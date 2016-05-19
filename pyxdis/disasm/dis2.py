@@ -385,7 +385,7 @@ def _get_instructions_bytes(code, opnames, varnames=None, names=None, constants=
                 argrepr = ("%d positional, %d keyword pair" %
                                (code2num(code, i-2), code2num(code, i-1)))
         opname = opnames[op]
-        yield Instruction3(opname, op,
+        yield Instruction2(opname, op,
                           arg, argval, argrepr,
                           offset, starts_line, is_jump_target)
 

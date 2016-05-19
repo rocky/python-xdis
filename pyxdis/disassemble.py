@@ -48,12 +48,12 @@ class Disassemble(object):
     def __init__(self, version):
         self.version = version
         # FIXME: DRY
-        if version == 2.7:
-            self.opc = opcode_27
+        if version == 2.5:
+            self.opc = opcode_25
         elif version == 2.6:
             self.opc = opcode_26
-        elif version == 2.5:
-            self.opc = opcode_25
+        elif version == 2.7:
+            self.opc = opcode_27
         elif version == 3.0:
             self.opc = opcode_30
         elif version == 3.1:
@@ -296,13 +296,13 @@ def get_disasm(version):
     # FIXME: see if we can do better
     if version == 2.7:
         import pyxdis.disasm.disasm27 as disassemble
-        disasm = disassemble.Disasm27()
+        disasm = disassemble.Disassemble27()
     elif version == 2.6:
         import pyxdis.disasm.disasm26 as disassemble
-        disasm = disassemble.Disasm26()
+        disasm = disassemble.Disassemble26()
     elif version == 2.5:
         import pyxdis.disasm.disasm25 as disassemble
-        disasm = disassemble.Disasm25()
+        disasm = disassemble.Disassemble25()
     elif version == 3.0:
         import pyxdis.disasm.disasm30 as disassemble
         disasm = disassemble.Disassemble30()

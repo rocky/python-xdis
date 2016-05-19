@@ -1,17 +1,15 @@
 #  Copyright (c) 2015, 2016 by Rocky Bernstein
 
 """
-Python 3 Generic bytecode disassembler
+Python 2 Generic bytecode disassembler
 
-This overlaps various Python3's dis module, but it can be run from
+This overlaps various Python2's dis module, but it can be run from
 Python versions other than the version running this code. Notably,
-run from Python version 2 and we save instruction information.
+run from Python version 3 and we save instruction information.
 """
 
-from __future__ import print_function
-
 import dis
-import pyxdis.disasm.dis3 as dis3
+import pyxdis.disasm.dis2 as dis2
 
 from collections import namedtuple
 from array import array
@@ -23,16 +21,16 @@ from pyxdis import PYTHON3
 
 
 # Get all the opcodes into globals
-import pyxdis.opcodes.opcode_3x as op3
+import pyxdis.opcodes.opcode_2x as op2
 
-globals().update(op3.opmap)
+globals().update(op2.opmap)
 
 import pyxdis.disassemble as disasm
 
-class Disassemble3(Disassemble):
+class Disassemble2(Disassemble):
 
     def __init__(self, version):
-        super(Disassemble3, self).__init__(version)
+        super(Disassemble2, self).__init__(version)
 
     def disassemble(self, co, classname=None, code_objects={}):
         """
@@ -43,7 +41,7 @@ class Disassemble3(Disassemble):
 
         self.code = array('B', co.co_code)
 
-        bytecode = dis3.Bytecode(co, self.opname)
+        bytecode = dis2.Bytecode(co, self.opname)
 
         for inst in bytecode:
             pattr =  inst.argrepr
@@ -63,16 +61,16 @@ class Disassemble3(Disassemble):
 def _test(version):
     import inspect
     co = inspect.currentframe().f_code
-    instructions = Disassemble3(version).disassemble(co)
+    instructions = Disassemble2(version).disassemble(co)
     for i in instructions:
         print(i.format())
 
 if __name__ == "__main__":
     from pyxdis import PYTHON_VERSION
-    if PYTHON_VERSION >= 3.0:
+    if 2.0 <= PYTHON_VERSION < 3.0:
         from pyxdis import PYTHON_VERSION
         _test(PYTHON_VERSION)
     else:
-        print("Need to be Python 3.0 or greater to demo; I am %s." %
+        print("Need to be Python 2.0 upto Python 2.7 to demo; I am %s." %
               PYTHON_VERSION)
     pass

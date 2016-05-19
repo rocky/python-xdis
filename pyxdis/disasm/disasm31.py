@@ -19,12 +19,8 @@ class Disassemble31(Disassemble3):
 if __name__ == "__main__":
     from pyxdis import PYTHON_VERSION
     if PYTHON_VERSION == 3.1:
-        import inspect
-        co = inspect.currentframe().f_code
-        instructions = Disassemble32().disassemble(co)
-        for i in instructions:
-            print(i.format())
-        pass
+        from pyxdis.disasm.disasm3 import _test
+        _test(PYTHON_VERSION)
     else:
         print("Need to be Python 3.1 to demo; I am %s." %
               PYTHON_VERSION)
