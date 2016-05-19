@@ -1,3 +1,5 @@
+|buildstatus|
+
 pyxdis
 ==========
 
