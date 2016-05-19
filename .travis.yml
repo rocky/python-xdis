@@ -1,0 +1,17 @@
+language: python
+
+sudo: false
+
+python:
+  - '3.5'
+  - '2.7.11'
+  - '2.6'
+  - '3.4'
+  - '3.2'
+
+install:
+- pip install -r requirements.txt
+- pip install -r requirements-dev.txt
+
+script:
+- python ./setup.py develop && COMPILE='--compile' make check

@@ -1,0 +1,8 @@
+include README.rst
+include ChangeLog
+include LICENSE
+include __pkginfo__.py
+recursive-include pyxdis *.py
+include bin/pyxdis
+recursive-include test *.py *.pyc
+recursive-include test_unit *.py

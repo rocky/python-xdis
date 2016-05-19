@@ -1,0 +1,10 @@
+Files in this directory contain very simnple constructs that work
+across all versions of Python.
+
+Their simplicity is to try to make it easier to test marshal
+and disassembly routines.
+
+The numbers in the filenames are to assist running the programs from
+the simplest to more complex. For example, many tests have assignment
+statements or function calls, so we want to test those constructs
+first.

@@ -1,0 +1,17 @@
+*.pyc
+*_dis
+*~
+/.cache
+/.eggs
+/.python-version
+/.tox
+/PKG-INFO
+/README
+/__pkginfo__.pyc
+/dist
+/how-to-make-a-release.txt
+/nose-1.3.7-py3.0.egg
+/pyxdis.egg-info
+/tmp
+__pycache__
+build

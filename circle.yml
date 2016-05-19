@@ -1,0 +1,13 @@
+machine:
+    python:
+        version: 2.7.8
+    environment:
+        COMPILE: --compile
+
+dependencies:
+    override:
+        - pip install -r requirements.txt
+        - pip install -r requirements-dev.txt
+test:
+    override:
+        - python ./setup.py develop && make check-2.7
