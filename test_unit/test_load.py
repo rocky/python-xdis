@@ -6,7 +6,10 @@ class TestLoad(unittest.TestCase):
 
     def test_basic(self):
         """Basic test of load_file, check_object_path and load_module"""
-        co = load_file(__file__)
+        filename = __file__
+        if filename.endswith('.pyo') or filename.endswith('.pyc'):
+            filename = filename[:-1]
+        co = load_file(filename)
         obj_path = check_object_path(__file__)
         if os.path.exists(obj_path):
             version, timestamp, magic_int, co2 = load_module(obj_path)
