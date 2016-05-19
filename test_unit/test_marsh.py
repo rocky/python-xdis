@@ -27,7 +27,7 @@ class TestMarshal(unittest.TestCase):
                             '06_frozenset.pyc')
         version, timestamp, magic_int, co = load_module(mod_file)
         expect = (0, None, 'attlist', 'linktype', 'link', 'element', 'Yep',
-                      frozenset({'linktype', 'attlist', 'element', 'link'}))
+                      frozenset(['linktype', 'attlist', 'element', 'link']))
         self.assertEqual(co.co_consts, expect, "Should handle frozenset")
 
 if __name__ == '__main__':
