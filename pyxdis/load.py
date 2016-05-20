@@ -43,7 +43,12 @@ def load_file(filename):
     This function does NOT write any file!
     """
     with open(filename, 'rb') as fp:
-        source = fp.read().decode('utf-8') + '\n'
+        try:
+            source = fp.read().decode('utf-8') + '\n'
+        except UnicodeDecodeError:
+            fp.seek(0)
+            source = fp.read() + '\n'
+
         try:
             co = compile(source, filename, 'exec', dont_inherit=True)
         except SyntaxError:

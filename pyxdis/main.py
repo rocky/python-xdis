@@ -20,78 +20,44 @@ import os, sys
 from collections import deque
 
 import pyxdis
+
 from pyxdis import PYTHON_VERSION
+from pyxdis.bytecode import Bytecode
 from pyxdis.code import iscode
+from pyxdis.opcodes import (opcode_25, opcode_26, opcode_27, opcode_30, opcode_31,
+                            opcode_32, opcode_33, opcode_34, opcode_35)
 from pyxdis.load import check_object_path, load_module
-from pyxdis.disassemble import get_disasm
+from pyxdis.util import format_code_info
 
 ## FIXME: this comes from Python's dis.py
 ## Isolate it?
 
-# The inspect module interrogates this dictionary to build its
-# list of CO_* constants. It is also used by pretty_flags to
-# turn the co_flags field into a human readable list.
-COMPILER_FLAG_NAMES = {
-     1: "OPTIMIZED",
-     2: "NEWLOCALS",
-     4: "VARARGS",
-     8: "VARKEYWORDS",
-    16: "NESTED",
-    32: "GENERATOR",
-    64: "NOFREE",
-   128: "COROUTINE",
-   256: "ITERABLE_COROUTINE",
-}
-
-def pretty_flags(flags):
-    """Return pretty representation of code flags."""
-    names = []
-    for i in range(32):
-        flag = 1<<i
-        if flags & flag:
-            names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
-            flags ^= flag
-            if not flags:
-                break
+def get_opcode(version):
+    # Set up disassembler with the right opcodes
+    if version == 2.5:
+        return opcode_25
+    elif version == 2.6:
+        return opcode_26
+    elif version == 2.7:
+        return opcode_27
+    elif version == 3.0:
+        return opcode_30
+    elif version == 3.1:
+        return opcode_31
+    elif version == 3.2:
+        return opcode_32
+    elif version == 3.3:
+        return opcode_33
+    elif version == 3.4:
+        return opcode_34
+    elif version == 3.5:
+        return opcode_35
     else:
-        names.append(hex(flags))
-    return ", ".join(names)
+        raise TypeError("%s is not a Python version I know about" % version)
 
-def format_code_info(co, version):
-    lines = []
-    lines.append("# Method Name:       %s" % co.co_name)
-    lines.append("# Filename:          %s" % co.co_filename)
-    lines.append("# Argument count:    %s" % co.co_argcount)
-    if version >= 3.0:
-        lines.append("# Kw-only arguments: %s" % co.co_kwonlyargcount)
-    lines.append("# Number of locals:  %s" % co.co_nlocals)
-    lines.append("# Stack size:        %s" % co.co_stacksize)
-    lines.append("# Flags:             %s" % pretty_flags(co.co_flags))
-    if co.co_consts:
-        lines.append("# Constants:")
-        for i_c in enumerate(co.co_consts):
-            lines.append("# %4d: %r" % i_c)
-    if co.co_names:
-        lines.append("# Names:")
-        for i_n in enumerate(co.co_names):
-            lines.append("%4d: %s" % i_n)
-    if co.co_varnames:
-        lines.append("# Variable names:")
-        for i_n in enumerate(co.co_varnames):
-            lines.append("# %4d: %s" % i_n)
-    if co.co_freevars:
-        lines.append("# Free variables:")
-        for i_n in enumerate(co.co_freevars):
-            lines.append("%4d: %s" % i_n)
-    if co.co_cellvars:
-        lines.append("# Cell variables:")
-        for i_n in enumerate(co.co_cellvars):
-            lines.append("# %4d: %s" % i_n)
-    return "\n".join(lines)
 
-#################################
 
-def disco(version, co, out=None, use_pyxdis_format=False):
+def disco(version, co, out=sys.stdout):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -105,32 +71,29 @@ def disco(version, co, out=None, use_pyxdis_format=False):
     if co.co_filename:
         print(format_code_info(co, version))
 
-    disasm = get_disasm(version)
-
-    disasm = disasm.disassemble_native \
-      if (not use_pyxdis_format) and hasattr(disasm, 'disassemble_native') \
-      else disasm.disassemble
+    opc = get_opcode(version)
 
     queue = deque([co])
-    disco_loop(disasm, version, queue, real_out, use_pyxdis_format)
+    disco_loop(opc, version, queue, real_out)
 
 
-def disco_loop(disasm, version, queue, real_out, use_pyxdis_format):
+def disco_loop(opc, version, queue, real_out):
     while len(queue) > 0:
         co = queue.popleft()
         if co.co_name != '<module>':
-            print("\n" + format_code_info(co, version), file=real_out)
-        tokens = disasm(co, use_pyxdis_format)
-        for t in tokens:
-            if iscode(t.pattr):
-                queue.append(t.pattr)
-            elif iscode(t.attr):
-                queue.append(t.attr)
-            print(t.format(), file=real_out)
+            real_out.write("\n" + format_code_info(co, version) + "\n")
+        real_out.write("\n" + format_code_info(co, version) + "\n")
+
+        bytecode = Bytecode(co, opc)
+        real_out.write(bytecode.dis() + "\n")
+
+        for instr in bytecode.get_instructions(co):
+            if iscode(instr.argval):
+                queue.append(instr.argval)
             pass
         pass
 
-def disassemble_file(filename, outstream=None, native=False):
+def disassemble_file(filename, outstream=sys.stdout):
     """
     disassemble Python byte-code file (.pyc)
 
@@ -139,11 +102,7 @@ def disassemble_file(filename, outstream=None, native=False):
     """
     filename = check_object_path(filename)
     version, timestamp, magic_int, co = load_module(filename)
-    if type(co) == list:
-        for con in co:
-            disco(version, con, outstream, native)
-    else:
-        disco(version, co, outstream, native)
+    disco(version, co, outstream)
     co = None
 
 def disassemble_files(in_base, out_base, files, outfile=None,
