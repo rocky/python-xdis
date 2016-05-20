@@ -15,7 +15,7 @@ import types
 import collections
 import io
 
-from uncompyle6 import PYTHON3
+from pyxdis import PYTHON3
 
 if PYTHON3:
     def code2num(code, i):

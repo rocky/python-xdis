@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Setup script for the 'uncompyle6' distribution."""
+"""Setup script for the 'pyxdis' distribution."""
 
 from __pkginfo__ import \
     author,           author_email,       \

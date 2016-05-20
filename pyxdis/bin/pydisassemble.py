@@ -6,9 +6,10 @@
 from __future__ import print_function
 import sys, os, getopt
 
-from pyxdis import check_python_version
-from pyxdis.main import disassemble_file
+import pyxdis
 from pyxdis.version import VERSION
+from pyxdis import PYTHON_VERSION
+from pyxdis.main import disassemble_file
 
 program, ext = os.path.splitext(os.path.basename(__file__))
 
@@ -34,14 +35,17 @@ def main():
     Usage_short = """usage: %s FILE...
 Type -h for for full help.""" % program
 
-    check_python_version(program)
+
+    if not (2.5 <= PYTHON_VERSION <= 3.5):
+        sys.stderr(print("This works on Python version 2.5..3.5; have %s" % PYTHON_VERSION))
+
 
     outfile = '-'
     out_base = None
     use_pyxdis_format = False
 
     if len(sys.argv) == 1:
-        print("No file(s) given", file=sys.stderr)
+        sys.stderr(print("No file(s) given"))
         print(Usage_short, file=sys.stderr)
         sys.exit(1)
 
@@ -67,7 +71,7 @@ Type -h for for full help.""" % program
 
     for file in files:
         if os.path.exists(files[0]):
-            disassemble_file(file, sys.stdout)
+            pyxdis.main.disassemble_file(file, sys.stdout)
         else:
             print("Can't read %s - skipping" % files[0],
                   file=sys.stderr)

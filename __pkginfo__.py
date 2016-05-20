@@ -32,7 +32,7 @@ author             = "Rocky Bernstein, Hartmut Goebel and others"
 author_email       = "rb@dustyfeet.com"
 entry_points={
     'console_scripts': [
-        'pyxdis=uncompyle6.bin.pyxdis:main',
+        'pyxdis=pyxdis.bin.pyxdis:main',
     ]}
 ftp_url            = None
 license            = 'MIT'

@@ -217,3 +217,12 @@ if PYTHON_VERSION == 2.7:
     import dis
     # print(set(dis.opmap.items()) - set(opmap.items()))
     assert all(item in opmap.items() for item in dis.opmap.items())
+
+# def dump_opcodes(opmap):
+#     """Utility for dumping opcodes"""
+#     op2name = {}
+#     for k in opmap.keys():
+#         op2name[opmap[k]] = k
+#     for i in sorted(op2name.keys()):
+#         print("%-3s %s" % (str(i), op2name[i]))
+# dump_opcodes(opmap)

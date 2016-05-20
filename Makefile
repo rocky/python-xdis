@@ -40,7 +40,7 @@ dist:
 
 #: Remove .pyc files
 clean_pyc:
-	( cd uncompyle6 && $(RM) -f *.pyc */*.pyc )
+	( cd pyxdis && $(RM) -f *.pyc */*.pyc )
 
 #: Create source tarball
 sdist:
@@ -56,7 +56,7 @@ check-rst:
 
 #: Lint program
 flake8:
-	$(LINT) uncompyle6
+	$(LINT) pyxdis
 
 #: Create binary egg distribution
 bdist_egg:
