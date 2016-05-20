@@ -20,9 +20,76 @@ import os, sys
 from collections import deque
 
 import pyxdis
+from pyxdis import PYTHON_VERSION
 from pyxdis.code import iscode
 from pyxdis.load import check_object_path, load_module
 from pyxdis.disassemble import get_disasm
+
+## FIXME: this comes from Python's dis.py
+## Isolate it?
+
+# The inspect module interrogates this dictionary to build its
+# list of CO_* constants. It is also used by pretty_flags to
+# turn the co_flags field into a human readable list.
+COMPILER_FLAG_NAMES = {
+     1: "OPTIMIZED",
+     2: "NEWLOCALS",
+     4: "VARARGS",
+     8: "VARKEYWORDS",
+    16: "NESTED",
+    32: "GENERATOR",
+    64: "NOFREE",
+   128: "COROUTINE",
+   256: "ITERABLE_COROUTINE",
+}
+
+def pretty_flags(flags):
+    """Return pretty representation of code flags."""
+    names = []
+    for i in range(32):
+        flag = 1<<i
+        if flags & flag:
+            names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
+            flags ^= flag
+            if not flags:
+                break
+    else:
+        names.append(hex(flags))
+    return ", ".join(names)
+
+def format_code_info(co, version):
+    lines = []
+    lines.append("# Method Name:       %s" % co.co_name)
+    lines.append("# Filename:          %s" % co.co_filename)
+    lines.append("# Argument count:    %s" % co.co_argcount)
+    if version >= 3.0:
+        lines.append("# Kw-only arguments: %s" % co.co_kwonlyargcount)
+    lines.append("# Number of locals:  %s" % co.co_nlocals)
+    lines.append("# Stack size:        %s" % co.co_stacksize)
+    lines.append("# Flags:             %s" % pretty_flags(co.co_flags))
+    if co.co_consts:
+        lines.append("# Constants:")
+        for i_c in enumerate(co.co_consts):
+            lines.append("# %4d: %r" % i_c)
+    if co.co_names:
+        lines.append("# Names:")
+        for i_n in enumerate(co.co_names):
+            lines.append("%4d: %s" % i_n)
+    if co.co_varnames:
+        lines.append("# Variable names:")
+        for i_n in enumerate(co.co_varnames):
+            lines.append("# %4d: %s" % i_n)
+    if co.co_freevars:
+        lines.append("# Free variables:")
+        for i_n in enumerate(co.co_freevars):
+            lines.append("%4d: %s" % i_n)
+    if co.co_cellvars:
+        lines.append("# Cell variables:")
+        for i_n in enumerate(co.co_cellvars):
+            lines.append("# %4d: %s" % i_n)
+    return "\n".join(lines)
+
+#################################
 
 def disco(version, co, out=None, use_pyxdis_format=False):
     """
@@ -33,10 +100,10 @@ def disco(version, co, out=None, use_pyxdis_format=False):
 
     # store final output stream for case of error
     real_out = out or sys.stdout
-    print('# Python %s' % version, file=real_out)
+    print('# Python bytecode %s (disassembled from Python %s)' %
+              (version, PYTHON_VERSION), file=real_out)
     if co.co_filename:
-        print('# Embedded file name: %s' % co.co_filename,
-              file=real_out)
+        print(format_code_info(co, version))
 
     disasm = get_disasm(version)
 
@@ -45,16 +112,14 @@ def disco(version, co, out=None, use_pyxdis_format=False):
       else disasm.disassemble
 
     queue = deque([co])
-    disco_loop(disasm, queue, real_out, use_pyxdis_format)
+    disco_loop(disasm, version, queue, real_out, use_pyxdis_format)
 
 
-def disco_loop(disasm, queue, real_out, use_pyxdis_format):
+def disco_loop(disasm, version, queue, real_out, use_pyxdis_format):
     while len(queue) > 0:
         co = queue.popleft()
         if co.co_name != '<module>':
-            print('\n# %s line %d of %s' %
-                      (co.co_name, co.co_firstlineno, co.co_filename),
-                      file=real_out)
+            print("\n" + format_code_info(co, version), file=real_out)
         tokens = disasm(co, use_pyxdis_format)
         for t in tokens:
             if iscode(t.pattr):

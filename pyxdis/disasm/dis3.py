@@ -60,35 +60,6 @@ def dis(x=None):
         raise TypeError("don't know how to disassemble %s objects" %
                         type(x).__name__)
 
-# The inspect module interrogates this dictionary to build its
-# list of CO_* constants. It is also used by pretty_flags to
-# turn the co_flags field into a human readable list.
-COMPILER_FLAG_NAMES = {
-     1: "OPTIMIZED",
-     2: "NEWLOCALS",
-     4: "VARARGS",
-     8: "VARKEYWORDS",
-    16: "NESTED",
-    32: "GENERATOR",
-    64: "NOFREE",
-   128: "COROUTINE",
-   256: "ITERABLE_COROUTINE",
-}
-
-def pretty_flags(flags):
-    """Return pretty representation of code flags."""
-    names = []
-    for i in range(32):
-        flag = 1<<i
-        if flags & flag:
-            names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
-            flags ^= flag
-            if not flags:
-                break
-    else:
-        names.append(hex(flags))
-    return ", ".join(names)
-
 def _get_code_object(x):
     """Helper to handle methods, functions, generators, strings and raw code objects"""
     if hasattr(x, '__func__'): # Method
@@ -107,37 +78,6 @@ def _get_code_object(x):
 def code_info(x):
     """Formatted details of methods, functions, or code."""
     return _format_code_info(_get_code_object(x))
-
-def _format_code_info(co):
-    lines = []
-    lines.append("Name:              %s" % co.co_name)
-    lines.append("Filename:          %s" % co.co_filename)
-    lines.append("Argument count:    %s" % co.co_argcount)
-    lines.append("Kw-only arguments: %s" % co.co_kwonlyargcount)
-    lines.append("Number of locals:  %s" % co.co_nlocals)
-    lines.append("Stack size:        %s" % co.co_stacksize)
-    lines.append("Flags:             %s" % pretty_flags(co.co_flags))
-    if co.co_consts:
-        lines.append("Constants:")
-        for i_c in enumerate(co.co_consts):
-            lines.append("%4d: %r" % i_c)
-    if co.co_names:
-        lines.append("Names:")
-        for i_n in enumerate(co.co_names):
-            lines.append("%4d: %s" % i_n)
-    if co.co_varnames:
-        lines.append("Variable names:")
-        for i_n in enumerate(co.co_varnames):
-            lines.append("%4d: %s" % i_n)
-    if co.co_freevars:
-        lines.append("Free variables:")
-        for i_n in enumerate(co.co_freevars):
-            lines.append("%4d: %s" % i_n)
-    if co.co_cellvars:
-        lines.append("Cell variables:")
-        for i_n in enumerate(co.co_cellvars):
-            lines.append("%4d: %s" % i_n)
-    return "\n".join(lines)
 
 def show_code(co):
     """Print details of methods, functions, or code to *file*.
