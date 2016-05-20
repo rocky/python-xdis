@@ -19,12 +19,6 @@ from pyxdis.instruction import Instruction
 from pyxdis.disassemble import Disassemble
 from pyxdis import PYTHON3
 
-
-# Get all the opcodes into globals
-import pyxdis.opcodes.opcode_2x as op2
-
-globals().update(op2.opmap)
-
 import pyxdis.disassemble as disasm
 
 class Disassemble2(Disassemble):
@@ -41,7 +35,7 @@ class Disassemble2(Disassemble):
 
         self.code = array('B', co.co_code)
 
-        bytecode = dis2.Bytecode(co, self.opname)
+        bytecode = dis2.Bytecode(co, self.opc)
 
         for inst in bytecode:
             pattr =  inst.argrepr

@@ -5,11 +5,6 @@ allow disassembling Python 2 bytecode on Python 3.
 
 # FIXME: can this be merged with dis3.py?
 
-# This part is modified for cross Python compatability
-from pyxdis.opcodes.opcode_2x import HAVE_ARGUMENT, EXTENDED_ARG, \
-     hasjrel, hasjabs, hasconst, hasname, haslocal, hascompare, hasfree, \
-     hasnargs, cmp_op
-
 from dis import findlinestarts
 import types
 import collections
@@ -208,7 +203,7 @@ class Instruction2(_Instruction):
 
     ## FIXME: figure out how to do _disassemble passing in opnames
 
-def get_instructions(x, opnames, first_line=None):
+def get_instructions(x, opc, first_line=None):
     """Iterator for the opcodes in methods, functions or code
 
     Generates a series of Instruction named tuples giving the details of
@@ -226,11 +221,11 @@ def get_instructions(x, opnames, first_line=None):
         line_offset = first_line - co.co_firstlineno
     else:
         line_offset = 0
-    return _get_instructions_bytes(co.co_code, opnames, co.co_varnames, co.co_names,
+    return _get_instructions_bytes(co.co_code, opc, co.co_varnames, co.co_names,
                                    co.co_consts, cell_names, linestarts,
                                    line_offset)
 
-def _get_instructions_bytes(code, opnames, varnames=None, names=None, constants=None,
+def _get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                       cells=None, linestarts=None, line_offset=0):
     """Iterate over the instructions in a bytecode string.
 
@@ -240,7 +235,8 @@ def _get_instructions_bytes(code, opnames, varnames=None, names=None, constants=
     arguments.
 
     """
-    labels = findlabels(code)
+    opnames = opc.opname
+    labels = findlabels(code, opc)
     extended_arg = 0
     starts_line = None
     # enumerate() is not an option, since we sometimes process
@@ -248,12 +244,7 @@ def _get_instructions_bytes(code, opnames, varnames=None, names=None, constants=
     n = len(code)
     i = 0
     while i < n:
-        op = code[i]
-        if isinstance(op, str):
-            op_num = ord(op)
-        else:
-            op_num = op
-
+        op = code2num(code, i)
         offset = i
         if linestarts is not None:
             starts_line = linestarts.get(i, None)
@@ -264,39 +255,36 @@ def _get_instructions_bytes(code, opnames, varnames=None, names=None, constants=
         arg = None
         argval = None
         argrepr = ''
-        if op >= HAVE_ARGUMENT:
-            if isinstance(code[i], str):
-                arg = op_num + ord(code[i+1])*256 + extended_arg
-            else:
-                arg = code[i] + code[i+1]*256 + extended_arg
+        if op >= opc.HAVE_ARGUMENT:
+            arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
             extended_arg = 0
             i = i+2
-            if op == EXTENDED_ARG:
+            if op == opc.EXTENDED_ARG:
                 extended_arg = arg*65536
             #  Set argval to the dereferenced value of the argument when
             #  availabe, and argrepr to the string representation of argval.
             #    _disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
             argval = arg
-            if op in hasconst:
+            if op in opc.hasconst:
                 argval, argrepr = _get_const_info(arg, constants)
-            elif op in hasname:
-                argval, argrepr = _get_name_info(arg, names)
-            elif op in hasjrel:
+            elif op in opc.hasname:
+                opc.argval, opc.argrepr = _get_name_info(arg, names)
+            elif op in opc.hasjrel:
                 argval = i + arg
                 argrepr = "to " + repr(argval)
-            elif op in haslocal:
+            elif op in opc.haslocal:
                 argval, argrepr = _get_name_info(arg, varnames)
-            elif op in hascompare:
-                argval = cmp_op[arg]
+            elif op in opc.hascompare:
+                argval = opc.cmp_op[arg]
                 argrepr = argval
-            elif op in hasfree:
+            elif op in opc.hasfree:
                 argval, argrepr = _get_name_info(arg, cells)
-            elif op in hasnargs:
-                argrepr = ("%d positional, %d keyword pair, %d annotated" %
-                               (code[i-2], code[i-1], code[i]))
-        yield Instruction(opnames[op_num], op,
-                          arg, argval, argrepr,
+            elif op in opc.hasnargs:
+                argrepr = ("%d positional, %d keyword pair" %
+                               (code2num(code, i-2), code2num(code, i-1)))
+        opname = opnames[op]
+        yield Instruction2(opname, op, arg, argval, argrepr,
                           offset, starts_line, is_jump_target)
 
 def _get_const_info(const_index, const_list):
@@ -327,69 +315,7 @@ def _get_name_info(name_index, name_list):
         argrepr = repr(argval)
     return argval, argrepr
 
-def _get_instructions_bytes(code, opnames, varnames=None, names=None, constants=None,
-                      cells=None, linestarts=None, line_offset=0):
-    """Iterate over the instructions in a bytecode string.
-
-    Generates a sequence of Instruction namedtuples giving the details of each
-    opcode.  Additional information about the code's runtime environment
-    (e.g. variable names, constants) can be specified using optional
-    arguments.
-
-    """
-    labels = findlabels(code)
-    extended_arg = 0
-    starts_line = None
-    # enumerate() is not an option, since we sometimes process
-    # multiple elements on a single pass through the loop
-    n = len(code)
-    i = 0
-    while i < n:
-        op = code2num(code, i)
-        offset = i
-        if linestarts is not None:
-            starts_line = linestarts.get(i, None)
-            if starts_line is not None:
-                starts_line += line_offset
-        is_jump_target = i in labels
-        i = i+1
-        arg = None
-        argval = None
-        argrepr = ''
-        if op >= HAVE_ARGUMENT:
-            arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
-            extended_arg = 0
-            i = i+2
-            if op == EXTENDED_ARG:
-                extended_arg = arg*65536
-            #  Set argval to the dereferenced value of the argument when
-            #  availabe, and argrepr to the string representation of argval.
-            #    _disassemble_bytes needs the string repr of the
-            #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
-            argval = arg
-            if op in hasconst:
-                argval, argrepr = _get_const_info(arg, constants)
-            elif op in hasname:
-                argval, argrepr = _get_name_info(arg, names)
-            elif op in hasjrel:
-                argval = i + arg
-                argrepr = "to " + repr(argval)
-            elif op in haslocal:
-                argval, argrepr = _get_name_info(arg, varnames)
-            elif op in hascompare:
-                argval = cmp_op[arg]
-                argrepr = argval
-            elif op in hasfree:
-                argval, argrepr = _get_name_info(arg, cells)
-            elif op in hasnargs:
-                argrepr = ("%d positional, %d keyword pair" %
-                               (code2num(code, i-2), code2num(code, i-1)))
-        opname = opnames[op]
-        yield Instruction2(opname, op,
-                          arg, argval, argrepr,
-                          offset, starts_line, is_jump_target)
-
-def findlabels(code):
+def findlabels(code, opc):
     """Detect all offsets in a byte code which are jump targets.
 
     Return the list of offsets.
@@ -403,13 +329,13 @@ def findlabels(code):
     while i < n:
         op = code2num(code, i)
         i = i+1
-        if op >= HAVE_ARGUMENT:
+        if op >= opc.HAVE_ARGUMENT:
             arg = code2num(code, i) + code2num(code, i+1)*256
             i = i+2
             label = -1
-            if op in hasjrel:
+            if op in opc.hasjrel:
                 label = i+arg
-            elif op in hasjabs:
+            elif op in opc.hasjabs:
                 label = arg
             if label >= 0:
                 if label not in labels:

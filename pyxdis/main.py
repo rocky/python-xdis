@@ -55,7 +55,7 @@ def disco_loop(disasm, queue, real_out, use_pyxdis_format):
             print('\n# %s line %d of %s' %
                       (co.co_name, co.co_firstlineno, co.co_filename),
                       file=real_out)
-        tokens, customize = disasm(co, use_pyxdis_format)
+        tokens = disasm(co, use_pyxdis_format)
         for t in tokens:
             if iscode(t.pattr):
                 queue.append(t.pattr)

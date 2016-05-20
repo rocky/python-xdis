@@ -43,7 +43,7 @@ class Disassemble3(Disassemble):
 
         self.code = array('B', co.co_code)
 
-        bytecode = dis3.Bytecode(co, self.opname)
+        bytecode = dis3.Bytecode(co, self.opc)
 
         for inst in bytecode:
             pattr =  inst.argrepr
