@@ -9,7 +9,8 @@ import collections
 from dis import findlinestarts
 
 from pyxdis import PYTHON3
-from pyxdis.util import findlabels, get_code_object, code2num
+from pyxdis.util import (findlabels, get_code_object, code2num,
+                         format_code_info)
 
 if PYTHON3:
     from io import StringIO
@@ -206,7 +207,7 @@ class Bytecode:
 
     def info(self):
         """Return formatted information about the code object."""
-        return _format_code_info(self.codeobj)
+        return format_code_info(self.codeobj)
 
     def dis(self):
         """Return a formatted view of the bytecode operations."""

@@ -1,8 +1,6 @@
 # Copyright (c) 2015-2016 by Rocky Bernstein
-# Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
-
 """
-CPython magic- and version- independent disassembly routines
+CPython independent disassembly routines
 
 There are two reasons we can't use Python's built-in routines
 from dis. First, the bytecode we are extracting may be from a different
@@ -14,9 +12,11 @@ Second, we need structured instruction information for the
 want to run on Python 2.7.
 """
 
-from __future__ import print_function
+# Note: we tend to eschew new Python 3 things, and even future
+# imports so this can run on older Pythons. This is
+# intended to be a more cross-version Python program
 
-import os, sys
+import sys
 from collections import deque
 
 import pyxdis
@@ -55,8 +55,6 @@ def get_opcode(version):
     else:
         raise TypeError("%s is not a Python version I know about" % version)
 
-
-
 def disco(version, co, out=sys.stdout):
     """
     diassembles and deparses a given code block 'co'
@@ -66,10 +64,10 @@ def disco(version, co, out=sys.stdout):
 
     # store final output stream for case of error
     real_out = out or sys.stdout
-    print('# Python bytecode %s (disassembled from Python %s)' %
-              (version, PYTHON_VERSION), file=real_out)
+    out.write('# Python bytecode %s (disassembled from Python %s)\n' %
+              (version, PYTHON_VERSION))
     if co.co_filename:
-        print(format_code_info(co, version))
+        out.write(format_code_info(co, version) + "\n")
 
     opc = get_opcode(version)
 
@@ -104,79 +102,6 @@ def disassemble_file(filename, outstream=sys.stdout):
     version, timestamp, magic_int, co = load_module(filename)
     disco(version, co, outstream)
     co = None
-
-def disassemble_files(in_base, out_base, files, outfile=None,
-                      native=False):
-    """
-    in_base	base directory for input files
-    out_base	base directory for output files (ignored when
-    files	list of filenames to be uncompyled (relative to src_base)
-    outfile	write output to this filename (overwrites out_base)
-
-    For redirecting output to
-    - <filename>		outfile=<filename> (out_base is ignored)
-    - files below out_base	out_base=...
-    - stdout			out_base=None, outfile=None
-    """
-    def _get_outstream(outfile):
-        dir = os.path.dirname(outfile)
-        failed_file = outfile + '_failed'
-        if os.path.exists(failed_file):
-            os.remove(failed_file)
-        try:
-            os.makedirs(dir)
-        except OSError:
-            pass
-        return open(outfile, 'w')
-
-    of = outfile
-    if outfile == '-':
-        outfile = None # use stdout
-    elif outfile and os.path.isdir(outfile):
-        out_base = outfile; outfile = None
-    elif outfile:
-        out_base = outfile; outfile = None
-
-    for filename in files:
-        infile = os.path.join(in_base, filename)
-        # print (infile, file=sys.stderr)
-
-        if of: # outfile was given as parameter
-            outstream = _get_outstream(outfile)
-        elif out_base is None:
-            outstream = sys.stdout
-        else:
-            outfile = os.path.join(out_base, filename) + '_dis'
-            outstream = _get_outstream(outfile)
-            # print(outfile, file=sys.stderr)
-            pass
-
-        # try to disassemble the input file
-        try:
-            disassemble_file(infile, outstream, native)
-        except KeyboardInterrupt:
-            if outfile:
-                outstream.close()
-                os.remove(outfile)
-            raise
-        except:
-            if outfile:
-                outstream.close()
-                os.rename(outfile, outfile + '_failed')
-            else:
-                sys.stderr.write("\n# Can't disassemble %s\n" % infile)
-                import traceback
-                traceback.print_exc()
-        else: # uncompyle successfull
-            if outfile:
-                outstream.close()
-            if not outfile: print('\n# okay disassembling', infile)
-            sys.stdout.flush()
-
-        if outfile:
-            sys.stdout.write("\n")
-            sys.stdout.flush()
-        return
 
 def _test():
     """Simple test program to disassemble a file."""

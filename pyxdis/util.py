@@ -2,11 +2,9 @@
 
 from pyxdis import PYTHON3
 if PYTHON3:
-    from io import StringIO
     def code2num(code, i):
         return code[i]
 else:
-    from StringIO import StringIO
     def code2num(code, i):
         return ord(code[i])
 
@@ -21,6 +19,7 @@ COMPILER_FLAG_NAMES = {
     0x0010: "NESTED",
     0x0020: "GENERATOR",
     0x0040: "NOFREE",
+
     # These are in Python 3.x
     0x0080: "COROUTINE",
     0x0100: "ITERABLE_COROUTINE",
@@ -120,36 +119,6 @@ def _try_compile(source, name):
     except SyntaxError:
         c = compile(source, name, 'exec')
     return c
-
-
-def dis(x=None):
-    """Disassemble classes, methods, functions, generators, or code.
-    """
-    if x is None:
-        distb()
-        return
-    if hasattr(x, '__func__'):  # Method
-        x = x.__func__
-    if hasattr(x, '__code__'):  # Function
-        x = x.__code__
-    if hasattr(x, 'gi_code'):  # Generator
-        x = x.gi_code
-    if hasattr(x, '__dict__'):  # Class or module
-        items = sorted(x.__dict__.items())
-        for name, x1 in items:
-            if isinstance(x1, _have_code):
-                print("Disassembly of %s:" % name, file)
-                try:
-                    dis(x1, file)
-                except TypeError as msg:
-                    print("Sorry:", msg)
-                print(file)
-    elif isinstance(x, (bytes, bytearray)): # Raw bytecode
-        _disassemble_bytes(x, file)
-    else:
-        raise TypeError("don't know how to disassemble %s objects" %
-                        type(x).__name__)
-
 
 def get_code_object(x):
     """Helper to handle methods, functions, generators, strings and raw code objects"""
