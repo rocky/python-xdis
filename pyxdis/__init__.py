@@ -44,14 +44,5 @@ IS_PYPY = '__pypy__' in sys.builtin_module_names
 
 sys.setrecursionlimit(5000)
 
-def check_python_version(program):
-    if not (sys.version_info[0:2] in ((2, 6), (2, 7), (3, 2), (3, 3), (3, 4), (3, 5))):
-        print('Error: %s requires Python 2.6, 2.7, 3.2, 3.3, 3.4 or 3.5' % program,
-              file=sys.stderr)
-        sys.exit(-1)
-    return
-
-import pyxdis.load
-
 # Export some functions
 from pyxdis.load import load_module, load_file

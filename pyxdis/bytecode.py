@@ -1,4 +1,4 @@
-"""Disassembler of Python byte code into mnemonics.
+"""Python bytecode and instruction classes
 Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
@@ -105,14 +105,13 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                 argrepr = ("%d positional, %d keyword pair" %
                                (code2num(code, i-2), code2num(code, i-1)))
         opname = opc.opname[op]
-        yield InstructionGeneric(opname, op,
-                                 arg, argval, argrepr,
-                                 offset, starts_line, is_jump_target)
+        yield Instruction(opname, op, arg, argval, argrepr,
+                          offset, starts_line, is_jump_target)
 
 _Instruction = collections.namedtuple("_Instruction",
      "opname opcode arg argval argrepr offset starts_line is_jump_target")
 
-class InstructionGeneric(_Instruction):
+class Instruction(_Instruction):
     """Details for a bytecode operation
 
        Defined fields:
