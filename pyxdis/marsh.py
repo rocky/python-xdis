@@ -8,7 +8,7 @@ When the two are the same, you can simply use Python's built-in marshal.loads()
 to produce a code object
 """
 
-# Copyright (c) 2015 by Rocky Bernstein
+# Copyright (c) 2015-2016 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
 from __future__ import print_function
@@ -25,12 +25,24 @@ internObjects = []
 
 if PYTHON3:
     def long(n): return n
+else:
+    import unicodedata
 
 def compat_str(s):
     if PYTHON_VERSION > 3.2:
         return s.decode('utf-8', errors='ignore') if PYTHON3 else str(s)
     else:
         return s.decode() if PYTHON3 else str(s)
+
+def compat_u2s(u):
+    if PYTHON_VERSION < 3.0:
+        # See also unaccent.py which can be found using google. I
+        # found it and this code via
+        # https://www.peterbe.com/plog/unicode-to-ascii where it is a
+        # dead link. That can potentially do better job in converting accents.
+        return unicodedata.normalize('NFKD', u).encode('ascii', 'ignore')
+    else:
+        return str(u)
 
 def load_code(fp, magic_int, code_objects={}):
     """
@@ -124,11 +136,14 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                         co_freevars, co_cellvars)
     else:
         if (3000 <= magic_int < 20121):
-            # Python 3  encodes some fields as Unicode while Python2
+            # Python 3 encodes some fields as Unicode while Python2
             # requires the corresponding field to have string values
-            co_consts = tuple([str(s) if isinstance(s, unicode) else s for s in co_consts])
-            co_names  = tuple([str(s) if isinstance(s, unicode) else s for s in co_names])
-            co_varnames  = tuple([str(s) if isinstance(s, unicode) else s for s in co_varnames])
+            co_consts = tuple([compat_u2s(s) if isinstance(s, unicode)
+                                   else s for s in co_consts])
+            co_names  = tuple([compat_u2s(s) if isinstance(s, unicode)
+                                   else s for s in co_names])
+            co_varnames  = tuple([compatu2s(s) if isinstance(s, unicode)
+                                      else s for s in co_varnames])
             co_filename = str(co_filename)
             co_name = str(co_name)
         if 3020 < magic_int <= 20121:

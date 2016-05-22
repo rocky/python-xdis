@@ -35,7 +35,7 @@ This uses setup.py, so it follows the standard Python routine:
     # or if you have pyenv:
     python setup.py develop
 
-A GNU makefile is also provided so `make install` (possibly as root or
+A GNU makefile is also provided so :code:`make install` (possibly as root or
 sudo) will do the steps above.
 
 Testing
@@ -49,7 +49,7 @@ A GNU makefile has been added to smooth over setting running the right
 command, and running tests from fastest to slowest.
 
 If you have remake_ installed, you can see the list of all tasks
-including tests via `remake --tasks`
+including tests via :code:`remake --tasks`
 
 
 Usage
