@@ -9,4 +9,4 @@ version = sys.version[0:3]
 cfile =  "bytecode_%s/%s" % (version, short) + 'c'
 print("byte-compiling %s to %s" % (path, cfile))
 py_compile.compile(path, cfile)
-os.system("../bin/pyxdis -a -t %s" % cfile)
+os.system("../bin/pydisassemble %s" % cfile)

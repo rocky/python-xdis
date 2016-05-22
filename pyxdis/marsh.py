@@ -146,56 +146,62 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     code_objects[str(code)] = code
     return code
 
+# Python 3.4+ support for reference objects.
+# The names follow marshal.c
+def r_ref_reserve(obj, flag):
+    i = None
+    if flag:
+        i = len(internObjects)
+        internObjects.append(obj)
+    return obj, i
+
+def r_ref_insert(obj, i):
+    if i is not None:
+        internObjects[i] = obj
+    return obj
+
+def r_ref(obj, flag):
+    if flag:
+        internObjects.append(obj)
+    return obj
+
+# Bit set on marshalType if we should
+# add obj to internObjects.
+# FLAG_REF is the marchal.c name
+FLAG_REF = 0x80
+
+# In marshal.c this method is called r_object()
 def load_code_internal(fp, magic_int, bytes_for_s=False,
-                       code_objects={}, marshalType=None):
+                       code_objects={}):
     global internStrings, internObjects
 
-    if marshalType is None:
-        b1 = ord(fp.read(1))
-        if b1 & 0x80:
-            b1 = b1 &0x7f
-            code = load_code_internal(fp, magic_int, bytes_for_s=False,
-                                      code_objects=code_objects,
-                                      marshalType=chr(b1))
-            internObjects.append(code)
-            return code
-        marshalType = chr(b1)
+    b1 = ord(fp.read(1))
+
+    flag = False
+    if b1 & FLAG_REF:
+        # Since 3.4, "flag" is the marshal.c name
+        flag = True
+        b1 = b1 & (FLAG_REF-1)
+    marshalType = chr(b1)
 
     # print(marshalType) # debug
     if marshalType == '0':
-        # Null
+        # In C this NULL. Not sure what it should
+        # translate here. Note NULL != None which is below
         return None
     elif marshalType == 'N':
         return None
-    elif marshalType == 'F':
-        return False
-    elif marshalType == 'T':
-        return True
     elif marshalType == 'S':
         return StopIteration
     elif marshalType == '.':
         return Ellipsis
+    elif marshalType == 'F':
+        return False
+    elif marshalType == 'T':
+        return True
     elif marshalType == 'i':
-        # int
-        return int(unpack('i', fp.read(4))[0])
-    elif marshalType == 'I':
-        # int64
-        return unpack('q', fp.read(8))[0]
-    elif marshalType == 'f':
-        # float
-        n = fp.read(1)
-        return float(unpack('d', fp.read(n))[0])
-    elif marshalType == 'g':
-        # binary float
-        return float(unpack('d', fp.read(8))[0])
-    elif marshalType == 'x':
-        # complex
-        raise KeyError(marshalType)
-    elif marshalType == 'y':
-        # binary complex
-        real = unpack('d', fp.read(8))[0]
-        imag = unpack('d', fp.read(8))[0]
-        return complex(real, imag)
+        # int32
+        return r_ref(int(unpack('i', fp.read(4))[0]), flag)
     elif marshalType == 'l':
         # long
         n = unpack('i', fp.read(4))[0]
@@ -207,8 +213,32 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
             md = int(unpack('h', fp.read(2))[0])
             d += md << j*15
         if n < 0:
-            return long(d*-1)
-        return d
+            d = long(d*-1)
+        return r_ref(d, flag)
+    elif marshalType == 'I':
+        # int64. Python 3.4 removed this.
+        return unpack('q', fp.read(8))[0]
+    elif marshalType == 'f':
+        # float
+        return r_ref(float(unpack('d', fp.read(1))[0]), flag)
+    elif marshalType == 'g':
+        # binary float
+        return r_ref(float(unpack('d', fp.read(8))[0]), flag)
+    elif marshalType == 'x':
+        # complex
+        # FIXME: check me
+        strsize = unpack('i', fp.read(4))[0]
+        s = fp.read(strsize)
+        real = float(s)
+        strsize = unpack('i', fp.read(4))[0]
+        s = fp.read(strsize)
+        imag = float(s)
+        return r_ref(complex(real, imag), flag)
+    elif marshalType == 'y':
+        # binary complex
+        real = unpack('d', fp.read(8))[0]
+        imag = unpack('d', fp.read(8))[0]
+        return r_ref(complex(real, imag), flag)
     elif marshalType == 's':
         # string
         # Note: could mean bytes in Python3 processing Python2 bytecode
@@ -216,90 +246,108 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         s = fp.read(strsize)
         if not bytes_for_s:
             s = compat_str(s)
-        return s
-    elif marshalType == 't':
-        # interned
+        return r_ref(s, flag)
+    elif marshalType == 'A':
+        # ascii interned - Python3 3.4
+        # FIXME: check
         strsize = unpack('i', fp.read(4))[0]
         interned = compat_str(fp.read(strsize))
         internStrings.append(interned)
-        return interned
-    elif marshalType == 'R':
-        # string reference
-        refnum = unpack('i', fp.read(4))[0]
-        return internStrings[refnum]
-    elif marshalType == 'r':
-        # object reference - new in Python3
-        refnum = unpack('i', fp.read(4))[0]
-        return internObjects[refnum-1]
+        return r_ref(interned, flag)
+    elif marshalType == 'a':
+        # ascii. Since Python 3.4
+        strsize = unpack('i', fp.read(4))[0]
+        s = fp.read(strsize)
+        s = compat_str(s)
+        return r_ref(s, flag)
+    elif marshalType == 'z':
+        # short ascii - since Python 3.4
+        strsize = unpack('B', fp.read(1))[0]
+        return r_ref(compat_str(fp.read(strsize)), flag)
+    elif marshalType == 'Z':
+        # short ascii interned - since Python 3.4
+        # FIXME: check
+        strsize = unpack('B', fp.read(1))[0]
+        interned = compat_str(fp.read(strsize))
+        internStrings.append(interned)
+        return r_ref(interned, flag)
+    elif marshalType == 't':
+        # interned - since Python 3.4
+        strsize = unpack('i', fp.read(4))[0]
+        interned = compat_str(fp.read(strsize))
+        internStrings.append(interned)
+        return r_ref(interned, flag)
+    elif marshalType == 'u':
+        strsize = unpack('i', fp.read(4))[0]
+        unicodestring = fp.read(strsize)
+        return r_ref(unicodestring.decode('utf-8'), flag)
+    elif marshalType == ')':
+        # small tuple - since Python 3.4
+        tuplesize = unpack('B', fp.read(1))[0]
+        ret, i = r_ref_reserve(tuple(), flag)
+        while tuplesize > 0:
+            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
+            tuplesize -= 1
+            pass
+        return r_ref_insert(ret, i)
     elif marshalType == '(':
+        # tuple
         tuplesize = unpack('i', fp.read(4))[0]
-        ret = tuple()
+        ret = r_ref(tuple(), flag)
         while tuplesize > 0:
             ret += load_code_internal(fp, magic_int, code_objects=code_objects),
             tuplesize -= 1
         return ret
     elif marshalType == '[':
-        raise KeyError(marshalType)
+        # list. FIXME: check me
+        n = unpack('i', fp.read(4))[0]
+        ret = r_ref(list(), flag)
+        while n > 0:
+            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
+            tuplesize -= 1
+        return ret
     elif marshalType == '{':
+        ret = r_ref(dict(), flag)
         # dictionary
+        # while True:
+        #     key = load_code_internal(fp, magic_int, code_objects=code_objects)
+        #     if key is NULL:
+        #         break
+        #     val = load_code_internal(fp, magic_int, code_objects=code_objects)
+        #     if val is NULL:
+        #         break
+        #     ret[key] = val
+        #     pass
         raise KeyError(marshalType)
+    elif marshalType in ['<', '>']:
+        # set and frozenset
+        setsize = unpack('i', fp.read(4))[0]
+        ret, i = r_ref_reserve(tuple(), flag)
+        while setsize > 0:
+            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
+            setsize -= 1
+        if marshalType == '>':
+            return r_ref_insert(frozenset(ret), i)
+        else:
+            return r_ref_insert(set(ret), i)
+    elif marshalType == 'R':
+        # Python 2 string reference
+        refnum = unpack('i', fp.read(4))[0]
+        return internStrings[refnum]
     elif marshalType == 'c':
         return load_code_type(fp, magic_int, bytes_for_s=False,
                               code_objects=code_objects)
     elif marshalType == 'C':
         # code type used in Python 1.0 - 1.2
         raise KeyError("C code is Python 1.0 - 1.2; can't handle yet")
-    elif marshalType == 'u':
-        strsize = unpack('i', fp.read(4))[0]
-        unicodestring = fp.read(strsize)
-        return unicodestring.decode('utf-8')
+    elif marshalType == 'r':
+        # object reference - since Python 3.4
+        refnum = unpack('i', fp.read(4))[0]
+        o = internObjects[refnum-1]
+        return o
     elif marshalType == '?':
         # unknown
         raise KeyError(marshalType)
-    elif marshalType in ['<', '>']:
-        # set and frozenset
-        setsize = unpack('i', fp.read(4))[0]
-        ret = tuple()
-        while setsize > 0:
-            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
-            setsize -= 1
-        if marshalType == '>':
-            return frozenset(ret)
-        else:
-            return set(ret)
-    elif marshalType == 'a':
-        # ascii
-        # FIXME check
-        strsize = unpack('i', fp.read(4))[0]
-        s = fp.read(strsize)
-        s = compat_str(s)
-        return s
-    elif marshalType == 'A':
-        # ascii interned - since Python3
-        # FIXME: check
-        strsize = unpack('i', fp.read(4))[0]
-        interned = compat_str(fp.read(strsize))
-        internStrings.append(interned)
-        return interned
-    elif marshalType == ')':
-        # small tuple - since Python3
-        tuplesize = unpack('B', fp.read(1))[0]
-        ret = tuple()
-        while tuplesize > 0:
-            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
-            tuplesize -= 1
-        return ret
-    elif marshalType == 'z':
-        # short ascii - since Python3
-        strsize = unpack('B', fp.read(1))[0]
-        return compat_str(fp.read(strsize))
-    elif marshalType == 'Z':
-        # short ascii interned - since Python3
-        # FIXME: check
-        strsize = unpack('B', fp.read(1))[0]
-        interned = compat_str(fp.read(strsize))
-        internStrings.append(interned)
-        return interned
     else:
         sys.stderr.write("Unknown type %i (hex %x) %c\n" %
                          (ord(marshalType), ord(marshalType), ord(marshalType)))
