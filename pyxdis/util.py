@@ -55,6 +55,8 @@ def format_code_info(co, version):
     lines.append("# Argument count:    %s" % co.co_argcount)
     if version >= 3.0:
         lines.append("# Kw-only arguments: %s" % co.co_kwonlyargcount)
+
+    pos_argc = co.co_argcount
     lines.append("# Number of locals:  %s" % co.co_nlocals)
     lines.append("# Stack size:        %s" % co.co_stacksize)
     lines.append("# Flags:             %s" % pretty_flags(co.co_flags))
@@ -65,15 +67,19 @@ def format_code_info(co, version):
     if co.co_names:
         lines.append("# Names:")
         for i_n in enumerate(co.co_names):
-            lines.append("%4d: %s" % i_n)
-    if co.co_varnames:
-        lines.append("# Variable names:")
-        for i_n in enumerate(co.co_varnames):
             lines.append("# %4d: %s" % i_n)
+    if pos_argc > 0:
+        lines.append("# Positional arguments:")
+        lines.append("#\t%s" % ", ".join(co.co_varnames[:pos_argc]))
+        pass
+    if co.co_varnames:
+        lines.append("# Local variables:")
+        for i, n in enumerate(co.co_varnames[co.co_argcount:]):
+            lines.append("# %4d: %s" % (pos_argc+i, n))
     if co.co_freevars:
         lines.append("# Free variables:")
         for i_n in enumerate(co.co_freevars):
-            lines.append("%4d: %s" % i_n)
+            lines.append("# %4d: %s" % i_n)
     if co.co_cellvars:
         lines.append("# Cell variables:")
         for i_n in enumerate(co.co_cellvars):

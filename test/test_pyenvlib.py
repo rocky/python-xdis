@@ -108,17 +108,22 @@ if __name__ == '__main__':
     do_verify = False
     test_dirs = []
     start_with = None
+    max_files = 800
 
     test_options_keys = list(test_options.keys())
     test_options_keys.sort()
     opts, args = getopt.getopt(sys.argv[1:], '',
-                               ['start-with=', 'verify', 'all', ] \
+                               ['start-with=',
+                                'max-files=',
+                                'verify', 'all', ] \
                                + test_options_keys )
     for opt, val in opts:
         if opt == '--verify':
             do_verify = True
         elif opt == '--start-with':
             start_with = val
+        elif opt == '--max-files':
+            max_files = int(val)
         elif opt[2:] in test_options_keys:
             test_dirs.append(test_options[opt[2:]])
         elif opt == '--all':
@@ -130,6 +135,8 @@ if __name__ == '__main__':
             target_dir = os.path.join(target_base, target_dir)
             if os.path.exists(target_dir):
                 shutil.rmtree(target_dir, ignore_errors=1)
-            do_tests(src_dir, pattern, target_dir, start_with, do_verify)
+            do_tests(src_dir, pattern, target_dir, start_with,
+                         do_verify=do_verify,
+                         max_files=max_files)
         else:
             print("### Path %s doesn't exist; skipping" % src_dir)

@@ -16,7 +16,7 @@ want to run on Python 2.7.
 # imports so this can run on older Pythons. This is
 # intended to be a more cross-version Python program
 
-import sys
+import datetime, sys
 from collections import deque
 
 import pyxdis
@@ -29,11 +29,9 @@ from pyxdis.opcodes import (opcode_25, opcode_26, opcode_27, opcode_30, opcode_3
 from pyxdis.load import check_object_path, load_module
 from pyxdis.util import format_code_info
 
-## FIXME: this comes from Python's dis.py
-## Isolate it?
-
 def get_opcode(version):
     # Set up disassembler with the right opcodes
+    # Is there a better way?
     if version == 2.5:
         return opcode_25
     elif version == 2.6:
@@ -55,7 +53,7 @@ def get_opcode(version):
     else:
         raise TypeError("%s is not a Python version I know about" % version)
 
-def disco(version, co, out=sys.stdout):
+def disco(version, co, timestamp, out=sys.stdout):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -66,6 +64,10 @@ def disco(version, co, out=sys.stdout):
     real_out = out or sys.stdout
     out.write('# Python bytecode %s (disassembled from Python %s)\n' %
               (version, PYTHON_VERSION))
+    if timestamp > 0:
+        value = datetime.datetime.fromtimestamp(timestamp)
+        out.write(value.strftime('# Timestamp in code: %Y-%m-%d %H:%M:%S'))
+
     if co.co_filename:
         out.write(format_code_info(co, version) + "\n")
 
@@ -80,7 +82,6 @@ def disco_loop(opc, version, queue, real_out):
         co = queue.popleft()
         if co.co_name != '<module>':
             real_out.write("\n" + format_code_info(co, version) + "\n")
-        real_out.write("\n" + format_code_info(co, version) + "\n")
 
         bytecode = Bytecode(co, opc)
         real_out.write(bytecode.dis() + "\n")
@@ -100,7 +101,7 @@ def disassemble_file(filename, outstream=sys.stdout):
     """
     filename = check_object_path(filename)
     version, timestamp, magic_int, co = load_module(filename)
-    disco(version, co, outstream)
+    disco(version, co, timestamp, outstream)
     co = None
 
 def _test():

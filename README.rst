@@ -59,7 +59,7 @@ Run
 
 ::
 
-     ./bin/pyxdis -h
+     ./bin/pydisassemble -h
 
 for usage help.
 

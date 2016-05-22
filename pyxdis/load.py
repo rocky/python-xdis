@@ -71,6 +71,7 @@ def load_module(filename, code_objects={}):
                code object
     """
 
+    timestamp = 0
     with open(filename, 'rb') as fp:
         magic = fp.read(4)
         try:
