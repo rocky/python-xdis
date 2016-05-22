@@ -53,7 +53,6 @@ def_op('ROT_THREE', 3)
 def_op('DUP_TOP', 4)
 def_op('ROT_FOUR', 5)
 
-def_op('NOP', 9)
 def_op('UNARY_POSITIVE', 10)
 def_op('UNARY_NEGATIVE', 11)
 def_op('UNARY_NOT', 12)
@@ -61,7 +60,6 @@ def_op('UNARY_CONVERT', 13)
 
 def_op('UNARY_INVERT', 15)
 
-def_op('LIST_APPEND', 18)
 def_op('BINARY_POWER', 19)
 
 def_op('BINARY_MULTIPLY', 20)

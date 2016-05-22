@@ -76,9 +76,9 @@ updateGlobal()
 from pyxdis import PYTHON_VERSION
 if PYTHON_VERSION == 3.5:
     import dis
-    for item in dis.opmap.items():
-        if item not in opmap.items():
-            print(item)
+    # for item in dis.opmap.items():
+    #     if item not in opmap.items():
+    #         print(item)
     assert all(item in opmap.items() for item in dis.opmap.items())
 
 # opcode_3x.dump_opcodes(opmap)
