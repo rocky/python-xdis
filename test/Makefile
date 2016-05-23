@@ -22,22 +22,22 @@ check: check-bytecode
 # 	$(MAKE) check-$$PYTHON_VERSION
 
 #: Run working tests from Python 2.6 or 2.7
-check-2.5 check-2.6 check-2.7: check-bytecode
+check-2.5 check-2.6 check-2.7 check-3.2 check-3.3 check-3.4 check-3.5: check-bytecode
 
-#: Run working tests from Python 3.2
-check-3.2: check-bytecode
-	$(PYTHON) test_pythonlib.py --bytecode-3.2 --verify $(COMPILE)
+# #: Run working tests from Python 3.2
+# check-3.2: check-bytecode
+# 	$(PYTHON) test_pythonlib.py --bytecode-3.2 --verify $(COMPILE)
 
-#: Run working tests from Python 3.3
-check-3.3: check-bytecode
-	$(PYTHON) test_pythonlib.py --bytecode-3.3 --verify $(COMPILE)
+# #: Run working tests from Python 3.3
+# check-3.3: check-bytecode
+# 	$(PYTHON) test_pythonlib.py --bytecode-3.3 --verify $(COMPILE)
 
-#: Run working tests from Python 3.5
-check-3.5: check-bytecode
+# #: Run working tests from Python 3.5
+# check-3.5: check-bytecode
 
-#: Run working tests from Python 3.4
-check-3.4: check-bytecode
-	$(PYTHON) test_pythonlib.py --bytecode-3.4 --verify $(COMPILE)
+# #: Run working tests from Python 3.4
+# check-3.4: check-bytecode
+# 	$(PYTHON) test_pythonlib.py --bytecode-3.4 --verify $(COMPILE)
 
 #: Check deparsing only, but from a different Python version
 check-disasm:
@@ -49,8 +49,8 @@ check-bytecode-2:
 
 #: Check deparsing bytecode only
 check-bytecode:
-	$(PYTHON) test_pythonlib.py --bytecode-2.5 --bytecode-2.7 \
-        --bytecode-3.2 --bytecode-3.3 --bytecode-3.4 --bytecode-3.5
+	# $(PYTHON) test_pythonlib.py --bytecode-2.5 --bytecode-2.6 --bytecode-2.7 \
+        # --bytecode-3.2 --bytecode-3.3 --bytecode-3.4 --bytecode-3.5
 
 #: Check deparsing Python 2.5
 check-bytecode-2.5:
