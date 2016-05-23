@@ -21,11 +21,12 @@ from collections import deque
 
 import pyxdis
 
-from pyxdis import PYTHON_VERSION
+from pyxdis import PYTHON_VERSION, IS_PYPY
 from pyxdis.bytecode import Bytecode
 from pyxdis.code import iscode
-from pyxdis.opcodes import (opcode_23, opcode_24, opcode_25,
-                            opcode_26, opcode_27,
+from pyxdis.opcodes import (opcode_23, opcode_24,
+                            opcode_25, opcode_26,
+                            opcode_27, opcode_pypy27,
                             opcode_30, opcode_31,
                             opcode_32, opcode_33, opcode_34, opcode_35)
 from pyxdis.load import check_object_path, load_module
@@ -43,7 +44,10 @@ def get_opcode(version):
     elif version == 2.6:
         return opcode_26
     elif version == 2.7:
-        return opcode_27
+        if IS_PYPY:
+            return opcode_pypy27
+        else:
+            return opcode_27
     elif version == 3.0:
         return opcode_30
     elif version == 3.1:

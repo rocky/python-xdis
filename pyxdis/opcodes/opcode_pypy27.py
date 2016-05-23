@@ -64,6 +64,7 @@ def_op('WITH_CLEANUP', 81)
 def_op('STORE_MAP', 54)
 
 # 2.7
+# 2.7
 rm_op(opname, opmap, 'LIST_APPEND', 18)
 rm_op(opname, opmap, 'BUILD_MAP', 104)
 rm_op(opname, opmap, 'LOAD_ATTR', 105)
@@ -95,7 +96,7 @@ def_op('MAP_ADD', 147)
 updateGlobal()
 
 from pyxdis import PYTHON_VERSION, IS_PYPY
-if PYTHON_VERSION == 2.7 and not IS_PYPY:
+if PYTHON_VERSION == 2.7 and IS_PYPY:
     import dis
     # print(set(dis.opmap.items()) - set(opmap.items()))
     # print(set(opmap.items()) - set(dis.opmap.items()))

@@ -10,7 +10,7 @@
 /__pkginfo__.pyc
 /dist
 /how-to-make-a-release.txt
-/nose-1.3.7-py3.0.egg
+/nose-*.egg
 /pyxdis.egg-info
 /tmp
 __pycache__
