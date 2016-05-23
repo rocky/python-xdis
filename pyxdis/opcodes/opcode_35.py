@@ -25,13 +25,6 @@ def def_op(name, op):
     opname[op] = name
     opmap[name] = op
 
-def rm_op(opname, opmap, name, op):
-    # opname is an array, so we need to keep the position in there.
-    opname[op] = ''
-
-    assert opmap[name] == op
-    del opmap[name]
-
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 

@@ -204,6 +204,11 @@ def rm_op(opname, opmap, name, op):
     # opname is an array, so we need to keep the position in there.
     opname[op] = ''
 
+    if op in hasname:
+       hasname.remove(op)
+    if op in hascompare:
+       hascompare.remove(op)
+
     assert opmap[name] == op
     del opmap[name]
 

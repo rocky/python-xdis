@@ -32,6 +32,11 @@ def rm_op(opname, opmap, name, op):
     # opname is an array, so we need to keep the position in there.
     opname[op] = ''
 
+    if op in hasname:
+       hasname.remove(op)
+    if op in hascompare:
+       hascompare.remove(op)
+
     assert opmap[name] == op
     del opmap[name]
 
@@ -54,7 +59,6 @@ def updateGlobal():
 # Bytecodes added since 2.3.
 # 2.4
 def_op('NOP', 9)
-def_op('LIST_APPEND', 18)
 def_op('YIELD_VALUE', 86)
 
 # 2.5
@@ -64,7 +68,6 @@ def_op('WITH_CLEANUP', 81)
 def_op('STORE_MAP', 54)
 
 # 2.7
-rm_op(opname, opmap, 'LIST_APPEND', 18)
 rm_op(opname, opmap, 'BUILD_MAP', 104)
 rm_op(opname, opmap, 'LOAD_ATTR', 105)
 rm_op(opname, opmap, 'COMPARE_OP', 106)

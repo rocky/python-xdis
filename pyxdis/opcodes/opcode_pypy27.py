@@ -33,6 +33,12 @@ def rm_op(opname, opmap, name, op):
     opname[op] = ''
 
     assert opmap[name] == op
+
+    if op in hasname:
+       hasname.remove(op)
+    if op in hascompare:
+       hascompare.remove(op)
+
     del opmap[name]
 
 def name_op(name, op):

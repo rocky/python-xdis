@@ -28,13 +28,6 @@ def def_op(name, op):
     opname[op] = name
     opmap[name] = op
 
-def rm_op(opname, opmap, name, op):
-    # opname is an array, so we need to keep the position in there.
-    opname[op] = ''
-
-    assert opmap[name] == op
-    del opmap[name]
-
 def name_op(name, op):
     def_op(name, op)
     hasname.append(op)
@@ -79,4 +72,4 @@ if PYTHON_VERSION == 2.6 and IS_PYPY:
     assert all(item in dis.opmap.items() for item in opmap.items())
 
 # Remove methods so importers aren't tempted to use it.
-del def_op, name_op, jrel_op, jabs_op, rm_op
+del def_op, name_op, jrel_op, jabs_op
