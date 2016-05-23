@@ -24,8 +24,8 @@ import pyxdis
 from pyxdis import PYTHON_VERSION, IS_PYPY
 from pyxdis.bytecode import Bytecode
 from pyxdis.code import iscode
-from pyxdis.opcodes import (opcode_23, opcode_24,
-                            opcode_25, opcode_26,
+from pyxdis.opcodes import (opcode_23, opcode_24, opcode_25,
+                            opcode_26, opcode_pypy26,
                             opcode_27, opcode_pypy27,
                             opcode_30, opcode_31,
                             opcode_32, opcode_33, opcode_34, opcode_35)
@@ -42,7 +42,10 @@ def get_opcode(version):
     elif version == 2.5:
         return opcode_25
     elif version == 2.6:
-        return opcode_26
+        if IS_PYPY:
+            return opcode_pypy26
+        else:
+            return opcode_26
     elif version == 2.7:
         if IS_PYPY:
             return opcode_pypy27

@@ -1,5 +1,5 @@
 """
-CPython PYPY 2.7 bytecode opcodes
+CPython PYPY 2.6 bytecode opcodes
 
 This is used in bytecode disassembly. This is equivalent of to the
 opcodes in Python's opcode.py library.
@@ -63,35 +63,6 @@ def_op('WITH_CLEANUP', 81)
 # 2.6
 def_op('STORE_MAP', 54)
 
-# 2.7
-rm_op(opname, opmap, 'LIST_APPEND', 18)
-rm_op(opname, opmap, 'BUILD_MAP', 104)
-rm_op(opname, opmap, 'LOAD_ATTR', 105)
-rm_op(opname, opmap, 'COMPARE_OP', 106)
-rm_op(opname, opmap, 'IMPORT_NAME', 107)
-rm_op(opname, opmap, 'IMPORT_FROM', 108)
-rm_op(opname, opmap, 'JUMP_IF_FALSE', 111)
-rm_op(opname, opmap, 'EXTENDED_ARG', 143)
-rm_op(opname, opmap, 'JUMP_IF_TRUE', 112)
-
-def_op('LIST_APPEND', 94)
-def_op('BUILD_SET', 104)        # Number of set items
-def_op('BUILD_MAP', 105)
-def_op('LOAD_ATTR', 106)
-def_op('COMPARE_OP', 107)
-def_op('IMPORT_NAME', 108)
-def_op('IMPORT_FROM', 109)
-
-jabs_op('JUMP_IF_FALSE_OR_POP', 111) # Target byte offset from beginning of code
-jabs_op('JUMP_IF_TRUE_OR_POP', 112)  # ""
-jabs_op('POP_JUMP_IF_FALSE', 114)    # ""
-jabs_op('POP_JUMP_IF_TRUE', 115)     # ""
-jrel_op('SETUP_WITH', 143)
-
-def_op('EXTENDED_ARG', 145)
-def_op('SET_ADD', 146)
-def_op('MAP_ADD', 147)
-
 def_op('LOOKUP_METHOD', 201)
 def_op('CALL_METHOD', 202)
 def_op('BUILD_LIST_FROM_ARG', 203)
@@ -100,7 +71,7 @@ def_op('JUMP_IF_NOT_DEBUG', 204)
 updateGlobal()
 
 from pyxdis import PYTHON_VERSION, IS_PYPY
-if PYTHON_VERSION == 2.7 and IS_PYPY:
+if PYTHON_VERSION == 2.6 and IS_PYPY:
     import dis
     # print(set(dis.opmap.items()) - set(opmap.items()))
     # print(set(opmap.items()) - set(dis.opmap.items()))
