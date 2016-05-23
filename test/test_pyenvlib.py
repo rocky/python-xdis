@@ -19,8 +19,6 @@ Step 2: Run the test:
 	  test_pyenvlib --mylib --verify # disassemble verify 'mylib'
 """
 
-from __future__ import print_function
-
 from pyxdis import main, PYTHON3
 import os, time, shutil
 from fnmatch import fnmatch

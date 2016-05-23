@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import imp, struct, sys
 
 def __build_magic(magic):

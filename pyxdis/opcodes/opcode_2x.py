@@ -178,6 +178,7 @@ def_op('BUILD_SLICE', 133)      # Number of items
 def_op('MAKE_CLOSURE', 134)
 def_op('LOAD_CLOSURE', 135)
 hasfree.append(135)
+
 def_op('LOAD_DEREF', 136)
 hasfree.append(136)
 def_op('STORE_DEREF', 137)
@@ -185,16 +186,17 @@ hasfree.append(137)
 
 def_op('CALL_FUNCTION_VAR', 140)     # #args + (#kwargs << 8)
 hasnargs.append(140)
+
 def_op('CALL_FUNCTION_KW', 141)      # #args + (#kwargs << 8)
+hasnargs.append(141)
+
 def_op('CALL_FUNCTION_VAR_KW', 142)  # #args + (#kwargs << 8)
+hasnargs.append(142)
 
 def_op('EXTENDED_ARG', 143)
 EXTENDED_ARG = 143
 
-fields2copy = """cmp_op hasconst hasname hasjrel hasjabs haslocal hascompare hasfree hasnargs
-opmap opname HAVE_ARGUMENT EXTENDED_ARG""".split()
-
-del def_op, name_op, jrel_op, jabs_op
+fields2copy = """cmp_op  hasname hasjrel hasjabs opmap opname HAVE_ARGUMENT""".split()
 
 def rm_op(opname, opmap, name, op):
     # opname is an array, so we need to keep the position in there.
@@ -210,3 +212,6 @@ def dump_opcodes(opmap):
         op2name[opmap[k]] = k
     for i in sorted(op2name.keys()):
         print("%-3s %s" % (str(i), op2name[i]))
+
+# Remove def_op some methods so no importers are tempted to use it.
+del def_op, name_op, jrel_op, jabs_op

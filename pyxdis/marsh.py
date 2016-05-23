@@ -11,8 +11,6 @@ to produce a code object
 # Copyright (c) 2015-2016 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
-from __future__ import print_function
-
 import sys, types
 from struct import unpack
 

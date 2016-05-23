@@ -197,6 +197,7 @@ EXTENDED_ARG = 144
 fields2copy = """cmp_op hasconst hasname hasjrel hasjabs haslocal hascompare hasfree hasnargs
 opmap opname HAVE_ARGUMENT EXTENDED_ARG""".split()
 
+# Remove def_op no importers are tempted to use it.
 del def_op
 
 def rm_op(opname, opmap, name, op):
