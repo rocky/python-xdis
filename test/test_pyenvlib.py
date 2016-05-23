@@ -25,9 +25,12 @@ from fnmatch import fnmatch
 
 #----- configure this for your needs
 
-TEST_VERSIONS=('2.4.6', '2.5.6',
-               '2.6.9', '2.7.10', '2.7.11',
+TEST_VERSIONS=('2.4.6', '2.5.6',  '2.6.9',
+               '2.7.8', '2.7.10', '2.7.11',
                '3.2.6', '3.3.5',  '3.4.2', '3.5.1')
+
+PYPY_TEST_VERSIONS=(('pypy-2.6.1', '2.7'), ('pypy-5.0.1', '2.7'))
+
 
 target_base = '/tmp/py-dis/'
 lib_prefix = os.path.join(os.environ['HOME'], '.pyenv/versions')
@@ -47,6 +50,10 @@ for vers in TEST_VERSIONS:
     short_vers = vers[:3]
     test_options[vers] = (os.path.join(lib_prefix, vers, 'lib', 'python'+short_vers),
                           PYC, 'python-lib'+short_vers)
+
+for vers, short_vers in PYPY_TEST_VERSIONS:
+    test_options[vers] = (os.path.join(lib_prefix, vers, 'lib-python', short_vers),
+                          PYC, 'python'+short_vers)
 
 def do_tests(src_dir, patterns, target_dir, start_with=None,
                  do_verify=False, max_files=800, verbose=False):
