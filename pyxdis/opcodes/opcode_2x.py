@@ -198,13 +198,6 @@ EXTENDED_ARG = 143
 
 fields2copy = """cmp_op  hasname hasjrel hasjabs opmap opname HAVE_ARGUMENT""".split()
 
-def rm_op(opname, opmap, name, op):
-    # opname is an array, so we need to keep the position in there.
-    opname[op] = ''
-
-    assert opmap[name] == op
-    del opmap[name]
-
 def dump_opcodes(opmap):
     """Utility for dumping opcodes"""
     op2name = {}

@@ -34,6 +34,13 @@ def def_op(name, op):
     opmap[name] = op
     globals().update({name: op})
 
+def rm_op(opname, opmap, name, op):
+    # opname is an array, so we need to keep the position in there.
+    opname[op] = ''
+
+    assert opmap[name] == op
+    del opmap[name]
+
 def name_op(name, op):
     def_op(name, op)
     hasname.append(op)
@@ -212,26 +219,19 @@ def_op('SET_ADD', 146)
 def_op('MAP_ADD', 147)
 
 # PyPy magic opcodes
-# FIXME: see if we can conditionally add them
+# FIXME: Put these in another file.
 def_op('LOOKUP_METHOD', 201)
 def_op('CALL_METHOD', 202)
 def_op('BUILD_LIST_FROM_ARG', 203)
 def_op('JUMP_IF_NOT_DEBUG', 204)
 
 updateGlobal()
-del def_op, name_op, jrel_op, jabs_op
+
+# Remove methods so importers aren't tempted to use it.
+del def_op, name_op, jrel_op, jabs_op, rm_op
 
 from pyxdis import PYTHON_VERSION
 if PYTHON_VERSION == 2.7:
     import dis
     # print(set(dis.opmap.items()) - set(opmap.items()))
     assert all(item in opmap.items() for item in dis.opmap.items())
-
-# def dump_opcodes(opmap):
-#     """Utility for dumping opcodes"""
-#     op2name = {}
-#     for k in opmap.keys():
-#         op2name[opmap[k]] = k
-#     for i in sorted(op2name.keys()):
-#         print("%-3s %s" % (str(i), op2name[i]))
-# dump_opcodes(opmap)

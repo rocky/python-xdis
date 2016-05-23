@@ -34,11 +34,14 @@ class TestOpcodes(unittest.TestCase):
             opc = opcode_35
         else:
             self.assertFalse("Python version %s is not something I know about" % PYTHON_VERSION)
-
         # print(set(opc.opmap.items()) - set(dis.opmap.items()))
         # print(set(dis.opmap.items()) - set(opc.opmap.items()))
+
         self.assertTrue(all(item in opc.opmap.items() for item in dis.opmap.items()))
-        self.assertTrue(all(item in dis.opmap.items() for item in opc.opmap.items()))
+
+        # FIXME: we put PYPY 2 opcodes in 2.7
+        if PYTHON_VERSION != 2.7:
+            self.assertTrue(all(item in dis.opmap.items() for item in opc.opmap.items()))
 
 if __name__ == '__main__':
     unittest.main()
