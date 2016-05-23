@@ -72,9 +72,9 @@ def format_code_info(co, version):
         lines.append("# Positional arguments:")
         lines.append("#\t%s" % ", ".join(co.co_varnames[:pos_argc]))
         pass
-    if co.co_varnames:
+    if len(co.co_varnames) > pos_argc:
         lines.append("# Local variables:")
-        for i, n in enumerate(co.co_varnames[co.co_argcount:]):
+        for i, n in enumerate(co.co_varnames[pos_argc:]):
             lines.append("# %4d: %s" % (pos_argc+i, n))
     if co.co_freevars:
         lines.append("# Free variables:")

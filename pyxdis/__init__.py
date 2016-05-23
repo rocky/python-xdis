@@ -25,8 +25,6 @@
   Probably a complete rewrite would be sensefull. hG/2000-12-27
 """
 
-from __future__ import print_function
-
 import sys
 
 __docformat__ = 'restructuredtext'

@@ -19,6 +19,8 @@ hasjabs = []
 haslocal = []
 hascompare = []
 hasfree = []
+hasnargs = []
+
 hasArgumentExtended = []
 PJIF = PJIT = JA = JF = 0
 
@@ -59,18 +61,18 @@ def updateGlobal():
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
-def_op('STOP_CODE', 0) 	# 0
-def_op('POP_TOP', 1)	# 15
-def_op('ROT_TWO', 2)	# 59
-def_op('ROT_THREE', 3)	# 60
-def_op('DUP_TOP', 4)	# 13
-def_op('ROT_FOUR', 5)	# 49
+def_op('STOP_CODE', 0)
+def_op('POP_TOP', 1)
+def_op('ROT_TWO', 2)
+def_op('ROT_THREE', 3)
+def_op('DUP_TOP', 4)
+def_op('ROT_FOUR', 5)
 
-def_op('NOP', 9)		# 53
-def_op('UNARY_POSITIVE', 10) # 48
-def_op('UNARY_NEGATIVE', 11) # 54
-def_op('UNARY_NOT', 12)		# 38
-def_op('UNARY_CONVERT', 13)	# 25
+def_op('NOP', 9)
+def_op('UNARY_POSITIVE', 10)
+def_op('UNARY_NEGATIVE', 11)
+def_op('UNARY_NOT', 12)
+def_op('UNARY_CONVERT', 13)
 
 def_op('UNARY_INVERT', 15)	# 34
 
@@ -182,21 +184,30 @@ haslocal.append(126)		# 71
 
 def_op('RAISE_VARARGS', 130) # 91   # Number of raise arguments (1, 2, or 3)
 def_op('CALL_FUNCTION', 131) # 102   # #args + (#kwargs << 8)
+hasnargs.append(131)
+
 def_op('MAKE_FUNCTION', 132) # 76   # Number of args with default values
 def_op('BUILD_SLICE', 133)  # 77    # Number of items
 def_op('MAKE_CLOSURE', 134) # 85
 def_op('LOAD_CLOSURE', 135) # 97
-hasfree.append(135)			# 97
-def_op('LOAD_DEREF', 136)	# 99
-hasfree.append(136)			# 99
-def_op('STORE_DEREF', 137)	# 100
-hasfree.append(137)			# 100
+hasfree.append(135)
+def_op('LOAD_DEREF', 136)
+hasfree.append(136)
 
-def_op('CALL_FUNCTION_VAR', 140) # 111    # #args + (#kwargs << 8)
-def_op('CALL_FUNCTION_KW', 141) # 112     # #args + (#kwargs << 8)
-def_op('CALL_FUNCTION_VAR_KW', 142) # 113 # #args + (#kwargs << 8)
-def_op('EXTENDED_ARG', 143) # 114
-EXTENDED_ARG = 143			# 114
+def_op('STORE_DEREF', 137)
+hasfree.append(137)
+
+def_op('CALL_FUNCTION_VAR', 140)     # #args + (#kwargs << 8)
+hasnargs.append(140)
+
+def_op('CALL_FUNCTION_KW', 141)      # #args + (#kwargs << 8)
+hasnargs.append(141)
+
+def_op('CALL_FUNCTION_VAR_KW', 142)  # #args + (#kwargs << 8)
+hasnargs.append(142)
+
+def_op('EXTENDED_ARG', 143)
+EXTENDED_ARG = 143
 
 updateGlobal()
 del def_op, name_op, jrel_op, jabs_op

@@ -30,9 +30,11 @@ else:
 
 def compat_str(s):
     if PYTHON_VERSION > 3.2:
-        return s.decode('utf-8', errors='ignore') if PYTHON3 else str(s)
+        return s.decode('utf-8', errors='ignore')
+    elif PYTHON3:
+        return s.decode()
     else:
-        return s.decode() if PYTHON3 else str(s)
+        return str(s)
 
 def compat_u2s(u):
     if PYTHON_VERSION < 3.0:
@@ -142,7 +144,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                                    else s for s in co_consts])
             co_names  = tuple([compat_u2s(s) if isinstance(s, unicode)
                                    else s for s in co_names])
-            co_varnames  = tuple([compatu2s(s) if isinstance(s, unicode)
+            co_varnames  = tuple([compat_u2s(s) if isinstance(s, unicode)
                                       else s for s in co_varnames])
             co_filename = str(co_filename)
             co_name = str(co_name)
@@ -234,8 +236,10 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         # int64. Python 3.4 removed this.
         return unpack('q', fp.read(8))[0]
     elif marshalType == 'f':
-        # float
-        return r_ref(float(unpack('d', fp.read(1))[0]), flag)
+        # float - Seems not in use after Python 2.4
+        strsize = unpack('B', fp.read(1))[0]
+        s = fp.read(strsize)
+        return r_ref(float(s), flag)
     elif marshalType == 'g':
         # binary float
         return r_ref(float(unpack('d', fp.read(8))[0]), flag)

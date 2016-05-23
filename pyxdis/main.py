@@ -24,7 +24,9 @@ import pyxdis
 from pyxdis import PYTHON_VERSION
 from pyxdis.bytecode import Bytecode
 from pyxdis.code import iscode
-from pyxdis.opcodes import (opcode_25, opcode_26, opcode_27, opcode_30, opcode_31,
+from pyxdis.opcodes import (opcode_23, opcode_24, opcode_25,
+                            opcode_26, opcode_27,
+                            opcode_30, opcode_31,
                             opcode_32, opcode_33, opcode_34, opcode_35)
 from pyxdis.load import check_object_path, load_module
 from pyxdis.util import format_code_info
@@ -32,7 +34,11 @@ from pyxdis.util import format_code_info
 def get_opcode(version):
     # Set up disassembler with the right opcodes
     # Is there a better way?
-    if version == 2.5:
+    if version == 2.3:
+        return opcode_23
+    elif version == 2.4:
+        return opcode_24
+    elif version == 2.5:
         return opcode_25
     elif version == 2.6:
         return opcode_26
@@ -66,7 +72,8 @@ def disco(version, co, timestamp, out=sys.stdout):
               (version, PYTHON_VERSION))
     if timestamp > 0:
         value = datetime.datetime.fromtimestamp(timestamp)
-        out.write(value.strftime('# Timestamp in code: %Y-%m-%d %H:%M:%S'))
+        out.write(value.strftime('# Timestamp in code: '
+                                 '%Y-%m-%d %H:%M:%S\n'))
 
     if co.co_filename:
         out.write(format_code_info(co, version) + "\n")
