@@ -10,6 +10,7 @@ opcodes in Python's opcode.py library.
 from copy import deepcopy
 
 import pyxdis.opcodes.opcode_2x as opcode_2x
+from pyxdis.opcodes.opcode_2x import def_op
 
 # FIXME: can we DRY this even more?
 
@@ -32,20 +33,12 @@ def updateGlobal():
                                           opcode_2x.hasjrel + opcode_2x.hasjabs)})
     return
 
-# Can't use opcode 2_x since we want to update *our* opname and opmap
-def def_op(name, op):
-    opname[op] = name
-    opmap[name] = op
-
 # Bytecodes added since 2.3
-def_op('NOP', 9)
-def_op('LIST_APPEND', 18)
-def_op('YIELD_VALUE', 86)
+def_op(opname, opmap, 'NOP', 9)
+def_op(opname, opmap, 'LIST_APPEND', 18)
+def_op(opname, opmap, 'YIELD_VALUE', 86)
 
 updateGlobal()
-
-# Remove def_op no importers are tempted to use it.
-del def_op
 
 from pyxdis import PYTHON_VERSION
 if PYTHON_VERSION == 2.4:

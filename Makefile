@@ -20,6 +20,15 @@ all: check
 
 # Run all tests
 check: unittest
+	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
+	$(MAKE) check-$$PYTHON_VERSION
+
+check-2.7 check-3.2 check-3.3 check-3.5:
+	$(MAKE) -C test $@
+
+#:Tests for Python 2.6 (doesn't have pytest)
+check-2.6:
+	$(MAKE) -C test $@
 
 # Run all quick tests
 check-short: unittest

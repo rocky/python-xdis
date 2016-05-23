@@ -4,7 +4,7 @@
 import imp, marshal, os, py_compile, sys, tempfile
 from struct import unpack
 
-import pyxdis.marsh
+import pyxdis.unmarshal
 from pyxdis import PYTHON3
 from pyxdis import magics
 
@@ -113,7 +113,7 @@ def load_module(filename, code_objects={}):
         bytecode = fp.read()
         co = marshal.loads(bytecode)
     else:
-        co = pyxdis.marsh.load_code(fp, magic_int, code_objects)
+        co = pyxdis.unmarshal.load_code(fp, magic_int, code_objects)
     pass
 
     fp.close()

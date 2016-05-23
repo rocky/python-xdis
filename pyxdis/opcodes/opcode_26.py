@@ -8,6 +8,7 @@ opcodes in Python's opcode.py library.
 from copy import deepcopy
 
 import pyxdis.opcodes.opcode_2x as opcode_2x
+from pyxdis.opcodes.opcode_2x import def_op
 
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
@@ -28,21 +29,17 @@ def updateGlobal():
     return
 
 
-def def_op(name, op):
-    opname[op] = name
-    opmap[name] = op
-
 # Bytecodes added since 2.3.
 # 2.4
-def_op('NOP', 9)
-def_op('LIST_APPEND', 18)
-def_op('YIELD_VALUE', 86)
+def_op(opname, opmap, 'NOP', 9)
+def_op(opname, opmap, 'LIST_APPEND', 18)
+def_op(opname, opmap, 'YIELD_VALUE', 86)
 
 # 2.5
-def_op('WITH_CLEANUP', 81)
+def_op(opname, opmap, 'WITH_CLEANUP', 81)
 
 # 2.6
-def_op('STORE_MAP', 54)
+def_op(opname, opmap, 'STORE_MAP', 54)
 
 updateGlobal()
 

@@ -1,5 +1,6 @@
 """
-CPython magic- and version- independent marshal routines
+CPython magic- and version-independent Python object
+deserialization (unmarshal).
 
 This is needed when the bytecode extracted is from
 a different version than the currently-running Python.

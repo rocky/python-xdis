@@ -20,7 +20,7 @@ check:
 	$(MAKE) check-$$PYTHON_VERSION
 
 #: Run working tests from Python 2.6 or 2.7
-check-2.6 check-2.7: check-bytecode check-2.7-ok
+check-2.6 check-2.7: check-bytecode
 
 #: Run working tests from Python 3.2
 check-3.2: check-bytecode
@@ -34,7 +34,7 @@ check-3.3: check-bytecode
 check-3.5: check-bytecode
 
 #: Run working tests from Python 3.4
-check-3.4: check-bytecode check-3.4-ok check-2.7-ok
+check-3.4: check-bytecode
 	$(PYTHON) test_pythonlib.py --bytecode-3.4 --verify $(COMPILE)
 
 #: Check deparsing only, but from a different Python version
@@ -81,18 +81,6 @@ check-bytecode-3.5:
 #: short tests for bytecodes only for this version of Python
 check-native-short:
 	$(PYTHON) test_pythonlib.py --bytecode-$(PYTHON_VERSION) --verify $(COMPILE)
-
-#: Run longer Python 2.7's lib files known to be okay
-check-2.7-ok:
-	$(PYTHON) test_pythonlib.py --ok-2.7 --verify $(COMPILE)
-
-#: Run longer Python 3.2's lib files known to be okay
-check-3.2-ok:
-	$(PYTHON) test_pythonlib.py --ok-3.2 --verify $(COMPILE)
-
-#: Run longer Python 3.4's lib files known to be okay
-check-3.4-ok:
-	$(PYTHON) test_pythonlib.py --ok-3.4 --verify $(COMPILE)
 
 clean: clean-py-dis clean-dis clean-unverified
 
