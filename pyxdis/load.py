@@ -5,7 +5,7 @@ import imp, marshal, os, py_compile, sys, tempfile
 from struct import unpack
 
 import pyxdis.unmarshal
-from pyxdis import PYTHON3
+from pyxdis import PYTHON3, PYTHON_VERSION
 from pyxdis import magics
 
 def check_object_path(path):
@@ -52,7 +52,10 @@ def load_file(filename):
         source = fp.read() + '\n'
 
     try:
-        co = compile(source, filename, 'exec', dont_inherit=True)
+        if PYTHON_VERSION < 2.6:
+            co = compile(source, filename, 'exec')
+        else:
+            co = compile(source, filename, 'exec', dont_inherit=True)
     except SyntaxError:
         sys.stderr.write('>>Syntax error in %s\n' % filename)
         fp.close()
