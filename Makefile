@@ -20,8 +20,8 @@ all: check
 
 # Run all tests
 check: unittest
-	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
-	$(MAKE) check-bytecode
+	# @PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
+	# $(MAKE) check-bytecode
 
 check-2.7 check-3.2 check-3.3 check-3.4 check-3.5:
 	$(MAKE) -C test $@
