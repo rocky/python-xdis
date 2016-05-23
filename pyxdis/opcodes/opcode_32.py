@@ -37,12 +37,13 @@ def updateGlobal():
 
 updateGlobal()
 
-from pyxdis import PYTHON_VERSION
+from pyxdis import PYTHON_VERSION, IS_PYPY
 if PYTHON_VERSION == 3.2:
     import dis
     # for item in dis.opmap.items():
     #     if item not in opmap.items():
     #         print(item)
-    assert all(item in opmap.items() for item in dis.opmap.items())
+    if not IS_PYPY:
+        assert all(item in opmap.items() for item in dis.opmap.items())
 
 # opcode_3x.dump_opcodes(opmap)
