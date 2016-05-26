@@ -68,9 +68,9 @@ See Also
 
 * https://github.com/rocky/python-uncompyle6 : python bytecode deparsing
 
-.. |downloads| image:: https://img.shields.io/pypi/dd/pyxdis.svg
+.. |downloads| image:: https://img.shields.io/pypi/dd/xdis.svg
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
 .. _remake: https://bashdb.sf.net/remake
-.. |buildstatus| image:: https://travis-ci.org/rocky/python-pyxdis.svg
-		 :target: https://travis-ci.org/rocky/python-pyxdis
+.. |buildstatus| image:: https://travis-ci.org/rocky/python-xdis.svg
+		 :target: https://travis-ci.org/rocky/python-xdis
