@@ -94,10 +94,12 @@ def verify_file(real_source_filename, real_bytecode_filename):
     """
     tempdir = tempfile.gettempdir()
     source_filename = os.path.join(tempdir, "testing.py")
+    if not os.path.exists(real_source_filename):
+        return
     try:
         f = open(real_source_filename, 'U')
-    except FileNotFoundError:
-        f = open(os.path.basename(real_source_filename), 'U')
+    except:
+        return
 
     codestring = f.read()
     f.close()
