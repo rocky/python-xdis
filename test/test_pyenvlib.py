@@ -42,7 +42,10 @@ LONG_PYTHON_VERSION = ("%s.%s.%s" %
                         sys.version_info[2]))
 
 target_base = '/tmp/py-dis/'
-lib_prefix = os.path.dirname(os.path.join.__code__.co_filename)
+if hasattr(os.path.join, '__code__'):
+    lib_prefix = os.path.dirname(os.path.join.__code__.co_filename)
+else:
+    lib_prefix = os.path.dirname(os.path.join.func_code.co_filename)
 
 PY = ('*.py', )
 PYC = ('*.pyc', )

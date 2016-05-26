@@ -1,0 +1,240 @@
+2016-05-26  rocky <rocky@dusytfeet.com>
+
+	* xdis/verify.py: More aggressive about skipping missing source code
+
+2016-05-25  rocky <rocky@dusytfeet.com>
+
+	* xdis/marsh.py: Add PYPY marshal/unmarshal routine
+
+2016-05-25  rocky <rocky@dusytfeet.com>
+
+	* test/simple_2.7/06_frozenset.py,
+	test/simple_source/06_frozenset.py, test/test_pyenvlib.py,
+	xdis/load.py, xdis/magics.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_pypy27.py: Sync with
+	verify branch
+
+2016-05-25  rocky <rocky@dusytfeet.com>
+
+	* .gitignore, MANIFEST.in, Makefile, README.rst, __pkginfo__.py,
+	bin/pydisassemble, doc/opcode-history.md, pyxdis/Makefile,
+	pyxdis/__init__.py, pyxdis/bin/__init__.py,
+	pyxdis/bin/pydisassemble.py, pyxdis/bytecode.py, pyxdis/code.py,
+	pyxdis/load.py, pyxdis/magics.py, pyxdis/main.py,
+	pyxdis/namedtuple.py, pyxdis/opcodes/Makefile,
+	pyxdis/opcodes/__init__.py, pyxdis/opcodes/opcode_23.py,
+	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
+	pyxdis/opcodes/opcode_26.py, pyxdis/opcodes/opcode_27.py,
+	pyxdis/opcodes/opcode_2x.py, pyxdis/opcodes/opcode_30.py,
+	pyxdis/opcodes/opcode_31.py, pyxdis/opcodes/opcode_32.py,
+	pyxdis/opcodes/opcode_33.py, pyxdis/opcodes/opcode_34.py,
+	pyxdis/opcodes/opcode_35.py, pyxdis/opcodes/opcode_3x.py,
+	pyxdis/opcodes/opcode_pypy26.py, pyxdis/opcodes/opcode_pypy27.py,
+	pyxdis/unmarshal.py, pyxdis/util.py, pyxdis/version.py, setup.py,
+	test/test_pythonlib.py, test_unit/test_disasm.py-nottyet,
+	test_unit/test_load.py, test_unit/test_magic.py,
+	test_unit/test_marsh.py, test_unit/test_opcode.py, xdis/Makefile,
+	xdis/__init__.py, xdis/bin/__init__.py, xdis/bin/pydisassemble.py,
+	xdis/bytecode.py, xdis/code.py, xdis/load.py, xdis/magics.py,
+	xdis/main.py, xdis/namedtuple.py, xdis/opcodes/Makefile,
+	xdis/opcodes/__init__.py, xdis/opcodes/opcode_23.py,
+	xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_25.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_32.py,
+	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py: 
+	pyxdis -> xdis
+
+2016-05-25  rocky <rocky@dusytfeet.com>
+
+	* README.rst: Link and name changes
+
+2016-05-25  rocky <rocky@dusytfeet.com>
+
+	* circle.yml: Another circle test
+
+2016-05-25  rocky <rocky@dusytfeet.com>
+
+	* Makefile, test/Makefile, test/test_pyenvlib.py: Run full lib tests
+	on CircleCI
+
+2016-05-23  rocky <rocky@dusytfeet.com>
+
+	* Makefile: Bigger hammer to disable tests
+
+2016-05-23  rocky <rocky@dusytfeet.com>
+
+	* Makefile, test/Makefile: Disable bytecode tests for now
+
+2016-05-23  rocky <rocky@dusytfeet.com>
+
+	* Makefile, pyxdis/bytecode.py, pyxdis/load.py,
+	pyxdis/namedtuple.py, test/Makefile, test/test_pythonlib.py: Allow
+	this to run on 2.5 as well
+
+2016-05-23  rocky <rocky@dusytfeet.com>
+
+	* Makefile, pyxdis/load.py, pyxdis/marsh.py,
+	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
+	pyxdis/opcodes/opcode_26.py, pyxdis/opcodes/opcode_27.py,
+	pyxdis/opcodes/opcode_2x.py, pyxdis/opcodes/opcode_pypy27.py,
+	pyxdis/unmarshal.py, test/Makefile, test/test_pythonlib.py: move
+	marshal to unmarshal. Add bytecode tests Will be adding pypy's marshal soon.
+
+2016-05-23  rocky <rocky@dusytfeet.com>
+
+	* test/test_pyenvlib.py: more test_pyenvlib versions, e.g. PYPY
+
+2016-05-23  rocky <rocky@dusytfeet.com>
+
+	* pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_35.py,
+	pyxdis/opcodes/opcode_3x.py, pyxdis/opcodes/opcode_pypy26.py,
+	pyxdis/opcodes/opcode_pypy27.py, pyxdis/util.py: Fix bug in rm_op.
+	Add PYPY-specific code flags
+
+2016-05-23  rocky <rocky@dusytfeet.com>
+
+	* .travis.yml, pyxdis/main.py, pyxdis/opcodes/opcode_pypy26.py,
+	pyxdis/opcodes/opcode_pypy27.py, test_unit/test_opcode.py: Try
+	Travis pypy
+
+2016-05-23  rocky <rocky@dusytfeet.com>
+
+	* .gitignore, pyxdis/main.py, pyxdis/opcodes/opcode_26.py,
+	pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_pypy27.py,
+	test/simple_source/05_24_float.py, test_unit/test_opcode.py: 
+	Separate PYPY 2.7 from 2.7; DRY 27
+
+2016-05-22  rocky <rocky@dusytfeet.com>
+
+	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py: 
+	Some tolerance for pypy
+
+2016-05-22  rocky <rocky@dusytfeet.com>
+
+	* pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_2x.py,
+	pyxdis/opcodes/opcode_35.py, test_unit/test_opcode.py: Fix removal
+	of opcodes in 3.5 2.7 needs pypy 2 split off.
+
+2016-05-22  rocky <rocky@dusytfeet.com>
+
+	* README.rst, pyxdis/magics.py, pyxdis/marsh.py,
+	pyxdis/opcodes/opcode_23.py, pyxdis/opcodes/opcode_24.py,
+	pyxdis/opcodes/opcode_25.py, pyxdis/opcodes/opcode_26.py,
+	pyxdis/opcodes/opcode_2x.py, pyxdis/opcodes/opcode_3x.py,
+	test/test_pyenvlib.py, test_unit/test_opcode.py: DRY 2.x opcodes
+	except 2.7
+
+2016-05-22  rocky <rocky@dusytfeet.com>
+
+	* pyxdis/__init__.py, pyxdis/load.py, pyxdis/main.py,
+	pyxdis/marsh.py, pyxdis/opcodes/opcode_23.py,
+	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
+	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py: 
+	Allow bytecodes back to 2.3 or so. and...  Add timestamps when disassembly Rewrite to allow some tolerance to
+	older Pythons
+
+2016-05-22  rocky <rocky@dusytfeet.com>
+
+	* README.rst, pyxdis/load.py, pyxdis/main.py, pyxdis/util.py,
+	test/test_pyenvlib.py: Correct command-line invocation and...  Improve function infomation: * Split out positional argument names and local variables * Remove duplicate <modle> info.  * comment *all* meta fields * add timestamp info
+
+2016-05-22  rocky <rocky@dusytfeet.com>
+
+	* README.rst, pyxdis/marsh.py, test/simple_source/01_unicode.py: 3.x
+	bytecode unicode constants running from 2.7
+
+2016-05-22  rocky <rocky@dusytfeet.com>
+
+	* doc/opcode-history.md, pyxdis/opcodes/opcode_24.py,
+	pyxdis/opcodes/opcode_35.py: Go over opcodes a little.
+
+2016-05-21  rocky <rocky@dusytfeet.com>
+
+	* pyxdis/marsh.py, test/add-test.py,
+	test/simple_source/06_py34_ref.py, test/test_pyenvlib.py: Fix 3.4+
+	marshal load references test_pyenvlib.py: allow testing 3.5.1 now Major fix. Some further work still remains.
+
+2016-05-20  rocky <rocky@dusytfeet.com>
+
+	* pyxdis/bytecode.py, pyxdis/main.py, pyxdis/util.py,
+	test/test_pyenvlib.py: Code cleanups
+
+2016-05-20  rocky <rb@dustyfeet.com>
+
+	* pyxdis/__init__.py, pyxdis/bytecode.py: More cleanups
+
+2016-05-20  rocky <rb@dustyfeet.com>
+
+	* pyxdis/bytecode.py, pyxdis/disasm/__init__.py,
+	pyxdis/disasm/dis2.py, pyxdis/disasm/dis3.py,
+	pyxdis/disasm/disasm2.py, pyxdis/disasm/disasm24.py,
+	pyxdis/disasm/disasm25.py, pyxdis/disasm/disasm26.py,
+	pyxdis/disasm/disasm27.py, pyxdis/disasm/disasm3.py,
+	pyxdis/disasm/disasm30.py, pyxdis/disasm/disasm31.py,
+	pyxdis/disasm/disasm32.py, pyxdis/disasm/disasm33.py,
+	pyxdis/disasm/disasm34.py, pyxdis/disasm/disasm35.py,
+	pyxdis/disassemble.py, pyxdis/instruction.py, pyxdis/load.py,
+	pyxdis/main.py, pyxdis/util.py: DRY disasembly code In fact, the disasm is now gone!a
+
+2016-05-20  rocky <rocky@dusytfeet.com>
+
+	* pyxdis/disasm/dis2.py, pyxdis/disasm/dis3.py, pyxdis/main.py,
+	pyxdis/opcodes/opcode_2x.py: Improve disassembly output Use format info from Python 3 disassembler for code block Remove it
+	from dis2.py
+
+2016-05-19  rocky <rocky@dusytfeet.com>
+
+	* MANIFEST.in, pyxdis/disasm/dis2.py, pyxdis/disasm/dis3.py,
+	pyxdis/disasm/disasm2.py, pyxdis/disasm/disasm3.py, pyxdis/main.py,
+	pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_2x.py,
+	pyxdis/opcodes/opcode_3x.py: Correct Python2 disassembly
+	generalization Remove dup code in dis{2,3}.py
+
+2016-05-19  rocky <rb@dustyfeet.com>
+
+	* Makefile, __pkginfo__.py, bin/pydisassemble, bin/pyxdis,
+	pyxdis/bin/pydisassemble.py, pyxdis/bin/pyxdis.py,
+	pyxdis/disasm/dis2.py, pyxdis/opcodes/opcode_27.py, setup.py,
+	test_unit/test_disasm.py-nottyet: Misc fixes
+
+2016-05-19  rocky <rb@dustyfeet.com>
+
+	* .travis.yml, README.rst: Travis doesn't do 2.5, 3.0 or 3.1
+
+2016-05-19  rocky <rb@dustyfeet.com>
+
+	* .travis.yml, test_unit/test_marsh.py: 2.6 doesn't do
+	frozenset({...})
+
+2016-05-19  rocky <rb@dustyfeet.com>
+
+	* .travis.yml: Need sudo
+
+2016-05-19  rocky <rb@dustyfeet.com>
+
+	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py: 
+	More opcodes, more travis testing.
+
+2016-05-19  rocky <rb@dustyfeet.com>
+
+	* pyxdis/disasm/dis2.py, pyxdis/disasm/disasm2.py,
+	pyxdis/disasm/disasm24.py, pyxdis/disasm/disasm25.py,
+	pyxdis/disasm/disasm26.py, pyxdis/disasm/disasm27.py,
+	pyxdis/disasm/disasm3.py, pyxdis/disasm/disasm30.py,
+	pyxdis/disasm/disasm31.py, pyxdis/disasm/disasm32.py,
+	pyxdis/disasm/disasm33.py, pyxdis/disasm/disasm34.py,
+	pyxdis/disasm/disasm35.py, pyxdis/disassemble.py,
+	pyxdis/opcodes/__init__.py, pyxdis/opcodes/opcode_23.py,
+	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
+	pyxdis/opcodes/opcode_26.py, pyxdis/opcodes/opcode_27.py,
+	pyxdis/opcodes/opcode_2x.py, pyxdis/opcodes/opcode_3x.py: Dry code a
+	little. Add Python 2 disassembly
+
+2016-05-19  rocky <rocky@dusytfeet.com>
+
+	* Start Python cross disasemble/marshal project For older history see uncompyle6
+

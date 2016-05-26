@@ -1,2 +1,9 @@
+1.0.0 2016-05-26 First release
+
+- Reduce redundancy in opcodes
+- Use 3.5.1 disassembly format
+- Start to roll in PYPY marshal routines
+- support PYPY and be able to run under
+  Python 2.5
 
 See uncompyle6 for past releases/history

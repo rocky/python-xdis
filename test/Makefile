@@ -19,3 +19,15 @@ check-full check-pyenv:
 #: Run all tests
 check-ci:
 	$(PYTHON) test_pyenvlib.py --verify --simple --compile
+
+clean: clean-py-dis clean-dis clean-unverified
+
+clean-dis:
+	find . -name '*_dis' -exec rm -v '{}' ';'
+
+clean-unverified:
+	find . -name '*_unverified' -exec rm -v '{}' ';'
+
+#: Clean temporary compile/decompile/verify direcotries in /tmp
+clean-py-dis:
+	rm -fr /tmp/py-dis-* || true
