@@ -2,7 +2,7 @@ include README.rst
 include ChangeLog
 include LICENSE
 include __pkginfo__.py
-recursive-include pyxdis *.py
+recursive-include xdis *.py
 include bin/pydisassemble
 recursive-include test *.py *.pyc
 recursive-include test_unit *.py

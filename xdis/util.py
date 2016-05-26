@@ -1,6 +1,6 @@
 # This comes from Python's dis.py
 
-from pyxdis import PYTHON3
+from xdis import PYTHON3
 if PYTHON3:
     def code2num(code, i):
         return code[i]

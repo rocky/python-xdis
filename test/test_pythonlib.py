@@ -29,7 +29,7 @@ Step 2: Run the test:
 
 import getopt, os, py_compile, sys, shutil, tempfile, time
 
-from pyxdis import main, PYTHON_VERSION
+from xdis import main, PYTHON_VERSION
 from fnmatch import fnmatch
 
 def get_srcdir():

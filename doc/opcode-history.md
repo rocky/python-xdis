@@ -4,7 +4,7 @@ Opcodes are generally mentioned in the Python Library Reference manual. See
 that for more information.
 
 Here we have the various changes in CPython opcodes. This is embodies in the code
-in directory pyxdis/opcodes
+in directory xdis/opcodes
 
 ## Python 2.4
 

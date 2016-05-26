@@ -7,8 +7,8 @@ opcodes in Python's opcode.py library.
 
 from copy import deepcopy
 
-import pyxdis.opcodes.opcode_2x as opcode_2x
-from pyxdis.opcodes.opcode_2x import def_op, rm_op
+import xdis.opcodes.opcode_2x as opcode_2x
+from xdis.opcodes.opcode_2x import def_op
 
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
@@ -24,6 +24,18 @@ EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
 for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))
+
+def rm_op(opname, opmap, name, op):
+    # opname is an array, so we need to keep the position in there.
+    opname[op] = ''
+
+    if op in hasname:
+       hasname.remove(op)
+    if op in hascompare:
+       hascompare.remove(op)
+
+    assert opmap[name] == op
+    del opmap[name]
 
 def name_op(name, op):
     def_op(opname, opmap, name, op)
@@ -80,15 +92,10 @@ def_op(opname, opmap, 'EXTENDED_ARG', 145)
 def_op(opname, opmap, 'SET_ADD', 146)
 def_op(opname, opmap, 'MAP_ADD', 147)
 
-def_op(opname, opmap, 'LOOKUP_METHOD', 201)
-def_op(opname, opmap, 'CALL_METHOD', 202)
-def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
-def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG', 204)
-
 updateGlobal()
 
-from pyxdis import PYTHON_VERSION, IS_PYPY
-if PYTHON_VERSION == 2.7 and IS_PYPY:
+from xdis import PYTHON_VERSION, IS_PYPY
+if PYTHON_VERSION == 2.7 and not IS_PYPY:
     import dis
     # print(set(dis.opmap.items()) - set(opmap.items()))
     # print(set(opmap.items()) - set(dis.opmap.items()))

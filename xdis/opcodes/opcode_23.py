@@ -8,7 +8,7 @@ opcodes in Python's dis.py library.
 
 from copy import deepcopy
 
-import pyxdis.opcodes.opcode_2x as opcode_2x
+import xdis.opcodes.opcode_2x as opcode_2x
 
 # FIXME: can we DRY this even more?
 
@@ -30,7 +30,7 @@ def updateGlobal():
     globals().update({'JUMP_OPs': map(lambda op: opcode_2x.opname[op],
                                           opcode_2x.hasjrel + opcode_2x.hasjabs)})
 
-from pyxdis import PYTHON_VERSION
+from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 2.3:
     import dis
     # print(set(dis.opmap.items()) - set(opmap.items()))

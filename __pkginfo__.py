@@ -32,15 +32,15 @@ author             = "Rocky Bernstein, Hartmut Goebel and others"
 author_email       = "rb@dustyfeet.com"
 entry_points={
     'console_scripts': [
-        'pyxdis=pyxdis.bin.pyxdis:main',
+        'xdis=xdis.bin.xdis:main',
     ]}
 ftp_url            = None
 license            = 'MIT'
 mailing_list       = 'python-debugger@googlegroups.com'
-modname            = 'pyxdis'
+modname            = 'xdis'
 py_modules         = None
 short_desc         = 'Python cross-version byte-code disassembler and marshal routines'
-web                = 'https://github.com/rocky/python-pyxdis/'
+web                = 'https://github.com/rocky/python-xdis/'
 
 # tracebacks in zip files are funky and not debuggable
 zip_safe = True
@@ -58,4 +58,4 @@ def read(*rnames):
 
 # Get info from files; set: long_description and VERSION
 long_description   = ( read("README.rst") + '\n' )
-exec(read('pyxdis/version.py'))
+exec(read('xdis/version.py'))

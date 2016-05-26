@@ -1,6 +1,6 @@
 |buildstatus|
 
-pyxdis
+xdis
 ==========
 
 Cross-Python bytecode Disassembler and Marshal routines

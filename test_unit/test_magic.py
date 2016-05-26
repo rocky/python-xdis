@@ -1,6 +1,6 @@
 import unittest, imp
-from pyxdis import PYTHON_VERSION
-import pyxdis.magics as magics
+from xdis import PYTHON_VERSION
+import xdis.magics as magics
 
 class TestOpcodes(unittest.TestCase):
 

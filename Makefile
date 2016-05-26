@@ -50,7 +50,7 @@ dist:
 
 #: Remove .pyc files
 clean_pyc:
-	( cd pyxdis && $(RM) -f *.pyc */*.pyc )
+	( cd xdis && $(RM) -f *.pyc */*.pyc )
 
 #: Create source tarball
 sdist:
@@ -62,11 +62,11 @@ lint: flake8
 
 # Check StructuredText long description formatting
 check-rst:
-	$(PYTHON) setup.py --long-description | rst2html.py > pyxdis-trepan.html
+	$(PYTHON) setup.py --long-description | rst2html.py > xdis-trepan.html
 
 #: Lint program
 flake8:
-	$(LINT) pyxdis
+	$(LINT) xdis
 
 #: Create binary egg distribution
 bdist_egg:

@@ -9,8 +9,8 @@ parsing and semantic interpretation.
 
 from copy import deepcopy
 
-import pyxdis.opcodes.opcode_3x as opcode_3x
-from pyxdis.opcodes.opcode_3x import fields2copy, rm_op
+import xdis.opcodes.opcode_3x as opcode_3x
+from xdis.opcodes.opcode_3x import fields2copy, rm_op
 
 # FIXME: can we DRY this even more?
 
@@ -46,7 +46,7 @@ def updateGlobal():
 updateGlobal()
 
 # FIXME: turn into pytest test
-from pyxdis import PYTHON_VERSION
+from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 3.3:
     import dis
     # for item in dis.opmap.items():

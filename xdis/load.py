@@ -4,9 +4,9 @@
 import imp, marshal, os, py_compile, sys, tempfile
 from struct import unpack
 
-import pyxdis.unmarshal
-from pyxdis import PYTHON3, PYTHON_VERSION
-from pyxdis import magics
+import xdis.unmarshal
+from xdis import PYTHON3, PYTHON_VERSION
+from xdis import magics
 
 def check_object_path(path):
     if path.endswith(".py"):
@@ -116,7 +116,7 @@ def load_module(filename, code_objects={}):
         bytecode = fp.read()
         co = marshal.loads(bytecode)
     else:
-        co = pyxdis.unmarshal.load_code(fp, magic_int, code_objects)
+        co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
     pass
 
     fp.close()

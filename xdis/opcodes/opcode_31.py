@@ -1,41 +1,40 @@
 """
-CPython 3.4 bytecode opcodes
+CPython 3.1 bytecode opcodes
 
-used in scanner (bytecode disassembly) and parser (Python grammar)
+This is used in scanner (bytecode disassembly) and parser (Python grammar).
 
-This is a superset of Python 3.4's opcode.py with some opcodes that simplify
+This is a superset of Python 3.1's opcode.py with some opcodes that simplify
 parsing and semantic interpretation.
 """
 
 from copy import deepcopy
 
-import pyxdis.opcodes.opcode_3x as opcode_3x
-from pyxdis.opcodes.opcode_3x import fields2copy, hasfree, rm_op
+import xdis.opcodes.opcode_3x as opcode_3x
+from xdis.opcodes.opcode_3x import fields2copy, rm_op
 
 # FIXME: can we DRY this even more?
 
 opmap = {}
 opname = [''] * 256
-hasconst = []
 hasjrel = []
 hasjabs = []
+
+for object in fields2copy:
+    globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
 def def_op(name, op):
     opname[op] = name
     opmap[name] = op
 
-for object in fields2copy:
-    globals()[object] =  deepcopy(getattr(opcode_3x, object))
+def_op('DUP_TOPX', 99)
+def_op('EXTENDED_ARG', 143)
+def_op('ROT_FOUR', 5)
 
-# Below are opcodes changes since Python 3.2
+# These are in Python 3.2 but not in Python 3.0
+rm_op(opname, opmap, 'DUP_TOP_TWO', 5)
 
-rm_op(opname, opmap, 'STOP_CODE', 0)
-rm_op(opname, opmap, 'STORE_LOCALS', 69)
-
-# These are new since Python 3.3
-def_op('YIELD_FROM', 72)
-def_op('LOAD_CLASSDEREF', 148)
-hasfree.append(148)
+# There are no opcodes to add or change.
+# If there were, they'd be listed below.
 
 def updateGlobal():
     # JUMP_OPs are used in verification are set in the scanner
@@ -49,13 +48,12 @@ def updateGlobal():
 
 updateGlobal()
 
-# FIXME: turn into pytest test
-from pyxdis import PYTHON_VERSION
-if PYTHON_VERSION == 3.4:
+from xdis import PYTHON_VERSION
+if PYTHON_VERSION == 3.1:
     import dis
-    # for item in dis.opmap.items():
-    #     if item not in opmap.items():
-    #         print(item)
+    for item in dis.opmap.items():
+        if item not in opmap.items():
+            print(item)
     assert all(item in opmap.items() for item in dis.opmap.items())
 
 # opcode_3x.dump_opcodes(opmap)

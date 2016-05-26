@@ -11,7 +11,7 @@
 /dist
 /how-to-make-a-release.txt
 /nose-*.egg
-/pyxdis.egg-info
+/xdis.egg-info
 /tmp
 __pycache__
 build

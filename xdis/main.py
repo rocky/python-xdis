@@ -19,18 +19,18 @@ want to run on Python 2.7.
 import datetime, sys
 from collections import deque
 
-import pyxdis
+import xdis
 
-from pyxdis import PYTHON_VERSION, IS_PYPY
-from pyxdis.bytecode import Bytecode
-from pyxdis.code import iscode
-from pyxdis.opcodes import (opcode_23, opcode_24, opcode_25,
+from xdis import PYTHON_VERSION, IS_PYPY
+from xdis.bytecode import Bytecode
+from xdis.code import iscode
+from xdis.opcodes import (opcode_23, opcode_24, opcode_25,
                             opcode_26, opcode_pypy26,
                             opcode_27, opcode_pypy27,
                             opcode_30, opcode_31,
                             opcode_32, opcode_33, opcode_34, opcode_35)
-from pyxdis.load import check_object_path, load_module
-from pyxdis.util import format_code_info
+from xdis.load import check_object_path, load_module
+from xdis.util import format_code_info
 
 def get_opcode(version):
     # Set up disassembler with the right opcodes
@@ -116,13 +116,14 @@ def disassemble_file(filename, outstream=sys.stdout):
     filename = check_object_path(filename)
     version, timestamp, magic_int, co = load_module(filename)
     disco(version, co, timestamp, outstream)
-    co = None
+    # print co.co_filename
+    return filename, co, version, timestamp, magic_int
 
 def _test():
     """Simple test program to disassemble a file."""
     argc = len(sys.argv)
     if argc != 2:
-        if argc == 1 and pyxdis.PYTHON3:
+        if argc == 1 and xdis.PYTHON3:
             fn = __file__
         else:
             sys.stderr.write("usage: %s [-|CPython compiled file]\n" % __file__)

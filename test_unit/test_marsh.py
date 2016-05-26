@@ -2,7 +2,7 @@
 
 import os, unittest
 
-from pyxdis.load import load_module
+from xdis.load import load_module
 
 def get_srcdir():
     filename = os.path.normcase(os.path.dirname(os.path.abspath(__file__)))
@@ -13,7 +13,7 @@ srcdir = get_srcdir()
 class TestMarshal(unittest.TestCase):
 
     def test_basic(self):
-        """Tests pyxdis.load.load_module"""
+        """Tests xdis.load.load_module"""
         # We deliberately pick a bytecode that we aren't likely to be running against
         mod_file = os.path.join(get_srcdir(), '..', 'test', 'bytecode_2.5',
                             '02_complex.pyc')

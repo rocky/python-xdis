@@ -4,16 +4,16 @@ allow running on Python 2.
 """
 
 import sys, types
-from pyxdis import PYTHON3, PYTHON_VERSION
+from xdis import PYTHON3, PYTHON_VERSION
 
 if PYTHON_VERSION <= 2.5:
-    from pyxdis.namedtuple import namedtuple
+    from xdis.namedtuple import namedtuple
 else:
     from collections import namedtuple
 
 from dis import findlinestarts
 
-from pyxdis.util import (findlabels, get_code_object, code2num,
+from xdis.util import (findlabels, get_code_object, code2num,
                          format_code_info)
 
 if PYTHON3:

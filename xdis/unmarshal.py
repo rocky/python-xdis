@@ -15,9 +15,9 @@ to produce a code object
 import sys, types
 from struct import unpack
 
-from pyxdis.magics import PYTHON_MAGIC_INT
-from pyxdis.code import Code3
-from pyxdis import PYTHON3, PYTHON_VERSION
+from xdis.magics import PYTHON_MAGIC_INT
+from xdis.code import Code3
+from xdis import PYTHON3, PYTHON_VERSION
 
 internStrings = []
 internObjects = []

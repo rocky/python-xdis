@@ -43,4 +43,4 @@ IS_PYPY = '__pypy__' in sys.builtin_module_names
 sys.setrecursionlimit(5000)
 
 # Export some functions
-from pyxdis.load import load_module, load_file
+from xdis.load import load_module, load_file

@@ -1,5 +1,5 @@
 """
-CPython 2.4 bytecode opcodes
+CPython 2.5 bytecode opcodes
 
 This is used in bytecode disassembly.
 
@@ -9,10 +9,8 @@ opcodes in Python's opcode.py library.
 
 from copy import deepcopy
 
-import pyxdis.opcodes.opcode_2x as opcode_2x
-from pyxdis.opcodes.opcode_2x import def_op
-
-# FIXME: can we DRY this even more?
+import xdis.opcodes.opcode_2x as opcode_2x
+from xdis.opcodes.opcode_2x import def_op
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 hasconst = list(opcode_2x.hasconst)
@@ -33,15 +31,19 @@ def updateGlobal():
                                           opcode_2x.hasjrel + opcode_2x.hasjabs)})
     return
 
-# Bytecodes added since 2.3
+# Bytecodes added since 2.3.
+# 2.4
 def_op(opname, opmap, 'NOP', 9)
 def_op(opname, opmap, 'LIST_APPEND', 18)
 def_op(opname, opmap, 'YIELD_VALUE', 86)
 
+# 2.5
+def_op(opname, opmap, 'WITH_CLEANUP', 81)
+
 updateGlobal()
 
-from pyxdis import PYTHON_VERSION
-if PYTHON_VERSION == 2.4:
+from xdis import PYTHON_VERSION
+if PYTHON_VERSION == 2.5:
     import dis
     # print(set(dis.opmap.items()) - set(opmap.items()))
     # print(set(opmap.items()) - set(dis.opmap.items()))

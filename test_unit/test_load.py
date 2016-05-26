@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os, sys, unittest
-from pyxdis.load import load_file, check_object_path, load_module
-from pyxdis import IS_PYPY
+from xdis.load import load_file, check_object_path, load_module
+from xdis import IS_PYPY
 
 class TestLoad(unittest.TestCase):
 

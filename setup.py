@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Setup script for the 'pyxdis' distribution."""
+"""Setup script for the 'xdis' distribution."""
 
 from __pkginfo__ import \
     author,           author_email,       \

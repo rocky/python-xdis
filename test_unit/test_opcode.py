@@ -1,11 +1,11 @@
 import unittest
 import dis
-from pyxdis import PYTHON_VERSION, IS_PYPY
-from pyxdis.opcodes import (opcode_23, opcode_24, opcode_25,
-                            opcode_26, opcode_pypy26,
-                            opcode_27, opcode_pypy27,
-                            opcode_30, opcode_31,
-                            opcode_32, opcode_33, opcode_34, opcode_35)
+from xdis import PYTHON_VERSION, IS_PYPY
+from xdis.opcodes import (opcode_23, opcode_24, opcode_25,
+                          opcode_26, opcode_pypy26,
+                          opcode_27, opcode_pypy27,
+                          opcode_30, opcode_31,
+                          opcode_32, opcode_33, opcode_34, opcode_35)
 
 class TestOpcodes(unittest.TestCase):
 
