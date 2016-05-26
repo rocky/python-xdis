@@ -1,10 +1,10 @@
 """
-CPython 2.3 bytecode opcodes
+CPython core set of bytecode opcodes based on version 2.3
 
 This is used in scanner (bytecode disassembly) and parser (Python grammar).
 
-This is a superset of Python 2.3's opcode.py with some opcodes that simplify
-parsing and semantic interpretation.
+This is used in bytecode disassembly. This is similar to the
+opcodes in Python's opcode.py library.
 """
 
 # FIXME: DRY this along the lines of opcode_3x.
@@ -197,18 +197,6 @@ _def_op('EXTENDED_ARG', 143)
 EXTENDED_ARG = 143
 
 fields2copy = """cmp_op  hasname hasjrel hasjabs opmap opname HAVE_ARGUMENT""".split()
-
-def rm_op(opname, opmap, name, op):
-    # opname is an array, so we need to keep the position in there.
-    opname[op] = ''
-
-    if op in hasname:
-       hasname.remove(op)
-    if op in hascompare:
-       hascompare.remove(op)
-
-    assert opmap[name] == op
-    del opmap[name]
 
 def def_op(opname, opmap, name, op):
     opname[op] = name

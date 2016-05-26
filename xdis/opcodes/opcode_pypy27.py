@@ -8,7 +8,7 @@ opcodes in Python's opcode.py library.
 from copy import deepcopy
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.opcode_2x import def_op, rm_op
+from xdis.opcodes.opcode_2x import def_op
 
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
@@ -40,6 +40,18 @@ def jabs_op(name, op):
 def updateGlobal():
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+
+def rm_op(opname, opmap, name, op):
+    # opname is an array, so we need to keep the position in there.
+    opname[op] = ''
+
+    if op in hasname:
+       hasname.remove(op)
+    if op in hascompare:
+       hascompare.remove(op)
+
+    assert opmap[name] == op
+    del opmap[name]
 
 # Bytecodes added since 2.3.
 # 2.4

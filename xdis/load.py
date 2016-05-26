@@ -63,7 +63,7 @@ def load_file(filename):
     fp.close()
     return co
 
-def load_module(filename, code_objects={}):
+def load_module(filename, code_objects={}, fast_load=False):
     """
     load a module without importing it.
     load_module(filename: string): version, magic_int, code_object
@@ -115,6 +115,8 @@ def load_module(filename, code_objects={}):
     if my_magic_int == magic_int:
         bytecode = fp.read()
         co = marshal.loads(bytecode)
+    elif fast_load:
+        co = xdis.marsh.load(fp, magic_int, code_objects)
     else:
         co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
     pass
