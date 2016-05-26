@@ -18,17 +18,18 @@ TEST_TYPES=check-long check-short check-2.7 check-3.4
 #: Default target - same as "check"
 all: check
 
-# Run all tests
+# Run all tests, exluding those that need pyenv
 check: unittest
-	# @PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
-	# $(MAKE) check-bytecode
+	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
+	$(MAKE) -C test check
 
-check-2.7 check-3.2 check-3.3 check-3.4 check-3.5:
-	$(MAKE) -C test $@
+check-ci: unittest
+	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
+	$(MAKE) -C test check-ci
 
-#:Tests for Python 2.6 (doesn't have pytest)
-check-2.5 check-2.6:
-	$(MAKE) -C test $@
+# All tests including pyenv library tests
+check-full: check
+	$(MAKE) -C test check-pyenv
 
 # Run all quick tests
 check-short: unittest
@@ -75,7 +76,6 @@ bdist_egg:
 #: Create binary wheel distribution
 bdist_wheel:
 	$(PYTHON) ./setup.py bdist_wheel
-
 
 # It is too much work to figure out how to add a new command to distutils
 # to do the following. I'm sure distutils will someday get there.
