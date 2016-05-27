@@ -4,6 +4,6 @@
 - Use 3.5.1 disassembly format
 - Start to roll in PYPY marshal routines
 - support PYPY and be able to run under
-  Python 2.5
+  Python 2.5 - 3.5 with opcodes going back to 2.3
 
 See uncompyle6 for past releases/history

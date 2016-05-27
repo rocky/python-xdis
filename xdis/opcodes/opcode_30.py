@@ -23,7 +23,7 @@ for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
 # These are in Python 3.2 but not in Python 3.1
-rm_op(opname, opmap, 'DUP_TOP_TWO', 5)
+rm_op('DUP_TOP_TWO', 5, locals())
 
 def def_op(name, op):
     opname[op] = name

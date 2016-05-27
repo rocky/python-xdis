@@ -30,15 +30,15 @@ for object in fields2copy:
 
 # Below are opcodes changes since Python 3.2
 
-rm_op(opname, opmap, 'STOP_CODE', 0)
-rm_op(opname, opmap, 'STORE_LOCALS', 69)
+rm_op('STOP_CODE', 0, locals())
+rm_op('STORE_LOCALS', 69, locals())
 
 # These are new since Python 3.3
 def_op('YIELD_FROM', 72)
 def_op('LOAD_CLASSDEREF', 148)
 
 # These are removed since Python 3.4
-rm_op(opname, opmap, 'WITH_CLEANUP', 81)
+rm_op('WITH_CLEANUP', 81, locals())
 
 # These are new since Python 3.4
 def_op('BINARY_MATRIX_MULTIPLY', 16)
@@ -56,7 +56,7 @@ def_op('BUILD_MAP_UNPACK_WITH_CALL', 151)
 def_op('BUILD_TUPLE_UNPACK', 152)
 def_op('BUILD_SET_UNPACK', 153)
 def_op('SETUP_ASYNC_WITH', 154)
-rm_op(opname, opmap, 'STORE_MAP', 54)
+rm_op('STORE_MAP', 54, locals())
 
 
 hasfree.append(148)

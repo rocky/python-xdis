@@ -8,7 +8,7 @@ opcodes in Python's opcode.py library.
 from copy import deepcopy
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.opcode_2x import def_op
+from xdis.opcodes.opcode_2x import def_op, rm_op
 
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
@@ -24,18 +24,6 @@ EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
 for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))
-
-def rm_op(opname, opmap, name, op):
-    # opname is an array, so we need to keep the position in there.
-    opname[op] = ''
-
-    if op in hasname:
-       hasname.remove(op)
-    if op in hascompare:
-       hascompare.remove(op)
-
-    assert opmap[name] == op
-    del opmap[name]
 
 def name_op(name, op):
     def_op(opname, opmap, name, op)
@@ -65,14 +53,14 @@ def_op(opname, opmap, 'WITH_CLEANUP', 81)
 def_op(opname, opmap, 'STORE_MAP', 54)
 
 # 2.7
-rm_op(opname, opmap, 'BUILD_MAP', 104)
-rm_op(opname, opmap, 'LOAD_ATTR', 105)
-rm_op(opname, opmap, 'COMPARE_OP', 106)
-rm_op(opname, opmap, 'IMPORT_NAME', 107)
-rm_op(opname, opmap, 'IMPORT_FROM', 108)
-rm_op(opname, opmap, 'JUMP_IF_FALSE', 111)
-rm_op(opname, opmap, 'EXTENDED_ARG', 143)
-rm_op(opname, opmap, 'JUMP_IF_TRUE', 112)
+rm_op('BUILD_MAP', 104, locals())
+rm_op('LOAD_ATTR', 105, locals())
+rm_op('COMPARE_OP', 106, locals())
+rm_op('IMPORT_NAME', 107, locals())
+rm_op('IMPORT_FROM', 108, locals())
+rm_op('JUMP_IF_FALSE', 111, locals())
+rm_op('EXTENDED_ARG', 143, locals())
+rm_op('JUMP_IF_TRUE', 112, locals())
 
 def_op(opname, opmap, 'LIST_APPEND', 94)
 def_op(opname, opmap, 'BUILD_SET', 104)        # Number of set items
@@ -103,4 +91,4 @@ if PYTHON_VERSION == 2.7 and not IS_PYPY:
     assert all(item in dis.opmap.items() for item in opmap.items())
 
 # Remove methods so importers aren't tempted to use it.
-del name_op, jrel_op, jabs_op, rm_op
+del name_op, jrel_op, jabs_op

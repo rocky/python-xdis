@@ -200,17 +200,31 @@ opmap opname HAVE_ARGUMENT EXTENDED_ARG""".split()
 # Remove def_op no importers are tempted to use it.
 del def_op
 
-def rm_op(opname, opmap, name, op):
+def rm_op(name, op, l):
     # opname is an array, so we need to keep the position in there.
-    opname[op] = ''
+    l['opname'][op] = ''
 
-    if op in hasname:
-       hasname.remove(op)
-    if op in hascompare:
-       hascompare.remove(op)
+    if op in l['hasconst']:
+       l['hasconst'].remove(op)
+    if op in l['hascompare']:
+       l['hascompare'].remove(op)
+    if op in l['hasfree']:
+       l['hasfree'].remove(op)
+    if op in l['hasjabs']:
+       l['hasjabs'].remove(op)
+    if op in l['hasname']:
+       l['hasname'].remove(op)
+    if op in l['hasjrel']:
+       l['hasjrel'].remove(op)
+    if op in l['haslocal']:
+       l['haslocal'].remove(op)
+    if op in l['hasname']:
+       l['hasname'].remove(op)
+    if op in l['hasnargs']:
+       l['hasnargs'].remove(op)
 
-    assert opmap[name] == op
-    del opmap[name]
+    assert l['opmap'][name] == op
+    del l['opmap'][name]
 
 def dump_opcodes(opmap):
     """Utility for dumping opcodes"""
