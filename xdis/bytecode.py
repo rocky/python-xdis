@@ -5,13 +5,12 @@ allow running on Python 2.
 
 import sys, types
 from xdis import PYTHON3, PYTHON_VERSION
+from dis import findlinestarts as _findlinestarts
 
 if PYTHON_VERSION <= 2.5:
     from xdis.namedtuple import namedtuple
 else:
     from collections import namedtuple
-
-from dis import findlinestarts
 
 from xdis.util import (findlabels, get_code_object, code2num,
                          format_code_info)
@@ -23,6 +22,8 @@ else:
 
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
+
+findlinestarts = _findlinestarts
 
 def _get_const_info(const_index, const_list):
     """Helper to get optional details about const references
@@ -98,6 +99,9 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                 argval, argrepr = _get_name_info(arg, names)
             elif op in opc.hasjrel:
                 argval = i + arg
+                argrepr = "to " + repr(argval)
+            elif op in opc.hasjabs:
+                argval = arg
                 argrepr = "to " + repr(argval)
             elif op in opc.haslocal:
                 argval, argrepr = _get_name_info(arg, varnames)

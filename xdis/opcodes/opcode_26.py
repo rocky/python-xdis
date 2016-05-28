@@ -10,9 +10,13 @@ from copy import deepcopy
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.opcode_2x import def_op
 
+hasArgumentExtended = []
+
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)
+hasjabs = list(opcode_2x.hasjabs)
+hasjrel = list(opcode_2x.hasjrel)
 haslocal = list(opcode_2x.haslocal)
 hasnargs = list(opcode_2x.hasnargs)
 opmap = list(opcode_2x.opmap)
@@ -23,9 +27,10 @@ for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))
 
 def updateGlobal():
+    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    globals().update({'JA': opmap['JUMP_ABSOLUTE']})
+    globals().update({'JF': opmap['JUMP_FORWARD']})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
-    globals().update({'JUMP_OPs': map(lambda op: opname[op],
-                                          opcode_2x.hasjrel + opcode_2x.hasjabs)})
     return
 
 
@@ -33,6 +38,8 @@ def updateGlobal():
 # 2.4
 def_op(opname, opmap, 'NOP', 9)
 def_op(opname, opmap, 'LIST_APPEND', 18)
+hasArgumentExtended.append(18)
+
 def_op(opname, opmap, 'YIELD_VALUE', 86)
 
 # 2.5

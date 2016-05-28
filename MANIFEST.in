@@ -3,6 +3,6 @@ include ChangeLog
 include LICENSE
 include __pkginfo__.py
 recursive-include xdis *.py
-include bin/pydisassemble
+include bin/pydisasm
 recursive-include test *.py *.pyc
 recursive-include test_unit *.py

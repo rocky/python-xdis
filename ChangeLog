@@ -1,3 +1,41 @@
+2016-05-28  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, xdis/bin/pydisassemble.py, xdis/bytecode.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_35.py, xdis/version.py: Get ready for release
+	1.0.4 Small omissions found by uncompyle6 * export findlinestarts * correct pydisassemble.py imports * add 2.4, 2.5 hasArgumentExtended * add hasjrel, and hasjabs * Add JUMP_OPs and JPIF, JPIT, JA, JF
+
+2016-05-27  rocky <rocky@dusytfeet.com>
+
+	* NEWS, __pkginfo__.py, bin/pydisassemble,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_pypy27.py, xdis/version.py: Get ready for
+	release 1.0.3
+
+2016-05-27  rocky <rocky@dusytfeet.com>
+
+	* NEWS, xdis/namedtuple.py, xdis/version.py: More portability issues
+
+2016-05-27  rocky <rocky@dusytfeet.com>
+
+	* NEWS, xdis/namedtuple.py, xdis/version.py: Get ready for release
+	1.0.1
+
+2016-05-27  rocky <rocky@dusytfeet.com>
+
+	* NEWS, README.rst, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy27.py: Fix and
+	DRY rm_op
+
+2016-05-26  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, test/Makefile, test/test_pyenvlib.py: Get ready
+	for relase 1.00 test/test_pyenv.lib: Python 2.5 tolerance.
+
 2016-05-26  rocky <rocky@dusytfeet.com>
 
 	* xdis/verify.py: More aggressive about skipping missing source code

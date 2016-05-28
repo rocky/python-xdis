@@ -42,6 +42,7 @@ def jabs_op(name, op):
     _def_op(name, op)
     hasjabs.append(op)
 
+
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 

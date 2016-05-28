@@ -9,6 +9,7 @@ import sys, os, getopt
 import xdis
 from xdis.version import VERSION
 from xdis import PYTHON_VERSION
+from xdis.main import disassemble_file
 
 program, ext = os.path.splitext(os.path.basename(__file__))
 
@@ -65,7 +66,7 @@ Type -h for for full help.""" % program
 
     for file in files:
         if os.path.exists(files[0]):
-            xdis.main.disassemble_file(file, sys.stdout)
+            disassemble_file(file, sys.stdout)
         else:
             print("Can't read %s - skipping" % files[0],
                   file=sys.stderr)

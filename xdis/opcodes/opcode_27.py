@@ -10,6 +10,7 @@ from copy import deepcopy
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.opcode_2x import def_op, rm_op
 
+hasArgumentExtended = []
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)
@@ -38,8 +39,12 @@ def jabs_op(name, op):
     hasjabs.append(op)
 
 def updateGlobal():
-    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
+    globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
+    globals().update({'JA': opmap['JUMP_ABSOLUTE']})
+    globals().update({'JF': opmap['JUMP_FORWARD']})
+    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
 # Bytecodes added since 2.3.
 # 2.4

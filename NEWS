@@ -1,7 +1,18 @@
-1.0.1-1.0.3 2016-05-27 Minor fixes
+1.0.4 2016-05-28
 
-- small bugs and make more usable in
-  uncompyle6
+Small omissions found by uncompyle6
+
+- export findlinestarts
+- correct pydisassemble.py imports
+- add 2.4, 2.5 hasArgumentExtended
+- add hasjrel, and hasjabs
+- Add JUMP_OPs and JPIF, JPIT, JA, JF
+
+1.0.1-1.0.3 2016-05-27
+
+Minor fixes
+
+- small bugs and make more usable in uncompyle6
 
 1.0.0 2016-05-26 First release
 
