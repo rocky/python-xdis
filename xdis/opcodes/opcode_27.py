@@ -65,10 +65,12 @@ rm_op('JUMP_IF_TRUE', 112, locals())
 def_op(opname, opmap, 'LIST_APPEND', 94)
 def_op(opname, opmap, 'BUILD_SET', 104)        # Number of set items
 def_op(opname, opmap, 'BUILD_MAP', 105)
-def_op(opname, opmap, 'LOAD_ATTR', 106)
+name_op('LOAD_ATTR', 106)
 def_op(opname, opmap, 'COMPARE_OP', 107)
-def_op(opname, opmap, 'IMPORT_NAME', 108)
-def_op(opname, opmap, 'IMPORT_FROM', 109)
+hascompare.append(107)
+
+name_op('IMPORT_NAME', 108)
+name_op('IMPORT_FROM', 109)
 
 jabs_op('JUMP_IF_FALSE_OR_POP', 111) # Target byte offset from beginning of code
 jabs_op('JUMP_IF_TRUE_OR_POP', 112)  # ""

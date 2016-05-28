@@ -32,7 +32,7 @@ author             = "Rocky Bernstein, Hartmut Goebel and others"
 author_email       = "rb@dustyfeet.com"
 entry_points={
     'console_scripts': [
-        'xdis=xdis.bin.xdis:main',
+        'pydisasm=xdis.bin.pydisassemble:main',
     ]}
 ftp_url            = None
 license            = 'MIT'
