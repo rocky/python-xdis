@@ -26,9 +26,16 @@ for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))
 
 def updateGlobal():
-    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opcode_2x.opmap.items()]))
+    # This makes things look more like 2.7
+    globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
+    globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
+
     globals().update({'JUMP_OPs': map(lambda op: opcode_2x.opname[op],
                                           opcode_2x.hasjrel + opcode_2x.hasjabs)})
+    globals().update({'JA': opmap['JUMP_ABSOLUTE']})
+    globals().update({'JF': opmap['JUMP_FORWARD']})
+    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opcode_2x.opmap.items()]))
+    return
 
 from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 2.3:

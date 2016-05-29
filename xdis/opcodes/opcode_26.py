@@ -27,6 +27,10 @@ for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))
 
 def updateGlobal():
+    # This makes things look more like 2.7
+    globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
+    globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
+
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update({'JA': opmap['JUMP_ABSOLUTE']})
     globals().update({'JF': opmap['JUMP_FORWARD']})

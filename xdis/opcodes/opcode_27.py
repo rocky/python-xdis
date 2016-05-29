@@ -10,7 +10,7 @@ from copy import deepcopy
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.opcode_2x import def_op, rm_op
 
-hasArgumentExtended = []
+hasArgumentExtended = []  # for compatibility with 2.5-2.6
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)
