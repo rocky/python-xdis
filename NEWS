@@ -1,3 +1,8 @@
+1.0.5 2016-05-29
+
+For Python 2.3-2.5 add pseudo opcodes PJIF PJIT JA
+This simplifies code in cross-version tools like uncompyle6
+
 1.0.4 2016-05-28
 
 Small omissions found by uncompyle6
