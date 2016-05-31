@@ -152,8 +152,8 @@ name_op('IMPORT_NAME', 107)     # Index in name list
 name_op('IMPORT_FROM', 108)     # Index in name list
 
 jrel_op('JUMP_FORWARD', 110)    # Number of bytes to skip
-jrel_op('JUMP_IF_FALSE', 111)   # ""
-jrel_op('JUMP_IF_TRUE', 112)    # ""
+jabs_op('JUMP_IF_FALSE', 111)   # ""
+jabs_op('JUMP_IF_TRUE', 112)    # ""
 jabs_op('JUMP_ABSOLUTE', 113)   # Target byte offset from beginning of code
 
 name_op('LOAD_GLOBAL', 116)     # Index in name list
@@ -198,7 +198,7 @@ hasnargs.append(142)
 _def_op('EXTENDED_ARG', 143)
 EXTENDED_ARG = 143
 
-fields2copy = """cmp_op  hasname hasjrel hasjabs opmap opname HAVE_ARGUMENT""".split()
+fields2copy = """cmp_op hasjabs""".split()
 
 def def_op(opname, opmap, name, op):
     opname[op] = name

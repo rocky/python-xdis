@@ -15,19 +15,19 @@ from xdis.opcodes.opcode_2x import def_op
 hasArgumentExtended = []
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
+HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
+cmp_op = list(opcode_2x.cmp_op)
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)
 hasjabs = list(opcode_2x.hasjabs)
 hasjrel = list(opcode_2x.hasjrel)
 haslocal = list(opcode_2x.haslocal)
+hasname = list(opcode_2x.hasname)
 hasnargs = list(opcode_2x.hasnargs)
-opmap = list(opcode_2x.opmap)
-opname = list(opcode_2x.opname)
+opmap = deepcopy(opcode_2x.opmap)
+opname = deepcopy(opcode_2x.opname)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
-
-for object in opcode_2x.fields2copy:
-    globals()[object] =  deepcopy(getattr(opcode_2x, object))
 
 def updateGlobal():
     # This makes things look more like 2.7

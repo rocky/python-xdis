@@ -10,7 +10,14 @@ from copy import deepcopy
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.opcode_2x import def_op, rm_op
 
+# FIXME: can we DRY this even more?
+
 hasArgumentExtended = []  # for compatibility with 2.5-2.6
+
+# Make a *copy* of opcode_2x values so we don't pollute 2x
+
+HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
+cmp_op = list(opcode_2x.cmp_op)
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)
@@ -19,12 +26,19 @@ hasjrel = list(opcode_2x.hasjrel)
 haslocal = list(opcode_2x.haslocal)
 hasname = list(opcode_2x.hasname)
 hasnargs = list(opcode_2x.hasnargs)
-opmap = list(opcode_2x.opmap)
-opname = list(opcode_2x.opname)
+opmap = deepcopy(opcode_2x.opmap)
+opname = deepcopy(opcode_2x.opname)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
-for object in opcode_2x.fields2copy:
-    globals()[object] =  deepcopy(getattr(opcode_2x, object))
+def updateGlobal():
+    # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
+    globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
+    globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
+
+    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    globals().update({'JA': opmap['JUMP_ABSOLUTE']})
+    globals().update({'JF': opmap['JUMP_FORWARD']})
+    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
 def name_op(name, op):
     def_op(opname, opmap, name, op)
@@ -37,14 +51,6 @@ def jrel_op(name, op):
 def jabs_op(name, op):
     def_op(opname, opmap, name, op)
     hasjabs.append(op)
-
-def updateGlobal():
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
-    globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
-    globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
-    globals().update({'JA': opmap['JUMP_ABSOLUTE']})
-    globals().update({'JF': opmap['JUMP_FORWARD']})
-    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
 # Bytecodes added since 2.3.
 # 2.4
