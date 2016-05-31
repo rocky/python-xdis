@@ -24,11 +24,6 @@ import xdis
 from xdis import PYTHON_VERSION, IS_PYPY
 from xdis.bytecode import Bytecode
 from xdis.code import iscode
-from xdis.opcodes import (opcode_23, opcode_24, opcode_25,
-                            opcode_26, opcode_pypy26,
-                            opcode_27, opcode_pypy27,
-                            opcode_30, opcode_31,
-                            opcode_32, opcode_33, opcode_34, opcode_35)
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
 
@@ -36,32 +31,45 @@ def get_opcode(version):
     # Set up disassembler with the right opcodes
     # Is there a better way?
     if version == 2.3:
+        from xdis.opcodes import opcode_23
         return opcode_23
     elif version == 2.4:
+        from xdis.opcodes import opcode_24
         return opcode_24
     elif version == 2.5:
+        from xdis.opcodes import opcode_25
         return opcode_25
     elif version == 2.6:
         if IS_PYPY:
+            from xdis.opcodes import opcode_pypy26
             return opcode_pypy26
         else:
+            from xdis.opcodes import opcode_26
             return opcode_26
     elif version == 2.7:
         if IS_PYPY:
+            from xdis.opcodes import opcode_pypy27
             return opcode_pypy27
         else:
+            from xdis.opcodes import opcode_27
             return opcode_27
     elif version == 3.0:
+        from xdis.opcodes import opcode_30
         return opcode_30
     elif version == 3.1:
+        from xdis.opcodes import opcode_31
         return opcode_31
     elif version == 3.2:
+        from xdis.opcodes import opcode_32
         return opcode_32
     elif version == 3.3:
+        from xdis.opcodes import opcode_33
         return opcode_33
     elif version == 3.4:
+        from xdis.opcodes import opcode_34
         return opcode_34
     elif version == 3.5:
+        from xdis.opcodes import opcode_35
         return opcode_35
     else:
         raise TypeError("%s is not a Python version I know about" % version)
@@ -84,6 +92,7 @@ def disco(version, co, timestamp, out=sys.stdout):
 
     if co.co_filename:
         out.write(format_code_info(co, version) + "\n")
+        pass
 
     opc = get_opcode(version)
 
