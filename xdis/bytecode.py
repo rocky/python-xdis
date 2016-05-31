@@ -4,13 +4,10 @@ allow running on Python 2.
 """
 
 import sys, types
-from xdis import PYTHON3, PYTHON_VERSION
+from xdis import PYTHON3
 from dis import findlinestarts as _findlinestarts
 
-if PYTHON_VERSION <= 2.5:
-    from xdis.namedtuple import namedtuple
-else:
-    from collections import namedtuple
+from collections import namedtuple
 
 from xdis.util import (findlabels, get_code_object, code2num,
                          format_code_info)

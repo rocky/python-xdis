@@ -103,26 +103,8 @@ class DisTests(unittest.TestCase):
                 "events did not match expectation:\n" +
                 "\n".join(difflib.ndiff(expected,
                                         lines)))
-
-    def test_opmap(self):
-        if PYTHON_VERSION != 2.7:
-            print('need Python 2.7')
-            return
-        self.assertEqual(opc.opmap["STOP_CODE"], 0)
-        self.assertIn(opc.opmap["LOAD_CONST"], opc.hasconst)
-        self.assertIn(opc.opmap["STORE_NAME"], opc.hasname)
-
-    def test_opname(self):
-        if PYTHON_VERSION != 2.7:
-            print('need Python 2.7')
-        self.assertEqual(opc.opname[opc.opmap["LOAD_FAST"]], "LOAD_FAST")
-
-    def test_boundaries(self):
-        if PYTHON_VERSION != 2.7:
-            print('need Python 2.7')
-            return
-        self.assertEqual(opc.opmap["EXTENDED_ARG"], opc.EXTENDED_ARG)
-        self.assertEqual(opc.opmap["STORE_NAME"], opc.HAVE_ARGUMENT)
+            pass
+        return
 
     def test_dis(self):
         self.do_disassembly_test(_f, dis_f)
@@ -136,24 +118,10 @@ class DisTests(unittest.TestCase):
         if __debug__:
             self.do_disassembly_test(bug1333982, dis_bug1333982)
         else:
-            self.skipTest('need asserts, run without -O')
-
-    def test_big_linenos(self):
-        def func(count):
-            namespace = {}
-            func = "def foo():\n " + "".join(["\n "] * count + ["spam\n"])
-            exec func in namespace
-            return namespace['foo']
-
-        # Test all small ranges
-        for i in xrange(1, 300):
-            expected = _BIG_LINENO_FORMAT % (i + 2)
-            self.do_disassembly_test(func(i), expected)
-
-        # Test some larger ranges too
-        for i in xrange(300, 5000, 10):
-            expected = _BIG_LINENO_FORMAT % (i + 2)
-            self.do_disassembly_test(func(i), expected)
+            print('need asserts, run without -O')
+            pass
+        return
+    pass
 
 if __name__ == "__main__":
     unittest.main()
