@@ -2,6 +2,7 @@ include README.rst
 include ChangeLog
 include LICENSE
 include __pkginfo__.py
+recursive-include doc *.md
 recursive-include xdis *.py
 include bin/pydisasm
 recursive-include test *.py *.pyc
