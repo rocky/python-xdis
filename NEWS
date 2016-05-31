@@ -1,3 +1,8 @@
+1.1.0 2016-05-31 Mom
+
+- Expose needed opcode values and bug fixes
+- drop support for running on Python 2.5
+
 1.0.5 2016-05-29
 
 For Python 2.3-2.5 add pseudo opcodes PJIF PJIT JA

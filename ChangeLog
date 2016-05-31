@@ -1,6 +1,32 @@
+2016-05-31  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 1.1.0
+
+2016-05-31  rocky <rocky@dusytfeet.com>
+
+	* __pkginfo__.py, test_unit/2.7/test_dis.py, test_unit/test_dis.py,
+	test_unit/test_dis27.py, xdis/bytecode.py, xdis/namedtuple.py: Start
+	diassembly tests and..  Drop running 2.5 support
+
+2016-05-31  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_dis27.py: Start disassembly tests
+
+2016-05-31  rocky <rocky@dusytfeet.com>
+
+	* xdis/main.py: Reduce uneccesary imports of unused opcodes
+
+2016-05-31  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: Fix
+	bugs. Expose needed opcode values Work in conjunction with uncompyle6
+
 2016-05-29  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 1.0.5
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 1.0.5
 
 2016-05-29  rocky <rocky@dusytfeet.com>
 
