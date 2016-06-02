@@ -59,7 +59,7 @@ Run
 
 ::
 
-     ./bin/pydisassemble -h
+     ./bin/pydisasm -h
 
 for usage help.
 
