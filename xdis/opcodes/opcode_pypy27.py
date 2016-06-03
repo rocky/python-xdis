@@ -1,7 +1,7 @@
 """
 CPython PYPY 2.7 bytecode opcodes
 
-This is used in bytecode disassembly. This is equivalent of to the
+This is used in bytecode disassembly. This is equivalent to the
 opcodes in Python's opcode.py library.
 """
 

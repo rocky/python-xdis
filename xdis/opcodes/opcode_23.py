@@ -1,7 +1,7 @@
 """
 CPython 2.3 bytecode opcodes
 
-This is used in bytecode disassembly. This is equivalent of to the
+This is used in bytecode disassembly. This is equivalent to the
 opcodes in Python's dis.py library.
 
 """
@@ -12,12 +12,16 @@ import xdis.opcodes.opcode_2x as opcode_2x
 
 # FIXME: can we DRY this even more?
 
+hasArgumentExtended = []
+
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
 cmp_op = list(opcode_2x.cmp_op)
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)
+hasjabs = list(opcode_2x.hasjabs)
+hasjrel = list(opcode_2x.hasjrel)
 haslocal = list(opcode_2x.haslocal)
 hasname = list(opcode_2x.hasname)
 hasnargs = list(opcode_2x.hasnargs)
