@@ -1,9 +1,19 @@
+2016-06-24  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 1.1.2
+
+2016-06-24  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py: LIST_APPEND
+	doesn't have an extended arg in 2.4-26
+
 2016-06-03  rocky <rocky@dusytfeet.com>
 
-	* xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
-	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
-	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
-	xdis/version.py: opcode 23 fixes. Release 1.1.1 Some doc typos corrected too.
+	* ChangeLog, NEWS, xdis/opcodes/opcode_23.py,
+	xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_25.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_pypy26.py,
+	xdis/opcodes/opcode_pypy27.py, xdis/version.py: opcode 23 fixes.
+	Release 1.1.1 Some doc typos corrected too.
 
 2016-06-02  rocky <rocky@dusytfeet.com>
 

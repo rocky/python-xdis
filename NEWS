@@ -1,3 +1,7 @@
+1.1.2 2016-06-24
+
+- Python 2.4-2.6 LIST_APPEND doesn't take an extended arg
+
 1.1.1 2016-06-3
 
 - opcode 2.3 fixes
