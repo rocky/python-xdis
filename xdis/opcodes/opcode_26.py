@@ -46,8 +46,6 @@ def updateGlobal():
 # 2.4
 def_op(opname, opmap, 'NOP', 9)
 def_op(opname, opmap, 'LIST_APPEND', 18)
-hasArgumentExtended.append(18)
-
 def_op(opname, opmap, 'YIELD_VALUE', 86)
 
 # 2.5
