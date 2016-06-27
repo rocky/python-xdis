@@ -152,8 +152,8 @@ name_op('IMPORT_NAME', 107)     # Index in name list
 name_op('IMPORT_FROM', 108)     # Index in name list
 
 jrel_op('JUMP_FORWARD', 110)    # Number of bytes to skip
-jabs_op('JUMP_IF_FALSE', 111)   # ""
-jabs_op('JUMP_IF_TRUE', 112)    # ""
+jrel_op('JUMP_IF_FALSE', 111)   # ""
+jrel_op('JUMP_IF_TRUE', 112)    # ""
 jabs_op('JUMP_ABSOLUTE', 113)   # Target byte offset from beginning of code
 
 name_op('LOAD_GLOBAL', 116)     # Index in name list

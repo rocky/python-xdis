@@ -1,6 +1,11 @@
+2016-06-27  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_2x.py, xdis/version.py: Get ready for release
+	1.1.3
+
 2016-06-24  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 1.1.2
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 1.1.2
 
 2016-06-24  rocky <rocky@dusytfeet.com>
 
