@@ -73,7 +73,7 @@ versions = {
     int2magic(3170): '3.2',  # 3.2a1 (add DUP_TOP_TWO, remove DUP_TOPX and ROT_FOUR)
     int2magic(3180): '3.2',  # 3.2a2 (add DELETE_DEREF)
     int2magic(3190): '3.3',  # 3.3a0  3190 __class__ super closure changed
-    int2magic(3100): '3.3',  # 3.3a0  3200 (__qualname__ added)
+    int2magic(3200): '3.3',  # 3.3a0  3200 (__qualname__ added)
     int2magic(3210): '3.3',  # 3210 (added size modulo 2**32 to the pyc header)
     int2magic(3220): '3.3',  # 3.3a1  3220 (changed PEP 380 implementation)
     int2magic(3230): '3.3',  # 3.3a4  3230 (revert changes to implicit __class__ closure)
