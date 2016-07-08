@@ -18,7 +18,6 @@ hasArgumentExtended = []
 
 HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
 cmp_op = list(opcode_2x.cmp_op)
-cmp_op = list(opcode_2x.cmp_op)
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)
@@ -36,11 +35,10 @@ def updateGlobal():
     globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
 
-    globals().update({'JUMP_OPs': map(lambda op: opcode_2x.opname[op],
-                                          opcode_2x.hasjrel + opcode_2x.hasjabs)})
+    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update({'JA': opmap['JUMP_ABSOLUTE']})
     globals().update({'JF': opmap['JUMP_FORWARD']})
-    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opcode_2x.opmap.items()]))
+    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
     return
 
 # Bytecodes added since 2.3
