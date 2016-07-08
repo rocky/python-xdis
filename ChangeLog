@@ -1,6 +1,14 @@
+2016-07-08  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 1.1.5
+
+2016-07-08  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_24.py: 2.4 needs jrel, jabs definitions too
+
 2016-07-07  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 1.1.4
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 1.1.4
 
 2016-07-04  rocky <rocky@dusytfeet.com>
 
