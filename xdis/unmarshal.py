@@ -244,13 +244,12 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         return r_ref(float(unpack('d', fp.read(8))[0]), flag)
     elif marshalType == 'x':
         # complex
-        # FIXME: check me
-        strsize = unpack('i', fp.read(4))[0]
-        s = fp.read(strsize)
-        real = float(s)
-        strsize = unpack('i', fp.read(4))[0]
-        s = fp.read(strsize)
-        imag = float(s)
+        if magic_int <= 62061:
+            get_float = lambda: float(fp.read(unpack('B', fp.read(1))[0]))
+        else:
+            get_float = lambda: float(fp.read(unpack('i', fp.read(4))[0]))
+        real = get_float()
+        imag = get_float()
         return r_ref(complex(real, imag), flag)
     elif marshalType == 'y':
         # binary complex
