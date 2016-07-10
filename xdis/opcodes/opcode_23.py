@@ -39,8 +39,6 @@ def updateGlobal():
 
     globals().update({'JUMP_OPs': map(lambda op: opcode_2x.opname[op],
                                           opcode_2x.hasjrel + opcode_2x.hasjabs)})
-    globals().update({'JA': opmap['JUMP_ABSOLUTE']})
-    globals().update({'JF': opmap['JUMP_FORWARD']})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opcode_2x.opmap.items()]))
     return
 
