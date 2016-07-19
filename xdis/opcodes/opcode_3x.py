@@ -3,6 +3,9 @@ CPython 3.2 bytecode opcodes to be used as a base for other opcodes including 3.
 If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
+from xdis.bytecode import _findlabels as findlabels
+from xdis.bytecode import _findlinestarts as findlinestarts
+
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 

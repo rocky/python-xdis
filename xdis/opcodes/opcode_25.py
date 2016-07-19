@@ -10,6 +10,7 @@ opcodes in Python's opcode.py library.
 from copy import deepcopy
 
 import xdis.opcodes.opcode_2x as opcode_2x
+from xdis.opcodes.opcode_2x import findlabels, findlinestarts
 from xdis.opcodes.opcode_2x import def_op
 
 hasArgumentExtended = []

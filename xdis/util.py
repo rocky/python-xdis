@@ -95,33 +95,6 @@ def format_code_info(co, version):
             lines.append("# %4d: %s" % i_n)
     return "\n".join(lines)
 
-def findlabels(code, opc):
-    """Detect all offsets in a byte code which are jump targets.
-
-    Return the list of offsets.
-
-    """
-    labels = []
-    # enumerate() is not an option, since we sometimes process
-    # multiple elements on a single pass through the loop
-    n = len(code)
-    i = 0
-    while i < n:
-        op = code2num(code, i)
-        i = i+1
-        if op >= opc.HAVE_ARGUMENT:
-            arg = code2num(code, i) + code2num(code, i+1)*256
-            i = i+2
-            label = -1
-            if op in opc.hasjrel:
-                label = i+arg
-            elif op in opc.hasjabs:
-                label = arg
-            if label >= 0:
-                if label not in labels:
-                    labels.append(label)
-    return labels
-
 def _try_compile(source, name):
     """Attempts to compile the given source, first as an expression and
        then as a statement if the first approach fails.

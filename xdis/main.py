@@ -71,6 +71,9 @@ def get_opcode(version):
     elif version == 3.5:
         from xdis.opcodes import opcode_35
         return opcode_35
+    elif version == 3.6:
+        from xdis.opcodes import opcode_36
+        return opcode_36
     else:
         raise TypeError("%s is not a Python version I know about" % version)
 

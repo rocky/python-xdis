@@ -9,6 +9,7 @@ opcodes in Python's dis.py library.
 from copy import deepcopy
 
 import xdis.opcodes.opcode_2x as opcode_2x
+from xdis.opcodes.opcode_2x import findlabels, findlinestarts
 
 # FIXME: can we DRY this even more?
 

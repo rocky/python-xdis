@@ -87,6 +87,8 @@ versions = {
     int2magic(3300): '3.4',  # 3.4a4  3300 (more changes to __qualname__ computation)
     int2magic(3310): '3.4',  # 3.4rc2 3310 (alter __qualname__ computation)
     int2magic(3350): '3.5',  # 3.5.0
+    int2magic(3361): '3.6',  # 3.6.0a1
+    int2magic(3370): '3.6',  # 3.6
 }
 
 magics = __by_version(versions)
