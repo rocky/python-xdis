@@ -51,7 +51,7 @@ versions = {
     int2magic(62191): '2.7', # 2.7a0 (introduce SETUP_WITH)
     int2magic(62201): '2.7', # 2.7a0 (introduce BUILD_SET)
     int2magic(62211): '2.7', # 2.7a0 (introduce MAP_ADD and SET_ADD)
-    int2magic(62218): '2.7', # 2.7 pypy?
+    int2magic(62218): '2.7', # 2.7 pypy including pypy-2.6.1, pypy-5.0.1
     int2magic(3000): '3.0',  # 3.000
     int2magic(3010): '3.0',  # 3.000 (removed UNARY_CONVERT)
     int2magic(3020): '3.0',  # 3.000 (added BUILD_SET)
