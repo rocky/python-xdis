@@ -106,14 +106,14 @@ def verify_file(real_source_filename, real_bytecode_filename):
 
     codeobject1 = compile(codestring, source_filename,'exec')
 
-    version, timestamp, magic_int, codeobject2,  = load_module(real_bytecode_filename)
+    version, timestamp, magic_int, codeobject2, is_pypy  = load_module(real_bytecode_filename)
     assert MAGIC == magics.int2magic(magic_int), \
       ("magic_int %d vs %d in %s/%s" %
            (magic_int, magics.magic2int(MAGIC), os.getcwd(), real_bytecode_filename))
     bytecode_filename1 = os.path.join(tempdir, "testing1.pyc")
     dump_compile(codeobject1, bytecode_filename1, timestamp, MAGIC)
-    version, timestamp, magic_int, codeobject3,  = load_module(real_bytecode_filename,
-                                                              fast_load=True)
+    version, timestamp, magic_int, codeobject3, is_pypy  = load_module(real_bytecode_filename,
+                                                                       fast_load=True)
 
     # compare_code(codeobject1, codeobject2)
     # compare_code(codeobject2, codeobject3)

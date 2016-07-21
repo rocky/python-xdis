@@ -122,12 +122,14 @@ def load_module(filename, code_objects={}, fast_load=False):
     pass
 
     fp.close()
-    return version, timestamp, magic_int, co
+
+    is_pypy = magic_int in (62218,)
+    return version, timestamp, magic_int, co, is_pypy
 
 if __name__ == '__main__':
     co = load_file(__file__)
     obj_path = check_object_path(__file__)
-    version, timestamp, magic_int, co2 = load_module(obj_path)
+    version, timestamp, magic_int, co2, is_pypy = load_module(obj_path)
     print("version", version, "magic int", magic_int)
     import datetime
     print(datetime.datetime.fromtimestamp(timestamp))

@@ -123,7 +123,7 @@ def disassemble_file(filename, outstream=sys.stdout):
     try to find the corresponding compiled object.
     """
     filename = check_object_path(filename)
-    version, timestamp, magic_int, co = load_module(filename)
+    version, timestamp, magic_int, co, is_pypy = load_module(filename)
     disco(version, co, timestamp, outstream)
     # print co.co_filename
     return filename, co, version, timestamp, magic_int
