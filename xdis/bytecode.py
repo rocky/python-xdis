@@ -10,7 +10,7 @@ from dis import findlinestarts as _findlinestarts
 from collections import namedtuple
 
 from xdis.util import (findlabels, get_code_object, code2num,
-                         format_code_info)
+                       format_code_info)
 
 if PYTHON3:
     from io import StringIO
@@ -79,7 +79,8 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
         arg = None
         argval = None
         argrepr = ''
-        if op >= opc.HAVE_ARGUMENT:
+        has_arg = op >= opc.HAVE_ARGUMENT
+        if has_arg:
             arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
             extended_arg = 0
             i = i+2
@@ -112,10 +113,10 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                                (code2num(code, i-2), code2num(code, i-1)))
         opname = opc.opname[op]
         yield Instruction(opname, op, arg, argval, argrepr,
-                          offset, starts_line, is_jump_target)
+                          has_arg, offset, starts_line, is_jump_target)
 
 _Instruction = namedtuple("_Instruction",
-     "opname opcode arg argval argrepr offset starts_line is_jump_target")
+     "opname opcode arg argval argrepr has_arg offset starts_line is_jump_target")
 
 class Instruction(_Instruction):
     """Details for a bytecode operation
@@ -126,6 +127,10 @@ class Instruction(_Instruction):
          arg - numeric argument to operation (if any), otherwise None
          argval - resolved arg value (if known), otherwise same as arg
          argrepr - human readable description of operation argument
+         has_arg - True opcode takes an argument. In that case,
+                   argval and argepr will have that value. False
+                   if this opcode doesn't take an argument. In that case,
+                   don't look at argval or ardrepr.
          offset - start index of operation within bytecode sequence
          starts_line - line started by this opcode (if any), otherwise None
          is_jump_target - True if other code jumps to here, otherwise False
