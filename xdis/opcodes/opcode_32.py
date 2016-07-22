@@ -10,6 +10,7 @@ parsing and semantic interpretation.
 from copy import deepcopy
 
 import xdis.opcodes.opcode_3x as opcode_3x
+from xdis.opcodes.opcode_3x import findlabels, findlinestarts
 from xdis.opcodes.opcode_3x import fields2copy
 
 # FIXME: can we DRY this even more?

@@ -1,18 +1,20 @@
 # (C) Copyright 2016 by Rocky Bernstein
 """
-CPython 3.5 bytecode opcodes
+CPython 3.6 bytecode opcodes
 
 used in scanner (bytecode disassembly) and parser (Python grammar)
 
-This is a superset of Python 3.5's opcode.py with some opcodes that simplify
+This is a superset of Python 3.6's opcode.py with some opcodes that simplify
 parsing and semantic interpretation.
 """
 
 from copy import deepcopy
 
 # These are used from outside this module
+from xdis.wordcode import _findlabels as findlabels
+from xdis.wordcode import _findlinestarts as findlinestarts
+
 import xdis.opcodes.opcode_3x as opcode_3x
-from xdis.opcodes.opcode_3x import findlabels, findlinestarts
 from xdis.opcodes.opcode_3x import fields2copy, hasfree, rm_op
 
 # FIXME: can we DRY this even more?
@@ -59,20 +61,20 @@ def_op('BUILD_MAP_UNPACK_WITH_CALL', 151)
 def_op('BUILD_TUPLE_UNPACK', 152)
 def_op('BUILD_SET_UNPACK', 153)
 def_op('SETUP_ASYNC_WITH', 154)
+def_op('FORMAT_VALUE', 155)
 rm_op('STORE_MAP', 54, locals())
 
 def updateGlobal():
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
-    globals().update({'JF': opmap['JUMP_FORWARD']})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
 updateGlobal()
 
 # FIXME: turn into pytest test
 from xdis import PYTHON_VERSION
-if PYTHON_VERSION == 3.5:
+if PYTHON_VERSION == 3.6:
     import dis
     # for item in dis.opmap.items():
     #     if item not in opmap.items():
