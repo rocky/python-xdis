@@ -5,12 +5,10 @@ allow running on Python 2.
 
 import sys, types
 from xdis import PYTHON3
-from dis import findlinestarts as _findlinestarts
 
 from collections import namedtuple
 
-from xdis.util import (findlabels, get_code_object, code2num,
-                       format_code_info)
+from xdis.util import (get_code_object, code2num, format_code_info)
 
 if PYTHON3:
     from io import StringIO
@@ -20,7 +18,60 @@ else:
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
-findlinestarts = _findlinestarts
+
+def _findlinestarts(code):
+    """Find the offsets in a byte code which are start of lines in the source.
+
+    Generate pairs (offset, lineno) as described in Python/compile.c.
+
+    """
+    if PYTHON3:
+        byte_increments = list(code.co_lnotab[0::2])
+        line_increments = list(code.co_lnotab[1::2])
+    else:
+        byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
+        line_increments = [ord(c) for c in code.co_lnotab[1::2]]
+
+    lastlineno = None
+    lineno = code.co_firstlineno
+    addr = 0
+    for byte_incr, line_incr in zip(byte_increments, line_increments):
+        if byte_incr:
+            if lineno != lastlineno:
+                yield (addr, lineno)
+                lastlineno = lineno
+            addr += byte_incr
+        lineno += line_incr
+    if lineno != lastlineno:
+        yield (addr, lineno)
+
+
+def _findlabels(code, opc):
+    """Detect all offsets in a byte code which are jump targets.
+
+    Return the list of offsets.
+
+    """
+    labels = []
+    # enumerate() is not an option, since we sometimes process
+    # multiple elements on a single pass through the loop
+    n = len(code)
+    i = 0
+    while i < n:
+        op = code2num(code, i)
+        i = i+1
+        if op >= opc.HAVE_ARGUMENT:
+            arg = code2num(code, i) + code2num(code, i+1)*256
+            i = i+2
+            label = -1
+            if op in opc.hasjrel:
+                label = i+arg
+            elif op in opc.hasjabs:
+                label = arg
+            if label >= 0:
+                if label not in labels:
+                    labels.append(label)
+    return labels
 
 def _get_const_info(const_index, const_list):
     """Helper to get optional details about const references
@@ -60,7 +111,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     arguments.
 
     """
-    labels = findlabels(code, opc)
+    labels = opc.findlabels(code, opc)
     extended_arg = 0
     starts_line = None
     # enumerate() is not an option, since we sometimes process
@@ -191,7 +242,7 @@ class Bytecode:
             self.first_line = first_line
             self._line_offset = first_line - co.co_firstlineno
         self._cell_names = co.co_cellvars + co.co_freevars
-        self._linestarts = dict(findlinestarts(co))
+        self._linestarts = dict(opc.findlinestarts(co))
         self._original_object = x
         self.opc = opc
         self.opnames = opc.opname
@@ -269,7 +320,7 @@ class Bytecode:
         """
         co = get_code_object(x)
         cell_names = co.co_cellvars + co.co_freevars
-        linestarts = dict(findlinestarts(co))
+        linestarts = dict(self.opc.findlinestarts(co))
         if first_line is not None:
             line_offset = first_line - co.co_firstlineno
         else:

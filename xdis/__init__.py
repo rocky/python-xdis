@@ -30,6 +30,7 @@ import sys
 __docformat__ = 'restructuredtext'
 
 PYTHON3 = (sys.version_info >= (3, 0))
+USE_WORDCODE = (sys.version_info >= (3, 6))
 
 # We do this crazy way to support Python 2.6 which
 # doesn't support version_major, and has a bug in

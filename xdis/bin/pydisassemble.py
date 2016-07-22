@@ -36,8 +36,8 @@ def main():
 Type -h for for full help.""" % program
 
 
-    if not (2.5 <= PYTHON_VERSION <= 3.5):
-        sys.stderr(print("This works on Python version 2.5..3.5; have %s" % PYTHON_VERSION))
+    if not (2.5 <= PYTHON_VERSION <= 3.6):
+        sys.stderr(print("This works on Python version 2.5..3.6; have %s" % PYTHON_VERSION))
 
     if len(sys.argv) == 1:
         sys.stderr(print("No file(s) given"))

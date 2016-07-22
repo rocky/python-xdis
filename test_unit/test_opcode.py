@@ -5,7 +5,7 @@ from xdis.opcodes import (opcode_23, opcode_24, opcode_25,
                           opcode_26, opcode_pypy26,
                           opcode_27, opcode_pypy27,
                           opcode_30, opcode_31,
-                          opcode_32, opcode_33, opcode_34, opcode_35)
+                          opcode_32, opcode_33, opcode_34, opcode_35, opcode_36)
 
 class TestOpcodes(unittest.TestCase):
 
@@ -39,6 +39,8 @@ class TestOpcodes(unittest.TestCase):
             opc = opcode_34
         elif PYTHON_VERSION == 3.5:
             opc = opcode_35
+        elif PYTHON_VERSION == 3.6:
+            opc = opcode_36
         else:
             self.assertFalse("Python version %s is not something I know about" % PYTHON_VERSION)
         # print(set(opc.opmap.items()) - set(dis.opmap.items()))
