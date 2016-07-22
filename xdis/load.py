@@ -126,8 +126,7 @@ def load_module(filename, code_objects={}, fast_load=False):
 
     fp.close()
 
-    is_pypy = magic_int in (62218,)
-    return version, timestamp, magic_int, co, is_pypy
+    return version, timestamp, magic_int, co, is_pypy(magic_int)
 
 if __name__ == '__main__':
     co = load_file(__file__)
