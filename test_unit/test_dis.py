@@ -3,7 +3,17 @@
 import unittest
 
 import six
-from xdis.opcodes import opcode_27 as opc
+import sys
+
+PY32 = sys.version_info[0:2] >= (3, 2)
+PY36 = sys.version_info[0:2] >= (3, 6)
+USE_WORDCODE = PY36
+
+if USE_WORDCODE:
+    from xdis.opcodes import opcode_36 as opc
+else:
+    from xdis.opcodes import opcode_27 as opc
+
 from xdis.bytecode import Bytecode
 
 _BIG_LINENO_FORMAT = """\
@@ -33,7 +43,9 @@ class DisTests(unittest.TestCase):
                                         lines)))
 
     def test_opmap(self):
-        self.assertEqual(opc.opmap["STOP_CODE"], 0)
+        # STOP_CODE removed from python 3.2
+        if not PY32:
+            self.assertEqual(opc.opmap["STOP_CODE"], 0)
         self.assertTrue(opc.opmap["LOAD_CONST"] in opc.hasconst)
         self.assertTrue(opc.opmap["STORE_NAME"] in opc.hasname)
 

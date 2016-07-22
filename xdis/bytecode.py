@@ -26,8 +26,8 @@ def _findlinestarts(code):
     Generate pairs (offset, lineno) as described in Python/compile.c.
 
     """
-    byte_increments = [c for c in code.co_lnotab[0::2]]
-    line_increments = [c for c in code.co_lnotab[1::2]]
+    byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
+    line_increments = [ord(c) for c in code.co_lnotab[1::2]]
 
     lastlineno = None
     lineno = code.co_firstlineno
