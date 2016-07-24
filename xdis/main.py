@@ -27,7 +27,7 @@ from xdis.code import iscode
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
 
-def get_opcode(version):
+def get_opcode(version, is_pypy):
     # Set up disassembler with the right opcodes
     # Is there a better way?
     if version == 2.3:
@@ -40,14 +40,14 @@ def get_opcode(version):
         from xdis.opcodes import opcode_25
         return opcode_25
     elif version == 2.6:
-        if IS_PYPY:
+        if is_pypy:
             from xdis.opcodes import opcode_pypy26
             return opcode_pypy26
         else:
             from xdis.opcodes import opcode_26
             return opcode_26
     elif version == 2.7:
-        if IS_PYPY:
+        if is_pypy:
             from xdis.opcodes import opcode_pypy27
             return opcode_pypy27
         else:
@@ -99,7 +99,7 @@ def disco(version, co, timestamp, out=sys.stdout, is_pypy=False):
         out.write(format_code_info(co, version) + "\n")
         pass
 
-    opc = get_opcode(version)
+    opc = get_opcode(version, is_pypy)
 
     queue = deque([co])
     disco_loop(opc, version, queue, real_out)

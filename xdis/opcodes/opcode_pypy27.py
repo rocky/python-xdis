@@ -93,8 +93,8 @@ def_op(opname, opmap, 'EXTENDED_ARG', 145)
 def_op(opname, opmap, 'SET_ADD', 146)
 def_op(opname, opmap, 'MAP_ADD', 147)
 
-def_op(opname, opmap, 'LOOKUP_METHOD', 201)
-def_op(opname, opmap, 'CALL_METHOD', 202)
+name_op('LOOKUP_METHOD', 201)
+name_op('CALL_METHOD', 202)
 def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
 def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG', 204)
 

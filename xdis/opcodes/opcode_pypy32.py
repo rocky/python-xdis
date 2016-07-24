@@ -19,6 +19,7 @@ opmap = {}
 opname = [''] * 256
 hasjrel = []
 hasjabs = []
+hasname = list(opcode_3x.hasname)
 
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
@@ -36,8 +37,12 @@ def updateGlobal():
 
 updateGlobal()
 
-def_op(opname, opmap, 'LOOKUP_METHOD', 201)
-def_op(opname, opmap, 'CALL_METHOD', 202)
+def name_op(name, op):
+    def_op(opname, opmap, name, op)
+    hasname.append(op)
+
+name_op('LOOKUP_METHOD', 201)
+name_op('CALL_METHOD', 202)
 def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
 def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG', 204)
 
