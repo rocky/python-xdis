@@ -5,7 +5,8 @@ from xdis.opcodes import (opcode_23, opcode_24, opcode_25,
                           opcode_26, opcode_pypy26,
                           opcode_27, opcode_pypy27,
                           opcode_30, opcode_31,
-                          opcode_32, opcode_33, opcode_34, opcode_35, opcode_36)
+                          opcode_32, opcode_pypy32, opcode_33,
+                          opcode_34, opcode_35, opcode_36)
 
 class TestOpcodes(unittest.TestCase):
 
@@ -32,7 +33,10 @@ class TestOpcodes(unittest.TestCase):
         elif PYTHON_VERSION == 3.1:
             opc = opcode_31
         elif PYTHON_VERSION == 3.2:
-            opc = opcode_32
+            if IS_PYPY:
+                opc = opcode_pypy32
+            else:
+                opc = opcode_32
         elif PYTHON_VERSION == 3.3:
             opc = opcode_33
         elif PYTHON_VERSION == 3.4:

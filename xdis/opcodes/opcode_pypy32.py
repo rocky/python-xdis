@@ -11,7 +11,7 @@ from copy import deepcopy
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.opcode_3x import findlabels, findlinestarts
-from xdis.opcodes.opcode_3x import fields2copy
+from xdis.opcodes.opcode_3x import def_op, fields2copy
 
 # FIXME: can we DRY this even more?
 
@@ -36,13 +36,18 @@ def updateGlobal():
 
 updateGlobal()
 
+def_op(opname, opmap, 'LOOKUP_METHOD', 201)
+def_op(opname, opmap, 'CALL_METHOD', 202)
+def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
+def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG', 204)
+
 from xdis import PYTHON_VERSION, IS_PYPY
-if PYTHON_VERSION == 3.2:
+if PYTHON_VERSION == 3.2 and IS_PYPY:
     import dis
+    # print(set(dis.opmap.items()) - set(opmap.items()))
+    # print(set(opmap.items()) - set(dis.opmap.items()))
     # for item in dis.opmap.items():
-    #     if item not in opmap.items():
-    #         print(item)
-    if not IS_PYPY:
+    if IS_PYPY:
         assert all(item in opmap.items() for item in dis.opmap.items())
         assert all(item in dis.opmap.items() for item in opmap.items())
 

@@ -1,5 +1,5 @@
 import imp, os, marshal, tempfile
-from xdis import magics, PYTHON3
+from xdis import magics, PYTHON3, PYTHON_VERSION, IS_PYPY
 from xdis.load import load_module
 
 MAGIC = imp.get_magic()
@@ -53,9 +53,10 @@ def dump_compile(codeobject, filename, timestamp, magic):
         if fc: fc.close()
 
 def compare_code(c1, c2):
-    # assert c1.co_code == c2.co_code, ("code %s vs %s" % (c1.co_code, c2.co_code))
+    # assert c1.co_code == c2.co_code, ("code %s vs. %s" % (c1.co_code, c2.co_code))
     assert c1.co_argcount == c2.co_argcount
-    assert len(c1.co_consts) == len(c2.co_consts), ("consts %s vs %s" % (c1.co_consts, c2.co_consts))
+    assert (len(c1.co_consts) == len(c2.co_consts),
+            ("consts:\n%s\nvs.\n%s" % (c1.co_consts, c2.co_consts)))
     assert c1.co_filename == c2.co_filename
     assert c1.co_firstlineno == c2.co_firstlineno
     assert c1.co_flags == c2.co_flags
@@ -76,7 +77,10 @@ def compare_bytecode_files(bc_file1, bc_file2):
     bytes2 = f.read()
     f.close
 
-    assert bytes1 == bytes2
+    if PYTHON_VERSION == 3.2 and IS_PYPY:
+        assert bytes1[4:] == bytes2[4:], ("byteode:\n%s\nvs\n%s" % (bytes1[4:], bytes2[4:]))
+    else:
+        assert bytes1 == bytes2, ("byteode:\n%s\nvs\n%s" % (bytes1, bytes2))
 
 def verify_file(real_source_filename, real_bytecode_filename):
     """Compile *real_source_filename* using
@@ -107,13 +111,18 @@ def verify_file(real_source_filename, real_bytecode_filename):
     codeobject1 = compile(codestring, source_filename,'exec')
 
     version, timestamp, magic_int, codeobject2, is_pypy  = load_module(real_bytecode_filename)
+
+    # A hack for PyPy 3.2
+    if magic_int == 3180+7:
+        magic_int = 48
+
     assert MAGIC == magics.int2magic(magic_int), \
       ("magic_int %d vs %d in %s/%s" %
            (magic_int, magics.magic2int(MAGIC), os.getcwd(), real_bytecode_filename))
     bytecode_filename1 = os.path.join(tempdir, "testing1.pyc")
     dump_compile(codeobject1, bytecode_filename1, timestamp, MAGIC)
     version, timestamp, magic_int, codeobject3, is_pypy  = load_module(real_bytecode_filename,
-                                                                       fast_load=True)
+                                                                       fast_load=not is_pypy)
 
     # compare_code(codeobject1, codeobject2)
     # compare_code(codeobject2, codeobject3)
