@@ -94,7 +94,10 @@ def _get_name_info(name_index, name_list):
        Otherwise returns the name index and its repr().
     """
     argval = name_index
-    if name_list is not None:
+    if (name_list is not None
+        # PyPY seems to "optimize" out constant names,
+        # so we need for that:
+        and name_index < len(name_list)):
         argval = name_list[name_index]
         argrepr = argval
     else:
