@@ -51,7 +51,8 @@ versions = {
     int2magic(62191): '2.7', # 2.7a0 (introduce SETUP_WITH)
     int2magic(62201): '2.7', # 2.7a0 (introduce BUILD_SET)
     int2magic(62211): '2.7', # 2.7a0 (introduce MAP_ADD and SET_ADD)
-    int2magic(62218): '2.7', # 2.7 pypy including pypy-2.6.1, pypy-5.0.1
+    int2magic(62211+7): '2.7', # 2.7 PyPy including pypy-2.6.1, pypy-5.0.1
+                               # PyPy adds 7 to the corresponding CPython nmber
     int2magic(3000): '3.0',  # 3.000
     int2magic(3010): '3.0',  # 3.000 (removed UNARY_CONVERT)
     int2magic(3020): '3.0',  # 3.000 (added BUILD_SET)
@@ -72,6 +73,8 @@ versions = {
     int2magic(3160): '3.2',  # 3.2a0 (add SETUP_WITH)
     int2magic(3170): '3.2',  # 3.2a1 (add DUP_TOP_TWO, remove DUP_TOPX and ROT_FOUR)
     int2magic(3180): '3.2',  # 3.2a2 (add DELETE_DEREF)
+    int2magic(3180+7): '3.2', # Python 3.2.5 - PyPy 2.3.4
+                              # PyPy adds 7 to the corresponding CPython number
     int2magic(3190): '3.3',  # 3.3a0  3190 __class__ super closure changed
     int2magic(3200): '3.3',  # 3.3a0  3200 (__qualname__ added)
     int2magic(3210): '3.3',  # 3210 (added size modulo 2**32 to the pyc header)
@@ -89,6 +92,11 @@ versions = {
     int2magic(3350): '3.5',  # 3.5.0
     int2magic(3361): '3.6',  # 3.6.0a1
     int2magic(3370): '3.6',  # 3.6
+    int2magic(3370): '3.6',  # 3.6
+
+    # A weird one
+    int2magic(48):    '3.2', # WTF? Python 3.2.5 - PyPy 2.3.4
+                             # This doesn't follow the rule below
 }
 
 magics = __by_version(versions)

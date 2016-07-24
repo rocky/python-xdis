@@ -36,7 +36,7 @@ def check_object_path(path):
     return path
 
 def is_pypy(magic_int):
-    return magic_int in (62218,)
+    return magic_int in (62211+7, 3180+7)
 
 def load_file(filename):
     """
@@ -83,6 +83,12 @@ def load_module(filename, code_objects={}, fast_load=False):
     timestamp = 0
     fp = open(filename, 'rb')
     magic = fp.read(4)
+
+    # For reasons I don't understand PyPy 3.2 stores a magic
+    # of '0'...  The two values below are for Pyton 2.x and 3.x respectively
+    if magic[0:1] in ['0', b'0']:
+        magic = magics.int2magic(3180+7)
+
     try:
         version = float(magics.versions[magic])
     except KeyError:
