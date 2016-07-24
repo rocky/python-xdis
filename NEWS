@@ -1,3 +1,16 @@
+2.0.0 2016-07-24
+
+- Support PyPy 2.x and 3.x
+  * load() now returns whether we've loaded PyPy. This is an incompatible change
+  * added is_pypy(magic_int)
+
+- Support Python 3.6
+
+- Remove uncompyle6's JA and JF: Use standard JUMP_ABSOLUTE and
+  JUMP_FORWARD.
+
+- Instructions store whether they have an argument
+
 1.1.7 2016-07-09
 
 - Fix bug in 2.4 complex type unmarshalling

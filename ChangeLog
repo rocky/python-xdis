@@ -1,6 +1,86 @@
+2016-07-24  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #5 from rocky/pypy Pypy
+
+2016-07-22  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Bump for incompatible API change load now returns extra argument is_pypy
+
+2016-07-22  rocky <rocky@dusytfeet.com>
+
+	* : commit 204b0c836402b912985bc78e61e9763b91a4a195 Merge: a616d7d
+	7a524c6 Author: Daniel Bradburn <moagstar@gmail.com> Date:   Fri Jul
+	22 22:30:26 2016 +0200
+
+2016-07-20  rocky <rocky@dusytfeet.com>
+
+	* xdis/load.py, xdis/magics.py, xdis/main.py: load_module returns
+	whether code is pypy or not This is an incompatible change
+
+2016-07-20  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_load.py, test_unit/test_marsh.py, xdis/load.py,
+	xdis/main.py, xdis/verify.py: load_module returns whether code is
+	pypy or not This is an incompatible change
+
+2016-07-22  rocky <rocky@dusytfeet.com>
+
+	* xdis/__init__.py: Don't think we need USE_WORDCODE this way I think it will be more a property of the object you are working on
+	rather than the interpreter you are running.
+
+2016-07-22  rocky <rocky@dusytfeet.com>
+
+	* README.rst, test/test_pythonlib.py, test_unit/test_dis.py,
+	test_unit/test_opcode.py, xdis/__init__.py,
+	xdis/bin/pydisassemble.py, xdis/bytecode.py, xdis/load.py,
+	xdis/magics.py, xdis/main.py, xdis/opcodes/opcode_23.py,
+	xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_25.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_32.py,
+	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py,
+	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy26.py,
+	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py: 
+	Moagstar's Python 3.6 support With some small changes - fix some of my typos - handle a merge conflict in xdis/byteocde
+
+2016-07-20  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_load.py, test_unit/test_marsh.py, xdis/load.py,
+	xdis/main.py, xdis/verify.py: load_module returns whether code is
+	pypy or not This is an incompatible change
+
+2016-07-20  rocky <rocky@dusytfeet.com>
+
+	* xdis/bytecode.py: Instructions store whether they have an argument
+
+2016-07-10  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_32.py,
+	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_pypy26.py,
+	xdis/opcodes/opcode_pypy27.py: Start to remove uncompyle6-specific
+	abbreviations
+
+2016-07-09  rocky <rocky@dusytfeet.com>
+
+	* : Get ready for release 1.1.7
+
+2016-07-09  rocky <rb@dustyfeet.com>
+
+	* xdis/unmarshal.py: Python <2.4 complex uses 1-byte float sizes
+
 2016-07-08  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 1.1.5
+	* xdis/opcodes/opcode_24.py, xdis/version.py: Another 2.4 bug. Get
+	ready for release 1.1.6
+
+2016-07-08  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 1.1.5
 
 2016-07-08  rocky <rocky@dusytfeet.com>
 
