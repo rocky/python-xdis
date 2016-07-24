@@ -70,20 +70,15 @@ test_options = {
                   PYOC, 'base_2.7', 2.7),
 }
 
-for  vers in (2.7, 3.4, 3.5):
-    pythonlib = "ok_lib%s" % vers
-    key = "ok-%s" % vers
-    test_options[key] = (os.path.join(src_dir, pythonlib), PYOC, key, vers)
-    pass
-
-for  vers in (2.5, 2.6, 2.7, 3.2, 3.3, 3.4, 3.5, 3.6):
+for  vers in (2.4, 2.5, 2.6, 2.7, 3.2, 3.3, 3.4, 3.5, 'pypy3.2', 'pypy2.7',
+              3.6):
     bytecode = "bytecode_%s" % vers
     key = "bytecode-%s" % vers
     test_options[key] =  (bytecode, PYC, bytecode, vers)
     key = "%s" % vers
     pythonlib = "python%s" % vers
-    if vers >= 3.0:
-        pythonlib = os.path.join(pythonlib, '__pycache__')
+    if isinstance(vers, float) and vers >= 3.0:
+        pythonlib = os.path.join(src_dir, pythonlib, '__pycache__')
     test_options[key] =  (os.path.join(lib_prefix, pythonlib), PYOC, pythonlib, vers)
 
 #-----

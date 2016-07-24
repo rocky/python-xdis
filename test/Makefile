@@ -9,7 +9,14 @@ PYTHON_VERSION = $(shell $(PYTHON) -V | cut -d ' ' -f 2 | cut -d'.' -f1,2)
 COMPILE ?=
 
 #: Run all tests
-check check-short:
+check: check-short
+	$(PYTHON) test_pythonlib.py --bytecode-2.4 --bytecode-2.5 \
+                  --bytecode-2.6 --bytecode-2.7 \
+                  --bytecode-3.2 --bytecode-3.3 \
+                  --bytecode-3.4 --bytecode-3.5 \
+	          --bytecode-pypy2.7 --bytecode-pypy3.2 $(COMPILE)
+
+check-short:
 	$(PYTHON) test_pyenvlib.py --verify --simple
 
 #: Test of all pyenv Python library files
@@ -28,6 +35,6 @@ clean-dis:
 clean-unverified:
 	find . -name '*_unverified' -exec rm -v '{}' ';'
 
-#: Clean temporary compile/decompile/verify direcotries in /tmp
+#: Clean temporary compile/decompile/verify directories in /tmp
 clean-py-dis:
 	rm -fr /tmp/py-dis-* || true

@@ -35,6 +35,9 @@ def check_object_path(path):
                          path)
     return path
 
+def is_pypy(magic_int):
+    return magic_int in (62211+7, 3180+7)
+
 def load_file(filename):
     """
     load a Python source file and compile it to byte-code
@@ -80,6 +83,12 @@ def load_module(filename, code_objects={}, fast_load=False):
     timestamp = 0
     fp = open(filename, 'rb')
     magic = fp.read(4)
+
+    # For reasons I don't understand PyPy 3.2 stores a magic
+    # of '0'...  The two values below are for Pyton 2.x and 3.x respectively
+    if magic[0:1] in ['0', b'0']:
+        magic = magics.int2magic(3180+7)
+
     try:
         version = float(magics.versions[magic])
     except KeyError:
@@ -122,13 +131,14 @@ def load_module(filename, code_objects={}, fast_load=False):
     pass
 
     fp.close()
-    return version, timestamp, magic_int, co
+
+    return version, timestamp, magic_int, co, is_pypy(magic_int)
 
 if __name__ == '__main__':
     co = load_file(__file__)
     obj_path = check_object_path(__file__)
-    version, timestamp, magic_int, co2 = load_module(obj_path)
-    print("version", version, "magic int", magic_int)
+    version, timestamp, magic_int, co2, pypy = load_module(obj_path)
+    print("version", version, "magic int", magic_int, 'is_pypy', pypy)
     import datetime
     print(datetime.datetime.fromtimestamp(timestamp))
     if version < 3.5:

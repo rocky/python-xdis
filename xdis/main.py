@@ -77,7 +77,7 @@ def get_opcode(version):
     else:
         raise TypeError("%s is not a Python version I know about" % version)
 
-def disco(version, co, timestamp, out=sys.stdout):
+def disco(version, co, timestamp, out=sys.stdout, is_pypy=False):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -86,8 +86,10 @@ def disco(version, co, timestamp, out=sys.stdout):
 
     # store final output stream for case of error
     real_out = out or sys.stdout
-    out.write('# Python bytecode %s (disassembled from Python %s)\n' %
-              (version, PYTHON_VERSION))
+    co_pypy_str = 'PyPy ' if is_pypy else ''
+    run_pypy_str = 'PyPy ' if IS_PYPY else ''
+    out.write('# %sPython bytecode %s (disassembled from %sPython %s)\n' %
+              (co_pypy_str, version, run_pypy_str, PYTHON_VERSION))
     if timestamp > 0:
         value = datetime.datetime.fromtimestamp(timestamp)
         out.write(value.strftime('# Timestamp in code: '
@@ -126,8 +128,8 @@ def disassemble_file(filename, outstream=sys.stdout):
     try to find the corresponding compiled object.
     """
     filename = check_object_path(filename)
-    version, timestamp, magic_int, co = load_module(filename)
-    disco(version, co, timestamp, outstream)
+    version, timestamp, magic_int, co, is_pypy = load_module(filename)
+    disco(version, co, timestamp, outstream, is_pypy)
     # print co.co_filename
     return filename, co, version, timestamp, magic_int
 
