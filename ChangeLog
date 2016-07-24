@@ -1,3 +1,22 @@
+2016-07-24  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 2.0.1
+
+2016-07-24  rocky <rocky@dusytfeet.com>
+
+	* xdis/main.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py: PyPy fixes - classify LOOKUP_METHOD and CALL_METHOD properly - opcode selection is based on byecode file, not interpreter
+
+2016-07-24  rocky <rocky@dusytfeet.com>
+
+	* test/add-test.py, test_unit/test_opcode.py,
+	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_3x.py,
+	xdis/opcodes/opcode_pypy32.py, xdis/verify.py: PyPy 3.2 support
+
+2016-07-24  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS: Get ready for release 2.0.0
+
 2016-07-24  R. Bernstein <rocky@users.noreply.github.com>
 
 	* : Merge pull request #5 from rocky/pypy Pypy

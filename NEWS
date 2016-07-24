@@ -1,3 +1,11 @@
+2.0.1 2016-07-24
+
+- PyPy bug fixes. (More probably to come.)
+  * pypy 3.x opcodes need to be their own thing
+  * classify LOOKUP_METHOD and CALL_METHOD
+    (probably will need to classify others too)
+  * some PyPy testing tolerance
+
 2.0.0 2016-07-24
 
 - Support PyPy 2.x and 3.x
