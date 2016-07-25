@@ -1,6 +1,25 @@
+2016-07-25  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 2.0.2
+
+2016-07-25  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py: Fix
+	some PyPy op classification bugs
+
+2016-07-25  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py: 
+	Document PyPY opts better And fix a bog in JUMP_IF_NOT_DEBUG jrel_op call
+
 2016-07-24  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 2.0.1
+	* xdis/bytecode.py: Last-minute PyPy workaround
+
+2016-07-24  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, test/test_pyenvlib.py, xdis/version.py: Get ready
+	for release 2.0.1
 
 2016-07-24  rocky <rocky@dusytfeet.com>
 
