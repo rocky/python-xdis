@@ -17,7 +17,7 @@ from xdis.opcodes.opcode_3x import def_op, fields2copy
 
 opmap = {}
 opname = [''] * 256
-hasjrel = []
+hasjrel = list(opcode_3x.hasjrel)
 hasjabs = []
 hasname = list(opcode_3x.hasname)
 
@@ -41,10 +41,18 @@ def name_op(name, op):
     def_op(opname, opmap, name, op)
     hasname.append(op)
 
+def jrel_op(name, op):
+    def_op(opname, opmap, name, op)
+    hasjrel.append(op)
+
 name_op('LOOKUP_METHOD', 201)
 name_op('CALL_METHOD', 202)
+
+# Used only in single-mode compilation list-comprehension generators
 def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
-def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG', 204)
+
+# Used only in assert statements
+jrel_op('JUMP_IF_NOT_DEBUG', 204)
 
 from xdis import PYTHON_VERSION, IS_PYPY
 if PYTHON_VERSION == 3.2 and IS_PYPY:

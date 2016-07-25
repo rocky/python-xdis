@@ -95,8 +95,12 @@ def_op(opname, opmap, 'MAP_ADD', 147)
 
 name_op('LOOKUP_METHOD', 201)
 name_op('CALL_METHOD', 202)
+
+# Used only in single-mode compilation list-comprehension generators
 def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
-def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG', 204)
+
+# Used only in assert statements
+jrel_op('JUMP_IF_NOT_DEBUG', 204)
 
 updateGlobal()
 
