@@ -20,11 +20,32 @@ opname = [''] * 256
 hasjrel = list(opcode_3x.hasjrel)
 hasjabs = []
 hasname = list(opcode_3x.hasname)
+hasnargs = list(opcode_3x.hasnargs)
 
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
-# There are no opcodes to add or change.
+def name_op(name, op):
+    def_op(opname, opmap, name, op)
+    hasname.append(op)
+
+def jrel_op(name, op):
+    def_op(opname, opmap, name, op)
+    hasjrel.append(op)
+
+# PyPy only
+# ----------
+name_op('LOOKUP_METHOD', 201)
+def_op(opname, opmap, 'CALL_METHOD', 202)
+hasnargs.append(202)
+
+# Used only in single-mode compilation list-comprehension generators
+def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
+
+# Used only in assert statements
+jrel_op('JUMP_IF_NOT_DEBUG', 204)
+
+# There are no opcodes to remove or change.
 # If there were, they'd be listed below.
 
 def updateGlobal():
@@ -36,23 +57,6 @@ def updateGlobal():
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
 
 updateGlobal()
-
-def name_op(name, op):
-    def_op(opname, opmap, name, op)
-    hasname.append(op)
-
-def jrel_op(name, op):
-    def_op(opname, opmap, name, op)
-    hasjrel.append(op)
-
-name_op('LOOKUP_METHOD', 201)
-name_op('CALL_METHOD', 202)
-
-# Used only in single-mode compilation list-comprehension generators
-def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
-
-# Used only in assert statements
-jrel_op('JUMP_IF_NOT_DEBUG', 204)
 
 from xdis import PYTHON_VERSION, IS_PYPY
 if PYTHON_VERSION == 3.2 and IS_PYPY:

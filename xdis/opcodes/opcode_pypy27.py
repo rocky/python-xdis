@@ -37,7 +37,6 @@ def updateGlobal():
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
 
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
-    globals().update({'JF': opmap['JUMP_FORWARD']})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
 def name_op(name, op):
@@ -93,14 +92,20 @@ def_op(opname, opmap, 'EXTENDED_ARG', 145)
 def_op(opname, opmap, 'SET_ADD', 146)
 def_op(opname, opmap, 'MAP_ADD', 147)
 
+# PyPy only
+# ----------
 name_op('LOOKUP_METHOD', 201)
-name_op('CALL_METHOD', 202)
+def_op(opname, opmap, 'CALL_METHOD', 202)
+hasnargs.append(202)
 
 # Used only in single-mode compilation list-comprehension generators
 def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
 jrel_op('JUMP_IF_NOT_DEBUG', 204)
+
+# There are no opcodes to remove or change.
+# If there were, they'd be listed below.
 
 updateGlobal()
 
