@@ -27,6 +27,7 @@ Step 2: Run the test:
   test_pythonlib.py --mylib --verify # decompile verify 'mylib'
 """
 
+from __future__ import print_function
 import getopt, os, py_compile, sys, shutil, tempfile, time
 
 from xdis import main, PYTHON_VERSION
@@ -158,8 +159,13 @@ def do_tests(src_dir, obj_patterns, target_dir, opts):
     cwd = os.getcwd()
     os.chdir(src_dir)
     try:
-          for file in files:
-                main.disassemble_file(file, output)
+          for infile in files:
+                main.disassemble_file(infile, output)
+                if opts['do_verify']:
+                    pass
+                    # print("Need to do something here to verify %s" % infile)
+                    # msg = verify.verify_file(infile, outfile)
+
         # if failed_files != 0:
         #     exit(2)
         # elif failed_verify != 0:
