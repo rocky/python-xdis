@@ -1,3 +1,7 @@
+2.0.3 2016-07-26
+
+- Small instruction print change
+
 2.0.2 2016-07-25
 
 - Fix some PyPy op classification bugs

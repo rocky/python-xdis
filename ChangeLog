@@ -1,6 +1,14 @@
+2016-07-26  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 2.0.3
+
 2016-07-25  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 2.0.2
+	* test/test_pythonlib.py: Small print change
+
+2016-07-25  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 2.0.2
 
 2016-07-25  rocky <rocky@dusytfeet.com>
 
