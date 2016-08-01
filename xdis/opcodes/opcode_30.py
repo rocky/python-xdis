@@ -17,8 +17,18 @@ from xdis.opcodes.opcode_3x import fields2copy, rm_op
 
 opmap = {}
 opname = [''] * 256
-hasjrel = []
-hasjabs = []
+
+cmp_op = list(opcode_3x.cmp_op)
+hasconst = list(opcode_3x.hasconst)
+hascompare = list(opcode_3x.hascompare)
+hasfree = list(opcode_3x.hasfree)
+hasjabs = list(opcode_3x.hasjabs)
+hasjrel = list(opcode_3x.hasjrel)
+haslocal = list(opcode_3x.haslocal)
+hasname = list(opcode_3x.hasname)
+hasnargs = list(opcode_3x.hasnargs)
+hasvargs = list(opcode_3x.hasvargs)
+opmap = deepcopy(opcode_3x.opmap)
 
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))

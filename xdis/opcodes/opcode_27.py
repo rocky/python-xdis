@@ -7,8 +7,10 @@ opcodes in Python's opcode.py library.
 
 from copy import deepcopy
 
-import xdis.opcodes.opcode_2x as opcode_2x
+# These are used from outside this module
 from xdis.opcodes.opcode_2x import findlabels, findlinestarts
+
+import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.opcode_2x import def_op, rm_op
 
 # FIXME: can we DRY this even more?
@@ -27,6 +29,7 @@ hasjrel = list(opcode_2x.hasjrel)
 haslocal = list(opcode_2x.haslocal)
 hasname = list(opcode_2x.hasname)
 hasnargs = list(opcode_2x.hasnargs)
+hasvargs = list(opcode_2x.hasvargs)
 opmap = deepcopy(opcode_2x.opmap)
 opname = deepcopy(opcode_2x.opname)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
@@ -50,6 +53,10 @@ def jrel_op(name, op):
 def jabs_op(name, op):
     def_op(opname, opmap, name, op)
     hasjabs.append(op)
+
+def compare_op(name, op):
+    def_op(opname, opmap, name, op)
+    hascompare.append(op)
 
 # Bytecodes added since 2.3.
 # 2.4
@@ -76,8 +83,7 @@ def_op(opname, opmap, 'LIST_APPEND', 94)
 def_op(opname, opmap, 'BUILD_SET', 104)        # Number of set items
 def_op(opname, opmap, 'BUILD_MAP', 105)
 name_op('LOAD_ATTR', 106)
-def_op(opname, opmap, 'COMPARE_OP', 107)
-hascompare.append(107)
+compare_op('COMPARE_OP', 107)
 
 name_op('IMPORT_NAME', 108)
 name_op('IMPORT_FROM', 109)

@@ -21,7 +21,8 @@ hasjabs = []
 haslocal = []
 hascompare = []
 hasfree = []
-hasnargs = []
+hasnargs = []  # For function-like calls
+hasvargs = []  # Similar but for operators BUILD_xxx
 
 opmap = {}
 opname = [''] * 256
@@ -32,17 +33,41 @@ def _def_op(name, op):
     opname[op] = name
     opmap[name] = op
 
-def name_op(name, op):
+def compare_op(name, op):
     _def_op(name, op)
-    hasname.append(op)
+    hascompare.append(op)
+
+def const_op(name, op):
+    _def_op(name, op)
+    hasconst.append(op)
+
+def free_op(name, op):
+    _def_op(name, op)
+    hasfree.append(op)
+
+def jabs_op(name, op):
+    _def_op(name, op)
+    hasjabs.append(op)
 
 def jrel_op(name, op):
     _def_op(name, op)
     hasjrel.append(op)
 
-def jabs_op(name, op):
+def local_op(name, op):
     _def_op(name, op)
-    hasjabs.append(op)
+    haslocal.append(op)
+
+def name_op(name, op):
+    _def_op(name, op)
+    hasname.append(op)
+
+def nargs_op(name, op):
+    _def_op(name, op)
+    hasnargs.append(op)
+
+def varargs_op(name, op):
+    _def_op(name, op)
+    hasvargs.append(op)
 
 
 # Instruction opcodes for compiled code
@@ -132,23 +157,21 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 name_op('STORE_NAME', 90)       # Index in name list
 name_op('DELETE_NAME', 91)      # ""
-_def_op('UNPACK_SEQUENCE', 92)   # Number of tuple items
+varargs_op('UNPACK_SEQUENCE', 92)   # Number of tuple items
 jrel_op('FOR_ITER', 93)
 
 name_op('STORE_ATTR', 95)       # Index in name list
 name_op('DELETE_ATTR', 96)      # ""
 name_op('STORE_GLOBAL', 97)     # ""
 name_op('DELETE_GLOBAL', 98)    # ""
-_def_op('DUP_TOPX', 99)          # number of items to duplicate
-_def_op('LOAD_CONST', 100)       # Index in const list
-hasconst.append(100)
+_def_op('DUP_TOPX', 99)         # number of items to duplicate
+const_op('LOAD_CONST', 100)     # Index in const list
 name_op('LOAD_NAME', 101)       # Index in name list
-_def_op('BUILD_TUPLE', 102)      # Number of tuple items
-_def_op('BUILD_LIST', 103)       # Number of list items
-_def_op('BUILD_MAP', 104)        # Always zero for now
+varargs_op('BUILD_TUPLE', 102)  # Number of tuple items
+varargs_op('BUILD_LIST', 103)   # Number of list items
+varargs_op('BUILD_MAP', 104)    # Always zero for now
 name_op('LOAD_ATTR', 105)       # Index in name list
-_def_op('COMPARE_OP', 106)       # Comparison operator
-hascompare.append(106)
+compare_op('COMPARE_OP', 106)       # Comparison operator
 
 name_op('IMPORT_NAME', 107)     # Index in name list
 name_op('IMPORT_FROM', 108)     # Index in name list
@@ -165,37 +188,24 @@ jrel_op('SETUP_LOOP', 120)      # Distance to target address
 jrel_op('SETUP_EXCEPT', 121)    # ""
 jrel_op('SETUP_FINALLY', 122)   # ""
 
-_def_op('LOAD_FAST', 124)        # Local variable number
-haslocal.append(124)
-_def_op('STORE_FAST', 125)       # Local variable number
-haslocal.append(125)
-_def_op('DELETE_FAST', 126)      # Local variable number
-haslocal.append(126)
+local_op('LOAD_FAST', 124)      # Local variable number
+local_op('STORE_FAST', 125)     # Local variable number
+local_op('DELETE_FAST', 126)    # Local variable number
 
-_def_op('RAISE_VARARGS', 130)    # Number of raise arguments (1, 2, or 3)
-_def_op('CALL_FUNCTION', 131)    # #args + (#kwargs << 8)
-hasnargs.append(131)
+_def_op('RAISE_VARARGS',  130)   # Number of raise arguments (1, 2, or 3)
+nargs_op('CALL_FUNCTION', 131)   # #args + (#kwargs << 8)
 
 _def_op('MAKE_FUNCTION', 132)    # Number of args with default values
-_def_op('BUILD_SLICE', 133)      # Number of items
+varargs_op('BUILD_SLICE', 133)   # Number of items
 
 _def_op('MAKE_CLOSURE', 134)
-_def_op('LOAD_CLOSURE', 135)
-hasfree.append(135)
+free_op('LOAD_CLOSURE', 135)
+free_op('LOAD_DEREF', 136)
+free_op('STORE_DEREF', 137)
 
-_def_op('LOAD_DEREF', 136)
-hasfree.append(136)
-_def_op('STORE_DEREF', 137)
-hasfree.append(137)
-
-_def_op('CALL_FUNCTION_VAR', 140)     # #args + (#kwargs << 8)
-hasnargs.append(140)
-
-_def_op('CALL_FUNCTION_KW', 141)      # #args + (#kwargs << 8)
-hasnargs.append(141)
-
-_def_op('CALL_FUNCTION_VAR_KW', 142)  # #args + (#kwargs << 8)
-hasnargs.append(142)
+nargs_op('CALL_FUNCTION_VAR', 140)     # #args + (#kwargs << 8)
+nargs_op('CALL_FUNCTION_KW', 141)      # #args + (#kwargs << 8)
+nargs_op('CALL_FUNCTION_VAR_KW', 142)  # #args + (#kwargs << 8)
 
 _def_op('EXTENDED_ARG', 143)
 EXTENDED_ARG = 143
@@ -228,6 +238,8 @@ def rm_op(name, op, l):
        l['hasname'].remove(op)
     if op in l['hasnargs']:
        l['hasnargs'].remove(op)
+    if op in l['hasvargs']:
+       l['hasvargs'].remove(op)
 
     assert l['opmap'][name] == op
     del l['opmap'][name]

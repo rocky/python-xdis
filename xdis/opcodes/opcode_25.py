@@ -26,6 +26,7 @@ hasjrel = list(opcode_2x.hasjrel)
 haslocal = list(opcode_2x.haslocal)
 hasname = list(opcode_2x.hasname)
 hasnargs = list(opcode_2x.hasnargs)
+hasvarargs = list(opcode_2x.hasvargs)
 opmap = deepcopy(opcode_2x.opmap)
 opname = deepcopy(opcode_2x.opname)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG

@@ -7,8 +7,10 @@ opcodes in Python's opcode.py library.
 
 from copy import deepcopy
 
-import xdis.opcodes.opcode_2x as opcode_2x
+# These are used from outside this module
 from xdis.opcodes.opcode_2x import findlabels, findlinestarts
+
+import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.opcode_2x import def_op
 
 # FIXME: can we DRY this even more?
@@ -27,6 +29,7 @@ hasjrel = list(opcode_2x.hasjrel)
 haslocal = list(opcode_2x.haslocal)
 hasname = list(opcode_2x.hasname)
 hasnargs = list(opcode_2x.hasnargs)
+hasvarargs = list(opcode_2x.hasvargs)
 opmap = deepcopy(opcode_2x.opmap)
 opname = deepcopy(opcode_2x.opname)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG

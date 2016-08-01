@@ -9,17 +9,25 @@ parsing and semantic interpretation.
 
 from copy import deepcopy
 
-import xdis.opcodes.opcode_3x as opcode_3x
+# These are used from outside this module
 from xdis.opcodes.opcode_3x import findlabels, findlinestarts
+
+import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.opcode_3x import fields2copy, rm_op
 
 # FIXME: can we DRY this even more?
 
 opmap = {}
 opname = [''] * 256
-hasconst = []
-hasjrel = []
-hasjabs = []
+hasconst = list(opcode_3x.hasconst)
+hascompare = list(opcode_3x.hascompare)
+hasfree = list(opcode_3x.hasfree)
+hasjabs = list(opcode_3x.hasjabs)
+hasjrel = list(opcode_3x.hasjrel)
+haslocal = list(opcode_3x.haslocal)
+hasname = list(opcode_3x.hasname)
+hasnargs = list(opcode_3x.hasnargs)
+hasvargs = list(opcode_3x.hasvargs)
 
 def def_op(name, op):
     opname[op] = name

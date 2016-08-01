@@ -21,9 +21,13 @@ from xdis.opcodes.opcode_3x import fields2copy, hasfree, rm_op
 
 opmap = {}
 opname = [''] * 256
-hasconst = []
-hasjrel = []
-hasjabs = []
+hasfree = list(opcode_3x.hasfree)
+hasjabs = list(opcode_3x.hasjabs)
+hasjrel = list(opcode_3x.hasjrel)
+haslocal = list(opcode_3x.haslocal)
+hasname = list(opcode_3x.hasname)
+hasnargs = list(opcode_3x.hasnargs)
+hasvargs = list(opcode_3x.hasvargs)
 
 def def_op(name, op):
     opname[op] = name
