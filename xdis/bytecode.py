@@ -133,7 +133,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
         arg = None
         argval = None
         argrepr = ''
-        has_arg = op >= opc.HAVE_ARGUMENT
+        has_arg = op_has_argument(op, opc)
         if has_arg:
             arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
             extended_arg = 0
@@ -168,6 +168,9 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
         opname = opc.opname[op]
         yield Instruction(opname, op, arg, argval, argrepr,
                           has_arg, offset, starts_line, is_jump_target)
+
+def op_has_argument(op, opc):
+    return op >= opc.HAVE_ARGUMENT
 
 _Instruction = namedtuple("_Instruction",
      "opname opcode arg argval argrepr has_arg offset starts_line is_jump_target")

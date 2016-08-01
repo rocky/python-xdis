@@ -1,6 +1,8 @@
 """Python disassembly functions specific to wordcode from python 3.6
 Extracted from
 """
+from xdis import PYTHON3
+from xdis.bytecode import op_has_argument
 
 def _unpack_opargs(code, opc):
     # enumerate() is not an option, since we sometimes process
@@ -9,12 +11,15 @@ def _unpack_opargs(code, opc):
     n = len(code)
     i = 0
     while i < n:
-        op = code[i]
+        op = code[i] if PYTHON3 else ord(code[i])
         offset = i
         i += 1
         arg = None
-        if op >= opc.HAVE_ARGUMENT:
-            arg = code[i] + code[i+1]*256 + extended_arg
+        if op_has_argument(op, opc):
+            if PYTHON3:
+                arg = code[i] + code[i+1]*256 + extended_arg
+            else:
+                arg = ord(code[i]) + ord(code[i+1])*256 + extended_arg
             extended_arg = 0
             i += 2
             if op == opc.EXTENDED_ARG:
@@ -28,8 +33,12 @@ def _findlinestarts(code):
     Generate pairs (offset, lineno) as described in Python/compile.c.
 
     """
-    byte_increments = code.co_lnotab[0::2]
-    line_increments = code.co_lnotab[1::2]
+    if PYTHON3:
+        byte_increments = code.co_lnotab[0::2]
+        line_increments = code.co_lnotab[1::2]
+    else:
+        byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
+        line_increments = [ord(c) for c in code.co_lnotab[1::2]]
 
     lastlineno = None
     lineno = code.co_firstlineno
