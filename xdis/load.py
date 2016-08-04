@@ -100,10 +100,10 @@ def load_module(filename, code_objects={}, fast_load=False):
             fp.close()
             raise ImportError("Bad magic number: '%s'" % magic)
 
-    if not (2.3 <= version <= 2.7) and not (3.0 <= version <= 3.6):
+    if not (2.2 <= version <= 2.7) and not (3.0 <= version <= 3.6):
         fp.close()
         raise ImportError("This is a Python %s file! Only "
-                          "Python 2.5 to 2.7 and 3.2 to 3.6 files are supported."
+                          "Python 2.2 to 2.7 and 3.2 to 3.6 files are supported."
                           % version)
 
     # print version

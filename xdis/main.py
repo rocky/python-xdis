@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2016 by Rocky Bernstein
+# Copyright (c) 2016 by Rocky Bernstein
 """
 CPython independent disassembly routines
 
@@ -30,7 +30,10 @@ from xdis.util import format_code_info
 def get_opcode(version, is_pypy):
     # Set up disassembler with the right opcodes
     # Is there a better way?
-    if version == 2.3:
+    if version == 2.2:
+        from xdis.opcodes import opcode_22
+        return opcode_22
+    elif version == 2.3:
         from xdis.opcodes import opcode_23
         return opcode_23
     elif version == 2.4:
@@ -77,7 +80,8 @@ def get_opcode(version, is_pypy):
     else:
         raise TypeError("%s is not a Python version I know about" % version)
 
-def disco(version, co, timestamp, out=sys.stdout, is_pypy=False):
+def disco(version, co, timestamp, out=sys.stdout,
+          is_pypy=False, magic_int=None):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -88,8 +92,10 @@ def disco(version, co, timestamp, out=sys.stdout, is_pypy=False):
     real_out = out or sys.stdout
     co_pypy_str = 'PyPy ' if is_pypy else ''
     run_pypy_str = 'PyPy ' if IS_PYPY else ''
-    out.write('# %sPython bytecode %s (disassembled from %sPython %s)\n' %
-              (co_pypy_str, version, run_pypy_str, PYTHON_VERSION))
+    out.write('# %sPython bytecode %s%s disassembled from %sPython %s\n' %
+              (co_pypy_str, version,
+               " (%d)" % magic_int if magic_int else "",
+               run_pypy_str, PYTHON_VERSION))
     if timestamp > 0:
         value = datetime.datetime.fromtimestamp(timestamp)
         out.write(value.strftime('# Timestamp in code: '
@@ -129,7 +135,7 @@ def disassemble_file(filename, outstream=sys.stdout):
     """
     filename = check_object_path(filename)
     version, timestamp, magic_int, co, is_pypy = load_module(filename)
-    disco(version, co, timestamp, outstream, is_pypy)
+    disco(version, co, timestamp, outstream, is_pypy, magic_int)
     # print co.co_filename
     return filename, co, version, timestamp, magic_int
 

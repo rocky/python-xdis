@@ -114,7 +114,12 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     co_cellvars = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_filename = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_name = load_code_internal(fp, magic_int)
-    co_firstlineno = unpack('i', fp.read(4))[0]
+
+    if v13_to_23:
+        co_firstlineno = unpack('h', fp.read(2))[0]
+    else:
+        co_firstlineno = unpack('i', fp.read(4))[0]
+
     co_lnotab = load_code_internal(fp, magic_int, code_objects=code_objects)
 
     # The Python3 code object is different than Python2's which
