@@ -191,6 +191,8 @@ def r_ref(obj, flag):
 # FLAG_REF is the marchal.c name
 FLAG_REF = 0x80
 
+# FIXME: redo with a dispatch table same as
+# marshal.
 # In marshal.c this method is called r_object()
 def load_code_internal(fp, magic_int, bytes_for_s=False,
                        code_objects={}):

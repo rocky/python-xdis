@@ -46,6 +46,7 @@ COMPILER_FLAG_NAMES = {
 def pretty_flags(flags):
     """Return pretty representation of code flags."""
     names = []
+    result = "0x%08x" % flags
     for i in range(32):
         flag = 1<<i
         if flags & flag:
@@ -55,7 +56,8 @@ def pretty_flags(flags):
                 break
     else:
         names.append(hex(flags))
-    return ", ".join(names)
+    names.reverse()
+    return "%s (%s)" % (result, " | ".join(names))
 
 def format_code_info(co, version):
     lines = []
