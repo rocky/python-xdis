@@ -9,27 +9,29 @@ opcodes in Python's opcode.py library.
 
 from copy import deepcopy
 
-import xdis.opcodes.opcode_2x as opcode_2x
+# These are used from outside this module
 from xdis.opcodes.opcode_2x import findlabels, findlinestarts
+
 from xdis.opcodes.opcode_2x import def_op
+import xdis.opcodes.opcode_24 as opcode_24
 
 hasArgumentExtended = []
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
-HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
-cmp_op = list(opcode_2x.cmp_op)
-hasconst = list(opcode_2x.hasconst)
-hascompare = list(opcode_2x.hascompare)
-hasfree = list(opcode_2x.hasfree)
-hasjabs = list(opcode_2x.hasjabs)
-hasjrel = list(opcode_2x.hasjrel)
-haslocal = list(opcode_2x.haslocal)
-hasname = list(opcode_2x.hasname)
-hasnargs = list(opcode_2x.hasnargs)
-hasvarargs = list(opcode_2x.hasvargs)
-opmap = deepcopy(opcode_2x.opmap)
-opname = deepcopy(opcode_2x.opname)
-EXTENDED_ARG = opcode_2x.EXTENDED_ARG
+HAVE_ARGUMENT = opcode_24.HAVE_ARGUMENT
+cmp_op = list(opcode_24.cmp_op)
+hasconst = list(opcode_24.hasconst)
+hascompare = list(opcode_24.hascompare)
+hasfree = list(opcode_24.hasfree)
+hasjabs = list(opcode_24.hasjabs)
+hasjrel = list(opcode_24.hasjrel)
+haslocal = list(opcode_24.haslocal)
+hasname = list(opcode_24.hasname)
+hasnargs = list(opcode_24.hasnargs)
+hasvargs = list(opcode_24.hasvargs)
+opmap = deepcopy(opcode_24.opmap)
+opname = deepcopy(opcode_24.opname)
+EXTENDED_ARG = opcode_24.EXTENDED_ARG
 
 def updateGlobal():
     # This makes things look more like 2.7
@@ -39,13 +41,6 @@ def updateGlobal():
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
     return
-
-# Bytecodes added since 2.3.
-# 2.4
-def_op(opname, opmap, 'NOP', 9)
-def_op(opname, opmap, 'LIST_APPEND', 18)
-
-def_op(opname, opmap, 'YIELD_VALUE', 86)
 
 # 2.5
 def_op(opname, opmap, 'WITH_CLEANUP', 81)
