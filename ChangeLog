@@ -1,6 +1,49 @@
+2016-08-05  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 2.2.0
+
+2016-08-05  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_25.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_34.py: DRY opcodes a
+	little bit. Some corrections too
+
+2016-08-05  rocky <rocky@dusytfeet.com>
+
+	* test/simple_source/03_build_map.py, xdis/unmarshal.py,
+	xdis/util.py: Show flags in hex and bit names in proper order
+
+2016-08-04  rocky <rocky@dusytfeet.com>
+
+	* test/Makefile, test/test_pythonlib.py, xdis/load.py,
+	xdis/main.py, xdis/opcodes/opcode_22.py, xdis/unmarshal.py: Add 2.2
+	bytecodes. Fix bug in 2.3...  * add some byteocde 2.2 and 2.3 tests * Show magic number in disassembly
+
+2016-08-01  rocky <rb@dustyfeet.com>
+
+	* xdis/version.py: Get ready for release 2.1.0
+
+2016-08-01  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py,
+	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_3x.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: More,
+	better opcode classification hasvargs: tag variable arg ops, e.g BUILD_xxx add helper fns to
+	append to various lists
+
+2016-08-01  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/wordcode.py: Make wordcode run on Python
+	2.7
+
 2016-07-26  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 2.0.3
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 2.0.3
 
 2016-07-25  rocky <rocky@dusytfeet.com>
 

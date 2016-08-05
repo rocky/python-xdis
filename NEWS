@@ -1,3 +1,14 @@
+2.2.0 2016-08-05
+
+- Add Python 2.2 bytecodes
+- Show Python magic number in disassembly output
+- Show compile flags in hex and in proper bit order
+
+2.1.0 2016-07-26
+
+- better opcode classification hasvargs for non-function calls, e.g. BUILD
+- Support 3.6 wordcode
+
 2.0.3 2016-07-26
 
 - Small instruction print change
