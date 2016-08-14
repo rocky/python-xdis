@@ -116,11 +116,14 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     """
     labels = opc.findlabels(code, opc)
     extended_arg = 0
+    python_36 = True if (
+        hasattr(opc, 'python_version') and opc.python_version >= 3.6) else False
     starts_line = None
     # enumerate() is not an option, since we sometimes process
     # multiple elements on a single pass through the loop
     n = len(code)
     i = 0
+    extended_arg = 0
     while i < n:
         op = code2num(code, i)
         offset = i
@@ -135,11 +138,15 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
         argrepr = ''
         has_arg = op_has_argument(op, opc)
         if has_arg:
-            arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
-            extended_arg = 0
-            i = i+2
-            if op == opc.EXTENDED_ARG:
-                extended_arg = arg*65536
+            if python_36:
+                arg = code2num(code, i) | extended_arg
+                extended_arg = (arg << 8) if opc == opc.EXTENDED_ARG else 0
+                i = i+1
+            else:
+                arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
+                i = i+2
+                extended_arg = arg*65536 if op == opc.EXTENDED_ARG else 0
+
             #  Set argval to the dereferenced value of the argument when
             #  availabe, and argrepr to the string representation of argval.
             #    _disassemble_bytes needs the string repr of the

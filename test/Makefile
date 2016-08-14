@@ -16,6 +16,7 @@ check: check-short
                   --bytecode-2.6 --bytecode-2.7 \
                   --bytecode-3.2 --bytecode-3.3 \
                   --bytecode-3.4 --bytecode-3.5 \
+	          --bytecode-3.6 \
 	          --bytecode-pypy2.7 --bytecode-pypy3.2 $(COMPILE)
 
 check-short:

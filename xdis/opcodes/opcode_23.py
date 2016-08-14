@@ -35,6 +35,7 @@ for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))
 
 def updateGlobal():
+    globals().update({'python_version': 2.3})
     # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
     globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['JUMP_IF_TRUE']})

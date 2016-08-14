@@ -36,6 +36,7 @@ EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
 def updateGlobal():
     # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
+    globals().update({'python_version': 2.7})
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
 

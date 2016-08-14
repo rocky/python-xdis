@@ -35,6 +35,7 @@ opname = deepcopy(opcode_25.opname)
 EXTENDED_ARG = opcode_25.EXTENDED_ARG
 
 def updateGlobal():
+    globals().update({'python_version': 2.6})
     # This makes things look more like 2.7
     globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['JUMP_IF_TRUE']})

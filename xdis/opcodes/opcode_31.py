@@ -49,6 +49,7 @@ rm_op('DUP_TOP_TWO', 5, locals())
 def updateGlobal():
     # JUMP_OPs are used in verification are set in the scanner
     # and used in the parser grammar
+    globals().update({'python_version': 3.1})
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))

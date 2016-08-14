@@ -69,6 +69,7 @@ def_op('FORMAT_VALUE', 155)
 rm_op('STORE_MAP', 54, locals())
 
 def updateGlobal():
+    globals().update({'python_version': 3.6})
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
