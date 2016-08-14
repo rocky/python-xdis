@@ -33,6 +33,8 @@ opname = deepcopy(opcode_2x.opname)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
 def updateGlobal():
+    globals().update({'python_version': 2.6})
+
     # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
     globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['JUMP_IF_TRUE']})

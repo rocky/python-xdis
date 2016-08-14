@@ -116,8 +116,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     """
     labels = opc.findlabels(code, opc)
     extended_arg = 0
-    python_36 = True if (
-        hasattr(opc, 'python_version') and opc.python_version >= 3.6) else False
+    python_36 = True if opc.python_version >= 3.6 else False
     starts_line = None
     # enumerate() is not an option, since we sometimes process
     # multiple elements on a single pass through the loop

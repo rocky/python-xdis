@@ -33,6 +33,8 @@ opname = deepcopy(opcode_2x.opname)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
 def updateGlobal():
+    globals().update({'python_version': 2.7})
+
     # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
@@ -51,6 +53,10 @@ def jrel_op(name, op):
 def jabs_op(name, op):
     def_op(opname, opmap, name, op)
     hasjabs.append(op)
+
+def compare_op(name, op):
+    def_op(opname, opmap, name, op)
+    hascompare.append(op)
 
 # Bytecodes added since 2.3.
 # 2.4
@@ -76,9 +82,8 @@ rm_op('JUMP_IF_TRUE', 112, locals())
 def_op(opname, opmap, 'LIST_APPEND', 94)
 def_op(opname, opmap, 'BUILD_SET', 104)        # Number of set items
 def_op(opname, opmap, 'BUILD_MAP', 105)
-def_op(opname, opmap, 'LOAD_ATTR', 106)
-def_op(opname, opmap, 'COMPARE_OP', 107)
-hascompare.append(107)
+name_op('LOAD_ATTR', 106)
+compare_op('COMPARE_OP', 107)
 
 name_op('IMPORT_NAME', 108)
 name_op('IMPORT_FROM', 109)

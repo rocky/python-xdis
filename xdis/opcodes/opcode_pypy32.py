@@ -49,6 +49,8 @@ jrel_op('JUMP_IF_NOT_DEBUG', 204)
 # If there were, they'd be listed below.
 
 def updateGlobal():
+    globals().update({'python_version': 3.2})
+
     # JUMP_OPs are used in verification are set in the scanner
     # and used in the parser grammar
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
