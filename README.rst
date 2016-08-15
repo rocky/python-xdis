@@ -9,7 +9,7 @@ Cross-Python bytecode Disassembler and Marshal routines
 Introduction
 ------------
 
-The Python `dis` module allows you to disassemble byte from the same
+The Python `dis` module allows you to disassemble bytecode from the same
 version of Python that you are running on. But what about bytecode from
 different versions?
 
