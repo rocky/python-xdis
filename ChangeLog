@@ -1,6 +1,32 @@
+2016-08-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 2.2.1
+
+2016-08-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/bytecode.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py: misc bugs * Mark pypy 2.7 as a name op * add python_version to all opcodes
+
+2016-08-13  rocky <rocky@dusytfeet.com>
+
+	* test/Makefile, test/simple_source/bug36/01_fstring.py-notyet,
+	xdis/bytecode.py, xdis/magics.py, xdis/opcodes/opcode_22.py,
+	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_32.py,
+	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py: Correct Python
+	3.6 arg parsing and...  Add python_version to each opc.
+
 2016-08-05  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 2.2.0
+	* README.rst: Doc corrections
+
+2016-08-05  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 2.2.0
 
 2016-08-05  rocky <rocky@dusytfeet.com>
 
