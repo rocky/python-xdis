@@ -65,8 +65,11 @@ def_op('BUILD_MAP_UNPACK_WITH_CALL', 151)
 def_op('BUILD_TUPLE_UNPACK', 152)
 def_op('BUILD_SET_UNPACK', 153)
 def_op('SETUP_ASYNC_WITH', 154)
-def_op('FORMAT_VALUE', 155)
 rm_op('STORE_MAP', 54, locals())
+
+# These are new since Python 3.6
+def_op('FORMAT_VALUE', 155)
+
 
 def updateGlobal():
     globals().update({'python_version': 3.6})

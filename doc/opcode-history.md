@@ -115,7 +115,7 @@ and print operators are removed.
 
 ### Renamed
 
-#### DUP_TOP_TWO from DUP_TOPX_2
+* DUP_TOP_TWO from DUP_TOPX_2
 
 ### Added
 
@@ -127,6 +127,32 @@ and print operators are removed.
 
 ## Python 3.3
 
+No changes
+
 ## Python 3.4
 
+No changes
+
 ## Python 3.5
+
+Added:
+
+* BINARY_MATRIX_MULTIPLY
+* INPLACE_MATRIX_MULTIPLY
+* GET_AITER
+* GET_ANEXT
+* BEFORE_ASYNC_WITH
+* GET_YIELD_FROM_ITER
+* GET_AWAITABLE
+* WITH_CLEANUP_START
+* WITH_CLEANUP_FINISH
+* BUILD_LIST_UNPACK
+* BUILD_MAP_UNPACK
+* BUILD_MAP_UNPACK_WITH_CALL
+* BUILD_TUPLE_UNPACK
+* BUILD_SET_UNPACK
+* SETUP_ASYNC_WITH
+
+## Python 3.6
+
+* FORMAT_VALUE  (used in format specifiers)
