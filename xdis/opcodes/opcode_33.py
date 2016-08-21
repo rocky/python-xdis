@@ -60,6 +60,7 @@ if PYTHON_VERSION == 3.3:
     # for item in dis.opmap.items():
     #     if item not in opmap.items():
     #         print(item)
+    assert all(item in dis.opmap.items() for item in opmap.items())
     assert all(item in opmap.items() for item in dis.opmap.items())
 
-# opcode3x.dump_opcodes(opmap)
+# opcode33.dump_opcodes(opmap)

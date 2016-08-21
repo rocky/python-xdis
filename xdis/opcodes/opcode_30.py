@@ -66,9 +66,10 @@ updateGlobal()
 from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 3.0:
     import dis
-    for item in dis.opmap.items():
-        if item not in opmap.items():
-            print(item)
+    # for item in dis.opmap.items():
+    #     if item not in opmap.items():
+    #         print(item)
+    assert all(item in dis.opmap.items() for item in opmap.items())
     assert all(item in opmap.items() for item in dis.opmap.items())
 
-# opcode_3x.dump_opcodes(opmap)
+# opcode_30.dump_opcodes(opmap)
