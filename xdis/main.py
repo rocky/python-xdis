@@ -150,7 +150,7 @@ def _test():
             sys.exit(2)
     else:
         fn = sys.argv[1]
-    disassemble_file(fn, native=True)
+    disassemble_file(fn)
 
 if __name__ == "__main__":
     _test()

@@ -139,6 +139,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     extended_arg = 0
     while i < n:
         op = code2num(code, i)
+
         offset = i
         if linestarts is not None:
             starts_line = linestarts.get(i, None)
@@ -187,6 +188,8 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                                (code2num(code, i-2), code2num(code, i-1)))
             elif python_36 and op == opc.FORMAT_VALUE:
                 argrepr = pretty_format_value_flags(arg)
+        elif python_36:
+            i += 1
 
         opname = opc.opname[op]
         yield Instruction(opname, op, arg, argval, argrepr,

@@ -1,4 +1,5 @@
 # Minimal tests for from the Python 2.7 dis module test
+from __future__ import print_function
 
 import unittest
 
@@ -7,7 +8,7 @@ from xdis.bytecode import Bytecode
 from xdis import PYTHON_VERSION
 
 def _f(a):
-    print a
+    print(a)
     return 1
 
 dis_f = """\
