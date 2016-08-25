@@ -90,7 +90,7 @@ def load_module(filename, code_objects={}, fast_load=False):
         magic = magics.int2magic(3180+7)
 
     try:
-        version = float(magics.versions[magic])
+        version = float(magics.versions[magic][:3])
     except KeyError:
         if len(magic) >= 2:
             fp.close()
@@ -105,6 +105,11 @@ def load_module(filename, code_objects={}, fast_load=False):
         raise ImportError("This is a Python %s file! Only "
                           "Python 2.2 to 2.7 and 3.2 to 3.6 files are supported."
                           % version)
+    elif magics.magic2int(magic) in (3361,):
+        fp.close()
+        raise ImportError("This is interim Python %s file which is not "
+                          "supported.\nFinal released versions are supported." %
+                          magics.versions[magic])
 
     # print version
     ts = fp.read(4)

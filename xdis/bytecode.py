@@ -130,7 +130,11 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     """
     labels = opc.findlabels(code, opc)
     extended_arg = 0
+
+    # FIXME: We really need to distingus 3.6.0a1 from 3.6.a3.
+    # See below FIXME
     python_36 = True if opc.python_version >= 3.6 else False
+
     starts_line = None
     # enumerate() is not an option, since we sometimes process
     # multiple elements on a single pass through the loop
@@ -155,10 +159,11 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
             if python_36:
                 arg = code2num(code, i) | extended_arg
                 extended_arg = (arg << 8) if opc == opc.EXTENDED_ARG else 0
-                i = i+1
+                # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
+                i += 1
             else:
                 arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
-                i = i+2
+                i += 2
                 extended_arg = arg*65536 if op == opc.EXTENDED_ARG else 0
 
             #  Set argval to the dereferenced value of the argument when
