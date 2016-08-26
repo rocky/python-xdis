@@ -29,7 +29,7 @@ def pretty_format_value_flags(flags):
     elif (flags & 0x03) == 0x03:
         return '!a'
     elif (flags & 0x04) == 0x04:
-        # pop fmt_spec from the stack and use it, else usef an
+        # pop fmt_spec from the stack and use it, else use an
         # empty fmt_spec.
         return ''
 

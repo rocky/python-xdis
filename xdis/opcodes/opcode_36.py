@@ -15,7 +15,7 @@ from xdis.wordcode import _findlabels as findlabels
 from xdis.wordcode import _findlinestarts as findlinestarts
 
 import xdis.opcodes.opcode_3x as opcode_3x
-from xdis.opcodes.opcode_3x import fields2copy, hasfree, rm_op
+from xdis.opcodes.opcode_3x import fields2copy, rm_op
 
 # FIXME: can we DRY this even more?
 
@@ -67,8 +67,12 @@ def_op('BUILD_SET_UNPACK', 153)
 def_op('SETUP_ASYNC_WITH', 154)
 rm_op('STORE_MAP', 54, locals())
 
-# These are new since Python 3.6
+# These are new since Python 3.5
 def_op('FORMAT_VALUE', 155)
+def_op('BUILD_CONST_KEY_MAP', 156)
+
+# And removed  since Python 3.5
+rm_op('MAKE_CLOSURE', 134, locals())
 
 
 def updateGlobal():
@@ -84,9 +88,9 @@ updateGlobal()
 from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 3.6:
     import dis
-    # for item in dis.opmap.items():
-    #     if item not in opmap.items():
-    #         print(item)
+    # print(set(dis.opmap.items()) - set(opmap.items()))
+    # print(set(opmap.items()) - set(dis.opmap.items()))
+
     assert all(item in opmap.items() for item in dis.opmap.items())
     assert all(item in dis.opmap.items() for item in opmap.items())
 

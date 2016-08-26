@@ -107,9 +107,9 @@ def load_module(filename, code_objects={}, fast_load=False):
                           % version)
     elif magics.magic2int(magic) in (3361,):
         fp.close()
-        raise ImportError("This is interim Python %s file which is not "
+        raise ImportError("%s is interim Python %s (%d) bytecode which is not "
                           "supported.\nFinal released versions are supported." %
-                          magics.versions[magic])
+                          (filename, magics.versions[magic], magics.magic2int(magic)))
 
     # print version
     ts = fp.read(4)

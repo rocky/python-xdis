@@ -85,9 +85,9 @@ updateGlobal()
 from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 3.5:
     import dis
-    # for item in dis.opmap.items():
-    #     if item not in opmap.items():
-    #         print(item)
+    # print(set(dis.opmap.items()) - set(opmap.items()))
+    # print(set(opmap.items()) - set(dis.opmap.items()))
+
     assert all(item in dis.opmap.items() for item in opmap.items())
     assert all(item in opmap.items() for item in dis.opmap.items())
 

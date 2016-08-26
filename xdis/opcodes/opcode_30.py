@@ -10,7 +10,10 @@ parsing and semantic interpretation.
 from copy import deepcopy
 
 import xdis.opcodes.opcode_3x as opcode_3x
+
+# These are used from outside this module
 from xdis.opcodes.opcode_3x import findlabels, findlinestarts
+
 from xdis.opcodes.opcode_3x import fields2copy, rm_op
 
 # FIXME: can we DRY this even more?
@@ -66,9 +69,9 @@ updateGlobal()
 from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 3.0:
     import dis
-    # for item in dis.opmap.items():
-    #     if item not in opmap.items():
-    #         print(item)
+    # print(set(dis.opmap.items()) - set(opmap.items()))
+    # print(set(opmap.items()) - set(dis.opmap.items()))
+
     assert all(item in dis.opmap.items() for item in opmap.items())
     assert all(item in opmap.items() for item in dis.opmap.items())
 
