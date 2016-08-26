@@ -1,4 +1,12 @@
-2.2.1 2016-08-145
+2.2.2 2016-08-26
+
+- Add Python 3.6 opcodes since 3.6.0.a1
+- magics.versions has more detailed version information, e.g. 62121 is 2.5c1
+- Add format conversion type (!r, !s, !a) in 3.6 FORMAT_VALUE attribute
+- We no longer support Python 3.6.0a1 but only 3.6.0a3
+- Update opcode history
+
+2.2.1 2016-08-14
 
 - Fix 3.6 arg parsing in wordcode
 - PyPy 2.7 LOAD_ATTR wasn't marked as a name op

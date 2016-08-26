@@ -155,4 +155,11 @@ Added:
 
 ## Python 3.6
 
+Added:
+
 * FORMAT_VALUE  (used in format specifiers)
+* BUILD_CONST_KEY_MAP (in 3.6.0a3)
+
+Removed:
+
+* MAKE_CLOSURE

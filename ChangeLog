@@ -1,6 +1,48 @@
+2016-08-26  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 2.2.2
+
+2016-08-25  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/load.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_32.py,
+	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_36.py: More 3.6 bytecodes ...  recompile all 3.6 bytecode to be 0a3 - (FU python)
+
+2016-08-25  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_magic.py, xdis/bytecode.py, xdis/load.py,
+	xdis/magics.py: More precise magic numbers.  Disallow some interim versions we just can't handle yet.
+
+2016-08-24  rocky <rb@dustyfeet.com>
+
+	* pytest/test_disasm.py, pytest/testdata/fstring-3.6.right,
+	requirements-dev.txt, test_unit/2.7/test_dis.py,
+	test_unit/2.7/test_dis.py-notyet, test_unit/test_dis.py,
+	test_unit/test_dis.py-notyet, xdis/bytecode.py, xdis/main.py: Bug in
+	3.6 disassembly was not adjusting for extra byte in word when handling non-arguemnt
+	ops like ADD_BINARY or POP_TOP Start to go over unit and pytest tests
+
+2016-08-21  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_36.py: Add 3.6 format specifier in disassembly
+	output...  Sync up opcode checks.
+
+2016-08-17  rocky <rocky@dusytfeet.com>
+
+	* doc/opcode-history.md, xdis/opcodes/opcode_36.py: Update opcode
+	history
+
 2016-08-14  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 2.2.1
+	* README.rst: One more doc typo
+
+2016-08-14  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 2.2.1
 
 2016-08-14  rocky <rocky@dusytfeet.com>
 
