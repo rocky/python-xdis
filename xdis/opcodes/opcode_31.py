@@ -40,8 +40,10 @@ def_op('DUP_TOPX', 99)
 def_op('EXTENDED_ARG', 143)
 def_op('ROT_FOUR', 5)
 
-# These are in Python 3.2 but not in Python 3.0
-rm_op('DUP_TOP_TWO', 5, locals())
+# These are in Python 3.2 but not in Python 3.1
+rm_op('DUP_TOP_TWO',    5, locals())
+rm_op('DELETE_DEREF', 138, locals())
+rm_op('SETUP_WITH',   143, locals())
 
 # There are no opcodes to add or change.
 # If there were, they'd be listed below.
