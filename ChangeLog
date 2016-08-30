@@ -1,6 +1,16 @@
+2016-08-29  rocky <rb@dustyfeet.com>
+
+	* xdis/version.py: Get ready for release 2.2.3
+
 2016-08-26  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 2.2.2
+	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py: 
+	Python 3.1 opcode bugs ...  verify assert statement.  test_pyenvlib.py: Allow 3.1 testing
+
+2016-08-26  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, doc/opcode-history.md, test/test_pyenvlib.py,
+	xdis/version.py: Get ready for release 2.2.2 * test_pyenvlib.py: allow 2.7.12 in testing * opcode-history.md: add changes since 3.6.0a1
 
 2016-08-25  rocky <rb@dustyfeet.com>
 
