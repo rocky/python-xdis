@@ -7,6 +7,7 @@ from struct import unpack
 import xdis.unmarshal
 from xdis import PYTHON3, PYTHON_VERSION
 from xdis import magics
+from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 
 def check_object_path(path):
     if path.endswith(".py"):
@@ -83,6 +84,7 @@ def load_module(filename, code_objects={}, fast_load=False):
     timestamp = 0
     fp = open(filename, 'rb')
     magic = fp.read(4)
+    magic_int = magics.magic2int(magic)
 
     # For reasons I don't understand PyPy 3.2 stores a magic
     # of '0'...  The two values below are for Pyton 2.x and 3.x respectively
@@ -105,12 +107,20 @@ def load_module(filename, code_objects={}, fast_load=False):
         raise ImportError("This is a Python %s file! Only "
                           "Python 2.2 to 2.7 and 3.0 to 3.6 files are supported."
                           % version)
-    elif magics.magic2int(magic) in (3361,):
+    elif magic_int in (3361,):
         fp.close()
         raise ImportError("%s is interim Python %s (%d) bytecode which is not "
                           "supported.\nFinal released versions are supported." %
                           (filename, magics.versions[magic], magics.magic2int(magic)))
-    elif magics.magic2int(magic) in (62135, 62215):
+    elif magic_int in (62135,) and PYTHON_VERSION < 3.0:
+        fp.seek(0)
+        basename = os.path.basename(filename)[0:-4]
+        fixed_dropbox_path = tempfile.mkstemp(prefix=basename + '-',
+                                              suffix='.pyc', text=False)[1]
+        fix_dropbox_pyc(fp, fixed_dropbox_path)
+        fp = open(fixed_dropbox_path, 'rb')
+        magic = fp.read(4)
+    elif magic_int in (62215, 62135):
         fp.close()
         raise ImportError("%s is a dropbox hacked Python %s (bytecode %d).\nSee "
                           "https://itooktheredpill.irgendwo.org/2012/dropbox-decrypt/ "
@@ -120,8 +130,8 @@ def load_module(filename, code_objects={}, fast_load=False):
     # print version
     ts = fp.read(4)
     timestamp = unpack("I", ts)[0]
-    magic_int = magics.magic2int(magic)
     my_magic_int = magics.magic2int(imp.get_magic())
+    fixed_magic_int = magics.magic2int(magic)
 
     # Note: a higher magic number doesn't necessarily mean a later
     # release.  At Python 3.0 the magic number decreased
@@ -136,14 +146,14 @@ def load_module(filename, code_objects={}, fast_load=False):
         bytecode = fp.read()
         co = marshal.loads(bytecode)
     elif fast_load:
-        co = xdis.marsh.load(fp, magic_int, code_objects)
+        co = xdis.marsh.load(fp, fixed_magic_int, code_objects)
     else:
-        co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
+        co = xdis.unmarshal.load_code(fp, fixed_magic_int, code_objects)
     pass
 
     fp.close()
 
-    return version, timestamp, magic_int, co, is_pypy(magic_int)
+    return version, timestamp, magic_int, co, is_pypy(fixed_magic_int)
 
 if __name__ == '__main__':
     co = load_file(__file__)
