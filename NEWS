@@ -1,3 +1,9 @@
+2.2.3 2016-09-11
+
+- Add Dropbox magic numbers.
+  Decode dropbox's 2.5 bytecode via code (on Python 2.x)
+  from https://github.com/rumpeltux/dropboxdec
+
 2.2.3 2016-08-29
 
 - Fix Python 3.1 opcode bugs

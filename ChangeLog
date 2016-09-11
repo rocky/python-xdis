@@ -1,6 +1,20 @@
+2016-09-11  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 2.3.0
+
+2016-09-11  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #8 from rocky/dropbox-2.5 Decode dropbox 2.5 Python files
+
+2016-09-11  rocky <rb@dustyfeet.com>
+
+	* xdis/load.py, xdis/magics.py: Include Dropbox-modified magic
+	numbers. Issue #7
+
 2016-08-29  rocky <rb@dustyfeet.com>
 
-	* xdis/version.py: Get ready for release 2.2.3
+	* ChangeLog, NEWS, test/test_pyenvlib.py, xdis/version.py: Get ready
+	for release 2.2.3
 
 2016-08-26  rocky <rocky@dusytfeet.com>
 
