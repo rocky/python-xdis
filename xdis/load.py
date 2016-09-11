@@ -103,13 +103,19 @@ def load_module(filename, code_objects={}, fast_load=False):
     if not (2.2 <= version <= 2.7) and not (3.0 <= version <= 3.6):
         fp.close()
         raise ImportError("This is a Python %s file! Only "
-                          "Python 2.2 to 2.7 and 3.2 to 3.6 files are supported."
+                          "Python 2.2 to 2.7 and 3.0 to 3.6 files are supported."
                           % version)
     elif magics.magic2int(magic) in (3361,):
         fp.close()
         raise ImportError("%s is interim Python %s (%d) bytecode which is not "
                           "supported.\nFinal released versions are supported." %
                           (filename, magics.versions[magic], magics.magic2int(magic)))
+    elif magics.magic2int(magic) in (62135, 62215):
+        fp.close()
+        raise ImportError("%s is a dropbox hacked Python %s (bytecode %d).\nSee "
+                          "https://itooktheredpill.irgendwo.org/2012/dropbox-decrypt/ "
+                          "for how to decrypt." %
+                          (filename, version, magics.magic2int(magic)))
 
     # print version
     ts = fp.read(4)

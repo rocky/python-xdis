@@ -44,6 +44,7 @@ versions = {
                                #  storing constants that should have been removed
     int2magic(62131): '2.5c2', # fix wrong code: for x, in ... in
                                # listcomp/genexp)
+    int2magic(62135): '2.5dropbox', # Dropbox-modified Python 2.5
     int2magic(62151): '2.6a0', # peephole optimizations & STORE_MAP
     int2magic(62161): '2.6a1', # WITH_CLEANUP optimization
     int2magic(62171): '2.7a0', # optimize list comprehensions/change
@@ -54,6 +55,9 @@ versions = {
     int2magic(62191): '2.7a0', # introduce SETUP_WITH
     int2magic(62201): '2.7a0', # introduce BUILD_SET
     int2magic(62211): '2.7a0', # introduce MAP_ADD and SET_ADD
+
+    int2magic(62215): '2.7dropbox', # Dropbox-modified Python 2.7
+
     int2magic(62211+7): '2.7', # PyPy including pypy-2.6.1, pypy-5.0.1
                                # PyPy adds 7 to the corresponding CPython nmber
     int2magic(3000): '3.000',
