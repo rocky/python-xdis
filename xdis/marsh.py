@@ -290,6 +290,7 @@ class _Unmarshaller:
         return x
 
     def r_long(self):
+        from trepan.api import debug; debug()
         s = self._read(4)
         a = ord(s[0])
         b = ord(s[1])
