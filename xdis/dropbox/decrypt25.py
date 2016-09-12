@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 # Copyright Hagen Fritsch, 2012, License: GPL-2.0
-# Dropbox python bytecode decryption tool
+# Adaption and generalization for xdis use by Rocky Bernstein
+
+# Dropbox Python bytecode decryption tool for Dropbox versions of 1.1x
+# (and possibly earlier) which uses Python bytecode 2.5.
+
 from __future__ import print_function
 
 import types
 import struct
 
-import xdis.marsh as _marshal
+from xdis import PYTHON3
+from xdis.magics import int2magic
+import xdis.marsh as xmarshal
 
 def rng(a, b):
     b = ((b << 13) ^ b) & 0xffffffff
@@ -23,10 +29,14 @@ def get_keys(a, b):
     ke = rng(kd, kc)
     return (kb,kc,kd,ke)
 
-def MX(z,y,sum,key,p,e):
+def MX(z, y, sum, key, p, e):
     return (((z>>5^y<<2) + (y>>3^z<<4)) ^ ((sum^y) + (key[(p&3)^e] ^ z)))
 
-def tea_decipher(v,key):
+def tea_decipher(v, key):
+    """
+    Tiny Decryption Algorithm decription (TEA)
+    See https://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm
+    """
     DELTA = 0x9e3779b9
     n = len(v)
     rounds = 6 + 52//n
@@ -42,24 +52,33 @@ def tea_decipher(v,key):
     return v
 
 def load_code(self):
-    """load the code object, calculate the key, decrypt it and return a real python code-object"""
+    """
+    Returns a Python code object like xdis.unmarshal.load_code(),
+    but in we decrypt the data in self.bufstr.
+
+    That is:
+      * calculate the TEA key,
+      * decrypt self.bufstr
+      * create and return a Python code-object
+    """
     a = self.load_int()
     b = self.load_int()
-    key = get_keys(a,b)
-    padsize = (b+15)&~0xf
+    key = get_keys(a, b)
+    padsize = (b + 15) & ~0xf
     intsize = padsize/4
     data = self.bufstr[self.bufpos:self.bufpos+padsize]
     # print("%d: %d (%d=%d)" % (self.bufpos, b, padsize, len(data)))
     data = list(struct.unpack('<%dL' % intsize, data))
     tea_decipher(data, key)
     self.bufpos += padsize
-    obj = _marshal._FastUnmarshaller(struct.pack('<%dL' % intsize, *data))
+    obj = xmarshal._FastUnmarshaller(struct.pack('<%dL' % intsize, *data))
     code = obj.load_code()
-    return types.CodeType(code.co_argcount, code.co_nlocals, code.co_stacksize,
-                        code.co_flags, patch(code.co_code), code.co_consts,
-                        code.co_names, code.co_varnames, code.co_filename,
-                        code.co_name, code.co_firstlineno, code.co_lnotab,
-                        code.co_freevars, code.co_cellvars)
+    co_code = patch(code.co_code)
+    co_lnotab = bytes(code.co_lnotab, encoding='utf-8') if PYTHON3 else code.co_lnotab
+    return types.CodeType(code.co_argcount, code.co_nlocals, code.co_stacksize, code.co_flags,
+                          co_code, code.co_consts, code.co_names, code.co_varnames,
+                          code.co_filename, code.co_name, code.co_firstlineno, co_lnotab,
+                          code.co_freevars, code.co_cellvars)
 
 try:
     a = bytearray()
@@ -76,7 +95,10 @@ except:
         def __len__(self):
             return len(self.l)
 
-# automatically generated opcode substitution table
+# Automatically generated opcode substitution table for v1
+# A different dropbox table for v.2 table is at
+#   https://github.com/kholia/dedrop/blob/master/src/dedrop-v2/dedrop-v2.py
+# They are similar but not the same.
 table = {  0:   0,   1:  87,  2:  66,  4:  25,  6:  55,  7:  62,
            9:  71,  10:  79, 12:  21, 13:   4, 14:  72, 15:   1, 16: 30,
           17:  31,  18:  32, 19:  33, 22:  63,
@@ -133,14 +155,24 @@ def patch(code):
             i += 2
     return str(code)
 
-_marshal._FastUnmarshaller.dispatch[_marshal.TYPE_CODE] = load_code
+try: from __pypy__ import builtinify
+except ImportError: builtinify = lambda f: f
+
+@builtinify
+def loads(s):
+    """
+    xdis.marshal.load() but with its dispatch load_code() function replaced
+    with our decoding version.
+    """
+    um = xmarshal._FastUnmarshaller(s)
+    um.dispatch[xmarshal.TYPE_CODE] = load_code
+    return um.load()
 
 def fix_dropbox_pyc(fp, fixed_pyc='/tmp/test.pyc'):
     b = fp.read()
     fp.close()
-    data = _marshal.dumps(_marshal.loads(b[8:]))
-    open(fixed_pyc, "w").write(
-        "\xb3\xf2\r\n" + b[4:8] + data)
+    data = xmarshal.dumps(loads(b[8:]))
+    open(fixed_pyc, "w").write(int2magic(62131) + b[4:8] + data)
 
 def fix_dir(path):
     import os
@@ -151,14 +183,14 @@ def fix_dir(path):
             print("fixing", name)
             data = open(name).read()
             try:
-                c = _marshal.loads(data[8:])
+                c = xmarshal.loads(data[8:])
             except Exception as e:
                 print("error", e, repr(e))
                 # print repr(data[8:])
                 continue
             # fix the version indicator and save
             open(name, "w").write(
-                "\xb3\xf2\r\n" + data[4:8] + _marshal.dumps(c))
+                "\xb3\xf2\r\n" + data[4:8] + xmarshal.dumps(c))
 
 if __name__ == '__main__':
     import os, sys
@@ -193,7 +225,7 @@ if 0:
             if not os.path.exists(f2): continue
             print("loading", name)
             try:
-                c = _marshal.loads(open(name).read()[8:])
+                c = xmarshal.loads(open(name).read()[8:])
             except:
                 print("error", name)
                 continue
