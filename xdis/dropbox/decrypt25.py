@@ -44,7 +44,7 @@ def tea_decipher(v, key):
     y = v[0]
     while sum != 0:
         e = (sum >> 2) & 3
-        for p in xrange(n-1, -1, -1):
+        for p in range(n-1, -1, -1):
             z = v[(n+p-1)%n]
             v[p] = (v[p] - MX(z,y,sum,key,p,e)) & 0xffffffff
             y = v[p]
@@ -74,11 +74,17 @@ def load_code(self):
     obj = xmarshal._FastUnmarshaller(struct.pack('<%dL' % intsize, *data))
     code = obj.load_code()
     co_code = patch(code.co_code)
-    co_lnotab = bytes(code.co_lnotab, encoding='utf-8') if PYTHON3 else code.co_lnotab
-    return types.CodeType(code.co_argcount, code.co_nlocals, code.co_stacksize, code.co_flags,
-                          co_code, code.co_consts, code.co_names, code.co_varnames,
-                          code.co_filename, code.co_name, code.co_firstlineno, co_lnotab,
-                          code.co_freevars, code.co_cellvars)
+    if PYTHON3:
+        return types.CodeType(code.co_argcount, 0, code.co_nlocals, code.co_stacksize,
+                              code.co_flags,
+                              co_code, code.co_consts, code.co_names, code.co_varnames,
+                              code.co_filename, code.co_name, code.co_firstlineno,
+                              code.co_lnotab, code.co_freevars, code.co_cellvars)
+    else:
+        return types.CodeType(code.co_argcount, code.co_nlocals, code.co_stacksize, code.co_flags,
+                              co_code, code.co_consts, code.co_names, code.co_varnames,
+                              code.co_filename, code.co_name, code.co_firstlineno,
+                              code.co_lnotab, code.co_freevars, code.co_cellvars)
 
 try:
     a = bytearray()
@@ -153,7 +159,7 @@ def patch(code):
         i += 1
         if table.get(op,op) >= 90: #opcode.HAVE_ARGUMENT:
             i += 2
-    return str(code)
+    return bytes(code) if PYTHON3 else str(code)
 
 try: from __pypy__ import builtinify
 except ImportError: builtinify = lambda f: f
@@ -172,6 +178,7 @@ def fix_dropbox_pyc(fp, fixed_pyc='/tmp/test.pyc'):
     b = fp.read()
     fp.close()
     data = xmarshal.dumps(loads(b[8:]))
+
     open(fixed_pyc, "w").write(int2magic(62131) + b[4:8] + data)
 
 def fix_dir(path):

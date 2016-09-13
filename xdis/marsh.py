@@ -1,6 +1,11 @@
 """Internal Python object serialization
 
-This module contains functions that can read and write Python values in a binary format. The format is specific to Python, but independent of machine architecture issues (e.g., you can write a Python value to a file on a PC, transport the file to a Sun, and read it back there). Details of the format may change between Python versions.
+This module contains functions that can read and write Python values
+in a binary format. The format is specific to Python, but independent
+of machine architecture issues (e.g., you can write a Python value to
+a file on a PC, transport the file to a Sun, and read it back
+there). Details of the format may change between Python versions.
+
 """
 
 # NOTE: This module is used in the Python3 interpreter, but also by
@@ -8,7 +13,7 @@ This module contains functions that can read and write Python values in a binary
 
 import types, struct
 
-from xdis import PYTHON_VERSION
+from xdis import PYTHON_VERSION, PYTHON3
 try:
     intern
 except NameError:
@@ -16,6 +21,10 @@ except NameError:
 
 try: from __pypy__ import builtinify
 except ImportError: builtinify = lambda f: f
+
+@builtinify
+def Ord(c):
+    return c if PYTHON3 else ord(c)
 
 
 TYPE_NULL     = '0'
@@ -279,11 +288,11 @@ class _Unmarshaller:
         try:
             return self.dispatch[c](self)
         except KeyError:
-            raise ValueError("bad marshal code: %c (%d)" % (c, ord(c)))
+            raise ValueError("bad marshal code: %c (%d)" % (c, Ord(c)))
 
     def r_short(self):
-        lo = ord(self._read(1))
-        hi = ord(self._read(1))
+        lo = Ord(self._read(1))
+        hi = Ord(self._read(1))
         x = lo | (hi<<8)
         if x & 0x8000:
             x = x - 0x10000
@@ -291,10 +300,10 @@ class _Unmarshaller:
 
     def r_long(self):
         s = self._read(4)
-        a = ord(s[0])
-        b = ord(s[1])
-        c = ord(s[2])
-        d = ord(s[3])
+        a = Ord(s[0])
+        b = Ord(s[1])
+        c = Ord(s[2])
+        d = Ord(s[3])
         x = a | (b<<8) | (c<<16) | (d<<24)
         if d & 0x80 and x > 0:
             x = -((1<<32) - x)
@@ -303,14 +312,14 @@ class _Unmarshaller:
             return x
 
     def r_long64(self):
-        a = ord(self._read(1))
-        b = ord(self._read(1))
-        c = ord(self._read(1))
-        d = ord(self._read(1))
-        e = ord(self._read(1))
-        f = ord(self._read(1))
-        g = ord(self._read(1))
-        h = ord(self._read(1))
+        a = Ord(self._read(1))
+        b = Ord(self._read(1))
+        c = Ord(self._read(1))
+        d = Ord(self._read(1))
+        e = Ord(self._read(1))
+        f = Ord(self._read(1))
+        g = Ord(self._read(1))
+        h = Ord(self._read(1))
         x = a | (b<<8) | (c<<16) | (d<<24)
         x = x | (e<<32) | (f<<40) | (g<<48) | (h<<56)
         if h & 0x80 and x > 0:
@@ -359,7 +368,7 @@ class _Unmarshaller:
     dispatch[TYPE_LONG] = load_long
 
     def load_float(self):
-        n = ord(self._read(1))
+        n = Ord(self._read(1))
         s = self._read(n)
         return float(s)
     dispatch[TYPE_FLOAT] = load_float
@@ -370,10 +379,10 @@ class _Unmarshaller:
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
 
     def load_complex(self):
-        n = ord(self._read(1))
+        n = Ord(self._read(1))
         s = self._read(n)
         real = float(s)
-        n = ord(self._read(1))
+        n = Ord(self._read(1))
         s = self._read(n)
         imag = float(s)
         return complex(real, imag)
@@ -472,8 +481,8 @@ def _read1(self):
     return ret
 
 def _r_short(self):
-    lo = ord(_read1(self))
-    hi = ord(_read1(self))
+    lo = Ord(_read1(self))
+    hi = Ord(_read1(self))
     x = lo | (hi<<8)
     if x & 0x8000:
         x = x - 0x10000
@@ -483,10 +492,10 @@ def _r_long(self):
     # inlined this most common case
     p = self.bufpos
     s = self.bufstr
-    a = ord(s[p])
-    b = ord(s[p+1])
-    c = ord(s[p+2])
-    d = ord(s[p+3])
+    a = Ord(s[p])
+    b = Ord(s[p+1])
+    c = Ord(s[p+2])
+    d = Ord(s[p+3])
     self.bufpos += 4
     x = a | (b<<8) | (c<<16) | (d<<24)
     if d & 0x80 and x > 0:
@@ -496,14 +505,14 @@ def _r_long(self):
         return x
 
 def _r_long64(self):
-    a = ord(_read1(self))
-    b = ord(_read1(self))
-    c = ord(_read1(self))
-    d = ord(_read1(self))
-    e = ord(_read1(self))
-    f = ord(_read1(self))
-    g = ord(_read1(self))
-    h = ord(_read1(self))
+    a = Ord(_read1(self))
+    b = Ord(_read1(self))
+    c = Ord(_read1(self))
+    d = Ord(_read1(self))
+    e = Ord(_read1(self))
+    f = Ord(_read1(self))
+    g = Ord(_read1(self))
+    h = Ord(_read1(self))
     x = a | (b<<8) | (c<<16) | (d<<24)
     x = x | (e<<32) | (f<<40) | (g<<48) | (h<<56)
     if h & 0x80 and x > 0:
@@ -526,10 +535,12 @@ class _FastUnmarshaller:
         c = '?'
         try:
             c = self.bufstr[self.bufpos]
+            if PYTHON3:
+                c = chr(c)
             self.bufpos += 1
             return _load_dispatch[c](self)
         except KeyError:
-            raise ValueError("bad marshal code: %c (%d)" % (c, ord(c)))
+            raise ValueError("bad marshal code: %c (%d)" % (c, Ord(c)))
         except IndexError:
             raise EOFError
 
@@ -579,16 +590,16 @@ class _FastUnmarshaller:
     dispatch[TYPE_LONG] = load_long
 
     def load_float(self):
-        n = ord(_read1(self))
+        n = Ord(_read1(self))
         s = _read(self, n)
         return float(s)
     dispatch[TYPE_FLOAT] = load_float
 
     def load_complex(self):
-        n = ord(_read1(self))
+        n = Ord(_read1(self))
         s = _read(self, n)
         real = float(s)
-        n = ord(_read1(self))
+        n = Ord(_read1(self))
         s = _read(self, n)
         imag = float(s)
         return complex(real, imag)
@@ -601,7 +612,10 @@ class _FastUnmarshaller:
 
     def load_interned(self):
         n = _r_long(self)
-        ret = intern(_read(self, n))
+        s = _read(self, n)
+        if PYTHON3:
+            s = s.decode('utf8')
+        ret = intern(s)
         self._stringtable.append(ret)
         return ret
     dispatch[TYPE_INTERNED] = load_interned
@@ -656,9 +670,17 @@ class _FastUnmarshaller:
         name = self.load()
         firstlineno = _r_long(self)
         lnotab = self.load()
-        return types.CodeType(argcount, nlocals, stacksize, flags, code, consts,
-                              names, varnames, filename, name, firstlineno,
-                              lnotab, freevars, cellvars)
+        if PYTHON3:
+            if isinstance(name, bytes):
+                name = 'foo'
+
+            return types.CodeType(argcount, 0, nlocals, stacksize, flags, code, consts,
+                                  names, varnames, filename.decode(), name, firstlineno,
+                                  lnotab, freevars, cellvars)
+        else:
+            return types.CodeType(argcount, nlocals, stacksize, flags, code, consts,
+                                  names, varnames, filename, name, firstlineno,
+                                  lnotab, freevars, cellvars)
     dispatch[TYPE_CODE] = load_code
 
     def load_set(self):

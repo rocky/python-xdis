@@ -20,6 +20,7 @@ all: check
 
 # Run all tests, exluding those that need pyenv
 check: unittest
+	py.test
 	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
 	$(MAKE) -C test check
 
@@ -32,12 +33,16 @@ check-full: check
 	$(MAKE) -C test check-pyenv
 
 # Run all quick tests
-check-short: unittest
+check-short: unittest pytest
 	$(MAKE) -C test check-short
 
 #: Run py.test tests
 unittest:
-	$(python) ./setup.py nosetests
+	cd test_unit && python test-dis.py
+
+pytest:
+	py.test
+
 
 #: Clean up temporary files and .pyc files
 clean: clean_pyc

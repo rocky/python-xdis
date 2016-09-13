@@ -206,8 +206,8 @@ if __name__ == '__main__':
             pass
         pass
 
-    if 'TRAVIS' in os.environ and os.environ['TRAVIS'] and PYTHON_VERSION >= 3.5:
-        print("### Doesn't work on Travis and Python 3.5 or greater")
+    if PYTHON_VERSION >= 3.5:
+        print("### Doesn't work on Python 3.5 or greater")
         sys.exit(0)
 
     for src_dir, pattern, target_dir in test_dirs:
