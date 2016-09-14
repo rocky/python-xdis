@@ -30,7 +30,10 @@ from xdis.util import format_code_info
 def get_opcode(version, is_pypy):
     # Set up disassembler with the right opcodes
     # Is there a better way?
-    if version == 2.2:
+    if version == 2.1:
+        from xdis.opcodes import opcode_21
+        return opcode_21
+    elif version == 2.2:
         from xdis.opcodes import opcode_22
         return opcode_22
     elif version == 2.3:

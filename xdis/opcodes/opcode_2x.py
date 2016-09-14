@@ -8,8 +8,10 @@ opcodes in Python's opcode.py library.
 """
 
 # FIXME: DRY this along the lines of opcode_3x.
-from xdis.bytecode import _findlabels as findlabels
-from xdis.bytecode import _findlinestarts as findlinestarts
+import sys
+if sys.version_info[0:2] > (2,1):
+    from xdis.bytecode import _findlabels as findlabels
+    from xdis.bytecode import _findlinestarts as findlinestarts
 
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
