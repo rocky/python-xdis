@@ -112,18 +112,13 @@ def load_module(filename, code_objects={}, fast_load=False):
         raise ImportError("%s is interim Python %s (%d) bytecode which is not "
                           "supported.\nFinal released versions are supported." %
                           (filename, magics.versions[magic], magics.magic2int(magic)))
-    elif magic_int in (62135,) and PYTHON_VERSION < 3.0:
+    elif magic_int == 62135:
         fp.seek(0)
-        basename = os.path.basename(filename)[0:-4]
-        fixed_dropbox_path = tempfile.mkstemp(prefix=basename + '-',
-                                              suffix='.pyc', text=False)[1]
-        fix_dropbox_pyc(fp, fixed_dropbox_path)
-        fp = open(fixed_dropbox_path, 'rb')
-        magic = fp.read(4)
-    elif magic_int in (62215, 62135):
+        return fix_dropbox_pyc(fp)
+    elif magic_int == 62215:
         fp.close()
         raise ImportError("%s is a dropbox hacked Python %s (bytecode %d).\nSee "
-                          "https://itooktheredpill.irgendwo.org/2012/dropbox-decrypt/ "
+                          "https://github.com/kholia/dedrop"
                           "for how to decrypt." %
                           (filename, version, magics.magic2int(magic)))
 
@@ -131,7 +126,7 @@ def load_module(filename, code_objects={}, fast_load=False):
     ts = fp.read(4)
     timestamp = unpack("I", ts)[0]
     my_magic_int = magics.magic2int(imp.get_magic())
-    fixed_magic_int = magics.magic2int(magic)
+    magic_int = magics.magic2int(magic)
 
     # Note: a higher magic number doesn't necessarily mean a later
     # release.  At Python 3.0 the magic number decreased
@@ -146,14 +141,14 @@ def load_module(filename, code_objects={}, fast_load=False):
         bytecode = fp.read()
         co = marshal.loads(bytecode)
     elif fast_load:
-        co = xdis.marsh.load(fp, fixed_magic_int, code_objects)
+        co = xdis.marsh.load(fp, magic_int, code_objects)
     else:
-        co = xdis.unmarshal.load_code(fp, fixed_magic_int, code_objects)
+        co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
     pass
 
     fp.close()
 
-    return version, timestamp, magic_int, co, is_pypy(fixed_magic_int)
+    return version, timestamp, magic_int, co, is_pypy(magic_int)
 
 if __name__ == '__main__':
     co = load_file(__file__)

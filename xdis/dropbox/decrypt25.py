@@ -175,11 +175,12 @@ def loads(s):
     return um.load()
 
 def fix_dropbox_pyc(fp, fixed_pyc='/tmp/test.pyc'):
+    fp.read(4) # size mod 2**32
+    ts = fp.read(4)
+    timestamp = struct.unpack("I", ts)[0]
     b = fp.read()
-    fp.close()
-    data = xmarshal.dumps(loads(b[8:]))
-
-    open(fixed_pyc, "w").write(int2magic(62131) + b[4:8] + data)
+    co = loads(b)
+    return 2.5, timestamp, 62131, co, False
 
 def fix_dir(path):
     import os
