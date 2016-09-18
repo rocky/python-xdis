@@ -1,15 +1,10 @@
 """
-CPython core set of bytecode opcodes based on version 2.3
+CPython 1.5 bytecode opcodes
 
 This is used in bytecode disassembly. This is similar to the
-opcodes in Python's opcode.py library.
+opcodes in Python's dis.py library.
 """
-
-# FIXME: DRY this along the lines of opcode_3x.
-import sys
-if sys.version_info[0:2] > (2,1):
-    from xdis.bytecode import _findlabels as findlabels
-    from xdis.bytecode import _findlinestarts as findlinestarts
+"""Disassembler of Python byte code into mnemonics."""
 
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
@@ -29,142 +24,122 @@ opname = [''] * 256
 for op in range(256): opname[op] = '<%r>' % (op,)
 del op
 
-def _def_op(name, op):
+def def_op(name, op):
     opname[op] = name
     opmap[name] = op
 
 def compare_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     hascompare.append(op)
 
 def const_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     hasconst.append(op)
 
 def free_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     hasfree.append(op)
 
 def jabs_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     hasjabs.append(op)
 
 def jrel_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     hasjrel.append(op)
 
 def local_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     haslocal.append(op)
 
 def name_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     hasname.append(op)
 
 def nargs_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     hasnargs.append(op)
 
 def varargs_op(name, op):
-    _def_op(name, op)
+    def_op(name, op)
     hasvargs.append(op)
 
 
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
-_def_op('STOP_CODE', 0)
-_def_op('POP_TOP', 1)
-_def_op('ROT_TWO', 2)
-_def_op('ROT_THREE', 3)
-_def_op('DUP_TOP', 4)
-_def_op('ROT_FOUR', 5)
+def_op('STOP_CODE', 0)
+def_op('POP_TOP', 1)
+def_op('ROT_TWO', 2)
+def_op('ROT_THREE', 3)
+def_op('DUP_TOP', 4)
 
-_def_op('UNARY_POSITIVE', 10)
-_def_op('UNARY_NEGATIVE', 11)
-_def_op('UNARY_NOT', 12)
-_def_op('UNARY_CONVERT', 13)
+def_op('UNARY_POSITIVE', 10)
+def_op('UNARY_NEGATIVE', 11)
+def_op('UNARY_NOT', 12)
+def_op('UNARY_CONVERT', 13)
 
-_def_op('UNARY_INVERT', 15)
+def_op('UNARY_INVERT', 15)
 
-_def_op('BINARY_POWER', 19)
+def_op('BINARY_POWER', 19)
 
-_def_op('BINARY_MULTIPLY', 20)
-_def_op('BINARY_DIVIDE', 21)
-_def_op('BINARY_MODULO', 22)
-_def_op('BINARY_ADD', 23)
-_def_op('BINARY_SUBTRACT', 24)
-_def_op('BINARY_SUBSCR', 25)
-_def_op('BINARY_FLOOR_DIVIDE', 26)
-_def_op('BINARY_TRUE_DIVIDE', 27)
-_def_op('INPLACE_FLOOR_DIVIDE', 28)
-_def_op('INPLACE_TRUE_DIVIDE', 29)
+def_op('BINARY_MULTIPLY', 20)
+def_op('BINARY_DIVIDE', 21)
+def_op('BINARY_MODULO', 22)
+def_op('BINARY_ADD', 23)
+def_op('BINARY_SUBTRACT', 24)
+def_op('BINARY_SUBSCR', 25)
 
-_def_op('SLICE+0', 30)
-_def_op('SLICE+1', 31)
-_def_op('SLICE+2', 32)
-_def_op('SLICE+3', 33)
+def_op('SLICE+0', 30)
+def_op('SLICE+1', 31)
+def_op('SLICE+2', 32)
+def_op('SLICE+3', 33)
 
-_def_op('STORE_SLICE+0', 40)
-_def_op('STORE_SLICE+1', 41)
-_def_op('STORE_SLICE+2', 42)
-_def_op('STORE_SLICE+3', 43)
+def_op('STORE_SLICE+0', 40)
+def_op('STORE_SLICE+1', 41)
+def_op('STORE_SLICE+2', 42)
+def_op('STORE_SLICE+3', 43)
 
-_def_op('DELETE_SLICE+0', 50)
-_def_op('DELETE_SLICE+1', 51)
-_def_op('DELETE_SLICE+2', 52)
-_def_op('DELETE_SLICE+3', 53)
+def_op('DELETE_SLICE+0', 50)
+def_op('DELETE_SLICE+1', 51)
+def_op('DELETE_SLICE+2', 52)
+def_op('DELETE_SLICE+3', 53)
 
-_def_op('INPLACE_ADD', 55)
-_def_op('INPLACE_SUBTRACT', 56)
-_def_op('INPLACE_MULTIPLY', 57)
-_def_op('INPLACE_DIVIDE', 58)
-_def_op('INPLACE_MODULO', 59)
-_def_op('STORE_SUBSCR', 60)
-_def_op('DELETE_SUBSCR', 61)
+def_op('STORE_SUBSCR', 60)
+def_op('DELETE_SUBSCR', 61)
 
-_def_op('BINARY_LSHIFT', 62)
-_def_op('BINARY_RSHIFT', 63)
-_def_op('BINARY_AND', 64)
-_def_op('BINARY_XOR', 65)
-_def_op('BINARY_OR', 66)
-_def_op('INPLACE_POWER', 67)
-_def_op('GET_ITER', 68)
+def_op('BINARY_LSHIFT', 62)
+def_op('BINARY_RSHIFT', 63)
+def_op('BINARY_AND', 64)
+def_op('BINARY_XOR', 65)
+def_op('BINARY_OR', 66)
 
-_def_op('PRINT_EXPR', 70)
-_def_op('PRINT_ITEM', 71)
-_def_op('PRINT_NEWLINE', 72)
-_def_op('PRINT_ITEM_TO', 73)
-_def_op('PRINT_NEWLINE_TO', 74)
-_def_op('INPLACE_LSHIFT', 75)
-_def_op('INPLACE_RSHIFT', 76)
-_def_op('INPLACE_AND', 77)
-_def_op('INPLACE_XOR', 78)
-_def_op('INPLACE_OR', 79)
-_def_op('BREAK_LOOP', 80)
+def_op('PRINT_EXPR', 70)
+def_op('PRINT_ITEM', 71)
+def_op('PRINT_NEWLINE', 72)
 
-_def_op('LOAD_LOCALS', 82)
-_def_op('RETURN_VALUE', 83)
-_def_op('IMPORT_STAR', 84)
-_def_op('EXEC_STMT', 85)
-_def_op('YIELD_VALUE', 86)
+def_op('BREAK_LOOP', 80)
 
-_def_op('POP_BLOCK', 87)
-_def_op('END_FINALLY', 88)
-_def_op('BUILD_CLASS', 89)
+def_op('LOAD_LOCALS', 82)
+def_op('RETURN_VALUE', 83)
+
+def_op('EXEC_STMT', 85)
+
+def_op('POP_BLOCK', 87)
+def_op('END_FINALLY', 88)
+def_op('BUILD_CLASS', 89)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 name_op('STORE_NAME', 90)       # Index in name list
 name_op('DELETE_NAME', 91)      # ""
-varargs_op('UNPACK_SEQUENCE', 92)   # Number of tuple items
-jrel_op('FOR_ITER', 93)
-
+varargs_op('UNPACK_TUPLE', 92)   # Number of tuple items
+def_op('UNPACK_LIST', 93)	# Number of list items
 name_op('STORE_ATTR', 95)       # Index in name list
 name_op('DELETE_ATTR', 96)      # ""
 name_op('STORE_GLOBAL', 97)     # ""
 name_op('DELETE_GLOBAL', 98)    # ""
-_def_op('DUP_TOPX', 99)         # number of items to duplicate
+
 const_op('LOAD_CONST', 100)     # Index in const list
 name_op('LOAD_NAME', 101)       # Index in name list
 varargs_op('BUILD_TUPLE', 102)  # Number of tuple items
@@ -183,7 +158,6 @@ jabs_op('JUMP_ABSOLUTE', 113)   # Target byte offset from beginning of code
 
 name_op('LOAD_GLOBAL', 116)     # Index in name list
 
-jabs_op('CONTINUE_LOOP', 119)   # Target address
 jrel_op('SETUP_LOOP', 120)      # Distance to target address
 jrel_op('SETUP_EXCEPT', 121)    # ""
 jrel_op('SETUP_FINALLY', 122)   # ""
@@ -191,23 +165,14 @@ jrel_op('SETUP_FINALLY', 122)   # ""
 local_op('LOAD_FAST', 124)      # Local variable number
 local_op('STORE_FAST', 125)     # Local variable number
 local_op('DELETE_FAST', 126)    # Local variable number
+def_op('SET_LINENO', 127)	# Current line number
 
-_def_op('RAISE_VARARGS',  130)   # Number of raise arguments (1, 2, or 3)
+def_op('RAISE_VARARGS',  130)   # Number of raise arguments (1, 2, or 3)
 nargs_op('CALL_FUNCTION', 131)   # #args + (#kwargs << 8)
 
-_def_op('MAKE_FUNCTION', 132)    # Number of args with default values
+def_op('MAKE_FUNCTION', 132)    # Number of args with default values
 varargs_op('BUILD_SLICE', 133)   # Number of items
 
-_def_op('MAKE_CLOSURE', 134)
-free_op('LOAD_CLOSURE', 135)
-free_op('LOAD_DEREF', 136)
-free_op('STORE_DEREF', 137)
-
-nargs_op('CALL_FUNCTION_VAR', 140)     # #args + (#kwargs << 8)
-nargs_op('CALL_FUNCTION_KW', 141)      # #args + (#kwargs << 8)
-nargs_op('CALL_FUNCTION_VAR_KW', 142)  # #args + (#kwargs << 8)
-
-_def_op('EXTENDED_ARG', 143)
 EXTENDED_ARG = 143
 
 fields2copy = """cmp_op hasjabs""".split()
@@ -253,4 +218,4 @@ def dump_opcodes(opmap):
         print("%-3s %s" % (str(i), op2name[i]))
 
 # Remove some methods so no importers are tempted to use it.
-del _def_op, name_op, jrel_op, jabs_op
+del def_op, name_op, jrel_op, jabs_op

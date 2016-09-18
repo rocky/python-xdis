@@ -1,3 +1,16 @@
+2016-09-12  rocky <rocky@dusytfeet.com>
+
+	* NEWS, xdis/marsh.py, xdis/version.py: Get ready for release 2.3.1
+
+2016-09-11  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/dropbox/decrypt25.py, xdis/magics.py: Tydy a
+	bit
+
+2016-09-11  rocky <rb@dustyfeet.com>
+
+	* : Add dropbox 2.5 bytecode file
+
 2016-09-11  rocky <rocky@dusytfeet.com>
 
 	* xdis/version.py: Get ready for release 2.3.0

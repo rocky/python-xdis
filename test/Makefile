@@ -13,6 +13,7 @@ check: check-short
 	$(PYTHON) test_pythonlib.py \
 	          --bytecode-2.2 --bytecode-2.3 \
                   --bytecode-2.4 --bytecode-2.5 \
+		  --bytecode-2.5dropbox \
                   --bytecode-2.6 --bytecode-2.7 \
                   --bytecode-3.2 --bytecode-3.3 \
                   --bytecode-3.4 --bytecode-3.5 \
