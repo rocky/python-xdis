@@ -6,7 +6,6 @@
 from __future__ import print_function
 import sys, os, getopt
 
-import xdis
 from xdis.version import VERSION
 from xdis import PYTHON_VERSION
 from xdis.main import disassemble_file
@@ -15,19 +14,19 @@ program, ext = os.path.splitext(os.path.basename(__file__))
 
 __doc__ = """
 Usage:
-  %s [OPTIONS]... FILE
-  %s [--help | -h | -V | --version]
+  pydisasm [OPTIONS]... FILE
+  pydisasm [--help | -h | -V | --version]
 
 Examples:
-  {0} foo.pyc
-  {0} foo.py    # same thing as above but find the file
-  {0} foo.pyc bar.pyc  # disassemble foo.pyc and bar.pyc
+  pydisasm foo.pyc
+  pydisasm foo.py    # same thing as above but find the file
+  pydisasm foo.pyc bar.pyc  # disassemble foo.pyc and bar.pyc
 
 Options:
   -V | --version     show version and stop
   -h | --help        show this message
 
-""".format(program)
+"""
 
 PATTERNS = ('*.pyc', '*.pyo')
 
