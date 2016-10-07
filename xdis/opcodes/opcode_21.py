@@ -14,7 +14,6 @@ if sys.version_info[0:2] > (2,1):
     import xdis.opcodes.opcode_2x as opcode_2x
     from xdis.opcodes.opcode_2x import findlabels, findlinestarts
     from xdis.opcodes.opcode_2x import def_op
-    from opcode_2x import findlabels, findlinestarts
 else:
     import opcode_2x
     from opcode_2x import def_op
@@ -67,7 +66,7 @@ def updateGlobal():
 
     globals().update({'JUMP_OPs': map(lambda op: opcode_2x.opname[op],
                                           opcode_2x.hasjrel + opcode_2x.hasjabs)})
-    # globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opcode_2x.opmap.items()]))
+    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opcode_2x.opmap.items()]))
     return
 
 updateGlobal()
