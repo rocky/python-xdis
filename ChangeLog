@@ -1,3 +1,62 @@
+2016-10-06  rocky <rb@dustyfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 2.3.3
+
+2016-10-06  rocky <rb@dustyfeet.com>
+
+	* : commit 9164530badf889087860685c7b8474a17acbbf83 Author: rocky
+	<rb@dustyfeet.com> Date:   Thu Oct 6 20:38:01 2016 -0400
+
+2016-09-23  rocky <rocky@dusytfeet.com>
+
+	* : commit aeb60a26427b2ae98c320b38633dcf0b92c035ed Author: rocky
+	<rocky@dusytfeet.com> Date:   Fri Sep 23 18:43:07 2016 -0400
+
+2016-09-21  rocky <rb@dustyfeet.com>
+
+	* xdis/bin/pydisassemble.py: Correct name in --help
+
+2016-09-18  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, test/Makefile, test/test_pythonlib.py, xdis/load.py,
+	xdis/main.py, xdis/opcodes/opcode_15.py, xdis/opcodes/opcode_20.py,
+	xdis/opcodes/opcode_2x.py: Start adding Python 1.5 and 2.0 opcodes
+
+2016-09-14  rocky <rb@dustyfeet.com>
+
+	* test/test_pyenvlib.py, xdis/load.py, xdis/main.py,
+	xdis/opcodes/opcode_21.py, xdis/opcodes/opcode_2x.py: Add Python 2.1
+	opcodes
+
+2016-09-14  rocky <rb@dustyfeet.com>
+
+	* xdis/dropbox/decrypt25.py, xdis/load.py: Disassemble dropbox 2.5
+	Python from Python 3.x No longer write and a read temporary bytecode file, so this works on
+	Python 3 and 2. Code is simpler too.
+
+2016-09-13  rocky <rb@dustyfeet.com>
+
+	* .travis.yml: travis 3.2 pytest doesn't work
+
+2016-09-13  rocky <rb@dustyfeet.com>
+
+	* pytest/test_disasm.py: Avoid timestamp in pytest
+
+2016-09-12  rocky <rb@dustyfeet.com>
+
+	* Makefile, test/test_pyenvlib.py,
+	test_unit/2.7/test_dis.py-notyet, test_unit/test-dis.py,
+	test_unit/test_dis.py-notyet, test_unit/test_disasm.py-nottyet,
+	test_unit/test_disasm.py-notyet, xdis/dropbox/decrypt25.py,
+	xdis/marsh.py: Python 3 compliance and tests Python 3 compliance in marsh.py and decrypt25.py, but more work is
+	needed.  Add more tests, however fragmented
+
+2016-09-12  rocky <rb@dustyfeet.com>
+
+	* xdis/dropbox/decrypt25.py: Clean up, generalize an integrate into
+	xdis better Another round is needed to get this to run on Python 3.  Should
+	don't need and should remove the write and read of a temporary file.
+
 2016-09-12  rocky <rocky@dusytfeet.com>
 
 	* NEWS, xdis/marsh.py, xdis/version.py: Get ready for release 2.3.1
