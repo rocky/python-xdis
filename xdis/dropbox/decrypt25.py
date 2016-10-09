@@ -11,7 +11,6 @@ import types
 import struct
 
 from xdis import PYTHON3
-from xdis.magics import int2magic
 import xdis.marsh as xmarshal
 
 def rng(a, b):
@@ -175,12 +174,12 @@ def loads(s):
     return um.load()
 
 def fix_dropbox_pyc(fp, fixed_pyc='/tmp/test.pyc'):
-    fp.read(4) # size mod 2**32
+    source_size = struct.unpack("I", fp.read(4))[0] # size mod 2**32
     ts = fp.read(4)
     timestamp = struct.unpack("I", ts)[0]
     b = fp.read()
     co = loads(b)
-    return 2.5, timestamp, 62131, co, False
+    return 2.5, timestamp, 62131, co, False, source_size
 
 def fix_dir(path):
     import os

@@ -13,12 +13,15 @@ class TestLoad(unittest.TestCase):
         co = load_file(filename)
         obj_path = check_object_path(__file__)
         if os.path.exists(obj_path):
-            version, timestamp, magic_int, co2, is_pypy = load_module(obj_path)
+            (version, timestamp, magic_int, co2, is_pypy,
+             source_size) = load_module(obj_path)
             self.assertEqual(sys.version[0:3], str(version))
             if IS_PYPY:
                 self.assertTrue("Skipped until we get better code comparison on PYPY")
             else:
-                self.assertEqual(co, co2)
+                for attr in """co_filename co_names co_flags co_argcount
+                             co_varnames""".split():
+                    self.assertEqual(getattr(co, attr), getattr(co2, attr), attr)
         else:
             self.assertTrue("Skipped because we can't find %s" % obj_path)
 

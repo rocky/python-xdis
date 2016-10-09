@@ -135,7 +135,9 @@ def load_module(filename, code_objects={}, fast_load=False):
     # release. Hence the test on the magic value rather than
     # PYTHON_VERSION, although PYTHON_VERSION would probably work.
     if 3200 <= magic_int < 20121:
-        fp.read(4) # size mod 2**32
+       source_size = unpack("I", fp.read(4))[0] # size mod 2**32
+    else:
+       source_size = None
 
     if my_magic_int == magic_int:
         bytecode = fp.read()
@@ -148,14 +150,16 @@ def load_module(filename, code_objects={}, fast_load=False):
 
     fp.close()
 
-    return version, timestamp, magic_int, co, is_pypy(magic_int)
+    return version, timestamp, magic_int, co, is_pypy(magic_int), source_size
 
 if __name__ == '__main__':
     co = load_file(__file__)
     obj_path = check_object_path(__file__)
-    version, timestamp, magic_int, co2, pypy = load_module(obj_path)
+    version, timestamp, magic_int, co2, pypy, source_size = load_module(obj_path)
     print("version", version, "magic int", magic_int, 'is_pypy', pypy)
     import datetime
     print(datetime.datetime.fromtimestamp(timestamp))
+    if source_size:
+        print("source size mod 2**32: %d" % source_size)
     if version < 3.5:
         assert co == co2
