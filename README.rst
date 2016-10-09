@@ -17,7 +17,7 @@ That's what this package is for. It can marshal load Python bytecodes
 from different versions of Python. The command-line routine
 *pydisasm* will show disassembly output using Python 3.5 disassembly conventions
 
-It accepts bytecodes from Python version 2.2 to 3.6 or so. The code
+It accepts bytecodes from Python version 1.5 to 3.6 or so. The code
 requires Python 2.5 or later and has been tested on Python running
 versions 2.6, 2.7, pypy-5.0.1, 3.2, 3.3, 3.4, 3.5 and 3.6.
 
