@@ -251,6 +251,3 @@ def dump_opcodes(opmap):
         op2name[opmap[k]] = k
     for i in sorted(op2name.keys()):
         print("%-3s %s" % (str(i), op2name[i]))
-
-# Remove some methods so no importers are tempted to use it.
-del _def_op, name_op, jrel_op, jabs_op

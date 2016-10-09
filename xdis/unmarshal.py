@@ -77,7 +77,8 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     v13_to_23 = magic_int in (20121, 50428, 50823, 60202, 60717)
 
     # Python [1.5 .. 2.3)
-    v15_to_23 = magic_int in (20121, 50428, 50823, 60202, 60717)
+    v15_to_22 = magic_int in (20121, 50428, 50823, 60202, 60717)
+    v15_to_20 = magic_int in (20121, 50428, 50823)
 
     if v13_to_23:
         co_argcount = unpack('h', fp.read(2))[0]
@@ -94,7 +95,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_nlocals = unpack('i', fp.read(4))[0]
 
-    if v15_to_23:
+    if v15_to_22:
         co_stacksize = unpack('h', fp.read(2))[0]
     else:
         co_stacksize = unpack('i', fp.read(4))[0]
@@ -109,8 +110,14 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
 
     co_consts = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_names = load_code_internal(fp, magic_int, code_objects=code_objects)
-    co_varnames = load_code_internal(fp, magic_int, code_objects=code_objects)
-    co_freevars = load_code_internal(fp, magic_int, code_objects=code_objects)
+
+    if v15_to_20:
+        co_varnames = tuple()
+        co_freevars = tuple()
+    else:
+        co_varnames = load_code_internal(fp, magic_int, code_objects=code_objects)
+        co_freevars = load_code_internal(fp, magic_int, code_objects=code_objects)
+
     co_cellvars = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_filename = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_name = load_code_internal(fp, magic_int)
@@ -131,10 +138,18 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
         if PYTHON_MAGIC_INT > 3020:
             # In later Python3 magic_ints, there is a
             # kwonlyargcount parameter which we set to 0.
-            code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                        co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                        co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                        co_freevars, co_cellvars)
+            if v15_to_20:
+                # Using variables for co_freevars causes a SEGV!
+                code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
+                            co_code, co_consts, co_names, co_varnames, co_filename, co_name,
+                            co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
+                            (), co_varnames)
+            else:
+                code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
+                            co_code, co_consts, co_names, co_varnames, co_filename, co_name,
+                            co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
+                            co_freevars, co_cellvars)
+
         else:
             code =  Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
                         co_code, co_consts, co_names, co_varnames, co_filename, co_name,

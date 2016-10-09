@@ -4,7 +4,9 @@ CPython 1.5 bytecode opcodes
 This is used in bytecode disassembly. This is similar to the
 opcodes in Python's dis.py library.
 """
-"""Disassembler of Python byte code into mnemonics."""
+
+from xdis.bytecode import _findlabels as findlabels
+from xdis.bytecode import _findlinestarts as findlinestarts
 
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
@@ -133,7 +135,7 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 name_op('STORE_NAME', 90)       # Index in name list
 name_op('DELETE_NAME', 91)      # ""
-varargs_op('UNPACK_TUPLE', 92)   # Number of tuple items
+varargs_op('UNPACK_TUPLE', 92)  # Number of tuple items
 def_op('UNPACK_LIST', 93)	# Number of list items
 name_op('STORE_ATTR', 95)       # Index in name list
 name_op('DELETE_ATTR', 96)      # ""
@@ -209,6 +211,19 @@ def rm_op(name, op, l):
     assert l['opmap'][name] == op
     del l['opmap'][name]
 
+def updateGlobal():
+    globals().update({'python_version': 1.5})
+    # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
+    globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
+    globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
+
+    globals().update({'JUMP_OPs': map(lambda op: opname[op],
+                                      hasjrel + hasjabs)})
+    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
+    return
+
+updateGlobal()
+
 def dump_opcodes(opmap):
     """Utility for dumping opcodes"""
     op2name = {}
@@ -216,6 +231,3 @@ def dump_opcodes(opmap):
         op2name[opmap[k]] = k
     for i in sorted(op2name.keys()):
         print("%-3s %s" % (str(i), op2name[i]))
-
-# Remove some methods so no importers are tempted to use it.
-del def_op, name_op, jrel_op, jabs_op

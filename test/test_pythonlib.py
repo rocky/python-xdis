@@ -71,9 +71,9 @@ test_options = {
                   PYOC, 'base_2.7', 2.7),
 }
 
-for  vers in (2.2, 2.3, 2.4, 2.5, '2.5dropbox', 2.6, 2.7,
-              3.2, 3.3, 3.4, 3.5, 'pypy3.2', 'pypy2.7',
-              3.6):
+for vers in (1.5, 2.2, 2.3, 2.4, 2.5, '2.5dropbox', 2.6, 2.7,
+             3.2, 3.3, 3.4, 3.5, 'pypy3.2', 'pypy2.7',
+             3.6):
     bytecode = "bytecode_%s" % vers
     key = "bytecode-%s" % vers
     test_options[key] =  (bytecode, PYC, bytecode, vers)
