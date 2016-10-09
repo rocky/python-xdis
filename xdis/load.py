@@ -67,9 +67,9 @@ def load_file(filename):
     fp.close()
     return co
 
-def load_module(filename, code_objects={}, fast_load=False):
-    """
-    load a module without importing it.
+def load_module(filename, code_objects={}, fast_load=False,
+                get_code=True):
+    """load a module without importing it.
     load_module(filename: string): version, magic_int, code_object
 
     filename:	name of file containing Python byte-code object
@@ -79,6 +79,10 @@ def load_module(filename, code_objects={}, fast_load=False):
     version: Python major/minor value e.g. 2.7. or 3.4
     magic_int: more specific than version. The actual byte code version of the
                code object
+
+    Parsing the  code object takes a bit of parsing time, but
+    sometimes all you want is the module info, time string, code size,
+    python version, etc. For that, set get_code=False.
     """
 
     timestamp = 0
@@ -134,14 +138,17 @@ def load_module(filename, code_objects={}, fast_load=False):
     else:
        source_size = None
 
-    if my_magic_int == magic_int:
-        bytecode = fp.read()
-        co = marshal.loads(bytecode)
-    elif fast_load:
-        co = xdis.marsh.load(fp, magic_int, code_objects)
+    if get_code:
+        if my_magic_int == magic_int:
+            bytecode = fp.read()
+            co = marshal.loads(bytecode)
+        elif fast_load:
+            co = xdis.marsh.load(fp, magic_int, code_objects)
+        else:
+            co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
+        pass
     else:
-        co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
-    pass
+        co = None
 
     fp.close()
 
