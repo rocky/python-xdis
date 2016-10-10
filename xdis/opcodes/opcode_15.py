@@ -5,8 +5,8 @@ This is used in bytecode disassembly. This is similar to the
 opcodes in Python's dis.py library.
 """
 
-from xdis.bytecode import _findlabels as findlabels
-from xdis.bytecode import _findlinestarts as findlinestarts
+# These are used from outside this module
+from xdis.bytecode import findlabels, findlinestarts
 
 # FIXME: can we DRY this even more?
 

@@ -10,7 +10,7 @@ parsing and semantic interpretation.
 from copy import deepcopy
 
 # These are used from outside this module
-from xdis.opcodes.opcode_3x import findlabels, findlinestarts
+from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.opcode_3x import fields2copy

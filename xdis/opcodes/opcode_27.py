@@ -8,7 +8,7 @@ opcodes in Python's opcode.py library.
 from copy import deepcopy
 
 # These are used from outside this module
-from xdis.opcodes.opcode_2x import findlabels, findlinestarts
+from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.opcode_2x import def_op, rm_op

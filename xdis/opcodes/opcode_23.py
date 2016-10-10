@@ -8,10 +8,10 @@ opcodes in Python's dis.py library.
 
 from copy import deepcopy
 
-import xdis.opcodes.opcode_2x as opcode_2x
+# These are used from outside this module
+from xdis.bytecode import findlinestarts, findlabels
 
-# findlinestarts is used externally
-from xdis.opcodes.opcode_2x import findlabels, findlinestarts
+import xdis.opcodes.opcode_2x as opcode_2x
 
 # FIXME: can we DRY this even more?
 

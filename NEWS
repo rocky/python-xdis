@@ -1,7 +1,11 @@
+3.0.1 2016-10-09
+
+- botched classification of FOR_LOOP in Python 1.5
+
 3.0.0 2016-10-09
 
 - load_module returns source-code size now.
-  This is incompatible with previous (2.x) vrseions
+  This is incompatible with previous (2.x) versions
 
 - add parameter in load_module to omit parsing code,
   just other info (source-code-size, timestamp, magic, etc)
