@@ -27,7 +27,7 @@ def _unpack_opargs(code, opc):
         yield (offset, op, arg)
 
 
-def _findlinestarts(code):
+def findlinestarts(code):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
@@ -57,7 +57,7 @@ def _findlinestarts(code):
         yield (addr, lineno)
 
 
-def _findlabels(code, opc):
+def findlabels(code, opc):
     """Detect all offsets in a byte code which are jump targets.
 
     Return the list of offsets.

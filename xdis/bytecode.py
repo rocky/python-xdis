@@ -33,7 +33,7 @@ def pretty_format_value_flags(flags):
         # empty fmt_spec.
         return ''
 
-def _findlinestarts(code):
+def findlinestarts(code):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
@@ -59,8 +59,20 @@ def _findlinestarts(code):
     if lineno != lastlineno:
         yield (addr, lineno)
 
+def offset2line(offset, linestarts):
+    low = 0
+    high = len(linestarts)-1
+    while low <= high:
+        mid = (low + high + 1) // 2
+        if linestarts[mid] >= offset:
+            high = mid - 1
+        if linestarts[mid] <= offset:
+            low = mid + 1
+            pass
+        pass
+    return linestarts[mid]
 
-def _findlabels(code, opc):
+def findlabels(code, opc):
     """Detect all offsets in a byte code which are jump targets.
 
     Return the list of offsets.
@@ -128,7 +140,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     arguments.
 
     """
-    labels = opc.findlabels(code, opc)
+    labels = findlabels(code, opc)
     extended_arg = 0
 
     # FIXME: We really need to distingus 3.6.0a1 from 3.6.a3.

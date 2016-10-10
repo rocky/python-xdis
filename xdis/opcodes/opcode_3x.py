@@ -3,9 +3,6 @@ CPython 3.2 bytecode opcodes to be used as a base for other opcodes including 3.
 If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
-from xdis.bytecode import _findlabels as findlabels
-from xdis.bytecode import _findlinestarts as findlinestarts
-
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 
@@ -212,9 +209,6 @@ EXTENDED_ARG = 144
 
 fields2copy = """cmp_op hasconst hasname hasjrel hasjabs haslocal hascompare hasfree hasnargs
 opmap opname HAVE_ARGUMENT EXTENDED_ARG""".split()
-
-# Remove _def_op no importers are tempted to use it.
-del _def_op
 
 def def_op(opname, opmap, name, op):
     opname[op] = name

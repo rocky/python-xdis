@@ -10,13 +10,11 @@ from copy import deepcopy
 
 import sys
 
-if sys.version_info[0:2] > (2,1):
-    import xdis.opcodes.opcode_2x as opcode_2x
-    from xdis.opcodes.opcode_2x import findlabels, findlinestarts
-    from xdis.opcodes.opcode_2x import def_op
-else:
-    import opcode_2x
-    from opcode_2x import def_op
+# These are used from outside this module
+from xdis.bytecode import findlinestarts, findlabels
+
+import xdis.opcodes.opcode_2x as opcode_2x
+from xdis.opcodes.opcode_2x import def_op
 
 # FIXME: can we DRY this even more?
 
