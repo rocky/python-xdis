@@ -8,6 +8,10 @@ opcodes in Python's dis.py library.
 from xdis.bytecode import _findlabels as findlabels
 from xdis.bytecode import _findlinestarts as findlinestarts
 
+# FIXME: can we DRY this even more?
+
+hasArgumentExtended = []
+
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 
@@ -157,6 +161,7 @@ jrel_op('JUMP_FORWARD', 110)    # Number of bytes to skip
 jrel_op('JUMP_IF_FALSE', 111)   # ""
 jrel_op('JUMP_IF_TRUE', 112)    # ""
 jabs_op('JUMP_ABSOLUTE', 113)   # Target byte offset from beginning of code
+jrel_op('FOR_LOOP', 114)	# Number of bytes to skip
 
 name_op('LOAD_GLOBAL', 116)     # Index in name list
 

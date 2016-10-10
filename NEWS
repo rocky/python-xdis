@@ -1,4 +1,20 @@
+3.0.0 2016-10-09
+
+- load_module returns source-code size now.
+  This is incompatible with previous (2.x) vrseions
+
+- add parameter in load_module to omit parsing code,
+  just other info (source-code-size, timestamp, magic, etc)
+
+- Disassemble 1.5 bytecodes and test
+
+- fix some Python 1.5 and 2.0 bytecode bugs
+
 2.3.2 2016-10-06
+
+- Start adding Python 1.5 and 2.0, and 2.1 opcodes
+- Disassemble dropbox 2.5
+- correct pydisasm name in --help
 
 2.3.1 2016-09-11
 

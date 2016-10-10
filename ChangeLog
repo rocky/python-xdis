@@ -1,6 +1,35 @@
+2016-10-10  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_15.py, xdis/version.py: Get ready for release
+	3.0.0 ...  and fix opcode 1.5 bugs
+
+2016-10-09  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_20.py: Small 2.0 opcode fixes
+
+2016-10-09  rocky <rocky@dusytfeet.com>
+
+	* xdis/load.py: Add option to get module object info sans code
+
+2016-10-09  rocky <rocky@dusytfeet.com>
+
+	* README.rst: Update doc to mention 1.5 opcodes
+
+2016-10-09  rocky <rocky@dusytfeet.com>
+
+	* test/Makefile, test/test_pythonlib.py, xdis/load.py,
+	xdis/opcodes/opcode_15.py, xdis/opcodes/opcode_2x.py,
+	xdis/unmarshal.py: Disassemble 1.5 bytecodes and test
+
+2016-10-09  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_disasm.py, test_unit/test_load.py,
+	test_unit/test_marsh.py, xdis/dropbox/decrypt25.py, xdis/load.py,
+	xdis/main.py, xdis/verify.py: Show source code size mod 2**32 ..  when it is available in bytecode
+
 2016-10-06  rocky <rb@dustyfeet.com>
 
-	* ChangeLog, NEWS, xdis/version.py: Get ready for release 2.3.3
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 2.3.2
 
 2016-10-06  rocky <rb@dustyfeet.com>
 
