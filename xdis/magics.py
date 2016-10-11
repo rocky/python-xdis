@@ -24,6 +24,9 @@ versions = {
     # taken from from Python/import.c
     # or importlib/_bootstrap.py
     # magic, version
+    int2magic(11913): '1.3', #
+    int2magic(5892):  '1.4', #
+    int2magic(20121): '1.5', # 1.5, 1.5.1, 1.5.2
     int2magic(20121): '1.5', # 1.5, 1.5.1, 1.5.2
     int2magic(50428): '1.6', # 1.6
     int2magic(50823): '2.0', # 2.0, 2.0.1
