@@ -1,3 +1,15 @@
+2016-10-11  rocky <rb@dustyfeet.com>
+
+	* xdis/version.py: Get ready for release 3.0.2
+
+2016-10-11  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py, xdis/unmarshal.py: Add 1.3 and 1.4 magics and ..  fix Python 1.5 unmarshaling bugs
+
+2016-10-10  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS: Adminstrivia
+
 2016-10-10  rocky <rocky@dusytfeet.com>
 
 	* xdis/opcodes/opcode_15.py, xdis/version.py: Get ready for release
@@ -124,7 +136,7 @@
 
 2016-08-26  rocky <rocky@dusytfeet.com>
 
-	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py: 
+	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py:
 	Python 3.1 opcode bugs ...  verify assert statement.  test_pyenvlib.py: Allow 3.1 testing
 
 2016-08-26  rocky <rocky@dusytfeet.com>
@@ -258,7 +270,7 @@
 
 2016-07-25  rocky <rocky@dusytfeet.com>
 
-	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py: 
+	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py:
 	Document PyPY opts better And fix a bog in JUMP_IF_NOT_DEBUG jrel_op call
 
 2016-07-24  rocky <rocky@dusytfeet.com>
@@ -328,7 +340,7 @@
 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py,
 	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy26.py,
-	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py: 
+	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py:
 	Moagstar's Python 3.6 support With some small changes - fix some of my typos - handle a merge conflict in xdis/byteocde
 
 2016-07-20  rocky <rocky@dusytfeet.com>
@@ -537,7 +549,7 @@
 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py,
 	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
-	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py: 
+	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py:
 	pyxdis -> xdis
 
 2016-05-25  rocky <rocky@dusytfeet.com>
@@ -597,12 +609,12 @@
 
 	* .gitignore, pyxdis/main.py, pyxdis/opcodes/opcode_26.py,
 	pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_pypy27.py,
-	test/simple_source/05_24_float.py, test_unit/test_opcode.py: 
+	test/simple_source/05_24_float.py, test_unit/test_opcode.py:
 	Separate PYPY 2.7 from 2.7; DRY 27
 
 2016-05-22  rocky <rocky@dusytfeet.com>
 
-	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py: 
+	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py:
 	Some tolerance for pypy
 
 2016-05-22  rocky <rocky@dusytfeet.com>
@@ -625,7 +637,7 @@
 	* pyxdis/__init__.py, pyxdis/load.py, pyxdis/main.py,
 	pyxdis/marsh.py, pyxdis/opcodes/opcode_23.py,
 	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
-	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py: 
+	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py:
 	Allow bytecodes back to 2.3 or so. and...  Add timestamps when disassembly Rewrite to allow some tolerance to
 	older Pythons
 
@@ -708,7 +720,7 @@
 
 2016-05-19  rocky <rb@dustyfeet.com>
 
-	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py: 
+	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py:
 	More opcodes, more travis testing.
 
 2016-05-19  rocky <rb@dustyfeet.com>
@@ -729,4 +741,3 @@
 2016-05-19  rocky <rocky@dusytfeet.com>
 
 	* Start Python cross disasemble/marshal project For older history see uncompyle6
-
