@@ -72,15 +72,16 @@ def load_code(fp, magic_int, code_objects={}):
     return load_code_internal(fp, magic_int, code_objects=code_objects)
 
 def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
-    # Python [1.3 .. 2.3)
+    # Python [1.3 .. 2.2)
     # FIXME: find out what magics were for 1.3
-    v13_to_23 = magic_int in (20121, 50428, 50823, 60202, 60717)
+    v13_to_22 = magic_int in (11913, 5892, 20121, 50428, 50823, 60202, 60717)
 
-    # Python [1.5 .. 2.3)
+    # Python [1.5 .. 2.2)
     v15_to_22 = magic_int in (20121, 50428, 50823, 60202, 60717)
     v15_to_20 = magic_int in (20121, 50428, 50823)
+    v13_to_20 = magic_int in (11913, 5892, 20121, 50428, 50823)
 
-    if v13_to_23:
+    if v13_to_22:
         co_argcount = unpack('h', fp.read(2))[0]
     else:
         co_argcount = unpack('i', fp.read(4))[0]
@@ -90,7 +91,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         kwonlyargcount = 0
 
-    if v13_to_23:
+    if v13_to_22:
         co_nlocals = unpack('h', fp.read(2))[0]
     else:
         co_nlocals = unpack('i', fp.read(4))[0]
@@ -100,33 +101,35 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_stacksize = unpack('i', fp.read(4))[0]
 
-    if v13_to_23:
+    if v13_to_22:
         co_flags = unpack('h', fp.read(2))[0]
     else:
         co_flags = unpack('i', fp.read(4))[0]
 
     co_code = load_code_internal(fp, magic_int, bytes_for_s=True,
                                  code_objects=code_objects)
-
     co_consts = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_names = load_code_internal(fp, magic_int, code_objects=code_objects)
 
-    if v15_to_20:
-        co_varnames = tuple()
-        co_freevars = tuple()
-    else:
-        co_varnames = load_code_internal(fp, magic_int, code_objects=code_objects)
-        co_freevars = load_code_internal(fp, magic_int, code_objects=code_objects)
+    # FIXME: only if >= 1.3
+    co_varnames = load_code_internal(fp, magic_int, code_objects=code_objects)
 
-    co_cellvars = load_code_internal(fp, magic_int, code_objects=code_objects)
+    if not v13_to_20:
+        co_freevars = load_code_internal(fp, magic_int, code_objects=code_objects)
+        co_cellvars = load_code_internal(fp, magic_int, code_objects=code_objects)
+    else:
+        co_freevars = tuple()
+        co_cellvars = tuple()
+
     co_filename = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_name = load_code_internal(fp, magic_int)
 
-    if v13_to_23:
+    if v15_to_22:
         co_firstlineno = unpack('h', fp.read(2))[0]
     else:
         co_firstlineno = unpack('i', fp.read(4))[0]
 
+    # FIXME: only if >= 1.5
     co_lnotab = load_code_internal(fp, magic_int, code_objects=code_objects)
 
     # The Python3 code object is different than Python2's which
@@ -139,11 +142,10 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
             # In later Python3 magic_ints, there is a
             # kwonlyargcount parameter which we set to 0.
             if v15_to_20:
-                # Using variables for co_freevars causes a SEGV!
                 code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
                             co_code, co_consts, co_names, co_varnames, co_filename, co_name,
                             co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                            (), co_varnames)
+                            co_freevars, co_cellvars)
             else:
                 code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
                             co_code, co_consts, co_names, co_varnames, co_filename, co_name,
