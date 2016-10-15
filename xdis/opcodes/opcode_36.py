@@ -11,8 +11,7 @@ parsing and semantic interpretation.
 from copy import deepcopy
 
 # These are used from outside this module
-from xdis.wordcode import _findlabels as findlabels
-from xdis.wordcode import _findlinestarts as findlinestarts
+from xdis.wordcode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.opcode_3x import fields2copy, rm_op
