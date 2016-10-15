@@ -35,8 +35,7 @@ entry_points={
         'pydisasm=xdis.bin.pydisassemble:main',
     ]}
 ftp_url            = None
-install_requires   = ['six >= 1.10.0',
-                      'xdis >= 1.0.5']
+install_requires   = ['six >= 1.10.0']
 license            = 'MIT'
 mailing_list       = 'python-debugger@googlegroups.com'
 modname            = 'xdis'
