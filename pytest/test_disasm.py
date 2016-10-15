@@ -29,7 +29,7 @@ def test_funcoutput(capfd, test_tuple, function_to_test):
     resout = StringIO()
     function_to_test(in_file, resout)
     expected = "".join(open(filename_expected, "r").readlines()[1:])
-    got = "\n".join(resout.getvalue().split("\n")[3:])
+    got = "\n".join(resout.getvalue().split("\n")[4:])
     if got != expected:
         with open(filename_expected + ".got", "w") as out:
             out.write(got)

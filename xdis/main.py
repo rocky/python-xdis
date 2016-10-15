@@ -26,6 +26,7 @@ from xdis.bytecode import Bytecode
 from xdis.code import iscode
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
+from xdis.version import VERSION
 
 def get_opcode(version, is_pypy):
     # Set up disassembler with the right opcodes
@@ -97,7 +98,7 @@ def get_opcode(version, is_pypy):
                 return opcode_36
     raise TypeError("%s is not a Python version I know about" % version)
 
-def disco(version, co, timestamp, out=sys.stdout,
+def disco(bytecode_version, co, timestamp, out=sys.stdout,
           is_pypy=False, magic_int=None, source_size=None):
     """
     diassembles and deparses a given code block 'co'
@@ -109,8 +110,8 @@ def disco(version, co, timestamp, out=sys.stdout,
     real_out = out or sys.stdout
     co_pypy_str = 'PyPy ' if is_pypy else ''
     run_pypy_str = 'PyPy ' if IS_PYPY else ''
-    out.write('# %sPython bytecode %s%s disassembled from %sPython %s\n' %
-              (co_pypy_str, version,
+    out.write('# pydisasm version %s\n# %sPython bytecode %s%s disassembled from %sPython %s\n' %
+              (VERSION, co_pypy_str, bytecode_version,
                " (%d)" % magic_int if magic_int else "",
                run_pypy_str, PYTHON_VERSION))
     if timestamp > 0:
@@ -123,13 +124,13 @@ def disco(version, co, timestamp, out=sys.stdout,
 
 
     if co.co_filename:
-        out.write(format_code_info(co, version) + "\n")
+        out.write(format_code_info(co, bytecode_version) + "\n")
         pass
 
-    opc = get_opcode(version, is_pypy)
+    opc = get_opcode(bytecode_version, is_pypy)
 
     queue = deque([co])
-    disco_loop(opc, version, queue, real_out)
+    disco_loop(opc, bytecode_version, queue, real_out)
 
 
 def disco_loop(opc, version, queue, real_out):
