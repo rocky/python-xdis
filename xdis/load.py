@@ -116,8 +116,8 @@ def load_module(filename, code_objects={}, fast_load=False,
         return fix_dropbox_pyc(fp)
     elif magic_int == 62215:
         fp.close()
-        raise ImportError("%s is a dropbox hacked Python %s (bytecode %d).\nSee "
-                          "https://github.com/kholia/dedrop"
+        raise ImportError("%s is a dropbox-hacked Python %s (bytecode %d).\nSee "
+                          "https://github.com/kholia/dedrop "
                           "for how to decrypt." %
                           (filename, version, magics.magic2int(magic)))
 
