@@ -60,17 +60,30 @@ def findlinestarts(code):
         yield (addr, lineno)
 
 def offset2line(offset, linestarts):
+    """linestarts is expected to be a *list) of (offset, line number)
+    where both offset and line number are in increasing order.
+    Return the closes line number at or below the offset.
+    If offset is less than the first line number given in linestarts,
+    return line number 0.
+    """
+    if len(linestarts) == 0 or offset < linestarts[0][0]:
+        return 0
     low = 0
-    high = len(linestarts)-1
+    high = len(linestarts) - 1
+    mid = (low + high + 1) // 2
     while low <= high:
-        mid = (low + high + 1) // 2
-        if linestarts[mid] >= offset:
+        if linestarts[mid][0] > offset:
             high = mid - 1
-        if linestarts[mid] <= offset:
+        elif linestarts[mid][0] < offset:
             low = mid + 1
-            pass
+        else:
+            return linestarts[mid][1]
+        mid = (low + high + 1) // 2
         pass
-    return linestarts[mid]
+    # Not found. Return closest position below
+    if mid >= len(linestarts):
+        return linestarts[len(linestarts)-1][1]
+    return linestarts[high][1]
 
 def findlabels(code, opc):
     """Detect all offsets in a byte code which are jump targets.
@@ -143,7 +156,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     labels = findlabels(code, opc)
     extended_arg = 0
 
-    # FIXME: We really need to distingus 3.6.0a1 from 3.6.a3.
+    # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
     # See below FIXME
     python_36 = True if opc.python_version >= 3.6 else False
 
