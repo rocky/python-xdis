@@ -11,7 +11,8 @@ parsing and semantic interpretation.
 from copy import deepcopy
 
 # These are used from outside this module
-from xdis.wordcode import findlinestarts, findlabels
+from xdis.wordcode import _findlabels as findlabels
+from xdis.wordcode import _findlinestarts as findlinestarts
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.opcode_3x import fields2copy, rm_op
@@ -66,12 +67,19 @@ def_op('BUILD_SET_UNPACK', 153)
 def_op('SETUP_ASYNC_WITH', 154)
 rm_op('STORE_MAP', 54, locals())
 
-# These are new since Python 3.5
+# These are new since Python 3.6
 def_op('FORMAT_VALUE', 155)
 def_op('BUILD_CONST_KEY_MAP', 156)
+def_op('STORE_ANNOTATION', 127)
+def_op('CALL_FUNCTION_EX', 142)
+def_op('SETUP_ANNOTATIONS', 85)
+def_op('BUILD_STRING', 157)
+def_op('BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
-# And removed  since Python 3.5
+# And removed  since Python 3.6
 rm_op('MAKE_CLOSURE', 134, locals())
+rm_op('CALL_FUNCTION_VAR', 140, locals())
+rm_op('CALL_FUNCTION_VAR_KW', 142, locals())
 
 
 def updateGlobal():
@@ -87,8 +95,8 @@ updateGlobal()
 from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 3.6:
     import dis
-    # print(set(dis.opmap.items()) - set(opmap.items()))
-    # print(set(opmap.items()) - set(dis.opmap.items()))
+    #print(set(dis.opmap.items()) - set(opmap.items()))
+    #print(set(opmap.items()) - set(dis.opmap.items()))
 
     assert all(item in opmap.items() for item in dis.opmap.items())
     assert all(item in dis.opmap.items() for item in opmap.items())
