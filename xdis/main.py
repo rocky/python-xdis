@@ -110,10 +110,11 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
     real_out = out or sys.stdout
     co_pypy_str = 'PyPy ' if is_pypy else ''
     run_pypy_str = 'PyPy ' if IS_PYPY else ''
-    out.write('# pydisasm version %s\n# %sPython bytecode %s%s disassembled from %sPython %s\n' %
+    out.write(('# pydisasm version %s\n# %sPython bytecode %s%s'
+               '\n# Disassembled from %sPython %s\n') %
               (VERSION, co_pypy_str, bytecode_version,
                " (%d)" % magic_int if magic_int else "",
-               run_pypy_str, PYTHON_VERSION))
+               run_pypy_str, '\n# '.join(sys.version.split('\n'))))
     if timestamp > 0:
         value = datetime.datetime.fromtimestamp(timestamp)
         out.write(value.strftime('# Timestamp in code: '
