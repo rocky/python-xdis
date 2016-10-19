@@ -11,8 +11,7 @@ parsing and semantic interpretation.
 from copy import deepcopy
 
 # These are used from outside this module
-from xdis.wordcode import _findlabels as findlabels
-from xdis.wordcode import _findlinestarts as findlinestarts
+from xdis.wordcode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.opcode_3x import fields2copy, rm_op
@@ -95,8 +94,8 @@ updateGlobal()
 from xdis import PYTHON_VERSION
 if PYTHON_VERSION == 3.6:
     import dis
-    #print(set(dis.opmap.items()) - set(opmap.items()))
-    #print(set(opmap.items()) - set(dis.opmap.items()))
+    # print(set(dis.opmap.items()) - set(opmap.items()))
+    # print(set(opmap.items()) - set(dis.opmap.items()))
 
     assert all(item in opmap.items() for item in dis.opmap.items())
     assert all(item in dis.opmap.items() for item in opmap.items())
