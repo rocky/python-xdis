@@ -36,7 +36,7 @@ entry_points={
     ]}
 ftp_url            = None
 install_requires   = ['six >= 1.10.0']
-license            = 'MIT'
+license            = 'GPL-2.0'
 mailing_list       = 'python-debugger@googlegroups.com'
 modname            = 'xdis'
 py_modules         = None
