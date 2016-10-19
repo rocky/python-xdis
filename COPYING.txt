@@ -1,0 +1,8 @@
+The license of most of the code in this project is under the terms
+of the MIT license (see LICENSE.mit).  Any files without an explicit
+license header is under the MIT license.
+
+The files in the xdis/dropbox directory, however, are under the
+terms of the GPL-2.0 license (see LICENSE.gpl2).  Due to the terms
+of these licenses, the use of the entire project requires complying
+with the terms of the GPL-2.0 license.
