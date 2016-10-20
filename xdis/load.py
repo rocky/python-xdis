@@ -154,6 +154,8 @@ def load_module(filename, code_objects={}, fast_load=False,
 
     return version, timestamp, magic_int, co, is_pypy(magic_int), source_size
 
+
+
 if __name__ == '__main__':
     co = load_file(__file__)
     obj_path = check_object_path(__file__)
