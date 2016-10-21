@@ -8,10 +8,11 @@ from xdis import PYTHON3
 
 from collections import namedtuple
 
-from xdis.util import (get_code_object, code2num, format_code_info)
+from xdis.util import (get_code_object, code2num, num2code, format_code_info)
 
 if PYTHON3:
     from io import StringIO
+    from functools import reduce
 else:
     from StringIO import StringIO
 
@@ -391,3 +392,63 @@ class Bytecode:
         return get_instructions_bytes(co.co_code, self.opc, co.co_varnames,
                                       co.co_names, co.co_consts, cell_names, linestarts,
                                       line_offset)
+
+def list2bytecode(l, opc, varnames, consts):
+    """Convert list/tuple of list/tuples to bytecode
+    _names_ contains a list of name objects
+    """
+    bc = []
+    for i, opcodes in enumerate(l):
+        opname = opcodes[0]
+        operands = opcodes[1:]
+        if opname not in opc.opname:
+            raise TypeError(
+                "error at item %d [%s, %s], opcode not valid" %
+                (i, opname, operands))
+        opcode = opc.opmap[opname]
+        bc.append(opcode)
+        print(opname, operands)
+        gen = (j for j in operands if operands)
+        for j in gen:
+            k = (consts if opcode in opc.hasconst else varnames).index(j)
+            if k == -1:
+                raise TypeError(
+                    "operand %s [%s, %s], not found in names" %
+                    (i, opname, operands))
+            else:
+                bc += num2code(k)
+                pass
+            pass
+        pass
+    if opc.python_version < 3.0:
+        return reduce(lambda a, b: a + chr(b), bc, '')
+    else:
+        if PYTHON3:
+            return bytes(bc)
+        else:
+            return bytes(bytearray(bc))
+
+
+if __name__ == '__main__':
+    import xdis.opcodes.opcode_27  as opcode_27
+    import xdis.opcodes.opcode_34  as opcode_34
+    consts = (None, 2)
+    varnames = ('a')
+    instructions = [
+        ('LOAD_CONST', 2),
+        ('STORE_FAST', 'a'),
+        ('LOAD_FAST', 'a'),
+        ('RETURN_VALUE',)
+    ]
+    def f():
+        a = 2
+        return a
+    if PYTHON3:
+        print(f.__code__.co_code)
+    else:
+        print(f.func_code.co_code)
+
+    bc = list2bytecode(instructions, opcode_27, varnames, consts)
+    print(bc)
+    bc = list2bytecode(instructions, opcode_34, varnames, consts)
+    print(bc)

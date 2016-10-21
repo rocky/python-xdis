@@ -6,6 +6,10 @@ else:
     def code2num(code, i):
         return ord(code[i])
 
+
+def num2code(num):
+    return (num & 0xff, num >> 8)
+
 # The inspect module interrogates this dictionary to build its
 # list of CO_* constants. It is also used by pretty_flags to
 # turn the co_flags field into a human readable list.

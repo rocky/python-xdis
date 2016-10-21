@@ -1,8 +1,7 @@
 # Copyright (c) 2015-2016 by Rocky Bernstein
-# Copyright (c) 2000 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
 import imp, marshal, os, py_compile, sys, tempfile
-from struct import unpack
+from struct import unpack, pack
 
 import xdis.unmarshal
 from xdis import PYTHON3, PYTHON_VERSION
@@ -154,15 +153,28 @@ def load_module(filename, code_objects={}, fast_load=False,
 
     return version, timestamp, magic_int, co, is_pypy(magic_int), source_size
 
+def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
+    """Write bytecode file _bytecode_path_, with code for having Python
+    magic_int (i.e. bytecode associated with some version of Python)
+    """
 
-if __name__ == '__main__':
-    co = load_file(__file__)
-    obj_path = check_object_path(__file__)
-    version, timestamp, magic_int, co2, pypy, source_size = load_module(obj_path)
-    print("version", version, "magic int", magic_int, 'is_pypy', pypy)
-    import datetime
-    print(datetime.datetime.fromtimestamp(timestamp))
-    if source_size:
-        print("source size mod 2**32: %d" % source_size)
-    if version < 3.5:
-        assert co == co2
+    with open(bytecode_path, 'w') as fp:
+        fp.write(pack('Hcc', magic_int, '\r', '\n'))
+        import time
+        fp.write(pack('I', int(time.time())))
+        if (3000 <= magic_int < 20121):
+            # In Python 3 you need to write out the size mod 2**32 here
+            fp.write(pack('I', filesize))
+        fp.write(marshal.dumps(code))
+    return
+
+# if __name__ == '__main__':
+#         co = load_file(__file__)
+#         obj_path = check_object_path(__file__)
+#         version, timestamp, magic_int, co2, pypy, source_size = load_module(obj_path)
+#         print("version", version, "magic int", magic_int, 'is_pypy', pypy)
+#         import datetime
+#         print(datetime.datetime.fromtimestamp(timestamp))
+#         if source_size:
+#             print("source size mod 2**32: %d" % source_size)
+#         assert co == co2

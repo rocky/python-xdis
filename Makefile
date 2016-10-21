@@ -20,7 +20,6 @@ all: check
 
 # Run all tests, exluding those that need pyenv
 check: unittest
-	py.test
 	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
 	$(MAKE) -C test check
 
