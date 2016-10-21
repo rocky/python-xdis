@@ -1,5 +1,3 @@
-# This comes from Python's dis.py
-
 from xdis import PYTHON3
 if PYTHON3:
     def code2num(code, i):
@@ -42,6 +40,14 @@ COMPILER_FLAG_NAMES = {
     0x0400: "PYPY_ONLY_AST",
     0x10000000 :"PYPY_ACCEPT_NULL_BYTES"
 }
+
+# Invert above dictionary so we can look up a bit value
+# from the compile flag name
+COMPILER_FLAG_BIT = dict([v, k] for (k, v) in COMPILER_FLAG_NAMES.items())
+
+# Allow us to access by just name, prefixed with CO. e.g
+# CO_OPTIMIZED, CO_NOFREE
+globals().update(dict(['CO_'+k, v] for (k, v) in COMPILER_FLAG_BIT.items()))
 
 def pretty_flags(flags):
     """Return pretty representation of code flags."""

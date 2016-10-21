@@ -91,7 +91,7 @@ def load_module(filename, code_objects={}, fast_load=False,
     magic_int = magics.magic2int(magic)
 
     # For reasons I don't understand PyPy 3.2 stores a magic
-    # of '0'...  The two values below are for Pyton 2.x and 3.x respectively
+    # of '0'...  The two values below are for Python 2.x and 3.x respectively
     if magic[0:1] in ['0', b'0']:
         magic = magics.int2magic(3180+7)
 
@@ -153,7 +153,6 @@ def load_module(filename, code_objects={}, fast_load=False,
     fp.close()
 
     return version, timestamp, magic_int, co, is_pypy(magic_int), source_size
-
 
 
 if __name__ == '__main__':

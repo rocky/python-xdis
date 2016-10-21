@@ -1,5 +1,4 @@
 """Python disassembly functions specific to wordcode from python 3.6
-Extracted from
 """
 from xdis import PYTHON3
 from xdis.bytecode import op_has_argument

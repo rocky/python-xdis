@@ -214,7 +214,8 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
             elif op in opc.hasfree:
                 argval, argrepr = _get_name_info(arg, cells)
             elif op in opc.hasnargs:
-                argrepr = ("%d positional, %d keyword pair" %
+                if not python_36:
+                    argrepr = ("%d positional, %d keyword pair" %
                                (code2num(code, i-2), code2num(code, i-1)))
             elif python_36 and op == opc.FORMAT_VALUE:
                 argrepr = pretty_format_value_flags(arg)

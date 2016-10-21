@@ -107,7 +107,7 @@ versions = {
     int2magic(3370): '3.6.0a1+1', # 3.6.0a?
     int2magic(3370): '3.6.0a1+2', # 3.6.0a?
     int2magic(3372): '3.6.0a3',  # 3.6.0a3
-    int2magic(3373): '3.6.0b2',  # 3.6.0a3
+    int2magic(3378): '3.6.0b2',  # 3.6.0b2
 
     # A weird one
     int2magic(48):    '3.2', # WTF? Python 3.2.5 - PyPy 2.3.4
