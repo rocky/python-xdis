@@ -18,9 +18,9 @@ from xdis.bytecode import Bytecode
 
 _BIG_LINENO_FORMAT = """\
 %3d           0 LOAD_GLOBAL              0 (spam)
-              3 POP_TOP
+              2 POP_TOP
               4 LOAD_CONST               0 (None)
-              7 RETURN_VALUE
+              6 RETURN_VALUE
 """
 
 class DisTests(unittest.TestCase):

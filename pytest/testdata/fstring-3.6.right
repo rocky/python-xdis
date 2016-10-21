@@ -1,4 +1,3 @@
-# Timestamp in code: 2016-08-13 23:00:57
 # Source code size mod 2**32: 292
 # Method Name:       <module>
 # Filename:          simple_source/bug36/01_fstring.py
@@ -47,7 +46,7 @@
              20 LOAD_CONST               4 (1991)
              22 LOAD_CONST               5 (10)
              24 LOAD_CONST               6 (12)
-             26 CALL_FUNCTION            3 (131 positional, 3 keyword pair)
+             26 CALL_FUNCTION            3
              28 STORE_NAME               4 (anniversary)
 
   7          30 LOAD_NAME                5 (print)
@@ -67,8 +66,8 @@
              58 FORMAT_VALUE             4
              60 LOAD_CONST              13 ('.')
              62 BUILD_LIST               7
-             64 CALL_FUNCTION            1 (131 positional, 1 keyword pair)
-             66 CALL_FUNCTION            1 (131 positional, 1 keyword pair)
+             64 CALL_FUNCTION            1
+             66 CALL_FUNCTION            1
              68 POP_TOP
 
   8          70 LOAD_NAME                5 (print)
@@ -79,8 +78,8 @@
              80 FORMAT_VALUE             2 (!r)
              82 LOAD_CONST              13 ('.')
              84 BUILD_LIST               3
-             86 CALL_FUNCTION            1 (131 positional, 1 keyword pair)
-             88 CALL_FUNCTION            1 (131 positional, 1 keyword pair)
+             86 CALL_FUNCTION            1
+             88 CALL_FUNCTION            1
              90 POP_TOP
              92 LOAD_CONST               1 (None)
              94 RETURN_VALUE
