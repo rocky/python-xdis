@@ -15,8 +15,6 @@ import xdis.opcodes.opcode_25 as opcode_25
 
 # FIXME: can we DRY this even more?
 
-hasArgumentExtended = []
-
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
 HAVE_ARGUMENT = opcode_25.HAVE_ARGUMENT

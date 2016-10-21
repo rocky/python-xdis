@@ -15,8 +15,6 @@ from xdis.bytecode import findlinestarts, findlabels
 from xdis.opcodes.opcode_2x import def_op
 import xdis.opcodes.opcode_24 as opcode_24
 
-hasArgumentExtended = []
-
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 HAVE_ARGUMENT = opcode_24.HAVE_ARGUMENT
 cmp_op = list(opcode_24.cmp_op)

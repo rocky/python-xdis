@@ -10,8 +10,6 @@ from xdis.bytecode import findlabels, findlinestarts
 
 # FIXME: can we DRY this even more?
 
-hasArgumentExtended = []
-
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 
