@@ -29,6 +29,9 @@ hasnargs = list(opcode_2x.hasnargs)
 hasvargs = list(opcode_2x.hasvargs)
 opmap = deepcopy(opcode_2x.opmap)
 opname = deepcopy(opcode_2x.opname)
+oppush = list(opcode_2x.oppush)
+oppop  = list(opcode_2x.oppop)
+
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
 for object in opcode_2x.fields2copy:

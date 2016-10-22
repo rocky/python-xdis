@@ -30,6 +30,9 @@ hasnargs = list(opcode_25.hasnargs)
 hasvargs = list(opcode_25.hasvargs)
 opmap = deepcopy(opcode_25.opmap)
 opname = deepcopy(opcode_25.opname)
+oppush = list(opcode_25.oppush)
+oppop  = list(opcode_25.oppop)
+
 EXTENDED_ARG = opcode_25.EXTENDED_ARG
 
 def updateGlobal():
