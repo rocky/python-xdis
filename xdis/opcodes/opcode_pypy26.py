@@ -10,58 +10,35 @@ from copy import deepcopy
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
-import xdis.opcodes.opcode_2x as opcode_2x
+import xdis.opcodes.opcode_26 as opcode_26
+
 from xdis.opcodes.opcode_2x import def_op
 
 # FIXME: can we DRY this even more?
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
-HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
-cmp_op = list(opcode_2x.cmp_op)
-hasconst = list(opcode_2x.hasconst)
-hascompare = list(opcode_2x.hascompare)
-hasfree = list(opcode_2x.hasfree)
-hasjabs = list(opcode_2x.hasjabs)
-hasjrel = list(opcode_2x.hasjrel)
-haslocal = list(opcode_2x.haslocal)
-hasname = list(opcode_2x.hasname)
-hasnargs = list(opcode_2x.hasnargs)
-hasvargs = list(opcode_2x.hasvargs)
-opmap = deepcopy(opcode_2x.opmap)
-opname = deepcopy(opcode_2x.opname)
-EXTENDED_ARG = opcode_2x.EXTENDED_ARG
+HAVE_ARGUMENT = opcode_26.HAVE_ARGUMENT
+cmp_op        = list(opcode_26.cmp_op)
+hasconst      = list(opcode_26.hasconst)
+hascompare    = list(opcode_26.hascompare)
+hasfree       = list(opcode_26.hasfree)
+hasjabs       = list(opcode_26.hasjabs)
+hasjrel       = list(opcode_26.hasjrel)
+haslocal      = list(opcode_26.haslocal)
+hasname       = list(opcode_26.hasname)
+hasnargs      = list(opcode_26.hasnargs)
+hasvargs      = list(opcode_26.hasvargs)
+opmap         = deepcopy(opcode_26.opmap)
+opname        = deepcopy(opcode_26.opname)
+EXTENDED_ARG  = opcode_26.EXTENDED_ARG
 
-def updateGlobal():
-    globals().update({'python_version': 2.6})
-
-    # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
-    globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
-    globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
-
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
-    globals().update({'JF': opmap['JUMP_FORWARD']})
-    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
-    return
-
-# Bytecodes added since 2.3.
-# 2.4
-def_op(opname, opmap, 'NOP', 9)
-def_op(opname, opmap, 'LIST_APPEND', 18)
-def_op(opname, opmap, 'YIELD_VALUE', 86)
-
-# 2.5
-def_op(opname, opmap, 'WITH_CLEANUP', 81)
-
-# 2.6
-def_op(opname, opmap, 'STORE_MAP', 54)
-
-def_op(opname, opmap, 'LOOKUP_METHOD', 201)
-def_op(opname, opmap, 'CALL_METHOD', 202)
+def_op(opname, opmap, 'LOOKUP_METHOD',       201)
+def_op(opname, opmap, 'CALL_METHOD',         202)
 def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
-def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG', 204)
+def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG',   204)
 
-updateGlobal()
+opcode_26.updateGlobal()
 
 from xdis import PYTHON_VERSION, IS_PYPY
 if PYTHON_VERSION == 2.6 and IS_PYPY:

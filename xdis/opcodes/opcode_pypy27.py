@@ -10,30 +10,30 @@ from copy import deepcopy
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
-import xdis.opcodes.opcode_2x as opcode_2x
+import xdis.opcodes.opcode_27 as opcode_27
 from xdis.opcodes.opcode_2x import def_op, rm_op
 
 # FIXME: can we DRY this even more?
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
-HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
-cmp_op = list(opcode_2x.cmp_op)
-hasconst = list(opcode_2x.hasconst)
-hascompare = list(opcode_2x.hascompare)
-hasfree = list(opcode_2x.hasfree)
-hasjabs = list(opcode_2x.hasjabs)
-hasjrel = list(opcode_2x.hasjrel)
-haslocal = list(opcode_2x.haslocal)
-hasname = list(opcode_2x.hasname)
-hasnargs = list(opcode_2x.hasnargs)
-hasvargs = list(opcode_2x.hasvargs)
-opmap = deepcopy(opcode_2x.opmap)
-opname = deepcopy(opcode_2x.opname)
-EXTENDED_ARG = opcode_2x.EXTENDED_ARG
+HAVE_ARGUMENT = opcode_27.HAVE_ARGUMENT
+cmp_op        = list(opcode_27.cmp_op)
+hasconst      = list(opcode_27.hasconst)
+hascompare    = list(opcode_27.hascompare)
+hasfree       = list(opcode_27.hasfree)
+hasjabs       = list(opcode_27.hasjabs)
+hasjrel       = list(opcode_27.hasjrel)
+haslocal      = list(opcode_27.haslocal)
+hasname       = list(opcode_27.hasname)
+hasnargs      = list(opcode_27.hasnargs)
+hasvargs      = list(opcode_27.hasvargs)
+opmap         = deepcopy(opcode_27.opmap)
+opname        = deepcopy(opcode_27.opname)
+EXTENDED_ARG  = opcode_27.EXTENDED_ARG
 
-def updateGlobal():
-    globals().update({'python_version': 2.7})
+def updateGlobal(version):
+    globals().update({'python_version': version})
 
     # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
@@ -42,66 +42,24 @@ def updateGlobal():
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
-def name_op(name, op):
-    def_op(opname, opmap, name, op)
-    hasname.append(op)
-
-def jrel_op(name, op):
-    def_op(opname, opmap, name, op)
+def jrel_op(name, op, pop=-2, push=-2):
+    def_op(opname, opmap, name, op, pop, push)
     hasjrel.append(op)
 
-def jabs_op(name, op):
-    def_op(opname, opmap, name, op)
+def jabs_op(name, op, pop=-2, push=-2):
+    def_op(opname, opmap, name, op, pop, push)
     hasjabs.append(op)
 
-def compare_op(name, op):
-    def_op(opname, opmap, name, op)
-    hascompare.append(op)
+def name_op(opname, opmap, op, pop=-2, push=-2):
+    def_op(opname, opmap, op, pop, push)
+    hasname.append(op)
 
-# Bytecodes added since 2.3.
-# 2.4
-def_op(opname, opmap, 'NOP', 9)
-def_op(opname, opmap, 'YIELD_VALUE', 86)
-
-# 2.5
-def_op(opname, opmap, 'WITH_CLEANUP', 81)
-
-# 2.6
-def_op(opname, opmap, 'STORE_MAP', 54)
-
-# 2.7
-rm_op('BUILD_MAP', 104, locals())
-rm_op('LOAD_ATTR', 105, locals())
-rm_op('COMPARE_OP', 106, locals())
-rm_op('IMPORT_NAME', 107, locals())
-rm_op('IMPORT_FROM', 108, locals())
-rm_op('JUMP_IF_FALSE', 111, locals())
-rm_op('EXTENDED_ARG', 143, locals())
-rm_op('JUMP_IF_TRUE', 112, locals())
-
-def_op(opname, opmap, 'LIST_APPEND', 94)
-def_op(opname, opmap, 'BUILD_SET', 104)        # Number of set items
-def_op(opname, opmap, 'BUILD_MAP', 105)
-name_op('LOAD_ATTR', 106)
-compare_op('COMPARE_OP', 107)
-
-name_op('IMPORT_NAME', 108)
-name_op('IMPORT_FROM', 109)
-
-jabs_op('JUMP_IF_FALSE_OR_POP', 111) # Target byte offset from beginning of code
-jabs_op('JUMP_IF_TRUE_OR_POP', 112)  # ""
-jabs_op('POP_JUMP_IF_FALSE', 114)    # ""
-jabs_op('POP_JUMP_IF_TRUE', 115)     # ""
-jrel_op('SETUP_WITH', 143)
-
-def_op(opname, opmap, 'EXTENDED_ARG', 145)
-def_op(opname, opmap, 'SET_ADD', 146)
-def_op(opname, opmap, 'MAP_ADD', 147)
 
 # PyPy only
 # ----------
-name_op('LOOKUP_METHOD', 201)
-def_op(opname, opmap, 'CALL_METHOD', 202)
+opcode_27.def_op(opname, opmap, 'CALL_METHOD',         202)
+name_op(opname, opmap, 'LOOKUP_METHOD', 201)
+opcode_27.def_op(opname, opmap, 'CALL_METHOD', 202)
 hasnargs.append(202)
 
 # Used only in single-mode compilation list-comprehension generators
@@ -113,7 +71,7 @@ jrel_op('JUMP_IF_NOT_DEBUG', 204)
 # There are no opcodes to remove or change.
 # If there were, they'd be listed below.
 
-updateGlobal()
+updateGlobal(2.7)
 
 from xdis import PYTHON_VERSION, IS_PYPY
 if PYTHON_VERSION == 2.7 and IS_PYPY:

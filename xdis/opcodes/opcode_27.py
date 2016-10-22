@@ -35,8 +35,8 @@ oppop  = list(opcode_2x.oppop)
 
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
-def updateGlobal():
-    globals().update({'python_version': 2.7})
+def updateGlobal(version):
+    globals().update({'python_version': version})
 
     # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
@@ -45,12 +45,12 @@ def updateGlobal():
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
-def name_op(name, op):
-    def_op(opname, opmap, name, op)
+def name_op(name, op, pop=-2, push=-2):
+    def_op(opname, opmap, name, op, pop, push)
     hasname.append(op)
 
-def jrel_op(name, op):
-    def_op(opname, opmap, name, op)
+def jrel_op(name, op, pop=-2, push=-2):
+    def_op(opname, opmap, name, op, pop, push)
     hasjrel.append(op)
 
 def jabs_op(name, op):
@@ -63,14 +63,14 @@ def compare_op(name, op):
 
 # Bytecodes added since 2.3.
 # 2.4
-def_op(opname, opmap, 'NOP', 9)
-def_op(opname, opmap, 'YIELD_VALUE', 86)
+def_op(opname, opmap, 'NOP',           9,  0,  0)
+def_op(opname, opmap, 'YIELD_VALUE',  86,  1,  0)
 
 # 2.5
-def_op(opname, opmap, 'WITH_CLEANUP', 81)
+def_op(opname, opmap, 'WITH_CLEANUP', 81, -1, -1)
 
 # 2.6
-def_op(opname, opmap, 'STORE_MAP', 54)
+def_op(opname, opmap, 'STORE_MAP',    54,  3,  2)
 
 # 2.7
 rm_op('BUILD_MAP', 104, locals())
@@ -101,7 +101,7 @@ def_op(opname, opmap, 'EXTENDED_ARG', 145)
 def_op(opname, opmap, 'SET_ADD', 146)
 def_op(opname, opmap, 'MAP_ADD', 147)
 
-updateGlobal()
+updateGlobal(2.7)
 
 from xdis import PYTHON_VERSION, IS_PYPY
 if PYTHON_VERSION == 2.7 and not IS_PYPY:

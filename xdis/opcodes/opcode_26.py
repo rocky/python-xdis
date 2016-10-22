@@ -46,7 +46,7 @@ def updateGlobal():
     return
 
 # 2.6
-def_op(opname, opmap, 'STORE_MAP', 54)
+def_op(opname, opmap, 'STORE_MAP', 54, 3, 2)
 
 updateGlobal()
 

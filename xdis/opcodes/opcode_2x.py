@@ -165,14 +165,14 @@ _def_op('BUILD_CLASS',          89,  3,  0)
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 name_op('STORE_NAME',           90,  1,  0)  # Index in name list
-name_op('DELETE_NAME', 91)      # ""
+name_op('DELETE_NAME',          91,  0,  0)      # ""
 varargs_op('UNPACK_SEQUENCE',   92, -1,  1)  # Number of tuple items
-jrel_op('FOR_ITER',             93,  0,  0)
+jrel_op('FOR_ITER',             93, -1, -1)
 
 name_op('STORE_ATTR',           95,  2,  0)  # Index in name list
 name_op('DELETE_ATTR',          96,  1,  0)  # ""
 name_op('STORE_GLOBAL',         97,  1,  0)  # ""
-name_op('DELETE_GLOBAL',        98)          # ""
+name_op('DELETE_GLOBAL',        98,  0,  0)  # ""
 _def_op('DUP_TOPX',             99,  1, -1)  # number of items to duplicate
 const_op('LOAD_CONST',         100,  0,  1)  # Index in const list
 name_op('LOAD_NAME',           101,  0,  1)  # Index in name list
@@ -221,9 +221,11 @@ EXTENDED_ARG = 143
 
 fields2copy = """cmp_op hasjabs""".split()
 
-def def_op(opname, opmap, name, op):
+def def_op(opname, opmap, name, op, pop=-2, push=-2):
     opname[op] = name
     opmap[name] = op
+    oppush[op] = push
+    oppop[op] = pop
 
 def rm_op(name, op, l):
     # opname is an array, so we need to keep the position in there.

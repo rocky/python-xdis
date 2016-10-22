@@ -46,9 +46,9 @@ def updateGlobal():
     return
 
 # Bytecodes added since 2.3
-def_op(opname, opmap, 'NOP', 9)
-def_op(opname, opmap, 'LIST_APPEND', 18)
-def_op(opname, opmap, 'YIELD_VALUE', 86)
+def_op(opname, opmap, 'NOP',           9,  0,  0)
+def_op(opname, opmap, 'LIST_APPEND',  18,  2,  0)
+def_op(opname, opmap, 'YIELD_VALUE',  86,  1,  0)
 
 updateGlobal()
 
