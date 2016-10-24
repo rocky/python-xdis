@@ -51,16 +51,21 @@ def_op('SET_ADD', 17)
 def_op('LIST_APPEND', 18)
 def_op('JUMP_IF_FALSE', 111)
 def_op('JUMP_IF_TRUE', 112)
-
 # There are no opcodes to add or change.
 # If there were, they'd be listed below.
+
+rm_op('JUMP_IF_FALSE_OR_POP', 111, locals())
+rm_op('JUMP_IF_TRUE_OR_POP',  112, locals())
+rm_op('POP_JUMP_IF_FALSE',    114, locals())
+rm_op('POP_JUMP_IF_TRUE',     115, locals())
+rm_op('DELETE_DEREF',         138, locals())
+rm_op('SETUP_WITH',           143, locals())
+rm_op('MAP_ADD',              147, locals())
 
 def updateGlobal():
     # JUMP_OPs are used in verification are set in the scanner
     # and used in the parser grammar
     globals().update({'python_version': 3.0})
-    globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
-    globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
 
