@@ -1,6 +1,137 @@
+2016-10-25  rocky <rb@dustyfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for version 3.2.0
+
+2016-10-25  rocky <rb@dustyfeet.com>
+
+	* test/Makefile, test/bug3.1/03_extendedarg.py,
+	test/test_pythonlib.py, xdis/opcodes/opcode_31.py,
+	xdis/opcodes/opcode_3x.py: 3.1 EXTENDED_ARG opcode bug Add 3.1 bytecode testing
+
+2016-10-24  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/opcode_30.py: Python 3.0 opcode fixes
+
+2016-10-22  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: DRY
+	opcodes; add stack use for 2.4-2.7
+
+2016-10-21  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/opcode_20.py, xdis/opcodes/opcode_21.py,
+	xdis/opcodes/opcode_22.py, xdis/opcodes/opcode_23.py,
+	xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_25.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_2x.py: Add stack effects counts on 2.x opcodes
+
+2016-10-21  rocky <rb@dustyfeet.com>
+
+	* test/Makefile, test/test_pythonlib.py: Add Python 2.1 bytecode
+
+2016-10-21  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/opcode_15.py, xdis/opcodes/opcode_20.py,
+	xdis/opcodes/opcode_21.py, xdis/opcodes/opcode_22.py,
+	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_pypy26.py,
+	xdis/opcodes/opcode_pypy27.py: Remove hasArgumentExtended It's not used.
+
+2016-10-21  rocky <rb@dustyfeet.com>
+
+	* test/simple_source/bug36/01_build_string.py,
+	test/simple_source/bug36/01_fstring.py-notyet,
+	test_unit/test-dis.py: Correct 3.6 tests
+
+2016-10-21  rocky <rb@dustyfeet.com>
+
+	* : commit 8922ebb579d2aa6278e4324319fddb163e2dc27b Author: rocky
+	<rb@dustyfeet.com> Date:   Fri Oct 21 03:33:33 2016 -0400
+
+2016-10-21  rocky <rb@dustyfeet.com>
+
+	* MANIFEST.in, test/simple_source/bug36/01_build_string.py,
+	xdis/bytecode.py, xdis/load.py, xdis/magics.py, xdis/util.py,
+	xdis/wordcode.py: Bunch of misc fixes...  MANIFEST.in: have two license files now load.py: typo util.py: Allow
+	us to go from optimization flag to bit value track Python 3.6 changes - CALL_FUNCTION can't show what's up anymore in disassembly. Thanks,
+	Python! - add code with BUILD_STRING op - add magic for 3.6.0b2 x
+
+2016-10-20  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py: Add 3.6b2 magic
+
+2016-10-20  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py: Add 3.6b2 magic
+
+2016-10-19  rocky <rb@dustyfeet.com>
+
+	* Makefile, pytest/test_load.py, pytest/todo-test.py,
+	xdis/bytecode.py, xdis/load.py, xdis/util.py: Add list2bytecode()
+	and write_bytecode_file() First step in handling bytecode assembly.
+
+2016-10-19  rocky <rb@dustyfeet.com>
+
+	* xdis/load.py: Add small test for load_module
+
+2016-10-19  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #13 from toddrme2178/master Add details about GPL-2.0 license
+
+2016-10-19  moagstar <moagstar@gmail.com>
+
+	* xdis/opcodes/opcode_36.py: added some new 3.6 opcodes and removed
+	some opcodes which are longer valid from 3.6
+
+2016-10-19  moagstar <moagstar@gmail.com>
+
+	* xdis/opcodes/opcode_36.py: added some new 3.6 opcodes and removed
+	some opcodes which are longer valid from 3.6
+
+2016-10-19  toddrme2178 <toddrme2178@gmail.com>
+
+	* COPYING.txt: Create copying.txt to explain license situation
+
+2016-10-19  toddrme2178 <toddrme2178@gmail.com>
+
+	* LICENSE, LICENSE.mit: Rename LICENSE to LICENSE.mit The license of most of the code is MIT, but the effective license of
+	the project is GPL-2.0 due to including GPL-2.0 code.
+
+2016-10-19  toddrme2178 <toddrme2178@gmail.com>
+
+	* __pkginfo__.py: Change license to GPL Since the project contains GPL 2.0 licensed code, the effective
+	license of the entire project is also GPL 2.0.
+
+2016-10-19  toddrme2178 <toddrme2178@gmail.com>
+
+	* LICENSE.gpl2: Add GPL-2.0 License Add GPL 2.0 license because of the dropbox subdirectory which is GPL
+	licensed.
+
+2016-10-19  rocky <rb@dustyfeet.com>
+
+	* pytest/test_disasm.py: Ignore timestamp in code disasembly test
+
+2016-10-19  rocky <rb@dustyfeet.com>
+
+	* pytest/test_disasm.py, pytest/testdata/fstring-3.6.right,
+	xdis/main.py: More Comment meta information - Add complete Python --version string
+
 2016-10-15  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 3.1.0
+	* pytest/test_disasm.py, xdis/magics.py, xdis/main.py: Add pydisasm
+	version number in disassembly
+
+2016-10-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/load.py: Add proper space around Dropbox URL Fixes #11
+
+2016-10-15  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, README.rst, __pkginfo__.py, requirements.txt,
+	xdis/version.py: Get ready for release 3.1.0
 
 2016-10-15  R. Bernstein <rocky@users.noreply.github.com>
 

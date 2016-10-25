@@ -1,3 +1,19 @@
+3.2.0 2016-10-25
+
+- Python 3.1 EXTENDED_ARG opcode bug fix
+- Python 3.0 opcode fixes
+- DRY opcode files
+- start noting stack-modification attributes on opcodes and
+  use for Python 2.4-2.7
+- Remove hasAgumentExtended. It's not used.
+- Update Python 3.6 opcodes
+- Add magic number for Python 3.6.0b2
+- On disassembly Python 3.6 no longer knows what's up in CALL_FUNCTION
+- Add Python 2.1 and 3.1 bytecode tests
+- Add list2bytecode() and write_bytecode_file() -
+  First steps in handling bytecode assembly
+- Change licence to GPL 2.0
+
 3.1.0 2016-10-15
 
 - expose findlabels, and findlinestarts,
