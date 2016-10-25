@@ -151,7 +151,7 @@ name_op('DELETE_ATTR', 96)       # ""
 name_op('STORE_GLOBAL', 97)      # ""
 name_op('DELETE_GLOBAL', 98)     # ""
 
-# Python 2's DUP_TOPX is gone
+# Python 2's DUP_TOPX is gone starting in Python 3.2
 
 const_op('LOAD_CONST', 100)      # Index in const list
 name_op('LOAD_NAME', 101)        # Index in name list
