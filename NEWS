@@ -1,3 +1,10 @@
+3.2.1 2016-10-30
+
+- Tag pypy 2.6 and 2.7 LOOKUP_METHOD properly
+  (bug introduced in 3.2.0. Thanks to alexwlchan of the hypothesis team.)
+- Clarification of EXTENDED_ARG in 3.0 and 3.1
+- disassemble output size indicates bytes explicitly
+
 3.2.0 2016-10-25
 
 - Python 3.1 EXTENDED_ARG opcode bug fix

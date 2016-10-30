@@ -1,6 +1,29 @@
+2016-10-30  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 3.2.1
+
+2016-10-30  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_disasm.py, pytest/testdata/fstring-3.6.right,
+	pytest/testdata/pypy_lambda.right,
+	test/simple_source/04_pypy_lambda.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: Bug in
+	PyPy LOOKUP_METHOD name tagging Fixes Issue #16 Thanks to alexwlchan of the hypothesis team.
+
+2016-10-30  rocky <rocky@dusytfeet.com>
+
+	* : commit 31fd84fa016152db4add20bb5a78346ea26566bd Author: rocky
+	<rocky@dusytfeet.com> Date:   Sun Oct 30 18:09:30 2016 -0400
+
+2016-10-27  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py: 
+	Clarification of EXTENDED_ARG in 3.0 and 3.1
+
 2016-10-25  rocky <rb@dustyfeet.com>
 
-	* ChangeLog, NEWS, xdis/version.py: Get ready for version 3.2.0
+	* ChangeLog, NEWS, README.rst, xdis/version.py: Get ready for
+	version 3.2.0
 
 2016-10-25  rocky <rb@dustyfeet.com>
 
