@@ -36,7 +36,7 @@ opmap = deepcopy(opcode_3x.opmap)
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
-# These are in Python 3.2 but not in Python 3.1
+# These are in Python 3.x but not in Python 3.0
 rm_op('DUP_TOP_TWO', 5, locals())
 
 def def_op(name, op):
@@ -45,6 +45,8 @@ def def_op(name, op):
 
 def_op('ROT_FOUR', 5)
 def_op('DUP_TOPX', 99)
+
+# This op is in 3.x but its opcode is a 144 instead
 def_op('EXTENDED_ARG', 143)
 
 def_op('SET_ADD', 17)
