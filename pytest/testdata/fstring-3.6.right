@@ -1,10 +1,10 @@
-# Source code size mod 2**32: 292
+# Source code size mod 2**32: 292 bytes
 # Method Name:       <module>
-# Filename:          simple_source/bug36/01_fstring.py
+# Filename:          version_specific/bug36/01_fstring.py
 # Argument count:    0
 # Kw-only arguments: 0
 # Number of locals:  0
-# Stack size:        9
+# Stack size:        8
 # Flags:             0x00000040 (NOFREE)
 # Constants:
 #    0: 0
@@ -14,14 +14,13 @@
 #    4: 1991
 #    5: 10
 #    6: 12
-#    7: ''
-#    8: 'My name is '
-#    9: ', my age next year is '
-#   10: 1
-#   11: ', my anniversary is '
-#   12: '%A, %B %d, %Y'
-#   13: '.'
-#   14: 'He said his name is '
+#    7: 'My name is '
+#    8: ', my age next year is '
+#    9: 1
+#   10: ', my anniversary is '
+#   11: '%A, %B %d, %Y'
+#   12: '.'
+#   13: 'He said his name is '
 # Names:
 #    0: datetime
 #    1: name
@@ -29,7 +28,6 @@
 #    3: date
 #    4: anniversary
 #    5: print
-#    6: join
   3           0 LOAD_CONST               0 (0)
               2 LOAD_CONST               1 (None)
               4 IMPORT_NAME              0 (datetime)
@@ -50,37 +48,31 @@
              28 STORE_NAME               4 (anniversary)
 
   7          30 LOAD_NAME                5 (print)
-             32 LOAD_CONST               7 ('')
-             34 LOAD_ATTR                6 (join)
-             36 LOAD_CONST               8 ('My name is ')
-             38 LOAD_NAME                1 (name)
-             40 FORMAT_VALUE             0
-             42 LOAD_CONST               9 (', my age next year is ')
-             44 LOAD_NAME                2 (age)
-             46 LOAD_CONST              10 (1)
-             48 BINARY_ADD
-             50 FORMAT_VALUE             0
-             52 LOAD_CONST              11 (', my anniversary is ')
-             54 LOAD_NAME                4 (anniversary)
-             56 LOAD_CONST              12 ('%A, %B %d, %Y')
-             58 FORMAT_VALUE             4
-             60 LOAD_CONST              13 ('.')
-             62 BUILD_LIST               7
-             64 CALL_FUNCTION            1
-             66 CALL_FUNCTION            1
-             68 POP_TOP
+             32 LOAD_CONST               7 ('My name is ')
+             34 LOAD_NAME                1 (name)
+             36 FORMAT_VALUE             0
+             38 LOAD_CONST               8 (', my age next year is ')
+             40 LOAD_NAME                2 (age)
+             42 LOAD_CONST               9 (1)
+             44 BINARY_ADD
+             46 FORMAT_VALUE             0
+             48 LOAD_CONST              10 (', my anniversary is ')
+             50 LOAD_NAME                4 (anniversary)
+             52 LOAD_CONST              11 ('%A, %B %d, %Y')
+             54 FORMAT_VALUE             4
+             56 LOAD_CONST              12 ('.')
+             58 BUILD_STRING             7
+             60 CALL_FUNCTION            1
+             62 POP_TOP
 
-  8          70 LOAD_NAME                5 (print)
-             72 LOAD_CONST               7 ('')
-             74 LOAD_ATTR                6 (join)
-             76 LOAD_CONST              14 ('He said his name is ')
-             78 LOAD_NAME                1 (name)
-             80 FORMAT_VALUE             2 (!r)
-             82 LOAD_CONST              13 ('.')
-             84 BUILD_LIST               3
-             86 CALL_FUNCTION            1
-             88 CALL_FUNCTION            1
-             90 POP_TOP
-             92 LOAD_CONST               1 (None)
-             94 RETURN_VALUE
+  8          64 LOAD_NAME                5 (print)
+             66 LOAD_CONST              13 ('He said his name is ')
+             68 LOAD_NAME                1 (name)
+             70 FORMAT_VALUE             2 (!r)
+             72 LOAD_CONST              12 ('.')
+             74 BUILD_STRING             3
+             76 CALL_FUNCTION            1
+             78 POP_TOP
+             80 LOAD_CONST               1 (None)
+             82 RETURN_VALUE
 

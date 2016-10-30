@@ -12,8 +12,6 @@ from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_26 as opcode_26
 
-from xdis.opcodes.opcode_2x import def_op
-
 # FIXME: can we DRY this even more?
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
@@ -33,10 +31,17 @@ opmap         = deepcopy(opcode_26.opmap)
 opname        = deepcopy(opcode_26.opname)
 EXTENDED_ARG  = opcode_26.EXTENDED_ARG
 
-def_op(opname, opmap, 'LOOKUP_METHOD',       201)
-def_op(opname, opmap, 'CALL_METHOD',         202)
-def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
-def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG',   204)
+def name_op(opname, opmap, name, op, pop=-2, push=-2):
+    opcode_26.def_op(opname, opmap, name, op, pop, push)
+    hasname.append(op)
+
+
+# PyPy only
+# ----------
+name_op(opname, opmap, 'LOOKUP_METHOD',                201, 1, 2)
+opcode_26.def_op(opname, opmap, 'CALL_METHOD',         202)
+opcode_26.def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
+opcode_26.def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG',   204)
 
 opcode_26.updateGlobal()
 

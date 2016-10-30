@@ -50,15 +50,14 @@ def jabs_op(name, op, pop=-2, push=-2):
     def_op(opname, opmap, name, op, pop, push)
     hasjabs.append(op)
 
-def name_op(opname, opmap, op, pop=-2, push=-2):
-    def_op(opname, opmap, op, pop, push)
+def name_op(opname, opmap, name, op, pop=-2, push=-2):
+    opcode_27.def_op(opname, opmap, name, op, pop, push)
     hasname.append(op)
 
 
 # PyPy only
 # ----------
-opcode_27.def_op(opname, opmap, 'CALL_METHOD',         202)
-name_op(opname, opmap, 'LOOKUP_METHOD', 201)
+name_op(opname, opmap, 'LOOKUP_METHOD', 201, 1, 2)
 opcode_27.def_op(opname, opmap, 'CALL_METHOD', 202)
 hasnargs.append(202)
 
