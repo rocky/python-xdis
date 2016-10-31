@@ -13,12 +13,12 @@ The Python `dis` module allows you to disassemble bytecode from the same
 version of Python that you are running on. But what about bytecode from
 different versions?
 
-That's what this package is for. It can marshal load Python bytecodes
+That's what this package is for. It can "marshal load" Python bytecodes
 from different versions of Python. The command-line routine
-*pydisasm* will show disassembly output using Python 3.5 disassembly conventions
+*pydisasm* will show disassembly output using Python 3.5 disassembly conventions.
 
-It accepts bytecodes from Python version 1.3 to 3.6 or so. The code
-requires Python 2.5 or later and has been tested on Python running
+It accepts bytecodes from Python version 1.5 to 3.6 or so. The code
+requires Python 2.6 or later and has been tested on Python running
 versions 2.6, pypy-2.6.1 2.7, pypy-5.0.1, pypy-5.3.1, 3.2, 3.3, 3.4, 3.5
 and 3.6.
 
@@ -50,7 +50,7 @@ A GNU makefile has been added to smooth over setting running the right
 command, and running tests from fastest to slowest.
 
 If you have remake_ installed, you can see the list of all tasks
-including tests via :code:`remake --tasks`
+including tests via :code:`remake --tasks`.
 
 
 Usage
