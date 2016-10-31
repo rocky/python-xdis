@@ -88,14 +88,14 @@ def_op(opname, opmap, 'BUILD_MAP', 105)
 name_op('LOAD_ATTR', 106)
 compare_op('COMPARE_OP', 107)
 
-name_op('IMPORT_NAME', 108)
-name_op('IMPORT_FROM', 109)
+name_op('IMPORT_NAME',         108,  2,  1)  # Index in name list
+name_op('IMPORT_FROM',         109,  0,  1)
 
 jabs_op('JUMP_IF_FALSE_OR_POP', 111) # Target byte offset from beginning of code
-jabs_op('JUMP_IF_TRUE_OR_POP', 112)  # ""
-jabs_op('POP_JUMP_IF_FALSE', 114)    # ""
-jabs_op('POP_JUMP_IF_TRUE', 115)     # ""
-jrel_op('SETUP_WITH', 143)
+jabs_op('JUMP_IF_TRUE_OR_POP',  112)  # ""
+jabs_op('POP_JUMP_IF_FALSE',    114)  # ""
+jabs_op('POP_JUMP_IF_TRUE',     115)  # ""
+jrel_op('SETUP_WITH',           143,  0,  2)
 
 def_op(opname, opmap, 'EXTENDED_ARG', 145)
 def_op(opname, opmap, 'SET_ADD', 146)

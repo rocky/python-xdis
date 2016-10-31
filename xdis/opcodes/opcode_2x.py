@@ -1,11 +1,13 @@
-"""
-CPython core set of bytecode opcodes based on version 2.3
+"""CPython core set of bytecode opcodes based on version 2.3
 
-This is used in bytecode disassembly. This is similar to the
-opcodes in Python's opcode.py library.
+This is used in bytecode disassembly among other things. This is
+similar to the opcodes in Python's opcode.py library.
+
+If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
-# FIXME: DRY this along the lines of opcode_3x.
+# FIXME: DRY this with opcode_3x.
+
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 
@@ -76,7 +78,6 @@ def varargs_op(name, op, pop=-1, push=1):
     _def_op(name, op, pop, push)
     hasvargs.append(op)
 
-
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
@@ -86,7 +87,7 @@ _def_op('STOP_CODE',             0,  0,  0)
 _def_op('POP_TOP',               1,  1,  0)
 _def_op('ROT_TWO',               2,  2,  2)
 _def_op('ROT_THREE',             3,  3,  3)
-_def_op('DUP_TOP',               4,  1,  2)
+_def_op('DUP_TOP',               4,  0,  1)
 _def_op('ROT_FOUR',              5,  4,  4)
 
 _def_op('UNARY_POSITIVE',       10,  1,  1)
@@ -164,33 +165,33 @@ _def_op('BUILD_CLASS',          89,  3,  0)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
-name_op('STORE_NAME',           90,  1,  0)  # Index in name list
+name_op('STORE_NAME',           90,  1,  0)  # Operand is in name list
 name_op('DELETE_NAME',          91,  0,  0)      # ""
 varargs_op('UNPACK_SEQUENCE',   92, -1,  1)  # Number of tuple items
 jrel_op('FOR_ITER',             93, -1, -1)
 
-name_op('STORE_ATTR',           95,  2,  0)  # Index in name list
+name_op('STORE_ATTR',           95,  2,  0)  # Operand is in name list
 name_op('DELETE_ATTR',          96,  1,  0)  # ""
 name_op('STORE_GLOBAL',         97,  1,  0)  # ""
 name_op('DELETE_GLOBAL',        98,  0,  0)  # ""
 _def_op('DUP_TOPX',             99,  1, -1)  # number of items to duplicate
-const_op('LOAD_CONST',         100,  0,  1)  # Index in const list
-name_op('LOAD_NAME',           101,  0,  1)  # Index in name list
+const_op('LOAD_CONST',         100,  0,  1)  # Operand is in const list
+name_op('LOAD_NAME',           101,  0,  1)  # Operand is in name list
 varargs_op('BUILD_TUPLE',      102, -1,  1)  # Number of tuple items
 varargs_op('BUILD_LIST',       103, -1,  1)  # Number of list items
 varargs_op('BUILD_MAP',        104, -1,  1)  # Always zero for now
-name_op('LOAD_ATTR',           105,  1,  1)  # Index in name list
+name_op('LOAD_ATTR',           105,  1,  1)  # Operand is in name list
 compare_op('COMPARE_OP',       106,  2,  1)  # Comparison operator
 
-name_op('IMPORT_NAME',         107,  0,  1)  # Index in name list
-name_op('IMPORT_FROM',         108,  1,  1)  # Index in name list
+name_op('IMPORT_NAME',         107,  2,  1) # Operand is in name list
+name_op('IMPORT_FROM',         108,  0,  1) # Operand is in name list
 
 jrel_op('JUMP_FORWARD',        110,  0,  0)  # Number of bytes to skip
 jrel_op('JUMP_IF_FALSE',       111,  1,  1)  # ""
 jrel_op('JUMP_IF_TRUE',        112,  1,  1)  # ""
 jabs_op('JUMP_ABSOLUTE',       113,  0,  0)  # Target byte offset from beginning of code
 
-name_op('LOAD_GLOBAL',         116,  0,  1)  # Index in name list
+name_op('LOAD_GLOBAL',         116,  0,  1)  # Operand is in name list
 
 jabs_op('CONTINUE_LOOP',       119,  0,  0)  # Target address
 jrel_op('SETUP_LOOP',          120,  0,  0)  # Distance to target address
