@@ -13,31 +13,50 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
-from xdis.opcodes.opcode_3x import def_op, fields2copy
+from xdis.opcodes.opcode_3x import fields2copy
 
 # FIXME: can we DRY this even more?
 
+# opmap[opcode_name] => opcode_number
 opmap = {}
+
+# opcode[i] => opcode name
 opname = [''] * 256
+
+# oppush[op] => number of stack entries pushed
+oppush = [0] * 256
+
+# oppop[op] => number of stack entries popped
+oppop  = [0] * 256
+
 hasjrel = list(opcode_3x.hasjrel)
 hasjabs = []
 hasname = list(opcode_3x.hasname)
 hasnargs = list(opcode_3x.hasnargs)
 
+for op in range(256): opname[op] = '<%r>' % (op,)
+del op
+
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
-def name_op(name, op):
-    def_op(opname, opmap, name, op)
+def def_op(opname, opmap, name, op, pop=-2, push=-2):
+    opname[op] = name
+    opmap[name] = op
+    oppush[op] = push
+    oppop[op] = pop
+
+def name_op(opname, opmap, name, op, pop=-2, push=-2):
+    def_op(opname, opmap, name, op, pop, push)
     hasname.append(op)
 
-def jrel_op(name, op):
-    def_op(opname, opmap, name, op)
+def jrel_op(name, op, pop=-2, push=-2):
+    def_op(opname, opmap, name, op, pop, push)
     hasjrel.append(op)
 
 # PyPy only
 # ----------
-name_op('LOOKUP_METHOD', 201)
+name_op(opname, opmap, 'LOOKUP_METHOD', 201, 1, 2)
 def_op(opname, opmap, 'CALL_METHOD', 202)
 hasnargs.append(202)
 
