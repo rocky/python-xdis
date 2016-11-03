@@ -1,6 +1,36 @@
+2016-11-02  rocky <rb@dustyfeet.com>
+
+	* xdis/version.py: Get ready for release 3.2.2
+
+2016-11-01  rocky <rb@dustyfeet.com>
+
+	* MANIFEST.in: Add COPYING.txt to distributed files Fixes issue #13
+
+2016-11-01  rocky <rb@dustyfeet.com>
+
+	* .travis.yml: No stackless-3.4.2
+
+2016-11-01  rocky <rb@dustyfeet.com>
+
+	* .travis.yml: Try stackless 3.4.2
+
+2016-11-01  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/opcode_pypy32.py: Correct pypy 3.2 bytecode
+	(LOOKUP_METHOD)
+
+2016-10-31  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_3x.py: Start adding push/pop for Python 3.x
+
 2016-10-30  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 3.2.1
+	* README.rst: Small doc changes - Correct versions we run on and support.  - Add a couple of missing sentence-end periods
+
+2016-10-30  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.2.1
 
 2016-10-30  rocky <rocky@dusytfeet.com>
 

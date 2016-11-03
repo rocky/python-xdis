@@ -1,3 +1,11 @@
+3.2.2 2016-11-02
+
+- Distrbute COPYING.txt
+- Correct pypy 3.2 bytecode
+- Start adding stack use on opcodes for Python 3.x
+
+- add stack use for Python 2 and Python3 opcodes (incomplete)
+
 3.2.1 2016-10-30
 
 - Tag pypy 2.6 and 2.7 LOOKUP_METHOD properly
