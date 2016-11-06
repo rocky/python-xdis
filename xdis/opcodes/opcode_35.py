@@ -22,7 +22,6 @@ opmap = {}
 opname = [''] * 256
 hasconst = list(opcode_3x.hasconst)
 hascompare = list(opcode_3x.hascompare)
-hasfree = list(opcode_3x.hasfree)
 hasjabs = list(opcode_3x.hasjabs)
 hasjrel = list(opcode_3x.hasjrel)
 haslocal = list(opcode_3x.haslocal)

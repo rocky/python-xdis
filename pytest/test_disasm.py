@@ -24,6 +24,10 @@ os.chdir(src_dir)
         disassemble_file,
     ),
     (
+        ('../test/bytecode_3.0/04_raise.pyc', 'testdata/raise-3.0.right',),
+        disassemble_file,
+    ),
+    (
         ('../test/bytecode_pypy2.7/04_pypy_lambda.pyc', 'testdata/pypy_lambda.right',),
         disassemble_file,
     ),

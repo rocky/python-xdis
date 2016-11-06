@@ -1,0 +1,47 @@
+# Method Name:       <module>
+# Filename:          simple_source/stmts/04_raise.py
+# Argument count:    0
+# Kw-only arguments: 0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000040 (NOFREE)
+# Constants:
+#    0: <code object compact_traceback at 0xdeadbeef0000, file "simple_source/stmts/04_raise.py", line 6>
+#    1: None
+# Names:
+#    0: compact_traceback
+  6           0 LOAD_CONST               0 (<code object compact_traceback at 0xdeadbeef0000, file "simple_source/stmts/04_raise.py", line 6>)
+              3 MAKE_FUNCTION            0
+              6 STORE_NAME               0 (compact_traceback)
+              9 LOAD_CONST               1 (None)
+             12 RETURN_VALUE
+
+
+# Method Name:       compact_traceback
+# Filename:          simple_source/stmts/04_raise.py
+# Argument count:    1
+# Kw-only arguments: 0
+# Number of locals:  1
+# Stack size:        2
+# Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
+# Constants:
+#    0: None
+#    1: 'traceback does not exist'
+# Names:
+#    0: AssertionError
+# Positional arguments:
+#	tb
+  7           0 LOAD_FAST                0 (tb)
+              3 JUMP_IF_TRUE            16 (to 22)
+              6 POP_TOP
+
+  8           7 LOAD_GLOBAL              0 (AssertionError)
+             10 LOAD_CONST               1 ('traceback does not exist')
+             13 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+             16 RAISE_VARARGS            1
+             19 JUMP_FORWARD             1 (to 23)
+        >>   22 POP_TOP
+
+  9     >>   23 LOAD_CONST               0 (None)
+             26 RETURN_VALUE
+

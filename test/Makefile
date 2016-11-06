@@ -16,7 +16,7 @@ check: check-short
                   --bytecode-2.4 --bytecode-2.5 \
 		  --bytecode-2.5dropbox \
                   --bytecode-2.6 --bytecode-2.7 \
-		  --bytecode-3.1 \
+		  --bytecode-3.0 --bytecode-3.1 \
                   --bytecode-3.2 --bytecode-3.3 \
                   --bytecode-3.4 --bytecode-3.5 \
 	          --bytecode-3.6 \

@@ -47,7 +47,8 @@ def updateGlobal():
 
 # Bytecodes added since 2.3
 def_op(opname, opmap, 'NOP',           9,  0,  0)
-def_op(opname, opmap, 'LIST_APPEND',  18,  2,  0)
+def_op(opname, opmap, 'LIST_APPEND',  18,  2,  1)  # Calls list.append(TOS[-i], TOS).
+                                                   # Used to implement list comprehensions.
 def_op(opname, opmap, 'YIELD_VALUE',  86,  1,  0)
 
 updateGlobal()

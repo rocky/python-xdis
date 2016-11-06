@@ -73,16 +73,17 @@ def_op(opname, opmap, 'WITH_CLEANUP', 81, -1, -1)
 def_op(opname, opmap, 'STORE_MAP',    54,  3,  2)
 
 # 2.7
-rm_op('BUILD_MAP', 104, locals())
-rm_op('LOAD_ATTR', 105, locals())
-rm_op('COMPARE_OP', 106, locals())
-rm_op('IMPORT_NAME', 107, locals())
-rm_op('IMPORT_FROM', 108, locals())
+rm_op('BUILD_MAP',     104, locals())
+rm_op('LOAD_ATTR',     105, locals())
+rm_op('COMPARE_OP',    106, locals())
+rm_op('IMPORT_NAME',   107, locals())
+rm_op('IMPORT_FROM',   108, locals())
 rm_op('JUMP_IF_FALSE', 111, locals())
-rm_op('EXTENDED_ARG', 143, locals())
-rm_op('JUMP_IF_TRUE', 112, locals())
+rm_op('EXTENDED_ARG',  143, locals())
+rm_op('JUMP_IF_TRUE',  112, locals())
 
-def_op(opname, opmap, 'LIST_APPEND', 94)
+def_op(opname, opmap, 'LIST_APPEND', 94, 2, 1) # Calls list.append(TOS[-i], TOS).
+                                               # Used to implement list comprehensions.
 def_op(opname, opmap, 'BUILD_SET', 104)        # Number of set items
 def_op(opname, opmap, 'BUILD_MAP', 105)
 name_op('LOAD_ATTR', 106)

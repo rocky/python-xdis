@@ -221,7 +221,8 @@ nargs_op('CALL_FUNCTION_VAR_KW', 142, -1, 1)  # #args + (#kwargs << 8)
 
 jrel_op('SETUP_WITH',          143,  0,  2)
 
-_def_op('LIST_APPEND',         145,  1,  0)
+_def_op('LIST_APPEND',         145,  2,  1)   # Calls list.append(TOS[-i], TOS).
+                                              # Used to implement list comprehensions.
 _def_op('SET_ADD',             146,  1,  0)
 _def_op('MAP_ADD',             147,  2,  1)
 
