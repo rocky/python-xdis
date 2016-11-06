@@ -1,6 +1,20 @@
+2016-11-06  rocky <rb@dustyfeet.com>
+
+	* xdis/version.py: Get ready for release 3.2.3
+
+2016-11-06  rocky <rb@dustyfeet.com>
+
+	* pytest/test_disasm.py, pytest/testdata/raise-3.0.right,
+	test/Makefile, test/simple_source/04_raise.py,
+	test/test_pythonlib.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py: Correct Python
+	3.0 bytecodes ...  Go over other opcodes and add stack manipulation entries.  For
+	example, for LIST_APPEND.
+
 2016-11-02  rocky <rb@dustyfeet.com>
 
-	* xdis/version.py: Get ready for release 3.2.2
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.2.2
 
 2016-11-01  rocky <rb@dustyfeet.com>
 

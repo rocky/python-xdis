@@ -1,3 +1,9 @@
+3.2.3 2016-11-6
+
+- Correct Python 3.0 bytecodes
+- Go over other opcodes and add stack manipulation entries.  For
+  example, for LIST_APPEND.
+
 3.2.2 2016-11-02
 
 - Distrbute COPYING.txt
