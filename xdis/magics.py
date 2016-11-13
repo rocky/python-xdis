@@ -48,24 +48,24 @@ versions = {
     int2magic(62131): '2.5c2', # fix wrong code: for x, in ... in
                                # listcomp/genexp)
     int2magic(62135): '2.5dropbox', # Dropbox-modified Python 2.5
-                               # used in versions 1.1x and before of Dropbox
-    int2magic(62151): '2.6a0', # peephole optimizations & STORE_MAP
-    int2magic(62161): '2.6a1', # WITH_CLEANUP optimization
-    int2magic(62171): '2.7a0', # optimize list comprehensions/change
-                               # LIST_APPEND
-    int2magic(62181): '2.7a0', # optimize conditional branches:
-                               #  introduce POP_JUMP_IF_FALSE and
-                               # POP_JUMP_IF_TRUE
-    int2magic(62191): '2.7a0', # introduce SETUP_WITH
-    int2magic(62201): '2.7a0', # introduce BUILD_SET
-    int2magic(62211): '2.7a0', # introduce MAP_ADD and SET_ADD
+                                 # used in versions 1.1x and before of Dropbox
+    int2magic(62151): '2.6a0',   # peephole optimizations & STORE_MAP
+    int2magic(62161): '2.6a1',   # WITH_CLEANUP optimization
+    int2magic(62171): '2.7a0',   # optimize list comprehensions/change
+                                 # LIST_APPEND
+    int2magic(62181): '2.7a0+1', # optimize conditional branches:
+                                 #  introduce POP_JUMP_IF_FALSE and
+                                 # POP_JUMP_IF_TRUE
+    int2magic(62191): '2.7a0+2', # introduce SETUP_WITH
+    int2magic(62201): '2.7a0+3', # introduce BUILD_SET
+    int2magic(62211): '2.7',     # introduce MAP_ADD and SET_ADD
 
     int2magic(62215): '2.7dropbox', # Dropbox-modified Python 2.7
                                     # used in versions 1.2-1.6 or so of
                                     # Dropbox
 
-    int2magic(62211+7): '2.7', # PyPy including pypy-2.6.1, pypy-5.0.1
-                               # PyPy adds 7 to the corresponding CPython nmber
+    int2magic(62211+7): '2.7pypy', # PyPy including pypy-2.6.1, pypy-5.0.1
+                                   # PyPy adds 7 to the corresponding CPython nmber
     int2magic(3000): '3.000',
     int2magic(3010): '3.000+1',  # removed UNARY_CONVERT
     int2magic(3020): '3.000+2',  # added BUILD_SET
@@ -86,8 +86,8 @@ versions = {
     int2magic(3160): '3.2a0',  # add SETUP_WITH
     int2magic(3170): '3.2a1',  # add DUP_TOP_TWO, remove DUP_TOPX and ROT_FOUR
     int2magic(3180): '3.2a2',  # 3.2a2 (add DELETE_DEREF)
-    int2magic(3180+7): '3.2',  # Python 3.2.5 - PyPy 2.3.4
-                               # PyPy adds 7 to the corresponding CPython number
+    int2magic(3180+7): '3.2pypy',  # Python 3.2.5 - PyPy 2.3.4
+                                   # PyPy adds 7 to the corresponding CPython number
     int2magic(3190): '3.3a0',  # __class__ super closure changed
     int2magic(3200): '3.3a0+', # __qualname__ added
     int2magic(3210): '3.3',    # added size modulo 2**32 to the pyc header
