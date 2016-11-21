@@ -1,4 +1,4 @@
-|buildstatus|
+|buildstatus| |Supported Python Versions|
 
 xdis
 ==========
@@ -75,3 +75,4 @@ See Also
 .. _remake: https://bashdb.sf.net/remake
 .. |buildstatus| image:: https://travis-ci.org/rocky/python-xdis.svg
 		 :target: https://travis-ci.org/rocky/python-xdis
+.. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg

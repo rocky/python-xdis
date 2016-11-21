@@ -21,7 +21,7 @@ from collections import deque
 
 import xdis
 
-from xdis import PYTHON_VERSION, IS_PYPY
+from xdis import IS_PYPY
 from xdis.bytecode import Bytecode
 from xdis.code import iscode
 from xdis.load import check_object_path, load_module
