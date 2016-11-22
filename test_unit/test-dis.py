@@ -70,7 +70,10 @@ class DisTests(unittest.TestCase):
             return namespace['foo']
 
         # Test all small ranges
-        big_lineno_format = _BIG_LINENO_FORMAT_36 if PY36 else _BIG_LINENO_FORMAT
+        if PY36:
+            big_lineno_format = _BIG_LINENO_FORMAT_36
+        else:
+            big_lineno_format = _BIG_LINENO_FORMAT
         for i in range(1, 300):
             expected = big_lineno_format % (i + 2)
             self.do_disassembly(func(i), expected)

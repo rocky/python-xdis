@@ -24,8 +24,10 @@ except ImportError: builtinify = lambda f: f
 
 @builtinify
 def Ord(c):
-    return c if PYTHON3 else ord(c)
-
+    if PYTHON3:
+        return c
+    else:
+        return ord(c)
 
 TYPE_NULL     = '0'
 TYPE_NONE     = 'N'

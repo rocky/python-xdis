@@ -156,7 +156,11 @@ def patch(code):
         i += 1
         if table.get(op,op) >= 90: #opcode.HAVE_ARGUMENT:
             i += 2
-    return bytes(code) if PYTHON3 else str(code)
+
+    if PYTHON3:
+        return bytes(code)
+    else:
+        return str(code)
 
 try: from __pypy__ import builtinify
 except ImportError: builtinify = lambda f: f
