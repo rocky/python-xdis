@@ -2,7 +2,6 @@
 
 import unittest
 
-import six
 import sys
 
 PY32 = sys.version_info[0:2] >= (3, 2)
@@ -34,7 +33,7 @@ class DisTests(unittest.TestCase):
 
     def do_disassembly(self, func, expected):
 
-        co = func.__code__
+        co = func.func_code
         bytecode = Bytecode(co, opc)
         got = bytecode.dis()
 
@@ -67,7 +66,7 @@ class DisTests(unittest.TestCase):
         def func(count):
             namespace = {}
             func = "def foo():\n " + "".join(["\n "] * count + ["spam\n"])
-            six.exec_(func, namespace)
+            exec(func, namespace)
             return namespace['foo']
 
         # Test all small ranges

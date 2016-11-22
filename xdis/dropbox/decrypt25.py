@@ -5,8 +5,6 @@
 # Dropbox Python bytecode decryption tool for Dropbox versions of 1.1x
 # (and possibly earlier) which uses Python bytecode 2.5.
 
-from __future__ import print_function
-
 import types
 import struct
 
@@ -191,7 +189,7 @@ def fix_dir(path):
             data = open(name).read()
             try:
                 c = xmarshal.loads(data[8:])
-            except Exception as e:
+            except Exception(e):
                 print("error", e, repr(e))
                 # print repr(data[8:])
                 continue
@@ -251,13 +249,13 @@ if 0:
         k.sort()
         table = {}
         for i in k:
-            print("%c (%02x %s) =>" %
-                  (ord(i), ord(i), bin(ord(i))), end='')
+            print "%c (%02x %s) =>" % \
+                  (ord(i), ord(i), bin(ord(i))),
             for j,count in m[i].iteritems():
                 if j == i: continue
                 table[ord(i)] = ord(j)
-                print("\t%c (%02x %s) [%d]" %
-                      (ord(j), ord(j), bin(ord(j)), count), end="")
+                print "\t%c (%02x %s) [%d]" % \
+                      (ord(j), ord(j), bin(ord(j)), count),
                 # print("%c (%02x %s) => %c (%02x %s)\t%d\t%s" % (ord(i),ord(i),bin(ord(i)),ord(j),ord(j),bin(ord(j)),ord(j)-ord(i),bin(ord(i)^ord(j)|0x100).replace('0', ' ')))
             print()
         return table

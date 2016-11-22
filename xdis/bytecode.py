@@ -6,7 +6,7 @@ allow running on Python 2.
 import sys, types
 from xdis import PYTHON3
 
-from collections import namedtuple
+from xdis.namedtuple25 import namedtuple
 
 from xdis.util import (get_code_object, code2num, num2code, format_code_info)
 
