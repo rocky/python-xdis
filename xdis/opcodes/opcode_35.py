@@ -87,7 +87,9 @@ if PYTHON_VERSION == 3.5:
     # print(set(dis.opmap.items()) - set(opmap.items()))
     # print(set(opmap.items()) - set(dis.opmap.items()))
 
-    assert all(item in dis.opmap.items() for item in opmap.items())
-    assert all(item in opmap.items() for item in dis.opmap.items())
+    for item in dis.opmap.items():
+        assert item in opmap.items()
+    for item in opmap.items():
+        assert item in opmap.items()
 
 # opcode_35.dump_opcodes(opmap)

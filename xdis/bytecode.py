@@ -8,7 +8,7 @@ from xdis import PYTHON3
 
 from xdis.namedtuple25 import namedtuple
 
-from xdis.util import (get_code_object, code2num, num2code, format_code_info)
+from xdis.util import get_code_object, code2num, num2code, format_code_info
 
 if PYTHON3:
     from io import StringIO
@@ -242,6 +242,12 @@ def op_has_argument(op, opc):
 _Instruction = namedtuple("_Instruction",
      "opname opcode arg argval argrepr has_arg offset starts_line is_jump_target")
 
+def from_traceback(cls, tb):
+    """ Construct a Bytecode from the given traceback """
+    while tb.tb_next:
+        tb = tb.tb_next
+    return cls(tb.tb_frame.f_code, current_offset=tb.tb_lasti)
+
 class Instruction(_Instruction):
     """Details for a bytecode operation
 
@@ -332,13 +338,6 @@ class Bytecode:
         return "{}({!r})".format(self.__class__.__name__,
                                  self._original_object)
 
-    @classmethod
-    def from_traceback(cls, tb):
-        """ Construct a Bytecode from the given traceback """
-        while tb.tb_next:
-            tb = tb.tb_next
-        return cls(tb.tb_frame.f_code, current_offset=tb.tb_lasti)
-
     def info(self):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj)
@@ -420,7 +419,7 @@ def list2bytecode(l, opc, varnames, consts):
         opcode = opc.opmap[opname]
         bc.append(opcode)
         print(opname, operands)
-        gen = (j for j in operands if operands)
+        gen = [j for j in operands if operands]
         for j in gen:
             if opcode in opc.hasconst:
                 thing = consts

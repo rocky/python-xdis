@@ -162,10 +162,6 @@ def patch(code):
     else:
         return str(code)
 
-try: from __pypy__ import builtinify
-except ImportError: builtinify = lambda f: f
-
-@builtinify
 def loads(s):
     """
     xdis.marshal.load() but with its dispatch load_code() function replaced

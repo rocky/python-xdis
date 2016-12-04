@@ -88,7 +88,9 @@ if PYTHON_VERSION == 3.2 and IS_PYPY:
     # print(set(opmap.items()) - set(dis.opmap.items()))
     # for item in dis.opmap.items():
     if IS_PYPY:
-        assert all(item in opmap.items() for item in dis.opmap.items())
-        assert all(item in dis.opmap.items() for item in opmap.items())
+        for item in dis.opmap.items():
+            assert item in opmap.items()
+        for item in opmap.items():
+            assert item in opmap.items()
 
 # opcode_3x.dump_opcodes(opmap)
