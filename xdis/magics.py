@@ -98,16 +98,17 @@ versions = {
     int2magic(3260): '3.4a1+1', # add LOAD_CLASSDEREF;
                                 # allow locals of class to override free vars
     int2magic(3270): '3.4a1+2', # various tweaks to the __class__ closure
-    int2magic(3280): '3.4a1+3', # remove implicit class argument
-    int2magic(3290): '3.4a4',   # changes to __qualname__ computation
-    int2magic(3300): '3.4a4+',  # more changes to __qualname__ computation
-    int2magic(3310): '3.4rc2',  # alter __qualname__ computation
-    int2magic(3350): '3.5',     # 3.5.0, 3.5.1, 3.5.2
-    int2magic(3361): '3.6.0a1', # 3.6.0a1
+    int2magic(3280): '3.4a1+3',   # remove implicit class argument
+    int2magic(3290): '3.4a4',     # changes to __qualname__ computation
+    int2magic(3300): '3.4a4+',    # more changes to __qualname__ computation
+    int2magic(3310): '3.4rc2',    # alter __qualname__ computation
+    int2magic(3350): '3.5',       # 3.5.0, 3.5.1, 3.5.2
+    int2magic(3361): '3.6.0a1',   # 3.6.0a1
     int2magic(3370): '3.6.0a1+1', # 3.6.0a?
-    int2magic(3370): '3.6.0a1+2', # 3.6.0a?
-    int2magic(3372): '3.6.0a3',  # 3.6.0a3
-    int2magic(3378): '3.6.0b2',  # 3.6.0b2
+    int2magic(3370): '3.6.0a1+2', #
+    int2magic(3372): '3.6.0a3',   #
+    int2magic(3378): '3.6.0b2',   #
+    int2magic(3379): '3.6.0rc1',  #
 
     # A weird one
     int2magic(48):    '3.2', # WTF? Python 3.2.5 - PyPy 2.3.4
