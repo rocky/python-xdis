@@ -1,6 +1,39 @@
+2016-12-16  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 3.2.4
+
+2016-12-16  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/opcode_36.py: Fix Python 3.6 disaseembly of
+	CALL_FUNCTION_EX
+
+2016-12-15  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py: Add 3.6rc1 magic
+
+2016-11-23  rocky <rb@dustyfeet.com>
+
+	* setup.py: test_requires => tests_require
+
+2016-11-23  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py: Note we can now handle 2.4 and 2.5
+
+2016-11-21  rocky <rb@dustyfeet.com>
+
+	* README.rst, xdis/main.py: Show supported Pythons; lint main.py
+
+2016-11-13  rocky <rocky@dusytfeet.com>
+
+	* setup.py: Administrivia: Fixes #17
+
+2016-11-13  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: Mak emagic string values unique
+
 2016-11-06  rocky <rb@dustyfeet.com>
 
-	* xdis/version.py: Get ready for release 3.2.3
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.2.3
 
 2016-11-06  rocky <rb@dustyfeet.com>
 

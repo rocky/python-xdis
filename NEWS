@@ -1,3 +1,10 @@
+3.2.4 2016-12-16
+
+- add magic for 3.6rc
+- Fix Python 3.6 disaseembly of CALL_FUNCTION_EX
+- Make magic string values unique
+- Note we can now handle Python 2.4 and 2.5
+
 3.2.3 2016-11-6
 
 - Correct Python 3.0 bytecodes
