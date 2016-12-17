@@ -28,9 +28,22 @@ hasname = list(opcode_3x.hasname)
 hasnargs = list(opcode_3x.hasnargs)
 hasvargs = list(opcode_3x.hasvargs)
 
-def def_op(name, op):
+# oppush[op] => number of stack entries pushed
+oppush = [0] * 256
+
+# oppop[op] => number of stack entries popped
+oppop  = [0] * 256
+
+
+def def_op(name, op, pop=-2, push=-2):
     opname[op] = name
     opmap[name] = op
+    oppush[op] = push
+    oppop[op] = pop
+
+def nargs_op(name, op, pop=-2, push=-2):
+    def_op(name, op, pop, push)
+    hasnargs.append(op)
 
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
@@ -66,20 +79,20 @@ def_op('BUILD_SET_UNPACK', 153)
 def_op('SETUP_ASYNC_WITH', 154)
 rm_op('STORE_MAP', 54, locals())
 
-# These are new since Python 3.6
-def_op('FORMAT_VALUE', 155)
-def_op('BUILD_CONST_KEY_MAP', 156)
-def_op('STORE_ANNOTATION', 127)
-def_op('CALL_FUNCTION_EX', 142)
-def_op('SETUP_ANNOTATIONS', 85)
-def_op('BUILD_STRING', 157)
-def_op('BUILD_TUPLE_UNPACK_WITH_CALL', 158)
-
-# And removed  since Python 3.6
+# These are removed  since Python 3.6
 rm_op('MAKE_CLOSURE', 134, locals())
 rm_op('CALL_FUNCTION_VAR', 140, locals())
 rm_op('CALL_FUNCTION_VAR_KW', 142, locals())
 
+
+# These are new since Python 3.6
+def_op('FORMAT_VALUE', 155)
+def_op('BUILD_CONST_KEY_MAP', 156)
+def_op('STORE_ANNOTATION', 127)
+nargs_op('CALL_FUNCTION_EX', 142, -1, 1)
+def_op('SETUP_ANNOTATIONS', 85)
+def_op('BUILD_STRING', 157)
+def_op('BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
 def updateGlobal():
     globals().update({'python_version': 3.6})
