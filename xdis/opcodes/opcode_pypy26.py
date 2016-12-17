@@ -50,5 +50,7 @@ if PYTHON_VERSION == 2.6 and IS_PYPY:
     import dis
     # print(set(dis.opmap.items()) - set(opmap.items()))
     # print(set(opmap.items()) - set(dis.opmap.items()))
-    assert all(item in opmap.items() for item in dis.opmap.items())
-    assert all(item in dis.opmap.items() for item in opmap.items())
+    for item in dis.opmap.items():
+        assert item in opmap.items()
+    for item in opmap.items():
+        assert item in opmap.items()

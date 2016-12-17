@@ -10,7 +10,10 @@ def _unpack_opargs(code, opc):
     n = len(code)
     i = 0
     while i < n:
-        op = code[i] if PYTHON3 else ord(code[i])
+        if PYTHON3:
+            op = code[i]
+        else:
+            op = ord(code[i])
         offset = i
         i += 1
         arg = None

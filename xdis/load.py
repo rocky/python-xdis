@@ -91,7 +91,7 @@ def load_module(filename, code_objects={}, fast_load=False,
 
     # For reasons I don't understand PyPy 3.2 stores a magic
     # of '0'...  The two values below are for Python 2.x and 3.x respectively
-    if magic[0:1] in ['0', b'0']:
+    if magic[0:1] in ['0', chr(0)]:
         magic = magics.int2magic(3180+7)
 
     try:
@@ -158,14 +158,15 @@ def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
     magic_int (i.e. bytecode associated with some version of Python)
     """
 
-    with open(bytecode_path, 'w') as fp:
-        fp.write(pack('Hcc', magic_int, '\r', '\n'))
-        import time
-        fp.write(pack('I', int(time.time())))
-        if (3000 <= magic_int < 20121):
-            # In Python 3 you need to write out the size mod 2**32 here
-            fp.write(pack('I', filesize))
-        fp.write(marshal.dumps(code))
+    fp = open(bytecode_path, 'w')
+    fp.write(pack('Hcc', magic_int, '\r', '\n'))
+    import time
+    fp.write(pack('I', int(time.time())))
+    if (3000 <= magic_int < 20121):
+        # In Python 3 you need to write out the size mod 2**32 here
+        fp.write(pack('I', filesize))
+    fp.write(marshal.dumps(code))
+    fp.close()
     return
 
 # if __name__ == '__main__':

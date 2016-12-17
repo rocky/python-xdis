@@ -19,13 +19,11 @@ try:
 except NameError:
     from sys import intern
 
-try: from __pypy__ import builtinify
-except ImportError: builtinify = lambda f: f
-
-@builtinify
 def Ord(c):
-    return c if PYTHON3 else ord(c)
-
+    if PYTHON3:
+        return c
+    else:
+        return ord(c)
 
 TYPE_NULL     = '0'
 TYPE_NONE     = 'N'
@@ -703,18 +701,15 @@ _load_dispatch = _FastUnmarshaller.dispatch
 
 version = 1
 
-@builtinify
 def dump(x, f, version=version):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write)
     m.dump(x)
 
-@builtinify
 def load(f):
     um = _Unmarshaller(f.read)
     return um.load()
 
-@builtinify
 def dumps(x, version=version):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
@@ -722,7 +717,6 @@ def dumps(x, version=version):
     m.dump(x)
     return ''.join(buffer)
 
-@builtinify
 def loads(s):
     um = _FastUnmarshaller(s)
     return um.load()
