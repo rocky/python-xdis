@@ -156,7 +156,6 @@ def patch(code):
         i += 1
         if table.get(op,op) >= 90: #opcode.HAVE_ARGUMENT:
             i += 2
-
     if PYTHON3:
         return bytes(code)
     else:
