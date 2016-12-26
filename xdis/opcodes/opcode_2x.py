@@ -81,8 +81,8 @@ def varargs_op(name, op, pop=-1, push=1):
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
- #       OP NAME           OPCODE  POP PUSH
- #-----------------------------------------
+#        OP NAME           OPCODE POP PUSH
+#-----------------------------------------
 _def_op('STOP_CODE',             0,  0,  0)
 _def_op('POP_TOP',               1,  1,  0)
 _def_op('ROT_TWO',               2,  2,  2)

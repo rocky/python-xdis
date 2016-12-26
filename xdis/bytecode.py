@@ -287,7 +287,7 @@ class Instruction(_Instruction):
                 fields.append('(' + self.argrepr + ')')
         return ' '.join(fields).rstrip()
 
-    ## FIXME: figure out how to do _disassemble passing in opnames
+    # FIXME: figure out how to do _disassemble passing in opnames
 
 class Bytecode:
     """The bytecode operations of a piece of code

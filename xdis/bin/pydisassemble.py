@@ -34,7 +34,6 @@ def main():
     Usage_short = """usage: %s FILE...
 Type -h for for full help.""" % program
 
-
     if not (2.5 <= PYTHON_VERSION <= 3.6):
         sys.stderr(print("This works on Python version 2.5..3.6; have %s" % PYTHON_VERSION))
 
@@ -61,7 +60,6 @@ Type -h for for full help.""" % program
             print(opt)
             print(Usage_short, file=sys.stderr)
             sys.exit(1)
-
 
     for file in files:
         if os.path.exists(files[0]):

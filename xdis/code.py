@@ -3,7 +3,8 @@ class Code3:
     """Class for a Python3 code object used when a Python interpreter less than 3 is
     working on Python3 bytecode
     """
-    def __init__(self, co_argcount, co_kwonlyargcount,co_nlocals, co_stacksize, co_flags, co_code,
+    def __init__(self, co_argcount, co_kwonlyargcount, co_nlocals,
+                 co_stacksize, co_flags, co_code,
                  co_consts, co_names, co_varnames, co_filename, co_name,
                  co_firstlineno, co_lnotab, co_freevars, co_cellvars):
         self.co_argcount = co_argcount

@@ -70,7 +70,7 @@ def updateGlobal():
 
 updateGlobal()
 
-if sys.version_info[0:2] == (2,1):
+if sys.version_info[0:2] == (2, 1):
     import dis
     assert len(opname) == len(dis.opname)
     for i in range(len(dis.opname)):

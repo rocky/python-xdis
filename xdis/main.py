@@ -123,7 +123,6 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
         out.write(value.strftime('# Source code size mod 2**32: %d bytes\n'
                                  % source_size))
 
-
     if co.co_filename:
         out.write(format_code_info(co, bytecode_version) + "\n")
         pass
