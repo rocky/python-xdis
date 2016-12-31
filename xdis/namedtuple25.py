@@ -35,7 +35,12 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
         names = list(field_names)
         seen = set()
         for i, name in enumerate(names):
-            if (not min(c.isalnum() or c=='_' for c in name) or _iskeyword(name)
+            bad_name = True
+            for c in name:
+                if not c.isalnum() or c=='_':
+                    bad_name = True
+                    break
+            if (not bad_name or _iskeyword(name)
                 or not name or name[0].isdigit() or name.startswith('_')
                 or name in seen):
                     names[i] = '_%d' % i
