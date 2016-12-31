@@ -33,9 +33,9 @@ def main():
     Usage_short = """usage: %s FILE...
 Type -h for for full help.""" % program
 
-
-    if not (2.4 <= PYTHON_VERSION <= 3.6):
-        sys.stderr.write("This works on Python version 2.4..3.6; have %s\n" % PYTHON_VERSION)
+    if not (2.4 <= PYTHON_VERSION <= 2.7):
+        sys.stderr.write("This works on Python version 2.4..2.7; have %s\n" % PYTHON_VERSION)
+        sys.stderr.write("Try master branch for 3.0+\n")
 
     if len(sys.argv) == 1:
         sys.stderr.write("No file(s) given\n")
@@ -60,7 +60,6 @@ Type -h for for full help.""" % program
             print(opt)
             sys.stderr.write(Usage_short)
             sys.exit(1)
-
 
     for file in files:
         if os.path.exists(files[0]):
