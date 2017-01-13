@@ -176,10 +176,10 @@ name_op('DELETE_GLOBAL',        98,  0,  0)  # ""
 
 const_op('LOAD_CONST',         100,  0,  1)  # Operand is in const list
 name_op('LOAD_NAME',           101,  0,  1)  # Operand is in name list
-varargs_op('BUILD_TUPLE',      102, -1,  1)  # Number of tuple items
-varargs_op('BUILD_LIST',       103, -1,  1)  # Number of list items
-varargs_op('BUILD_SET',        104, -1,  1)  # Number of set items
-varargs_op('BUILD_MAP',        105, -1,  1)  # Always zero for now
+varargs_op('BUILD_TUPLE',      102, -1,  1)  # TOS is count of tuple items
+varargs_op('BUILD_LIST',       103, -1,  1)  # TOS is count of list items
+varargs_op('BUILD_SET',        104, -1,  1)  # TOS is count of set items
+varargs_op('BUILD_MAP',        105, -1,  1)  # TOS is count of kwarg items
 name_op('LOAD_ATTR',           106,  1,  1)  # Operand is in name list
 compare_op('COMPARE_OP',       107,  2,  1)  # Comparison operator
 name_op('IMPORT_NAME',         108,  1,  1)  # Operand is in name list

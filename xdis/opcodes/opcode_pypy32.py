@@ -33,6 +33,7 @@ hasjrel = list(opcode_3x.hasjrel)
 hasjabs = []
 hasname = list(opcode_3x.hasname)
 hasnargs = list(opcode_3x.hasnargs)
+hasvargs = list(opcode_3x.hasvargs)
 
 for op in range(256): opname[op] = '<%r>' % (op,)
 del op
@@ -54,10 +55,14 @@ def jrel_op(name, op, pop=-2, push=-2):
     def_op(opname, opmap, name, op, pop, push)
     hasjrel.append(op)
 
+def varargs_op(opname, opmap, name, op, pop=-1, push=1):
+    def_op(opname, opmap, name, op, pop, push)
+    hasvargs.append(op)
+
 # PyPy only
 # ----------
-name_op(opname, opmap, 'LOOKUP_METHOD', 201, 1, 2)
-def_op(opname, opmap, 'CALL_METHOD', 202)
+name_op(opname, opmap, 'LOOKUP_METHOD',  201, 1, 2)
+varargs_op(opname, opmap, 'CALL_METHOD', 202 -1, 2)
 hasnargs.append(202)
 
 # Used only in single-mode compilation list-comprehension generators

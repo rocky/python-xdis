@@ -45,6 +45,10 @@ def nargs_op(name, op, pop=-2, push=-2):
     def_op(name, op, pop, push)
     hasnargs.append(op)
 
+def varargs_op(name, op, pop=-1, push=1):
+    def_op(name, op, pop, push)
+    hasvargs.append(op)
+
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
@@ -79,7 +83,7 @@ def_op('BUILD_SET_UNPACK', 153)
 def_op('SETUP_ASYNC_WITH', 154)
 rm_op('STORE_MAP', 54, locals())
 
-# These are removed  since Python 3.6
+# These are removed since Python 3.6
 rm_op('MAKE_CLOSURE', 134, locals())
 rm_op('CALL_FUNCTION_VAR', 140, locals())
 rm_op('CALL_FUNCTION_VAR_KW', 142, locals())
@@ -87,7 +91,7 @@ rm_op('CALL_FUNCTION_VAR_KW', 142, locals())
 
 # These are new since Python 3.6
 def_op('FORMAT_VALUE', 155)
-def_op('BUILD_CONST_KEY_MAP', 156)
+varargs_op('BUILD_CONST_KEY_MAP', 156, -1, 1) # TOS is count of kwargs
 def_op('STORE_ANNOTATION', 127)
 nargs_op('CALL_FUNCTION_EX', 142, -1, 1)
 def_op('SETUP_ANNOTATIONS', 85)
