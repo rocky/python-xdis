@@ -17,7 +17,7 @@ from struct import unpack
 
 from xdis.magics import PYTHON_MAGIC_INT
 from xdis.code import Code3
-from xdis import PYTHON3, PYTHON_VERSION
+from xdis import PYTHON3, PYTHON_VERSION, IS_PYPY
 
 internStrings = []
 internObjects = []
@@ -28,7 +28,9 @@ else:
     import unicodedata
 
 def compat_str(s):
-    if PYTHON_VERSION > 3.2:
+    if (PYTHON_VERSION > 3.2 or
+        # FIXME: investigate
+        PYTHON_VERSION == 3.2 and IS_PYPY):
         return s.decode('utf-8', errors='ignore')
     elif PYTHON3:
         return s.decode()
@@ -321,7 +323,13 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
     elif marshalType == 'u':
         strsize = unpack('i', fp.read(4))[0]
         unicodestring = fp.read(strsize)
-        return r_ref(unicodestring.decode('utf-8'), flag)
+        if PYTHON_VERSION == 3.2 and IS_PYPY:
+            # FIXME: this isn't quite right. See
+            # pypy3-2.4.0/lib-python/3/email/message.py
+            # '([^\ud800-\udbff]|\A)[\udc00-\udfff]([^\udc00-\udfff]|\Z)')
+            return r_ref(unicodestring.decode('utf-8', errors='ignore'), flag)
+        else:
+            return r_ref(unicodestring.decode('utf-8'), flag)
     elif marshalType == ')':
         # small tuple - since Python 3.4
         tuplesize = unpack('B', fp.read(1))[0]

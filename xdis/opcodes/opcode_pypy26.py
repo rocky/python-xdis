@@ -35,12 +35,16 @@ def name_op(opname, opmap, name, op, pop=-2, push=-2):
     opcode_26.def_op(opname, opmap, name, op, pop, push)
     hasname.append(op)
 
+def varargs_op(opname, opmap, name, op, pop=-1, push=1):
+    opcode_26.def_op(opname, opmap, name, op, pop, push)
+    hasvargs.append(op)
 
 # PyPy only
 # ----------
-name_op(opname, opmap, 'LOOKUP_METHOD',                201, 1, 2)
-opcode_26.def_op(opname, opmap, 'CALL_METHOD',         202)
-opcode_26.def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
+name_op(opname, opmap, 'LOOKUP_METHOD',                201,  1, 2)
+opcode_26.def_op(opname, opmap, 'CALL_METHOD',         202, -1, 1)
+hasnargs.append(202)
+varargs_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
 opcode_26.def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG',   204)
 
 opcode_26.updateGlobal()
