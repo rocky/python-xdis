@@ -12,7 +12,9 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.opcode_2x import def_op
+from xdis.opcodes.base import def_op
+
+l = locals()
 
 # FIXME: can we DRY this even more?
 
@@ -36,8 +38,8 @@ oppop  = list(opcode_2x.oppop)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
 # 2.2 Bytecodes not in 2.3
-def_op(opname, opmap, 'FOR_LOOP', 114)
-def_op(opname, opmap, 'SET_LINENO', 127)
+def_op(l, 'FOR_LOOP', 114)
+def_op(l, 'SET_LINENO', 127)
 
 for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))

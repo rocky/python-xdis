@@ -1,4 +1,4 @@
-# (C) Copyright 2016 by Rocky Bernstein
+# (C) Copyright 2016-2017 by Rocky Bernstein
 """
 CPython 3.5 bytecode opcodes
 
@@ -9,12 +9,15 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
+from xdis.opcodes.base import def_op, rm_op
+
+l = locals()
 
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
-from xdis.opcodes.opcode_3x import fields2copy, hasfree, rm_op
+from xdis.opcodes.opcode_3x import fields2copy, hasfree
 
 # FIXME: can we DRY this even more?
 
@@ -28,13 +31,11 @@ haslocal = list(opcode_3x.haslocal)
 hasname = list(opcode_3x.hasname)
 hasnargs = list(opcode_3x.hasnargs)
 hasvargs = list(opcode_3x.hasvargs)
-
-def def_op(name, op):
-    opname[op] = name
-    opmap[name] = op
+oppush = list(opcode_3x.oppush)
+oppop  = list(opcode_3x.oppop)
 
 def free_op(name, op):
-    def_op(name, op)
+    def_op(l, name, op)
     hasfree.append(op)
 
 for object in fields2copy:
@@ -42,32 +43,32 @@ for object in fields2copy:
 
 # Below are opcodes changes since Python 3.2
 
-rm_op('STOP_CODE', 0, locals())
-rm_op('STORE_LOCALS', 69, locals())
+rm_op('STOP_CODE', 0, l)
+rm_op('STORE_LOCALS', 69, l)
 
 # These are new since Python 3.3
-def_op('YIELD_FROM', 72)
+def_op(l, 'YIELD_FROM', 72)
 free_op('LOAD_CLASSDEREF', 148)
 
 # These are removed since Python 3.4
 rm_op('WITH_CLEANUP', 81, locals())
 
 # These are new since Python 3.5
-def_op('BINARY_MATRIX_MULTIPLY', 16)
-def_op('INPLACE_MATRIX_MULTIPLY', 17)
-def_op('GET_AITER', 50)
-def_op('GET_ANEXT', 51)
-def_op('BEFORE_ASYNC_WITH', 52)
-def_op('GET_YIELD_FROM_ITER', 69)
-def_op('GET_AWAITABLE', 73)
-def_op('WITH_CLEANUP_START', 81)
-def_op('WITH_CLEANUP_FINISH', 82)
-def_op('BUILD_LIST_UNPACK', 149)
-def_op('BUILD_MAP_UNPACK', 150)
-def_op('BUILD_MAP_UNPACK_WITH_CALL', 151)
-def_op('BUILD_TUPLE_UNPACK', 152)
-def_op('BUILD_SET_UNPACK', 153)
-def_op('SETUP_ASYNC_WITH', 154)
+def_op(l, 'BINARY_MATRIX_MULTIPLY', 16)
+def_op(l, 'INPLACE_MATRIX_MULTIPLY', 17)
+def_op(l, 'GET_AITER', 50)
+def_op(l, 'GET_ANEXT', 51)
+def_op(l, 'BEFORE_ASYNC_WITH', 52)
+def_op(l, 'GET_YIELD_FROM_ITER', 69)
+def_op(l, 'GET_AWAITABLE', 73)
+def_op(l, 'WITH_CLEANUP_START', 81)
+def_op(l, 'WITH_CLEANUP_FINISH', 82)
+def_op(l, 'BUILD_LIST_UNPACK', 149)
+def_op(l, 'BUILD_MAP_UNPACK', 150)
+def_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151)
+def_op(l, 'BUILD_TUPLE_UNPACK', 152)
+def_op(l, 'BUILD_SET_UNPACK', 153)
+def_op(l, 'SETUP_ASYNC_WITH', 154)
 rm_op('STORE_MAP', 54, locals())
 
 def updateGlobal():

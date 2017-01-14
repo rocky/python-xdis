@@ -13,7 +13,9 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.opcode_2x import def_op
+from xdis.opcodes.base import def_op
+
+l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
@@ -46,10 +48,10 @@ def updateGlobal():
     return
 
 # Bytecodes added since 2.3
-def_op(opname, opmap, 'NOP',           9,  0,  0)
-def_op(opname, opmap, 'LIST_APPEND',  18,  2,  1)  # Calls list.append(TOS[-i], TOS).
+def_op(l, 'NOP',           9,  0,  0)
+def_op(l, 'LIST_APPEND',  18,  2,  1)  # Calls list.append(TOS[-i], TOS).
                                                    # Used to implement list comprehensions.
-def_op(opname, opmap, 'YIELD_VALUE',  86,  1,  0)
+def_op(l, 'YIELD_VALUE',  86,  1,  0)
 
 updateGlobal()
 

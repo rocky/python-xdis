@@ -7,13 +7,13 @@ opcodes in Python's dis.py library.
 
 from copy import deepcopy
 
-import sys
+from xdis.opcodes.base import def_op
+
+l = locals()
 
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
-
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.opcode_2x import def_op
 
 # FIXME: can we DRY this even more?
 
@@ -58,8 +58,8 @@ rm_op('STORE_DEREF', 137)
 
 
 # 2.0 Bytecodes not in 2.3
-def_op(opname, opmap, 'FOR_LOOP', 114)
-def_op(opname, opmap, 'SET_LINENO', 127)
+def_op(l, opname, opmap, 'FOR_LOOP', 114)
+def_op(l, opname, opmap, 'SET_LINENO', 127)
 
 for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))
@@ -77,6 +77,7 @@ def updateGlobal():
 
 updateGlobal()
 
+import sys
 if sys.version_info[0:2] == (2, 0):
     import dis
     assert len(opname) == len(dis.opname)

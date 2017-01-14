@@ -11,9 +11,11 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_27 as opcode_27
-from xdis.opcodes.opcode_2x import def_op, rm_op
+from xdis.opcodes.base import def_op, name_op, varargs_op
 
 # FIXME: can we DRY this even more?
+
+l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
@@ -23,13 +25,16 @@ hasconst      = list(opcode_27.hasconst)
 hascompare    = list(opcode_27.hascompare)
 hasfree       = list(opcode_27.hasfree)
 hasjabs       = list(opcode_27.hasjabs)
-hasjrel       = list(opcode_27.hasjrel)
+hasjrel       = list(opcode_27.haslocal)
 haslocal      = list(opcode_27.haslocal)
 hasname       = list(opcode_27.hasname)
 hasnargs      = list(opcode_27.hasnargs)
 hasvargs      = list(opcode_27.hasvargs)
 opmap         = deepcopy(opcode_27.opmap)
 opname        = deepcopy(opcode_27.opname)
+oppush        = list(opcode_27.oppush)
+oppop         = list(opcode_27.oppop)
+
 EXTENDED_ARG  = opcode_27.EXTENDED_ARG
 
 def updateGlobal(version):
@@ -43,30 +48,21 @@ def updateGlobal(version):
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
 def jrel_op(name, op, pop=-2, push=-2):
-    def_op(opname, opmap, name, op, pop, push)
+    def_op(l, name, op, pop, push)
     hasjrel.append(op)
 
 def jabs_op(name, op, pop=-2, push=-2):
-    def_op(opname, opmap, name, op, pop, push)
+    def_op(l, name, op, pop, push)
     hasjabs.append(op)
-
-def name_op(opname, opmap, name, op, pop=-2, push=-2):
-    opcode_27.def_op(opname, opmap, name, op, pop, push)
-    hasname.append(op)
-
-
-def varargs_op(opname, opmap, name, op, pop=-1, push=1):
-    opcode_27.def_op(opname, opmap, name, op, pop, push)
-    hasvargs.append(op)
 
 # PyPy only
 # ----------
-name_op(opname, opmap,  'LOOKUP_METHOD',  201,  1, 2)
-varargs_op(opname, opmap, 'CALL_METHOD', 202, -1, 1)
+name_op(l,    'LOOKUP_METHOD',  201,  1, 2)
+varargs_op(l, 'CALL_METHOD', 202, -1, 1)
 hasnargs.append(202)
 
 # Used only in single-mode compilation list-comprehension generators
-def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
+def_op(l, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
 jrel_op('JUMP_IF_NOT_DEBUG', 204)
@@ -83,6 +79,3 @@ if PYTHON_VERSION == 2.7 and IS_PYPY:
     # print(set(opmap.items()) - set(dis.opmap.items()))
     assert all(item in opmap.items() for item in dis.opmap.items())
     assert all(item in dis.opmap.items() for item in opmap.items())
-
-# Remove methods so importers aren't tempted to use it.
-del name_op, jrel_op, jabs_op

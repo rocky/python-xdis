@@ -8,13 +8,16 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
+from xdis.opcodes.base import def_op, rm_op
+
+l = locals()
 
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
 
-from xdis.opcodes.opcode_3x import fields2copy, rm_op
+from xdis.opcodes.opcode_3x import fields2copy
 
 # FIXME: can we DRY this even more?
 
@@ -29,13 +32,11 @@ haslocal = list(opcode_3x.haslocal)
 hasname = list(opcode_3x.hasname)
 hasnargs = list(opcode_3x.hasnargs)
 hasvargs = list(opcode_3x.hasvargs)
-
-def def_op(name, op):
-    opname[op] = name
-    opmap[name] = op
+oppush = list(opcode_3x.oppush)
+oppop  = list(opcode_3x.oppop)
 
 def free_op(name, op):
-    def_op(name, op)
+    def_op(l, name, op)
     hasfree.append(op)
 
 for object in fields2copy:
@@ -47,7 +48,7 @@ rm_op('STOP_CODE', 0, locals())
 rm_op('STORE_LOCALS', 69, locals())
 
 # These are new since Python 3.3
-def_op('YIELD_FROM', 72)
+def_op(l, 'YIELD_FROM', 72)
 free_op('LOAD_CLASSDEREF', 148)
 
 def updateGlobal():

@@ -8,6 +8,9 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
+from xdis.opcodes.base import (def_op, name_op, varargs_op)
+
+l = locals()
 
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
@@ -41,32 +44,18 @@ del op
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
-def def_op(opname, opmap, name, op, pop=-2, push=-2):
-    opname[op] = name
-    opmap[name] = op
-    oppush[op] = push
-    oppop[op] = pop
-
-def name_op(opname, opmap, name, op, pop=-2, push=-2):
-    def_op(opname, opmap, name, op, pop, push)
-    hasname.append(op)
-
 def jrel_op(name, op, pop=-2, push=-2):
-    def_op(opname, opmap, name, op, pop, push)
+    def_op(l, opname, opmap, name, op, pop, push)
     hasjrel.append(op)
-
-def varargs_op(opname, opmap, name, op, pop=-1, push=1):
-    def_op(opname, opmap, name, op, pop, push)
-    hasvargs.append(op)
 
 # PyPy only
 # ----------
-name_op(opname, opmap, 'LOOKUP_METHOD',  201, 1, 2)
-varargs_op(opname, opmap, 'CALL_METHOD', 202 -1, 2)
+name_op(l, 'LOOKUP_METHOD',  201, 1, 2)
+varargs_op(l, 'CALL_METHOD', 202 -1, 2)
 hasnargs.append(202)
 
 # Used only in single-mode compilation list-comprehension generators
-def_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
+def_op(l, l, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
 jrel_op('JUMP_IF_NOT_DEBUG', 204)

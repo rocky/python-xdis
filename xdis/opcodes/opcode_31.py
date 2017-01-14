@@ -8,12 +8,15 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
+from xdis.opcodes.base import def_op, rm_op
+
+l = locals()
 
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
-from xdis.opcodes.opcode_3x import fields2copy, rm_op
+from xdis.opcodes.opcode_3x import fields2copy
 
 # FIXME: can we DRY this even more?
 
@@ -28,25 +31,23 @@ haslocal = list(opcode_3x.haslocal)
 hasname = list(opcode_3x.hasname)
 hasnargs = list(opcode_3x.hasnargs)
 hasvargs = list(opcode_3x.hasvargs)
+oppush = list(opcode_3x.oppush)
+oppop  = list(opcode_3x.oppop)
 
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
-def def_op(name, op):
-    opname[op] = name
-    opmap[name] = op
-
 # These are in Python 3.x but not in Python 3.1
-rm_op('DUP_TOP_TWO',    5, locals())
-rm_op('DELETE_DEREF', 138, locals())
-rm_op('SETUP_WITH',   143, locals())
+rm_op('DUP_TOP_TWO',    5, l)
+rm_op('DELETE_DEREF', 138, l)
+rm_op('SETUP_WITH',   143, l)
 
 # These are in Python 3.1 but not Python 3.x
-def_op('ROT_FOUR', 5)
-def_op('DUP_TOPX', 99)
+def_op(l, 'ROT_FOUR', 5)
+def_op(l, 'DUP_TOPX', 99)
 
 # This op is in 3.x but its opcode is a 144 instead
-def_op('EXTENDED_ARG', 143)
+def_op(l, 'EXTENDED_ARG', 143)
 
 # There are no opcodes to add or change.
 # If there were, they'd be listed below.

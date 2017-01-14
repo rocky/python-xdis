@@ -14,9 +14,9 @@ import sys
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.opcode_2x import def_op
+from xdis.opcodes.base import (def_op, rm_op)
 
-# FIXME: can we DRY this even more?
+l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
@@ -37,22 +37,18 @@ oppop  = list(opcode_2x.oppop)
 
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
-def rm_op(name, op):
-    # opname is an array, so we need to keep the position in there.
-    opname[op] = '<%s>' % op
-
 # 2.3 Bytecodes not in 2.1
-rm_op('BINARY_FLOOR_DIVIDE', 26)
-rm_op('BINARY_TRUE_DIVIDE', 27)
-rm_op('BINARY_INPLACE_DIVIDE', 28)
-rm_op('INPLACE_TURE_DIVIDE', 29)
-rm_op('GET_ITER', 68)
-rm_op('YIELD_VALUE', 86)
-rm_op('FOR_ITER', 93)
+rm_op('BINARY_FLOOR_DIVIDE',  26, l)
+rm_op('BINARY_TRUE_DIVIDE',   27, l)
+rm_op('INPLACE_FLOOR_DIVIDE', 28, l)
+rm_op('INPLACE_TRUE_DIVIDE',  29, l)
+rm_op('GET_ITER', 68, l)
+rm_op('YIELD_VALUE', 86, l)
+rm_op('FOR_ITER', 93, l)
 
 # 2.1 Bytecodes not in 2.3
-def_op(opname, opmap, 'FOR_LOOP', 114)
-def_op(opname, opmap, 'SET_LINENO', 127)
+def_op(l, 'FOR_LOOP',   114)
+def_op(l, 'SET_LINENO', 127)
 
 for object in opcode_2x.fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_2x, object))

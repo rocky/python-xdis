@@ -13,9 +13,9 @@ from xdis.bytecode import findlinestarts, findlabels
 from xdis.opcodes.opcode_2x import def_op
 import xdis.opcodes.opcode_25 as opcode_25
 
-# FIXME: can we DRY this even more?
-
 # Make a *copy* of opcode_2x values so we don't pollute 2x
+
+l = locals()
 
 HAVE_ARGUMENT = opcode_25.HAVE_ARGUMENT
 cmp_op = list(opcode_25.cmp_op)
@@ -46,7 +46,7 @@ def updateGlobal():
     return
 
 # 2.6
-def_op(opname, opmap, 'STORE_MAP', 54, 3, 2)
+def_op(l, 'STORE_MAP', 54, 3, 2)
 
 updateGlobal()
 

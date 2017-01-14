@@ -12,8 +12,10 @@ from copy import deepcopy
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
-from xdis.opcodes.opcode_2x import def_op
+from xdis.opcodes.base import def_op
 import xdis.opcodes.opcode_24 as opcode_24
+
+l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 HAVE_ARGUMENT = opcode_24.HAVE_ARGUMENT
@@ -45,7 +47,7 @@ def updateGlobal():
     return
 
 # 2.5
-def_op(opname, opmap, 'WITH_CLEANUP', 81)
+def_op(l, 'WITH_CLEANUP', 81)
 
 updateGlobal()
 

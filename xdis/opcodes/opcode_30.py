@@ -9,12 +9,16 @@ parsing and semantic interpretation.
 
 from copy import deepcopy
 
+from xdis.opcodes.base import def_op, rm_op
+
+l = locals()
+
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
 
-from xdis.opcodes.opcode_3x import fields2copy, rm_op
+from xdis.opcodes.opcode_3x import fields2copy
 
 # FIXME: can we DRY this even more?
 
@@ -41,24 +45,18 @@ for object in fields2copy:
 
 # These are in Python 3.x but not in Python 3.0
 
-rm_op('DUP_TOP_TWO',            5, locals())
-rm_op('JUMP_IF_FALSE_OR_POP', 111, locals())
-rm_op('JUMP_IF_TRUE_OR_POP',  112, locals())
-rm_op('POP_JUMP_IF_FALSE',    114, locals())
-rm_op('POP_JUMP_IF_TRUE',     115, locals())
-rm_op('DELETE_DEREF',         138, locals())
-rm_op('SETUP_WITH',           143, locals())
-rm_op('LIST_APPEND',          145, locals())
-rm_op('MAP_ADD',              147, locals())
-
-def def_op(name, op, pop=-2, push=-2):
-    opname[op] = name
-    opmap[name] = op
-    oppush[op] = push
-    oppop[op] = pop
+rm_op('DUP_TOP_TWO',            5, l)
+rm_op('JUMP_IF_FALSE_OR_POP', 111, l)
+rm_op('JUMP_IF_TRUE_OR_POP',  112, l)
+rm_op('POP_JUMP_IF_FALSE',    114, l)
+rm_op('POP_JUMP_IF_TRUE',     115, l)
+rm_op('DELETE_DEREF',         138, l)
+rm_op('SETUP_WITH',           143, l)
+rm_op('LIST_APPEND',          145, l)
+rm_op('MAP_ADD',              147, l)
 
 def jrel_op(name, op, pop=0, push=0):
-    def_op(name, op, pop, push)
+    def_op(l, name, op, pop, push)
     hasjrel.append(op)
 
     # These are are in 3.0 but are not in 3.x or in 3.x they have
@@ -66,16 +64,16 @@ def jrel_op(name, op, pop=0, push=0):
 # changes, these have to be applied *after* removing ops (with
 # the same name).
 
-def_op('ROT_FOUR',        5,  4, 4)
-def_op('SET_ADD',        17,  1, 0)
-def_op('LIST_APPEND',    18,  2, 1)
-def_op('DUP_TOPX',       99)
+def_op(l, 'ROT_FOUR',        5,  4, 4)
+def_op(l, 'SET_ADD',        17,  1, 0)
+def_op(l, 'LIST_APPEND',    18,  2, 1)
+def_op(l, 'DUP_TOPX',       99)
 
 jrel_op('JUMP_IF_FALSE', 111, 1, 1)
 jrel_op('JUMP_IF_TRUE',  112, 1, 1)
 
 # This op is in 3.x but its opcode is a 144 instead
-def_op('EXTENDED_ARG',  143)
+def_op(l, 'EXTENDED_ARG',  143)
 
 def updateGlobal():
     # JUMP_OPs are used in verification are set in the scanner

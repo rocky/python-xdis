@@ -9,7 +9,7 @@ When the two are the same, you can simply use Python's built-in marshal.loads()
 to produce a code object
 """
 
-# Copyright (c) 2015-2016 by Rocky Bernstein
+# Copyright (c) 2015-2017 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
 import sys, types
@@ -51,7 +51,7 @@ def load_code(fp, magic_int, code_objects={}):
     """
     marshal.load() written in Python. When the Python bytecode magic loaded is the
     same magic for the running Python interpreter, we can simply use the
-    Python-supplied mashal.load().
+    Python-supplied marshal.load().
 
     However we need to use this when versions are different since the internal
     code structures are different. Sigh.

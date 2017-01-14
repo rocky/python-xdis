@@ -28,6 +28,8 @@ haslocal = list(opcode_3x.haslocal)
 hasname = list(opcode_3x.hasname)
 hasnargs = list(opcode_3x.hasnargs)
 hasvargs = list(opcode_3x.hasvargs)
+oppush = list(opcode_3x.oppush)
+oppop  = list(opcode_3x.oppop)
 
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
