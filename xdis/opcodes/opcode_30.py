@@ -45,15 +45,15 @@ for object in fields2copy:
 
 # These are in Python 3.x but not in Python 3.0
 
-rm_op('DUP_TOP_TWO',            5, l)
-rm_op('JUMP_IF_FALSE_OR_POP', 111, l)
-rm_op('JUMP_IF_TRUE_OR_POP',  112, l)
-rm_op('POP_JUMP_IF_FALSE',    114, l)
-rm_op('POP_JUMP_IF_TRUE',     115, l)
-rm_op('DELETE_DEREF',         138, l)
-rm_op('SETUP_WITH',           143, l)
-rm_op('LIST_APPEND',          145, l)
-rm_op('MAP_ADD',              147, l)
+rm_op(l, 'DUP_TOP_TWO',            5)
+rm_op(l, 'JUMP_IF_FALSE_OR_POP', 111)
+rm_op(l, 'JUMP_IF_TRUE_OR_POP',  112)
+rm_op(l, 'POP_JUMP_IF_FALSE',    114)
+rm_op(l, 'POP_JUMP_IF_TRUE',     115)
+rm_op(l, 'DELETE_DEREF',         138)
+rm_op(l, 'SETUP_WITH',           143)
+rm_op(l, 'LIST_APPEND',          145)
+rm_op(l, 'MAP_ADD',              147)
 
 def jrel_op(name, op, pop=0, push=0):
     def_op(l, name, op, pop, push)

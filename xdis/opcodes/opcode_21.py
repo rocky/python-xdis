@@ -38,13 +38,13 @@ oppop  = list(opcode_2x.oppop)
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
 # 2.3 Bytecodes not in 2.1
-rm_op('BINARY_FLOOR_DIVIDE',  26, l)
-rm_op('BINARY_TRUE_DIVIDE',   27, l)
-rm_op('INPLACE_FLOOR_DIVIDE', 28, l)
-rm_op('INPLACE_TRUE_DIVIDE',  29, l)
-rm_op('GET_ITER', 68, l)
-rm_op('YIELD_VALUE', 86, l)
-rm_op('FOR_ITER', 93, l)
+rm_op(l, 'BINARY_FLOOR_DIVIDE',  26)
+rm_op(l, 'BINARY_TRUE_DIVIDE',   27)
+rm_op(l, 'INPLACE_FLOOR_DIVIDE', 28)
+rm_op(l, 'INPLACE_TRUE_DIVIDE',  29)
+rm_op(l, 'GET_ITER', 68)
+rm_op(l, 'YIELD_VALUE', 86)
+rm_op(l, 'FOR_ITER', 93)
 
 # 2.1 Bytecodes not in 2.3
 def_op(l, 'FOR_LOOP',   114)

@@ -49,8 +49,8 @@ for object in fields2copy:
 
 # Below are opcodes changes since Python 3.2
 
-rm_op('STOP_CODE', 0, l)
-rm_op('STORE_LOCALS', 69, l)
+rm_op(l, 'STOP_CODE', 0)
+rm_op(l, 'STORE_LOCALS', 69)
 
 # These are new since Python 3.3
 def_op(l, 'YIELD_FROM', 72)
@@ -58,30 +58,31 @@ def_op(l, 'LOAD_CLASSDEREF', 148)
 hasfree.append(148)
 
 # These are removed since Python 3.4
-rm_op('WITH_CLEANUP', 81, l)
+rm_op(l, 'WITH_CLEANUP', 81)
 
 # These are new since Python 3.5
-def_op(l, 'BINARY_MATRIX_MULTIPLY', 16)
-def_op(l, 'INPLACE_MATRIX_MULTIPLY', 17)
-def_op(l, 'GET_AITER', 50)
-def_op(l, 'GET_ANEXT', 51)
-def_op(l, 'BEFORE_ASYNC_WITH', 52)
-def_op(l, 'GET_YIELD_FROM_ITER', 69)
-def_op(l, 'GET_AWAITABLE', 73)
-def_op(l, 'WITH_CLEANUP_START', 81)
-def_op(l, 'WITH_CLEANUP_FINISH', 82)
-def_op(l, 'BUILD_LIST_UNPACK', 149)
-def_op(l, 'BUILD_MAP_UNPACK', 150)
+def_op(l, 'BINARY_MATRIX_MULTIPLY',      16)
+def_op(l, 'INPLACE_MATRIX_MULTIPLY',     17)
+def_op(l, 'GET_AITER',                   50)
+def_op(l, 'GET_ANEXT',                   51)
+def_op(l, 'BEFORE_ASYNC_WITH',           52)
+def_op(l, 'GET_YIELD_FROM_ITER',         69)
+def_op(l, 'GET_AWAITABLE',               73)
+def_op(l, 'WITH_CLEANUP_START',          81)
+def_op(l, 'WITH_CLEANUP_FINISH',         82)
+def_op(l, 'BUILD_LIST_UNPACK',          149)
+def_op(l, 'BUILD_MAP_UNPACK',           150)
 def_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151)
-def_op(l, 'BUILD_TUPLE_UNPACK', 152)
-def_op(l, 'BUILD_SET_UNPACK', 153)
-def_op(l, 'SETUP_ASYNC_WITH', 154)
-rm_op('STORE_MAP', 54, locals())
+def_op(l, 'BUILD_TUPLE_UNPACK',         152)
+def_op(l, 'BUILD_SET_UNPACK',           153)
+def_op(l, 'SETUP_ASYNC_WITH',           154)
+
+rm_op(l, 'STORE_MAP', 54)
 
 # These are removed since Python 3.6
-rm_op('MAKE_CLOSURE', 134, locals())
-rm_op('CALL_FUNCTION_VAR', 140, locals())
-rm_op('CALL_FUNCTION_VAR_KW', 142, locals())
+rm_op(l, 'MAKE_CLOSURE',         134)
+rm_op(l, 'CALL_FUNCTION_VAR',    140)
+rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
 
 
 # These are new since Python 3.6

@@ -38,9 +38,9 @@ for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
 # These are in Python 3.x but not in Python 3.1
-rm_op('DUP_TOP_TWO',    5, l)
-rm_op('DELETE_DEREF', 138, l)
-rm_op('SETUP_WITH',   143, l)
+rm_op(l, 'DUP_TOP_TWO',    5)
+rm_op(l, 'DELETE_DEREF', 138)
+rm_op(l, 'SETUP_WITH',   143)
 
 # These are in Python 3.1 but not Python 3.x
 def_op(l, 'ROT_FOUR', 5)

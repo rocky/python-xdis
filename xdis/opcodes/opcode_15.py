@@ -182,38 +182,6 @@ EXTENDED_ARG = 143
 
 fields2copy = """cmp_op hasjabs""".split()
 
-def def_op(opname, opmap, name, op):
-    opname[op] = name
-    opmap[name] = op
-
-def rm_op(name, op, l):
-    # opname is an array, so we need to keep the position in there.
-    l['opname'][op] = ''
-
-    if op in l['hasconst']:
-       l['hasconst'].remove(op)
-    if op in l['hascompare']:
-       l['hascompare'].remove(op)
-    if op in l['hasfree']:
-       l['hasfree'].remove(op)
-    if op in l['hasjabs']:
-       l['hasjabs'].remove(op)
-    if op in l['hasname']:
-       l['hasname'].remove(op)
-    if op in l['hasjrel']:
-       l['hasjrel'].remove(op)
-    if op in l['haslocal']:
-       l['haslocal'].remove(op)
-    if op in l['hasname']:
-       l['hasname'].remove(op)
-    if op in l['hasnargs']:
-       l['hasnargs'].remove(op)
-    if op in l['hasvargs']:
-       l['hasvargs'].remove(op)
-
-    assert l['opmap'][name] == op
-    del l['opmap'][name]
-
 def updateGlobal():
     globals().update({'python_version': 1.5})
     # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y

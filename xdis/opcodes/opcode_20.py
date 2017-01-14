@@ -7,7 +7,7 @@ opcodes in Python's dis.py library.
 
 from copy import deepcopy
 
-from xdis.opcodes.base import def_op
+from xdis.opcodes.base import def_op, rm_op
 
 l = locals()
 
@@ -36,25 +36,21 @@ oppop  = list(opcode_2x.oppop)
 
 EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 
-def rm_op(name, op):
-    # opname is an array, so we need to keep the position in there.
-    opname[op] = '<%s>' % op
-
 # 2.3 Bytecodes not in 2.0
-rm_op('BINARY_FLOOR_DIVIDE', 26)
-rm_op('BINARY_TRUE_DIVIDE', 27)
-rm_op('BINARY_INPLACE_DIVIDE', 28)
-rm_op('INPLACE_TURE_DIVIDE', 29)
-rm_op('GET_ITER', 68)
-rm_op('YIELD_VALUE', 86)
-rm_op('FOR_ITER', 93)
+rm_op(l, 'BINARY_FLOOR_DIVIDE', 26)
+rm_op(l, 'BINARY_TRUE_DIVIDE', 27)
+rm_op(l, 'BINARY_INPLACE_DIVIDE', 28)
+rm_op(l, 'INPLACE_TURE_DIVIDE', 29)
+rm_op(l, 'GET_ITER', 68)
+rm_op(l, 'YIELD_VALUE', 86)
+rm_op(l, 'FOR_ITER', 93)
 
 # 2.1 Bytecodes not in 2.0
-rm_op('CONTINUE_LOOP', 119)
-rm_op('MAKE_CLOSURE', 134)
-rm_op('LOAD_CLOSURE', 135)
-rm_op('LOAD_DEREF', 136)
-rm_op('STORE_DEREF', 137)
+rm_op(l, 'CONTINUE_LOOP', 119)
+rm_op(l, 'MAKE_CLOSURE', 134)
+rm_op(l, 'LOAD_CLOSURE', 135)
+rm_op(l, 'LOAD_DEREF', 136)
+rm_op(l, 'STORE_DEREF', 137)
 
 
 # 2.0 Bytecodes not in 2.3

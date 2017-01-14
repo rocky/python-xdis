@@ -44,8 +44,8 @@ for object in fields2copy:
 
 # Below are opcodes changes since Python 3.2
 
-rm_op('STOP_CODE', 0, locals())
-rm_op('STORE_LOCALS', 69, locals())
+rm_op(l, 'STOP_CODE',     0)
+rm_op(l, 'STORE_LOCALS', 69)
 
 # These are new since Python 3.3
 def_op(l, 'YIELD_FROM', 72)

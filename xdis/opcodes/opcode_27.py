@@ -70,14 +70,14 @@ def_op(l, 'WITH_CLEANUP', 81, -1, -1)
 def_op(l, 'STORE_MAP',    54,  3,  2)
 
 # 2.7
-rm_op('BUILD_MAP',     104, l)
-rm_op('LOAD_ATTR',     105, l)
-rm_op('COMPARE_OP',    106, l)
-rm_op('IMPORT_NAME',   107, l)
-rm_op('IMPORT_FROM',   108, l)
-rm_op('JUMP_IF_FALSE', 111, l)
-rm_op('EXTENDED_ARG',  143, l)
-rm_op('JUMP_IF_TRUE',  112, l)
+rm_op(l, 'BUILD_MAP',     104)
+rm_op(l, 'LOAD_ATTR',     105)
+rm_op(l, 'COMPARE_OP',    106)
+rm_op(l, 'IMPORT_NAME',   107)
+rm_op(l, 'IMPORT_FROM',   108)
+rm_op(l, 'JUMP_IF_FALSE', 111)
+rm_op(l, 'EXTENDED_ARG',  143)
+rm_op(l, 'JUMP_IF_TRUE',  112)
 
 def_op(l, 'LIST_APPEND', 94, 2, 1) # Calls list.append(TOS[-i], TOS).
                                                # Used to implement list comprehensions.

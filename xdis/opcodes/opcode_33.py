@@ -39,7 +39,7 @@ for object in fields2copy:
 
 # Below are opcodes since Python 3.2
 
-rm_op('STOP_CODE', 0, l)
+rm_op(l, 'STOP_CODE', 0)
 
 def_op(l, 'YIELD_FROM', 72)
 

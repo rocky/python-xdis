@@ -8,7 +8,7 @@ def name_op(l, op_name, op_code, pop=-2, push=-2):
     def_op(l, op_name, op_code, push, pop)
     l['hasname'].append(op_code)
 
-def rm_op(name, op, l):
+def rm_op(l, name, op):
     # opname is an array, so we need to keep the position in there.
     l['opname'][op] = '<%s>' % op
 
