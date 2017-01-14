@@ -12,14 +12,14 @@ from copy import deepcopy
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
-from xdis.opcodes.base import def_op
+from xdis.opcodes.base import def_op, cmp_op
 import xdis.opcodes.opcode_24 as opcode_24
 
 l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 HAVE_ARGUMENT = opcode_24.HAVE_ARGUMENT
-cmp_op = list(opcode_24.cmp_op)
+cmp_op = list(cmp_op)
 hasconst = list(opcode_24.hasconst)
 hascompare = list(opcode_24.hascompare)
 hasfree = list(opcode_24.hasfree)

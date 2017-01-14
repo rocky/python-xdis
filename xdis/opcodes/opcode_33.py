@@ -1,3 +1,4 @@
+# (C) Copyright 2017 by Rocky Bernstein
 """
 CPython 3.3 bytecode opcodes
 

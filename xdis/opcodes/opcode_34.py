@@ -1,3 +1,4 @@
+# (C) Copyright 2017 by Rocky Bernstein
 """
 CPython 3.4 bytecode opcodes
 
@@ -8,7 +9,7 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
-from xdis.opcodes.base import def_op, rm_op
+from xdis.opcodes.base import def_op, free_op, rm_op
 
 l = locals()
 
@@ -35,10 +36,6 @@ hasvargs = list(opcode_3x.hasvargs)
 oppush = list(opcode_3x.oppush)
 oppop  = list(opcode_3x.oppop)
 
-def free_op(name, op):
-    def_op(l, name, op)
-    hasfree.append(op)
-
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
@@ -48,8 +45,8 @@ rm_op(l, 'STOP_CODE',     0)
 rm_op(l, 'STORE_LOCALS', 69)
 
 # These are new since Python 3.3
-def_op(l, 'YIELD_FROM', 72)
-free_op('LOAD_CLASSDEREF', 148)
+def_op(l,  'YIELD_FROM',       72)
+free_op(l, 'LOAD_CLASSDEREF', 148)
 
 def updateGlobal():
     # JUMP_OPs are used in verification are set in the scanner

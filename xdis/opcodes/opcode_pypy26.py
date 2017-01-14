@@ -11,13 +11,15 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_26 as opcode_26
-
+from xdis.opcodes.base import cmp_op, def_op, name_op, varargs_op
 # FIXME: can we DRY this even more?
+
+l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
 HAVE_ARGUMENT = opcode_26.HAVE_ARGUMENT
-cmp_op        = list(opcode_26.cmp_op)
+cmp_op        = list(cmp_op)
 hasconst      = list(opcode_26.hasconst)
 hascompare    = list(opcode_26.hascompare)
 hasfree       = list(opcode_26.hasfree)
@@ -31,21 +33,13 @@ opmap         = deepcopy(opcode_26.opmap)
 opname        = deepcopy(opcode_26.opname)
 EXTENDED_ARG  = opcode_26.EXTENDED_ARG
 
-def name_op(opname, opmap, name, op, pop=-2, push=-2):
-    opcode_26.def_op(opname, opmap, name, op, pop, push)
-    hasname.append(op)
-
-def varargs_op(opname, opmap, name, op, pop=-1, push=1):
-    opcode_26.def_op(opname, opmap, name, op, pop, push)
-    hasvargs.append(op)
-
 # PyPy only
 # ----------
-name_op(opname, opmap, 'LOOKUP_METHOD',                201,  1, 2)
-opcode_26.def_op(opname, opmap, 'CALL_METHOD',         202, -1, 1)
+name_op(l, 'LOOKUP_METHOD',          201,  1, 2)
+def_op(l,  'CALL_METHOD',            202, -1, 1)
 hasnargs.append(202)
-varargs_op(opname, opmap, 'BUILD_LIST_FROM_ARG', 203)
-opcode_26.def_op(opname, opmap, 'JUMP_IF_NOT_DEBUG',   204)
+varargs_op(l, 'BUILD_LIST_FROM_ARG', 203)
+def_op(l, 'JUMP_IF_NOT_DEBUG',       204)
 
 opcode_26.updateGlobal()
 

@@ -9,7 +9,7 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
-from xdis.opcodes.base import def_op, rm_op, varargs_op
+from xdis.opcodes.base import def_op, nargs_op, rm_op, varargs_op
 
 l = locals()
 
@@ -39,10 +39,6 @@ oppush = [0] * 256
 # oppop[op] => number of stack entries popped
 oppop  = [0] * 256
 
-
-def nargs_op(name, op, pop=-2, push=-2):
-    def_op(l, name, op, pop, push)
-    hasnargs.append(op)
 
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
@@ -89,7 +85,7 @@ rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
 def_op(l, 'FORMAT_VALUE', 155)
 varargs_op(l, 'BUILD_CONST_KEY_MAP', 156, -1, 1) # TOS is count of kwargs
 def_op(l, 'STORE_ANNOTATION', 127)
-nargs_op('CALL_FUNCTION_EX', 142, -1, 1)
+nargs_op(l, 'CALL_FUNCTION_EX', 142, -1, 1)
 def_op(l, 'SETUP_ANNOTATIONS', 85)
 def_op(l, 'BUILD_STRING', 157)
 def_op(l, 'BUILD_TUPLE_UNPACK_WITH_CALL', 158)

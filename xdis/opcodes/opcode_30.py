@@ -9,7 +9,7 @@ parsing and semantic interpretation.
 
 from copy import deepcopy
 
-from xdis.opcodes.base import def_op, rm_op
+from xdis.opcodes.base import def_op, rm_op, cmp_op
 
 l = locals()
 
@@ -25,7 +25,7 @@ from xdis.opcodes.opcode_3x import fields2copy
 opmap = {}
 opname = [''] * 256
 
-cmp_op     = list(opcode_3x.cmp_op)
+cmp_op     = list(cmp_op)
 hasconst   = list(opcode_3x.hasconst)
 hascompare = list(opcode_3x.hascompare)
 hasfree    = list(opcode_3x.hasfree)

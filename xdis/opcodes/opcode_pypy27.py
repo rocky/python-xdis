@@ -11,7 +11,9 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_27 as opcode_27
-from xdis.opcodes.base import def_op, name_op, varargs_op
+from xdis.opcodes.base import (
+    cmp_op, def_op, jrel_op, name_op, varargs_op
+    )
 
 # FIXME: can we DRY this even more?
 
@@ -20,7 +22,7 @@ l = locals()
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
 HAVE_ARGUMENT = opcode_27.HAVE_ARGUMENT
-cmp_op        = list(opcode_27.cmp_op)
+cmp_op        = list(cmp_op)
 hasconst      = list(opcode_27.hasconst)
 hascompare    = list(opcode_27.hascompare)
 hasfree       = list(opcode_27.hasfree)
@@ -47,25 +49,17 @@ def updateGlobal(version):
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
-def jrel_op(name, op, pop=-2, push=-2):
-    def_op(l, name, op, pop, push)
-    hasjrel.append(op)
-
-def jabs_op(name, op, pop=-2, push=-2):
-    def_op(l, name, op, pop, push)
-    hasjabs.append(op)
-
 # PyPy only
 # ----------
-name_op(l,    'LOOKUP_METHOD',  201,  1, 2)
-varargs_op(l, 'CALL_METHOD', 202, -1, 1)
+name_op(l,    'LOOKUP_METHOD',   201,  1, 2)
+varargs_op(l, 'CALL_METHOD',     202, -1, 1)
 hasnargs.append(202)
 
 # Used only in single-mode compilation list-comprehension generators
 def_op(l, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
-jrel_op('JUMP_IF_NOT_DEBUG', 204)
+jrel_op(l, 'JUMP_IF_NOT_DEBUG',     204)
 
 # There are no opcodes to remove or change.
 # If there were, they'd be listed below.

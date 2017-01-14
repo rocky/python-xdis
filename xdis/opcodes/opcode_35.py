@@ -9,7 +9,7 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
-from xdis.opcodes.base import def_op, rm_op
+from xdis.opcodes.base import def_op, free_op, rm_op
 
 l = locals()
 
@@ -34,47 +34,44 @@ hasvargs = list(opcode_3x.hasvargs)
 oppush = list(opcode_3x.oppush)
 oppop  = list(opcode_3x.oppop)
 
-def free_op(name, op):
-    def_op(l, name, op)
-    hasfree.append(op)
-
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
 # Below are opcodes changes since Python 3.2
 
-rm_op(l, 'STOP_CODE',     0)
-rm_op(l, 'STORE_LOCALS', 69)
+rm_op(l, 'STOP_CODE',                     0)
+rm_op(l, 'STORE_LOCALS',                 69)
 
 # These are new since Python 3.3
-def_op(l, 'YIELD_FROM', 72)
-free_op('LOAD_CLASSDEREF', 148)
+def_op(l,  'YIELD_FROM',                 72)
+free_op(l, 'LOAD_CLASSDEREF',           148)
 
 # These are removed since Python 3.4
-rm_op(l, 'WITH_CLEANUP', 81)
+rm_op(l, 'WITH_CLEANUP',                 81)
 
 # These are new since Python 3.5
-def_op(l, 'BINARY_MATRIX_MULTIPLY', 16)
-def_op(l, 'INPLACE_MATRIX_MULTIPLY', 17)
-def_op(l, 'GET_AITER', 50)
-def_op(l, 'GET_ANEXT', 51)
-def_op(l, 'BEFORE_ASYNC_WITH', 52)
-def_op(l, 'GET_YIELD_FROM_ITER', 69)
-def_op(l, 'GET_AWAITABLE', 73)
-def_op(l, 'WITH_CLEANUP_START', 81)
-def_op(l, 'WITH_CLEANUP_FINISH', 82)
-def_op(l, 'BUILD_LIST_UNPACK', 149)
-def_op(l, 'BUILD_MAP_UNPACK', 150)
+def_op(l, 'BINARY_MATRIX_MULTIPLY',      16)
+def_op(l, 'INPLACE_MATRIX_MULTIPLY',     17)
+def_op(l, 'GET_AITER',                   50)
+def_op(l, 'GET_ANEXT',                   51)
+def_op(l, 'BEFORE_ASYNC_WITH',           52)
+def_op(l, 'GET_YIELD_FROM_ITER',         69)
+def_op(l, 'GET_AWAITABLE',               73)
+def_op(l, 'WITH_CLEANUP_START',          81)
+def_op(l, 'WITH_CLEANUP_FINISH',         82)
+def_op(l, 'BUILD_LIST_UNPACK',          149)
+def_op(l, 'BUILD_MAP_UNPACK',           150)
 def_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151)
-def_op(l, 'BUILD_TUPLE_UNPACK', 152)
-def_op(l, 'BUILD_SET_UNPACK', 153)
-def_op(l, 'SETUP_ASYNC_WITH', 154)
+def_op(l, 'BUILD_TUPLE_UNPACK',         152)
+def_op(l, 'BUILD_SET_UNPACK',           153)
+def_op(l, 'SETUP_ASYNC_WITH',           154)
 
-rm_op(l,  'STORE_MAP', 54)
+rm_op(l,  'STORE_MAP',                   54)
 
 def updateGlobal():
     globals().update({'python_version': 3.5})
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    # FIXME: Get rid of these (change uncompyle)
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
     globals().update({'JF': opmap['JUMP_FORWARD']})

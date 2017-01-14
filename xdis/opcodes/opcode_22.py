@@ -12,7 +12,7 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.base import def_op
+from xdis.opcodes.base import def_op, cmp_op
 
 l = locals()
 
@@ -20,7 +20,7 @@ l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
-cmp_op = list(opcode_2x.cmp_op)
+cmp_op = list(cmp_op)
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)

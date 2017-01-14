@@ -11,15 +11,18 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.base import def_op, rm_op, name_op
+from xdis.opcodes.base import (
+    def_op, jabs_op, jrel_op, rm_op, name_op, cmp_op
+    )
 
 l = locals()
+
 # FIXME: can we DRY this even more?
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
 HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
-cmp_op = list(opcode_2x.cmp_op)
+cmp_op = list(cmp_op)
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)
@@ -39,20 +42,13 @@ EXTENDED_ARG = opcode_2x.EXTENDED_ARG
 def updateGlobal(version):
     globals().update({'python_version': version})
 
+    # FIXME: Get rid of this (fix uncompyle6)
     # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
 
     globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
-
-def jrel_op(name, op, pop=-2, push=-2):
-    def_op(l, name, op, pop, push)
-    hasjrel.append(op)
-
-def jabs_op(name, op):
-    def_op(l, name, op)
-    hasjabs.append(op)
 
 def compare_op(name, op):
     def_op(l, name, op)
@@ -79,21 +75,21 @@ rm_op(l, 'JUMP_IF_FALSE', 111)
 rm_op(l, 'EXTENDED_ARG',  143)
 rm_op(l, 'JUMP_IF_TRUE',  112)
 
-def_op(l, 'LIST_APPEND', 94, 2, 1) # Calls list.append(TOS[-i], TOS).
-                                               # Used to implement list comprehensions.
-def_op(l, 'BUILD_SET', 104)        # Number of set items
-def_op(l, 'BUILD_MAP', 105)
-name_op(l, 'LOAD_ATTR', 106)
-compare_op('COMPARE_OP', 107)
+def_op(l, 'LIST_APPEND',            94, 2, 1) # Calls list.append(TOS[-i], TOS).
+                                              # Used to implement list comprehensions.
+def_op(l, 'BUILD_SET',             104)     # Number of set items
+def_op(l, 'BUILD_MAP',             105)
+name_op(l, 'LOAD_ATTR',            106)
+compare_op('COMPARE_OP',           107)
 
-name_op(l, 'IMPORT_NAME',         108,  2,  1)  # Index in name list
-name_op(l, 'IMPORT_FROM',         109,  0,  1)
+name_op(l, 'IMPORT_NAME',          108,  2,  1)  # Index in name list
+name_op(l, 'IMPORT_FROM',          109,  0,  1)
 
-jabs_op('JUMP_IF_FALSE_OR_POP', 111) # Target byte offset from beginning of code
-jabs_op('JUMP_IF_TRUE_OR_POP',  112)  # ""
-jabs_op('POP_JUMP_IF_FALSE',    114)  # ""
-jabs_op('POP_JUMP_IF_TRUE',     115)  # ""
-jrel_op('SETUP_WITH',           143,  0,  2)
+jabs_op(l, 'JUMP_IF_FALSE_OR_POP', 111) # Target byte offset from beginning of code
+jabs_op(l, 'JUMP_IF_TRUE_OR_POP',  112)  # ""
+jabs_op(l, 'POP_JUMP_IF_FALSE',    114)  # ""
+jabs_op(l, 'POP_JUMP_IF_TRUE',     115)  # ""
+jrel_op(l, 'SETUP_WITH',           143,  0,  2)
 
 def_op(l, 'EXTENDED_ARG', 145)
 def_op(l, 'SET_ADD', 146)

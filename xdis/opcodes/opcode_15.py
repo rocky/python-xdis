@@ -7,11 +7,17 @@ opcodes in Python's dis.py library.
 
 # These are used from outside this module
 from xdis.bytecode import findlabels, findlinestarts
+from xdis.opcodes.base import (
+    cmp_op, compare_op, const_op,
+    def_op,
+    free_op, jabs_op, jrel_op,
+    local_op, name_op, nargs_op,
+    varargs_op
+    )
+
+l = locals()
 
 # FIXME: can we DRY this even more?
-
-cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
-        'is not', 'exception match', 'BAD')
 
 hasconst = []
 hasname = []
@@ -23,160 +29,125 @@ hasfree = []
 hasnargs = []  # For function-like calls
 hasvargs = []  # Similar but for operators BUILD_xxx
 
+# oppush[op] => number of stack entries pushed
+oppush = [0] * 256
+
+# oppop[op] => number of stack entries popped
+oppop  = [0] * 256
+
 opmap = {}
 opname = [''] * 256
 for op in range(256): opname[op] = '<%r>' % (op,)
 del op
 
-def def_op(name, op):
-    opname[op] = name
-    opmap[name] = op
-
-def compare_op(name, op):
-    def_op(name, op)
-    hascompare.append(op)
-
-def const_op(name, op):
-    def_op(name, op)
-    hasconst.append(op)
-
-def free_op(name, op):
-    def_op(name, op)
-    hasfree.append(op)
-
-def jabs_op(name, op):
-    def_op(name, op)
-    hasjabs.append(op)
-
-def jrel_op(name, op):
-    def_op(name, op)
-    hasjrel.append(op)
-
-def local_op(name, op):
-    def_op(name, op)
-    haslocal.append(op)
-
-def name_op(name, op):
-    def_op(name, op)
-    hasname.append(op)
-
-def nargs_op(name, op):
-    def_op(name, op)
-    hasnargs.append(op)
-
-def varargs_op(name, op):
-    def_op(name, op)
-    hasvargs.append(op)
-
-
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
-def_op('STOP_CODE', 0)
-def_op('POP_TOP', 1)
-def_op('ROT_TWO', 2)
-def_op('ROT_THREE', 3)
-def_op('DUP_TOP', 4)
+def_op(l, 'STOP_CODE', 0)
+def_op(l, 'POP_TOP', 1)
+def_op(l, 'ROT_TWO', 2)
+def_op(l, 'ROT_THREE', 3)
+def_op(l, 'DUP_TOP', 4)
 
-def_op('UNARY_POSITIVE', 10)
-def_op('UNARY_NEGATIVE', 11)
-def_op('UNARY_NOT', 12)
-def_op('UNARY_CONVERT', 13)
+def_op(l, 'UNARY_POSITIVE', 10)
+def_op(l, 'UNARY_NEGATIVE', 11)
+def_op(l, 'UNARY_NOT', 12)
+def_op(l, 'UNARY_CONVERT', 13)
 
-def_op('UNARY_INVERT', 15)
+def_op(l, 'UNARY_INVERT', 15)
 
-def_op('BINARY_POWER', 19)
+def_op(l, 'BINARY_POWER', 19)
 
-def_op('BINARY_MULTIPLY', 20)
-def_op('BINARY_DIVIDE', 21)
-def_op('BINARY_MODULO', 22)
-def_op('BINARY_ADD', 23)
-def_op('BINARY_SUBTRACT', 24)
-def_op('BINARY_SUBSCR', 25)
+def_op(l, 'BINARY_MULTIPLY', 20)
+def_op(l, 'BINARY_DIVIDE', 21)
+def_op(l, 'BINARY_MODULO', 22)
+def_op(l, 'BINARY_ADD', 23)
+def_op(l, 'BINARY_SUBTRACT', 24)
+def_op(l, 'BINARY_SUBSCR', 25)
 
-def_op('SLICE+0', 30)
-def_op('SLICE+1', 31)
-def_op('SLICE+2', 32)
-def_op('SLICE+3', 33)
+def_op(l, 'SLICE+0', 30)
+def_op(l, 'SLICE+1', 31)
+def_op(l, 'SLICE+2', 32)
+def_op(l, 'SLICE+3', 33)
 
-def_op('STORE_SLICE+0', 40)
-def_op('STORE_SLICE+1', 41)
-def_op('STORE_SLICE+2', 42)
-def_op('STORE_SLICE+3', 43)
+def_op(l, 'STORE_SLICE+0', 40)
+def_op(l, 'STORE_SLICE+1', 41)
+def_op(l, 'STORE_SLICE+2', 42)
+def_op(l, 'STORE_SLICE+3', 43)
 
-def_op('DELETE_SLICE+0', 50)
-def_op('DELETE_SLICE+1', 51)
-def_op('DELETE_SLICE+2', 52)
-def_op('DELETE_SLICE+3', 53)
+def_op(l, 'DELETE_SLICE+0', 50)
+def_op(l, 'DELETE_SLICE+1', 51)
+def_op(l, 'DELETE_SLICE+2', 52)
+def_op(l, 'DELETE_SLICE+3', 53)
 
-def_op('STORE_SUBSCR', 60)
-def_op('DELETE_SUBSCR', 61)
+def_op(l, 'STORE_SUBSCR', 60)
+def_op(l, 'DELETE_SUBSCR', 61)
 
-def_op('BINARY_LSHIFT', 62)
-def_op('BINARY_RSHIFT', 63)
-def_op('BINARY_AND', 64)
-def_op('BINARY_XOR', 65)
-def_op('BINARY_OR', 66)
+def_op(l, 'BINARY_LSHIFT', 62)
+def_op(l, 'BINARY_RSHIFT', 63)
+def_op(l, 'BINARY_AND', 64)
+def_op(l, 'BINARY_XOR', 65)
+def_op(l, 'BINARY_OR', 66)
 
-def_op('PRINT_EXPR', 70)
-def_op('PRINT_ITEM', 71)
-def_op('PRINT_NEWLINE', 72)
+def_op(l, 'PRINT_EXPR', 70)
+def_op(l, 'PRINT_ITEM', 71)
+def_op(l, 'PRINT_NEWLINE', 72)
 
-def_op('BREAK_LOOP', 80)
+def_op(l, 'BREAK_LOOP', 80)
 
-def_op('LOAD_LOCALS', 82)
-def_op('RETURN_VALUE', 83)
+def_op(l, 'LOAD_LOCALS', 82)
+def_op(l, 'RETURN_VALUE', 83)
 
-def_op('EXEC_STMT', 85)
+def_op(l, 'EXEC_STMT', 85)
 
-def_op('POP_BLOCK', 87)
-def_op('END_FINALLY', 88)
-def_op('BUILD_CLASS', 89)
+def_op(l, 'POP_BLOCK', 87)
+def_op(l, 'END_FINALLY', 88)
+def_op(l, 'BUILD_CLASS', 89)
 
-HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
+HAVE_ARGUMENT = 90                 # Opcodes from here have an argument:
 
-name_op('STORE_NAME', 90)       # Index in name list
-name_op('DELETE_NAME', 91)      # ""
-varargs_op('UNPACK_TUPLE', 92)  # Number of tuple items
-def_op('UNPACK_LIST', 93)	# Number of list items
-name_op('STORE_ATTR', 95)       # Index in name list
-name_op('DELETE_ATTR', 96)      # ""
-name_op('STORE_GLOBAL', 97)     # ""
-name_op('DELETE_GLOBAL', 98)    # ""
+name_op(l, 'STORE_NAME', 90)       # Index in name list
+name_op(l, 'DELETE_NAME', 91)      # ""
+varargs_op(l, 'UNPACK_TUPLE', 92)  # Number of tuple items
+def_op(l, 'UNPACK_LIST', 93)	   # Number of list items
+name_op(l, 'STORE_ATTR', 95)       # Index in name list
+name_op(l, 'DELETE_ATTR', 96)      # ""
+name_op(l, 'STORE_GLOBAL', 97)     # ""
+name_op(l, 'DELETE_GLOBAL', 98)    # ""
 
-const_op('LOAD_CONST', 100)     # Index in const list
-name_op('LOAD_NAME', 101)       # Index in name list
-varargs_op('BUILD_TUPLE', 102)  # Number of tuple items
-varargs_op('BUILD_LIST', 103)   # Number of list items
-varargs_op('BUILD_MAP', 104)    # Always zero for now
-name_op('LOAD_ATTR', 105)       # Index in name list
-compare_op('COMPARE_OP', 106)       # Comparison operator
+const_op(l, 'LOAD_CONST', 100)     # Index in const list
+name_op(l, 'LOAD_NAME', 101)       # Index in name list
+varargs_op(l, 'BUILD_TUPLE', 102)  # Number of tuple items
+varargs_op(l, 'BUILD_LIST', 103)   # Number of list items
+varargs_op(l, 'BUILD_MAP', 104)    # Always zero for now
+name_op(l, 'LOAD_ATTR', 105)       # Index in name list
+compare_op(l, 'COMPARE_OP', 106)   # Comparison operator
 
-name_op('IMPORT_NAME', 107)     # Index in name list
-name_op('IMPORT_FROM', 108)     # Index in name list
+name_op(l, 'IMPORT_NAME', 107)     # Index in name list
+name_op(l, 'IMPORT_FROM', 108)     # Index in name list
 
-jrel_op('JUMP_FORWARD', 110)    # Number of bytes to skip
-jrel_op('JUMP_IF_FALSE', 111)   # ""
-jrel_op('JUMP_IF_TRUE', 112)    # ""
-jabs_op('JUMP_ABSOLUTE', 113)   # Target byte offset from beginning of code
-def_op('FOR_LOOP', 114)	        # Number of bytes to skip
+jrel_op(l, 'JUMP_FORWARD', 110)    # Number of bytes to skip
+jrel_op(l, 'JUMP_IF_FALSE', 111)   # ""
+jrel_op(l, 'JUMP_IF_TRUE', 112)    # ""
+jabs_op(l, 'JUMP_ABSOLUTE', 113)   # Target byte offset from beginning of code
+def_op(l, 'FOR_LOOP', 114)	   # Number of bytes to skip
 
-name_op('LOAD_GLOBAL', 116)     # Index in name list
+name_op(l, 'LOAD_GLOBAL', 116)     # Index in name list
 
-jrel_op('SETUP_LOOP', 120)      # Distance to target address
-jrel_op('SETUP_EXCEPT', 121)    # ""
-jrel_op('SETUP_FINALLY', 122)   # ""
+jrel_op(l, 'SETUP_LOOP', 120)      # Distance to target address
+jrel_op(l, 'SETUP_EXCEPT', 121)    # ""
+jrel_op(l, 'SETUP_FINALLY', 122)   # ""
 
-local_op('LOAD_FAST', 124)      # Local variable number
-local_op('STORE_FAST', 125)     # Local variable number
-local_op('DELETE_FAST', 126)    # Local variable number
-def_op('SET_LINENO', 127)	# Current line number
+local_op(l, 'LOAD_FAST', 124)      # Local variable number
+local_op(l, 'STORE_FAST', 125)     # Local variable number
+local_op(l, 'DELETE_FAST', 126)    # Local variable number
+def_op(l, 'SET_LINENO', 127)	   # Current line number
 
-def_op('RAISE_VARARGS',  130)   # Number of raise arguments (1, 2, or 3)
-nargs_op('CALL_FUNCTION', 131)   # #args + (#kwargs << 8)
+def_op(l, 'RAISE_VARARGS',  130)   # Number of raise arguments (1, 2, or 3)
+nargs_op(l, 'CALL_FUNCTION', 131)  # #args + (#kwargs << 8)
 
-def_op('MAKE_FUNCTION', 132)    # Number of args with default values
-varargs_op('BUILD_SLICE', 133)   # Number of items
+def_op(l, 'MAKE_FUNCTION', 132)    # Number of args with default values
+varargs_op(l, 'BUILD_SLICE', 133)  # Number of items
 
 EXTENDED_ARG = 143
 

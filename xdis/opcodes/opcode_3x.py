@@ -8,15 +8,16 @@ If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
 from xdis.opcodes.base import (
-    def_op, name_op, varargs_op
+    cmp_op, compare_op, const_op,
+    def_op,
+    free_op, jabs_op, jrel_op,
+    local_op, name_op, nargs_op,
+    varargs_op
     )
 
 l = locals()
 
 # FIXME: DRY with opcode2x.py
-
-cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
-        'is not', 'exception match', 'BAD')
 
 hasconst = []
 hasname = []
@@ -42,34 +43,6 @@ oppop  = [0] * 256
 
 for op in range(256): opname[op] = '<%r>' % (op,)
 del op
-
-def compare_op(name, op, pop=2, push=1):
-    def_op(l, name, op, pop, push)
-    hascompare.append(op)
-
-def const_op(name, op, pop=0, push=1):
-    def_op(l, name, op, pop, push)
-    hasconst.append(op)
-
-def free_op(name, op, pop=0, push=1):
-    def_op(l, name, op, pop, push)
-    hasfree.append(op)
-
-def jabs_op(name, op, pop=0, push=0):
-    def_op(l, name, op, pop, push)
-    hasjabs.append(op)
-
-def jrel_op(name, op, pop=0, push=0):
-    def_op(l, name, op, pop, push)
-    hasjrel.append(op)
-
-def local_op(name, op, pop=0, push=1):
-    def_op(l, name, op, pop, push)
-    haslocal.append(op)
-
-def nargs_op(name, op, pop=-2, push=-2):
-    def_op(l, name, op, pop, push)
-    hasnargs.append(op)
 
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
@@ -153,70 +126,70 @@ def_op(l, 'POP_EXCEPT',           89,  1, -1)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
-name_op(l, 'STORE_NAME',           90,  1,  0)  # Operand is in name list
-name_op(l, 'DELETE_NAME',          91,  0,  0)  # ""
-varargs_op(l, 'UNPACK_SEQUENCE',   92, -1,  1)  # Number of tuple items
-jrel_op('FOR_ITER',             93, -1, -1)
+name_op(l, 'STORE_NAME',            90,  1,  0)   # Operand is in name list
+name_op(l, 'DELETE_NAME',           91,  0,  0)   # ""
+varargs_op(l, 'UNPACK_SEQUENCE',    92, -1,  1)   # Number of tuple items
+jrel_op(l,    'FOR_ITER',           93, -1, -1)
 
-def_op(l, 'UNPACK_EX', 94)
-name_op(l, 'STORE_ATTR',           95,  2,  0)  # Operand is in name list
-name_op(l, 'DELETE_ATTR',          96,  1,  0)  # ""
-name_op(l, 'STORE_GLOBAL',         97,  1,  0)  # ""
-name_op(l, 'DELETE_GLOBAL',        98,  0,  0)  # ""
+def_op(l,  'UNPACK_EX', 94)
+name_op(l, 'STORE_ATTR',            95,  2,  0)   # Operand is in name list
+name_op(l, 'DELETE_ATTR',           96,  1,  0)   # ""
+name_op(l, 'STORE_GLOBAL',          97,  1,  0)   # ""
+name_op(l, 'DELETE_GLOBAL',         98,  0,  0)   # ""
 
 # Python 2's DUP_TOPX is gone starting in Python 3.2
 
-const_op('LOAD_CONST',         100,  0,  1)  # Operand is in const list
-name_op(l, 'LOAD_NAME',           101,  0,  1)  # Operand is in name list
-varargs_op(l, 'BUILD_TUPLE',      102, -1,  1)  # TOS is count of tuple items
-varargs_op(l, 'BUILD_LIST',       103, -1,  1)  # TOS is count of list items
-varargs_op(l, 'BUILD_SET',        104, -1,  1)  # TOS is count of set items
-varargs_op(l, 'BUILD_MAP',        105, -1,  1)  # TOS is count of kwarg items
-name_op(l, 'LOAD_ATTR',           106,  1,  1)  # Operand is in name list
-compare_op('COMPARE_OP',       107,  2,  1)  # Comparison operator
-name_op(l, 'IMPORT_NAME',         108,  1,  1)  # Operand is in name list
-name_op(l, 'IMPORT_FROM',         109,  0,  1)  # Operand is in name list
+const_op(l,   'LOAD_CONST',        100,  0,  1)  # Operand is in const list
+name_op(l,    'LOAD_NAME',         101,  0,  1)  # Operand is in name list
+varargs_op(l, 'BUILD_TUPLE',       102, -1,  1)  # TOS is count of tuple items
+varargs_op(l, 'BUILD_LIST',        103, -1,  1)  # TOS is count of list items
+varargs_op(l, 'BUILD_SET',         104, -1,  1)  # TOS is count of set items
+varargs_op(l, 'BUILD_MAP',         105, -1,  1)  # TOS is count of kwarg items
+name_op(l, 'LOAD_ATTR',            106,  1,  1)  # Operand is in name list
+compare_op(l, 'COMPARE_OP',        107,  2,  1)  # Comparison operator
+name_op(l, 'IMPORT_NAME',          108,  1,  1)  # Operand is in name list
+name_op(l, 'IMPORT_FROM',          109,  0,  1)  # Operand is in name list
 
-jrel_op('JUMP_FORWARD',        110,  0,  0)  # Number of bytes to skip
-jabs_op('JUMP_IF_FALSE_OR_POP', 111) # Target byte offset from beginning of code
-jabs_op('JUMP_IF_TRUE_OR_POP', 112)  # ""
-jabs_op('JUMP_ABSOLUTE',       113,  0,  0)   # Target byte offset from beginning of code
-jabs_op('POP_JUMP_IF_FALSE',   114)    # ""
-jabs_op('POP_JUMP_IF_TRUE',    115)     # ""
+jrel_op(l, 'JUMP_FORWARD',         110,  0,  0)  # Number of bytes to skip
+jabs_op(l, 'JUMP_IF_FALSE_OR_POP', 111)          # Target byte offset from beginning of code
+jabs_op(l, 'JUMP_IF_TRUE_OR_POP',  112)          # ""
+jabs_op(l, 'JUMP_ABSOLUTE',        113,  0,  0)  # Target byte offset from beginning of code
+jabs_op(l, 'POP_JUMP_IF_FALSE',    114)          # ""
+jabs_op(l, 'POP_JUMP_IF_TRUE',     115)          # ""
 
-name_op(l, 'LOAD_GLOBAL',         116,  0,  1)   # Operand is in name list
+name_op(l, 'LOAD_GLOBAL',          116,  0,  1)  # Operand is in name list
 
-jabs_op('CONTINUE_LOOP',       119,  0,  0)   # Target address
-jrel_op('SETUP_LOOP',          120,  0,  0)   # Distance to target address
-jrel_op('SETUP_EXCEPT',        121,  0,  0)   # ""
-jrel_op('SETUP_FINALLY',       122,  0,  0)   # ""
+jabs_op(l, 'CONTINUE_LOOP',        119,  0,  0)  # Target address
+jrel_op(l, 'SETUP_LOOP',           120,  0,  0)  # Distance to target address
+jrel_op(l, 'SETUP_EXCEPT',         121,  0,  0)  # ""
+jrel_op(l, 'SETUP_FINALLY',        122,  0,  0)  # ""
 
-local_op('LOAD_FAST',          124,  0,  1)   # Local variable number
-local_op('STORE_FAST',         125,  1,  0)   # Local variable number
-local_op('DELETE_FAST',        126,  0,  0)   # Local variable number
+local_op(l, 'LOAD_FAST',           124,  0,  1)  # Local variable number
+local_op(l, 'STORE_FAST',          125,  1,  0)  # Local variable number
+local_op(l, 'DELETE_FAST',         126,  0,  0)  # Local variable number
 
-def_op(l, 'RAISE_VARARGS',       130, -1,  0)   # Number of raise arguments (1, 2, or 3)
-nargs_op('CALL_FUNCTION',      131, -1,  1)   # #args + (#kwargs << 8)
+def_op(l, 'RAISE_VARARGS',         130, -1,  0)  # Number of raise arguments (1, 2, or 3)
+nargs_op(l, 'CALL_FUNCTION',       131, -1,  1)  # #args + (#kwargs << 8)
 
-def_op(l, 'MAKE_FUNCTION',       132, -1,  1)   # Number of args with default values
-varargs_op(l, 'BUILD_SLICE',      133, -1,  1)   # Number of items
+def_op(l, 'MAKE_FUNCTION',         132, -1,  1)  # Number of args with default values
+varargs_op(l, 'BUILD_SLICE',       133, -1,  1)  # Number of items
 
-def_op(l, 'MAKE_CLOSURE',        134, -1,  1)
-free_op('LOAD_CLOSURE',        135,  0,  1)
-free_op('LOAD_DEREF',          136,  0,  1)
-free_op('STORE_DEREF',         137,  1,  0)
-free_op('DELETE_DEREF',        138,  0,  0)
+def_op(l, 'MAKE_CLOSURE',          134, -1,  1)
+free_op(l, 'LOAD_CLOSURE',         135,  0,  1)
+free_op(l, 'LOAD_DEREF',           136,  0,  1)
+free_op(l, 'STORE_DEREF',          137,  1,  0)
+free_op(l, 'DELETE_DEREF',         138,  0,  0)
 
-nargs_op('CALL_FUNCTION_VAR',  140, -1,  1)   # #args + (#kwargs << 8)
-nargs_op('CALL_FUNCTION_KW',   141, -1,  1)   # #args + (#kwargs << 8)
-nargs_op('CALL_FUNCTION_VAR_KW', 142, -1, 1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_VAR',   140, -1,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_KW',    141, -1,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_VAR_KW',142, -1, 1)   # #args + (#kwargs << 8)
 
-jrel_op('SETUP_WITH',          143,  0,  2)
+jrel_op(l, 'SETUP_WITH',           143,  0,  2)
 
-def_op(l, 'LIST_APPEND',         145,  2,  1)   # Calls list.append(TOS[-i], TOS).
-                                              # Used to implement list comprehensions.
-def_op(l, 'SET_ADD',             146,  1,  0)
-def_op(l, 'MAP_ADD',             147,  2,  1)
+def_op(l, 'LIST_APPEND',           145,  2,  1)  # Calls list.append(TOS[-i], TOS).
+                                                 # Used to implement list comprehensions.
+def_op(l, 'SET_ADD',               146,  1,  0)
+def_op(l, 'MAP_ADD',               147,  2,  1)
 
 def_op(l, 'EXTENDED_ARG', 144)
 EXTENDED_ARG = 144

@@ -11,13 +11,14 @@ from copy import deepcopy
 # These are used from outside this module
 from xdis.bytecode import findlinestarts, findlabels
 
+from xdis.opcodes.base import cmp_op
 import xdis.opcodes.opcode_2x as opcode_2x
 
 # FIXME: can we DRY this even more?
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
-cmp_op = list(opcode_2x.cmp_op)
+cmp_op = list(cmp_op)
 hasconst = list(opcode_2x.hasconst)
 hascompare = list(opcode_2x.hascompare)
 hasfree = list(opcode_2x.hasfree)

@@ -1,5 +1,5 @@
 """
-CPython 3.2 bytecode opcodes
+CPython 3.2 PYPY bytecode opcodes
 
 This is used in scanner (bytecode disassembly) and parser (Python grammar).
 
@@ -8,7 +8,7 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
-from xdis.opcodes.base import (def_op, name_op, varargs_op)
+from xdis.opcodes.base import (def_op, jrel_op, name_op, varargs_op)
 
 l = locals()
 
@@ -44,10 +44,6 @@ del op
 for object in fields2copy:
     globals()[object] =  deepcopy(getattr(opcode_3x, object))
 
-def jrel_op(name, op, pop=-2, push=-2):
-    def_op(l, opname, opmap, name, op, pop, push)
-    hasjrel.append(op)
-
 # PyPy only
 # ----------
 name_op(l, 'LOOKUP_METHOD',  201, 1, 2)
@@ -58,7 +54,7 @@ hasnargs.append(202)
 def_op(l, l, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
-jrel_op('JUMP_IF_NOT_DEBUG', 204)
+jrel_op(l, 'JUMP_IF_NOT_DEBUG', 204)
 
 # There are no opcodes to remove or change.
 # If there were, they'd be listed below.
