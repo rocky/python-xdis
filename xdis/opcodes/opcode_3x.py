@@ -8,7 +8,7 @@ If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
 from xdis.opcodes.base import (
-    cmp_op, compare_op, const_op,
+    compare_op, const_op,
     def_op,
     free_op, jabs_op, jrel_op,
     local_op, name_op, nargs_op,
@@ -194,7 +194,7 @@ def_op(l, 'MAP_ADD',               147,  2,  1)
 def_op(l, 'EXTENDED_ARG', 144)
 EXTENDED_ARG = 144
 
-fields2copy = """cmp_op hasconst hasname hasjrel hasjabs haslocal hascompare hasfree hasnargs
+fields2copy = """hasconst hasname hasjrel hasjabs haslocal hascompare hasfree hasnargs
 opmap opname HAVE_ARGUMENT EXTENDED_ARG""".split()
 
 def dump_opcodes(opmap):

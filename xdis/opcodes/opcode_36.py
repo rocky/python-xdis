@@ -9,7 +9,9 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
-from xdis.opcodes.base import def_op, nargs_op, rm_op, varargs_op
+from xdis.opcodes.base import(
+    def_op, free_op, init_opdata, nargs_op, rm_op, varargs_op
+    )
 
 l = locals()
 
@@ -17,41 +19,22 @@ l = locals()
 from xdis.wordcode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
-from xdis.opcodes.opcode_3x import fields2copy
 
 # FIXME: can we DRY this even more?
 
-opmap = {}
-opname = [''] * 256
-hasfree = list(opcode_3x.hasfree)
-hasjabs = list(opcode_3x.hasjabs)
-hasjrel = list(opcode_3x.hasjrel)
-haslocal = list(opcode_3x.haslocal)
-hasname = list(opcode_3x.hasname)
-hasnargs = list(opcode_3x.hasnargs)
-hasvargs = list(opcode_3x.hasvargs)
-oppush = list(opcode_3x.oppush)
-oppop  = list(opcode_3x.oppop)
-
-# oppush[op] => number of stack entries pushed
-oppush = [0] * 256
-
-# oppop[op] => number of stack entries popped
-oppop  = [0] * 256
-
-
-for object in fields2copy:
-    globals()[object] =  deepcopy(getattr(opcode_3x, object))
+# Make a *copy* of opcode_2x values so we don't pollute 2x
+opmap = deepcopy(opcode_3x.opmap)
+opname = deepcopy(opcode_3x.opname)
+init_opdata(l, opcode_3x)
 
 # Below are opcodes changes since Python 3.2
 
-rm_op(l, 'STOP_CODE', 0)
+rm_op(l, 'STOP_CODE',     0)
 rm_op(l, 'STORE_LOCALS', 69)
 
 # These are new since Python 3.3
-def_op(l, 'YIELD_FROM', 72)
-def_op(l, 'LOAD_CLASSDEREF', 148)
-hasfree.append(148)
+def_op(l,  'YIELD_FROM',       72)
+free_op(l, 'LOAD_CLASSDEREF', 148)
 
 # These are removed since Python 3.4
 rm_op(l, 'WITH_CLEANUP', 81)
@@ -92,10 +75,15 @@ def_op(l, 'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
 def updateGlobal():
     globals().update({'python_version': 3.6})
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+
+    # FIXME remove (fix uncompyle6)
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
+
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
+
+    globals().update({'JUMP_OPs': map(lambda op: opname[op],
+                                      l['hasjrel'] + l['hasjabs'])})
 
 updateGlobal()
 

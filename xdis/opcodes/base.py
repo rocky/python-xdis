@@ -7,6 +7,23 @@ opcodes
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 
+# Opcodes greater than 90 an argument
+HAVE_ARGUMENT = 90
+
+fields2copy = """
+hascompare hasconst hasfree hasjabs hasjrel haslocal
+hasname hasnargs hasvargs oppop oppush
+""".split()
+
+
+def init_opdata(l, from_mod):
+    l['cmp_op'] = cmp_op
+    l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
+    l['EXTENDED_ARG'] = from_mod.EXTENDED_ARG
+    for field in fields2copy:
+        l[field] = list(getattr(from_mod, field))
+
+
 def compare_op(l, name, op, pop=2, push=1):
     def_op(l, name, op, pop, push)
     l['hascompare'].append(op)

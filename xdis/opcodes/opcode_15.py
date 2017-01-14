@@ -12,7 +12,8 @@ from xdis.opcodes.base import (
     def_op,
     free_op, jabs_op, jrel_op,
     local_op, name_op, nargs_op,
-    varargs_op
+    varargs_op,
+    HAVE_ARGUMENT
     )
 
 l = locals()
@@ -103,8 +104,6 @@ def_op(l, 'EXEC_STMT', 85)
 def_op(l, 'POP_BLOCK', 87)
 def_op(l, 'END_FINALLY', 88)
 def_op(l, 'BUILD_CLASS', 89)
-
-HAVE_ARGUMENT = 90                 # Opcodes from here have an argument:
 
 name_op(l, 'STORE_NAME', 90)       # Index in name list
 name_op(l, 'DELETE_NAME', 91)      # ""

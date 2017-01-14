@@ -1,3 +1,4 @@
+# (C) Copyright 2017 by Rocky Bernstein
 """
 CPython 3.0 bytecode opcodes
 
@@ -9,7 +10,9 @@ parsing and semantic interpretation.
 
 from copy import deepcopy
 
-from xdis.opcodes.base import def_op, rm_op, cmp_op
+from xdis.opcodes.base import (
+    def_op, init_opdata,
+    jrel_op, rm_op)
 
 l = locals()
 
@@ -18,30 +21,14 @@ from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
 
-from xdis.opcodes.opcode_3x import fields2copy
-
 # FIXME: can we DRY this even more?
 
-opmap = {}
-opname = [''] * 256
+l = locals()
 
-cmp_op     = list(cmp_op)
-hasconst   = list(opcode_3x.hasconst)
-hascompare = list(opcode_3x.hascompare)
-hasfree    = list(opcode_3x.hasfree)
-hasjabs    = list(opcode_3x.hasjabs)
-hasjrel    = list(opcode_3x.hasjrel)
-haslocal   = list(opcode_3x.haslocal)
-hasname    = list(opcode_3x.hasname)
-hasnargs   = list(opcode_3x.hasnargs)
-hasvargs   = list(opcode_3x.hasvargs)
+# Make a *copy* of opcode_2x values so we don't pollute 2x
 opmap = deepcopy(opcode_3x.opmap)
-
-oppush = list(opcode_3x.oppush)
-oppop  = list(opcode_3x.oppop)
-
-for object in fields2copy:
-    globals()[object] =  deepcopy(getattr(opcode_3x, object))
+opname = deepcopy(opcode_3x.opname)
+init_opdata(l, opcode_3x)
 
 # These are in Python 3.x but not in Python 3.0
 
@@ -55,11 +42,7 @@ rm_op(l, 'SETUP_WITH',           143)
 rm_op(l, 'LIST_APPEND',          145)
 rm_op(l, 'MAP_ADD',              147)
 
-def jrel_op(name, op, pop=0, push=0):
-    def_op(l, name, op, pop, push)
-    hasjrel.append(op)
-
-    # These are are in 3.0 but are not in 3.x or in 3.x they have
+# These are are in 3.0 but are not in 3.x or in 3.x they have
 # different opcode numbers. Note: As a result of opcode value
 # changes, these have to be applied *after* removing ops (with
 # the same name).
@@ -69,18 +52,19 @@ def_op(l, 'SET_ADD',        17,  1, 0)
 def_op(l, 'LIST_APPEND',    18,  2, 1)
 def_op(l, 'DUP_TOPX',       99)
 
-jrel_op('JUMP_IF_FALSE', 111, 1, 1)
-jrel_op('JUMP_IF_TRUE',  112, 1, 1)
+jrel_op(l, 'JUMP_IF_FALSE', 111, 1, 1)
+jrel_op(l, 'JUMP_IF_TRUE',  112, 1, 1)
 
 # This op is in 3.x but its opcode is a 144 instead
 def_op(l, 'EXTENDED_ARG',  143)
 
 def updateGlobal():
-    # JUMP_OPs are used in verification are set in the scanner
-    # and used in the parser grammar
     globals().update({'python_version': 3.0})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    # JUMP_OPs are used in verification are set in the scanner
+    # and used in the parser grammar
+    globals().update({'JUMP_OPs': map(lambda op: opname[op],
+                                      l['hasjrel'] + l['hasjabs'])})
 
 updateGlobal()
 

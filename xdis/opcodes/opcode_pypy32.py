@@ -8,7 +8,10 @@ parsing and semantic interpretation.
 """
 
 from copy import deepcopy
-from xdis.opcodes.base import (def_op, jrel_op, name_op, varargs_op)
+
+from xdis.opcodes.base import (
+    def_op, init_opdata, jrel_op, name_op,
+    varargs_op)
 
 l = locals()
 
@@ -16,42 +19,24 @@ l = locals()
 from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_3x as opcode_3x
-from xdis.opcodes.opcode_3x import fields2copy
 
 # FIXME: can we DRY this even more?
 
-# opmap[opcode_name] => opcode_number
-opmap = {}
-
-# opcode[i] => opcode name
-opname = [''] * 256
-
-# oppush[op] => number of stack entries pushed
-oppush = [0] * 256
-
-# oppop[op] => number of stack entries popped
-oppop  = [0] * 256
-
-hasjrel = list(opcode_3x.hasjrel)
-hasjabs = []
-hasname = list(opcode_3x.hasname)
-hasnargs = list(opcode_3x.hasnargs)
-hasvargs = list(opcode_3x.hasvargs)
-
-for op in range(256): opname[op] = '<%r>' % (op,)
-del op
-
-for object in fields2copy:
-    globals()[object] =  deepcopy(getattr(opcode_3x, object))
+# Make a *copy* of opcode_2x values so we don't pollute 2x
+opmap = deepcopy(opcode_3x.opmap)
+opname = deepcopy(opcode_3x.opname)
+init_opdata(l, opcode_3x)
 
 # PyPy only
 # ----------
-name_op(l, 'LOOKUP_METHOD',  201, 1, 2)
-varargs_op(l, 'CALL_METHOD', 202 -1, 2)
-hasnargs.append(202)
+name_op(l, 'LOOKUP_METHOD',  201,  1, 2)
+
+varargs_op(l, 'CALL_METHOD', 202, -1, 1)
+l['hasnargs'].append(202)
+hasvargs = list(opcode_3x.hasvargs)
 
 # Used only in single-mode compilation list-comprehension generators
-def_op(l, l, 'BUILD_LIST_FROM_ARG', 203)
+def_op(l, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
 jrel_op(l, 'JUMP_IF_NOT_DEBUG', 204)
@@ -67,7 +52,8 @@ def updateGlobal():
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    globals().update({'JUMP_OPs': map(lambda op: opname[op],
+                                      l['hasjrel'] + l['hasjabs'])})
 
 updateGlobal()
 
