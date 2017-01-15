@@ -2,37 +2,29 @@
 """
 CPython 3.5 bytecode opcodes
 
-used in scanner (bytecode disassembly) and parser (Python grammar)
-
-This is a superset of Python 3.5's opcode.py with some opcodes that simplify
-parsing and semantic interpretation.
+This is a like Python 3.5's opcode.py with some classification
+of stack usage.
 """
 
 from copy import deepcopy
 from xdis.opcodes.base import (
-    def_op, free_op, init_opdata, rm_op)
+    def_op, init_opdata, rm_op)
 
-import xdis.opcodes.opcode_3x as opcode_3x
+import xdis.opcodes.opcode_34 as opcode_34
 
 # FIXME: can we DRY this even more?
 
 l = locals()
 
-# Make a *copy* of opcode_2x values so we don't pollute 2x
-opmap = deepcopy(opcode_3x.opmap)
-opname = deepcopy(opcode_3x.opname)
-init_opdata(l, opcode_3x)
+# Make a *copy* of opcode_34 values so we don't pollute 34
+opmap = deepcopy(opcode_34.opmap)
+opname = deepcopy(opcode_34.opname)
+init_opdata(l, opcode_34)
 
-# Below are opcodes changes since Python 3.2
-
-rm_op(l, 'STOP_CODE',                     0)
-rm_op(l, 'STORE_LOCALS',                 69)
-
-# These are new since Python 3.3
-def_op(l,  'YIELD_FROM',                 72)
-free_op(l, 'LOAD_CLASSDEREF',           148)
-
-# These are removed since Python 3.4
+# These are removed since Python 3.5.
+# Removals happen before adds since
+# some opcodes are reused
+rm_op(l, 'STORE_MAP',                    54)
 rm_op(l, 'WITH_CLEANUP',                 81)
 
 # These are new since Python 3.5
@@ -51,8 +43,6 @@ def_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151)
 def_op(l, 'BUILD_TUPLE_UNPACK',         152)
 def_op(l, 'BUILD_SET_UNPACK',           153)
 def_op(l, 'SETUP_ASYNC_WITH',           154)
-
-rm_op(l,  'STORE_MAP',                   54)
 
 def updateGlobal():
     globals().update({'python_version': 3.5})

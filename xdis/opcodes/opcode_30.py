@@ -2,10 +2,8 @@
 """
 CPython 3.0 bytecode opcodes
 
-This is used in scanner (bytecode disassembly) and parser (Python grammar).
-
-This is a superset of Python 3.0's opcode.py with some opcodes that simplify
-parsing and semantic interpretation.
+This is a like Python 3.0's opcode.py with some classification
+of stack usage.
 """
 
 from copy import deepcopy
@@ -16,13 +14,11 @@ from xdis.opcodes.base import (
 
 import xdis.opcodes.opcode_3x as opcode_3x
 
-l = locals()
-
 # FIXME: can we DRY this even more?
 
 l = locals()
 
-# Make a *copy* of opcode_2x values so we don't pollute 2x
+# Make a *copy* of opcode_3x values so we don't pollute 3x
 opmap = deepcopy(opcode_3x.opmap)
 opname = deepcopy(opcode_3x.opname)
 init_opdata(l, opcode_3x)

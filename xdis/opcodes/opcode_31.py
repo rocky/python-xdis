@@ -2,10 +2,8 @@
 """
 CPython 3.1 bytecode opcodes
 
-This is used in scanner (bytecode disassembly) and parser (Python grammar).
-
-This is a superset of Python 3.1's opcode.py with some opcodes that simplify
-parsing and semantic interpretation.
+This is a like Python 3.1's opcode.py with some classification
+of stack usage.
 """
 
 from copy import deepcopy

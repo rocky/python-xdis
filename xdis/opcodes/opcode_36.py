@@ -2,58 +2,25 @@
 """
 CPython 3.6 bytecode opcodes
 
-used in scanner (bytecode disassembly) and parser (Python grammar)
-
-This is a superset of Python 3.6's opcode.py with some opcodes that simplify
-parsing and semantic interpretation.
+This is a like Python 3.6's opcode.py with some classification
+of stack usage.
 """
 
 from copy import deepcopy
 from xdis.opcodes.base import(
-    def_op, free_op, init_opdata, nargs_op, rm_op, varargs_op
+    def_op, init_opdata, nargs_op, rm_op, varargs_op
     )
 
-import xdis.opcodes.opcode_3x as opcode_3x
+import xdis.opcodes.opcode_35 as opcode_35
 
 l = locals()
 
 # FIXME: can we DRY this even more?
 
-# Make a *copy* of opcode_2x values so we don't pollute 2x
-opmap = deepcopy(opcode_3x.opmap)
-opname = deepcopy(opcode_3x.opname)
-init_opdata(l, opcode_3x)
-
-# Below are opcodes changes since Python 3.2
-
-rm_op(l, 'STOP_CODE',     0)
-rm_op(l, 'STORE_LOCALS', 69)
-
-# These are new since Python 3.3
-def_op(l,  'YIELD_FROM',       72)
-free_op(l, 'LOAD_CLASSDEREF', 148)
-
-# These are removed since Python 3.4
-rm_op(l, 'WITH_CLEANUP', 81)
-
-# These are new since Python 3.5
-def_op(l, 'BINARY_MATRIX_MULTIPLY',      16)
-def_op(l, 'INPLACE_MATRIX_MULTIPLY',     17)
-def_op(l, 'GET_AITER',                   50)
-def_op(l, 'GET_ANEXT',                   51)
-def_op(l, 'BEFORE_ASYNC_WITH',           52)
-def_op(l, 'GET_YIELD_FROM_ITER',         69)
-def_op(l, 'GET_AWAITABLE',               73)
-def_op(l, 'WITH_CLEANUP_START',          81)
-def_op(l, 'WITH_CLEANUP_FINISH',         82)
-def_op(l, 'BUILD_LIST_UNPACK',          149)
-def_op(l, 'BUILD_MAP_UNPACK',           150)
-def_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151)
-def_op(l, 'BUILD_TUPLE_UNPACK',         152)
-def_op(l, 'BUILD_SET_UNPACK',           153)
-def_op(l, 'SETUP_ASYNC_WITH',           154)
-
-rm_op(l, 'STORE_MAP', 54)
+# Make a *copy* of opcode_35 values so we don't pollute 3.5
+opmap = deepcopy(opcode_35.opmap)
+opname = deepcopy(opcode_35.opname)
+init_opdata(l, opcode_35)
 
 # These are removed since Python 3.6
 rm_op(l, 'MAKE_CLOSURE',         134)

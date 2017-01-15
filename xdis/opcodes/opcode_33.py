@@ -2,10 +2,8 @@
 """
 CPython 3.3 bytecode opcodes
 
-This is used in disassembly
-
-This is a superset of Python 3.3's opcode.py with some opcodes that simplify
-parsing and semantic interpretation.
+This is a like Python 3.5's opcode.py with some classification
+of stack usage.
 """
 
 from copy import deepcopy
@@ -18,7 +16,7 @@ import xdis.opcodes.opcode_3x as opcode_3x
 
 l = locals()
 
-# Make a *copy* of opcode_2x values so we don't pollute 2x
+# Make a *copy* of opcode_3x values so we don't pollute 3x
 opmap = deepcopy(opcode_3x.opmap)
 opname = deepcopy(opcode_3x.opname)
 init_opdata(l, opcode_3x)
