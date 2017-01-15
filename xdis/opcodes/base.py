@@ -7,7 +7,7 @@ Python opcode.py structures
 
 from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
-from xdis import PYTHON_VERSION
+from xdis import IS_PYPY, PYTHON_VERSION
 
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
@@ -21,7 +21,7 @@ hascompare hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasvargs oppop oppush
 """.split()
 
-def init_opdata(l, from_mod, version=None):
+def init_opdata(l, from_mod, version=None, is_pypy=False):
     """Sets up a number of the structures found in Python's
     opcode.py. Python opcode.py routines assign attributes to modules.
     In order to do this in a modular way here, the local dictionary
@@ -30,6 +30,7 @@ def init_opdata(l, from_mod, version=None):
 
     if version:
         l['python_version'] = version
+    l['is_pypy'] = is_pypy
     l['cmp_op'] = cmp_op
     l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
     l['findlinestarts'] = findlinestarts
@@ -139,8 +140,14 @@ def finalize_opcodes(l):
     opcode_check(l)
 
 def opcode_check(l):
+    """When the version of Python we are running happens
+    to have the same opcode set as the opcode we are
+    importing, we perform checks to make sure our opcode
+    set matches exactly.
+    """
     # Python 2.6 reports 2.6000000000000001
-    if abs(PYTHON_VERSION - l['python_version']) <= 0.01:
+    if (abs(PYTHON_VERSION - l['python_version']) <= 0.01
+        and IS_PYPY == l['is_pypy']):
         import dis
         opmap = dict([(k.replace('+', '_'), v)
                       for (k, v) in dis.opmap.items()])
@@ -149,3 +156,11 @@ def opcode_check(l):
 
         assert all(item in opmap.items() for item in l['opmap'].items())
         assert all(item in l['opmap'].items() for item in opmap.items())
+
+def dump_opcodes(opmap):
+    """Utility for dumping opcodes"""
+    op2name = {}
+    for k in opmap.keys():
+        op2name[opmap[k]] = k
+    for i in sorted(op2name.keys()):
+        print("%-3s %s" % (str(i), op2name[i]))

@@ -13,7 +13,7 @@ from xdis.opcodes.base import (
     )
 
 l = locals()
-init_opdata(l, opcode_26, 2.6)
+init_opdata(l, opcode_26, 2.6, is_pypy=True)
 
 # PyPy only
 # ----------
