@@ -4,6 +4,8 @@ Common routines for entering and classifiying
 opcodes
 """
 
+from xdis.bytecode import findlinestarts, findlabels
+
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 
@@ -20,6 +22,8 @@ def init_opdata(l, from_mod):
     l['cmp_op'] = cmp_op
     l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
     l['EXTENDED_ARG'] = from_mod.EXTENDED_ARG
+    l['findlinestarts'] = findlinestarts
+    l['findlabels'] = findlabels
     for field in fields2copy:
         l[field] = list(getattr(from_mod, field))
 

@@ -13,12 +13,9 @@ from xdis.opcodes.base import (
     def_op, free_op, init_opdata, rm_op
     )
 
-l = locals()
-
-# These are used from outside this module
-from xdis.bytecode import findlinestarts, findlabels
-
 import xdis.opcodes.opcode_3x as opcode_3x
+
+l = locals()
 
 # FIXME: can we DRY this even more?
 

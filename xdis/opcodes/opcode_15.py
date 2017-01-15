@@ -9,14 +9,17 @@ opcodes in Python's dis.py library.
 from xdis.bytecode import findlabels, findlinestarts
 from xdis.opcodes.base import (
     cmp_op, compare_op, const_op,
-    def_op,
-    free_op, jabs_op, jrel_op,
+    def_op, jabs_op, jrel_op,
     local_op, name_op, nargs_op,
     varargs_op,
     HAVE_ARGUMENT
     )
 
 l = locals()
+
+# These are just to silence the import above
+l['findlindstarts'] = findlinestarts
+l['findlabels'] = findlabels
 
 # FIXME: can we DRY this even more?
 

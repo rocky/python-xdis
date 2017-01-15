@@ -7,30 +7,19 @@ opcodes in Python's opcode.py library.
 
 from copy import deepcopy
 
-# These are used from outside this module
-from xdis.bytecode import findlinestarts, findlabels
-
-from xdis.opcodes.opcode_2x import def_op, cmp_op
 import xdis.opcodes.opcode_25 as opcode_25
+from xdis.opcodes.base import (
+    def_op, init_opdata
+    )
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
 l = locals()
 
-HAVE_ARGUMENT = opcode_25.HAVE_ARGUMENT
-cmp_op = list(cmp_op)
-hasconst = list(opcode_25.hasconst)
-hascompare = list(opcode_25.hascompare)
-hasfree = list(opcode_25.hasfree)
-hasjabs = list(opcode_25.hasjabs)
-hasjrel = list(opcode_25.hasjrel)
-haslocal = list(opcode_25.haslocal)
-hasname = list(opcode_25.hasname)
-hasnargs = list(opcode_25.hasnargs)
-hasvargs = list(opcode_25.hasvargs)
 opmap = deepcopy(opcode_25.opmap)
 opname = deepcopy(opcode_25.opname)
 oppush = list(opcode_25.oppush)
+init_opdata(l, opcode_25)
 oppop  = list(opcode_25.oppop)
 
 EXTENDED_ARG = opcode_25.EXTENDED_ARG
@@ -41,7 +30,8 @@ def updateGlobal():
     globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
 
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    globals().update({'JUMP_OPs': map(lambda op: opname[op],
+                                      l['hasjrel'] + l['hasjabs'])})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
     return
 

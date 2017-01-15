@@ -12,9 +12,6 @@ from copy import deepcopy
 from xdis.opcodes.base import (
     def_op, init_opdata, rm_op)
 
-# These are used from outside this module
-from xdis.bytecode import findlinestarts, findlabels
-
 import xdis.opcodes.opcode_3x as opcode_3x
 
 # FIXME: can we DRY this even more?

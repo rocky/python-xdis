@@ -7,12 +7,9 @@ opcodes in Python's opcode.py library.
 
 from copy import deepcopy
 
-# These are used from outside this module
-from xdis.bytecode import findlinestarts, findlabels
-
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
-    def_op, jabs_op, jrel_op, rm_op, name_op, cmp_op
+    def_op, compare_op, init_opdata, jabs_op, jrel_op, rm_op, name_op,
     )
 
 l = locals()
@@ -21,23 +18,9 @@ l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
-HAVE_ARGUMENT = opcode_2x.HAVE_ARGUMENT
-cmp_op = list(cmp_op)
-hasconst = list(opcode_2x.hasconst)
-hascompare = list(opcode_2x.hascompare)
-hasfree = list(opcode_2x.hasfree)
-hasjabs = list(opcode_2x.hasjabs)
-hasjrel = list(opcode_2x.hasjrel)
-haslocal = list(opcode_2x.haslocal)
-hasname = list(opcode_2x.hasname)
-hasnargs = list(opcode_2x.hasnargs)
-hasvargs = list(opcode_2x.hasvargs)
 opmap = deepcopy(opcode_2x.opmap)
 opname = deepcopy(opcode_2x.opname)
-oppush = list(opcode_2x.oppush)
-oppop  = list(opcode_2x.oppop)
-
-EXTENDED_ARG = opcode_2x.EXTENDED_ARG
+init_opdata(l, opcode_2x)
 
 def updateGlobal(version):
     globals().update({'python_version': version})
@@ -47,12 +30,9 @@ def updateGlobal(version):
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
 
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    globals().update({'JUMP_OPs': map(lambda op: opname[op],
+                                      l['hasjrel'] + l['hasjabs'])})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
-
-def compare_op(name, op):
-    def_op(l, name, op)
-    hascompare.append(op)
 
 # Bytecodes added since 2.3.
 # 2.4
@@ -80,7 +60,7 @@ def_op(l, 'LIST_APPEND',            94, 2, 1) # Calls list.append(TOS[-i], TOS).
 def_op(l, 'BUILD_SET',             104)     # Number of set items
 def_op(l, 'BUILD_MAP',             105)
 name_op(l, 'LOAD_ATTR',            106)
-compare_op('COMPARE_OP',           107)
+compare_op(l, 'COMPARE_OP',        107)
 
 name_op(l, 'IMPORT_NAME',          108,  2,  1)  # Index in name list
 name_op(l, 'IMPORT_FROM',          109,  0,  1)

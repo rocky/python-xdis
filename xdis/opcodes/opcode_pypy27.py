@@ -7,12 +7,10 @@ opcodes in Python's opcode.py library.
 
 from copy import deepcopy
 
-# These are used from outside this module
-from xdis.bytecode import findlinestarts, findlabels
-
 import xdis.opcodes.opcode_27 as opcode_27
 from xdis.opcodes.base import (
-    cmp_op, def_op, jrel_op, name_op, varargs_op
+    def_op, init_opdata,
+    jrel_op, name_op, varargs_op
     )
 
 # FIXME: can we DRY this even more?
@@ -21,23 +19,9 @@ l = locals()
 
 # Make a *copy* of opcode_2x values so we don't pollute 2x
 
-HAVE_ARGUMENT = opcode_27.HAVE_ARGUMENT
-cmp_op        = list(cmp_op)
-hasconst      = list(opcode_27.hasconst)
-hascompare    = list(opcode_27.hascompare)
-hasfree       = list(opcode_27.hasfree)
-hasjabs       = list(opcode_27.hasjabs)
-hasjrel       = list(opcode_27.haslocal)
-haslocal      = list(opcode_27.haslocal)
-hasname       = list(opcode_27.hasname)
-hasnargs      = list(opcode_27.hasnargs)
-hasvargs      = list(opcode_27.hasvargs)
 opmap         = deepcopy(opcode_27.opmap)
 opname        = deepcopy(opcode_27.opname)
-oppush        = list(opcode_27.oppush)
-oppop         = list(opcode_27.oppop)
-
-EXTENDED_ARG  = opcode_27.EXTENDED_ARG
+init_opdata(l, opcode_27)
 
 def updateGlobal(version):
     globals().update({'python_version': version})
@@ -46,14 +30,15 @@ def updateGlobal(version):
     globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
 
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
+    globals().update({'JUMP_OPs': map(lambda op: opname[op],
+                                      l['hasjrel'] + l['hasjabs'])})
     globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
 
 # PyPy only
 # ----------
 name_op(l,    'LOOKUP_METHOD',   201,  1, 2)
 varargs_op(l, 'CALL_METHOD',     202, -1, 1)
-hasnargs.append(202)
+l['hasnargs'].append(202)
 
 # Used only in single-mode compilation list-comprehension generators
 def_op(l, 'BUILD_LIST_FROM_ARG', 203)
