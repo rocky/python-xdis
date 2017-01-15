@@ -1,65 +1,30 @@
+# (C) Copyright 2017 by Rocky Bernstein
 """
 CPython 2.4 bytecode opcodes
 
-This is used in bytecode disassembly.
-
-This is used in bytecode disassembly. This is equivalent to the
-opcodes in Python's opcode.py library.
+This is a like Python 2.3's opcode.py with some classification
+of stack usage.
 """
-
-from copy import deepcopy
-
-# These are used from outside this module
-from xdis.bytecode import findlinestarts, findlabels
 
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
-    def_op, cmp_op,
-    HAVE_ARGUMENT)
+    def_op, init_opdata,
+    finalize_opcodes)
 
 l = locals()
+init_opdata(l, opcode_2x, 2.4)
 
-# Make a *copy* of opcode_2x values so we don't pollute 2x
-
-cmp_op = list(cmp_op)
-hasconst = list(opcode_2x.hasconst)
-hascompare = list(opcode_2x.hascompare)
-hasfree = list(opcode_2x.hasfree)
-hasjabs = list(opcode_2x.hasjabs)
-hasjrel = list(opcode_2x.hasjrel)
-haslocal = list(opcode_2x.haslocal)
-hasname = list(opcode_2x.hasname)
-hasnargs = list(opcode_2x.hasnargs)
-hasvargs = list(opcode_2x.hasvargs)
-opmap = deepcopy(opcode_2x.opmap)
-opname = deepcopy(opcode_2x.opname)
-
-oppush = list(opcode_2x.oppush)
-oppop  = list(opcode_2x.oppop)
-EXTENDED_ARG = opcode_2x.EXTENDED_ARG
-
+# FIXME remove (fix uncompyle6)
 def updateGlobal():
-    globals().update({'python_version': 2.4})
-    # This makes things look more like 2.7
-    globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
-    globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
-
-    globals().update({'JUMP_OPs': map(lambda op: opname[op], hasjrel + hasjabs)})
-    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
+    globals().update({'PJIF': l['opmap']['JUMP_IF_FALSE']})
+    globals().update({'PJIT': l['opmap']['JUMP_IF_TRUE']})
     return
 
 # Bytecodes added since 2.3
 def_op(l, 'NOP',           9,  0,  0)
 def_op(l, 'LIST_APPEND',  18,  2,  1)  # Calls list.append(TOS[-i], TOS).
-                                                   # Used to implement list comprehensions.
+                                       # Used to implement list comprehensions.
 def_op(l, 'YIELD_VALUE',  86,  1,  0)
 
 updateGlobal()
-
-from xdis import PYTHON_VERSION
-if PYTHON_VERSION == 2.4:
-    import dis
-    # print(set(dis.opmap.items()) - set(opmap.items()))
-    # print(set(opmap.items()) - set(dis.opmap.items()))
-    assert all(item in opmap.items() for item in dis.opmap.items())
-    assert all(item in dis.opmap.items() for item in opmap.items())
+finalize_opcodes(l)

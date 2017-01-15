@@ -1,15 +1,19 @@
 # (C) Copyright 2017 by Rocky Bernstein
 """
-Common routines for entering and classifiying
-opcodes
+Common routines for entering and classifiying opcodes. Inspired by,
+limited by, and somewhat compatible with the corresponding
+Python opcode.py structures
 """
 
+from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
+from xdis import PYTHON_VERSION
 
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 
-# Opcodes greater than 90 an argument
+# Opcodes greater than 90 take an instruction operand or "argument"
+# as opcode.py likes to call it.
 HAVE_ARGUMENT = 90
 
 fields2copy = """
@@ -17,13 +21,22 @@ hascompare hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasvargs oppop oppush
 """.split()
 
+def init_opdata(l, from_mod, version=None):
+    """Sets up a number of the structures found in Python's
+    opcode.py. Python opcode.py routines assign attributes to modules.
+    In order to do this in a modular way here, the local dictionary
+    for the module is passed.
+    """
 
-def init_opdata(l, from_mod):
+    if version:
+        l['python_version'] = version
     l['cmp_op'] = cmp_op
     l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
-    l['EXTENDED_ARG'] = from_mod.EXTENDED_ARG
     l['findlinestarts'] = findlinestarts
     l['findlabels'] = findlabels
+    l['opmap'] = deepcopy(from_mod.opmap)
+    l['opname'] = deepcopy(from_mod.opname)
+
     for field in fields2copy:
         l[field] = list(getattr(from_mod, field))
 
@@ -67,6 +80,12 @@ def nargs_op(l, name, op, pop=-2, push=-2):
     l['hasnargs'].append(op)
 
 def rm_op(l, name, op):
+    """Remove an opcode. This is used when basing a new Python release off
+    of another one, and there is an opcode that is in the old release
+    that was removed in the new release.
+    We are pretty aggressive about removing traces of the op.
+    """
+
     # opname is an array, so we need to keep the position in there.
     l['opname'][op] = '<%s>' % op
 
@@ -97,3 +116,36 @@ def rm_op(l, name, op):
 def varargs_op(l, op_name, op_code, pop=-1, push=1):
     def_op(l, op_name, op_code, pop, push)
     l['hasvargs'].append(op_code)
+
+# Some of the convoluted code below reflects some of the
+# many Python idiocies over the years.
+
+def finalize_opcodes(l):
+    # Not sure why, but opcode.py addes has opcode.EXTENDED_ARG
+    # as well as opmap['EXTENDED_ARG']
+    l['EXTENDED_ARG'] = l['opmap']['EXTENDED_ARG']
+
+    # Python stupidly named some OPCODES with a + which
+    # prevents using opcode name directly as an attribute,
+    # e.g. SLICE+3. So we turn that into SLICE_3
+    # so we can then use opcode_23.SLICE_3.
+    # Later Python's fix this.
+    l['opmap'] = dict([(k.replace('+', '_'), v)
+                       for (k, v) in l['opmap'].items()])
+    # Now add in the attributes into the module
+    for op in l['opmap']:
+        l[op] = l['opmap'][op]
+    l['JUMP_OPs'] = set(l['hasjrel'] + l['hasjabs'])
+    opcode_check(l)
+
+def opcode_check(l):
+    # Python 2.6 reports 2.6000000000000001
+    if abs(PYTHON_VERSION - l['python_version']) <= 0.01:
+        import dis
+        opmap = dict([(k.replace('+', '_'), v)
+                      for (k, v) in dis.opmap.items()])
+        # print(set(opmap.items()) - set(l['opmap'].items()))
+        # print(set(l['opmap'].items()) - set(opmap.items()))
+
+        assert all(item in opmap.items() for item in l['opmap'].items())
+        assert all(item in l['opmap'].items() for item in opmap.items())

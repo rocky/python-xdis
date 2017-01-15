@@ -1,51 +1,20 @@
+# (C) Copyright 2017 by Rocky Bernstein
 """
 CPython 2.7 bytecode opcodes
 
-This is used in bytecode disassembly. This is equivalent to the
-opcodes in Python's opcode.py library.
+This is a like Python 2.7's opcode.py with some classification
+of stack usage.
 """
 
-from copy import deepcopy
-
-import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
-    def_op, compare_op, init_opdata, jabs_op, jrel_op, rm_op, name_op,
-    )
+    def_op, compare_op, finalize_opcodes,
+    init_opdata, jabs_op, jrel_op, name_op, rm_op)
+import xdis.opcodes.opcode_26 as opcode_26
 
 l = locals()
+init_opdata(l, opcode_26, 2.7)
 
-# FIXME: can we DRY this even more?
-
-# Make a *copy* of opcode_2x values so we don't pollute 2x
-
-opmap = deepcopy(opcode_2x.opmap)
-opname = deepcopy(opcode_2x.opname)
-init_opdata(l, opcode_2x)
-
-def updateGlobal(version):
-    globals().update({'python_version': version})
-
-    # FIXME: Get rid of this (fix uncompyle6)
-    # Canonicalize to PJIx: JUMP_IF_y and POP_JUMP_IF_y
-    globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
-    globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
-
-    globals().update({'JUMP_OPs': map(lambda op: opname[op],
-                                      l['hasjrel'] + l['hasjabs'])})
-    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
-
-# Bytecodes added since 2.3.
-# 2.4
-def_op(l, 'NOP',           9,  0,  0)
-def_op(l, 'YIELD_VALUE',  86,  1,  0)
-
-# 2.5
-def_op(l, 'WITH_CLEANUP', 81, -1, -1)
-
-# 2.6
-def_op(l, 'STORE_MAP',    54,  3,  2)
-
-# 2.7
+# Below are opcode changes since Python 2.6
 rm_op(l, 'BUILD_MAP',     104)
 rm_op(l, 'LOAD_ATTR',     105)
 rm_op(l, 'COMPARE_OP',    106)
@@ -57,7 +26,7 @@ rm_op(l, 'JUMP_IF_TRUE',  112)
 
 def_op(l, 'LIST_APPEND',            94, 2, 1) # Calls list.append(TOS[-i], TOS).
                                               # Used to implement list comprehensions.
-def_op(l, 'BUILD_SET',             104)     # Number of set items
+def_op(l, 'BUILD_SET',             104)       # Number of set items
 def_op(l, 'BUILD_MAP',             105)
 name_op(l, 'LOAD_ATTR',            106)
 compare_op(l, 'COMPARE_OP',        107)
@@ -75,12 +44,10 @@ def_op(l, 'EXTENDED_ARG', 145)
 def_op(l, 'SET_ADD', 146)
 def_op(l, 'MAP_ADD', 147)
 
-updateGlobal(2.7)
+# FIXME remove (fix uncompyle6)
+def updateGlobal():
+    globals().update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
+    globals().update({'PJIT': l['opmap']['POP_JUMP_IF_TRUE']})
+updateGlobal()
 
-from xdis import PYTHON_VERSION, IS_PYPY
-if PYTHON_VERSION == 2.7 and not IS_PYPY:
-    import dis
-    # print(set(dis.opmap.items()) - set(opmap.items()))
-    # print(set(opmap.items()) - set(dis.opmap.items()))
-    assert all(item in opmap.items() for item in dis.opmap.items())
-    assert all(item in dis.opmap.items() for item in opmap.items())
+finalize_opcodes(l)
