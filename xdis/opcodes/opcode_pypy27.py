@@ -1,6 +1,6 @@
 # (C) Copyright 2017 by Rocky Bernstein
 """
-CPython PYPY 2.7 bytecode opcodes
+PYPY 2.7 opcodes
 
 This is a like Python 2.7's opcode.py with some classification
 of stack usage.
@@ -9,12 +9,14 @@ of stack usage.
 import xdis.opcodes.opcode_27 as opcode_27
 from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
-    jrel_op, name_op, varargs_op
+    jrel_op, name_op, varargs_op, update_pj3
     )
 
 l = locals()
 
 init_opdata(l, opcode_27, 2.7, is_pypy=True)
+
+## FIXME: DRY common PYPY opcode additions
 
 # PyPy only
 # ----------
@@ -32,10 +34,6 @@ jrel_op(l, 'JUMP_IF_NOT_DEBUG',     204)
 # If there were, they'd be listed below.
 
 # FIXME remove (fix uncompyle6)
-def updateGlobal():
-    globals().update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
-    globals().update({'PJIT': l['opmap']['POP_JUMP_IF_TRUE']})
-
-updateGlobal()
+update_pj3(globals(), l)
 
 finalize_opcodes(l)
