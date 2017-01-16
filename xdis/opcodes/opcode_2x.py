@@ -7,7 +7,7 @@ If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
 from xdis.opcodes.base import (
-    cmp_op, compare_op, const_op,
+    compare_op, const_op,
     def_op,
     free_op, jabs_op, jrel_op,
     local_op, name_op, nargs_op,
@@ -184,13 +184,3 @@ nargs_op(l, 'CALL_FUNCTION_VAR_KW', 142, -1, 1)  # #args + (#kwargs << 8)
 
 def_op(l, 'EXTENDED_ARG', 143)
 EXTENDED_ARG = 143
-
-fields2copy = """cmp_op hasjabs""".split()
-
-def dump_opcodes(opmap):
-    """Utility for dumping opcodes"""
-    op2name = {}
-    for k in opmap.keys():
-        op2name[opmap[k]] = k
-    for i in sorted(op2name.keys()):
-        print("%-3s %s" % (str(i), op2name[i]))

@@ -16,7 +16,7 @@ from xdis.opcodes.base import (
 l = locals()
 init_opdata(l, opcode_26, 2.6, is_pypy=True)
 
-## FIXME: DRY common PYPY opcode additions
+# FIXME: DRY common PYPY opcode additions
 
 # PyPy only
 # ----------

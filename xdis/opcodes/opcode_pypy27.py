@@ -16,7 +16,7 @@ l = locals()
 
 init_opdata(l, opcode_27, 2.7, is_pypy=True)
 
-## FIXME: DRY common PYPY opcode additions
+# FIXME: DRY common PYPY opcode additions
 
 # PyPy only
 # ----------

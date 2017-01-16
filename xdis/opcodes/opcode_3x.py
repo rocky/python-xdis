@@ -47,8 +47,8 @@ del op
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
- #       OP NAME            OPCODE POP PUSH
- #-----------------------------------------
+#       OP NAME            OPCODE POP PUSH
+#-----------------------------------------
 def_op(l, 'STOP_CODE',             0,  0,  0)
 def_op(l, 'POP_TOP',               1,  1,  0)
 def_op(l, 'ROT_TWO',               2,  2,  2)
@@ -193,14 +193,3 @@ def_op(l, 'MAP_ADD',               147,  2,  1)
 
 def_op(l, 'EXTENDED_ARG', 144)
 EXTENDED_ARG = 144
-
-fields2copy = """hasconst hasname hasjrel hasjabs haslocal hascompare hasfree hasnargs
-opmap opname HAVE_ARGUMENT EXTENDED_ARG""".split()
-
-def dump_opcodes(opmap):
-    """Utility for dumping opcodes"""
-    op2name = {}
-    for k in opmap.keys():
-        op2name[opmap[k]] = k
-    for i in sorted(op2name.keys()):
-        print("%-3s %s" % (str(i), op2name[i]))

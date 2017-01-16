@@ -8,7 +8,7 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
-     update_pj2)
+    update_pj2)
 import xdis.opcodes.opcode_25 as opcode_25
 
 l = locals()
