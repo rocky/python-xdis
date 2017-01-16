@@ -184,7 +184,7 @@ nargs_op(l, 'CALL_FUNCTION_VAR',   140, -1,  1)  # #args + (#kwargs << 8)
 nargs_op(l, 'CALL_FUNCTION_KW',    141, -1,  1)  # #args + (#kwargs << 8)
 nargs_op(l, 'CALL_FUNCTION_VAR_KW',142, -1, 1)   # #args + (#kwargs << 8)
 
-jrel_op(l, 'SETUP_WITH',           143,  0,  2)
+jrel_op(l, 'SETUP_WITH',           143,  0,  7)
 
 def_op(l, 'LIST_APPEND',           145,  2,  1)  # Calls list.append(TOS[-i], TOS).
                                                  # Used to implement list comprehensions.

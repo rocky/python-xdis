@@ -2,13 +2,13 @@
 """
 CPython 3.3 bytecode opcodes
 
-This is a like Python 3.5's opcode.py with some classification
+This is a like Python 3.3's opcode.py with some classification
 of stack usage.
 """
 
 from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
-    rm_op)
+    rm_op, update_pj3)
 
 import xdis.opcodes.opcode_3x as opcode_3x
 
@@ -20,12 +20,6 @@ init_opdata(l, opcode_3x, 3.3)
 rm_op(l,  'STOP_CODE',   0)
 def_op(l, 'YIELD_FROM', 72)
 
-# FIXME remove (fix uncompyle6)
-def updateGlobal():
-    globals().update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
-    globals().update({'PJIT': l['opmap']['POP_JUMP_IF_TRUE']})
-updateGlobal()
+update_pj3(globals(), l)
 
 finalize_opcodes(l)
-
-# opcode33.dump_opcodes(opmap)

@@ -139,6 +139,16 @@ def finalize_opcodes(l):
     l['JUMP_OPs'] = set(l['hasjrel'] + l['hasjabs'])
     opcode_check(l)
 
+def update_pj3(g, l):
+    g.update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
+    g.update({'PJIT': l['opmap']['POP_JUMP_IF_TRUE']})
+
+
+def update_pj2(g, l):
+    g.update({'PJIF': l['opmap']['JUMP_IF_FALSE']})
+    g.update({'PJIT': l['opmap']['JUMP_IF_TRUE']})
+
+
 def opcode_check(l):
     """When the version of Python we are running happens
     to have the same opcode set as the opcode we are

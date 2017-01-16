@@ -7,7 +7,8 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    def_op, finalize_opcodes, init_opdata)
+    def_op, finalize_opcodes, init_opdata,
+     update_pj2)
 import xdis.opcodes.opcode_25 as opcode_25
 
 l = locals()
@@ -17,10 +18,6 @@ init_opdata(l, opcode_25, 2.6)
 def_op(l, 'STORE_MAP', 54, 3, 2)
 
 # FIXME remove (fix uncompyle6)
-def updateGlobal():
-    globals().update({'PJIF': l['opmap']['JUMP_IF_FALSE']})
-    globals().update({'PJIT': l['opmap']['JUMP_IF_TRUE']})
-    return
-updateGlobal()
+update_pj2(globals(), l)
 
 finalize_opcodes(l)
