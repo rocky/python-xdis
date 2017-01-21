@@ -6,20 +6,15 @@ This is a like Python 3.5's opcode.py with some classification
 of stack usage.
 """
 
-from copy import deepcopy
 from xdis.opcodes.base import (
-    def_op, init_opdata, rm_op)
+    def_op, init_opdata, finalize_opcodes,
+    rm_op, update_pj3)
 
 import xdis.opcodes.opcode_34 as opcode_34
 
-# FIXME: can we DRY this even more?
-
 l = locals()
 
-# Make a *copy* of opcode_34 values so we don't pollute 34
-opmap = deepcopy(opcode_34.opmap)
-opname = deepcopy(opcode_34.opname)
-init_opdata(l, opcode_34)
+init_opdata(l, opcode_34, 3.5)
 
 # These are removed since Python 3.5.
 # Removals happen before adds since
@@ -44,29 +39,6 @@ def_op(l, 'BUILD_TUPLE_UNPACK',         152, -1, 1)
 def_op(l, 'BUILD_SET_UNPACK',           153, -1, 1)
 def_op(l, 'SETUP_ASYNC_WITH',           154,  0, 6)
 
-def updateGlobal():
-    globals().update({'python_version': 3.5})
+update_pj3(globals(), l)
 
-    # FIXME: Get rid of these (change uncompyle)
-    globals().update({'PJIF': opmap['POP_JUMP_IF_FALSE']})
-    globals().update({'PJIT': opmap['POP_JUMP_IF_TRUE']})
-    globals().update({'JF': opmap['JUMP_FORWARD']})
-
-    globals().update(dict([(k.replace('+', '_'), v) for (k, v) in opmap.items()]))
-
-    globals().update({'JUMP_OPs': map(lambda op: opname[op],
-                                      l['hasjrel'] + l['hasjabs'])})
-
-updateGlobal()
-
-# FIXME: turn into pytest test
-from xdis import PYTHON_VERSION
-if PYTHON_VERSION == 3.5:
-    import dis
-    # print(set(dis.opmap.items()) - set(opmap.items()))
-    # print(set(opmap.items()) - set(dis.opmap.items()))
-
-    assert all(item in dis.opmap.items() for item in opmap.items())
-    assert all(item in opmap.items() for item in dis.opmap.items())
-
-# opcode_35.dump_opcodes(opmap)
+finalize_opcodes(l)
