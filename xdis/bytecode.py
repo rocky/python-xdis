@@ -365,7 +365,7 @@ class Bytecode:
                                instr.starts_line is not None and
                                instr.offset > 0)
             if new_source_line:
-               file.write("\n")
+                file.write("\n")
             is_current_instr = instr.offset == lasti
             file.write(instr._disassemble(lineno_width, is_current_instr) + "\n")
             pass
