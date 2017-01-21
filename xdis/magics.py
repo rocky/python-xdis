@@ -48,7 +48,7 @@ versions = {
     int2magic(62131): '2.5c2', # fix wrong code: for x, in ... in
                                # listcomp/genexp)
     int2magic(62135): '2.5dropbox', # Dropbox-modified Python 2.5
-                                 # used in versions 1.1x and before of Dropbox
+                                    # used in versions 1.1x and before of Dropbox
     int2magic(62151): '2.6a0',   # peephole optimizations & STORE_MAP
     int2magic(62161): '2.6a1',   # WITH_CLEANUP optimization
     int2magic(62171): '2.7a0',   # optimize list comprehensions/change

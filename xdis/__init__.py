@@ -40,7 +40,5 @@ PYTHON_VERSION_STR  = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 IS_PYPY = '__pypy__' in sys.builtin_module_names
 
-sys.setrecursionlimit(5000)
-
 # Export some functions
 from xdis.load import load_module, load_file

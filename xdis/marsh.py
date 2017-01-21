@@ -131,7 +131,7 @@ class _Marshaller:
         digits = []
         while x:
             digits.append(x & 0x7FFF)
-            x = x>>15
+            x = x >> 15
         self.w_long(len(digits) * sign)
         for d in digits:
             self.w_short(d)
@@ -304,7 +304,7 @@ class _Unmarshaller:
         d = Ord(s[3])
         x = a | (b<<8) | (c<<16) | (d<<24)
         if d & 0x80 and x > 0:
-            x = -((1<<32) - x)
+            x = -((1 << 32) - x)
             return int(x)
         else:
             return x
@@ -318,8 +318,8 @@ class _Unmarshaller:
         f = Ord(self._read(1))
         g = Ord(self._read(1))
         h = Ord(self._read(1))
-        x = a | (b<<8) | (c<<16) | (d<<24)
-        x = x | (e<<32) | (f<<40) | (g<<48) | (h<<56)
+        x = a | (b <<  8) | (c << 16) | (d << 24)
+        x = x | (e << 32) | (f << 40) | (g << 48) | (h << 56)
         if h & 0x80 and x > 0:
             x = -((1<<64) - x)
         return x
@@ -511,8 +511,8 @@ def _r_long64(self):
     f = Ord(_read1(self))
     g = Ord(_read1(self))
     h = Ord(_read1(self))
-    x = a | (b<<8) | (c<<16) | (d<<24)
-    x = x | (e<<32) | (f<<40) | (g<<48) | (h<<56)
+    x = a | (b <<  8) | (c << 16) | (d << 24)
+    x = x | (e << 32) | (f << 40) | (g << 48) | (h << 56)
     if h & 0x80 and x > 0:
         x = -((1<<64) - x)
     return x

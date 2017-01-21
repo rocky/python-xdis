@@ -27,7 +27,7 @@ def get_keys(a, b):
     return (kb,kc,kd,ke)
 
 def MX(z, y, sum, key, p, e):
-    return (((z>>5^y<<2) + (y>>3^z<<4)) ^ ((sum^y) + (key[(p&3)^e] ^ z)))
+    return (((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (key[(p & 3)^e] ^ z)))
 
 def tea_decipher(v, key):
     """
@@ -42,8 +42,8 @@ def tea_decipher(v, key):
     while sum != 0:
         e = (sum >> 2) & 3
         for p in range(n-1, -1, -1):
-            z = v[(n+p-1)%n]
-            v[p] = (v[p] - MX(z,y,sum,key,p,e)) & 0xffffffff
+            z = v[(n + p - 1) % n]
+            v[p] = (v[p] - MX(z, y, sum, key, p, e)) & 0xffffffff
             y = v[p]
         sum -= DELTA
     return v
@@ -154,7 +154,7 @@ def patch(code):
             misses[op] = misses.get(op, 0) + 1
         code[i] = table.get(op,op)
         i += 1
-        if table.get(op,op) >= 90: #opcode.HAVE_ARGUMENT:
+        if table.get(op,op) >= 90: # opcode.HAVE_ARGUMENT:
             i += 2
     if PYTHON3:
         return bytes(code)
@@ -220,7 +220,6 @@ if 0:
             pass
         return
 
-
     for root, dirs, files in os.walk('library'):
         for name in files:
             name = os.path.join(root, name)
@@ -237,11 +236,10 @@ if 0:
             fill(c, d)
             codes_c = filter(lambda x: type(x) == type(c), c.co_consts)
             codes_d = filter(lambda x: type(x) == type(c), d.co_consts)
-            for i,j in zip(codes_c, codes_d):
-                fill(i,j)
+            for i, j in zip(codes_c, codes_d):
+                fill(i, j)
                 pass
             pass
-
 
     def print_table(m):
         k = m.keys()
@@ -259,13 +257,12 @@ if 0:
             print()
         return table
 
-
     import re
     re.compile('offset loc_(\w+)').findall('dd offset loc_8096DC4, offset loc_8096963, offset loc_8095462')
 
     def load(name):
         a = re.compile('offset loc_(\w+)').findall(open(name).read())
-        a = [int(i,16) for i in a]
+        a = [int(i, 16) for i in a]
         c = a[:]
         c.sort()
         c = [(i, c.index(i)) for i in a]

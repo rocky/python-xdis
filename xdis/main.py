@@ -81,8 +81,12 @@ def get_opcode(version, is_pypy):
                 from xdis.opcodes import opcode_31
                 return opcode_31
             elif version == 3.2:
-                from xdis.opcodes import opcode_32
-                return opcode_32
+                if is_pypy:
+                    from xdis.opcodes import opcode_pypy32
+                    return opcode_pypy32
+                else:
+                    from xdis.opcodes import opcode_32
+                    return opcode_32
         else:
             if version == 3.3:
                 from xdis.opcodes import opcode_33

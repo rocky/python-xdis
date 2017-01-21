@@ -60,7 +60,7 @@ def pretty_flags(flags):
     names = []
     result = "0x%08x" % flags
     for i in range(32):
-        flag = 1<<i
+        flag = 1 << i
         if flags & flag:
             names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
             flags ^= flag

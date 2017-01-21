@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2016 by Rocky Bernstein
+# Copyright (c) 2015-2017 by Rocky Bernstein
 
 import imp, marshal, os, py_compile, sys, tempfile
 from struct import unpack, pack
@@ -133,9 +133,9 @@ def load_module(filename, code_objects={}, fast_load=False,
     # release. Hence the test on the magic value rather than
     # PYTHON_VERSION, although PYTHON_VERSION would probably work.
     if 3200 <= magic_int < 20121:
-       source_size = unpack("I", fp.read(4))[0] # size mod 2**32
+        source_size = unpack("I", fp.read(4))[0] # size mod 2**32
     else:
-       source_size = None
+        source_size = None
 
     if get_code:
         if my_magic_int == magic_int:
