@@ -164,8 +164,10 @@ def opcode_check(l):
         # print(set(opmap.items()) - set(l['opmap'].items()))
         # print(set(l['opmap'].items()) - set(opmap.items()))
 
-        assert all(item in opmap.items() for item in l['opmap'].items())
-        assert all(item in l['opmap'].items() for item in opmap.items())
+        for item in l['opmap'].items():
+            assert item in opmap.items()
+        for item in opmap.items():
+            assert item in l['opmap'].items()
 
 def dump_opcodes(opmap):
     """Utility for dumping opcodes"""

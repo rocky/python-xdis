@@ -47,7 +47,11 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
             seen.add(name)
         field_names = tuple(names)
     for name in (typename,) + field_names:
-        if not min(c.isalnum() or c=='_' for c in name):
+        is_alnum = True
+        for c in name:
+            if not (c.isalnum() or c=='_'):
+                is_alnum = False
+        if not is_alnum:
             raise ValueError('Type names and field names can only contain alphanumeric characters and underscores: %r' % name)
         if _iskeyword(name):
             raise ValueError('Type names and field names cannot be a keyword: %r' % name)
@@ -64,7 +68,8 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
     # Create and fill-in the class template
     numfields = len(field_names)
     argtxt = repr(field_names).replace("'", "")[1:-1]   # tuple repr without parens or quotes
-    reprtxt = ', '.join('%s=%%r' % name for name in field_names)
+    for name in field_names:
+        reprtxt = ', '.join('%s=%%r' % name)
     template = '''class %(typename)s(tuple):
         '%(typename)s(%(argtxt)s)' \n
         __slots__ = () \n
