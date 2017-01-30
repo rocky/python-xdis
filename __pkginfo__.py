@@ -9,7 +9,7 @@
 
 # Things that change more often go here.
 copyright   = """
-Copyright (C) 2015, 2016 Rocky Bernstein <rb@dustyfeet.com>.
+Copyright (C) 2015-2017 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
 classifiers =  ['Development Status :: 4 - Beta',
@@ -21,9 +21,11 @@ classifiers =  ['Development Status :: 4 - Beta',
                 'Programming Language :: Python :: 2.6',
                 'Programming Language :: Python :: 2.7',
                 'Programming Language :: Python :: 3',
+                'Programming Language :: Python :: 3.2',
                 'Programming Language :: Python :: 3.3',
                 'Programming Language :: Python :: 3.4',
                 'Programming Language :: Python :: 3.5',
+                'Programming Language :: Python :: 3.6',
                 'Topic :: Software Development :: Debuggers',
                 'Topic :: Software Development :: Libraries :: Python Modules',
                 ]
@@ -31,22 +33,18 @@ classifiers =  ['Development Status :: 4 - Beta',
 # The rest in alphabetic order
 author             = "Rocky Bernstein, Hartmut Goebel and others"
 author_email       = "rb@dustyfeet.com"
-entry_points={
-    'console_scripts': [
-        'pydisasm=xdis.bin.pydisassemble:main',
-    ]}
 ftp_url            = None
 install_requires   = ['six >= 1.10.0']
 license            = 'GPL-2.0'
 mailing_list       = 'python-debugger@googlegroups.com'
 modname            = 'xdis'
 py_modules         = None
+scripts            = ['bin/pydisasm']
 short_desc         = 'Python cross-version byte-code disassembler and marshal routines'
 web                = 'https://github.com/rocky/python-xdis/'
 
 # tracebacks in zip files are funky and not debuggable
 zip_safe = True
-
 
 import os.path
 def get_srcdir():
