@@ -232,7 +232,7 @@ if __name__ == '__main__':
         pass
 
     if not checked_dirs:
-        sys.stderr("No directories found to check\n")
+        sys.stderr.write("No directories found to check\n")
         sys.exit(1)
 
     test_opts['compiled_version'] = last_compile_version
