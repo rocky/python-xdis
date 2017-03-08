@@ -15,3 +15,4 @@
 /tmp
 __pycache__
 build
+/pytest/**/*.got
