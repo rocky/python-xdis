@@ -5,9 +5,9 @@
 from __pkginfo__ import \
     author,           author_email,       \
     license,          long_description,   classifiers,               \
-    modname,          py_modules,         scripts,                   \
-    short_desc,       VERSION,            web,                       \
-    zip_safe
+    modname,          py_modules,         setup_requires,            \
+    scripts,          short_desc,         tests_require,             \
+    VERSION,          web,                zip_safe
 
 from setuptools import setup, find_packages
 setup(
@@ -20,9 +20,9 @@ setup(
        name               = modname,
        packages           = find_packages(),
        py_modules         = py_modules,
+       setup_requires     = setup_requires,
        scripts            = scripts,
-       test_suite         = 'nose.collector',
+       tests_require      = tests_require,
        url                = web,
-       tests_require     = ['nose>=1.0'],
        version            = VERSION,
        zip_safe           = zip_safe)
