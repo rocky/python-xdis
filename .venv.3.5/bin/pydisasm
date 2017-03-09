@@ -1,6 +1,0 @@
-#!/home/moagstar/Projects/python-xdis/.venv.3.5/bin/python
-# EASY-INSTALL-DEV-SCRIPT: 'xdis==3.2.4','pydisasm'
-__requires__ = 'xdis==3.2.4'
-__import__('pkg_resources').require('xdis==3.2.4')
-__file__ = '/home/moagstar/Projects/python-xdis/bin/pydisasm'
-exec(compile(open(__file__).read(), __file__, 'exec'))
