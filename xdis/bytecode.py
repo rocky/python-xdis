@@ -95,7 +95,11 @@ def findlabels(code, opc):
     labels = []
     # enumerate() is not an option, since we sometimes process
     # multiple elements on a single pass through the loop
-    n = len(code)
+    try:
+        n = len(code)
+    except:
+        code = code.co_code
+        n = len(code)
     i = 0
     while i < n:
         op = code2num(code, i)
@@ -289,7 +293,7 @@ class Instruction(_Instruction):
 
     # FIXME: figure out how to do _disassemble passing in opnames
 
-class Bytecode:
+class Bytecode(object):
     """The bytecode operations of a piece of code
 
     Instantiate this with a function, method, string of code, or a code object
@@ -332,7 +336,7 @@ class Bytecode:
 
     def info(self):
         """Return formatted information about the code object."""
-        return format_code_info(self.codeobj)
+        return format_code_info(self.codeobj, self.opc.version)
 
     def dis(self):
         """Return a formatted view of the bytecode operations."""

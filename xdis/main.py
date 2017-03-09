@@ -103,7 +103,7 @@ def get_opcode(version, is_pypy):
     raise TypeError("%s is not a Python version I know about" % version)
 
 def disco(bytecode_version, co, timestamp, out=sys.stdout,
-          is_pypy=False, magic_int=None, source_size=None):
+          is_pypy=False, magic_int=None, source_size=None, header=True):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -114,21 +114,21 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
     real_out = out or sys.stdout
     co_pypy_str = 'PyPy ' if is_pypy else ''
     run_pypy_str = 'PyPy ' if IS_PYPY else ''
-    out.write(('# pydisasm version %s\n# %sPython bytecode %s%s'
-               '\n# Disassembled from %sPython %s\n') %
-              (VERSION, co_pypy_str, bytecode_version,
-               " (%d)" % magic_int if magic_int else "",
-               run_pypy_str, '\n# '.join(sys.version.split('\n'))))
+    if header:
+        real_out.write(('# pydisasm version %s\n# %sPython bytecode %s%s'
+                   '\n# Disassembled from %sPython %s\n') %
+                  (VERSION, co_pypy_str, bytecode_version,
+                   " (%d)" % magic_int if magic_int else "",
+                   run_pypy_str, '\n# '.join(sys.version.split('\n'))))
     if timestamp > 0:
         value = datetime.datetime.fromtimestamp(timestamp)
-        out.write(value.strftime('# Timestamp in code: '
+        real_out.write(value.strftime('# Timestamp in code: '
                                  '%Y-%m-%d %H:%M:%S\n'))
     if source_size:
-        out.write(value.strftime('# Source code size mod 2**32: %d bytes\n'
-                                 % source_size))
+        real_out.write('# Source code size mod 2**32: %d bytes\n' % source_size)
 
     if co.co_filename:
-        out.write(format_code_info(co, bytecode_version) + "\n")
+        real_out.write(format_code_info(co, bytecode_version) + "\n")
         pass
 
     opc = get_opcode(bytecode_version, is_pypy)
