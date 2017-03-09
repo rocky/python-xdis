@@ -7,7 +7,7 @@ import six
 import pytest
 # local
 import xdis.std as dis
-from xdis import PYTHON3
+from xdis import PYTHON3, IS_PYPY
 
 
 # just a simple bit of code that should be the same across python versions,
@@ -31,12 +31,12 @@ EXPECTED_CODE_INFO = ("""\
 + ("# Kw-only arguments: 0" if PYTHON3 else "") +
 """# Number of locals:  0
 # Stack size:        1
-# Flags:             0x00000040 (NOFREE)
+# Flags:             {flags}
 # Constants:
 #    0: 10
 #    1: None
 # Names:
-#    0: a""")
+#    0: a""").format(flags='0x00000000 (0x0)' if IS_PYPY else '0x00000040 (NOFREE)')
 
 
 EXPECTED_DIS = """\
