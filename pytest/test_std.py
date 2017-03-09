@@ -7,6 +7,7 @@ import six
 import pytest
 # local
 import xdis.std as dis
+from xdis import PYTHON3
 
 
 # just a simple bit of code that should be the same across python versions,
@@ -22,19 +23,20 @@ TEST_BRANCH_SOURCE_CODE = 'a = 0 if 1 else 2'
 TEST_BRANCH_CODE = compile(TEST_BRANCH_SOURCE_CODE, '<disassembly>', 'single')
 
 
-EXPECTED_CODE_INFO = """\
+EXPECTED_CODE_INFO = ("""\
 # Method Name:       <module>
 # Filename:          <disassembly>
 # Argument count:    0
-# Kw-only arguments: 0
-# Number of locals:  0
+"""
++ ("# Kw-only arguments: 0" if PYTHON3 else "") +
+"""# Number of locals:  0
 # Stack size:        1
 # Flags:             0x00000040 (NOFREE)
 # Constants:
 #    0: 10
 #    1: None
 # Names:
-#    0: a"""
+#    0: a""")
 
 
 EXPECTED_DIS = """\
