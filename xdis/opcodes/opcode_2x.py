@@ -3,7 +3,7 @@
 This is used in bytecode disassembly among other things. This is
 similar to the opcodes in Python's opcode.py library.
 
-If this file changes the other opcode files may have to a adjusted accordingly.
+If this file changes the other opcode files may have to be adjusted accordingly.
 """
 
 from xdis.opcodes.base import (

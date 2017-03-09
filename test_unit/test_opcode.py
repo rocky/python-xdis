@@ -7,6 +7,7 @@ from xdis.opcodes import (opcode_23, opcode_24, opcode_25,
                           opcode_30, opcode_31,
                           opcode_32, opcode_pypy32, opcode_33,
                           opcode_34, opcode_35, opcode_36)
+from xdis.opcodes.base import fix_opcode_names
 
 class TestOpcodes(unittest.TestCase):
 
@@ -47,11 +48,10 @@ class TestOpcodes(unittest.TestCase):
             opc = opcode_36
         else:
             self.assertFalse("Python version %s is not something I know about" % PYTHON_VERSION)
-        # print(set(opc.opmap.items()) - set(dis.opmap.items()))
-        # print(set(dis.opmap.items()) - set(opc.opmap.items()))
 
-        self.assertTrue(all(item in opc.opmap.items() for item in dis.opmap.items()))
-        self.assertTrue(all(item in dis.opmap.items() for item in opc.opmap.items()))
+        host_opmap = fix_opcode_names(dis.opmap)
+
+        self.assertEqual(opc.opmap, host_opmap)
 
 if __name__ == '__main__':
     unittest.main()
