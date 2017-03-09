@@ -1,4 +1,5 @@
 import os, pytest, sys
+from xdis import IS_PYPY
 from xdis.load import load_file, check_object_path, load_module
 
 @pytest.mark.skipif(sys.version_info >= (3,5),
@@ -14,4 +15,7 @@ def test_load_file():
     else:
         assert source_size is None
 
-    assert co == co2
+    if IS_PYPY:
+        assert str(co) == str(co2)
+    else:
+        assert co == co2
