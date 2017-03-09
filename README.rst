@@ -75,7 +75,7 @@ want to use the improved api from python 3.4 in python 2. For example:
 >>> import xdis.std as dis
 >>> [x.opname for x in dis.Bytecode('a = 10')]
 ['LOAD_CONST', 'STORE_NAME', 'LOAD_CONST', 'RETURN_VALUE']
-cd py	
+
 See Also
 --------
 
