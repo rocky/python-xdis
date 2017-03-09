@@ -12,9 +12,11 @@ from xdis.opcodes.base import (
 
 import xdis.opcodes.opcode_31 as opcode_31
 
+version = 3.0
+
 l = locals()
 
-init_opdata(l, opcode_31, 3.0)
+init_opdata(l, opcode_31, version)
 
 # These are in Python 3.x but not in Python 3.0
 

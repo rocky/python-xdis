@@ -12,9 +12,11 @@ from xdis.opcodes.base import (
     jrel_op, name_op, varargs_op, update_pj3
     )
 
+version = 2.7
+
 l = locals()
 
-init_opdata(l, opcode_27, 2.7, is_pypy=True)
+init_opdata(l, opcode_27, version, is_pypy=True)
 
 # FIXME: DRY common PYPY opcode additions
 

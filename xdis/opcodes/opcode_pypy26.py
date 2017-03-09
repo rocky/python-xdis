@@ -13,8 +13,10 @@ from xdis.opcodes.base import (
     update_pj2
     )
 
+version = 2.6
+
 l = locals()
-init_opdata(l, opcode_26, 2.6, is_pypy=True)
+init_opdata(l, opcode_26, version, is_pypy=True)
 
 # FIXME: DRY common PYPY opcode additions
 

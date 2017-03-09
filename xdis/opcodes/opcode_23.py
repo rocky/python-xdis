@@ -10,8 +10,10 @@ import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
     init_opdata, finalize_opcodes)
 
+version = 2.3
+
 l = locals()
-init_opdata(l, opcode_2x, 2.3)
+init_opdata(l, opcode_2x, version)
 
 # FIXME remove (fix uncompyle6)
 def updateGlobal():

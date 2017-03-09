@@ -8,8 +8,10 @@ import xdis.opcodes.opcode_21 as opcode_21
 from xdis.opcodes.base import (
     init_opdata, finalize_opcodes, rm_op)
 
+version = 2.0
+
 l = locals()
-init_opdata(l, opcode_21, 2.0)
+init_opdata(l, opcode_21, version)
 
 # 2.1 Bytecodes not in 2.0
 rm_op(l, 'CONTINUE_LOOP', 119)

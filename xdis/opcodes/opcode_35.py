@@ -12,9 +12,11 @@ from xdis.opcodes.base import (
 
 import xdis.opcodes.opcode_34 as opcode_34
 
+version = 3.5
+
 l = locals()
 
-init_opdata(l, opcode_34, 3.5)
+init_opdata(l, opcode_34, version)
 
 # These are removed since Python 3.5.
 # Removals happen before adds since

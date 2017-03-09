@@ -11,8 +11,10 @@ from xdis.opcodes.base import (
     init_opdata, jabs_op, jrel_op, name_op, rm_op)
 import xdis.opcodes.opcode_26 as opcode_26
 
+version = 2.7
+
 l = locals()
-init_opdata(l, opcode_26, 2.7)
+init_opdata(l, opcode_26, version)
 
 # Below are opcode changes since Python 2.6
 rm_op(l, 'BUILD_MAP',     104)

@@ -1,4 +1,5 @@
 from xdis import PYTHON3
+
 if PYTHON3:
     def code2num(code, i):
         return code[i]
@@ -135,13 +136,19 @@ def get_code_object(x):
     raise TypeError("don't know how to disassemble %s objects" %
                     type(x).__name__)
 
-def code_info(x):
-    """Formatted details of methods, functions, or code."""
-    return format_code_info(get_code_object(x))
 
-def show_code(co):
+def code_info(x, version):
+    """Formatted details of methods, functions, or code."""
+    return format_code_info(get_code_object(x), version)
+
+
+def show_code(co, version, file=None):
     """Print details of methods, functions, or code to *file*.
 
     If *file* is not provided, the output is printed on stdout.
     """
-    print(code_info(co))
+    if file is None:
+        print(code_info(co, version))
+    else:
+        file.write(code_info(co, version) + '\n')
+

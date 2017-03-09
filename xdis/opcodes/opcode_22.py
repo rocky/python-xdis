@@ -9,8 +9,10 @@ import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
     def_op, init_opdata, finalize_opcodes)
 
+version = 2.2
+
 l = locals()
-init_opdata(l, opcode_2x, 2.2)
+init_opdata(l, opcode_2x, version)
 
 # 2.2 Bytecodes not in 2.3
 def_op(l, 'FOR_LOOP',   114)
