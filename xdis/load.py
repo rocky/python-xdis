@@ -48,11 +48,7 @@ def load_file(filename):
     This function does NOT write any file!
     """
     fp = open(filename, 'rb')
-    try:
-        source = fp.read().decode('utf-8') + '\n'
-    except UnicodeDecodeError:
-        fp.seek(0)
-        source = fp.read() + '\n'
+    source = fp.read()
 
     try:
         if PYTHON_VERSION < 2.6:
@@ -66,7 +62,7 @@ def load_file(filename):
     fp.close()
     return co
 
-def load_module(filename, code_objects={}, fast_load=False,
+def load_module(filename, code_objects=None, fast_load=False,
                 get_code=True):
     """load a module without importing it.
     load_module(filename: string): version, magic_int, code_object
@@ -83,6 +79,8 @@ def load_module(filename, code_objects={}, fast_load=False,
     sometimes all you want is the module info, time string, code size,
     python version, etc. For that, set get_code=False.
     """
+    if code_objects is None:
+      code_objects = {}
 
     timestamp = 0
     fp = open(filename, 'rb')
