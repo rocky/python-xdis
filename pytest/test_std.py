@@ -28,7 +28,7 @@ EXPECTED_CODE_INFO = ("""\
 # Filename:          <disassembly>
 # Argument count:    0
 """
-+ ("# Kw-only arguments: 0" if PYTHON3 else "") +
++ ("# Kw-only arguments: 0\n" if PYTHON3 else "") +
 """# Number of locals:  0
 # Stack size:        1
 # Flags:             {flags}
@@ -84,7 +84,8 @@ def test_bytecode_dis(bytecode_fixture):
 
 
 def test_bytecode_info(bytecode_fixture):
-    assert bytecode_fixture.info() == EXPECTED_CODE_INFO
+    actual = bytecode_fixture.info()
+    assert actual == EXPECTED_CODE_INFO
 
 
 def test_bytecode__iter__(bytecode_fixture):
