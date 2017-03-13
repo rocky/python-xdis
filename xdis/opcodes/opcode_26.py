@@ -11,8 +11,10 @@ from xdis.opcodes.base import (
     update_pj2)
 import xdis.opcodes.opcode_25 as opcode_25
 
+version = 2.6
+
 l = locals()
-init_opdata(l, opcode_25, 2.6)
+init_opdata(l, opcode_25, version)
 
 # Below are opcode changes since Python 2.5
 def_op(l, 'STORE_MAP', 54, 3, 2)

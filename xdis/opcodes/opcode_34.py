@@ -12,9 +12,11 @@ from xdis.opcodes.base import (
 
 import xdis.opcodes.opcode_33 as opcode_33
 
+version = 3.4
+
 l = locals()
 
-init_opdata(l, opcode_33, 3.4)
+init_opdata(l, opcode_33, version)
 
 # These are removed since Python 3.3
 rm_op(l, 'STORE_LOCALS', 69)

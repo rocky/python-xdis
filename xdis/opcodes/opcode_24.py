@@ -11,8 +11,10 @@ from xdis.opcodes.base import (
     def_op, init_opdata,
     finalize_opcodes, update_pj2)
 
+version = 2.4
+
 l = locals()
-init_opdata(l, opcode_2x, 2.4)
+init_opdata(l, opcode_2x, version)
 
 # Bytecodes added since 2.3
 def_op(l, 'NOP',           9,  0,  0)

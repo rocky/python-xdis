@@ -9,8 +9,10 @@ import xdis.opcodes.opcode_22 as opcode_22
 from xdis.opcodes.base import (
     init_opdata, finalize_opcodes, rm_op)
 
+version = 2.1
+
 l = locals()
-init_opdata(l, opcode_22, 2.1)
+init_opdata(l, opcode_22, version)
 
 # 2.1 bytecodes changes from 2.2
 rm_op(l, 'BINARY_FLOOR_DIVIDE',  26)

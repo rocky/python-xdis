@@ -14,9 +14,11 @@ from xdis.opcodes.base import(
 
 import xdis.opcodes.opcode_35 as opcode_35
 
+version = 3.6
+
 l = locals()
 
-init_opdata(l, opcode_35, 3.6)
+init_opdata(l, opcode_35, version)
 
 # These are removed since Python 3.6
 rm_op(l, 'MAKE_CLOSURE',         134)

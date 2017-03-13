@@ -39,7 +39,11 @@ def test_funcoutput(capfd, test_tuple, function_to_test):
     function_to_test(in_file, resout)
     expected = "".join(open(filename_expected, "r").readlines())
     got_lines = resout.getvalue().split("\n")
-    got_lines = [re.sub(' at 0x[0-9a-f]+, file', ' at 0xdeadbeef0000, file', line)
+    got_lines = [re.sub(' at 0x[0-9a-f]+', ' at 0xdeadbeef0000', line)
+                 for line in got_lines]
+    got_lines = [re.sub('<code object .*>',
+                        '<xdis.code.Code3 instance at 0xdeadbeef0000>',
+                        line)
                  for line in got_lines]
     got = "\n".join(got_lines[5:])
 

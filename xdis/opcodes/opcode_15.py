@@ -16,6 +16,8 @@ from xdis.opcodes.base import (
     HAVE_ARGUMENT
     )
 
+version = 1.5
+
 l = locals()
 
 # These are just to silence the import above
@@ -161,7 +163,7 @@ EXTENDED_ARG = 143
 fields2copy = """cmp_op hasjabs""".split()
 
 def updateGlobal():
-    globals().update({'python_version': 1.5})
+    globals().update({'python_version': version})
     globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
     globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
     return

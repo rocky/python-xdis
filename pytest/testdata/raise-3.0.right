@@ -6,11 +6,11 @@
 # Stack size:        1
 # Flags:             0x00000040 (NOFREE)
 # Constants:
-#    0: <code object compact_traceback at 0xdeadbeef0000, file "simple_source/stmts/04_raise.py", line 6>
+#    0: <xdis.code.Code3 instance at 0xdeadbeef0000>
 #    1: None
 # Names:
 #    0: compact_traceback
-  6           0 LOAD_CONST               0 (<code object compact_traceback at 0xdeadbeef0000, file "simple_source/stmts/04_raise.py", line 6>)
+  6           0 LOAD_CONST               0 (<xdis.code.Code3 instance at 0xdeadbeef0000>)
               3 MAKE_FUNCTION            0
               6 STORE_NAME               0 (compact_traceback)
               9 LOAD_CONST               1 (None)

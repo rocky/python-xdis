@@ -14,7 +14,9 @@ import xdis.opcodes.opcode_32 as opcode_32
 
 l = locals()
 
-init_opdata(l, opcode_32, 3.1)
+version = 3.1
+
+init_opdata(l, opcode_32, version)
 
 # These are in Python 3.2 but not in Python 3.1
 rm_op(l, 'DUP_TOP_TWO',    5)

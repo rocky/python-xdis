@@ -76,7 +76,7 @@ for vers in (1.5, 2.1, 2.2, 2.3, 2.4, 2.5, '2.5dropbox',
              3.6):
     bytecode = "bytecode_%s" % vers
     key = "bytecode-%s" % vers
-    test_options[key] =  (bytecode, PYC, bytecode, vers)
+    test_options[key] = (os.path.join(src_dir, bytecode), PYC, bytecode, vers)
     key = "%s" % vers
     pythonlib = "python%s" % vers
     if isinstance(vers, float) and vers >= 3.0:
@@ -231,7 +231,7 @@ if __name__ == '__main__':
         pass
 
     if not checked_dirs:
-        sys.stderr("No directories found to check\n")
+        sys.stderr.write("No directories found to check\n")
         sys.exit(1)
 
     test_opts['compiled_version'] = last_compile_version

@@ -126,18 +126,23 @@ def finalize_opcodes(l):
     # as well as opmap['EXTENDED_ARG']
     l['EXTENDED_ARG'] = l['opmap']['EXTENDED_ARG']
 
-    # Python stupidly named some OPCODES with a + which
-    # prevents using opcode name directly as an attribute,
-    # e.g. SLICE+3. So we turn that into SLICE_3
-    # so we can then use opcode_23.SLICE_3.
-    # Later Python's fix this.
-    l['opmap'] = dict([(k.replace('+', '_'), v)
-                       for (k, v) in l['opmap'].items()])
+    l['opmap'] = fix_opcode_names(l['opmap'])
     # Now add in the attributes into the module
     for op in l['opmap']:
         l[op] = l['opmap'][op]
     l['JUMP_OPs'] = set(l['hasjrel'] + l['hasjabs'])
     opcode_check(l)
+
+
+def fix_opcode_names(opmap):
+    """
+    Python stupidly named some OPCODES with a + which prevents using opcode name
+    directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3 so we
+    can then use opcode_23.SLICE_3.  Later Python's fix this.
+    """
+    return dict([(k.replace('+', '_'), v)
+                  for (k, v) in opmap.items()])
+
 
 def update_pj3(g, l):
     g.update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
@@ -159,8 +164,7 @@ def opcode_check(l):
     if (abs(PYTHON_VERSION - l['python_version']) <= 0.01
         and IS_PYPY == l['is_pypy']):
         import dis
-        opmap = dict([(k.replace('+', '_'), v)
-                      for (k, v) in dis.opmap.items()])
+        opmap = fix_opcode_names(dis.opmap)
         # print(set(opmap.items()) - set(l['opmap'].items()))
         # print(set(l['opmap'].items()) - set(opmap.items()))
 

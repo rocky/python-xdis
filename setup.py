@@ -5,7 +5,7 @@
 from __pkginfo__ import \
     author,           author_email,       \
     license,          long_description,   classifiers,               \
-    entry_points,     modname,            py_modules,                \
+    modname,          py_modules,         scripts,                   \
     short_desc,       VERSION,            web,                       \
     zip_safe
 
@@ -15,12 +15,12 @@ setup(
        author_email       = author_email,
        classifiers        = classifiers,
        description        = short_desc,
-       entry_points       = entry_points,
        license            = license,
        long_description   = long_description,
        name               = modname,
        packages           = find_packages(),
        py_modules         = py_modules,
+       scripts            = scripts,
        test_suite         = 'nose.collector',
        url                = web,
        tests_require     = ['nose>=1.0'],
