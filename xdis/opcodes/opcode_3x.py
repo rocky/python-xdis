@@ -47,8 +47,8 @@ del op
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
-#       OP NAME            OPCODE POP PUSH
-#-----------------------------------------
+#          OP NAME            OPCODE POP PUSH
+#--------------------------------------------
 def_op(l, 'STOP_CODE',             0,  0,  0)
 def_op(l, 'POP_TOP',               1,  1,  0)
 def_op(l, 'ROT_TWO',               2,  2,  2)

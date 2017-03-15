@@ -44,6 +44,7 @@ unittest:
 clean: clean_pyc
 	$(PYTHON) ./setup.py $@
 	(cd test && $(MAKE) clean)
+	(cd test_unit && $(MAKE) clean)
 
 #: Create source (tarball) and wheel distribution
 dist:
