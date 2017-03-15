@@ -30,17 +30,21 @@ classifiers =  ['Development Status :: 4 - Beta',
                 'Topic :: Software Development :: Libraries :: Python Modules',
                 ]
 
+_six = 'six >= 1.10.0'
+
 # The rest in alphabetic order
 author             = "Rocky Bernstein, Hartmut Goebel and others"
 author_email       = "rb@dustyfeet.com"
 ftp_url            = None
-install_requires   = ['six >= 1.10.0']
+install_requires   = [_six]
 license            = 'GPL-2.0'
 mailing_list       = 'python-debugger@googlegroups.com'
 modname            = 'xdis'
 py_modules         = None
+setup_requires     = ['pytest-runner']
 scripts            = ['bin/pydisasm']
 short_desc         = 'Python cross-version byte-code disassembler and marshal routines'
+tests_require      = ['pytest', _six]
 web                = 'https://github.com/rocky/python-xdis/'
 
 # tracebacks in zip files are funky and not debuggable

@@ -51,6 +51,6 @@ class Code2:
 def iscode(obj):
     """A replacement for inspect.iscode() which we can't used because we may be
     using a different version of Python than the version of Python used
-    in creating the byte-compiled objects. Here, he code types may mismatch.
+    in creating the byte-compiled objects. Here, the code types may mismatch.
     """
     return inspect.iscode(obj) or isinstance(obj, Code3)
