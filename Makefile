@@ -37,7 +37,7 @@ check-short: unittest pytest
 
 #: Run unittests tests
 unittest:
-	nosetests
+	nosetests -v
 
 
 #: Clean up temporary files and .pyc files
