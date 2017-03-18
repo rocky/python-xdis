@@ -5,7 +5,10 @@ from xdis.load import load_file, check_object_path, load_module
 @pytest.mark.skipif(sys.version_info >= (3,5),
                     reason="Doesn't work on 3.5 and later")
 def test_load_file():
-    co = load_file(__file__)
+    filename = __file__
+    if filename.endswith('pyc'):
+        filename = filename[:-1]
+    co = load_file(filename)
     obj_path = check_object_path(__file__)
     (version, timestamp, magic_int, co2, pypy,
      source_size) = load_module(obj_path)

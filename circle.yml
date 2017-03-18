@@ -4,7 +4,7 @@ machine:
 
 dependencies:
     override:
-        - pip install six
+        - pip install nose
         - pip install -r requirements.txt
         - pip install -r requirements-dev.txt
 test:

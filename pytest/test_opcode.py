@@ -9,8 +9,10 @@ def test_opcode():
     # print(set(opmap.items()) - set(l['opmap'].items()))
     # print(set(l['opmap'].items()) - set(opmap.items()))
 
-    assert all(item in opmap.items() for item in opc.opmap.items())
-    assert all(item in opc.opmap.items() for item in opmap.items())
+    for item in opc.opmap.items():
+        assert item in opmap.items()
+    for item in opmap.items():
+        assert item in opc.opmap.items()
 
     fields = """hascompare hasconst hasfree hasjabs hasjrel haslocal
     hasname""".split()
