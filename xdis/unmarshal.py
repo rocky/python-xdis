@@ -26,6 +26,9 @@ if PYTHON3:
     def long(n): return n
 else:
     import unicodedata
+    if PYTHON_VERSION < 2.4:
+        from sets import Set as set
+        frozenset = set
 
 def compat_str(s):
     if (PYTHON_VERSION > 3.2 or

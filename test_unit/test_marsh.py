@@ -3,6 +3,11 @@
 import os, unittest
 
 from xdis.load import load_module
+from xdis import PYTHON_VERSION
+
+if PYTHON_VERSION < 2.4:
+    from sets import Set as set
+    frozenset = set
 
 def get_srcdir():
     filename = os.path.normcase(os.path.dirname(os.path.abspath(__file__)))

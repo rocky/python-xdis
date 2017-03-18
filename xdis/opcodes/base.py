@@ -9,6 +9,10 @@ from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
 from xdis import IS_PYPY, PYTHON_VERSION
 
+if PYTHON_VERSION < 2.4:
+    from sets import Set as set
+    frozenset = set
+
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
         'is not', 'exception match', 'BAD')
 

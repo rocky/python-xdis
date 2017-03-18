@@ -50,11 +50,13 @@ COMPILER_FLAG_NAMES = {
 # from the compile flag name
 COMPILER_FLAG_BIT = {}
 for (k, v) in COMPILER_FLAG_NAMES.items():
-    COMPILER_FLAG_BIT[v] = k
+    COMPILER_FLAG_BIT[k] = v
 
 # Allow us to access by just name, prefixed with CO. e.g
 # CO_OPTIMIZED, CO_NOFREE
-globals().update(dict(['CO_'+k, v] for (k, v) in COMPILER_FLAG_BIT.items()))
+
+for k, v in COMPILER_FLAG_BIT.items():
+    globals().update(dict({'CO_'+v: k}))
 
 def pretty_flags(flags):
     """Return pretty representation of code flags."""
@@ -153,4 +155,3 @@ def show_code(co, version, file=None):
         print(code_info(co, version))
     else:
         file.write(code_info(co, version) + '\n')
-

@@ -7,8 +7,8 @@ of stack usage.
 """
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.base import (
-    init_opdata, finalize_opcodes)
+from xdis.opcodes.base import  \
+    init_opdata, finalize_opcodes
 
 version = 2.3
 

@@ -17,7 +17,22 @@ want to run on Python 2.7.
 # intended to be a more cross-version Python program
 
 import datetime, sys
-from collections import deque
+
+try:
+    from collections import deque
+except ImportError:
+    class deque:
+        def __init__(self, initial_todo=[]):
+            self.todo = initial_todo
+
+        def popleft(self):
+            return self.todo.pop()
+
+        def append(self, item):
+            return self.todo.append(item)
+
+        def __len__(self):
+            return len(self.todo)
 
 import xdis
 
