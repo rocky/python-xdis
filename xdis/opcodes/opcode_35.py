@@ -8,7 +8,7 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op, init_opdata, finalize_opcodes,
-    rm_op, update_pj3)
+    jrel_op, rm_op, update_pj3)
 
 import xdis.opcodes.opcode_34 as opcode_34
 
@@ -25,21 +25,23 @@ rm_op(l, 'STORE_MAP',                    54)
 rm_op(l, 'WITH_CLEANUP',                 81)
 
 # These are new since Python 3.5
-def_op(l, 'BINARY_MATRIX_MULTIPLY',      16,  2, 1)
-def_op(l, 'INPLACE_MATRIX_MULTIPLY',     17,  2, 1)
-def_op(l, 'GET_AITER',                   50,  1, 1)
-def_op(l, 'GET_ANEXT',                   51,  0, 1)
+#          OP NAME                   OPCODE POP PUSH
+#---------------------------------------------------
+def_op(l, 'BINARY_MATRIX_MULTIPLY',      16,  2,  1)
+def_op(l, 'INPLACE_MATRIX_MULTIPLY',     17,  2,  1)
+def_op(l, 'GET_AITER',                   50,  1,  1)
+def_op(l, 'GET_ANEXT',                   51,  0,  1)
 def_op(l, 'BEFORE_ASYNC_WITH',           52)
-def_op(l, 'GET_YIELD_FROM_ITER',         69)
-def_op(l, 'GET_AWAITABLE',               73,  0, 0)
-def_op(l, 'WITH_CLEANUP_START',          81,  0, 1)
-def_op(l, 'WITH_CLEANUP_FINISH',         82, -1, 1)
-def_op(l, 'BUILD_LIST_UNPACK',          149, -1, 1)
-def_op(l, 'BUILD_MAP_UNPACK',           150, -1, 1)
-def_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151, -1, 1)
-def_op(l, 'BUILD_TUPLE_UNPACK',         152, -1, 1)
-def_op(l, 'BUILD_SET_UNPACK',           153, -1, 1)
-def_op(l, 'SETUP_ASYNC_WITH',           154,  0, 6)
+def_op(l, 'GET_YIELD_FROM_ITER',         69,  0,  1)
+def_op(l, 'GET_AWAITABLE',               73,  0,  0)
+def_op(l, 'WITH_CLEANUP_START',          81,  0,  1)
+def_op(l, 'WITH_CLEANUP_FINISH',         82, -1,  1)
+def_op(l, 'BUILD_LIST_UNPACK',          149, -1,  1)
+def_op(l, 'BUILD_MAP_UNPACK',           150, -1,  1)
+def_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151, -1,  1)
+def_op(l, 'BUILD_TUPLE_UNPACK',         152, -1,  1)
+def_op(l, 'BUILD_SET_UNPACK',           153, -1,  1)
+jrel_op(l, 'SETUP_ASYNC_WITH',          154,  0,  6)
 
 update_pj3(globals(), l)
 

@@ -2,6 +2,7 @@
 *_dis
 *~
 /.cache
+*.egg
 /.eggs
 /.python-version
 /.tox

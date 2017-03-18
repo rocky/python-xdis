@@ -44,3 +44,4 @@ clean-unverified:
 #: Clean temporary compile/decompile/verify directories in /tmp
 clean-py-dis:
 	rm -fr /tmp/py-dis-* || true
+	rm -fr __pycache__ || true

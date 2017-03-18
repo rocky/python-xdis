@@ -35,18 +35,16 @@ check-full: check
 check-short: unittest pytest
 	$(MAKE) -C test check-short
 
-#: Run py.test tests
+#: Run unittests tests
 unittest:
-	cd test_unit && python test-dis.py
-
-pytest:
-	py.test
+	python setup.py test
 
 
 #: Clean up temporary files and .pyc files
 clean: clean_pyc
 	$(PYTHON) ./setup.py $@
 	(cd test && $(MAKE) clean)
+	(cd test_unit && $(MAKE) clean)
 
 #: Create source (tarball) and wheel distribution
 dist:
