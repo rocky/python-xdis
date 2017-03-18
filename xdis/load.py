@@ -155,7 +155,6 @@ def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
     """
     fp = open(bytecode_path, 'wb')
     fp.write(pack('Hcc', magic_int, '\r', '\n'))
-    import time
     try:
         fp.write(pack('I', int(time.time())))
         if (3000 <= magic_int < 20121):
