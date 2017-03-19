@@ -1,21 +1,23 @@
 """
-Provide the same std api as python 3.x so xdis can be used as a drop in
+Provide the same API as Python 3.x so xdis can be used as a drop in
 replacement for dis. This will provide a dis module with support for the
-python version being run.
+Python version being run.
 
 Why would you want this? The main reason is if you want a compatibility shim
-for supporting the more advanced python 3 dis api (being able to iterate through
+for supporting the more advanced Python 3 dis API (being able to iterate through
 opcodes, supplying a custom file to dump the dis to) across python versions, for
 example:
 
     import xdis.std as dis
 
-    # works in python 2 and 3
+    # works in Python 2 and 3
     for op in dis.Bytecode('for i in range(10): pass'):
         print(op)
 
 """
 
+# Used from the outside
+from dis import hasconst, hasname, opmap, opname, EXTENDED_ARG, HAVE_ARGUMENT
 
 # std
 import sys
