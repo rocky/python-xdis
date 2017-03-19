@@ -1,5 +1,5 @@
 """
-  Copyright (c) 2015-2016 by Rocky Bernstein
+  Copyright (c) 2015-2017 by Rocky Bernstein
   Copyright (c) 2000 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
   Permission is hereby granted, free of charge, to any person obtaining

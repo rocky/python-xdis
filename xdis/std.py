@@ -16,6 +16,8 @@ example:
 
 """
 
+# Used from the outside
+from dis import hasconst, hasname, opmap, opname, EXTENDED_ARG, HAVE_ARGUMENT
 
 # std
 import sys
