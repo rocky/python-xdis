@@ -31,14 +31,15 @@ if sys.version_info[0:2] == (2, 7):
         return 1
 
     dis_f = """\
-     %-4d         0 LOAD_FAST                0 (a)
-                  3 PRINT_ITEM
-                  4 PRINT_NEWLINE
+%3d           0 LOAD_GLOBAL              0 (print)
+              3 LOAD_FAST                0 (a)
+              6 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+              9 POP_TOP
 
-     %-4d         5 LOAD_CONST               1 (1)
-                  8 RETURN_VALUE
+%3d          10 LOAD_CONST               1 (1)
+             13 RETURN_VALUE
 
-    """%(_f.func_code.co_firstlineno + 1,
+"""%(_f.func_code.co_firstlineno + 1,
          _f.func_code.co_firstlineno + 2)
 
     dis_bug708901 = """\
@@ -105,7 +106,7 @@ if sys.version_info[0:2] == (2, 7):
             got = s.getvalue()
             # Trim trailing blanks (if any).
             lines = got.split('\n')
-            lines = [line.rstrip() for line in lines]
+            # lines = [line.rstrip() for line in lines]
             expected = expected.split("\n")
             import difflib
             if expected != lines:
@@ -130,7 +131,6 @@ if sys.version_info[0:2] == (2, 7):
             self.assertEqual(opmap["STORE_NAME"], dis.HAVE_ARGUMENT)
 
         def test_dis(self):
-            self.skipTest('Add ability to test dis')
             self.do_disassembly_test(_f, dis_f)
 
         def test_bug_708901(self):

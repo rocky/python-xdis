@@ -51,12 +51,13 @@ dis_f = """\
 
 
 dis_f_co_code = """\
-          0 LOAD_GLOBAL         0 (0)
-          3 LOAD_FAST           0 (0)
-          6 CALL_FUNCTION       1 (1 positional, 0 keyword pair)
-          9 POP_TOP
-         10 LOAD_CONST          1 (1)
-         13 RETURN_VALUE
+ 37           0 LOAD_GLOBAL              0 (print)
+              3 LOAD_FAST                0 (a)
+              6 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+              9 POP_TOP
+
+ 38          10 LOAD_CONST               1 (1)
+             13 RETURN_VALUE
 
 """
 
@@ -269,8 +270,7 @@ if sys.version_info[0:2] == (3, 3):
             self.do_disassembly_test(compound_stmt_str, dis_compound_stmt_str)
 
         def test_disassemble_bytes(self):
-            self.skipTest('Add ability to disassemble bytes')
-            # self.do_disassembly_test(_f.__code__.co_code, dis_f_co_code)
+            self.do_disassembly_test(_f.__code__, dis_f_co_code)
 
         def test_disassemble_method(self):
             self.do_disassembly_test(_C(1).__init__, dis_c_instance_method)
