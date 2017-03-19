@@ -4,7 +4,6 @@ import difflib
 import unittest
 import sys
 import xdis.std as dis
-import dis as _dis
 import io
 import re
 
@@ -218,15 +217,15 @@ if sys.version_info[0:2] == (3, 3):
 
         def test_opmap(self):
             self.assertEqual(dis.opmap["NOP"], 9)
-            self.assertIn(dis.opmap["LOAD_CONST"], _dis.hasconst)
-            self.assertIn(dis.opmap["STORE_NAME"], _dis.hasname)
+            self.assertIn(dis.opmap["LOAD_CONST"], dis.hasconst)
+            self.assertIn(dis.opmap["STORE_NAME"], dis.hasname)
 
         def test_opname(self):
             self.assertEqual(dis.opname[dis.opmap["LOAD_FAST"]], "LOAD_FAST")
 
         def test_boundaries(self):
-            self.assertEqual(dis.opmap["EXTENDED_ARG"], _dis.EXTENDED_ARG)
-            self.assertEqual(dis.opmap["STORE_NAME"], _dis.HAVE_ARGUMENT)
+            self.assertEqual(dis.opmap["EXTENDED_ARG"], dis.EXTENDED_ARG)
+            self.assertEqual(dis.opmap["STORE_NAME"], dis.HAVE_ARGUMENT)
 
         def test_dis(self):
             self.do_disassembly_test(_f, dis_f)
