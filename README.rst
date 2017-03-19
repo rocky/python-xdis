@@ -68,13 +68,21 @@ for usage help.
 As a drop-in replacement for dis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-xdis also provides a drop in replacement for the standard dis module, this is useful if you
-want to use the improved api from python 3.4 in python 2. For example:
+`xdis` also provides some support as a drop in replacement for the
+the Python library `dis <https://docs.python.org/3/library/dis.html>`_
+module. This is may be desirable when you want to use the improved API
+from Python 3.4 or later from an earlier Python version.
 
->>> # works in python 2 and 3
+For example:
+
+>>> # works in Python 2 and 3
 >>> import xdis.std as dis
 >>> [x.opname for x in dis.Bytecode('a = 10')]
 ['LOAD_CONST', 'STORE_NAME', 'LOAD_CONST', 'RETURN_VALUE']
+
+There may some small differences in output produced for formatted
+disassembly or how we show compiler flags. We expect you'll
+find the `xdis` output more informative though.
 
 See Also
 --------
