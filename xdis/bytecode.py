@@ -249,11 +249,12 @@ class Instruction(_Instruction):
          has_arg - True opcode takes an argument. In that case,
                    argval and argepr will have that value. False
                    if this opcode doesn't take an argument. In that case,
-                   don't look at argval or ardrepr.
+                   don't look at argval or argrepr.
          offset - start index of operation within bytecode sequence
          starts_line - line started by this opcode (if any), otherwise None
          is_jump_target - True if other code jumps to here, otherwise False
     """
+    # FIXME: remove has_arg from initialization but keep it as a field.
 
     def _disassemble(self, lineno_width=3, mark_as_current=False):
         """Format instruction details for inclusion in disassembly output

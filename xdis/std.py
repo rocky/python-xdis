@@ -158,4 +158,5 @@ class Instruction(_Instruction):
          is_jump_target - True if other code jumps to here, otherwise False
     """
     def __init__(self, *args, **kwargs):
-        super(Instruction, self).__init__(*args, opc=opc, **kwargs)
+        _Instruction(*args, **kwargs)
+        self.opc = opc
