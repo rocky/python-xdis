@@ -1,3 +1,4 @@
+import types
 from xdis import PYTHON3
 
 if PYTHON3:
@@ -129,14 +130,25 @@ def get_code_object(x):
     """Helper to handle methods, functions, generators, strings and raw code objects"""
     if hasattr(x, '__func__'): # Method
         x = x.__func__
-    if hasattr(x, '__code__'): # Function
-        x = x.__code__
+    if hasattr(x, 'im_func'):
+        x = x.im_func
+    if hasattr(x, 'func_code'): # Method
+        x = x.func_code
     if hasattr(x, 'gi_code'):  # Generator
         x = x.gi_code
+    if hasattr(x, '__dict__'):
+        items = x.__dict__.items()
+        items.sort()
+        for name, x1 in items:
+            if type(x1) in (types.MethodType,
+                            types.FunctionType,
+                            types.CodeType,
+                            types.ClassType):
+                x = x1
+    if hasattr(x, 'co_code'):
+        return x
     if isinstance(x, str):     # Source code
         x = _try_compile(x, "<disassembly>")
-    if hasattr(x, 'co_code'):  # Code object
-        return x
     raise TypeError("don't know how to disassemble %s objects" %
                     type(x).__name__)
 
