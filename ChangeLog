@@ -1,6 +1,3698 @@
+2017-03-18  rocky <rocky@dusytfeet.com>
+
+	* README.rst, xdis/version.py: Get ready for release 3.3.0
+
+2017-03-18  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_marsh.py, xdis/bytecode.py, xdis/main.py,
+	xdis/namedtuple23.py, xdis/namedtuple24.py, xdis/namedtuple25.py,
+	xdis/opcodes/base.py, xdis/opcodes/opcode_23.py,
+	xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_25.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_2x.py,
+	xdis/unmarshal.py, xdis/util.py: Python 2.4 compaitiblity ...  and some Python 2.3 compatability
+
+2017-03-18  rocky <rb@dustyfeet.com>
+
+	* Makefile, pytest/test_bytecode.py, pytest/test_load_file.py,
+	pytest/test_opcode.py, test_unit/test_bytecode.py,
+	test_unit/test_load.py, test_unit/test_loadfile.py,
+	test_unit/test_opcode.py: conver pytest to test_unit...  Python 2.5- doesn't support py.test
+
+2017-03-18  rocky <rocky@dusytfeet.com>
+
+	* bin/pydisasm, xdis/__init__.py, xdis/load.py: Small bugs/tewaks
+
+2017-03-18  rocky <rocky@dusytfeet.com>
+
+	* Makefile, __pkginfo__.py, circle.yml, pytest/test_disasm.py,
+	pytest/test_load_file.py, pytest/test_opcode.py: Try sync with
+	master. Might break CircleCI
+
+2017-03-18  rocky <rocky@dusytfeet.com>
+
+	* : Hacked branch 'master' into python-2.4 There were conflicts resolved and code modified
+
+2017-03-15  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #22 from x746e/test-tweaks Test tweaks
+
+2017-03-09  Kirill Spitsyn <ksp@google.com>
+
+	* xdis/load.py: Don't convert source to unicode when loading files.  Under PyPy `co_flags` on code objects returned by `compile` are
+	different for `str` and `unicode` inputs: ``` % pypy Python 2.7.12 (aff251e54385, Nov 09 2016, 18:02:49) [PyPy
+	5.6.0 with GCC 4.8.2] on linux2 Type "help", "copyright", "credits"
+	or "license" for more information.  >>>> compile('x = 1', 'hz',
+	'exec').co_flags 0 >>>> compile(u'x = 1', 'hz', 'exec').co_flags 256
+	``` So not converting the source to unicode makes `load_file` under PyPy
+	to produce code objects with the same `co_flags` as ones produced by
+	`load_module`.  That is something xdis unittests are relying on.  Also changed `load_modules`'s `code_objects` default value to be
+	immutable.  Otherwise the `dict` may preserve values between calls
+	to the function.
+
+2017-03-08  Kirill Spitsyn <ksp@google.com>
+
+	* __pkginfo__.py, xdis/code.py: Fix `setup.py test` with python 3.
+
+2017-03-08  Kirill Spitsyn <ksp@google.com>
+
+	* Makefile: Change `make unittest` to run `setup.py test`.  That will make the way tests are run by robots (e.g. by TravisCI)
+	similar to way they are run by humans.  Also it seems that currently most tests in `test_unit/` and all
+	tests in `pytest/` are not run by continious integration.  This
+	commit fixes that.
+
+2017-03-08  Kirill Spitsyn <ksp@google.com>
+
+	* .gitignore: Ignore *.egg directories.
+
+2017-03-08  Kirill Spitsyn <ksp@google.com>
+
+	* __pkginfo__.py, setup.cfg, setup.py: Change `setup.py test` to run
+	`py.test`.  Currently `setup.py` seems to be configured to use `nose`, though
+	given that tests in `pytest/` use `py.test` it may make sense to use
+	it everywhere.
+
+2017-03-08  Kirill Spitsyn <ksp@google.com>
+
+	* pytest/test_load.py, pytest/test_load_file.py: Rename test file to
+	avoid confusing `py.test`.  The similary named files in `pytest` and `test_unit` directory were
+	causing `py.test` to fail with: % py.test ============================ test session starts
+	============================= platform linux2 -- Python 2.7.6,
+	pytest-3.0.6, py-1.4.32, pluggy-0.4.0 rootdir:
+	/usr/local/google/home/ksp/src/python-xdis, inifile: collected 12
+	items / 1 errors =================================== ERRORS
+	=================================== __________________ ERROR
+	collecting test_unit/test_load.py ___________________ import file
+	mismatch: imported module 'test_load' has this __file__ attribute:   /usr/local/google/home/ksp/src/python-xdis/pytest/test_load.py
+	which is not the same as the test file we want to collect:   /usr/local/google/home/ksp/src/python-xdis/test_unit/test_load.py
+	HINT: remove __pycache__ / .pyc files and/or use a unique basename
+	for your test file modules !!!!!!!!!!!!!!!!!! Interrupted: 1 errors
+	during collection !!!!!!!!!!!!!!!!!!! ========================== 1
+	error in 0.13 seconds ===========================
+
+2017-03-08  Kirill Spitsyn <ksp@google.com>
+
+	* test_unit/test-dis.py, test_unit/test_dis.py: Rename `test-dis.py`
+	to be valid module.  In particular, that will make `py.test` collect tests in it.
+
+2017-03-13  rocky <rocky@dusytfeet.com>
+
+	* : commit ba5ff13339cc780fa678dfd9fa1af4b6ea096471 Merge: cb414d2
+	c4e8992 Author: R. Bernstein <rocky@users.noreply.github.com> Date:
+	Sat Mar 11 08:35:37 2017 -0500
+
+2017-03-10  Daniel Bradburn <moagstar@gmail.com>
+
+	* pytest/test_std.py: fixed failing test_std due to missing newline
+
+2017-03-09  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #26 from rocky/dis_api Provide shim for xdis so that it can be used as a drop in
+	replacement for the std dis module
+
+2017-03-09  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #27 from x746e/patch-4 Fix broken link in README.rst
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* README.rst: removed typo from README.rst
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* README.rst: added info about std api to readme
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* pytest/test_std.py: fixed std tests in pypy due to difference in
+	default compile flags
+
+2017-03-09  Kirill Spitsyn <tn@0x746e.org.ua>
+
+	* README.rst: Fix broken link in README.rst
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* .gitignore, .idea/dictionaries/moagstar.xml,
+	.idea/inspectionProfiles/Project_Default.xml,
+	.idea/inspectionProfiles/profiles_settings.xml, .idea/misc.xml,
+	.idea/modules.xml, .idea/python-xdis.iml, .idea/vcs.xml,
+	.idea/workspace.xml: added more comprehensive pycharm to .gitignore
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* .gitignore: added .idea to gitignore
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* pytest/test_std.py: fixed failing test on python2
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* .venv.2.7/bin/activate, .venv.2.7/bin/activate.csh,
+	.venv.2.7/bin/activate.fish, .venv.2.7/bin/activate_this.py,
+	.venv.2.7/bin/easy_install, .venv.2.7/bin/easy_install-2.7,
+	.venv.2.7/bin/pip, .venv.2.7/bin/pip2, .venv.2.7/bin/pip2.7,
+	.venv.2.7/bin/python-config, .venv.2.7/bin/python2,
+	.venv.2.7/bin/python2.7, .venv.2.7/bin/wheel,
+	.venv.2.7/include/python2.7, .venv.2.7/lib/python2.7/UserDict.py,
+	.venv.2.7/lib/python2.7/_abcoll.py,
+	.venv.2.7/lib/python2.7/_weakrefset.py,
+	.venv.2.7/lib/python2.7/abc.py, .venv.2.7/lib/python2.7/codecs.py,
+	.venv.2.7/lib/python2.7/copy_reg.py,
+	.venv.2.7/lib/python2.7/distutils/__init__.py,
+	.venv.2.7/lib/python2.7/distutils/distutils.cfg,
+	.venv.2.7/lib/python2.7/encodings,
+	.venv.2.7/lib/python2.7/fnmatch.py,
+	.venv.2.7/lib/python2.7/genericpath.py,
+	.venv.2.7/lib/python2.7/lib-dynload,
+	.venv.2.7/lib/python2.7/linecache.py,
+	.venv.2.7/lib/python2.7/locale.py,
+	.venv.2.7/lib/python2.7/no-global-site-packages.txt,
+	.venv.2.7/lib/python2.7/ntpath.py,
+	.venv.2.7/lib/python2.7/orig-prefix.txt,
+	.venv.2.7/lib/python2.7/os.py,
+	.venv.2.7/lib/python2.7/posixpath.py,
+	.venv.2.7/lib/python2.7/re.py,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/DESCR
+	IPTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/INSTA
+	LLER,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/METAD
+	ATA,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/RECOR
+	D,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/WHEEL
+	,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/metad
+	ata.json,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/top_l
+	evel.txt, .venv.2.7/lib/python2.7/site-packages/appdirs.py,
+	.venv.2.7/lib/python2.7/site-packages/easy_install.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/DESC
+	RIPTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/INST
+	ALLER,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/META
+	DATA,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/RECO
+	RD,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/WHEE
+	L,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/meta
+	data.json,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/top_
+	level.txt,
+	.venv.2.7/lib/python2.7/site-packages/packaging/__about__.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/_compat.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/_structures.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/markers.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/requirements.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/specifiers.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/utils.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/version.py,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/DESCRIPTI
+	ON.rst,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/INSTALLER
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/METADATA,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/RECORD,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/WHEEL,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/entry_poi
+	nts.txt,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/metadata.
+	json,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/top_level
+	.txt, .venv.2.7/lib/python2.7/site-packages/pip/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/__main__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/appdirs.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/__in
+	it__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/_cmd
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/adap
+	ter.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cach
+	e.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cach
+	es/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cach
+	es/file_cache.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cach
+	es/redis_cache.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/comp
+	at.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cont
+	roller.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/file
+	wrapper.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/heur
+	istics.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/seri
+	alize.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/wrap
+	per.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/ansi.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/ansitowi
+	n32.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/initiali
+	se.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/win32.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/winterm.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/__init__.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/misc.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/shutil.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/sysconfig.cfg,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/sysconfig.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/tarfile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/compat.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/database.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/index.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/locators.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/manifest.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/markers.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/metadata.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/resources
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/scripts.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/util.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/version.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distro.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_ihatexm
+	l.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_inputst
+	ream.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_tokeniz
+	er.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_trie/__
+	init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_trie/_b
+	ase.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_trie/da
+	trie.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_trie/py
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_utils.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/constant
+	s.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	alphabeticalattributes.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	base.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	inject_meta_charset.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	lint.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	optionaltags.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	sanitizer.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	whitespace.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/html5par
+	ser.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/serializ
+	er.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treeadap
+	ters/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treeadap
+	ters/genshi.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treeadap
+	ters/sax.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/base.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/dom.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/etree.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/etree_lxml.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/base.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/dom.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/etree.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/etree_lxml.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/genshi.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/ipaddress.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/linklock
+	file.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/mkdirloc
+	kfile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/pidlockf
+	ile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/sqlitelo
+	ckfile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/symlinkl
+	ockfile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/ordereddict.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/__about
+	__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/__init_
+	_.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/_compat
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/_struct
+	ures.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/markers
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/require
+	ments.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/specifi
+	ers.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/utils.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/version
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/pkg_resources/__i
+	nit__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/bar.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/counter.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/helpers.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/spinner.
+	py, .venv.2.7/lib/python2.7/site-packages/pip/_vendor/pyparsing.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/re-vendor.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/adapters
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/api.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/auth.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/cacert.p
+	em,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/certs.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/compat.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/cookies.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/exceptio
+	ns.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/hooks.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/models.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/big5freq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/big5prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/chardetect.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/chardistribution.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/charsetgroupprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/charsetprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/codingstatemachine.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/compat.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/constants.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/cp949prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/escprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/escsm.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/eucjpprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/euckrfreq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/euckrprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/euctwfreq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/euctwprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/gb2312freq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/gb2312prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/hebrewprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/jisfreq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/jpcntx.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langbulgarianmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langcyrillicmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langgreekmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langhebrewmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langhungarianmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langthaimodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/latin1prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcharsetprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcsgroupprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcssm.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/sbcharsetprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/sbcsgroupprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/sjisprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/universaldetector.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/utf8prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/_collections.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/connection.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/connectionpool.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/appengine.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/ntlmpool.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/pyopenssl.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/socks.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/exceptions.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/fields.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/filepost.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ordered_dict.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/six.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ssl_match_hostname/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ssl_match_hostname/_implementation.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/poolmanager.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/request.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/response.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/connection.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/request.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/response.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/retry.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/ssl_.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/timeout.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/url.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/sessions
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/status_c
+	odes.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/structur
+	es.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/utils.py
+	, .venv.2.7/lib/python2.7/site-packages/pip/_vendor/retrying.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/six.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/__in
+	it__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/labe
+	ls.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/mkla
+	bels.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/test
+	s.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/x_us
+	er_defined.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/basecommand.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/baseparser.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/cmdoptions.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/check.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/completion.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/download.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/freeze.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/hash.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/help.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/install.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/list.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/search.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/show.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/uninstall.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/compat/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/compat/dictconfig.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/download.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/exceptions.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/index.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/locations.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/models/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/models/index.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/operations/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/operations/check.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/operations/freeze.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/pep425tags.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/req_file.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/req_install.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/req_set.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/req_uninstall.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/status_codes.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/appdirs.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/build.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/deprecation.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/encoding.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/filesystem.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/glibc.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/hashes.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/logging.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/outdated.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/packaging.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/setuptools_build.py
+	, .venv.2.7/lib/python2.7/site-packages/pip/utils/ui.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/bazaar.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/git.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/mercurial.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/subversion.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/pkg_resources/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/DES
+	CRIPTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/INS
+	TALLER,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/MET
+	ADATA,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/REC
+	ORD,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/WHE
+	EL,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/met
+	adata.json,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/top
+	_level.txt, .venv.2.7/lib/python2.7/site-packages/pyparsing.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/D
+	ESCRIPTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/I
+	NSTALLER,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/M
+	ETADATA,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/R
+	ECORD,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/W
+	HEEL,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/d
+	ependency_links.txt,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/e
+	ntry_points.txt,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/m
+	etadata.json,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/t
+	op_level.txt,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/z
+	ip-safe,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/archive_util.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/__init__.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/alias.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/bdist_egg.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/bdist_rpm.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/bdist_wini
+	nst.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/build_clib
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/build_ext.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/build_py.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/develop.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/easy_insta
+	ll.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/egg_info.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/install.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/install_eg
+	g_info.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/install_li
+	b.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/install_sc
+	ripts.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/launcher
+	manifest.xml,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/py36compat
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/register.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/rotate.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/saveopts.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/sdist.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/setopt.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/test.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/upload.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/upload_doc
+	s.py, .venv.2.7/lib/python2.7/site-packages/setuptools/config.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/dep_util.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/depends.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/dist.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/extension.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/glob.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/launch.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/lib2to3_ex.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/monkey.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/msvc.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/namespaces.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/package_index.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py26compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py27compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py31compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py33compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py36compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/sandbox.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/script (dev).tmpl,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/script.tmpl,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/site-patch.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/ssl_support.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/unicode_utils.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/version.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/windows_support.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/DESCRIPT
+	ION.rst,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/INSTALLE
+	R,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/METADATA
+	,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/RECORD,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/WHEEL,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/metadata
+	.json,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/top_leve
+	l.txt, .venv.2.7/lib/python2.7/site-packages/six.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/DESCRI
+	PTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/INSTAL
+	LER,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/LICENS
+	E.txt,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/METADA
+	TA,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/RECORD
+	,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/WHEEL,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/entry_
+	points.txt,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/metada
+	ta.json,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/top_le
+	vel.txt, .venv.2.7/lib/python2.7/site-packages/wheel/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/__main__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/archive.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/bdist_wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/decorator.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/egg2wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/eggnames.txt,
+	.venv.2.7/lib/python2.7/site-packages/wheel/install.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/metadata.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/paths.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/pep425tags.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/pkginfo.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/signatures/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/signatures/djbec.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/signatures/ed25519py.py
+	, .venv.2.7/lib/python2.7/site-packages/wheel/signatures/keys.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/complex-dist/compl
+	exdist/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/complex-dist/setup
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/headers.dist/heade
+	r.h,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/headers.dist/heade
+	rsdist.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/headers.dist/setup
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/pydist-schema.json
+	,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/simple.dist/setup.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/simple.dist/simple
+	dist/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_basic.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_install.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_keys.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_paths.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_ranking.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_signatures.py
+	, .venv.2.7/lib/python2.7/site-packages/wheel/test/test_tagopt.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_tool.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_wheelfile.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/tool/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/util.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/wininst2wheel.py,
+	.venv.2.7/lib/python2.7/site.py, .venv.2.7/lib/python2.7/sre.py,
+	.venv.2.7/lib/python2.7/sre_compile.py,
+	.venv.2.7/lib/python2.7/sre_constants.py,
+	.venv.2.7/lib/python2.7/sre_parse.py,
+	.venv.2.7/lib/python2.7/stat.py, .venv.2.7/lib/python2.7/types.py,
+	.venv.2.7/lib/python2.7/warnings.py, .venv.2.7/local/bin,
+	.venv.2.7/local/include, .venv.2.7/local/lib,
+	.venv.2.7/pip-selfcheck.json, .venv.3.5/bin/activate,
+	.venv.3.5/bin/activate.csh, .venv.3.5/bin/activate.fish,
+	.venv.3.5/bin/activate_this.py, .venv.3.5/bin/easy_install,
+	.venv.3.5/bin/easy_install-3.5, .venv.3.5/bin/flake8,
+	.venv.3.5/bin/nosetests, .venv.3.5/bin/nosetests-3.4,
+	.venv.3.5/bin/pip, .venv.3.5/bin/pip3, .venv.3.5/bin/pip3.5,
+	.venv.3.5/bin/py.test, .venv.3.5/bin/pycodestyle,
+	.venv.3.5/bin/pydisasm, .venv.3.5/bin/pyflakes,
+	.venv.3.5/bin/pytest, .venv.3.5/bin/python,
+	.venv.3.5/bin/python-config, .venv.3.5/bin/python3.5,
+	.venv.3.5/bin/wheel, .venv.3.5/include/python3.5m,
+	.venv.3.5/lib/python3.5/__future__.py,
+	.venv.3.5/lib/python3.5/_bootlocale.py,
+	.venv.3.5/lib/python3.5/_collections_abc.py,
+	.venv.3.5/lib/python3.5/_dummy_thread.py,
+	.venv.3.5/lib/python3.5/_weakrefset.py,
+	.venv.3.5/lib/python3.5/abc.py, .venv.3.5/lib/python3.5/base64.py,
+	.venv.3.5/lib/python3.5/bisect.py,
+	.venv.3.5/lib/python3.5/codecs.py,
+	.venv.3.5/lib/python3.5/collections,
+	.venv.3.5/lib/python3.5/config-3.5m-x86_64-linux-gnu,
+	.venv.3.5/lib/python3.5/copy.py,
+	.venv.3.5/lib/python3.5/copyreg.py,
+	.venv.3.5/lib/python3.5/distutils/__init__.py,
+	.venv.3.5/lib/python3.5/distutils/distutils.cfg,
+	.venv.3.5/lib/python3.5/encodings,
+	.venv.3.5/lib/python3.5/fnmatch.py,
+	.venv.3.5/lib/python3.5/functools.py,
+	.venv.3.5/lib/python3.5/genericpath.py,
+	.venv.3.5/lib/python3.5/hashlib.py,
+	.venv.3.5/lib/python3.5/heapq.py, .venv.3.5/lib/python3.5/hmac.py,
+	.venv.3.5/lib/python3.5/imp.py, .venv.3.5/lib/python3.5/importlib,
+	.venv.3.5/lib/python3.5/io.py, .venv.3.5/lib/python3.5/keyword.py,
+	.venv.3.5/lib/python3.5/lib-dynload,
+	.venv.3.5/lib/python3.5/linecache.py,
+	.venv.3.5/lib/python3.5/locale.py,
+	.venv.3.5/lib/python3.5/no-global-site-packages.txt,
+	.venv.3.5/lib/python3.5/ntpath.py,
+	.venv.3.5/lib/python3.5/operator.py,
+	.venv.3.5/lib/python3.5/orig-prefix.txt,
+	.venv.3.5/lib/python3.5/os.py,
+	.venv.3.5/lib/python3.5/plat-x86_64-linux-gnu,
+	.venv.3.5/lib/python3.5/posixpath.py,
+	.venv.3.5/lib/python3.5/random.py, .venv.3.5/lib/python3.5/re.py,
+	.venv.3.5/lib/python3.5/reprlib.py,
+	.venv.3.5/lib/python3.5/rlcompleter.py,
+	.venv.3.5/lib/python3.5/shutil.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_argcomplete.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_code/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_code/_py2traceback.p
+	y, .venv.3.5/lib/python3.5/site-packages/_pytest/_code/code.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_code/source.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_pluggy.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/assertion/__init__.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/assertion/rewrite.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/assertion/util.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/cacheprovider.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/capture.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/compat.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/config.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/debugging.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/deprecated.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/doctest.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/fixtures.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/freeze_support.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/helpconfig.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/hookspec.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/junitxml.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/main.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/mark.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/monkeypatch.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/nose.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/pastebin.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/pytester.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/python.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/recwarn.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/resultlog.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/runner.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/setuponly.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/setupplan.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/skipping.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/terminal.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/tmpdir.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/unittest.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/vendored_packages/__i
+	nit__.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/vendored_packages/plu
+	ggy.py,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/DESCR
+	IPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/INSTA
+	LLER,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/METAD
+	ATA,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/RECOR
+	D,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/WHEEL
+	,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/metad
+	ata.json,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/top_l
+	evel.txt, .venv.3.5/lib/python3.5/site-packages/appdirs.py,
+	.venv.3.5/lib/python3.5/site-packages/easy-install.pth,
+	.venv.3.5/lib/python3.5/site-packages/easy_install.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/DESCRI
+	PTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/INSTAL
+	LER,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/METADA
+	TA,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/RECORD
+	,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/entry_
+	points.txt,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/metada
+	ta.json,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/top_le
+	vel.txt, .venv.3.5/lib/python3.5/site-packages/flake8/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/api/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/api/legacy.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/checker.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/defaults.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/exceptions.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/formatting/__init__.py
+	, .venv.3.5/lib/python3.5/site-packages/flake8/formatting/base.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/formatting/default.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/application.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/cli.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/debug.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/git.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/mercurial.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/options.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/setuptools_comman
+	d.py, .venv.3.5/lib/python3.5/site-packages/flake8/main/vcs.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/options/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/options/aggregator.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/options/config.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/options/manager.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/_trie.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/manager.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/notifier.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/pyflakes.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/processor.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/statistics.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/style_guide.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/utils.py,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/DESCRI
+	PTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/INSTAL
+	LER,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/METADA
+	TA,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/RECORD
+	,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/entry_
+	points.txt,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/metada
+	ta.json,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/top_le
+	vel.txt, .venv.3.5/lib/python3.5/site-packages/mccabe.py,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/DESCRIPT
+	ION.rst,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/INSTALLE
+	R,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/METADATA
+	,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/RECORD,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/entry_po
+	ints.txt,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/metadata
+	.json,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/top_leve
+	l.txt, .venv.3.5/lib/python3.5/site-packages/nose/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/case.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/commands.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/config.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/core.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/exc.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/ext/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/ext/dtcompat.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/failure.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/importer.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/inspector.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/loader.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/allmodules.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/attrib.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/base.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/builtin.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/capture.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/collect.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/cover.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/debug.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/deprecated.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/doctests.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/errorclass.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/failuredetail.py
+	, .venv.3.5/lib/python3.5/site-packages/nose/plugins/isolate.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/logcapture.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/manager.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/multiprocess.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/plugintest.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/prof.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/skip.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/testid.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/xunit.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/proxy.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/pyversion.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/result.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/selector.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/sphinx/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/sphinx/pluginopts.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/suite.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/tools/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/tools/nontrivial.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/tools/trivial.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/twistedtools.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/usage.txt,
+	.venv.3.5/lib/python3.5/site-packages/nose/util.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/DESC
+	RIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/INST
+	ALLER,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/META
+	DATA,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/RECO
+	RD,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/WHEE
+	L,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/meta
+	data.json,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/top_
+	level.txt,
+	.venv.3.5/lib/python3.5/site-packages/packaging/__about__.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/_compat.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/_structures.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/markers.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/requirements.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/specifiers.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/utils.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/version.py,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/DESCRIPTI
+	ON.rst,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/INSTALLER
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/METADATA,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/RECORD,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/entry_poi
+	nts.txt,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/metadata.
+	json,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/top_level
+	.txt, .venv.3.5/lib/python3.5/site-packages/pip/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/appdirs.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/__in
+	it__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/_cmd
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/adap
+	ter.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cach
+	e.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cach
+	es/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cach
+	es/file_cache.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cach
+	es/redis_cache.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/comp
+	at.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cont
+	roller.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/file
+	wrapper.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/heur
+	istics.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/seri
+	alize.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/wrap
+	per.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/ansi.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/ansitowi
+	n32.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/initiali
+	se.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/win32.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/winterm.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/__init__.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/misc.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/shutil.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/sysconfig.cfg,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/sysconfig.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/tarfile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/compat.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/database.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/index.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/locators.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/manifest.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/markers.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/metadata.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/resources
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/scripts.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/util.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/version.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distro.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_ihatexm
+	l.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_inputst
+	ream.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_tokeniz
+	er.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/__
+	init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/_b
+	ase.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/da
+	trie.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/py
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_utils.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/constant
+	s.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	alphabeticalattributes.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	base.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	inject_meta_charset.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	lint.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	optionaltags.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	sanitizer.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	whitespace.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/html5par
+	ser.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/serializ
+	er.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadap
+	ters/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadap
+	ters/genshi.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadap
+	ters/sax.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/base.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/dom.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/etree.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/etree_lxml.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/base.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/dom.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/etree.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/etree_lxml.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/genshi.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/ipaddress.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/linklock
+	file.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/mkdirloc
+	kfile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/pidlockf
+	ile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/sqlitelo
+	ckfile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/symlinkl
+	ockfile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/ordereddict.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/__about
+	__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/__init_
+	_.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/_compat
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/_struct
+	ures.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/markers
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/require
+	ments.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/specifi
+	ers.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/utils.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/version
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/pkg_resources/__i
+	nit__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/bar.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/counter.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/helpers.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/spinner.
+	py, .venv.3.5/lib/python3.5/site-packages/pip/_vendor/pyparsing.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/re-vendor.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/adapters
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/api.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/auth.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/cacert.p
+	em,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/certs.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/compat.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/cookies.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/exceptio
+	ns.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/hooks.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/models.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/big5freq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/big5prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/chardetect.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/chardistribution.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/charsetgroupprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/charsetprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/codingstatemachine.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/compat.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/constants.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/cp949prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/escprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/escsm.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/eucjpprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/euckrfreq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/euckrprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/euctwfreq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/euctwprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/gb2312freq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/gb2312prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/hebrewprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/jisfreq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/jpcntx.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langbulgarianmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langcyrillicmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langgreekmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langhebrewmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langhungarianmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langthaimodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/latin1prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcharsetprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcsgroupprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcssm.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/sbcharsetprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/sbcsgroupprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/sjisprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/universaldetector.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/utf8prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/_collections.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/connection.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/connectionpool.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/appengine.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/ntlmpool.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/pyopenssl.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/socks.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/exceptions.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/fields.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/filepost.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ordered_dict.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/six.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ssl_match_hostname/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ssl_match_hostname/_implementation.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/poolmanager.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/request.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/response.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/connection.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/request.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/response.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/retry.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/ssl_.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/timeout.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/url.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/sessions
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/status_c
+	odes.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/structur
+	es.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/utils.py
+	, .venv.3.5/lib/python3.5/site-packages/pip/_vendor/retrying.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/six.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/__in
+	it__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/labe
+	ls.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/mkla
+	bels.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/test
+	s.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/x_us
+	er_defined.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/basecommand.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/baseparser.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/cmdoptions.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/check.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/completion.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/download.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/freeze.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/hash.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/help.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/install.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/list.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/search.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/show.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/uninstall.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/compat/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/compat/dictconfig.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/download.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/exceptions.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/index.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/locations.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/models/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/models/index.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/operations/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/operations/check.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/operations/freeze.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/pep425tags.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/req_file.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/req_install.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/req_set.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/req_uninstall.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/status_codes.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/appdirs.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/build.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/deprecation.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/encoding.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/filesystem.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/glibc.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/hashes.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/logging.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/outdated.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/packaging.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/setuptools_build.py
+	, .venv.3.5/lib/python3.5/site-packages/pip/utils/ui.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/bazaar.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/git.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/mercurial.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/subversion.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/pkg_resources/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/DESCRIPTI
+	ON.rst,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/INSTALLER
+	,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/METADATA,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/RECORD,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/metadata.
+	json,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/top_level
+	.txt, .venv.3.5/lib/python3.5/site-packages/py/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/__metainfo.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_apipkg.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_builtin.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/_assertionnew.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/_assertionold.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/_py2traceback.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/assertion.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/code.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/source.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_error.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_iniconfig.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_io/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_io/capture.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_io/saferepr.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_io/terminalwriter.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_log/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_log/log.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_log/warning.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/cacheutil.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/common.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/local.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/svnurl.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/svnwc.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_process/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_process/cmdexec.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_process/forkedfunc.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_process/killproc.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_std.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_xmlgen.py,
+	.venv.3.5/lib/python3.5/site-packages/py/test.py,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/D
+	ESCRIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/I
+	NSTALLER,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/M
+	ETADATA,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/R
+	ECORD,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/W
+	HEEL,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/e
+	ntry_points.txt,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/m
+	etadata.json,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/n
+	amespace_packages.txt,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/t
+	op_level.txt, .venv.3.5/lib/python3.5/site-packages/pycodestyle.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/DESC
+	RIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/INST
+	ALLER,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/META
+	DATA,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/RECO
+	RD,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/WHEE
+	L,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/entr
+	y_points.txt,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/meta
+	data.json,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/top_
+	level.txt,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/api.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/checker.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/messages.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/reporter.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/scripts/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/scripts/pyflakes.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/harness.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_api.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_dict.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_doctests.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_imports.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_other.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_return_wit
+	h_arguments_inside_generator.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_undefined_
+	names.py,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/DES
+	CRIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/INS
+	TALLER,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/MET
+	ADATA,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/REC
+	ORD,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/WHE
+	EL,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/met
+	adata.json,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/top
+	_level.txt, .venv.3.5/lib/python3.5/site-packages/pyparsing.py,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/DESCRI
+	PTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/INSTAL
+	LER,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/LICENS
+	E.txt,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/METADA
+	TA,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/RECORD
+	,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/entry_
+	points.txt,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/metada
+	ta.json,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/top_le
+	vel.txt, .venv.3.5/lib/python3.5/site-packages/pytest.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/D
+	ESCRIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/I
+	NSTALLER,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/M
+	ETADATA,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/R
+	ECORD,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/W
+	HEEL,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/d
+	ependency_links.txt,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/e
+	ntry_points.txt,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/m
+	etadata.json,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/t
+	op_level.txt,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/z
+	ip-safe,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/archive_util.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/__init__.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/alias.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/bdist_egg.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/bdist_rpm.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/bdist_wini
+	nst.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/build_clib
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/build_ext.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/build_py.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/develop.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/easy_insta
+	ll.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/egg_info.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/install.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/install_eg
+	g_info.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/install_li
+	b.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/install_sc
+	ripts.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/launcher
+	manifest.xml,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/py36compat
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/register.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/rotate.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/saveopts.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/sdist.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/setopt.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/test.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/upload.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/upload_doc
+	s.py, .venv.3.5/lib/python3.5/site-packages/setuptools/config.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/dep_util.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/depends.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/dist.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/extension.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/glob.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/launch.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/lib2to3_ex.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/monkey.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/msvc.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/namespaces.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/package_index.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py26compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py27compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py31compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py33compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py36compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/sandbox.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/script (dev).tmpl,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/script.tmpl,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/site-patch.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/ssl_support.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/unicode_utils.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/version.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/windows_support.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/DESCRIPT
+	ION.rst,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/INSTALLE
+	R,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/METADATA
+	,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/RECORD,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/metadata
+	.json,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/top_leve
+	l.txt, .venv.3.5/lib/python3.5/site-packages/six.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/DESCRI
+	PTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/INSTAL
+	LER,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/LICENS
+	E.txt,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/METADA
+	TA,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/RECORD
+	,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/entry_
+	points.txt,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/metada
+	ta.json,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/top_le
+	vel.txt, .venv.3.5/lib/python3.5/site-packages/wheel/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/archive.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/bdist_wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/decorator.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/egg2wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/eggnames.txt,
+	.venv.3.5/lib/python3.5/site-packages/wheel/install.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/metadata.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/paths.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/pep425tags.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/pkginfo.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/signatures/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/signatures/djbec.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/signatures/ed25519py.py
+	, .venv.3.5/lib/python3.5/site-packages/wheel/signatures/keys.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/complex-dist/compl
+	exdist/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/complex-dist/setup
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/headers.dist/heade
+	r.h,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/headers.dist/heade
+	rsdist.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/headers.dist/setup
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/pydist-schema.json
+	,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/simple.dist/setup.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/simple.dist/simple
+	dist/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_basic.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_install.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_keys.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_paths.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_ranking.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_signatures.py
+	, .venv.3.5/lib/python3.5/site-packages/wheel/test/test_tagopt.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_tool.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_wheelfile.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/tool/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/util.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/wininst2wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/xdis.egg-link,
+	.venv.3.5/lib/python3.5/site.py,
+	.venv.3.5/lib/python3.5/sre_compile.py,
+	.venv.3.5/lib/python3.5/sre_constants.py,
+	.venv.3.5/lib/python3.5/sre_parse.py,
+	.venv.3.5/lib/python3.5/stat.py, .venv.3.5/lib/python3.5/struct.py,
+	.venv.3.5/lib/python3.5/tarfile.py,
+	.venv.3.5/lib/python3.5/tempfile.py,
+	.venv.3.5/lib/python3.5/token.py,
+	.venv.3.5/lib/python3.5/tokenize.py,
+	.venv.3.5/lib/python3.5/types.py,
+	.venv.3.5/lib/python3.5/warnings.py,
+	.venv.3.5/lib/python3.5/weakref.py, .venv.3.5/man/man1/nosetests.1,
+	.venv.3.5/pip-selfcheck.json: removed accidentally added virtual
+	environments
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* .gitignore: added .venv to gitignore
+
+2017-03-09  Daniel Bradburn <moagstar@gmail.com>
+
+	* .idea/dictionaries/moagstar.xml,
+	.idea/inspectionProfiles/Project_Default.xml,
+	.idea/inspectionProfiles/profiles_settings.xml, .idea/misc.xml,
+	.idea/modules.xml, .idea/python-xdis.iml, .idea/vcs.xml,
+	.idea/workspace.xml, .venv.2.7/bin/activate,
+	.venv.2.7/bin/activate.csh, .venv.2.7/bin/activate.fish,
+	.venv.2.7/bin/activate_this.py, .venv.2.7/bin/easy_install,
+	.venv.2.7/bin/easy_install-2.7, .venv.2.7/bin/pip,
+	.venv.2.7/bin/pip2, .venv.2.7/bin/pip2.7,
+	.venv.2.7/bin/python-config, .venv.2.7/bin/python2,
+	.venv.2.7/bin/python2.7, .venv.2.7/bin/wheel,
+	.venv.2.7/include/python2.7, .venv.2.7/lib/python2.7/UserDict.py,
+	.venv.2.7/lib/python2.7/_abcoll.py,
+	.venv.2.7/lib/python2.7/_weakrefset.py,
+	.venv.2.7/lib/python2.7/abc.py, .venv.2.7/lib/python2.7/codecs.py,
+	.venv.2.7/lib/python2.7/copy_reg.py,
+	.venv.2.7/lib/python2.7/distutils/__init__.py,
+	.venv.2.7/lib/python2.7/distutils/distutils.cfg,
+	.venv.2.7/lib/python2.7/encodings,
+	.venv.2.7/lib/python2.7/fnmatch.py,
+	.venv.2.7/lib/python2.7/genericpath.py,
+	.venv.2.7/lib/python2.7/lib-dynload,
+	.venv.2.7/lib/python2.7/linecache.py,
+	.venv.2.7/lib/python2.7/locale.py,
+	.venv.2.7/lib/python2.7/no-global-site-packages.txt,
+	.venv.2.7/lib/python2.7/ntpath.py,
+	.venv.2.7/lib/python2.7/orig-prefix.txt,
+	.venv.2.7/lib/python2.7/os.py,
+	.venv.2.7/lib/python2.7/posixpath.py,
+	.venv.2.7/lib/python2.7/re.py,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/DESCR
+	IPTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/INSTA
+	LLER,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/METAD
+	ATA,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/RECOR
+	D,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/WHEEL
+	,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/metad
+	ata.json,
+	.venv.2.7/lib/python2.7/site-packages/appdirs-1.4.3.dist-info/top_l
+	evel.txt, .venv.2.7/lib/python2.7/site-packages/appdirs.py,
+	.venv.2.7/lib/python2.7/site-packages/easy_install.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/DESC
+	RIPTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/INST
+	ALLER,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/META
+	DATA,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/RECO
+	RD,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/WHEE
+	L,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/meta
+	data.json,
+	.venv.2.7/lib/python2.7/site-packages/packaging-16.8.dist-info/top_
+	level.txt,
+	.venv.2.7/lib/python2.7/site-packages/packaging/__about__.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/_compat.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/_structures.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/markers.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/requirements.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/specifiers.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/utils.py,
+	.venv.2.7/lib/python2.7/site-packages/packaging/version.py,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/DESCRIPTI
+	ON.rst,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/INSTALLER
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/METADATA,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/RECORD,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/WHEEL,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/entry_poi
+	nts.txt,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/metadata.
+	json,
+	.venv.2.7/lib/python2.7/site-packages/pip-9.0.1.dist-info/top_level
+	.txt, .venv.2.7/lib/python2.7/site-packages/pip/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/__main__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/appdirs.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/__in
+	it__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/_cmd
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/adap
+	ter.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cach
+	e.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cach
+	es/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cach
+	es/file_cache.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cach
+	es/redis_cache.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/comp
+	at.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/cont
+	roller.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/file
+	wrapper.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/heur
+	istics.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/seri
+	alize.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/cachecontrol/wrap
+	per.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/ansi.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/ansitowi
+	n32.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/initiali
+	se.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/win32.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/colorama/winterm.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/__init__.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/misc.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/shutil.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/sysconfig.cfg,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/sysconfig.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/_backport
+	/tarfile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/compat.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/database.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/index.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/locators.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/manifest.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/markers.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/metadata.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/resources
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/scripts.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/util.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/version.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distlib/wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/distro.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_ihatexm
+	l.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_inputst
+	ream.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_tokeniz
+	er.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_trie/__
+	init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_trie/_b
+	ase.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_trie/da
+	trie.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_trie/py
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/_utils.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/constant
+	s.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	alphabeticalattributes.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	base.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	inject_meta_charset.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	lint.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	optionaltags.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	sanitizer.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/filters/
+	whitespace.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/html5par
+	ser.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/serializ
+	er.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treeadap
+	ters/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treeadap
+	ters/genshi.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treeadap
+	ters/sax.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/base.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/dom.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/etree.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treebuil
+	ders/etree_lxml.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/base.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/dom.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/etree.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/etree_lxml.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/html5lib/treewalk
+	ers/genshi.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/ipaddress.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/linklock
+	file.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/mkdirloc
+	kfile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/pidlockf
+	ile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/sqlitelo
+	ckfile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/lockfile/symlinkl
+	ockfile.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/ordereddict.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/__about
+	__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/__init_
+	_.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/_compat
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/_struct
+	ures.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/markers
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/require
+	ments.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/specifi
+	ers.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/utils.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/packaging/version
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/pkg_resources/__i
+	nit__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/bar.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/counter.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/helpers.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/progress/spinner.
+	py, .venv.2.7/lib/python2.7/site-packages/pip/_vendor/pyparsing.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/re-vendor.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/__init__
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/adapters
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/api.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/auth.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/cacert.p
+	em,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/certs.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/compat.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/cookies.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/exceptio
+	ns.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/hooks.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/models.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/big5freq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/big5prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/chardetect.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/chardistribution.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/charsetgroupprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/charsetprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/codingstatemachine.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/compat.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/constants.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/cp949prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/escprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/escsm.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/eucjpprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/euckrfreq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/euckrprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/euctwfreq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/euctwprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/gb2312freq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/gb2312prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/hebrewprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/jisfreq.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/jpcntx.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langbulgarianmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langcyrillicmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langgreekmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langhebrewmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langhungarianmodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/langthaimodel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/latin1prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcharsetprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcsgroupprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcssm.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/sbcharsetprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/sbcsgroupprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/sjisprober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/universaldetector.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/chardet/utf8prober.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/_collections.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/connection.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/connectionpool.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/appengine.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/ntlmpool.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/pyopenssl.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/socks.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/exceptions.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/fields.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/filepost.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ordered_dict.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/six.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ssl_match_hostname/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ssl_match_hostname/_implementation.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/poolmanager.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/request.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/response.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/connection.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/request.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/response.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/retry.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/ssl_.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/timeout.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/url.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/sessions
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/status_c
+	odes.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/structur
+	es.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/requests/utils.py
+	, .venv.2.7/lib/python2.7/site-packages/pip/_vendor/retrying.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/six.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/__in
+	it__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/labe
+	ls.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/mkla
+	bels.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/test
+	s.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/_vendor/webencodings/x_us
+	er_defined.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/basecommand.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/baseparser.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/cmdoptions.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/check.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/completion.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/download.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/freeze.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/hash.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/help.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/install.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/list.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/search.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/show.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/uninstall.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/commands/wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/compat/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/compat/dictconfig.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/download.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/exceptions.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/index.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/locations.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/models/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/models/index.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/operations/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/operations/check.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/operations/freeze.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/pep425tags.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/req_file.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/req_install.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/req_set.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/req/req_uninstall.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/status_codes.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/appdirs.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/build.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/deprecation.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/encoding.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/filesystem.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/glibc.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/hashes.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/logging.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/outdated.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/packaging.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/utils/setuptools_build.py
+	, .venv.2.7/lib/python2.7/site-packages/pip/utils/ui.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/bazaar.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/git.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/mercurial.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/vcs/subversion.py,
+	.venv.2.7/lib/python2.7/site-packages/pip/wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/pkg_resources/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/DES
+	CRIPTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/INS
+	TALLER,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/MET
+	ADATA,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/REC
+	ORD,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/WHE
+	EL,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/met
+	adata.json,
+	.venv.2.7/lib/python2.7/site-packages/pyparsing-2.2.0.dist-info/top
+	_level.txt, .venv.2.7/lib/python2.7/site-packages/pyparsing.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/D
+	ESCRIPTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/I
+	NSTALLER,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/M
+	ETADATA,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/R
+	ECORD,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/W
+	HEEL,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/d
+	ependency_links.txt,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/e
+	ntry_points.txt,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/m
+	etadata.json,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/t
+	op_level.txt,
+	.venv.2.7/lib/python2.7/site-packages/setuptools-34.3.1.dist-info/z
+	ip-safe,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/archive_util.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/__init__.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/alias.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/bdist_egg.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/bdist_rpm.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/bdist_wini
+	nst.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/build_clib
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/build_ext.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/build_py.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/develop.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/easy_insta
+	ll.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/egg_info.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/install.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/install_eg
+	g_info.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/install_li
+	b.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/install_sc
+	ripts.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/launcher
+	manifest.xml,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/py36compat
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/register.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/rotate.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/saveopts.p
+	y,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/sdist.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/setopt.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/test.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/upload.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/command/upload_doc
+	s.py, .venv.2.7/lib/python2.7/site-packages/setuptools/config.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/dep_util.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/depends.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/dist.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/extension.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/glob.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/launch.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/lib2to3_ex.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/monkey.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/msvc.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/namespaces.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/package_index.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py26compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py27compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py31compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py33compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/py36compat.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/sandbox.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/script (dev).tmpl,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/script.tmpl,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/site-patch.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/ssl_support.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/unicode_utils.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/version.py,
+	.venv.2.7/lib/python2.7/site-packages/setuptools/windows_support.py
+	,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/DESCRIPT
+	ION.rst,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/INSTALLE
+	R,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/METADATA
+	,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/RECORD,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/WHEEL,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/metadata
+	.json,
+	.venv.2.7/lib/python2.7/site-packages/six-1.10.0.dist-info/top_leve
+	l.txt, .venv.2.7/lib/python2.7/site-packages/six.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/DESCRI
+	PTION.rst,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/INSTAL
+	LER,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/LICENS
+	E.txt,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/METADA
+	TA,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/RECORD
+	,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/WHEEL,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/entry_
+	points.txt,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/metada
+	ta.json,
+	.venv.2.7/lib/python2.7/site-packages/wheel-0.29.0.dist-info/top_le
+	vel.txt, .venv.2.7/lib/python2.7/site-packages/wheel/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/__main__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/archive.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/bdist_wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/decorator.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/egg2wheel.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/eggnames.txt,
+	.venv.2.7/lib/python2.7/site-packages/wheel/install.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/metadata.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/paths.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/pep425tags.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/pkginfo.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/signatures/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/signatures/djbec.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/signatures/ed25519py.py
+	, .venv.2.7/lib/python2.7/site-packages/wheel/signatures/keys.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/complex-dist/compl
+	exdist/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/complex-dist/setup
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/headers.dist/heade
+	r.h,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/headers.dist/heade
+	rsdist.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/headers.dist/setup
+	.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/pydist-schema.json
+	,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/simple.dist/setup.
+	py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/simple.dist/simple
+	dist/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_basic.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_install.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_keys.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_paths.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_ranking.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_signatures.py
+	, .venv.2.7/lib/python2.7/site-packages/wheel/test/test_tagopt.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_tool.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/test/test_wheelfile.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/tool/__init__.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/util.py,
+	.venv.2.7/lib/python2.7/site-packages/wheel/wininst2wheel.py,
+	.venv.2.7/lib/python2.7/site.py, .venv.2.7/lib/python2.7/sre.py,
+	.venv.2.7/lib/python2.7/sre_compile.py,
+	.venv.2.7/lib/python2.7/sre_constants.py,
+	.venv.2.7/lib/python2.7/sre_parse.py,
+	.venv.2.7/lib/python2.7/stat.py, .venv.2.7/lib/python2.7/types.py,
+	.venv.2.7/lib/python2.7/warnings.py, .venv.2.7/local/bin,
+	.venv.2.7/local/include, .venv.2.7/local/lib,
+	.venv.2.7/pip-selfcheck.json, .venv.3.5/bin/activate,
+	.venv.3.5/bin/activate.csh, .venv.3.5/bin/activate.fish,
+	.venv.3.5/bin/activate_this.py, .venv.3.5/bin/easy_install,
+	.venv.3.5/bin/easy_install-3.5, .venv.3.5/bin/flake8,
+	.venv.3.5/bin/nosetests, .venv.3.5/bin/nosetests-3.4,
+	.venv.3.5/bin/pip, .venv.3.5/bin/pip3, .venv.3.5/bin/pip3.5,
+	.venv.3.5/bin/py.test, .venv.3.5/bin/pycodestyle,
+	.venv.3.5/bin/pydisasm, .venv.3.5/bin/pyflakes,
+	.venv.3.5/bin/pytest, .venv.3.5/bin/python,
+	.venv.3.5/bin/python-config, .venv.3.5/bin/python3.5,
+	.venv.3.5/bin/wheel, .venv.3.5/include/python3.5m,
+	.venv.3.5/lib/python3.5/__future__.py,
+	.venv.3.5/lib/python3.5/_bootlocale.py,
+	.venv.3.5/lib/python3.5/_collections_abc.py,
+	.venv.3.5/lib/python3.5/_dummy_thread.py,
+	.venv.3.5/lib/python3.5/_weakrefset.py,
+	.venv.3.5/lib/python3.5/abc.py, .venv.3.5/lib/python3.5/base64.py,
+	.venv.3.5/lib/python3.5/bisect.py,
+	.venv.3.5/lib/python3.5/codecs.py,
+	.venv.3.5/lib/python3.5/collections,
+	.venv.3.5/lib/python3.5/config-3.5m-x86_64-linux-gnu,
+	.venv.3.5/lib/python3.5/copy.py,
+	.venv.3.5/lib/python3.5/copyreg.py,
+	.venv.3.5/lib/python3.5/distutils/__init__.py,
+	.venv.3.5/lib/python3.5/distutils/distutils.cfg,
+	.venv.3.5/lib/python3.5/encodings,
+	.venv.3.5/lib/python3.5/fnmatch.py,
+	.venv.3.5/lib/python3.5/functools.py,
+	.venv.3.5/lib/python3.5/genericpath.py,
+	.venv.3.5/lib/python3.5/hashlib.py,
+	.venv.3.5/lib/python3.5/heapq.py, .venv.3.5/lib/python3.5/hmac.py,
+	.venv.3.5/lib/python3.5/imp.py, .venv.3.5/lib/python3.5/importlib,
+	.venv.3.5/lib/python3.5/io.py, .venv.3.5/lib/python3.5/keyword.py,
+	.venv.3.5/lib/python3.5/lib-dynload,
+	.venv.3.5/lib/python3.5/linecache.py,
+	.venv.3.5/lib/python3.5/locale.py,
+	.venv.3.5/lib/python3.5/no-global-site-packages.txt,
+	.venv.3.5/lib/python3.5/ntpath.py,
+	.venv.3.5/lib/python3.5/operator.py,
+	.venv.3.5/lib/python3.5/orig-prefix.txt,
+	.venv.3.5/lib/python3.5/os.py,
+	.venv.3.5/lib/python3.5/plat-x86_64-linux-gnu,
+	.venv.3.5/lib/python3.5/posixpath.py,
+	.venv.3.5/lib/python3.5/random.py, .venv.3.5/lib/python3.5/re.py,
+	.venv.3.5/lib/python3.5/reprlib.py,
+	.venv.3.5/lib/python3.5/rlcompleter.py,
+	.venv.3.5/lib/python3.5/shutil.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_argcomplete.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_code/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_code/_py2traceback.p
+	y, .venv.3.5/lib/python3.5/site-packages/_pytest/_code/code.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_code/source.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/_pluggy.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/assertion/__init__.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/assertion/rewrite.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/assertion/util.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/cacheprovider.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/capture.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/compat.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/config.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/debugging.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/deprecated.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/doctest.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/fixtures.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/freeze_support.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/helpconfig.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/hookspec.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/junitxml.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/main.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/mark.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/monkeypatch.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/nose.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/pastebin.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/pytester.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/python.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/recwarn.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/resultlog.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/runner.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/setuponly.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/setupplan.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/skipping.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/terminal.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/tmpdir.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/unittest.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/vendored_packages/__i
+	nit__.py,
+	.venv.3.5/lib/python3.5/site-packages/_pytest/vendored_packages/plu
+	ggy.py,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/DESCR
+	IPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/INSTA
+	LLER,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/METAD
+	ATA,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/RECOR
+	D,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/WHEEL
+	,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/metad
+	ata.json,
+	.venv.3.5/lib/python3.5/site-packages/appdirs-1.4.3.dist-info/top_l
+	evel.txt, .venv.3.5/lib/python3.5/site-packages/appdirs.py,
+	.venv.3.5/lib/python3.5/site-packages/easy-install.pth,
+	.venv.3.5/lib/python3.5/site-packages/easy_install.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/DESCRI
+	PTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/INSTAL
+	LER,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/METADA
+	TA,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/RECORD
+	,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/entry_
+	points.txt,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/metada
+	ta.json,
+	.venv.3.5/lib/python3.5/site-packages/flake8-3.3.0.dist-info/top_le
+	vel.txt, .venv.3.5/lib/python3.5/site-packages/flake8/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/api/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/api/legacy.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/checker.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/defaults.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/exceptions.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/formatting/__init__.py
+	, .venv.3.5/lib/python3.5/site-packages/flake8/formatting/base.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/formatting/default.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/application.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/cli.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/debug.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/git.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/mercurial.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/options.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/main/setuptools_comman
+	d.py, .venv.3.5/lib/python3.5/site-packages/flake8/main/vcs.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/options/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/options/aggregator.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/options/config.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/options/manager.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/_trie.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/manager.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/notifier.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/plugins/pyflakes.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/processor.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/statistics.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/style_guide.py,
+	.venv.3.5/lib/python3.5/site-packages/flake8/utils.py,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/DESCRI
+	PTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/INSTAL
+	LER,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/METADA
+	TA,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/RECORD
+	,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/entry_
+	points.txt,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/metada
+	ta.json,
+	.venv.3.5/lib/python3.5/site-packages/mccabe-0.6.1.dist-info/top_le
+	vel.txt, .venv.3.5/lib/python3.5/site-packages/mccabe.py,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/DESCRIPT
+	ION.rst,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/INSTALLE
+	R,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/METADATA
+	,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/RECORD,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/entry_po
+	ints.txt,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/metadata
+	.json,
+	.venv.3.5/lib/python3.5/site-packages/nose-1.3.7.dist-info/top_leve
+	l.txt, .venv.3.5/lib/python3.5/site-packages/nose/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/case.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/commands.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/config.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/core.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/exc.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/ext/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/ext/dtcompat.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/failure.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/importer.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/inspector.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/loader.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/allmodules.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/attrib.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/base.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/builtin.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/capture.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/collect.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/cover.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/debug.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/deprecated.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/doctests.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/errorclass.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/failuredetail.py
+	, .venv.3.5/lib/python3.5/site-packages/nose/plugins/isolate.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/logcapture.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/manager.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/multiprocess.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/plugintest.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/prof.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/skip.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/testid.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/plugins/xunit.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/proxy.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/pyversion.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/result.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/selector.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/sphinx/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/sphinx/pluginopts.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/suite.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/tools/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/tools/nontrivial.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/tools/trivial.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/twistedtools.py,
+	.venv.3.5/lib/python3.5/site-packages/nose/usage.txt,
+	.venv.3.5/lib/python3.5/site-packages/nose/util.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/DESC
+	RIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/INST
+	ALLER,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/META
+	DATA,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/RECO
+	RD,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/WHEE
+	L,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/meta
+	data.json,
+	.venv.3.5/lib/python3.5/site-packages/packaging-16.8.dist-info/top_
+	level.txt,
+	.venv.3.5/lib/python3.5/site-packages/packaging/__about__.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/_compat.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/_structures.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/markers.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/requirements.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/specifiers.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/utils.py,
+	.venv.3.5/lib/python3.5/site-packages/packaging/version.py,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/DESCRIPTI
+	ON.rst,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/INSTALLER
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/METADATA,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/RECORD,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/entry_poi
+	nts.txt,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/metadata.
+	json,
+	.venv.3.5/lib/python3.5/site-packages/pip-9.0.1.dist-info/top_level
+	.txt, .venv.3.5/lib/python3.5/site-packages/pip/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/appdirs.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/__in
+	it__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/_cmd
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/adap
+	ter.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cach
+	e.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cach
+	es/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cach
+	es/file_cache.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cach
+	es/redis_cache.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/comp
+	at.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cont
+	roller.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/file
+	wrapper.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/heur
+	istics.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/seri
+	alize.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/cachecontrol/wrap
+	per.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/ansi.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/ansitowi
+	n32.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/initiali
+	se.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/win32.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/colorama/winterm.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/__init__.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/misc.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/shutil.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/sysconfig.cfg,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/sysconfig.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/_backport
+	/tarfile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/compat.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/database.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/index.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/locators.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/manifest.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/markers.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/metadata.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/resources
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/scripts.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/util.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/version.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distlib/wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/distro.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_ihatexm
+	l.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_inputst
+	ream.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_tokeniz
+	er.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/__
+	init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/_b
+	ase.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/da
+	trie.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/py
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/_utils.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/constant
+	s.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	alphabeticalattributes.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	base.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	inject_meta_charset.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	lint.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	optionaltags.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	sanitizer.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/
+	whitespace.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/html5par
+	ser.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/serializ
+	er.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadap
+	ters/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadap
+	ters/genshi.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadap
+	ters/sax.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/base.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/dom.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/etree.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuil
+	ders/etree_lxml.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/base.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/dom.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/etree.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/etree_lxml.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalk
+	ers/genshi.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/ipaddress.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/linklock
+	file.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/mkdirloc
+	kfile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/pidlockf
+	ile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/sqlitelo
+	ckfile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/lockfile/symlinkl
+	ockfile.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/ordereddict.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/__about
+	__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/__init_
+	_.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/_compat
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/_struct
+	ures.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/markers
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/require
+	ments.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/specifi
+	ers.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/utils.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/packaging/version
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/pkg_resources/__i
+	nit__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/bar.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/counter.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/helpers.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/progress/spinner.
+	py, .venv.3.5/lib/python3.5/site-packages/pip/_vendor/pyparsing.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/re-vendor.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/__init__
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/adapters
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/api.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/auth.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/cacert.p
+	em,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/certs.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/compat.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/cookies.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/exceptio
+	ns.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/hooks.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/models.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/big5freq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/big5prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/chardetect.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/chardistribution.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/charsetgroupprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/charsetprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/codingstatemachine.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/compat.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/constants.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/cp949prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/escprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/escsm.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/eucjpprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/euckrfreq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/euckrprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/euctwfreq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/euctwprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/gb2312freq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/gb2312prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/hebrewprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/jisfreq.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/jpcntx.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langbulgarianmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langcyrillicmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langgreekmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langhebrewmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langhungarianmodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/langthaimodel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/latin1prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcharsetprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcsgroupprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/mbcssm.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/sbcharsetprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/sbcsgroupprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/sjisprober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/universaldetector.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/chardet/utf8prober.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/_collections.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/connection.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/connectionpool.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/appengine.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/ntlmpool.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/pyopenssl.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/contrib/socks.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/exceptions.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/fields.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/filepost.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ordered_dict.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/six.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ssl_match_hostname/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/packages/ssl_match_hostname/_implementation.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/poolmanager.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/request.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/response.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/connection.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/request.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/response.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/retry.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/ssl_.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/timeout.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/packages
+	/urllib3/util/url.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/sessions
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/status_c
+	odes.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/structur
+	es.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/requests/utils.py
+	, .venv.3.5/lib/python3.5/site-packages/pip/_vendor/retrying.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/six.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/__in
+	it__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/labe
+	ls.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/mkla
+	bels.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/test
+	s.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/_vendor/webencodings/x_us
+	er_defined.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/basecommand.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/baseparser.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/cmdoptions.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/check.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/completion.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/download.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/freeze.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/hash.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/help.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/install.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/list.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/search.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/show.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/uninstall.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/commands/wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/compat/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/compat/dictconfig.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/download.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/exceptions.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/index.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/locations.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/models/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/models/index.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/operations/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/operations/check.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/operations/freeze.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/pep425tags.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/req_file.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/req_install.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/req_set.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/req/req_uninstall.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/status_codes.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/appdirs.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/build.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/deprecation.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/encoding.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/filesystem.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/glibc.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/hashes.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/logging.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/outdated.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/packaging.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/utils/setuptools_build.py
+	, .venv.3.5/lib/python3.5/site-packages/pip/utils/ui.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/bazaar.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/git.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/mercurial.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/vcs/subversion.py,
+	.venv.3.5/lib/python3.5/site-packages/pip/wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/pkg_resources/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/DESCRIPTI
+	ON.rst,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/INSTALLER
+	,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/METADATA,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/RECORD,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/metadata.
+	json,
+	.venv.3.5/lib/python3.5/site-packages/py-1.4.32.dist-info/top_level
+	.txt, .venv.3.5/lib/python3.5/site-packages/py/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/__metainfo.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_apipkg.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_builtin.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/_assertionnew.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/_assertionold.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/_py2traceback.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/assertion.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/code.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_code/source.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_error.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_iniconfig.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_io/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_io/capture.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_io/saferepr.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_io/terminalwriter.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_log/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_log/log.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_log/warning.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/cacheutil.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/common.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/local.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/svnurl.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_path/svnwc.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_process/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_process/cmdexec.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_process/forkedfunc.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_process/killproc.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_std.py,
+	.venv.3.5/lib/python3.5/site-packages/py/_xmlgen.py,
+	.venv.3.5/lib/python3.5/site-packages/py/test.py,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/D
+	ESCRIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/I
+	NSTALLER,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/M
+	ETADATA,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/R
+	ECORD,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/W
+	HEEL,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/e
+	ntry_points.txt,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/m
+	etadata.json,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/n
+	amespace_packages.txt,
+	.venv.3.5/lib/python3.5/site-packages/pycodestyle-2.3.1.dist-info/t
+	op_level.txt, .venv.3.5/lib/python3.5/site-packages/pycodestyle.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/DESC
+	RIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/INST
+	ALLER,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/META
+	DATA,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/RECO
+	RD,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/WHEE
+	L,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/entr
+	y_points.txt,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/meta
+	data.json,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes-1.5.0.dist-info/top_
+	level.txt,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/api.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/checker.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/messages.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/reporter.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/scripts/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/scripts/pyflakes.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/harness.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_api.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_dict.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_doctests.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_imports.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_other.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_return_wit
+	h_arguments_inside_generator.py,
+	.venv.3.5/lib/python3.5/site-packages/pyflakes/test/test_undefined_
+	names.py,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/DES
+	CRIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/INS
+	TALLER,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/MET
+	ADATA,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/REC
+	ORD,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/WHE
+	EL,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/met
+	adata.json,
+	.venv.3.5/lib/python3.5/site-packages/pyparsing-2.2.0.dist-info/top
+	_level.txt, .venv.3.5/lib/python3.5/site-packages/pyparsing.py,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/DESCRI
+	PTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/INSTAL
+	LER,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/LICENS
+	E.txt,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/METADA
+	TA,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/RECORD
+	,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/entry_
+	points.txt,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/metada
+	ta.json,
+	.venv.3.5/lib/python3.5/site-packages/pytest-3.0.6.dist-info/top_le
+	vel.txt, .venv.3.5/lib/python3.5/site-packages/pytest.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/D
+	ESCRIPTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/I
+	NSTALLER,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/M
+	ETADATA,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/R
+	ECORD,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/W
+	HEEL,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/d
+	ependency_links.txt,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/e
+	ntry_points.txt,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/m
+	etadata.json,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/t
+	op_level.txt,
+	.venv.3.5/lib/python3.5/site-packages/setuptools-34.3.1.dist-info/z
+	ip-safe,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/archive_util.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/__init__.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/alias.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/bdist_egg.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/bdist_rpm.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/bdist_wini
+	nst.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/build_clib
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/build_ext.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/build_py.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/develop.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/easy_insta
+	ll.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/egg_info.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/install.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/install_eg
+	g_info.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/install_li
+	b.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/install_sc
+	ripts.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/launcher
+	manifest.xml,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/py36compat
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/register.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/rotate.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/saveopts.p
+	y,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/sdist.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/setopt.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/test.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/upload.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/command/upload_doc
+	s.py, .venv.3.5/lib/python3.5/site-packages/setuptools/config.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/dep_util.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/depends.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/dist.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/extension.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/glob.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/launch.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/lib2to3_ex.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/monkey.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/msvc.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/namespaces.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/package_index.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py26compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py27compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py31compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py33compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/py36compat.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/sandbox.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/script (dev).tmpl,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/script.tmpl,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/site-patch.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/ssl_support.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/unicode_utils.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/version.py,
+	.venv.3.5/lib/python3.5/site-packages/setuptools/windows_support.py
+	,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/DESCRIPT
+	ION.rst,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/INSTALLE
+	R,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/METADATA
+	,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/RECORD,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/metadata
+	.json,
+	.venv.3.5/lib/python3.5/site-packages/six-1.10.0.dist-info/top_leve
+	l.txt, .venv.3.5/lib/python3.5/site-packages/six.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/DESCRI
+	PTION.rst,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/INSTAL
+	LER,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/LICENS
+	E.txt,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/METADA
+	TA,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/RECORD
+	,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/WHEEL,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/entry_
+	points.txt,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/metada
+	ta.json,
+	.venv.3.5/lib/python3.5/site-packages/wheel-0.29.0.dist-info/top_le
+	vel.txt, .venv.3.5/lib/python3.5/site-packages/wheel/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/__main__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/archive.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/bdist_wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/decorator.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/egg2wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/eggnames.txt,
+	.venv.3.5/lib/python3.5/site-packages/wheel/install.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/metadata.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/paths.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/pep425tags.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/pkginfo.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/signatures/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/signatures/djbec.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/signatures/ed25519py.py
+	, .venv.3.5/lib/python3.5/site-packages/wheel/signatures/keys.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/complex-dist/compl
+	exdist/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/complex-dist/setup
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/headers.dist/heade
+	r.h,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/headers.dist/heade
+	rsdist.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/headers.dist/setup
+	.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/pydist-schema.json
+	,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/simple.dist/setup.
+	py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/simple.dist/simple
+	dist/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_basic.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_install.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_keys.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_paths.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_ranking.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_signatures.py
+	, .venv.3.5/lib/python3.5/site-packages/wheel/test/test_tagopt.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_tool.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/test/test_wheelfile.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/tool/__init__.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/util.py,
+	.venv.3.5/lib/python3.5/site-packages/wheel/wininst2wheel.py,
+	.venv.3.5/lib/python3.5/site-packages/xdis.egg-link,
+	.venv.3.5/lib/python3.5/site.py,
+	.venv.3.5/lib/python3.5/sre_compile.py,
+	.venv.3.5/lib/python3.5/sre_constants.py,
+	.venv.3.5/lib/python3.5/sre_parse.py,
+	.venv.3.5/lib/python3.5/stat.py, .venv.3.5/lib/python3.5/struct.py,
+	.venv.3.5/lib/python3.5/tarfile.py,
+	.venv.3.5/lib/python3.5/tempfile.py,
+	.venv.3.5/lib/python3.5/token.py,
+	.venv.3.5/lib/python3.5/tokenize.py,
+	.venv.3.5/lib/python3.5/types.py,
+	.venv.3.5/lib/python3.5/warnings.py,
+	.venv.3.5/lib/python3.5/weakref.py, .venv.3.5/man/man1/nosetests.1,
+	.venv.3.5/pip-selfcheck.json, pytest/test_std.py, xdis/bytecode.py,
+	xdis/main.py, xdis/opcodes/opcode_15.py, xdis/opcodes/opcode_20.py,
+	xdis/opcodes/opcode_21.py, xdis/opcodes/opcode_22.py,
+	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_32.py,
+	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py, xdis/std.py, xdis/util.py: added
+	std.py which provides a drop in replacement for the standard dis api
+	(improved api from 3.5 with the ability to specify file for writing
+	output to, and ability to iterate through instructions. The api uses
+	opcodes from the current python version
+
+2017-03-08  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #25 from x746e/fix-test_disasm Fix test_disasm.py on python2.x (issue #24).
+
+2017-03-08  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #23 from x746e/test-fixes Fix TestOpcodes.test_basic.
+
+2017-03-08  rocky <rb@dustyfeet.com>
+
+	* circle.yml: CircleCI testing needs python "six" module
+
+2017-03-08  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #21 from x746e/patch-3 Ignore .got files generated by tests in pytest/.
+
+2017-03-07  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #20 from x746e/patch-2 Don't assume `bytecode-` dirs are in the current directory.
+
+2017-03-07  Kirill Spitsyn <tn@0x746e.org.ua>
+
+	* test/test_pythonlib.py: Don't assume `bytecode-` dirs are in the
+	current directory.
+
+2017-03-07  Kirill Spitsyn <tn@0x746e.org.ua>
+
+	* test/test_pythonlib.py: Add forgetten `write()`.
+
+2017-01-29  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py, bin/pydisasm, setup.py, xdis/bin/__init__.py,
+	xdis/bin/pydisassemble.py: Simplify pydisasm and ...  fix a bug in showing usage Note this works in Python 3.2
+
+2017-01-29  rocky <rocky@dusytfeet.com>
+
+	* : commit ef18eff1523937d5cfaef19611ccd9eef4ca07ba Author: rocky
+	<rocky@dusytfeet.com> Date:   Sun Jan 29 18:07:05 2017 -0500
+
+2017-01-21  rocky <rocky@dusytfeet.com>
+
+	* xdis/namedtuple25.py, xdis/opcodes/base.py: More 2.3ish
+
+2017-01-21  rocky <rocky@dusytfeet.com>
+
+	* : commit 2bed8825e5087d0544903bebec934c926219eac6 Merge: 3c5bdbc
+	bb58737 Author: rocky <rb@dustyfeet.com> Date:   Fri Jan 20 23:34:48
+	2017 -0500
+
+2017-01-20  rocky <rb@dustyfeet.com>
+
+	* test/test_pyenvlib.py, xdis/opcodes/opcode_34.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py: Finish this
+	round DRYing opcodes
+
+2017-01-16  rocky <rocky@dusytfeet.com>
+
+	* xdis/bytecode.py, xdis/code.py, xdis/dropbox/decrypt25.py,
+	xdis/load.py, xdis/magics.py, xdis/marsh.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy26.py,
+	xdis/opcodes/opcode_pypy27.py, xdis/util.py: Lint crap
+
+2017-01-16  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py: More DRY
+
+2017-01-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py,
+	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py: More DRYness
+
+2017-01-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_pypy26.py,
+	xdis/opcodes/opcode_pypy27.py: Note if we are PYPY or not and ...  use that in opcode tests.  Add a dump_opcodes() function
+
+2017-01-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_20.py,
+	xdis/opcodes/opcode_21.py, xdis/opcodes/opcode_22.py,
+	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: 
+	Another round of DRYing code
+
+2017-01-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py,
+	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_36.py: More DRY
+
+2017-01-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_15.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py,
+	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_pypy27.py: DRY even
+	more
+
+2017-01-13  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_3x.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py, xdis/unmarshal.py: Python 3.6, PYPY
+	classification bugs/improvements * Note pypy CALL_METHOD is varargs (and nargs) * BUILD_CONST_KEY_MAP is also varargs Add stack counts to the above.  unmarshal.py: PYPY 3.2 unicode workarounds. Should investigate
+	further
+
+2017-01-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/main.py, xdis/opcodes/base.py, xdis/opcodes/opcode_15.py,
+	xdis/opcodes/opcode_20.py, xdis/opcodes/opcode_21.py,
+	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+	xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py,
+	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_3x.py,
+	xdis/opcodes/opcode_pypy32.py: More DRY
+
+2017-01-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_15.py,
+	xdis/opcodes/opcode_20.py, xdis/opcodes/opcode_21.py,
+	xdis/opcodes/opcode_22.py, xdis/opcodes/opcode_23.py,
+	xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_25.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_3x.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py: DRY op functions - all in base now
+
+2017-01-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_15.py,
+	xdis/opcodes/opcode_20.py, xdis/opcodes/opcode_21.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_36.py: rm_op parameter order like the others
+
+2017-01-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_20.py,
+	xdis/opcodes/opcode_21.py, xdis/opcodes/opcode_22.py,
+	xdis/opcodes/opcode_24.py, xdis/opcodes/opcode_25.py,
+	xdis/opcodes/opcode_26.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_30.py,
+	xdis/opcodes/opcode_31.py, xdis/opcodes/opcode_32.py,
+	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py,
+	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py, xdis/unmarshal.py: DRY opcode files use opcodes/base for common code
+
+2017-01-13  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_3x.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py, xdis/unmarshal.py: Python 3.6, PYPY
+	classification bugs/improvements * Note pypy CALL_METHOD is varargs (and nargs) * BUILD_CONST_KEY_MAP is also varargs Add stack counts to the above.  unmarshal.py: PYPY 3.2 unicode workarounds. Should investigate
+	further
+
+2017-01-12  rocky <rocky@dusytfeet.com>
+
+	* xdis/__init__.py: sys.resursionlimit is optional, not essential
+
+2016-12-31  rocky <rocky@dusytfeet.com>
+
+	* : commit c9d8083cb61846505e00ebf533f88ca6310f21a8 Author: rocky
+	<rocky@dusytfeet.com> Date:   Sat Dec 31 18:30:23 2016 -0500
+
+2016-12-26  rocky <rb@dustyfeet.com>
+
+	* xdis/bin/pydisassemble.py, xdis/bytecode.py, xdis/code.py,
+	xdis/main.py, xdis/opcodes/opcode_20.py, xdis/opcodes/opcode_21.py,
+	xdis/opcodes/opcode_2x.py, xdis/util.py: Some lint stuff
+
 2016-12-16  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 3.2.4
+	* : 0	1	xdis/dropbox/decrypt25.py
+
+2016-12-16  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.2.4
 
 2016-12-16  rocky <rb@dustyfeet.com>
 
@@ -11,6 +3703,22 @@
 
 	* xdis/magics.py: Add 3.6rc1 magic
 
+2016-12-04  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/dropbox/decrypt25.py, xdis/marsh.py,
+	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_27.py,
+	xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_pypy26.py,
+	xdis/opcodes/opcode_pypy32.py: towards supporting python 2.3
+
+2016-11-24  rocky <rb@dustyfeet.com>
+
+	* circle.yml: Use 2.7 for CircleCI testing
+
+2016-11-23  rocky <rb@dustyfeet.com>
+
+	* setup.py: test-requires => tests-require
+
 2016-11-23  rocky <rb@dustyfeet.com>
 
 	* setup.py: test_requires => tests_require
@@ -18,6 +3726,20 @@
 2016-11-23  rocky <rb@dustyfeet.com>
 
 	* __pkginfo__.py: Note we can now handle 2.4 and 2.5
+
+2016-11-22  rocky <rb@dustyfeet.com>
+
+	* .travis.yml, __pkginfo__.py, circle.yml, test_unit/test-dis.py,
+	xdis/bytecode.py, xdis/dropbox/decrypt25.py, xdis/main.py,
+	xdis/marsh.py, xdis/opcodes/opcode_24.py, xdis/unmarshal.py,
+	xdis/verify.py, xdis/wordcode.py: Make it work on Python 2.4
+
+2016-11-22  rocky <rb@dustyfeet.com>
+
+	* test/test_pythonlib.py, test_unit/test-dis.py,
+	xdis/bin/pydisassemble.py, xdis/bytecode.py,
+	xdis/dropbox/decrypt25.py, xdis/load.py, xdis/namedtuple25.py: Make
+	it work on Python 2.5
 
 2016-11-21  rocky <rb@dustyfeet.com>
 
