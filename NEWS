@@ -1,3 +1,10 @@
+3.3.0 2016-03-18
+
+- Start supporting Python 3.x dis API functions
+  This is largely due to Daniel Bradburn (moagstar)
+- Expanded tests, bug fixes, and bug fixes for various versions of Python
+  This is largely due to Kirill Spitsyn
+
 3.2.4 2016-12-16
 
 - add magic for 3.6rc
