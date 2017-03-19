@@ -125,7 +125,7 @@ if sys.version_info[0:2] == (2, 7):
             self.assertEqual(opname[opmap["LOAD_FAST"]], "LOAD_FAST")
 
         def test_boundaries(self):
-            opmap = dis.opcodes.opcode_27.opmap
+            opmap = dis.opmap
             self.assertEqual(opmap["EXTENDED_ARG"], dis.EXTENDED_ARG)
             self.assertEqual(opmap["STORE_NAME"], dis.HAVE_ARGUMENT)
 
