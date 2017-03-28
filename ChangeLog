@@ -1,6 +1,21 @@
+2017-03-19  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_dis34.py: Hide test_dis34 code when not 3.4
+
+2017-03-19  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_dis34.py, xdis/bytecode.py, xdis/std.py: Add
+	test_dis.py from Python 3.4
+
+2017-03-19  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_dis27.py, test_unit/test_dis33.py: Add back some
+	std lib test_dis tests...  Some modifications to output have been made
+
 2017-03-18  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 3.3.0
+	* ChangeLog, NEWS, test/test_pyenvlib.py, xdis/version.py: Get ready
+	for release 3.3.0
 
 2017-03-18  rocky <rocky@dusytfeet.com>
 
