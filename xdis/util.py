@@ -50,13 +50,13 @@ COMPILER_FLAG_NAMES = {
 # Invert above dictionary so we can look up a bit value
 # from the compile flag name
 COMPILER_FLAG_BIT = {}
-for (k, v) in COMPILER_FLAG_NAMES.items():
+for (v, k) in COMPILER_FLAG_NAMES.items():
     COMPILER_FLAG_BIT[k] = v
 
 # Allow us to access by just name, prefixed with CO. e.g
 # CO_OPTIMIZED, CO_NOFREE
 
-for k, v in COMPILER_FLAG_BIT.items():
+for v, k in COMPILER_FLAG_BIT.items():
     globals().update(dict({'CO_'+v: k}))
 
 def pretty_flags(flags):
