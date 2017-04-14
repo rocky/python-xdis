@@ -103,6 +103,7 @@ versions = {
     int2magic(3300): '3.4a4+',    # more changes to __qualname__ computation
     int2magic(3310): '3.4rc2',    # alter __qualname__ computation
     int2magic(3350): '3.5',       # 3.5.0, 3.5.1, 3.5.2
+    int2magic(3351): '3.5.3',     # 3.5.3
     int2magic(3361): '3.6.0a1',   # 3.6.0a1
     int2magic(3370): '3.6.0a1+1', # 3.6.0a?
     int2magic(3370): '3.6.0a1+2', #

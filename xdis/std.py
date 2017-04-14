@@ -160,3 +160,4 @@ class Instruction(_Instruction):
     def __init__(self, *args, **kwargs):
         kwargs['opc'] = opc
         super(Instruction, self).__init__(*args, **kwargs)
+        self.opc = opc
