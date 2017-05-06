@@ -53,4 +53,14 @@ def iscode(obj):
     using a different version of Python than the version of Python used
     in creating the byte-compiled objects. Here, the code types may mismatch.
     """
-    return inspect.iscode(obj) or isinstance(obj, Code3)
+    return inspect.iscode(obj) or isinstance(obj, Code3) or isinstance(obj, Code2)
+
+def code_has_star_arg(code):
+    """Return True iff
+    the code object has a variable positional parameter (*args-like)"""
+    return (code.co_flags & 4) != 0
+
+def code_has_star_star_arg(code):
+    """Return True iff
+    The code object has a variable keyword parameter (**kwargs-like)."""
+    return (code.co_flags & 8) != 0
