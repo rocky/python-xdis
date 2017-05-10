@@ -7,7 +7,7 @@ import six
 import pytest
 # local
 import xdis.std as dis
-from xdis import PYTHON3, IS_PYPY
+from xdis import PYTHON3, IS_PYPY, PYTHON_VERSION
 
 
 # just a simple bit of code that should be the same across python versions,
@@ -46,6 +46,18 @@ EXPECTED_DIS = """\
               9 RETURN_VALUE
 """
 
+EXPECTED_DIS_36 = """\
+  1           0 LOAD_CONST               0 (10)
+              2 STORE_NAME               0 (a)
+              4 LOAD_CONST               1 (None)
+              6 RETURN_VALUE
+"""
+
+if PYTHON_VERSION < 3.6:
+    expected_dis = EXPECTED_DIS
+else:
+    expected_dis = EXPECTED_DIS_36
+
 
 @pytest.fixture
 def bytecode_fixture():
@@ -80,7 +92,7 @@ def test_bytecode_first_line(bytecode_fixture):
 
 
 def test_bytecode_dis(bytecode_fixture):
-    assert bytecode_fixture.dis() == EXPECTED_DIS
+    assert bytecode_fixture.dis() == expected_dis
 
 
 def test_bytecode_info(bytecode_fixture):
@@ -109,7 +121,7 @@ def test_pretty_flags():
 def test_dis(stream_fixture):
     dis.dis(TEST_SOURCE_CODE, file=stream_fixture)
     actual = stream_fixture.getvalue()
-    assert actual == EXPECTED_DIS + '\n'
+    assert actual == expected_dis + '\n'
 
 
 def test_distb(traceback_fixture, stream_fixture):
@@ -122,7 +134,7 @@ def test_distb(traceback_fixture, stream_fixture):
 def test_disassemble(stream_fixture):
     dis.disassemble(TEST_CODE, file=stream_fixture)
     actual = stream_fixture.getvalue()
-    expected = EXPECTED_CODE_INFO + '\n' + EXPECTED_DIS + '\n'
+    expected = EXPECTED_CODE_INFO + '\n' + expected_dis + '\n'
     assert actual == expected
 
 
@@ -139,7 +151,10 @@ def test_findlinestarts():
 
 
 def test_findlabels():
-    actual = list(dis.findlabels(TEST_BRANCH_CODE))
+    if PYTHON_VERSION < 3.6:
+        test_code = TEST_BRANCH_CODE
+    else:
+        test_code = TEST_BRANCH_CODE.co_code
+    actual = list(dis.findlabels(test_code))
     actual_len = len(actual)
     assert actual_len > 0
-

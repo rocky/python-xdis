@@ -8,6 +8,7 @@ def _unpack_opargs(code, opc):
     # multiple elements on a single pass through the loop
     extended_arg = 0
     n = len(code)
+
     i = 0
     while i < n:
         op = code[i] if PYTHON3 else ord(code[i])
@@ -25,6 +26,16 @@ def _unpack_opargs(code, opc):
                 extended_arg = arg*65536
         yield (offset, op, arg)
 
+def _unpack_opargs_wordcode(code, opc):
+    extended_arg = 0
+    for i in range(0, len(code), 2):
+        op = code[i]
+        if op_has_argument(op, opc):
+            arg = code[i+1] | extended_arg
+            extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
+        else:
+            arg = None
+        yield (i, op, arg)
 
 def findlinestarts(code):
     """Find the offsets in a byte code which are start of lines in the source.
@@ -63,7 +74,12 @@ def findlabels(code, opc):
 
     """
     labels = []
-    for offset, op, arg in _unpack_opargs(code, opc):
+    if opc.version < 3.6:
+        unpack_opargs = _unpack_opargs
+    else:
+        unpack_opargs = _unpack_opargs_wordcode
+
+    for offset, op, arg in unpack_opargs(code, opc):
         if arg is not None:
             label = -1
             if op in opc.hasjrel:
