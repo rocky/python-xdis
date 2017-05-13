@@ -20,20 +20,6 @@ else:
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
-def pretty_format_value_flags(flags):
-    if (flags & 0x03) == 0x00:
-        return ''
-    elif (flags & 0x03) == 0x01:
-        return '!s'
-    elif (flags & 0x03) == 0x02:
-        return '!r'
-    elif (flags & 0x03) == 0x03:
-        return '!a'
-    elif (flags & 0x04) == 0x04:
-        # pop fmt_spec from the stack and use it, else use an
-        # empty fmt_spec.
-        return ''
-
 def findlinestarts(code):
     """Find the offsets in a byte code which are start of lines in the source.
 
@@ -222,8 +208,8 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                 if not python_36:
                     argrepr = ("%d positional, %d keyword pair" %
                                (code2num(code, i-2), code2num(code, i-1)))
-            elif python_36 and op == opc.FORMAT_VALUE:
-                argrepr = pretty_format_value_flags(arg)
+            elif hasattr(opc, 'opcode_arg_fmt') and opc.opname[op] in opc.opcode_arg_fmt:
+                argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
         elif python_36:
             i += 1
 
@@ -290,6 +276,8 @@ class Instruction(_Instruction):
             # Column: Opcode argument details
             if self.argrepr:
                 fields.append('(' + self.argrepr + ')')
+                pass
+            pass
         return ' '.join(fields).rstrip()
 
     # FIXME: figure out how to do _disassemble passing in opnames

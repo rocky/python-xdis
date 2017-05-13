@@ -78,7 +78,43 @@ def_op(l,   'SETUP_ANNOTATIONS', 85)
 def_op(l,   'BUILD_STRING',     157)
 def_op(l,   'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
+MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
+
+def format_MAKE_FUNCTION_arg(flags):
+    pattr = ''
+    for flag in MAKE_FUNCTION_FLAGS:
+        bit = flags & 1
+        if bit:
+            if pattr:
+                pattr += ", " + flag
+            else:
+                pattr = flag
+                pass
+            pass
+        flags >>= 1
+    return pattr
+
+def format_value_flags(flags):
+    if (flags & 0x03) == 0x00:
+        return ''
+    elif (flags & 0x03) == 0x01:
+        return '!s'
+    elif (flags & 0x03) == 0x02:
+        return '!r'
+    elif (flags & 0x03) == 0x03:
+        return '!a'
+    elif (flags & 0x04) == 0x04:
+        # pop fmt_spec from the stack and use it, else use an
+        # empty fmt_spec.
+        return ''
+
+opcode_arg_fmt = {
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
+    'FORMAT_VALUE': format_value_flags
+}
 
 update_pj3(globals(), l)
+
+
 
 finalize_opcodes(l)
