@@ -10,6 +10,8 @@ from xdis.opcodes.base import (
     def_op, init_opdata, finalize_opcodes,
     jrel_op, rm_op, update_pj3)
 
+from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
+
 import xdis.opcodes.opcode_34 as opcode_34
 
 version = 3.5
@@ -44,5 +46,9 @@ def_op(l, 'BUILD_SET_UNPACK',           153, -1,  1)
 jrel_op(l, 'SETUP_ASYNC_WITH',          154,  0,  6)
 
 update_pj3(globals(), l)
+
+opcode_arg_fmt = {
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
+}
 
 finalize_opcodes(l)

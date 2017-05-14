@@ -272,7 +272,7 @@ class Instruction(_Instruction):
         fields.append(self.opname.ljust(20))
         # Column: Opcode argument
         if self.arg is not None:
-            fields.append(repr(self.arg).rjust(5))
+            fields.append(repr(self.arg).rjust(6))
             # Column: Opcode argument details
             if self.argrepr:
                 fields.append('(' + self.argrepr + ')')

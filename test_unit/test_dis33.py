@@ -12,23 +12,23 @@ class _C:
         self.x = x == 1
 
 dis_c_instance_method = """\
- %-4d         0 LOAD_FAST                1 (x)
-              3 LOAD_CONST               1 (1)
-              6 COMPARE_OP               2 (==)
-              9 LOAD_FAST                0 (self)
-             12 STORE_ATTR               0 (x)
-             15 LOAD_CONST               0 (None)
+ %-4d         0 LOAD_FAST                 1 (x)
+              3 LOAD_CONST                1 (1)
+              6 COMPARE_OP                2 (==)
+              9 LOAD_FAST                 0 (self)
+             12 STORE_ATTR                0 (x)
+             15 LOAD_CONST                0 (None)
              18 RETURN_VALUE
 
 """ % (_C.__init__.__code__.co_firstlineno + 1,)
 
 dis_c_instance_method_bytes = """\
-          0 LOAD_FAST           1 (1)
-          3 LOAD_CONST          1 (1)
-          6 COMPARE_OP          2 (==)
-          9 LOAD_FAST           0 (0)
-         12 STORE_ATTR          0 (0)
-         15 LOAD_CONST          0 (0)
+          0 LOAD_FAST            1 (1)
+          3 LOAD_CONST           1 (1)
+          6 COMPARE_OP           2 (==)
+          9 LOAD_FAST            0 (0)
+         12 STORE_ATTR           0 (0)
+         15 LOAD_CONST           0 (0)
          18 RETURN_VALUE
 
 """
@@ -38,12 +38,12 @@ def _f(a):
     return 1
 
 dis_f = """\
- %-4d         0 LOAD_GLOBAL              0 (print)
-              3 LOAD_FAST                0 (a)
-              6 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+ %-4d         0 LOAD_GLOBAL               0 (print)
+              3 LOAD_FAST                 0 (a)
+              6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
               9 POP_TOP
 
- %-4d        10 LOAD_CONST               1 (1)
+ %-4d        10 LOAD_CONST                1 (1)
              13 RETURN_VALUE
 
 """ % (_f.__code__.co_firstlineno + 1,
@@ -51,12 +51,12 @@ dis_f = """\
 
 
 dis_f_co_code = """\
- 37           0 LOAD_GLOBAL              0 (print)
-              3 LOAD_FAST                0 (a)
-              6 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+ 37           0 LOAD_GLOBAL               0 (print)
+              3 LOAD_FAST                 0 (a)
+              6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
               9 POP_TOP
 
- 38          10 LOAD_CONST               1 (1)
+ 38          10 LOAD_CONST                1 (1)
              13 RETURN_VALUE
 
 """
@@ -68,19 +68,19 @@ def bug708901():
         pass
 
 dis_bug708901 = """\
- %-4d         0 SETUP_LOOP              23 (to 26)
-              3 LOAD_GLOBAL              0 (range)
-              6 LOAD_CONST               1 (1)
+ %-4d         0 SETUP_LOOP               23 (to 26)
+              3 LOAD_GLOBAL               0 (range)
+              6 LOAD_CONST                1 (1)
 
- %-4d         9 LOAD_CONST               2 (10)
-             12 CALL_FUNCTION            2 (2 positional, 0 keyword pair)
+ %-4d         9 LOAD_CONST                2 (10)
+             12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
              15 GET_ITER
-        >>   16 FOR_ITER                 6 (to 25)
-             19 STORE_FAST               0 (res)
+        >>   16 FOR_ITER                  6 (to 25)
+             19 STORE_FAST                0 (res)
 
- %-4d        22 JUMP_ABSOLUTE           16 (to 16)
+ %-4d        22 JUMP_ABSOLUTE            16 (to 16)
         >>   25 POP_BLOCK
-        >>   26 LOAD_CONST               0 (None)
+        >>   26 LOAD_CONST                0 (None)
              29 RETURN_VALUE
 
 """ % (bug708901.__code__.co_firstlineno + 1,
@@ -94,22 +94,22 @@ def bug1333982(x=[]):
     pass
 
 dis_bug1333982 = """\
- %-4d         0 LOAD_CONST               1 (0)
-              3 POP_JUMP_IF_TRUE        92 (to 92)
-              6 LOAD_GLOBAL              0 (AssertionError)
-              9 LOAD_CONST               2 (<code object <listcomp> at 0x..., file "%s", line %d>)
-             12 LOAD_CONST               3 ('bug1333982.<locals>.<listcomp>')
-             15 MAKE_FUNCTION            0
-             18 LOAD_FAST                0 (x)
+ %-4d         0 LOAD_CONST                1 (0)
+              3 POP_JUMP_IF_TRUE         92 (to 92)
+              6 LOAD_GLOBAL               0 (AssertionError)
+              9 LOAD_CONST                2 (<code object <listcomp> at 0x..., file "%s", line %d>)
+             12 LOAD_CONST                3 ('bug1333982.<locals>.<listcomp>')
+             15 MAKE_FUNCTION             0 (0 positional, 0 name and default, 0 annotations)
+             18 LOAD_FAST                 0 (x)
              21 GET_ITER
-             22 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+             22 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
 
- %-4d        25 LOAD_CONST               4 (1)
+ %-4d        25 LOAD_CONST                4 (1)
              28 BINARY_ADD
-             29 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
-             32 RAISE_VARARGS            1
+             29 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+             32 RAISE_VARARGS             1
 
- %-4d   >>   35 LOAD_CONST               0 (None)
+ %-4d   >>   35 LOAD_CONST                0 (None)
              38 RETURN_VALUE
 
 """ % (bug1333982.__code__.co_firstlineno + 1,

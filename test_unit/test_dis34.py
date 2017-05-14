@@ -32,23 +32,23 @@ if sys.version_info[0:2] == (3, 4):
     TRACEBACK_CODE = get_tb().tb_frame.f_code
 
     dis_c_instance_method = """\
- %-4d         0 LOAD_FAST                1 (x)
-              3 LOAD_CONST               1 (1)
-              6 COMPARE_OP               2 (==)
-              9 LOAD_FAST                0 (self)
-             12 STORE_ATTR               0 (x)
-             15 LOAD_CONST               0 (None)
+ %-4d         0 LOAD_FAST                 1 (x)
+              3 LOAD_CONST                1 (1)
+              6 COMPARE_OP                2 (==)
+              9 LOAD_FAST                 0 (self)
+             12 STORE_ATTR                0 (x)
+             15 LOAD_CONST                0 (None)
              18 RETURN_VALUE
 
 """ % (_C.__init__.__code__.co_firstlineno + 1,)
 
     dis_c_instance_method_bytes = """\
-          0 LOAD_FAST           1 (1)
-          3 LOAD_CONST          1 (1)
-          6 COMPARE_OP          2 (==)
-          9 LOAD_FAST           0 (0)
-         12 STORE_ATTR          0 (0)
-         15 LOAD_CONST          0 (0)
+          0 LOAD_FAST            1 (1)
+          3 LOAD_CONST           1 (1)
+          6 COMPARE_OP           2 (==)
+          9 LOAD_FAST            0 (0)
+         12 STORE_ATTR           0 (0)
+         15 LOAD_CONST           0 (0)
          18 RETURN_VALUE
 
 """
@@ -58,12 +58,12 @@ if sys.version_info[0:2] == (3, 4):
         return 1
 
     dis_f = """\
- %-4d         0 LOAD_GLOBAL              0 (print)
-              3 LOAD_FAST                0 (a)
-              6 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+ %-4d         0 LOAD_GLOBAL               0 (print)
+              3 LOAD_FAST                 0 (a)
+              6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
               9 POP_TOP
 
- %-4d        10 LOAD_CONST               1 (1)
+ %-4d        10 LOAD_CONST                1 (1)
              13 RETURN_VALUE
 
 """ % (_f.__code__.co_firstlineno + 1,
@@ -71,12 +71,12 @@ if sys.version_info[0:2] == (3, 4):
 
 
     dis_f_co_code = """\
- 57           0 LOAD_GLOBAL              0 (print)
-              3 LOAD_FAST                0 (a)
-              6 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+ 57           0 LOAD_GLOBAL               0 (print)
+              3 LOAD_FAST                 0 (a)
+              6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
               9 POP_TOP
 
- 58          10 LOAD_CONST               1 (1)
+ 58          10 LOAD_CONST                1 (1)
              13 RETURN_VALUE
 
 """
@@ -89,19 +89,19 @@ if sys.version_info[0:2] == (3, 4):
         return
 
     dis_bug708901 = """\
- %-4d         0 SETUP_LOOP              23 (to 26)
-              3 LOAD_GLOBAL              0 (range)
-              6 LOAD_CONST               1 (1)
+ %-4d         0 SETUP_LOOP               23 (to 26)
+              3 LOAD_GLOBAL               0 (range)
+              6 LOAD_CONST                1 (1)
 
- %-4d         9 LOAD_CONST               2 (10)
-             12 CALL_FUNCTION            2 (2 positional, 0 keyword pair)
+ %-4d         9 LOAD_CONST                2 (10)
+             12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
              15 GET_ITER
-        >>   16 FOR_ITER                 6 (to 25)
-             19 STORE_FAST               0 (res)
+        >>   16 FOR_ITER                  6 (to 25)
+             19 STORE_FAST                0 (res)
 
- %-4d        22 JUMP_ABSOLUTE           16 (to 16)
+ %-4d        22 JUMP_ABSOLUTE            16 (to 16)
         >>   25 POP_BLOCK
-        >>   26 LOAD_CONST               0 (None)
+        >>   26 LOAD_CONST                0 (None)
              29 RETURN_VALUE
 
 """ % (bug708901.__code__.co_firstlineno + 1,
@@ -115,22 +115,22 @@ if sys.version_info[0:2] == (3, 4):
         pass
 
     dis_bug1333982 = """\
- %-4d         0 LOAD_CONST               1 (0)
-              3 POP_JUMP_IF_TRUE        92 (to 92)
-              6 LOAD_GLOBAL              0 (AssertionError)
-              9 LOAD_CONST               2 (<code object <listcomp> at 0x..., file "%s", line %d>)
-             12 LOAD_CONST               3 ('bug1333982.<locals>.<listcomp>')
-             15 MAKE_FUNCTION            0
-             18 LOAD_FAST                0 (x)
+ %-4d         0 LOAD_CONST                1 (0)
+              3 POP_JUMP_IF_TRUE         92 (to 92)
+              6 LOAD_GLOBAL               0 (AssertionError)
+              9 LOAD_CONST                2 (<code object <listcomp> at 0x..., file "%s", line %d>)
+             12 LOAD_CONST                3 ('bug1333982.<locals>.<listcomp>')
+             15 MAKE_FUNCTION             0 (0 positional, 0 name and default, 0 annotations)
+             18 LOAD_FAST                 0 (x)
              21 GET_ITER
-             22 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
+             22 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
 
- %-4d        25 LOAD_CONST               4 (1)
+ %-4d        25 LOAD_CONST                4 (1)
              28 BINARY_ADD
-             29 CALL_FUNCTION            1 (1 positional, 0 keyword pair)
-             32 RAISE_VARARGS            1
+             29 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+             32 RAISE_VARARGS             1
 
- %-4d   >>   35 LOAD_CONST               0 (None)
+ %-4d   >>   35 LOAD_CONST                0 (None)
              38 RETURN_VALUE
 
 """ % (bug1333982.__code__.co_firstlineno + 1,
@@ -140,20 +140,20 @@ if sys.version_info[0:2] == (3, 4):
        bug1333982.__code__.co_firstlineno + 3)
 
     _BIG_LINENO_FORMAT = """\
-%3d           0 LOAD_GLOBAL              0 (spam)
+%3d           0 LOAD_GLOBAL               0 (spam)
               3 POP_TOP
-              4 LOAD_CONST               0 (None)
+              4 LOAD_CONST                0 (None)
               7 RETURN_VALUE
 
 """
 
     dis_module_expected_results = """\
 Disassembly of f:
-  4           0 LOAD_CONST               0 (None)
+  4           0 LOAD_CONST                0 (None)
               3 RETURN_VALUE
 
 Disassembly of g:
-  5           0 LOAD_CONST               0 (None)
+  5           0 LOAD_CONST                0 (None)
               3 RETURN_VALUE
 
 """
@@ -161,8 +161,8 @@ Disassembly of g:
     expr_str = "x + 1"
 
     dis_expr_str = """\
-  1           0 LOAD_NAME                0 (x)
-              3 LOAD_CONST               0 (1)
+  1           0 LOAD_NAME                 0 (x)
+              3 LOAD_CONST                0 (1)
               6 BINARY_ADD
               7 RETURN_VALUE
 
@@ -171,11 +171,11 @@ Disassembly of g:
     simple_stmt_str = "x = x + 1"
 
     dis_simple_stmt_str = """\
-  1           0 LOAD_NAME                0 (x)
-              3 LOAD_CONST               0 (1)
+  1           0 LOAD_NAME                 0 (x)
+              3 LOAD_CONST                0 (1)
               6 BINARY_ADD
-              7 STORE_NAME               0 (x)
-             10 LOAD_CONST               1 (None)
+              7 STORE_NAME                0 (x)
+             10 LOAD_CONST                1 (None)
              13 RETURN_VALUE
 
 """
@@ -187,51 +187,51 @@ while 1:
     # Trailing newline has been deliberately omitted
 
     dis_compound_stmt_str = """\
-  1           0 LOAD_CONST               0 (0)
-              3 STORE_NAME               0 (x)
+  1           0 LOAD_CONST                0 (0)
+              3 STORE_NAME                0 (x)
 
-  2           6 SETUP_LOOP              13 (to 22)
+  2           6 SETUP_LOOP               13 (to 22)
 
-  3     >>    9 LOAD_NAME                0 (x)
-             12 LOAD_CONST               1 (1)
+  3     >>    9 LOAD_NAME                 0 (x)
+             12 LOAD_CONST                1 (1)
              15 INPLACE_ADD
-             16 STORE_NAME               0 (x)
-             19 JUMP_ABSOLUTE            9 (to 9)
-        >>   22 LOAD_CONST               2 (None)
+             16 STORE_NAME                0 (x)
+             19 JUMP_ABSOLUTE             9 (to 9)
+        >>   22 LOAD_CONST                2 (None)
              25 RETURN_VALUE
 
 """
 
     dis_traceback = """\
- %-4d         0 SETUP_EXCEPT            12 (to 15)
+ %-4d         0 SETUP_EXCEPT             12 (to 15)
 
- %-4d         3 LOAD_CONST               1 (1)
-              6 LOAD_CONST               2 (0)
+ %-4d         3 LOAD_CONST                1 (1)
+              6 LOAD_CONST                2 (0)
     -->       9 BINARY_TRUE_DIVIDE
              10 POP_TOP
              11 POP_BLOCK
-             12 JUMP_FORWARD            46 (to 61)
+             12 JUMP_FORWARD             46 (to 61)
 
  %-4d   >>   15 DUP_TOP
-             16 LOAD_GLOBAL              0 (Exception)
-             19 COMPARE_OP              10 (exception match)
-             22 POP_JUMP_IF_FALSE       60
+             16 LOAD_GLOBAL               0 (Exception)
+             19 COMPARE_OP               10 (exception match)
+             22 POP_JUMP_IF_FALSE        60
              25 POP_TOP
-             26 STORE_FAST               0 (e)
+             26 STORE_FAST                0 (e)
              29 POP_TOP
-             30 SETUP_FINALLY           14 (to 47)
+             30 SETUP_FINALLY            14 (to 47)
 
- %-4d        33 LOAD_FAST                0 (e)
-             36 LOAD_ATTR                1 (__traceback__)
-             39 STORE_FAST               1 (tb)
+ %-4d        33 LOAD_FAST                 0 (e)
+             36 LOAD_ATTR                 1 (__traceback__)
+             39 STORE_FAST                1 (tb)
              42 POP_BLOCK
              43 POP_EXCEPT
-             44 LOAD_CONST               0 (None)
-        >>   47 LOAD_CONST               0 (None)
-             50 STORE_FAST               0 (e)
-             53 DELETE_FAST              0 (e)
+             44 LOAD_CONST                0 (None)
+        >>   47 LOAD_CONST                0 (None)
+             50 STORE_FAST                0 (e)
+             53 DELETE_FAST               0 (e)
              56 END_FINALLY
-             57 JUMP_FORWARD             1 (to 61)
+             57 JUMP_FORWARD              1 (to 61)
         >>   60 END_FINALLY
 
  %-4d   >>   61 LOAD_FAST                1 (tb)

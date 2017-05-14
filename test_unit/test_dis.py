@@ -17,16 +17,16 @@ else:
 from xdis.bytecode import Bytecode
 
 _BIG_LINENO_FORMAT_36 = """\
-%3d           0 LOAD_GLOBAL              0 (spam)
+%3d           0 LOAD_GLOBAL               0 (spam)
               2 POP_TOP
-              4 LOAD_CONST               0 (None)
+              4 LOAD_CONST                0 (None)
               6 RETURN_VALUE
 """
 
 _BIG_LINENO_FORMAT = """\
-%3d           0 LOAD_GLOBAL              0 (spam)
+%3d           0 LOAD_GLOBAL               0 (spam)
               3 POP_TOP
-              4 LOAD_CONST               0 (None)
+              4 LOAD_CONST                0 (None)
               7 RETURN_VALUE
 """
 

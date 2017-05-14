@@ -193,3 +193,10 @@ def_op(l, 'MAP_ADD',               147,  2,  1)
 
 def_op(l, 'EXTENDED_ARG', 144)
 EXTENDED_ARG = 144
+
+def format_MAKE_FUNCTION_arg(argc):
+    pos_args = argc & 0xFF
+    name_default = (argc >> 8) & 0xFF
+    annotate_args = (argc >> 16) & 0x7FFF
+    return ("%d positional, %d name and default, %d annotations" %
+            (pos_args, name_default, annotate_args))

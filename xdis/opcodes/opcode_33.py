@@ -10,6 +10,8 @@ from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
     rm_op, update_pj3)
 
+from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
+
 import xdis.opcodes.opcode_3x as opcode_3x
 
 version = 3.3
@@ -23,5 +25,9 @@ rm_op(l,  'STOP_CODE',   0)
 def_op(l, 'YIELD_FROM', 72)
 
 update_pj3(globals(), l)
+
+opcode_arg_fmt = {
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
+}
 
 finalize_opcodes(l)

@@ -10,6 +10,8 @@ from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
     rm_op, update_pj3)
 
+from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
+
 import xdis.opcodes.opcode_32 as opcode_32
 
 l = locals()
@@ -31,5 +33,9 @@ def_op(l, 'DUP_TOPX', 99)
 def_op(l, 'EXTENDED_ARG', 143)
 
 update_pj3(globals(), l)
+
+opcode_arg_fmt = {
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
+}
 
 finalize_opcodes(l)

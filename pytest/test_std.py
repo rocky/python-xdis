@@ -40,16 +40,16 @@ EXPECTED_CODE_INFO = ("""\
 
 
 EXPECTED_DIS = """\
-  1           0 LOAD_CONST               0 (10)
-              3 STORE_NAME               0 (a)
-              6 LOAD_CONST               1 (None)
+  1           0 LOAD_CONST                0 (10)
+              3 STORE_NAME                0 (a)
+              6 LOAD_CONST                1 (None)
               9 RETURN_VALUE
 """
 
 EXPECTED_DIS_36 = """\
-  1           0 LOAD_CONST               0 (10)
-              2 STORE_NAME               0 (a)
-              4 LOAD_CONST               1 (None)
+  1           0 LOAD_CONST                0 (10)
+              2 STORE_NAME                0 (a)
+              4 LOAD_CONST                1 (None)
               6 RETURN_VALUE
 """
 
