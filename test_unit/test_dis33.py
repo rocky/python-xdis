@@ -119,16 +119,16 @@ dis_bug1333982 = """\
        bug1333982.__code__.co_firstlineno + 3)
 
 _BIG_LINENO_FORMAT = """\
-%3d           0 LOAD_GLOBAL              0 (spam)
+%3d           0 LOAD_GLOBAL               0 (spam)
               3 POP_TOP
-              4 LOAD_CONST               0 (None)
+              4 LOAD_CONST                0 (None)
               7 RETURN_VALUE
 
 """
 
 dis_module_expected_results = """\
 Disassembly of f:
-  4           0 LOAD_CONST               0 (None)
+  4           0 LOAD_CONST                0 (None)
               3 RETURN_VALUE
 
 Disassembly of g:
@@ -140,8 +140,8 @@ Disassembly of g:
 expr_str = "x + 1"
 
 dis_expr_str = """\
-  1           0 LOAD_NAME                0 (x)
-              3 LOAD_CONST               0 (1)
+  1           0 LOAD_NAME                 0 (x)
+              3 LOAD_CONST                0 (1)
               6 BINARY_ADD
               7 RETURN_VALUE
 
@@ -150,11 +150,11 @@ dis_expr_str = """\
 simple_stmt_str = "x = x + 1"
 
 dis_simple_stmt_str = """\
-  1           0 LOAD_NAME                0 (x)
-              3 LOAD_CONST               0 (1)
+  1           0 LOAD_NAME                 0 (x)
+              3 LOAD_CONST                0 (1)
               6 BINARY_ADD
-              7 STORE_NAME               0 (x)
-             10 LOAD_CONST               1 (None)
+              7 STORE_NAME                0 (x)
+             10 LOAD_CONST                1 (None)
              13 RETURN_VALUE
 
 """
@@ -166,17 +166,17 @@ while 1:
 # Trailing newline has been deliberately omitted
 
 dis_compound_stmt_str = """\
-  1           0 LOAD_CONST               0 (0)
-              3 STORE_NAME               0 (x)
+  1           0 LOAD_CONST                0 (0)
+              3 STORE_NAME                0 (x)
 
-  2           6 SETUP_LOOP              13 (to 22)
+  2           6 SETUP_LOOP               13 (to 22)
 
-  3     >>    9 LOAD_NAME                0 (x)
-             12 LOAD_CONST               1 (1)
+  3     >>    9 LOAD_NAME                 0 (x)
+             12 LOAD_CONST                1 (1)
              15 INPLACE_ADD
-             16 STORE_NAME               0 (x)
-             19 JUMP_ABSOLUTE            9 (to 9)
-        >>   22 LOAD_CONST               2 (None)
+             16 STORE_NAME                0 (x)
+             19 JUMP_ABSOLUTE             9 (to 9)
+        >>   22 LOAD_CONST                2 (None)
              25 RETURN_VALUE
 
 """
