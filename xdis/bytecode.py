@@ -174,7 +174,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
         if has_arg:
             if python_36:
                 arg = code2num(code, i) | extended_arg
-                extended_arg = (arg << 8) if opc == opc.EXTENDED_ARG else 0
+                extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
                 # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
                 i += 1
             else:
