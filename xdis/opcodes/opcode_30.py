@@ -10,6 +10,8 @@ from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
     jrel_op, rm_op, update_pj2)
 
+from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
+
 import xdis.opcodes.opcode_31 as opcode_31
 
 version = 3.0
@@ -42,5 +44,9 @@ jrel_op(l, 'JUMP_IF_TRUE',  112, 1, 1)
 def_op(l, 'EXTENDED_ARG',  143)
 
 update_pj2(globals(), l)
+
+opcode_arg_fmt = {
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
+}
 
 finalize_opcodes(l)

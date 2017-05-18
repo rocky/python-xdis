@@ -1,6 +1,58 @@
-2017-03-19  rocky <rocky@dusytfeet.com>
+2017-05-18  rocky <rocky@dusytfeet.com>
 
-	* test_unit/test_dis34.py: Hide test_dis34 code when not 3.4
+	* xdis/version.py: Get ready for release 3.3.1
+
+2017-05-16  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_dis33.py: track recent disassembly format change.
+
+2017-05-16  rocky <rb@dustyfeet.com>
+
+	* pytest/test_disasm.py, pytest/testdata/big_dict-3.6.right,
+	test/simple_source/03_big_dict.py, xdis/bytecode.py: Fix bug in 3.6
+	EXTENDED_ARG handling
+
+2017-05-14  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_std.py, pytest/testdata/fstring-3.6.right,
+	pytest/testdata/pypy_lambda.right, pytest/testdata/raise-3.0.right,
+	test_unit/test_dis.py, test_unit/test_dis27.py,
+	test_unit/test_dis33.py, test_unit/test_dis34.py, xdis/bytecode.py,
+	xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py,
+	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_33.py,
+	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+	xdis/opcodes/opcode_3x.py: Python 3.x MAKE_FUNCTION arg printing...  Parse the argc argument and show breakout of positiona, default and
+	name, and annotation arguments.
+
+2017-05-13  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/opcodes/opcode_36.py: Add general
+	instruction arg formatting mechanism Use that to Format MAKE_FUNCTION flags Change FORMAT_VALUE flags to
+	use this mechanism
+
+2017-05-10  rocky <rb@dustyfeet.com>
+
+	* .travis.yml: Try travis testing with 3.6
+
+2017-05-10  rocky <rb@dustyfeet.com>
+
+	* pytest/test_std.py, xdis/opcodes/opcode_36.py,
+	xdis/opcodes/opcode_3x.py, xdis/wordcode.py: Python 3.6 compliance opcode_36.py: Was missing SETUP_ASYNC_WITH wordcode.py:
+	_unpack_opargs changes with 3.6 test_std.py: compile() code return
+	value no longer has a len(). Use code.co_code
+
+2017-05-06  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py: Add some small code helper functions
+
+2017-03-27  rocky <rocky@dusytfeet.com>
+
+	* : commit 09bc28696574fadf0c91663e145c226632d0fd82 Author: rocky
+	<rocky@dusytfeet.com> Date:   Mon Mar 27 21:54:32 2017 -0400
+
+2017-03-23  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #29 from x746e/running-tests-with-bazel Changes that simplify running the tests under Bazel.
 
 2017-03-19  rocky <rb@dustyfeet.com>
 
@@ -117,6 +169,20 @@
 2017-03-10  Daniel Bradburn <moagstar@gmail.com>
 
 	* pytest/test_std.py: fixed failing test_std due to missing newline
+
+2017-03-09  Kirill Spitsyn <ksp@google.com>
+
+	* pytest/test_disasm.py: Changes that simplify running the tests
+	under Bazel.  Changed all paths to be absolute, removed `os.chdir` call.  For some
+	reason `chdir` was not working for me -- I suspect this might be
+	related to the fact the "current working directory" is a
+	process-global concept, and it's hard to guarantee that it would not
+	be changed by something in other thread, or even by the same thread,
+	in the time between module load and actual test execution.  The way I'm trying to run the tests, it's reading the test data from
+	read-only mounted partition, so it's not possible to write "*.got"
+	files near the "*.right" files.  So I added a way
+	(`XDIS_DONT_WRITE_DOT_GOT_FILES` environment variable) to simple
+	disable writing those files.
 
 2017-03-09  R. Bernstein <rocky@users.noreply.github.com>
 

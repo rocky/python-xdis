@@ -1,4 +1,14 @@
-3.3.0 2016-03-18
+3.3.1 2017-04-18 - Lewis
+
+Python 3.6 bugs/features
+- Fix bug in handling operand of opcode after EXTENDED_ARG
+- A general mechanism to handle formatting of instruction operands and use
+  that on MAKE_FUNCTION 3.6+
+- Add missing SETUP_ASYNC_WITH opcode
+- Test 3.6 on Travis CI
+- compile() return value, "code" no longer has a len. Use "code.co_code"
+
+3.3.0 2017-03-18
 
 - Start supporting Python 3.x dis API functions
   This is largely due to Daniel Bradburn (moagstar)

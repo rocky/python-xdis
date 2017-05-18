@@ -11,6 +11,8 @@ from xdis.opcodes.base import (
     finalize_opcodes, init_opdata,
     update_pj3)
 
+from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
+
 # FIXME: can we DRY this even more?
 
 version = 3.2
@@ -23,5 +25,9 @@ init_opdata(l, opcode_3x, version)
 # If there were, they'd be listed below.
 
 update_pj3(globals(), l)
+
+opcode_arg_fmt = {
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
+}
 
 finalize_opcodes(l)

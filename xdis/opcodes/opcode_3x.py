@@ -171,7 +171,7 @@ local_op(l, 'DELETE_FAST',         126,  0,  0)  # Local variable number
 def_op(l, 'RAISE_VARARGS',         130, -1,  0)  # Number of raise arguments (1, 2, or 3)
 nargs_op(l, 'CALL_FUNCTION',       131, -1,  1)  # #args + (#kwargs << 8)
 
-def_op(l, 'MAKE_FUNCTION',         132, -1,  1)  # Number of args with default values
+def_op(l, 'MAKE_FUNCTION',         132, -1,  1)  # Number of args if < 3.6
 varargs_op(l, 'BUILD_SLICE',       133, -1,  1)  # Number of items
 
 def_op(l, 'MAKE_CLOSURE',          134, -1,  1)
@@ -193,3 +193,10 @@ def_op(l, 'MAP_ADD',               147,  2,  1)
 
 def_op(l, 'EXTENDED_ARG', 144)
 EXTENDED_ARG = 144
+
+def format_MAKE_FUNCTION_arg(argc):
+    pos_args = argc & 0xFF
+    name_default = (argc >> 8) & 0xFF
+    annotate_args = (argc >> 16) & 0x7FFF
+    return ("%d positional, %d name and default, %d annotations" %
+            (pos_args, name_default, annotate_args))
