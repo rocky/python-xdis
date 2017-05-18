@@ -12,11 +12,11 @@ def _f(a):
     return 1
 
 dis_f = """\
- %-4d         0 LOAD_FAST                0 (a)
+ %-4d         0 LOAD_FAST                 0 (a)
               3 PRINT_ITEM
               4 PRINT_NEWLINE
 
- %-4d         5 LOAD_CONST               1 (1)
+ %-4d         5 LOAD_CONST                1 (1)
               8 RETURN_VALUE
 
 """%(_f.func_code.co_firstlineno + 1,
@@ -29,19 +29,19 @@ def bug708901():
         pass
 
 dis_bug708901 = """\
- %-4d         0 SETUP_LOOP              23 (to 26)
-              3 LOAD_GLOBAL              0 (range)
-              6 LOAD_CONST               1 (1)
+ %-4d         0 SETUP_LOOP               23 (to 26)
+              3 LOAD_GLOBAL               0 (range)
+              6 LOAD_CONST                1 (1)
 
- %-4d         9 LOAD_CONST               2 (10)
-             12 CALL_FUNCTION            2 (2 positional, 0 keyword pair)
+ %-4d         9 LOAD_CONST                2 (10)
+             12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
              15 GET_ITER
-        >>   16 FOR_ITER                 6 (to 25)
-             19 STORE_FAST               0 (res)
+        >>   16 FOR_ITER                  6 (to 25)
+             19 STORE_FAST                0 (res)
 
- %-4d        22 JUMP_ABSOLUTE           16 (to 16)
+ %-4d        22 JUMP_ABSOLUTE            16 (to 16)
         >>   25 POP_BLOCK
-        >>   26 LOAD_CONST               0 (None)
+        >>   26 LOAD_CONST                0 (None)
              29 RETURN_VALUE
 
 """%(bug708901.func_code.co_firstlineno + 1,

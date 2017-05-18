@@ -1,9 +1,7 @@
 # Minimal tests for dis module
-from __future__ import print_function
 
 from xdis import PYTHON3
 
-import six
 import sys
 
 if PYTHON3:
@@ -144,24 +142,24 @@ if sys.version_info[0:2] == (2, 7):
             else:
                 self.skipTest('need asserts, run without -O')
 
-        def test_big_linenos(self):
-            def func(count):
-                namespace = {}
-                func = "def foo():\n " + "".join(["\n "] * count + ["spam\n"]
-                )
-                exec_fn = six.__dict__['exec_']
-                exec_fn(func, namespace)
-                return namespace['foo']
+        # def test_big_linenos(self):
+        #     def func(count):
+        #         namespace = {}
+        #         func = "def foo():\n " + "".join(["\n "] * count + ["spam\n"]
+        #         )
+        #         exec_fn = six.__dict__['exec_']
+        #         exec_fn(func, namespace)
+        #         return namespace['foo']
 
-            # Test all small ranges
-            for i in range(1, 300):
-                expected = _BIG_LINENO_FORMAT % (i + 2)
-                self.do_disassembly_test(func(i), expected)
+        #     # Test all small ranges
+        #     for i in range(1, 300):
+        #         expected = _BIG_LINENO_FORMAT % (i + 2)
+        #         self.do_disassembly_test(func(i), expected)
 
-            # Test some larger ranges too
-            for i in range(300, 5000, 10):
-                expected = _BIG_LINENO_FORMAT % (i + 2)
-                self.do_disassembly_test(func(i), expected)
+        #     # Test some larger ranges too
+        #     for i in range(300, 5000, 10):
+        #         expected = _BIG_LINENO_FORMAT % (i + 2)
+        #         self.do_disassembly_test(func(i), expected)
 
     def test_main():
         run_unittest(DisTests)
