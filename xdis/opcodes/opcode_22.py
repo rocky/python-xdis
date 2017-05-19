@@ -7,7 +7,8 @@ This is similar to the opcode portion in Python 2.2's dis.py library.
 
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
-    def_op, init_opdata, finalize_opcodes)
+    def_op, init_opdata, finalize_opcodes,
+    format_extended_arg)
 
 version = 2.2
 
@@ -24,4 +25,9 @@ def updateGlobal():
     globals().update({'PJIT': l['opmap']['JUMP_IF_TRUE']})
     return
 updateGlobal()
+
+opcode_arg_fmt = {
+    'EXTENDED_ARG': format_extended_arg,
+}
+
 finalize_opcodes(l)
