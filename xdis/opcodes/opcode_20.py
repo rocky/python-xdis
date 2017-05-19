@@ -1,3 +1,4 @@
+# (C) Copyright 2017 by Rocky Bernstein
 """
 CPython 2.0 bytecode opcodes
 
@@ -6,7 +7,7 @@ This is similar to the opcode portion in Python 2.0's dis.py library.
 
 import xdis.opcodes.opcode_21 as opcode_21
 from xdis.opcodes.base import (
-    init_opdata, finalize_opcodes, rm_op)
+    init_opdata, finalize_opcodes, format_extended_arg, rm_op)
 
 version = 2.0
 
@@ -27,4 +28,9 @@ def updateGlobal():
     return
 
 updateGlobal()
+
+opcode_arg_fmt = {
+    'EXTENDED_ARG': format_extended_arg,
+}
+
 finalize_opcodes(l)

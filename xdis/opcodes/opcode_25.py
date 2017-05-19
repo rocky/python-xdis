@@ -7,9 +7,10 @@ of stack usage.
 """
 
 import xdis.opcodes.opcode_24 as opcode_24
-from xdis.opcodes.base import \
-    def_op, init_opdata, \
-    finalize_opcodes, update_pj2
+from xdis.opcodes.base import (
+    def_op, init_opdata,
+    finalize_opcodes, format_extended_arg,
+    update_pj2)
 
 version = 2.5
 
@@ -21,5 +22,9 @@ def_op(l, 'WITH_CLEANUP', 81)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)
+
+opcode_arg_fmt = {
+    'EXTENDED_ARG': format_extended_arg,
+}
 
 finalize_opcodes(l)

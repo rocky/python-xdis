@@ -158,6 +158,12 @@ def update_pj2(g, l):
     g.update({'PJIT': l['opmap']['JUMP_IF_TRUE']})
 
 
+def format_extended_arg(arg):
+    return str(arg * (1 << 16))
+
+def format_extended_arg36(arg):
+    return str(arg * (1 << 8))
+
 def opcode_check(l):
     """When the version of Python we are running happens
     to have the same opcode set as the opcode we are

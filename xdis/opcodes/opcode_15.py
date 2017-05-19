@@ -1,3 +1,4 @@
+# (C) Copyright 2017 by Rocky Bernstein
 """
 CPython 1.5 bytecode opcodes
 
@@ -8,12 +9,13 @@ opcodes in Python's dis.py library.
 # These are used from outside this module
 from xdis.bytecode import findlabels, findlinestarts
 from xdis.opcodes.base import (
-    cmp_op, compare_op, const_op,
+    compare_op, const_op,
     def_op, jabs_op, jrel_op,
-    init_opdata, finalize_opcodes,
+    finalize_opcodes, format_extended_arg,
     local_op, name_op, nargs_op,
     varargs_op,
-    HAVE_ARGUMENT
+    # Although these aren't used here, they are exported
+    cmp_op, HAVE_ARGUMENT
     )
 
 version = 1.5
@@ -169,4 +171,9 @@ def updateGlobal():
     return
 
 updateGlobal()
+
+opcode_arg_fmt = {
+    'EXTENDED_ARG': format_extended_arg,
+}
+
 finalize_opcodes(l)

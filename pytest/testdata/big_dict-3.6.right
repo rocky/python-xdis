@@ -489,10 +489,10 @@
 
 122         220 LOAD_CONST              255 (('%C', (0, 2, ', ')))
 
-123         222 EXTENDED_ARG              1
+123         222 EXTENDED_ARG              1 (256)
             224 LOAD_CONST              256 (('%c: %c', 3, 1))
 
-124         226 EXTENDED_ARG              1
+124         226 EXTENDED_ARG              1 (256)
             228 LOAD_CONST              257 (('%c: %c', 1, 2))
             230 LOAD_CONST               99 (('BINARY_ADD', 'BINARY_SUBTRACT', 'BINARY_MULTIPLY', 'BINARY_DIVIDE', 'BINARY_MATRIX_MULTIPLY', 'BINARY_TRUE_DIVIDE', 'BINARY_FLOOR_DIVIDE', 'BINARY_MODULO', 'BINARY_POWER', 'BINARY_LSHIFT', 'BINARY_RSHIFT', 'BINARY_AND', 'BINARY_OR', 'BINARY_XOR', 'INPLACE_ADD', 'INPLACE_SUBTRACT', 'INPLACE_MULTIPLY', 'INPLACE_MATRIX_MULTIPLY', 'INPLACE_DIVIDE', 'INPLACE_TRUE_DIVIDE', 'INPLACE_FLOOR_DIVIDE', 'INPLACE_MODULO', 'INPLACE_POWER', 'INPLACE_LSHIFT', 'INPLACE_RSHIFT', 'INPLACE_AND', 'INPLACE_OR', 'INPLACE_XOR', 'binary_expr', 'UNARY_POSITIVE', 'UNARY_NEGATIVE', 'UNARY_INVERT', 'unary_expr', 'unary_not', 'unary_convert', 'get_iter', 'slice0', 'slice1', 'slice2', 'slice3', 'IMPORT_FROM', 'load_attr', 'LOAD_FAST', 'LOAD_NAME', 'LOAD_CLASSNAME', 'LOAD_GLOBAL', 'LOAD_DEREF', 'LOAD_LOCALS', 'LOAD_ASSERT', 'DELETE_FAST', 'DELETE_NAME', 'DELETE_GLOBAL', 'delete_subscr', 'binary_subscr', 'binary_subscr2', 'store_subscr', 'STORE_FAST', 'STORE_NAME', 'STORE_GLOBAL', 'STORE_DEREF', 'unpack', 'unpack_w_parens', 'unpack_list', 'build_tuple2', 'list_iter', 'list_for', 'list_if', 'list_if_not', 'lc_body', 'comp_body', 'set_comp_body', 'gen_comp_body', 'dict_comp_body', 'assign', 'augassign1', 'augassign2', 'designList', 'and', 'ret_and', 'and2', 'or', 'ret_or', 'conditional', 'conditionalTrue', 'ret_cond', 'conditionalnot', 'ret_cond_not', 'conditional_lambda', 'return_lambda', 'compare', 'cmp_list', 'cmp_list1', 'cmp_list2', 'funcdef', 'funcdefdeco', 'mkfuncdeco', 'mkfuncdeco0', 'classdefdeco', 'classdefdeco1', 'kwarg', 'kwargs', 'assert_expr_or', 'assert_expr_and', 'print_items_stmt', 'print_items_nl_stmt', 'print_item', 'print_nl', 'print_to', 'print_to_nl', 'print_nl_to', 'print_to_items', 'kv', 'kv2'))
             232 BUILD_CONST_KEY_MAP     113
