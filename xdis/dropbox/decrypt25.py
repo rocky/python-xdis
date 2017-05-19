@@ -246,13 +246,13 @@ if 0:
         k.sort()
         table = {}
         for i in k:
-            print "%c (%02x %s) =>" % \
-                  (ord(i), ord(i), bin(ord(i))),
+            print("%c (%02x %s) =>" %
+                  (ord(i), ord(i), bin(ord(i))))
             for j,count in m[i].iteritems():
                 if j == i: continue
                 table[ord(i)] = ord(j)
-                print "\t%c (%02x %s) [%d]" % \
-                      (ord(j), ord(j), bin(ord(j)), count),
+                print("\t%c (%02x %s) [%d]" %
+                      (ord(j), ord(j), bin(ord(j)), count))
                 # print("%c (%02x %s) => %c (%02x %s)\t%d\t%s" % (ord(i),ord(i),bin(ord(i)),ord(j),ord(j),bin(ord(j)),ord(j)-ord(i),bin(ord(i)^ord(j)|0x100).replace('0', ' ')))
             print()
         return table
