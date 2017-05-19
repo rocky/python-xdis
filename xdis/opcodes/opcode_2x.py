@@ -8,8 +8,7 @@ If this file changes the other opcode files may have to be adjusted accordingly.
 
 from xdis.opcodes.base import (
     compare_op, const_op,
-    def_op,
-    free_op, jabs_op, jrel_op,
+    def_op, free_op, jabs_op, jrel_op,
     local_op, name_op, nargs_op,
     varargs_op
     )

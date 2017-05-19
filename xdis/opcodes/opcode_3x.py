@@ -9,7 +9,7 @@ If this file changes the other opcode files may have to a adjusted accordingly.
 
 from xdis.opcodes.base import (
     compare_op, const_op,
-    def_op,
+    def_op, format_extended_arg,
     free_op, jabs_op, jrel_op,
     local_op, name_op, nargs_op,
     varargs_op
@@ -200,3 +200,7 @@ def format_MAKE_FUNCTION_arg(argc):
     annotate_args = (argc >> 16) & 0x7FFF
     return ("%d positional, %d name and default, %d annotations" %
             (pos_args, name_default, annotate_args))
+
+opcode_arg_fmt = {
+    'EXTENDED_ARG': format_extended_arg
+}

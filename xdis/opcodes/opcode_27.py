@@ -7,7 +7,7 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    def_op, compare_op, finalize_opcodes,
+    def_op, compare_op, finalize_opcodes, format_extended_arg,
     init_opdata, jabs_op, jrel_op, name_op, rm_op)
 import xdis.opcodes.opcode_26 as opcode_26
 
@@ -51,5 +51,9 @@ def updateGlobal():
     globals().update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
     globals().update({'PJIT': l['opmap']['POP_JUMP_IF_TRUE']})
 updateGlobal()
+
+opcode_arg_fmt = {
+    'EXTENDED_ARG': format_extended_arg,
+}
 
 finalize_opcodes(l)
