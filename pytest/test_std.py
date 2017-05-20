@@ -36,8 +36,8 @@ EXPECTED_CODE_INFO = ("""\
 #    0: 10
 #    1: None
 # Names:
-#    0: a""").format(flags='0x00000000 (0x0)' if IS_PYPY else '0x00000040 (NOFREE)')
-
+#    0: a""").format(flags='0x00000000 (0x0)' if (
+    IS_PYPY and PYTHON_VERSION < 3.5) else '0x00000040 (NOFREE)')
 
 EXPECTED_DIS = """\
   1           0 LOAD_CONST                0 (10)
