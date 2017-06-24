@@ -238,10 +238,15 @@ def op_size(op, opc):
     for given opcode <op>.
     """
     if op < opc.HAVE_ARGUMENT:
-        return 2 if opc.version >= 3.6 else 1
+        if opc.version >= 3.6:
+            return 2
+        else:
+            return 1
     else:
-        return 2 if opc.version >= 3.6 else 3
-
+        if opc.version >= 3.6:
+            return 2
+        else:
+            return 3
 
 _Instruction = namedtuple("_Instruction",
      "opname opcode arg argval argrepr has_arg offset starts_line is_jump_target")

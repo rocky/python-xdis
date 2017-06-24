@@ -1,6 +1,11 @@
 2017-06-24  rocky <rb@dustyfeet.com>
 
-	* xdis/version.py: Get ready for release 3.4.0
+	* xdis/bytecode.py: Get ready for release 3.4.0
+
+2017-06-24  rocky <rb@dustyfeet.com>
+
+	* : commit 190bfd3c1795cd04ee1418a1671170f40e2e76b9 Author: rocky
+	<rb@dustyfeet.com> Date:   Sat Jun 24 05:20:59 2017 -0400
 
 2017-06-24  rocky <rb@dustyfeet.com>
 
@@ -14,11 +19,13 @@
 
 2017-05-19  rocky <rb@dustyfeet.com>
 
-	* xdis/opcodes/opcode_15.py, xdis/opcodes/opcode_20.py,
-	xdis/opcodes/opcode_21.py, xdis/opcodes/opcode_22.py,
-	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
-	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py: Finish custom
-	EXTENDED_ARG print routine
+	* xdis/dropbox/decrypt25.py, xdis/namedtuple24.py: Use
+	3.0-compatibile syntax where possible
+
+2017-05-19  rocky <rb@dustyfeet.com>
+
+	* : commit 6f071cd8f5b7bd098eb954c6e59c87d914f02c51 Author: rocky
+	<rb@dustyfeet.com> Date:   Fri May 19 15:00:35 2017 -0400
 
 2017-05-19  rocky <rocky@dusytfeet.com>
 
@@ -32,7 +39,14 @@
 
 2017-05-18  rocky <rocky@dusytfeet.com>
 
-	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.3.1
+	* test_unit/test_dis24.py, test_unit/test_dis27.py,
+	test_unit/test_dis33.py, test_unit/test_dis34.py: Remove tests that
+	include 2.7+ish features
+
+2017-05-18  rocky <rocky@dusytfeet.com>
+
+	* : commit 10b465d4f009274ecf34a50bd46410583a15ac2c Author: rocky
+	<rocky@dusytfeet.com> Date:   Thu May 18 03:38:33 2017 -0400
 
 2017-05-16  rocky <rb@dustyfeet.com>
 
@@ -77,10 +91,23 @@
 
 	* xdis/code.py: Add some small code helper functions
 
+2017-05-06  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py: Add some small code helper functions
+
+2017-04-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/util.py: Correct mistranslated dict comprehension
+
+2017-04-14  rocky <rocky@dusytfeet.com>
+
+	* : commit 19be5e9d7799e3271278c04d5f1394bb993b40b6 Merge: 09bc286
+	dafc3ba Author: rocky <rocky@dusytfeet.com> Date:   Mon Mar 27
+	21:54:50 2017 -0400
+
 2017-03-27  rocky <rocky@dusytfeet.com>
 
-	* : commit 09bc28696574fadf0c91663e145c226632d0fd82 Author: rocky
-	<rocky@dusytfeet.com> Date:   Mon Mar 27 21:54:32 2017 -0400
+	* ChangeLog, xdis/magics.py: More magic (3.5.3)
 
 2017-03-23  R. Bernstein <rocky@users.noreply.github.com>
 
@@ -96,9 +123,36 @@
 	* test_unit/test_dis27.py, test_unit/test_dis33.py: Add back some
 	std lib test_dis tests...  Some modifications to output have been made
 
+2017-03-19  rocky <rocky@dusytfeet.com>
+
+	* Makefile, __pkginfo__.py, test_unit/test_dis24.py,
+	test_unit/test_dis27.py, test_unit/test_dis33.py, xdis/std.py,
+	xdis/util.py: Add test_dis from Python 2.4
+
+2017-03-19  rocky <rocky@dusytfeet.com>
+
+	* : commit 06bd514f068ce66912c7a9422ad174dba6245e10 Author: rocky
+	<rocky@dusytfeet.com> Date:   Sat Mar 18 22:59:10 2017 -0400
+
 2017-03-18  rocky <rocky@dusytfeet.com>
 
-	* README.rst, xdis/version.py: Get ready for release 3.3.0
+	* ChangeLog, NEWS, test/test_pyenvlib.py, xdis/version.py: Get ready
+	for release 3.3.0
+
+2017-03-18  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_dis33.py, xdis/std.py: Remove _dis in tests; Added
+	to xdis.std now
+
+2017-03-18  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #31 from rocky/std-dis-tests Std dis tests
+
+2017-03-18  rocky <rocky@dusytfeet.com>
+
+	* README.rst, test_unit/test_dis27.py, test_unit/test_dis33.py,
+	xdis/__init__.py: Start adding tests from Python's corresponding
+	test_dis.py
 
 2017-03-18  rocky <rb@dustyfeet.com>
 
@@ -129,6 +183,14 @@
 2017-03-18  rocky <rocky@dusytfeet.com>
 
 	* : Hacked branch 'master' into python-2.4 There were conflicts resolved and code modified
+
+2017-03-15  rocky <rocky@dusytfeet.com>
+
+	* Makefile, pytest/test_opcode.py, test/Makefile,
+	test_unit/Makefile, test_unit/test_opcode.py,
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py: 
+	SETUP_ASYNC_WITH is jrel ...  found by pytest/test_opcode.py opcode_35.py: correct SETUP_ASYNC_WITH Makefile: add clean target
+	opcode_3x.py: small formating change
 
 2017-03-15  R. Bernstein <rocky@users.noreply.github.com>
 
@@ -3700,7 +3762,7 @@
 	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
 	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
 	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_33.py,
-	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py:
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: 
 	Another round of DRYing code
 
 2017-01-14  rocky <rocky@dusytfeet.com>
@@ -3928,7 +3990,7 @@
 
 2016-10-27  rocky <rb@dustyfeet.com>
 
-	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py:
+	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py: 
 	Clarification of EXTENDED_ARG in 3.0 and 3.1
 
 2016-10-25  rocky <rb@dustyfeet.com>
@@ -4218,7 +4280,7 @@
 
 2016-08-26  rocky <rocky@dusytfeet.com>
 
-	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py:
+	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py: 
 	Python 3.1 opcode bugs ...  verify assert statement.  test_pyenvlib.py: Allow 3.1 testing
 
 2016-08-26  rocky <rocky@dusytfeet.com>
@@ -4352,7 +4414,7 @@
 
 2016-07-25  rocky <rocky@dusytfeet.com>
 
-	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py:
+	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py: 
 	Document PyPY opts better And fix a bog in JUMP_IF_NOT_DEBUG jrel_op call
 
 2016-07-24  rocky <rocky@dusytfeet.com>
@@ -4422,7 +4484,7 @@
 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py,
 	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy26.py,
-	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py:
+	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py: 
 	Moagstar's Python 3.6 support With some small changes - fix some of my typos - handle a merge conflict in xdis/byteocde
 
 2016-07-20  rocky <rocky@dusytfeet.com>
@@ -4631,7 +4693,7 @@
 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py,
 	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
-	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py:
+	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py: 
 	pyxdis -> xdis
 
 2016-05-25  rocky <rocky@dusytfeet.com>
@@ -4691,12 +4753,12 @@
 
 	* .gitignore, pyxdis/main.py, pyxdis/opcodes/opcode_26.py,
 	pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_pypy27.py,
-	test/simple_source/05_24_float.py, test_unit/test_opcode.py:
+	test/simple_source/05_24_float.py, test_unit/test_opcode.py: 
 	Separate PYPY 2.7 from 2.7; DRY 27
 
 2016-05-22  rocky <rocky@dusytfeet.com>
 
-	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py:
+	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py: 
 	Some tolerance for pypy
 
 2016-05-22  rocky <rocky@dusytfeet.com>
@@ -4719,7 +4781,7 @@
 	* pyxdis/__init__.py, pyxdis/load.py, pyxdis/main.py,
 	pyxdis/marsh.py, pyxdis/opcodes/opcode_23.py,
 	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
-	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py:
+	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py: 
 	Allow bytecodes back to 2.3 or so. and...  Add timestamps when disassembly Rewrite to allow some tolerance to
 	older Pythons
 
@@ -4802,7 +4864,7 @@
 
 2016-05-19  rocky <rb@dustyfeet.com>
 
-	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py:
+	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py: 
 	More opcodes, more travis testing.
 
 2016-05-19  rocky <rb@dustyfeet.com>
@@ -4823,3 +4885,4 @@
 2016-05-19  rocky <rocky@dusytfeet.com>
 
 	* Start Python cross disasemble/marshal project For older history see uncompyle6
+
