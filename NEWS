@@ -1,9 +1,15 @@
-3.3.1 2017-04-18 - Lewis
+3.4.0 2017-06-25
+
+- Add hasfunctions:
+  has_argument()_, next_offset(), and op_size() functions to
+  work with fixed (3.6+) and varible-length (pre 3.6) instructions
+
+3.3.1 2017-05-18 - Lewis
 
 Python 3.6 bugs/features
 - Fix bug in handling operand of opcode after EXTENDED_ARG
 - A general mechanism to handle formatting of instruction operands and use
-  that on MAKE_FUNCTION 3.6+
+  that on Python 3.6+ opcode MAKE_FUNCTION FORMAT_VALUE
 - Add missing SETUP_ASYNC_WITH opcode
 - Test 3.6 on Travis CI
 - compile() return value, "code" no longer has a len. Use "code.co_code"

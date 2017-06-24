@@ -111,9 +111,10 @@ versions = {
     int2magic(3378): '3.6.0b2',   #
     int2magic(3379): '3.6.0rc1',  #
 
-    # A weird one
+    # Weird ones
     int2magic(48):    '3.2', # WTF? Python 3.2.5 - PyPy 2.3.4
                              # This doesn't follow the rule below
+    int2magic(112):   '3.5pypy', # pypy3.5-c-jit-latest
 }
 
 magics = __by_version(versions)
