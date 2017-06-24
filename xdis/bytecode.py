@@ -220,6 +220,20 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
 def op_has_argument(op, opc):
     return op >= opc.HAVE_ARGUMENT
 
+def next_offset(op, opc, offset):
+    return offset + op_size(op, opc)
+
+def op_size(op, opc):
+    """
+    Return size of operator with its arguments
+    for given opcode <op>.
+    """
+    if op < opc.HAVE_ARGUMENT:
+        return 2 if opc.version >= 3.6 else 1
+    else:
+        return 2 if opc.version >= 3.6 else 3
+
+
 _Instruction = namedtuple("_Instruction",
      "opname opcode arg argval argrepr has_arg offset starts_line is_jump_target")
 

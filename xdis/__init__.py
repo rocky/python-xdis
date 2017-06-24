@@ -42,3 +42,4 @@ IS_PYPY = '__pypy__' in sys.builtin_module_names
 
 # Export some functions
 from xdis.load import load_module, load_file
+from xdis.bytecode import op_has_argument, next_offset, op_size
