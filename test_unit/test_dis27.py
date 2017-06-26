@@ -31,32 +31,32 @@ if sys.version_info[0:2] == (2, 7):
         return 1
 
     dis_f = """\
-%3d           0 LOAD_GLOBAL               0 (print)
-              3 LOAD_FAST                 0 (a)
-              6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
-              9 POP_TOP
+%3d:           0 LOAD_GLOBAL               0 (print)
+               3 LOAD_FAST                 0 (a)
+               6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+               9 POP_TOP
 
-%3d          10 LOAD_CONST                1 (1)
-             13 RETURN_VALUE
+%3d:          10 LOAD_CONST                1 (1)
+              13 RETURN_VALUE
 
 """%(_f.func_code.co_firstlineno + 1,
          _f.func_code.co_firstlineno + 2)
 
     dis_bug708901 = """\
- %-4d         0 SETUP_LOOP               23 (to 26)
-              3 LOAD_GLOBAL               0 (range)
-              6 LOAD_CONST                1 (1)
+%3d:           0 SETUP_LOOP               23 (to 26)
+               3 LOAD_GLOBAL               0 (range)
+               6 LOAD_CONST                1 (1)
 
- %-4d         9 LOAD_CONST                2 (10)
-             12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
-             15 GET_ITER
-        >>   16 FOR_ITER                  6 (to 25)
-             19 STORE_FAST                0 (res)
+%3d:           9 LOAD_CONST                2 (10)
+              12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+              15 GET_ITER
+         >>   16 FOR_ITER                  6 (to 25)
+              19 STORE_FAST                0 (res)
 
- %-4d        22 JUMP_ABSOLUTE            16 (to 16)
-        >>   25 POP_BLOCK
-        >>   26 LOAD_CONST                0 (None)
-             29 RETURN_VALUE
+%3d:          22 JUMP_ABSOLUTE            16 (to 16)
+         >>   25 POP_BLOCK
+         >>   26 LOAD_CONST                0 (None)
+              29 RETURN_VALUE
 
 """%(bug708901.func_code.co_firstlineno + 1,
      bug708901.func_code.co_firstlineno + 2,
@@ -64,35 +64,35 @@ if sys.version_info[0:2] == (2, 7):
 
 
     dis_bug1333982 = """\
- %-4d         0 LOAD_CONST                1 (0)
-              3 POP_JUMP_IF_TRUE         41 (to 41)
-              6 LOAD_GLOBAL               0 (AssertionError)
-              9 BUILD_LIST                0
-             12 LOAD_FAST                 0 (x)
-             15 GET_ITER
-        >>   16 FOR_ITER                 12 (to 31)
-             19 STORE_FAST                1 (s)
-             22 LOAD_FAST                 1 (s)
-             25 LIST_APPEND               2
-             28 JUMP_ABSOLUTE            16 (to 16)
+%3d:           0 LOAD_CONST                1 (0)
+               3 POP_JUMP_IF_TRUE         41 (to 41)
+               6 LOAD_GLOBAL               0 (AssertionError)
+               9 BUILD_LIST                0
+              12 LOAD_FAST                 0 (x)
+              15 GET_ITER
+         >>   16 FOR_ITER                 12 (to 31)
+              19 STORE_FAST                1 (s)
+              22 LOAD_FAST                 1 (s)
+              25 LIST_APPEND               2
+              28 JUMP_ABSOLUTE            16 (to 16)
 
- %-4d   >>   31 LOAD_CONST                2 (1)
-             34 BINARY_ADD
-             35 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
-             38 RAISE_VARARGS             1
+%3d:     >>   31 LOAD_CONST                2 (1)
+              34 BINARY_ADD
+              35 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+              38 RAISE_VARARGS             1
 
- %-4d   >>   41 LOAD_CONST                0 (None)
-             44 RETURN_VALUE
+%3d:     >>   41 LOAD_CONST                0 (None)
+              44 RETURN_VALUE
 
 """%(bug1333982.func_code.co_firstlineno + 1,
      bug1333982.func_code.co_firstlineno + 2,
      bug1333982.func_code.co_firstlineno + 3)
 
     _BIG_LINENO_FORMAT = """\
-%3d           0 LOAD_GLOBAL               0 (spam)
-              3 POP_TOP
-              4 LOAD_CONST                0 (None)
-              7 RETURN_VALUE
+%3d:           0 LOAD_GLOBAL               0 (spam)
+               3 POP_TOP
+               4 LOAD_CONST                0 (None)
+               7 RETURN_VALUE
 
 """
 

@@ -32,6 +32,7 @@ EXPECTED_CODE_INFO = ("""\
 """# Number of locals:  0
 # Stack size:        1
 # Flags:             {flags}
+# First Line:        1
 # Constants:
 #    0: 10
 #    1: None
@@ -40,10 +41,10 @@ EXPECTED_CODE_INFO = ("""\
     IS_PYPY and PYTHON_VERSION < 3.5) else '0x00000040 (NOFREE)')
 
 EXPECTED_DIS = """\
-  1           0 LOAD_CONST                0 (10)
-              3 STORE_NAME                0 (a)
-              6 LOAD_CONST                1 (None)
-              9 RETURN_VALUE
+  1:           0 LOAD_CONST                0 (10)
+               3 STORE_NAME                0 (a)
+               6 LOAD_CONST                1 (None)
+               9 RETURN_VALUE
 """
 
 EXPECTED_DIS_36 = """\
