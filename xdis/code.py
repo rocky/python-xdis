@@ -13,6 +13,7 @@ class Code3:
         self.co_nlocals = co_nlocals
         self.co_stacksize = co_stacksize
         self.co_flags = co_flags
+        # FIXME: should we enforce co_flags to be bytes rather than str?
         self.co_code = co_code
         self.co_consts = co_consts
         self.co_names = co_names
@@ -20,23 +21,26 @@ class Code3:
         self.co_filename = co_filename
         self.co_name = co_name
         self.co_firstlineno = co_firstlineno
+        # FIXME: should we enforce co_lnotab to be bytes rather than str?
         self.co_lnotab = co_lnotab
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
 
 class Code2:
-    """Class for a Python2 code object used when a Python interpreter less than 3 is
-    working on Python3 bytecode
+    """Class for a Python2 code object used when a Python 3 interpreter is
+    working on Python2 bytecode
     """
     def __init__(self, co_argcount, co_kwonlyargcount, co_nlocals, co_stacksize,
                  co_flags, co_code,
                  co_consts, co_names, co_varnames, co_filename, co_name,
                  co_firstlineno, co_lnotab, co_freevars, co_cellvars):
         self.co_argcount = co_argcount
+        # Note: There is no kwonlyargcount in Python2
         self.co_kwonlyargcount = co_kwonlyargcount
         self.co_nlocals = co_nlocals
         self.co_stacksize = co_stacksize
         self.co_flags = co_flags
+        # FIXME: should we enforce co_code to be str rather than bytes?
         self.co_code = co_code
         self.co_consts = co_consts
         self.co_names = co_names
@@ -44,6 +48,7 @@ class Code2:
         self.co_filename = co_filename
         self.co_name = co_name
         self.co_firstlineno = co_firstlineno
+        # FIXME: should we enforce co_lnotab to be str rather than bytes?
         self.co_lnotab = co_lnotab
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
