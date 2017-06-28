@@ -145,7 +145,14 @@ for m in '2.6 2.6.6 2.6.7 2.6.8 2.6.9'.split():
 for m in '2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13'.split():
     magics[m] = magics['2.6a1']
 
+for m in '3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6'.split():
+    magics[m] = magics['3.4rc2']
 
+for m in '3.5.0 3.5.1 3.5.2'.split():
+    magics[m] = magics['3.5']
+
+for m in '3.6.0 3.6.1'.split():
+    magics[m] = magics['3.6.0rc1']
 
 def __show(text, magic):
     print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
