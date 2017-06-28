@@ -1,4 +1,4 @@
-"""uncompyle6 packaging information"""
+"""xdis packaging information"""
 
 # To the extent possible we make this file look more like a
 # configuration file rather than code like setup.py. I find putting
