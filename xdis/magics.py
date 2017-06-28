@@ -121,22 +121,22 @@ versions = {
 
 magics = __by_version(versions)
 
-for m in '2.0.1'.split():
+for m in '2.0 2.0.1'.split():
     magics[m] = magics['2.0']
 
-for m in '2.1.1 2.1.2'.split():
+for m in '2.1 2.1.1 2.1.2'.split():
     magics[m] = magics['2.1']
 
-for m in '2.2.3'.split():
+for m in '2.2 2.2.3'.split():
     magics[m] = magics['2.2']
 
-for m in '2.3.7'.split():
+for m in '2.3 2.3.7'.split():
     magics[m] = magics['2.1']
 
 for m in '2.4 2.4.1 2.4.2 2.4.3 2.4.5 2.4.6'.split():
     magics[m] = magics['2.4b1']
 
-for m in '2.5.1 2.5.2 2.5.3 2.5.43 2.5.5 2.5.6'.split():
+for m in '2.5 2.5.1 2.5.2 2.5.3 2.5.43 2.5.5 2.5.6'.split():
     magics[m] = magics['2.5c2']
 
 for m in '2.6 2.6.6 2.6.7 2.6.8 2.6.9'.split():
@@ -145,13 +145,13 @@ for m in '2.6 2.6.6 2.6.7 2.6.8 2.6.9'.split():
 for m in '2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13'.split():
     magics[m] = magics['2.6a1']
 
-for m in '3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6'.split():
+for m in '3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6'.split():
     magics[m] = magics['3.4rc2']
 
-for m in '3.5.0 3.5.1 3.5.2'.split():
+for m in '3.5 3.5.0 3.5.1 3.5.2'.split():
     magics[m] = magics['3.5']
 
-for m in '3.6.0 3.6.1'.split():
+for m in '3.6 3.6.0 3.6.1'.split():
     magics[m] = magics['3.6.0rc1']
 
 def __show(text, magic):
