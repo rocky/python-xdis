@@ -117,34 +117,40 @@ def load_module(filename, code_objects=None, fast_load=False,
                             "decrypt." % (
                                 filename, version, magics.magic2int(magic)))
 
-      # print version
-      ts = fp.read(4)
-      timestamp = unpack("I", ts)[0]
-      my_magic_int = magics.magic2int(imp.get_magic())
-      magic_int = magics.magic2int(magic)
+      try:
+          # print version
+          ts = fp.read(4)
+          timestamp = unpack("I", ts)[0]
+          my_magic_int = magics.magic2int(imp.get_magic())
+          magic_int = magics.magic2int(magic)
 
-      # Note: a higher magic number doesn't necessarily mean a later
-      # release.  At Python 3.0 the magic number decreased
-      # significantly. Hence the range below. Also note inclusion of
-      # the size info, occurred within a Python major/minor
-      # release. Hence the test on the magic value rather than
-      # PYTHON_VERSION, although PYTHON_VERSION would probably work.
-      if 3200 <= magic_int < 20121:
-          source_size = unpack("I", fp.read(4))[0] # size mod 2**32
-      else:
-          source_size = None
-
-      if get_code:
-          if my_magic_int == magic_int:
-              bytecode = fp.read()
-              co = marshal.loads(bytecode)
-          elif fast_load:
-              co = xdis.marsh.load(fp, magic_int, code_objects)
+          # Note: a higher magic number doesn't necessarily mean a later
+          # release.  At Python 3.0 the magic number decreased
+          # significantly. Hence the range below. Also note inclusion of
+          # the size info, occurred within a Python major/minor
+          # release. Hence the test on the magic value rather than
+          # PYTHON_VERSION, although PYTHON_VERSION would probably work.
+          if 3200 <= magic_int < 20121:
+              source_size = unpack("I", fp.read(4))[0] # size mod 2**32
           else:
-              co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
-          pass
-      else:
-          co = None
+              source_size = None
+
+          if get_code:
+              if my_magic_int == magic_int:
+                  bytecode = fp.read()
+                  co = marshal.loads(bytecode)
+              elif fast_load:
+                  co = xdis.marsh.load(fp, magic_int, code_objects)
+              else:
+                  co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
+              pass
+          else:
+              co = None
+      except:
+          import traceback
+          traceback.print_exc()
+          raise ImportError("Ill-formed bytecode file %s" % filename)
+
     finally:
       fp.close()
 
