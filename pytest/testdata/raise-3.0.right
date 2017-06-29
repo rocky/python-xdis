@@ -1,22 +1,3 @@
-# Method Name:       <module>
-# Filename:          simple_source/stmts/04_raise.py
-# Argument count:    0
-# Kw-only arguments: 0
-# Number of locals:  0
-# Stack size:        1
-# Flags:             0x00000040 (NOFREE)
-# First Line:        6
-# Constants:
-#    0: <xdis.code.Code3 instance at 0xdeadbeef0000>
-#    1: None
-# Names:
-#    0: compact_traceback
-  6:           0 LOAD_CONST                0 (<xdis.code.Code3 instance at 0xdeadbeef0000>)
-               3 MAKE_FUNCTION             0 (0 positional, 0 name and default, 0 annotations)
-               6 STORE_NAME                0 (compact_traceback)
-               9 LOAD_CONST                1 (None)
-              12 RETURN_VALUE
-
 
 # Method Name:       compact_traceback
 # Filename:          simple_source/stmts/04_raise.py
@@ -46,4 +27,24 @@
 
   9:     >>   23 LOAD_CONST                0 (None)
               26 RETURN_VALUE
+
+
+# Method Name:       <module>
+# Filename:          simple_source/stmts/04_raise.py
+# Argument count:    0
+# Kw-only arguments: 0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000040 (NOFREE)
+# First Line:        6
+# Constants:
+#    0: <xdis.code.Code3 instance at 0xdeadbeef0000>
+#    1: None
+# Names:
+#    0: compact_traceback
+  6:           0 LOAD_CONST                0 (<xdis.code.Code3 instance at 0xdeadbeef0000>)
+               3 MAKE_FUNCTION             0 (0 positional, 0 name and default, 0 annotations)
+               6 STORE_NAME                0 (compact_traceback)
+               9 LOAD_CONST                1 (None)
+              12 RETURN_VALUE
 

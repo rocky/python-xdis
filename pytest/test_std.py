@@ -23,7 +23,7 @@ TEST_BRANCH_SOURCE_CODE = 'a = 0 if 1 else 2'
 TEST_BRANCH_CODE = compile(TEST_BRANCH_SOURCE_CODE, '<disassembly>', 'single')
 
 
-EXPECTED_CODE_INFO = ("""\
+EXPECTED_CODE_INFO = ("""
 # Method Name:       <module>
 # Filename:          <disassembly>
 # Argument count:    0
@@ -98,7 +98,7 @@ def test_bytecode_dis(bytecode_fixture):
 
 def test_bytecode_info(bytecode_fixture):
     actual = bytecode_fixture.info()
-    assert actual == EXPECTED_CODE_INFO
+    assert '\n' + actual == EXPECTED_CODE_INFO
 
 
 def test_bytecode__iter__(bytecode_fixture):
@@ -106,13 +106,13 @@ def test_bytecode__iter__(bytecode_fixture):
 
 
 def test_code_info():
-    assert dis.code_info(TEST_SOURCE_CODE) == EXPECTED_CODE_INFO
+    assert '\n' + dis.code_info(TEST_SOURCE_CODE) == EXPECTED_CODE_INFO
 
 
 def test_show_code(stream_fixture):
     dis.show_code(TEST_SOURCE_CODE, file=stream_fixture)
     actual = stream_fixture.getvalue()
-    assert actual == EXPECTED_CODE_INFO + '\n'
+    assert '\n' + actual == EXPECTED_CODE_INFO + '\n'
 
 
 def test_pretty_flags():
