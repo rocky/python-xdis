@@ -128,8 +128,9 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
                    run_pypy_str, '\n# '.join(sys.version.split('\n'))))
     if timestamp > 0:
         value = datetime.datetime.fromtimestamp(timestamp)
-        real_out.write(value.strftime('# Timestamp in code: '
-                                 '%Y-%m-%d %H:%M:%S\n'))
+        real_out.write('# Timestamp in code: %d' % timestamp)
+        real_out.write(value.strftime(' (%Y-%m-%d %H:%M:%S)\n')
+)
     if source_size:
         real_out.write('# Source code size mod 2**32: %d bytes\n' % source_size)
 
