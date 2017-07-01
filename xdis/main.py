@@ -109,7 +109,7 @@ def get_opcode(version, is_pypy):
 
 def disco(bytecode_version, co, timestamp, out=sys.stdout,
           is_pypy=False, magic_int=None, source_size=None,
-          header=True, asm_compat=True):
+          header=True, asm_format=True):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -134,14 +134,14 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
     if source_size:
         real_out.write('# Source code size mod 2**32: %d bytes\n' % source_size)
 
-    if co.co_filename and not asm_compat:
+    if co.co_filename and not asm_format:
         real_out.write(format_code_info(co, bytecode_version) + "\n")
         pass
 
     opc = get_opcode(bytecode_version, is_pypy)
 
-    if asm_compat:
-        disco_loop_asm_compat(opc, bytecode_version, co, real_out)
+    if asm_format:
+        disco_loop_asm_format(opc, bytecode_version, co, real_out)
     else:
         queue = deque([co])
         disco_loop(opc, bytecode_version, queue, real_out)
@@ -172,7 +172,7 @@ def disco_loop(opc, version, queue, real_out):
             pass
         pass
 
-def disco_loop_asm_compat(opc, version, co, real_out):
+def disco_loop_asm_format(opc, version, co, real_out):
     """Produces disassembly in a format more conducive to
     automatic assembly by producing inner modules before they are
     used by outer ones. Since this is recusive, we'll
@@ -180,16 +180,16 @@ def disco_loop_asm_compat(opc, version, co, real_out):
     """
     for c in co.co_consts:
         if iscode(c):
-            disco_loop_asm_compat(opc, version, c, real_out)
+            disco_loop_asm_format(opc, version, c, real_out)
         pass
 
     if co.co_name != '<module>' or co.co_filename:
         real_out.write("\n" + format_code_info(co, version) + "\n")
 
     bytecode = Bytecode(co, opc)
-    real_out.write(bytecode.dis() + "\n")
+    real_out.write(bytecode.dis(asm_format=True) + "\n")
 
-def disassemble_file(filename, outstream=sys.stdout, asm_compat=True):
+def disassemble_file(filename, outstream=sys.stdout, asm_format=False):
     """
     disassemble Python byte-code file (.pyc)
 

@@ -184,7 +184,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
 
             #  Set argval to the dereferenced value of the argument when
             #  availabe, and argrepr to the string representation of argval.
-            #    _disassemble_bytes needs the string repr of the
+            #    disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
             argval = arg
             if op in opc.hasconst:
@@ -256,7 +256,7 @@ class Instruction(_Instruction):
     """
     # FIXME: remove has_arg from initialization but keep it as a field.
 
-    def _disassemble(self, lineno_width=3, mark_as_current=False):
+    def disassemble(self, lineno_width=3, mark_as_current=False, asm_format=False):
         """Format instruction details for inclusion in disassembly output
 
         *lineno_width* sets the width of the line number field (0 omits it)
@@ -266,22 +266,35 @@ class Instruction(_Instruction):
         # Column: Source code line number
         if lineno_width:
             if self.starts_line is not None:
-                lineno_fmt = "%%%dd:" % lineno_width
-                fields.append(lineno_fmt % self.starts_line)
+                if asm_format:
+                    lineno_fmt = "%%%dd:\n" % lineno_width
+                    fields.append(lineno_fmt % self.starts_line)
+                    fields.append(' ' * (lineno_width-1))
+                else:
+                    lineno_fmt = "%%%dd:" % lineno_width
+                    fields.append(lineno_fmt % self.starts_line)
             else:
-                fields.append(' ' * (lineno_width+1))
+                fields.append(' ' * (lineno_width))
         # Column: Current instruction indicator
-        if mark_as_current:
+        if mark_as_current and not asm_format:
             fields.append('-->')
         else:
             fields.append('   ')
         # Column: Jump target marker
         if self.is_jump_target:
-            fields.append('>>')
+            if not asm_format:
+                fields.append('>>')
+            else:
+                fields = ["L%d:\n" % self.offset] + fields
+                fields.append(' ')
         else:
             fields.append('  ')
         # Column: Instruction offset from start of code sequence
-        fields.append(repr(self.offset).rjust(4))
+        if asm_format:
+            fields.append(' ' * 4)
+        else:
+            fields.append(repr(self.offset).rjust(4))
+
         # Column: Opcode name
         fields.append(self.opname.ljust(20))
         # Column: Opcode argument
@@ -294,7 +307,7 @@ class Instruction(_Instruction):
             pass
         return ' '.join(fields).rstrip()
 
-    # FIXME: figure out how to do _disassemble passing in opnames
+    # FIXME: figure out how to do disassemble passing in opnames
 
 class Bytecode(object):
     """The bytecode operations of a piece of code
@@ -341,7 +354,7 @@ class Bytecode(object):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version)
 
-    def dis(self):
+    def dis(self, asm_format=False):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         if self.current_offset is not None:
@@ -355,12 +368,14 @@ class Bytecode(object):
                                linestarts=self._linestarts,
                                line_offset=self._line_offset,
                                file=output,
-                               lasti=offset)
+                               lasti=offset,
+                               asm_format=asm_format)
         return output.getvalue()
 
     def disassemble_bytes(self, code, lasti=-1, varnames=None, names=None,
                           constants=None, cells=None, linestarts=None,
-                          file=sys.stdout, line_offset=0):
+                          file=sys.stdout, line_offset=0,
+                          asm_format=False):
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None
         # TODO?: Adjust width upwards if max(linestarts.values()) >= 1000?
@@ -374,7 +389,8 @@ class Bytecode(object):
             if new_source_line:
                 file.write("\n")
             is_current_instr = instr.offset == lasti
-            file.write(instr._disassemble(lineno_width, is_current_instr) + "\n")
+            file.write(instr.disassemble(lineno_width, is_current_instr, asm_format)
+                       + "\n")
             pass
         return
 

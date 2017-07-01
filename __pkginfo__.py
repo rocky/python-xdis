@@ -36,7 +36,7 @@ _six = 'six >= 1.10.0'
 author             = "Rocky Bernstein, Hartmut Goebel and others"
 author_email       = "rb@dustyfeet.com"
 ftp_url            = None
-install_requires   = [_six]
+install_requires   = [_six, 'click']
 license            = 'GPL-2.0'
 mailing_list       = 'python-debugger@googlegroups.com'
 modname            = 'xdis'
