@@ -213,11 +213,14 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                 argval, argrepr = _get_name_info(arg, cells)
                 optype = 'free'
             elif op in opc.hasnargs:
-                optype = 'naargs'
+                optype = 'nargs'
                 if not python_36:
                     argrepr = ("%d positional, %d keyword pair" %
                                (code2num(code, i-2), code2num(code, i-1)))
-            elif hasattr(opc, 'opcode_arg_fmt') and opc.opname[op] in opc.opcode_arg_fmt:
+            # This has to come after hasnargs. Some are in both?
+            elif op in opc.hasvargs:
+                optype = 'vargs'
+            if hasattr(opc, 'opcode_arg_fmt') and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
         elif python_36:
             i += 1
