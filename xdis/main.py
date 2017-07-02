@@ -109,7 +109,7 @@ def get_opcode(version, is_pypy):
 
 def disco(bytecode_version, co, timestamp, out=sys.stdout,
           is_pypy=False, magic_int=None, source_size=None,
-          header=True, asm_format=True):
+          header=True, asm_format=False):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -198,7 +198,8 @@ def disassemble_file(filename, outstream=sys.stdout, asm_format=False):
     """
     filename = check_object_path(filename)
     version, timestamp, magic_int, co, is_pypy, source_size  = load_module(filename)
-    disco(version, co, timestamp, outstream, is_pypy, magic_int, source_size)
+    disco(version, co, timestamp, outstream, is_pypy, magic_int, source_size,
+          asm_format=asm_format)
     # print co.co_filename
     return filename, co, version, timestamp, magic_int
 

@@ -64,25 +64,25 @@ if sys.version_info[0:2] == (2, 7):
 
 
     dis_bug1333982 = """\
-%3d:           0 LOAD_CONST                1 (0)
-               3 POP_JUMP_IF_TRUE         41 (to 41)
-               6 LOAD_GLOBAL               0 (AssertionError)
-               9 BUILD_LIST                0
-              12 LOAD_FAST                 0 (x)
-              15 GET_ITER
-         >>   16 FOR_ITER                 12 (to 31)
-              19 STORE_FAST                1 (s)
-              22 LOAD_FAST                 1 (s)
-              25 LIST_APPEND               2
-              28 JUMP_ABSOLUTE            16 (to 16)
+%3d:          0 LOAD_CONST                1 (0)
+              3 POP_JUMP_IF_TRUE         41 (to 41)
+              6 LOAD_GLOBAL               0 (AssertionError)
+              9 BUILD_LIST                0
+             12 LOAD_FAST                 0 (x)
+             15 GET_ITER
+        >>   16 FOR_ITER                 12 (to 31)
+             19 STORE_FAST                1 (s)
+             22 LOAD_FAST                 1 (s)
+             25 LIST_APPEND               2
+             28 JUMP_ABSOLUTE            16 (to 16)
 
-%3d:     >>   31 LOAD_CONST                2 (1)
-              34 BINARY_ADD
-              35 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
-              38 RAISE_VARARGS             1
+%3d:    >>   31 LOAD_CONST                2 (1)
+             34 BINARY_ADD
+             35 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+             38 RAISE_VARARGS             1
 
-%3d:     >>   41 LOAD_CONST                0 (None)
-              44 RETURN_VALUE
+%3d:    >>   41 LOAD_CONST                0 (None)
+             44 RETURN_VALUE
 
 """%(bug1333982.func_code.co_firstlineno + 1,
      bug1333982.func_code.co_firstlineno + 2,

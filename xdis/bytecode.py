@@ -171,6 +171,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
         argval = None
         argrepr = ''
         has_arg = op_has_argument(op, opc)
+        optype = None
         if has_arg:
             if python_36:
                 arg = code2num(code, i) | extended_arg
@@ -189,22 +190,30 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
             argval = arg
             if op in opc.hasconst:
                 argval, argrepr = _get_const_info(arg, constants)
+                optype = 'const'
             elif op in opc.hasname:
                 argval, argrepr = _get_name_info(arg, names)
+                optype = 'name'
             elif op in opc.hasjrel:
                 argval = i + arg
                 argrepr = "to " + repr(argval)
+                optype = 'jrel'
             elif op in opc.hasjabs:
                 argval = arg
                 argrepr = "to " + repr(argval)
+                optype = 'jabs'
             elif op in opc.haslocal:
                 argval, argrepr = _get_name_info(arg, varnames)
+                optype = 'local'
             elif op in opc.hascompare:
                 argval = opc.cmp_op[arg]
                 argrepr = argval
+                optype = 'compare'
             elif op in opc.hasfree:
                 argval, argrepr = _get_name_info(arg, cells)
+                optype = 'free'
             elif op in opc.hasnargs:
+                optype = 'naargs'
                 if not python_36:
                     argrepr = ("%d positional, %d keyword pair" %
                                (code2num(code, i-2), code2num(code, i-1)))
@@ -214,7 +223,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
             i += 1
 
         opname = opc.opname[op]
-        yield Instruction(opname, op, arg, argval, argrepr,
+        yield Instruction(opname, op, optype, arg, argval, argrepr,
                           has_arg, offset, starts_line, is_jump_target)
 
 def op_has_argument(op, opc):
@@ -235,7 +244,7 @@ def op_size(op, opc):
 
 
 _Instruction = namedtuple("_Instruction",
-     "opname opcode arg argval argrepr has_arg offset starts_line is_jump_target")
+     "opname opcode optype arg argval argrepr has_arg offset starts_line is_jump_target")
 
 class Instruction(_Instruction):
     """Details for a bytecode operation
@@ -243,6 +252,8 @@ class Instruction(_Instruction):
        Defined fields:
          opname - human readable name for operation
          opcode - numeric code for operation
+         optype - opcode classification. One of
+            compare, const, free, jabs, jrel, local, name, nargs
          arg - numeric argument to operation (if any), otherwise None
          argval - resolved arg value (if known), otherwise same as arg
          argrepr - human readable description of operation argument
@@ -269,12 +280,14 @@ class Instruction(_Instruction):
                 if asm_format:
                     lineno_fmt = "%%%dd:\n" % lineno_width
                     fields.append(lineno_fmt % self.starts_line)
-                    fields.append(' ' * (lineno_width-1))
+                    fields.append(' ' * (lineno_width))
+                    if self.is_jump_target:
+                        fields.append(' ' * (lineno_width-1))
                 else:
                     lineno_fmt = "%%%dd:" % lineno_width
                     fields.append(lineno_fmt % self.starts_line)
             else:
-                fields.append(' ' * (lineno_width))
+                fields.append(' ' * (lineno_width+1))
         # Column: Current instruction indicator
         if mark_as_current and not asm_format:
             fields.append('-->')
@@ -286,20 +299,22 @@ class Instruction(_Instruction):
                 fields.append('>>')
             else:
                 fields = ["L%d:\n" % self.offset] + fields
-                fields.append(' ')
+                if not self.starts_line:
+                    fields.append(' ')
         else:
             fields.append('  ')
         # Column: Instruction offset from start of code sequence
-        if asm_format:
-            fields.append(' ' * 4)
-        else:
+        if not asm_format:
             fields.append(repr(self.offset).rjust(4))
 
         # Column: Opcode name
         fields.append(self.opname.ljust(20))
         # Column: Opcode argument
         if self.arg is not None:
-            fields.append(repr(self.arg).rjust(6))
+            if asm_format and self.optype == 'jabs':
+                fields.append(('L'+repr(self.arg)).rjust(6))
+            else:
+                fields.append(repr(self.arg).rjust(6))
             # Column: Opcode argument details
             if self.argrepr:
                 fields.append('(' + self.argrepr + ')')
