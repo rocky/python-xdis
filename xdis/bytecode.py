@@ -226,7 +226,8 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
             i += 1
 
         opname = opc.opname[op]
-        yield Instruction(opname, op, optype, arg, argval, argrepr,
+        inst_size = op_size(op, opc)
+        yield Instruction(opname, op, optype, inst_size, arg, argval, argrepr,
                           has_arg, offset, starts_line, is_jump_target)
 
 def op_has_argument(op, opc):
@@ -247,7 +248,7 @@ def op_size(op, opc):
 
 
 _Instruction = namedtuple("_Instruction",
-     "opname opcode optype arg argval argrepr has_arg offset starts_line is_jump_target")
+     "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target")
 
 class Instruction(_Instruction):
     """Details for a bytecode operation
@@ -257,6 +258,7 @@ class Instruction(_Instruction):
          opcode - numeric code for operation
          optype - opcode classification. One of
             compare, const, free, jabs, jrel, local, name, nargs
+         inst_size - number of bytes the instruction occupies
          arg - numeric argument to operation (if any), otherwise None
          argval - resolved arg value (if known), otherwise same as arg
          argrepr - human readable description of operation argument
@@ -314,8 +316,14 @@ class Instruction(_Instruction):
         fields.append(self.opname.ljust(20))
         # Column: Opcode argument
         if self.arg is not None:
-            if asm_format and self.optype == 'jabs':
-                fields.append(('L'+repr(self.arg)).rjust(6))
+            if asm_format:
+                if self.optype == 'jabs':
+                    fields.append(('L' + str(self.arg)).rjust(6))
+                elif self.optype == 'jrel':
+                    argval = self.offset + self.arg + self.inst_size
+                    fields.append(('L' + str(argval)).rjust(6))
+                else:
+                    fields.append(repr(self.arg).rjust(6))
             else:
                 fields.append(repr(self.arg).rjust(6))
             # Column: Opcode argument details
