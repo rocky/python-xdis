@@ -1,5 +1,6 @@
 # (C) Copyright 2017 by Rocky Bernstein
-import inspect
+from xdis import PYTHON3
+import inspect, types
 class Code3:
     """Class for a Python3 code object used when a Python interpreter less than 3 is
     working on Python3 bytecode
@@ -52,6 +53,45 @@ class Code2:
         self.co_lnotab = co_lnotab
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
+        return
+
+    def freeze(self):
+        for field in 'co_consts co_names co_varnames'.split():
+            val = getattr(self, field)
+            if isinstance(val, list):
+                setattr(self, field, tuple(val))
+
+        if PYTHON3:
+            delattr(self, 'co_kwonlyargcount')
+            return self
+        else:
+            args = (self.co_argcount,
+                    self.co_nlocals,
+                    self.co_stacksize,
+                    self.co_flags,
+                    self.co_code,
+                    self.co_consts,
+                    self.co_names,
+                    self.co_varnames,
+                    self.co_filename,
+                    self.co_name,
+                    self.co_firstlineno,
+                    self.co_lnotab,
+                    self.co_freevars,
+                    self.co_cellvars)
+            return types.CodeType(*args)
+
+
+    def check(self):
+        for field in 'co_argcount co_nlocals co_flags co_firstlineno'.split():
+            val = getattr(self, field)
+            assert isinstance(val, int), \
+                "%s should be int, is %s" % (field, type(val))
+        for field in 'co_consts co_names co_varnames'.split():
+            val = getattr(self, field)
+            assert isinstance(val, tuple), \
+                "%s should be tuple, is %s" % (field, type(val))
+
 
 def iscode(obj):
     """A replacement for inspect.iscode() which we can't used because we may be

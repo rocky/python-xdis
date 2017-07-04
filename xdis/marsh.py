@@ -14,6 +14,8 @@ there). Details of the format may change between Python versions.
 import types, struct
 
 from xdis import PYTHON_VERSION, PYTHON3
+from xdis.code import Code2, Code3
+
 try:
     intern
 except NameError:
@@ -67,6 +69,7 @@ class _Marshaller:
                 if func:
                     break
             else:
+                from trepan.api import debug; debug()
                 raise ValueError("unmarshallable object")
             func(self, x)
 
@@ -216,7 +219,7 @@ class _Marshaller:
         self._write(TYPE_NULL)
     dispatch[dict] = dump_dict
 
-    def dump_code(self, x):
+    def dump_code2(self, x):
         self._write(TYPE_CODE)
         self.w_long(x.co_argcount)
         self.w_long(x.co_nlocals)
@@ -232,8 +235,32 @@ class _Marshaller:
         self.dump(x.co_name)
         self.w_long(x.co_firstlineno)
         self.dump(x.co_lnotab)
+    dispatch[Code2] = dump_code2
+
+    def dump_code3(self, x):
+        self._write(TYPE_CODE)
+        self.w_long(x.co_argcount)
+        self.w_long(x.co_nlocals)
+        self.w_long(x.co_stacksize)
+        self.w_long(x.co_kwonlyargcount)
+        self.w_long(x.co_flags)
+        self.dump(x.co_code)
+        self.dump(x.co_consts)
+        self.dump(x.co_names)
+        self.dump(x.co_varnames)
+        self.dump(x.co_freevars)
+        self.dump(x.co_cellvars)
+        self.dump(x.co_filename)
+        self.dump(x.co_name)
+        self.w_long(x.co_firstlineno)
+        self.dump(x.co_lnotab)
+    dispatch[Code3] = dump_code3
+
     try:
-        dispatch[types.CodeType] = dump_code
+        if PYTHON3:
+            dispatch[types.CodeType] = dump_code3
+        else:
+            dispatch[types.CodeType] = dump_code2
     except NameError:
         pass
 
@@ -720,7 +747,16 @@ def dumps(x, version=version):
     buffer = []
     m = _Marshaller(buffer.append)
     m.dump(x)
-    return ''.join(buffer)
+    if PYTHON3:
+        buf = []
+        for b in buffer:
+            if isinstance(b, str):
+                buf.append(b.encode('ascii'))
+            else:
+                buf.append(b)
+        return b''.join(buf)
+    else:
+        return ''.join(buffer)
 
 @builtinify
 def loads(s):
