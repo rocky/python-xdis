@@ -57,8 +57,9 @@ class _Marshaller:
 
     dispatch = {}
 
-    def __init__(self, writefunc):
+    def __init__(self, writefunc, python_version=None):
         self._write = writefunc
+        self.python_version = python_version
 
     def dump(self, x):
         try:
@@ -187,7 +188,10 @@ class _Marshaller:
 
     def dump_unicode(self, x):
         self._write(TYPE_UNICODE)
-        s = x.encode('utf8')
+        if not PYTHON3 and self.python_version < '3.0':
+            s = x.encode('utf8')
+        else:
+            s = x
         self.w_long(len(s))
         self._write(s)
     try:
@@ -240,9 +244,9 @@ class _Marshaller:
     def dump_code3(self, x):
         self._write(TYPE_CODE)
         self.w_long(x.co_argcount)
+        self.w_long(x.co_kwonlyargcount)
         self.w_long(x.co_nlocals)
         self.w_long(x.co_stacksize)
-        self.w_long(x.co_kwonlyargcount)
         self.w_long(x.co_flags)
         self.dump(x.co_code)
         self.dump(x.co_consts)
@@ -742,16 +746,22 @@ def load(f):
     return um.load()
 
 @builtinify
-def dumps(x, version=version):
+def dumps(x, version=version, python_version=None):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
-    m = _Marshaller(buffer.append)
+    m = _Marshaller(buffer.append, python_version=python_version)
     m.dump(x)
-    if PYTHON3:
+    if python_version:
+        is_python3 = python_version >= '3.0'
+    else:
+        is_python3 = PYTHON3
+
+    if is_python3:
         buf = []
         for b in buffer:
             if isinstance(b, str):
-                buf.append(b.encode('ascii'))
+                s2b = bytes(ord(b[j]) for j in range(len(b)))
+                buf.append(s2b)
             else:
                 buf.append(b)
         return b''.join(buf)
