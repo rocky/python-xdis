@@ -14,7 +14,7 @@ there). Details of the format may change between Python versions.
 import types, struct
 
 from xdis import PYTHON_VERSION, PYTHON3
-from xdis.code import Code2, Code3
+from xdis.code import Code2, Code2Compat, Code3, Code3Compat
 
 try:
     intern
@@ -240,6 +240,7 @@ class _Marshaller:
         self.w_long(x.co_firstlineno)
         self.dump(x.co_lnotab)
     dispatch[Code2] = dump_code2
+    dispatch[Code2Compat] = dump_code2
 
     def dump_code3(self, x):
         self._write(TYPE_CODE)
@@ -259,6 +260,7 @@ class _Marshaller:
         self.w_long(x.co_firstlineno)
         self.dump(x.co_lnotab)
     dispatch[Code3] = dump_code3
+    dispatch[Code3Compat] = dump_code3
 
     try:
         if PYTHON3:
@@ -308,9 +310,10 @@ class _Unmarshaller:
 
     dispatch = {}
 
-    def __init__(self, readfunc):
+    def __init__(self, readfunc, python_version=None):
         self._read = readfunc
         self._stringtable = []
+        self.python_version = python_version
 
     def load(self):
         c = self._read(1)
@@ -466,6 +469,11 @@ class _Unmarshaller:
 
     def load_code(self):
         argcount = self.r_long()
+        if self.python_version and self.python_version >= '3.0':
+            is_python3 = True
+            kwonlyargcount = self.r_long()
+        else:
+            is_python3 = False
         nlocals = self.r_long()
         stacksize = self.r_long()
         flags = self.r_long()
@@ -479,9 +487,30 @@ class _Unmarshaller:
         name = self.load()
         firstlineno = self.r_long()
         lnotab = self.load()
-        return types.CodeType(argcount, nlocals, stacksize, flags, code, consts,
-                              names, varnames, filename, name, firstlineno,
-                              lnotab, freevars, cellvars)
+        if is_python3:
+            if PYTHON3:
+                return types.CodeType(argcount, kwonlyargcount, nlocals,
+                                  stacksize, flags, code, consts,
+                                  names, varnames, filename, name,
+                                  firstlineno, lnotab, freevars, cellvars)
+            else:
+                return Code3(argcount, kwonlyargcount, nlocals,
+                             stacksize, flags, code, consts,
+                             names, varnames, filename, name,
+                             firstlineno, lnotab, freevars, cellvars)
+        else:
+            if PYTHON3:
+                return Code2(argcount, nlocals,
+                             stacksize, flags, code, consts,
+                             names, varnames, filename, name,
+                             firstlineno,
+                             lnotab, freevars, cellvars)
+            else:
+                return types.CodeType(argcount, nlocals,
+                                      stacksize, flags, code, consts,
+                                      names, varnames, filename, name,
+                                      firstlineno,
+                                      lnotab, freevars, cellvars)
     dispatch[TYPE_CODE] = load_code
 
     def load_set(self):
@@ -556,10 +585,11 @@ class _FastUnmarshaller:
 
     dispatch = {}
 
-    def __init__(self, buffer):
+    def __init__(self, buffer, python_version=None):
         self.bufstr = buffer
         self.bufpos = 0
         self._stringtable = []
+        self.python_version = python_version
 
     def load(self):
         # make flow space happy
@@ -732,14 +762,14 @@ _load_dispatch = _FastUnmarshaller.dispatch
 version = 1
 
 @builtinify
-def dump(x, f, version=version):
+def dump(x, f, version=version, python_version=None):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
-    m = _Marshaller(f.write)
+    m = _Marshaller(f.write, python_version)
     m.dump(x)
 
 @builtinify
-def load(f):
-    um = _Unmarshaller(f.read)
+def load(f, python_version=None):
+    um = _Unmarshaller(f.read, python_version)
     return um.load()
 
 @builtinify
@@ -766,6 +796,6 @@ def dumps(x, version=version, python_version=None):
         return ''.join(buffer)
 
 @builtinify
-def loads(s):
-    um = _FastUnmarshaller(s)
+def loads(s, python_version=None):
+    um = _FastUnmarshaller(s, python_version)
     return um.load()

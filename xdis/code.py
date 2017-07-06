@@ -97,6 +97,35 @@ class Code3:
                 "%s should be tuple, is %s" % (field, type(val))
 
 
+class Code3Compat(Code3):
+    """A much more flexible version of Code. We don't require kwonlyargcount which
+    does't exist. You can also fill in what you want and leave the rest blank.
+    Remmeber though to call inherited function freeze when done.
+    """
+    def __init__(self,
+                 co_argcount=0,
+                 co_kwonlyargcount=0,
+                 co_nlocals=0,
+                 co_stacksize=0, co_flags=[], co_code=[],
+                 co_consts=[], co_names=[], co_varnames=[], co_filename='unknown',
+                 co_name = 'unknown', co_firstlineno=1,
+                 co_lnotab='', co_freevars=[], co_cellvars=[]):
+        self.co_argcount = co_argcount
+        self.co_kwonlyargcount = co_kwonlyargcount
+        self.co_nlocals = co_nlocals
+        self.co_stacksize = co_stacksize
+        self.co_flags = co_flags
+        self.co_code = co_code
+        self.co_consts = co_consts
+        self.co_names = co_names
+        self.co_varnames = co_varnames
+        self.co_filename = co_filename
+        self.co_name = co_name
+        self.co_firstlineno = co_firstlineno
+        self.co_lnotab = co_lnotab
+        self.co_freevars = co_freevars
+        self.co_cellvars = co_cellvars
+
 class Code2:
     """Class for a Python2 code object used when a Python 3 interpreter is
     working on Python2 bytecode. It also functions as an object that can be used
