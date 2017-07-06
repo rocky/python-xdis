@@ -702,9 +702,6 @@ class _FastUnmarshaller:
         firstlineno = _r_long(self)
         lnotab = self.load()
         if PYTHON3:
-            if isinstance(name, bytes):
-                name = 'foo'
-
             return types.CodeType(argcount, 0, nlocals, stacksize, flags, code, consts,
                                   names, varnames, filename.decode(), name, firstlineno,
                                   lnotab, freevars, cellvars)

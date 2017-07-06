@@ -3,7 +3,14 @@ from xdis import PYTHON3
 import inspect, types
 class Code3:
     """Class for a Python3 code object used when a Python interpreter less than 3 is
-    working on Python3 bytecode
+    working on Python3 bytecode. It also functions as an object that can be used
+    to build or write a Python3 code object, since we allow mutable structures.
+    When done mutating, call method freeze().
+
+    For convenience in generating code objects, fields like
+    `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
+    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    can be stored as a simple list of offset, line_number tuples.
     """
     def __init__(self, co_argcount, co_kwonlyargcount, co_nlocals,
                  co_stacksize, co_flags, co_code,
@@ -14,7 +21,6 @@ class Code3:
         self.co_nlocals = co_nlocals
         self.co_stacksize = co_stacksize
         self.co_flags = co_flags
-        # FIXME: should we enforce co_flags to be bytes rather than str?
         self.co_code = co_code
         self.co_consts = co_consts
         self.co_names = co_names
@@ -22,14 +28,86 @@ class Code3:
         self.co_filename = co_filename
         self.co_name = co_name
         self.co_firstlineno = co_firstlineno
-        # FIXME: should we enforce co_lnotab to be bytes rather than str?
         self.co_lnotab = co_lnotab
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
 
+    def encode_lineno_tab(self):
+        cur_line = self.co_firstlineno
+        co_lnotab = b''
+
+        for offset, line_number in self.co_lnotab:
+            while offset >= 256:
+                co_lnotab.append(chr(255))
+                co_lnotab.append(chr(0))
+                offset -= 255
+            while line_number >= 256:
+                co_lnotab.append(chr(0))
+                co_lnotab.append(chr(255))
+                line_number -= 255
+                cur_line += 255
+            co_lnotab += bytearray([offset])
+            co_lnotab += bytearray([line_number - cur_line])
+            cur_line = line_number
+
+        self.co_lnotab = co_lnotab
+
+    def freeze(self):
+        for field in 'co_consts co_names co_varnames'.split():
+            val = getattr(self, field)
+            if isinstance(val, list):
+                setattr(self, field, tuple(val))
+
+        if isinstance(self.co_lnotab, list):
+            # We assume we have a list of tuples:
+            # (offset, linenumber) which we convert
+            # into the encoded format
+            self.encode_lineno_tab()
+
+
+        if PYTHON3:
+            args = (self.co_argcount,
+                    self.co_kwonlyargcount,
+                    self.co_nlocals,
+                    self.co_stacksize,
+                    self.co_flags,
+                    self.co_code,
+                    self.co_consts,
+                    self.co_names,
+                    self.co_varnames,
+                    self.co_filename,
+                    self.co_name,
+                    self.co_firstlineno,
+                    self.co_lnotab,
+                    self.co_freevars,
+                    self.co_cellvars)
+            return types.CodeType(*args)
+        else:
+            return self
+
+
+    def check(self):
+        for field in 'co_argcount co_nlocals co_flags co_firstlineno'.split():
+            val = getattr(self, field)
+            assert isinstance(val, int), \
+                "%s should be int, is %s" % (field, type(val))
+        for field in 'co_consts co_names co_varnames'.split():
+            val = getattr(self, field)
+            assert isinstance(val, tuple), \
+                "%s should be tuple, is %s" % (field, type(val))
+
+
 class Code2:
     """Class for a Python2 code object used when a Python 3 interpreter is
-    working on Python2 bytecode
+    working on Python2 bytecode. It also functions as an object that can be used
+    to build or write a Python3 code object, since we allow mutable structures.
+    When done mutating, call method freeze().
+
+    For convenience in generating code objects, fields like
+    `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
+    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    can be stored as a simple list of offset, line_number tuples.
+
     """
     def __init__(self, co_argcount, co_kwonlyargcount, co_nlocals, co_stacksize,
                  co_flags, co_code,
@@ -41,7 +119,6 @@ class Code2:
         self.co_nlocals = co_nlocals
         self.co_stacksize = co_stacksize
         self.co_flags = co_flags
-        # FIXME: should we enforce co_code to be str rather than bytes?
         self.co_code = co_code
         self.co_consts = co_consts
         self.co_names = co_names
@@ -49,17 +126,46 @@ class Code2:
         self.co_filename = co_filename
         self.co_name = co_name
         self.co_firstlineno = co_firstlineno
-        # FIXME: should we enforce co_lnotab to be str rather than bytes?
         self.co_lnotab = co_lnotab
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
         return
+
+    def encode_lineno_tab(self):
+        cur_line = self.co_firstlineno
+        co_lnotab = ''
+
+        for offset, line_number in self.co_lnotab:
+            while offset >= 256:
+                co_lnotab.append(chr(255))
+                co_lnotab.append(chr(0))
+                offset -= 255
+            while line_number >= 256:
+                co_lnotab.append(chr(0))
+                co_lnotab.append(chr(255))
+                line_number -= 255
+                cur_line += 255
+            co_lnotab += chr(offset)
+            co_lnotab += chr(line_number - cur_line)
+            cur_line = line_number
+
+        self.co_lnotab = co_lnotab
+
 
     def freeze(self):
         for field in 'co_consts co_names co_varnames'.split():
             val = getattr(self, field)
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
+
+        if isinstance(self.co_lnotab, list):
+            # We assume we have a list of tuples:
+            # (offset, linenumber) which we convert
+            # into the encoded format
+
+            # FIXME: handle PYTHON 3
+            self.encode_lineno_tab()
+
 
         if PYTHON3:
             delattr(self, 'co_kwonlyargcount')
