@@ -12,6 +12,7 @@ import struct
 
 from xdis import PYTHON3
 import xdis.marsh as xmarshal
+from xdis.code import Code2Compat
 
 def rng(a, b):
     b = ((b << 13) ^ b) & 0xffffffff
@@ -74,11 +75,11 @@ def load_code(self):
     code = obj.load_code()
     co_code = patch(code.co_code)
     if PYTHON3:
-        return types.CodeType(code.co_argcount, 0, code.co_nlocals, code.co_stacksize,
-                              code.co_flags,
-                              co_code, code.co_consts, code.co_names, code.co_varnames,
-                              code.co_filename, code.co_name, code.co_firstlineno,
-                              code.co_lnotab, code.co_freevars, code.co_cellvars)
+        return Code2Compat(code.co_argcount, code.co_nlocals, code.co_stacksize,
+                           code.co_flags,
+                           co_code, code.co_consts, code.co_names, code.co_varnames,
+                           code.co_filename, code.co_name, code.co_firstlineno,
+                           code.co_lnotab, code.co_freevars, code.co_cellvars)
     else:
         return types.CodeType(code.co_argcount, code.co_nlocals, code.co_stacksize, code.co_flags,
                               co_code, code.co_consts, code.co_names, code.co_varnames,
