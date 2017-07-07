@@ -20,7 +20,7 @@ PATTERNS = ('*.pyc', '*.pyo')
               help='Produce ouput suitable for xasm')
 @click.option("--version", '-V', default=False,
               help='Show version and exit')
-@click.option("--files", "-i", multiple=True)
+@click.argument('files', nargs=-1)
 def main(asm, version, files):
     Usage_short = """usage:
    %s [--asm] -i FILE...
