@@ -31,7 +31,10 @@ def _unpack_opargs_wordcode(code, opc):
     for i in range(0, len(code), 2):
         op = code[i]
         if op_has_argument(op, opc):
-            arg = code[i+1] | extended_arg
+            if isinstance(code[i+1], str):
+                arg = ord(code[i+1]) | extended_arg
+            else:
+                arg = code[i+1] | extended_arg
             extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
         else:
             arg = None
