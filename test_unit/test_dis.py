@@ -53,8 +53,8 @@ class DisTests(unittest.TestCase):
         # STOP_CODE removed from python 3.2
         if not PY32:
             self.assertEqual(opc.opmap["STOP_CODE"], 0)
-        self.assertTrue(opc.opmap["LOAD_CONST"] in opc.hasconst)
-        self.assertTrue(opc.opmap["STORE_NAME"] in opc.hasname)
+        self.assertTrue(opc.opmap["LOAD_CONST"] in opc.CONST_OPS)
+        self.assertTrue(opc.opmap["STORE_NAME"] in opc.NAME_OPS)
 
     def test_opname(self):
         self.assertEqual(opc.opname[opc.opmap["LOAD_FAST"]], "LOAD_FAST")

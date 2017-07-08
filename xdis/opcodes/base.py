@@ -161,22 +161,22 @@ def update_pj2(g, l):
     update_sets(l)
 
 def update_sets(l):
-    l['COMPARE_INSTRUCTIONS'] = set(l['hascompare'])
-    l['CONST_INSTRUCTIONS']   = set(l['hasconst'])
-    l['FREE_INSTRUCTIONS']    = set(l['hasfree'])
-    l['JREL_INSTRUCTIONS']    = set(l['hasjrel'])
-    l['JABS_INSTRUCTIONS']    = set(l['hasjabs'])
+    l['COMPARE_OPS'] = set(l['hascompare'])
+    l['CONST_OPS']   = set(l['hasconst'])
+    l['FREE_OPS']    = set(l['hasfree'])
+    l['JREL_OPS']    = set(l['hasjrel'])
+    l['JABS_OPS']    = set(l['hasjabs'])
     l['JUMP_UNCONDITONAL']    = set([l['opmap']['JUMP_ABSOLUTE'],
                                      l['opmap']['JUMP_FORWARD']])
-    l['LOOP_INSTRUCTIONS']    = set([l['opmap']['SETUP_LOOP']])
-    l['LOCAL_INSTRUCTIONS']   = set(l['haslocal'])
-    l['JUMP_INSTRUCTIONS']    = (l['JABS_INSTRUCTIONS']
-                              | l['JREL_INSTRUCTIONS']
-                              | l['LOOP_INSTRUCTIONS']
+    l['LOOP_OPS']    = set([l['opmap']['SETUP_LOOP']])
+    l['LOCAL_OPS']   = set(l['haslocal'])
+    l['JUMP_OPS']    = (l['JABS_OPS']
+                              | l['JREL_OPS']
+                              | l['LOOP_OPS']
                               | l['JUMP_UNCONDITONAL'])
-    l['NAME_INSTRUCTIONS']    = set(l['hasname'])
-    l['NARGS_INSTRUCTIONS']   = set(l['hasnargs'])
-    l['VARGS_INSTRUCTIONS']   = set(l['hasvargs'])
+    l['NAME_OPS']    = set(l['hasname'])
+    l['NARGS_OPS']   = set(l['hasnargs'])
+    l['VARGS_OPS']   = set(l['hasvargs'])
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))

@@ -85,9 +85,9 @@ def findlabels(code, opc):
     for offset, op, arg in unpack_opargs(code, opc):
         if arg is not None:
             label = -1
-            if op in opc.hasjrel:
+            if op in opc.JREL_OPS:
                 label = offset + 3 + arg
-            elif op in opc.hasjabs:
+            elif op in opc.JABS_OPS:
                 label = arg
             if label >= 0:
                 if label not in labels:

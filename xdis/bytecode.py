@@ -94,9 +94,9 @@ def findlabels(code, opc):
             arg = code2num(code, i) + code2num(code, i+1)*256
             i = i+2
             label = -1
-            if op in opc.hasjrel:
+            if op in opc.JREL_OPS:
                 label = i+arg
-            elif op in opc.hasjabs:
+            elif op in opc.JABS_OPS:
                 label = arg
             if label >= 0:
                 if label not in labels:
@@ -188,37 +188,37 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
             #    disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
             argval = arg
-            if op in opc.CONST_INSTRUCTIONS:
+            if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
                 optype = 'const'
-            elif op in opc.NAME_INSTRUCTIONS:
+            elif op in opc.NAME_OPS:
                 argval, argrepr = _get_name_info(arg, names)
                 optype = 'name'
-            elif op in opc.JREL_INSTRUCTIONS:
+            elif op in opc.JREL_OPS:
                 argval = i + arg
                 argrepr = "to " + repr(argval)
                 optype = 'jrel'
-            elif op in opc.JABS_INSTRUCTIONS:
+            elif op in opc.JABS_OPS:
                 argval = arg
                 argrepr = "to " + repr(argval)
                 optype = 'jabs'
-            elif op in opc.LOCAL_INSTRUCTIONS:
+            elif op in opc.LOCAL_OPS:
                 argval, argrepr = _get_name_info(arg, varnames)
                 optype = 'local'
-            elif op in opc.COMPARE_INSTRUCTIONS:
+            elif op in opc.COMPARE_OPS:
                 argval = opc.cmp_op[arg]
                 argrepr = argval
                 optype = 'compare'
-            elif op in opc.FREE_INSTRUCTIONS:
+            elif op in opc.FREE_OPS:
                 argval, argrepr = _get_name_info(arg, cells)
                 optype = 'free'
-            elif op in opc.NARGS_INSTRUCTIONS:
+            elif op in opc.NARGS_OPS:
                 optype = 'nargs'
                 if not python_36:
                     argrepr = ("%d positional, %d keyword pair" %
                                (code2num(code, i-2), code2num(code, i-1)))
             # This has to come after hasnargs. Some are in both?
-            elif op in opc.VARGS_INSTRUCTIONS:
+            elif op in opc.VARGS_OPS:
                 optype = 'vargs'
             if hasattr(opc, 'opcode_arg_fmt') and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
@@ -459,7 +459,7 @@ def list2bytecode(l, opc, varnames, consts):
         print(opname, operands)
         gen = (j for j in operands if operands)
         for j in gen:
-            k = (consts if opcode in opc.hasconst else varnames).index(j)
+            k = (consts if opcode in opc.CONST_OPS else varnames).index(j)
             if k == -1:
                 raise TypeError(
                     "operand %s [%s, %s], not found in names" %
