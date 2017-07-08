@@ -147,12 +147,27 @@ def fix_opcode_names(opmap):
 def update_pj3(g, l):
     g.update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
     g.update({'PJIT': l['opmap']['POP_JUMP_IF_TRUE']})
-
+    update_sets(l)
 
 def update_pj2(g, l):
     g.update({'PJIF': l['opmap']['JUMP_IF_FALSE']})
     g.update({'PJIT': l['opmap']['JUMP_IF_TRUE']})
+    update_sets(l)
 
+def update_sets(l):
+    l['CONST_INSTRUCTIONS']   = set(l['hasconst'])
+    l['JREL_INSTRUCTIONS']    = set(l['hasjrel'])
+    l['JABS_INSTRUCTIONS']    = set(l['hasjabs'])
+    l['JUMP_UNCONDITONAL']    = set([l['opmap']['JUMP_ABSOLUTE'],
+                                     l['opmap']['JUMP_FORWARD']])
+    l['LOOP_INSTRUCTIONS']    = set([l['opmap']['SETUP_LOOP']])
+    l['LOCAL_INSTRUCTIONS']   = set(l['haslocal'])
+    l['JUMP_INSTRUCTIONS']    = (l['JABS_INSTRUCTIONS']
+                              | l['JREL_INSTRUCTIONS']
+                              | l['LOOP_INSTRUCTIONS']
+                              | l['JUMP_UNCONDITONAL'])
+    l['NAME_INSTRUCTIONS']    = set(l['hasname'])
+    l['NARGS_INSTRUCTIONS']   = set(l['hasnargs'])
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))
