@@ -1,6 +1,167 @@
+2017-07-08  rocky <rb@dustyfeet.com>
+
+	* xdis/version.py: Get ready for release 3.5.0
+
+2017-07-08  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/marsh.py: marsh and --asm formatting
+	improvements...  marsh.py: Add marshal type codes since 3.4 and mark when various
+	types were introduced or removed.  Some attempt to implement some of the types has been done, but more
+	work is needed.  --asm remove index number for those things xasm can now support
+
+2017-07-08  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/code.py, xdis/marsh.py: Some nasty bugs...  marsh.py: * add marshalling for Code2 and Code3 instances * Add BINARY_COMPLEX type, note existence of   ASCII, ASCII_INTERNED, SHORT_ASCII, SHORT_ASCII_INTERNED code.py: * correct Python 2.x line number table calculation bytecode.py: indentation
+
+2017-07-08  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_dis.py, xdis/bytecode.py, xdis/opcodes/base.py,
+	xdis/wordcode.py: Change opcode set names...  xx_INSTRUCTIONS -> xx_OPS.  replace in opc.hasxxx with in
+	opc.xxx_OPS
+
+2017-07-07  rocky <rb@dustyfeet.com>
+
+	* test/test_pyenvlib.py, xdis/bytecode.py, xdis/opcodes/base.py,
+	xdis/opcodes/opcode_15.py, xdis/opcodes/opcode_20.py,
+	xdis/opcodes/opcode_21.py, xdis/opcodes/opcode_22.py,
+	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_27.py: DRY opcodes
+	better
+
+2017-07-07  rocky <rb@dustyfeet.com>
+
+	* test/test_pyenvlib.py, xdis/wordcode.py: Attempt to fix
+	_unpack_opargs_wordcode in 3.6
+
+2017-07-07  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/opcodes/base.py: Correct Python 3.6
+	findlinestarts and findlabels
+
+2017-07-07  rocky <rb@dustyfeet.com>
+
+	* xdis/opcodes/base.py: Add opcode sets where there were lists
+
+2017-07-06  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py: Fix up lnotab calculation
+
+2017-07-06  rocky <rb@dustyfeet.com>
+
+	* bin/pydisasm: Improve pyasm options since click cutover
+
+2017-07-06  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py, xdis/marsh.py: Python cross-version compatable
+	marshalling
+
+2017-07-05  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py, xdis/dropbox/decrypt25.py, xdis/marsh.py: Add
+	Code2Compat and simplify
+
+2017-07-05  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py, xdis/marsh.py: Support for assembly: beef up Code
+	objects
+
+2017-07-05  rocky <rocky@dusytfeet.com>
+
+	* xdis/marsh.py: Python3 code dump fixes
+
+2017-07-04  rocky <rocky@dusytfeet.com>
+
+	* .gitignore, xdis/code.py, xdis/marsh.py: WIP: Code type changes
+	for pyc generation Not complete, but it's a start.  marsh.py: now aware Python 2 and Python 3 marshalling are oslightly
+	different.
+
+2017-07-03  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_dis34.py, xdis/bytecode.py: in asm mode turn
+	relative jumps into labels Each instruction now has an intruction size field: inst_size
+
+2017-07-02  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_dis34.py, xdis/bytecode.py: Bug in classifying
+	vargs Add optype to instruction test
+
+2017-07-02  rocky <rb@dustyfeet.com>
+
+	* pytest/test_std.py, pytest/testdata/big_dict-3.6.right,
+	pytest/testdata/fstring-3.6.right,
+	pytest/testdata/pypy_lambda.right, pytest/testdata/raise-3.0.right,
+	test_unit/test_dis27.py, xdis/bytecode.py, xdis/main.py: Add optype
+	to Instructions ...  In disassemble --asm mode, absolute jumps are turned into labels.
+
+2017-07-01  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py, bin/pydisasm, xdis/bytecode.py, xdis/main.py: Add
+	--asm option Use click now
+
+2017-07-01  rocky <rb@dustyfeet.com>
+
+	* xdis/main.py: Show timestamp as it is found
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* pytest/test_std.py, pytest/testdata/big_dict-3.6.right,
+	pytest/testdata/fstring-3.6.right,
+	pytest/testdata/pypy_lambda.right, pytest/testdata/raise-3.0.right,
+	xdis/main.py: Output order is now  assembly order
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py: Document Code2 and Code3 a little better
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py: Bug in tagging 2.7.x versions
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* xdis/load.py: Trap ill-formed python bytecode better
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py: Fill out magics for 3.3
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_magic.py: Another magic test for magic coverage
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_magic.py, xdis/magics.py: lookup for base Python
+	versions, e.g. 2.7 or 3.4
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py: Even more magic for 3.4.[0..6] 3.5.[0..2] and 3.6.[0..1]
+
+2017-06-27  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py, test_unit/test_magic.py, xdis/magics.py: More
+	magic...  The Python versions that are associated with a magic number is a set
+	now, not a single version Associate known Python versions, e.g. 2.7.10, 2.7.11...  with a
+	magic value in map magics.magics
+
+2017-06-26  rocky <rb@dustyfeet.com>
+
+	* pytest/test_std.py: Adjust one more test
+
+2017-06-26  rocky <rb@dustyfeet.com>
+
+	* pytest/test_std.py, pytest/testdata/big_dict-3.6.right,
+	pytest/testdata/fstring-3.6.right,
+	pytest/testdata/pypy_lambda.right, pytest/testdata/raise-3.0.right,
+	test_unit/test_dis.py, test_unit/test_dis27.py,
+	test_unit/test_dis33.py, test_unit/test_dis34.py, xdis/bytecode.py,
+	xdis/util.py: Add colon after line numbers for asm...  Line numbers now have a suffix ':' to  distinguished then offsets.
+	This makes assembly from disassembly output easier.  Add more code fields in disassembly also to easy assembly from
+	disassemble output.
+
 2017-06-24  rocky <rb@dustyfeet.com>
 
-	* xdis/version.py: Get ready for release 3.4.0
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.4.0
 
 2017-06-24  rocky <rb@dustyfeet.com>
 
