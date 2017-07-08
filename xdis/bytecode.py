@@ -361,9 +361,9 @@ class Bytecode(object):
     def __iter__(self):
         co = self.codeobj
         return get_instructions_bytes(co.co_code, self.opc, co.co_varnames, co.co_names,
-                                       co.co_consts, self._cell_names,
-                                       self._linestarts,
-                                       line_offset=self._line_offset)
+                                      co.co_consts, self._cell_names,
+                                      self._linestarts,
+                                      line_offset=self._line_offset)
 
     def __repr__(self):
         return "{}({!r})".format(self.__class__.__name__,

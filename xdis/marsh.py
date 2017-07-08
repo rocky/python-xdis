@@ -29,31 +29,43 @@ def Ord(c):
     return c if PYTHON3 else ord(c)
 
 
-TYPE_NULL     = '0'
-TYPE_NONE     = 'N'
-TYPE_FALSE    = 'F'
-TYPE_TRUE     = 'T'
-TYPE_STOPITER = 'S'
-TYPE_ELLIPSIS = '.'
-TYPE_INT      = 'i'
-TYPE_INT64    = 'I'
-TYPE_FLOAT    = 'f'
-TYPE_BINARY_FLOAT = 'g'
-TYPE_COMPLEX  = 'x'
-TYPE_LONG     = 'l'
-TYPE_STRING   = 's'
-TYPE_INTERNED = 't'
-TYPE_STRINGREF= 'R'
-TYPE_TUPLE    = '('
-TYPE_LIST     = '['
-TYPE_DICT     = '{'
-TYPE_CODE     = 'c'
-TYPE_UNICODE  = 'u'
-TYPE_UNKNOWN  = '?'
-TYPE_SET      = '<'
-TYPE_FROZENSET= '>'
+TYPE_NULL            = '0'
+TYPE_NONE            = 'N'
+TYPE_FALSE           = 'F'
+TYPE_TRUE            = 'T'
+TYPE_STOPITER        = 'S'
+TYPE_ELLIPSIS        = '.'
+TYPE_INT             = 'i'
+TYPE_INT64           = 'I'  # 2.x
+TYPE_FLOAT           = 'f'
+TYPE_BINARY_FLOAT    = 'g'
+TYPE_COMPLEX         = 'x'
+TYPE_BINARY_COMPLEX  = 'y'  # 3.x
+TYPE_LONG            = 'l'
+TYPE_STRING          = 's'
+TYPE_INTERNED        = 't'
+TYPE_REF             = 'r'  # 3.x
+TYPE_STRINGREF       = 'R'  # 2.x
+TYPE_TUPLE           = '('
+TYPE_LIST            = '['
+TYPE_DICT            = '{'
+TYPE_CODE            = 'c'
+TYPE_UNICODE         = 'u'
+TYPE_UNKNOWN         = '?'
+TYPE_SET             = '<'
+TYPE_FROZENSET       = '>'
+
+TYPE_ASCII           = 'a'  # 3.x
+TYPE_ASCII_INTERNED  = 'A'  # 3.x
+TYPE_SMALL_TUPLE     =  ')' # 3.x
+TYPE_SHORT_ASCII     = 'z'  # 3.x
+TYPE_SHORT_ASCII_INTERNED = 'Z' # 3.x
+
 
 class _Marshaller:
+    """Python marshalling routine that runs in Python 2 and Python 3.
+    We also extend to allow for xdis Code2 and Code3 types and instances.
+    """
 
     dispatch = {}
 
@@ -65,13 +77,18 @@ class _Marshaller:
         try:
             self.dispatch[type(x)](self, x)
         except KeyError:
-            for tp in type(x).mro():
-                func = self.dispatch.get(tp)
-                if func:
-                    break
+            if isinstance(x, Code2):
+                self.dispatch[Code2](self, x)
+            elif isinstance(x, Code3):
+                self.dispatch[Code3](self, x)
             else:
-                from trepan.api import debug; debug()
-                raise ValueError("unmarshallable object")
+                for tp in type(x).mro():
+                    func = self.dispatch.get(tp)
+                    if func:
+                        break
+                else:
+                    # from trepan.api import debug; debug()
+                    raise ValueError("unmarshallable object")
             func(self, x)
 
     def w_long64(self, x):
@@ -176,6 +193,14 @@ class _Marshaller:
         dispatch[complex] = dump_complex
     except NameError:
         pass
+
+    def dump_binary_complex(self, x):
+        write = self._write
+        write(TYPE_BINARY_COMPLEX)
+        write(struct.pack('d', x.real))
+        write(struct.pack('d', x.imag))
+
+    dispatch[TYPE_BINARY_COMPLEX] = dump_binary_complex
 
     def dump_string(self, x):
         # XXX we can't check for interned strings, yet,
