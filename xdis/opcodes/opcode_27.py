@@ -8,7 +8,7 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op, compare_op, finalize_opcodes, format_extended_arg,
-    init_opdata, jabs_op, jrel_op, name_op, rm_op)
+    init_opdata, jabs_op, jrel_op, name_op, rm_op, update_pj3)
 import xdis.opcodes.opcode_26 as opcode_26
 
 version = 2.7
@@ -46,11 +46,7 @@ def_op(l, 'EXTENDED_ARG', 145)
 def_op(l, 'SET_ADD', 146)
 def_op(l, 'MAP_ADD', 147)
 
-# FIXME remove (fix uncompyle6)
-def updateGlobal():
-    globals().update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
-    globals().update({'PJIT': l['opmap']['POP_JUMP_IF_TRUE']})
-updateGlobal()
+update_pj3(globals(), l)
 
 opcode_arg_fmt = {
     'EXTENDED_ARG': format_extended_arg,

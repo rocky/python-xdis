@@ -188,37 +188,37 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
             #    disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
             argval = arg
-            if op in opc.hasconst:
+            if op in opc.CONST_INSTRUCTIONS:
                 argval, argrepr = _get_const_info(arg, constants)
                 optype = 'const'
-            elif op in opc.hasname:
+            elif op in opc.NAME_INSTRUCTIONS:
                 argval, argrepr = _get_name_info(arg, names)
                 optype = 'name'
-            elif op in opc.hasjrel:
+            elif op in opc.JREL_INSTRUCTIONS:
                 argval = i + arg
                 argrepr = "to " + repr(argval)
                 optype = 'jrel'
-            elif op in opc.hasjabs:
+            elif op in opc.JABS_INSTRUCTIONS:
                 argval = arg
                 argrepr = "to " + repr(argval)
                 optype = 'jabs'
-            elif op in opc.haslocal:
+            elif op in opc.LOCAL_INSTRUCTIONS:
                 argval, argrepr = _get_name_info(arg, varnames)
                 optype = 'local'
-            elif op in opc.hascompare:
+            elif op in opc.COMPARE_INSTRUCTIONS:
                 argval = opc.cmp_op[arg]
                 argrepr = argval
                 optype = 'compare'
-            elif op in opc.hasfree:
+            elif op in opc.FREE_INSTRUCTIONS:
                 argval, argrepr = _get_name_info(arg, cells)
                 optype = 'free'
-            elif op in opc.hasnargs:
+            elif op in opc.NARGS_INSTRUCTIONS:
                 optype = 'nargs'
                 if not python_36:
                     argrepr = ("%d positional, %d keyword pair" %
                                (code2num(code, i-2), code2num(code, i-1)))
             # This has to come after hasnargs. Some are in both?
-            elif op in opc.hasvargs:
+            elif op in opc.VARGS_INSTRUCTIONS:
                 optype = 'vargs'
             if hasattr(opc, 'opcode_arg_fmt') and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
