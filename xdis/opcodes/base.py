@@ -7,6 +7,7 @@ Python opcode.py structures
 
 from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
+import xdis.wordcode
 from xdis import IS_PYPY, PYTHON_VERSION
 
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
@@ -33,8 +34,13 @@ def init_opdata(l, from_mod, version=None, is_pypy=False):
     l['is_pypy'] = is_pypy
     l['cmp_op'] = cmp_op
     l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
-    l['findlinestarts'] = findlinestarts
-    l['findlabels'] = findlabels
+    if version < 3.5:
+        l['findlinestarts'] = findlinestarts
+        l['findlabels']     = findlabels
+    else:
+        l['findlinestarts'] = xdis.wordcode.findlinestarts
+        l['findlabels']     = xdis.wordcode.findlabels
+
     l['opmap'] = deepcopy(from_mod.opmap)
     l['opname'] = deepcopy(from_mod.opname)
 

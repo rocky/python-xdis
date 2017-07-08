@@ -144,7 +144,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     arguments.
 
     """
-    labels = findlabels(code, opc)
+    labels = opc.findlabels(code, opc)
     extended_arg = 0
 
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
