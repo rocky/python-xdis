@@ -36,30 +36,31 @@ TYPE_TRUE            = 'T'
 TYPE_STOPITER        = 'S'
 TYPE_ELLIPSIS        = '.'
 TYPE_INT             = 'i'
-TYPE_INT64           = 'I'  # 2.x
-TYPE_FLOAT           = 'f'
+TYPE_INT64           = 'I'  # Python 3.4 removed this
+TYPE_FLOAT           = 'f'  # Seems not in use after Python 2.4
 TYPE_BINARY_FLOAT    = 'g'
 TYPE_COMPLEX         = 'x'
 TYPE_BINARY_COMPLEX  = 'y'  # 3.x
 TYPE_LONG            = 'l'
 TYPE_STRING          = 's'
 TYPE_INTERNED        = 't'
-TYPE_REF             = 'r'  # 3.x
-TYPE_STRINGREF       = 'R'  # 2.x
+TYPE_REF             = 'r'  # Since 3.4
+TYPE_STRINGREF       = 'R'  # Python 2
 TYPE_TUPLE           = '('
 TYPE_LIST            = '['
 TYPE_DICT            = '{'
+TYPE_CODE_OLD        = 'C'  # used in Python 1.0 - 1.2
 TYPE_CODE            = 'c'
 TYPE_UNICODE         = 'u'
 TYPE_UNKNOWN         = '?'
 TYPE_SET             = '<'
 TYPE_FROZENSET       = '>'
 
-TYPE_ASCII           = 'a'  # 3.x
-TYPE_ASCII_INTERNED  = 'A'  # 3.x
-TYPE_SMALL_TUPLE     =  ')' # 3.x
-TYPE_SHORT_ASCII     = 'z'  # 3.x
-TYPE_SHORT_ASCII_INTERNED = 'Z' # 3.x
+TYPE_ASCII           = 'a'  # since 3.4
+TYPE_ASCII_INTERNED  = 'A'  # since 3.4
+TYPE_SMALL_TUPLE     =  ')' # since 3.4
+TYPE_SHORT_ASCII     = 'z'  # since 3.4
+TYPE_SHORT_ASCII_INTERNED = 'Z' # since 3.4
 
 
 class _Marshaller:
@@ -232,6 +233,15 @@ class _Marshaller:
         for item in x:
             self.dump(item)
     dispatch[tuple] = dump_tuple
+    dispatch[TYPE_TUPLE] = dump_tuple
+
+    def dump_small_tuple(self, x):
+        self._write(TYPE_SMALL_TUPLE)
+        self.w_short(len(x))
+        for item in x:
+            self.dump(item)
+
+    dispatch[TYPE_SMALL_TUPLE] = dump_small_tuple
 
     def dump_list(self, x):
         self._write(TYPE_LIST)
@@ -239,6 +249,7 @@ class _Marshaller:
         for item in x:
             self.dump(item)
     dispatch[list] = dump_list
+    dispatch[TYPE_LIST] = dump_tuple
 
     def dump_dict(self, x):
         self._write(TYPE_DICT)
@@ -314,6 +325,22 @@ class _Marshaller:
         dispatch[frozenset] = dump_frozenset
     except NameError:
         pass
+
+    # FIXME: dump_ascii, dump_short_ascii are just guesses
+    def dump_ascii(self, x):
+        self._write(TYPE_ASCII)
+        self.w_long(len(x))
+        self._write(x)
+    dispatch[TYPE_ASCII] = dump_ascii
+
+    def dump_short_ascii(self, x):
+        self._write(TYPE_SHORT_ASCII)
+        # FIXME: check len(x)?
+        self.w_short(len(x))
+        self._write(x)
+    dispatch[TYPE_SHORT_ASCII] = dump_short_ascii
+
+    # FIXME: Handle interned versions of dump_ascii, dump_short_ascii
 
 class _NULL:
     pass

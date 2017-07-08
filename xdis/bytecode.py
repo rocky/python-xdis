@@ -279,6 +279,8 @@ class Instruction(_Instruction):
         *mark_as_current* inserts a '-->' marker arrow as part of the line
         """
         fields = []
+        if asm_format:
+            indexed_operand = set(['name', 'local', 'compare'])
         # Column: Source code line number
         if lineno_width:
             if self.starts_line is not None:
@@ -316,19 +318,23 @@ class Instruction(_Instruction):
         fields.append(self.opname.ljust(20))
         # Column: Opcode argument
         if self.arg is not None:
+            argrepr = self.argrepr
             if asm_format:
                 if self.optype == 'jabs':
-                    fields.append(('L' + str(self.arg)).rjust(6))
+                    fields.append('L' + str(self.arg))
                 elif self.optype == 'jrel':
                     argval = self.offset + self.arg + self.inst_size
-                    fields.append(('L' + str(argval)).rjust(6))
+                    fields.append('L' + str(argval))
+                elif self.optype in indexed_operand:
+                    fields.append('(%s)' % argrepr)
+                    argrepr = None
                 else:
-                    fields.append(repr(self.arg).rjust(6))
+                    fields.append(repr(self.arg))
             else:
                 fields.append(repr(self.arg).rjust(6))
             # Column: Opcode argument details
-            if self.argrepr:
-                fields.append('(' + self.argrepr + ')')
+            if argrepr:
+                fields.append('(%s)' % argrepr)
                 pass
             pass
         return ' '.join(fields).rstrip()
