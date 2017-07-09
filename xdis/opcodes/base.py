@@ -136,7 +136,7 @@ def finalize_opcodes(l):
     # Now add in the attributes into the module
     for op in l['opmap']:
         l[op] = l['opmap'][op]
-    l['JUMP_OPs'] = set(l['hasjrel'] + l['hasjabs'])
+    l['JUMP_OPs'] = frozenset(l['hasjrel'] + l['hasjabs'])
     opcode_check(l)
 
 
@@ -161,22 +161,22 @@ def update_pj2(g, l):
     update_sets(l)
 
 def update_sets(l):
-    l['COMPARE_OPS'] = set(l['hascompare'])
-    l['CONST_OPS']   = set(l['hasconst'])
-    l['FREE_OPS']    = set(l['hasfree'])
-    l['JREL_OPS']    = set(l['hasjrel'])
-    l['JABS_OPS']    = set(l['hasjabs'])
-    l['JUMP_UNCONDITONAL']    = set([l['opmap']['JUMP_ABSOLUTE'],
+    l['COMPARE_OPS'] = frozenset(l['hascompare'])
+    l['CONST_OPS']   = frozenset(l['hasconst'])
+    l['FREE_OPS']    = frozenset(l['hasfree'])
+    l['JREL_OPS']    = frozenset(l['hasjrel'])
+    l['JABS_OPS']    = frozenset(l['hasjabs'])
+    l['JUMP_UNCONDITONAL']    = frozenset([l['opmap']['JUMP_ABSOLUTE'],
                                      l['opmap']['JUMP_FORWARD']])
-    l['LOOP_OPS']    = set([l['opmap']['SETUP_LOOP']])
-    l['LOCAL_OPS']   = set(l['haslocal'])
+    l['LOOP_OPS']    = frozenset([l['opmap']['SETUP_LOOP']])
+    l['LOCAL_OPS']   = frozenset(l['haslocal'])
     l['JUMP_OPS']    = (l['JABS_OPS']
                               | l['JREL_OPS']
                               | l['LOOP_OPS']
                               | l['JUMP_UNCONDITONAL'])
-    l['NAME_OPS']    = set(l['hasname'])
-    l['NARGS_OPS']   = set(l['hasnargs'])
-    l['VARGS_OPS']   = set(l['hasvargs'])
+    l['NAME_OPS']    = frozenset(l['hasname'])
+    l['NARGS_OPS']   = frozenset(l['hasnargs'])
+    l['VARGS_OPS']   = frozenset(l['hasvargs'])
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))
