@@ -811,31 +811,16 @@ _load_dispatch = _FastUnmarshaller.dispatch
 
 version = 1
 
-<<<<<<< HEAD
-def dump(x, f, version=version):
-=======
-@builtinify
 def dump(x, f, version=version, python_version=None):
->>>>>>> master
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version)
     m.dump(x)
 
-<<<<<<< HEAD
-def load(f):
-    um = _Unmarshaller(f.read)
-    return um.load()
-
-def dumps(x, version=version):
-=======
-@builtinify
 def load(f, python_version=None):
     um = _Unmarshaller(f.read, python_version)
     return um.load()
 
-@builtinify
 def dumps(x, version=version, python_version=None):
->>>>>>> master
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version)
@@ -853,7 +838,7 @@ def dumps(x, version=version, python_version=None):
                 buf.append(s2b)
             else:
                 buf.append(b)
-        return b''.join(buf)
+        return ''.join(buf)
     else:
         return ''.join(buffer)
 

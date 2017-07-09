@@ -164,6 +164,5 @@ if sys.version_info[0:2] == (2, 7):
     def test_main():
         run_unittest(DisTests)
 
-
 if __name__ == "__main__":
     test_main()

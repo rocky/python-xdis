@@ -33,7 +33,7 @@ class Code3:
         self.co_cellvars = co_cellvars
 
     def encode_lineno_tab(self):
-        co_lnotab = b''
+        co_lnotab = ''
 
         prev_line_number = self.co_firstlineno
         prev_offset = 0
@@ -50,8 +50,8 @@ class Code3:
                 co_lnotab.append(chr(0))
                 co_lnotab.append(chr(255))
                 line_diff -= 255
-            co_lnotab += bytearray([offset_diff])
-            co_lnotab += bytearray([line_diff])
+            co_lnotab += chr(offset_diff)
+            co_lnotab += chr(line_diff)
 
         self.co_lnotab = co_lnotab
 

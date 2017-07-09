@@ -16,14 +16,16 @@ Usage:
   pydisasm [OPTIONS]... FILE
   pydisasm [--help | -h | -V | --version]
 
-Examples:
-  pydisasm foo.pyc
-  pydisasm foo.py    # same thing as above but find the file
-  pydisasm foo.pyc bar.pyc  # disassemble foo.pyc and bar.pyc
-
 Options:
+  -a | --asm         produce assembly output more suitable for modification
   -V | --version     show version and stop
   -h | --help        show this message
+
+Examples:
+  pydisasm foo.pyc
+  pydisasm foo.py           # same thing as above but find the file
+  pydisasm --asm foo.py     # produce assembler-friendly output
+  pydisasm foo.pyc bar.pyc  # disassemble foo.pyc and bar.pyc
 
 """
 
@@ -45,12 +47,13 @@ Type -h for for full help.""" % program
         sys.exit(1)
 
     try:
-        opts, files = getopt.getopt(sys.argv[1:], 'hVU',
-                                    ['help', 'version'])
+        opts, files = getopt.getopt(sys.argv[1:], 'hVUa',
+                                    ['help', 'version', 'asm'])
     except getopt.GetoptError(e):
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
 
+    asm = False
     for opt, val in opts:
         if opt in ('-h', '--help'):
             print(__doc__)
@@ -58,6 +61,8 @@ Type -h for for full help.""" % program
         elif opt in ('-V', '--version'):
             print("%s %s" % (program, VERSION))
             sys.exit(0)
+        elif opt in ('-a', '--asm'):
+            asm = True
         else:
             print(opt)
             sys.stderr.write(Usage_short)
@@ -65,7 +70,7 @@ Type -h for for full help.""" % program
 
     for file in files:
         if os.path.exists(files[0]):
-            disassemble_file(file, sys.stdout)
+            disassemble_file(file, sys.stdout, asm)
         else:
             sys.stderr.write("Can't read %s - skipping" % files[0])
             pass
