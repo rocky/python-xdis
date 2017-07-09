@@ -23,8 +23,7 @@ TEST_BRANCH_SOURCE_CODE = 'a = 0 if 1 else 2'
 TEST_BRANCH_CODE = compile(TEST_BRANCH_SOURCE_CODE, '<disassembly>', 'single')
 
 
-EXPECTED_CODE_INFO = ("""\
-# Method Name:       <module>
+EXPECTED_CODE_INFO = ("""# Method Name:       <module>
 # Filename:          <disassembly>
 # Argument count:    0
 """
@@ -32,6 +31,7 @@ EXPECTED_CODE_INFO = ("""\
 """# Number of locals:  0
 # Stack size:        1
 # Flags:             {flags}
+# First Line:        1
 # Constants:
 #    0: 10
 #    1: None
@@ -40,17 +40,17 @@ EXPECTED_CODE_INFO = ("""\
     IS_PYPY and PYTHON_VERSION < 3.5) else '0x00000040 (NOFREE)')
 
 EXPECTED_DIS = """\
-  1           0 LOAD_CONST                0 (10)
-              3 STORE_NAME                0 (a)
-              6 LOAD_CONST                1 (None)
-              9 RETURN_VALUE
+  1:           0 LOAD_CONST                0 (10)
+               3 STORE_NAME                0 (a)
+               6 LOAD_CONST                1 (None)
+               9 RETURN_VALUE
 """
 
 EXPECTED_DIS_36 = """\
-  1           0 LOAD_CONST                0 (10)
-              2 STORE_NAME                0 (a)
-              4 LOAD_CONST                1 (None)
-              6 RETURN_VALUE
+  1:           0 LOAD_CONST                0 (10)
+               2 STORE_NAME                0 (a)
+               4 LOAD_CONST                1 (None)
+               6 RETURN_VALUE
 """
 
 if PYTHON_VERSION < 3.6:

@@ -34,7 +34,10 @@ def _unpack_opargs_wordcode(code, opc):
     for i in range(0, len(code), 2):
         op = code[i]
         if op_has_argument(op, opc):
-            arg = code[i+1] | extended_arg
+            if isinstance(code[i+1], str):
+                arg = ord(code[i+1]) | extended_arg
+            else:
+                arg = code[i+1] | extended_arg
             extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
         else:
             arg = None
@@ -85,9 +88,9 @@ def findlabels(code, opc):
     for offset, op, arg in unpack_opargs(code, opc):
         if arg is not None:
             label = -1
-            if op in opc.hasjrel:
+            if op in opc.JREL_OPS:
                 label = offset + 3 + arg
-            elif op in opc.hasjabs:
+            elif op in opc.JABS_OPS:
                 label = arg
             if label >= 0:
                 if label not in labels:

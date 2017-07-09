@@ -1,4 +1,4 @@
-# Copyright (c) 2016 by Rocky Bernstein
+# Copyright (c) 2016-2017 by Rocky Bernstein
 """
 CPython independent disassembly routines
 
@@ -123,7 +123,8 @@ def get_opcode(version, is_pypy):
     raise TypeError("%s is not a Python version I know about" % version)
 
 def disco(bytecode_version, co, timestamp, out=sys.stdout,
-          is_pypy=False, magic_int=None, source_size=None, header=True):
+          is_pypy=False, magic_int=None, source_size=None,
+          header=True, asm_format=False):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -151,22 +152,36 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
                '\n# '.join(sys.version.split('\n'))))
     if timestamp > 0:
         value = datetime.datetime.fromtimestamp(timestamp)
-        real_out.write(value.strftime('# Timestamp in code: '
-                                 '%Y-%m-%d %H:%M:%S\n'))
+        real_out.write('# Timestamp in code: %d' % timestamp)
+        real_out.write(value.strftime(' (%Y-%m-%d %H:%M:%S)\n')
+)
     if source_size:
         real_out.write('# Source code size mod 2**32: %d bytes\n' % source_size)
 
-    if co.co_filename:
+    if co.co_filename and not asm_format:
         real_out.write(format_code_info(co, bytecode_version) + "\n")
         pass
 
     opc = get_opcode(bytecode_version, is_pypy)
 
-    queue = deque([co])
-    disco_loop(opc, bytecode_version, queue, real_out)
+    if asm_format:
+        disco_loop_asm_format(opc, bytecode_version, co, real_out)
+    else:
+        queue = deque([co])
+        disco_loop(opc, bytecode_version, queue, real_out)
 
 
 def disco_loop(opc, version, queue, real_out):
+    """Disassembles a queue of code objects. If we discover
+    another code object which will be found in co_consts, we add
+    the new code to the list. Note that the order of code discovery
+    is in the order of first encountered which is not amenable for
+    the format used by a disassembler where code objects should
+    be defined before using them in other functions.
+    However this is not recursive and will overall lead to less
+    memory consumption at run time.
+    """
+
     while len(queue) > 0:
         co = queue.popleft()
         if co.co_name != '<module>':
@@ -175,13 +190,30 @@ def disco_loop(opc, version, queue, real_out):
         bytecode = Bytecode(co, opc)
         real_out.write(bytecode.dis() + "\n")
 
-        for instr in bytecode.get_instructions(co):
-            if iscode(instr.argval):
-                queue.append(instr.argval)
+        for c in co.co_consts:
+            if iscode(c):
+                queue.append(c)
             pass
         pass
 
-def disassemble_file(filename, outstream=sys.stdout):
+def disco_loop_asm_format(opc, version, co, real_out):
+    """Produces disassembly in a format more conducive to
+    automatic assembly by producing inner modules before they are
+    used by outer ones. Since this is recusive, we'll
+    use more stack space at runtime.
+    """
+    for c in co.co_consts:
+        if iscode(c):
+            disco_loop_asm_format(opc, version, c, real_out)
+        pass
+
+    if co.co_name != '<module>' or co.co_filename:
+        real_out.write("\n" + format_code_info(co, version) + "\n")
+
+    bytecode = Bytecode(co, opc)
+    real_out.write(bytecode.dis(asm_format=True) + "\n")
+
+def disassemble_file(filename, outstream=sys.stdout, asm_format=False):
     """
     disassemble Python byte-code file (.pyc)
 
@@ -190,7 +222,8 @@ def disassemble_file(filename, outstream=sys.stdout):
     """
     filename = check_object_path(filename)
     version, timestamp, magic_int, co, is_pypy, source_size  = load_module(filename)
-    disco(version, co, timestamp, outstream, is_pypy, magic_int, source_size)
+    disco(version, co, timestamp, outstream, is_pypy, magic_int, source_size,
+          asm_format=asm_format)
     # print co.co_filename
     return filename, co, version, timestamp, magic_int
 

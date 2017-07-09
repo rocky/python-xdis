@@ -1,8 +1,36 @@
+3.5.0 2017-07-08
+
+Overall: Support for bytecode assembler (xasm), Better 3.4-3.6 support
+
+- Add --xasm option to pydisasm. This will output a disassembly
+  suitable for an assembler, specifically xasm.
+- Add magic lookup for 3.4.[0..6] 3.5.[0..2] and 3.6.[0..1]
+- Add magic lookup for base versions, e.g. 2.7 or 3.4
+- Trap ill-formed python bytecode bettern
+- Show timestamp in pydisasm output as it is stored
+- Add "optype" field to Instructions. Derived from the has_xxx lists
+- Marshaling for Python2 and Python3 code when using cross-version
+  is aware that the format for the other type is different.
+- Add opcode sets corresponding to the the opcode has_xxx lists.
+- Document Code2 and Code3 a little better
+- add Code2Compat and Code3Compat to make cross-version Code creation
+  easier
+- add Code2/Code3 freeze() routine which convert from from a
+  programmer-friendly code object to one compacted and ready for
+  marshalling or use.
+- Correct Python 3.6+ findlinestarts() and findlabels() methods
+- Fix _unpack_opargs_wordcode in 3.6
+- DRY opcodes more
+- Add marshal types that have appeared since Python 3.4 and
+  start to implement. More work is needed here.
+
+
 3.4.0 2017-06-25
 
-- Add hasfunctions:
+- Add functions in xdis.bytecode:
   has_argument()_, next_offset(), and op_size() functions to
-  work with fixed (3.6+) and varible-length (pre 3.6) instructions
+- work with fixed (3.6+) and variable-length (pre 3.6) instructions
+- Add magic for pypy3.5
 
 3.3.1 2017-05-18 - Lewis
 

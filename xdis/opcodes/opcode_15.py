@@ -13,14 +13,23 @@ from xdis.opcodes.base import (
     def_op, jabs_op, jrel_op,
     finalize_opcodes, format_extended_arg,
     local_op, name_op, nargs_op,
-    varargs_op,
     # Although these aren't used here, they are exported
-    cmp_op, HAVE_ARGUMENT
+    varargs_op, update_pj2
     )
 
 version = 1.5
 
+cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
+        'is not', 'exception match', 'BAD')
+
+# Opcodes greater than 90 take an instruction operand or "argument"
+# as opcode.py likes to call it.
+HAVE_ARGUMENT = 90
+
 l = locals()
+l['python_version'] = version
+l['cmp_op'] = cmp_op
+l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
 
 # These are just to silence the import above
 l['findlindstarts'] = findlinestarts
@@ -164,13 +173,7 @@ EXTENDED_ARG = 143
 
 fields2copy = """cmp_op hasjabs""".split()
 
-def updateGlobal():
-    globals().update({'python_version': version})
-    globals().update({'PJIF': opmap['JUMP_IF_FALSE']})
-    globals().update({'PJIT': opmap['JUMP_IF_TRUE']})
-    return
-
-updateGlobal()
+update_pj2(globals(), l)
 
 opcode_arg_fmt = {
     'EXTENDED_ARG': format_extended_arg,

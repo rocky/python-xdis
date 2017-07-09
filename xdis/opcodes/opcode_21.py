@@ -7,7 +7,7 @@ This is similar to the opcode portion in Python 2.1's dis.py library.
 
 import xdis.opcodes.opcode_22 as opcode_22
 from xdis.opcodes.base import (
-    init_opdata, finalize_opcodes, format_extended_arg, rm_op)
+    init_opdata, finalize_opcodes, format_extended_arg, rm_op, update_pj2)
 
 version = 2.1
 
@@ -23,13 +23,7 @@ rm_op(l, 'GET_ITER', 68)
 rm_op(l, 'YIELD_VALUE', 86)
 rm_op(l, 'FOR_ITER', 93)
 
-# FIXME remove (fix uncompyle6)
-def updateGlobal():
-    globals().update({'PJIF': l['opmap']['JUMP_IF_FALSE']})
-    globals().update({'PJIT': l['opmap']['JUMP_IF_TRUE']})
-    return
-
-updateGlobal()
+update_pj2(globals(), l)
 
 opcode_arg_fmt = {
     'EXTENDED_ARG': format_extended_arg,

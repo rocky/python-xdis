@@ -7,6 +7,7 @@ Python opcode.py structures
 
 from copy import deepcopy
 from xdis.bytecode import findlinestarts, findlabels
+import xdis.wordcode
 from xdis import IS_PYPY, PYTHON_VERSION
 
 if PYTHON_VERSION < 2.4:
@@ -37,8 +38,13 @@ def init_opdata(l, from_mod, version=None, is_pypy=False):
     l['is_pypy'] = is_pypy
     l['cmp_op'] = cmp_op
     l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
-    l['findlinestarts'] = findlinestarts
-    l['findlabels'] = findlabels
+    if version < 3.5:
+        l['findlinestarts'] = findlinestarts
+        l['findlabels']     = findlabels
+    else:
+        l['findlinestarts'] = xdis.wordcode.findlinestarts
+        l['findlabels']     = xdis.wordcode.findlabels
+
     l['opmap'] = deepcopy(from_mod.opmap)
     l['opname'] = deepcopy(from_mod.opname)
 
@@ -151,12 +157,30 @@ def fix_opcode_names(opmap):
 def update_pj3(g, l):
     g.update({'PJIF': l['opmap']['POP_JUMP_IF_FALSE']})
     g.update({'PJIT': l['opmap']['POP_JUMP_IF_TRUE']})
-
+    update_sets(l)
 
 def update_pj2(g, l):
     g.update({'PJIF': l['opmap']['JUMP_IF_FALSE']})
     g.update({'PJIT': l['opmap']['JUMP_IF_TRUE']})
+    update_sets(l)
 
+def update_sets(l):
+    l['COMPARE_OPS'] = set(l['hascompare'])
+    l['CONST_OPS']   = set(l['hasconst'])
+    l['FREE_OPS']    = set(l['hasfree'])
+    l['JREL_OPS']    = set(l['hasjrel'])
+    l['JABS_OPS']    = set(l['hasjabs'])
+    l['JUMP_UNCONDITONAL']    = set([l['opmap']['JUMP_ABSOLUTE'],
+                                     l['opmap']['JUMP_FORWARD']])
+    l['LOOP_OPS']    = set([l['opmap']['SETUP_LOOP']])
+    l['LOCAL_OPS']   = set(l['haslocal'])
+    l['JUMP_OPS']    = (l['JABS_OPS']
+                              | l['JREL_OPS']
+                              | l['LOOP_OPS']
+                              | l['JUMP_UNCONDITONAL'])
+    l['NAME_OPS']    = set(l['hasname'])
+    l['NARGS_OPS']   = set(l['hasnargs'])
+    l['VARGS_OPS']   = set(l['hasvargs'])
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))

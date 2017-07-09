@@ -6,6 +6,7 @@
 # Number of locals:  0
 # Stack size:        8
 # Flags:             0x00000040 (NOFREE)
+# First Line:        3
 # Constants:
 #    0: 0
 #    1: None
@@ -28,51 +29,51 @@
 #    3: date
 #    4: anniversary
 #    5: print
-  3           0 LOAD_CONST                0 (0)
-              2 LOAD_CONST                1 (None)
-              4 IMPORT_NAME               0 (datetime)
-              6 STORE_NAME                0 (datetime)
+  3:           0 LOAD_CONST                0 (0)
+               2 LOAD_CONST                1 (None)
+               4 IMPORT_NAME               0 (datetime)
+               6 STORE_NAME                0 (datetime)
 
-  4           8 LOAD_CONST                2 ('Fred')
-             10 STORE_NAME                1 (name)
+  4:           8 LOAD_CONST                2 ('Fred')
+              10 STORE_NAME                1 (name)
 
-  5          12 LOAD_CONST                3 (50)
-             14 STORE_NAME                2 (age)
+  5:          12 LOAD_CONST                3 (50)
+              14 STORE_NAME                2 (age)
 
-  6          16 LOAD_NAME                 0 (datetime)
-             18 LOAD_ATTR                 3 (date)
-             20 LOAD_CONST                4 (1991)
-             22 LOAD_CONST                5 (10)
-             24 LOAD_CONST                6 (12)
-             26 CALL_FUNCTION             3
-             28 STORE_NAME                4 (anniversary)
+  6:          16 LOAD_NAME                 0 (datetime)
+              18 LOAD_ATTR                 3 (date)
+              20 LOAD_CONST                4 (1991)
+              22 LOAD_CONST                5 (10)
+              24 LOAD_CONST                6 (12)
+              26 CALL_FUNCTION             3
+              28 STORE_NAME                4 (anniversary)
 
-  7          30 LOAD_NAME                 5 (print)
-             32 LOAD_CONST                7 ('My name is ')
-             34 LOAD_NAME                 1 (name)
-             36 FORMAT_VALUE              0
-             38 LOAD_CONST                8 (', my age next year is ')
-             40 LOAD_NAME                 2 (age)
-             42 LOAD_CONST                9 (1)
-             44 BINARY_ADD
-             46 FORMAT_VALUE              0
-             48 LOAD_CONST               10 (', my anniversary is ')
-             50 LOAD_NAME                 4 (anniversary)
-             52 LOAD_CONST               11 ('%A, %B %d, %Y')
-             54 FORMAT_VALUE              4
-             56 LOAD_CONST               12 ('.')
-             58 BUILD_STRING              7
-             60 CALL_FUNCTION             1
-             62 POP_TOP
+  7:          30 LOAD_NAME                 5 (print)
+              32 LOAD_CONST                7 ('My name is ')
+              34 LOAD_NAME                 1 (name)
+              36 FORMAT_VALUE              0
+              38 LOAD_CONST                8 (', my age next year is ')
+              40 LOAD_NAME                 2 (age)
+              42 LOAD_CONST                9 (1)
+              44 BINARY_ADD
+              46 FORMAT_VALUE              0
+              48 LOAD_CONST               10 (', my anniversary is ')
+              50 LOAD_NAME                 4 (anniversary)
+              52 LOAD_CONST               11 ('%A, %B %d, %Y')
+              54 FORMAT_VALUE              4
+              56 LOAD_CONST               12 ('.')
+              58 BUILD_STRING              7
+              60 CALL_FUNCTION             1
+              62 POP_TOP
 
-  8          64 LOAD_NAME                 5 (print)
-             66 LOAD_CONST               13 ('He said his name is ')
-             68 LOAD_NAME                 1 (name)
-             70 FORMAT_VALUE              2 (!r)
-             72 LOAD_CONST               12 ('.')
-             74 BUILD_STRING              3
-             76 CALL_FUNCTION             1
-             78 POP_TOP
-             80 LOAD_CONST                1 (None)
-             82 RETURN_VALUE
+  8:          64 LOAD_NAME                 5 (print)
+              66 LOAD_CONST               13 ('He said his name is ')
+              68 LOAD_NAME                 1 (name)
+              70 FORMAT_VALUE              2 (!r)
+              72 LOAD_CONST               12 ('.')
+              74 BUILD_STRING              3
+              76 CALL_FUNCTION             1
+              78 POP_TOP
+              80 LOAD_CONST                1 (None)
+              82 RETURN_VALUE
 

@@ -16,7 +16,10 @@ by_version = {}
 
 def __by_version(magics):
     for m, v in list(magics.items()):
-        by_magic[m] = v
+        if m not in by_magic:
+            by_magic[m] = set([v])
+        else:
+            by_magic[m].add(v)
         by_version[v] = m
     return by_version
 
@@ -27,13 +30,12 @@ versions = {
     int2magic(11913): '1.3', #
     int2magic(5892):  '1.4', #
     int2magic(20121): '1.5', # 1.5, 1.5.1, 1.5.2
-    int2magic(20121): '1.5', # 1.5, 1.5.1, 1.5.2
     int2magic(50428): '1.6', # 1.6
     int2magic(50823): '2.0', # 2.0, 2.0.1
     int2magic(60202): '2.1', # 2.1, 2.1.1, 2.1.2
     int2magic(60717): '2.2', # 2.2
     int2magic(62011): '2.3a0',
-    int2magic(62021): '2.3a0',
+    int2magic(62021): '2.3a0', # ! Two magics one version
     int2magic(62041): '2.4a0',
     int2magic(62051): '2.4a3',
     int2magic(62061): '2.4b1',
@@ -118,6 +120,42 @@ versions = {
 }
 
 magics = __by_version(versions)
+
+for m in '2.0 2.0.1'.split():
+    magics[m] = magics['2.0']
+
+for m in '2.1 2.1.1 2.1.2'.split():
+    magics[m] = magics['2.1']
+
+for m in '2.2 2.2.3'.split():
+    magics[m] = magics['2.2']
+
+for m in '2.3 2.3.7'.split():
+    magics[m] = magics['2.1']
+
+for m in '2.4 2.4.1 2.4.2 2.4.3 2.4.5 2.4.6'.split():
+    magics[m] = magics['2.4b1']
+
+for m in '2.5 2.5.1 2.5.2 2.5.3 2.5.43 2.5.5 2.5.6'.split():
+    magics[m] = magics['2.5c2']
+
+for m in '2.6 2.6.6 2.6.7 2.6.8 2.6.9'.split():
+    magics[m] = magics['2.6a1']
+
+for m in '2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13'.split():
+    magics[m] = magics['2.7']
+
+for m in '3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6'.split():
+    magics[m] = magics['3.3']
+
+for m in '3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6'.split():
+    magics[m] = magics['3.4rc2']
+
+for m in '3.5 3.5.0 3.5.1 3.5.2'.split():
+    magics[m] = magics['3.5']
+
+for m in '3.6 3.6.0 3.6.1'.split():
+    magics[m] = magics['3.6.0rc1']
 
 def __show(text, magic):
     print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
