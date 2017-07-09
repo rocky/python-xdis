@@ -43,15 +43,12 @@ class Code3:
             prev_offset = offset
             prev_line_number = line_number
             while offset_diff >= 256:
-                co_lnotab.append(chr(255))
-                co_lnotab.append(chr(0))
+                co_lnotab += bytearray([255, 0])
                 offset_diff -= 255
             while line_diff >= 256:
-                co_lnotab.append(chr(0))
-                co_lnotab.append(chr(255))
+                co_lnotab.append([0, 255])
                 line_diff -= 255
-            co_lnotab += bytearray([offset_diff])
-            co_lnotab += bytearray([line_diff])
+            co_lnotab += bytearray([offset_diff, line_diff])
 
         self.co_lnotab = co_lnotab
 

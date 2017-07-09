@@ -10,8 +10,8 @@ from xdis.bytecode import findlinestarts, findlabels
 import xdis.wordcode
 from xdis import IS_PYPY, PYTHON_VERSION
 
-cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
-        'is not', 'exception match', 'BAD')
+cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not-in', 'is',
+        'is-not', 'exception-match', 'BAD')
 
 # Opcodes greater than 90 take an instruction operand or "argument"
 # as opcode.py likes to call it.
