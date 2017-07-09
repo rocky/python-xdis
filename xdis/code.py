@@ -46,18 +46,22 @@ class Code3:
                 co_lnotab += bytearray([255, 0])
                 offset_diff -= 255
             while line_diff >= 256:
-                co_lnotab.append([0, 255])
+                co_lnotab += bytearray([0, 255])
                 line_diff -= 255
             co_lnotab += bytearray([offset_diff, line_diff])
 
         self.co_lnotab = co_lnotab
 
     def freeze(self):
-        for field in 'co_consts co_names co_varnames'.split():
+        for field in 'co_consts co_names co_varnames co_freevars co_cellvars'.split():
             val = getattr(self, field)
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
 
+        if isinstance(self.co_lnotab, dict):
+            d = self.co_lnotab
+            self.co_lnotab = sorted(zip(d.keys(), d.values()),
+                                    key=lambda tup: tup[0])
         if isinstance(self.co_lnotab, list):
             # We assume we have a list of tuples:
             # (offset, linenumber) which we convert
@@ -184,7 +188,7 @@ class Code2:
         self.co_lnotab = co_lnotab
 
     def freeze(self):
-        for field in 'co_consts co_names co_varnames'.split():
+        for field in 'co_consts co_names co_varnames co_freevars co_cellvars'.split():
             val = getattr(self, field)
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
