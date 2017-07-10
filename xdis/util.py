@@ -83,10 +83,8 @@ def format_code_info(co, version):
     lines.append("# Stack size:        %s" % co.co_stacksize)
     lines.append("# Flags:             %s" % pretty_flags(co.co_flags))
     lines.append("# First Line:        %s" % co.co_firstlineno)
-    if co.co_freevars:
-        lines.append("# Freevars:          %s" % str(co.co_freevars))
-    if co.co_cellvars:
-        lines.append("# Cellvars:          %s" % str(co.co_cellvars))
+    # if co.co_freevars:
+    #     lines.append("# Freevars:      %s" % str(co.co_freevars))
     if co.co_consts:
         lines.append("# Constants:")
         for i_c in enumerate(co.co_consts):
@@ -95,6 +93,10 @@ def format_code_info(co, version):
         lines.append("# Names:")
         for i_n in enumerate(co.co_names):
             lines.append("# %4d: %s" % i_n)
+    if co.co_varnames:
+        lines.append("# Varnames:")
+        lines.append("#\t%s" % ", ".join(co.co_varnames))
+        pass
     if pos_argc > 0:
         lines.append("# Positional arguments:")
         lines.append("#\t%s" % ", ".join(co.co_varnames[:pos_argc]))
