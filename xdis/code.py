@@ -193,6 +193,10 @@ class Code2:
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
 
+        if isinstance(self.co_lnotab, dict):
+            d = self.co_lnotab
+            self.co_lnotab = sorted(zip(d.keys(), d.values()),
+                                    key=lambda tup: tup[0])
         if isinstance(self.co_lnotab, list):
             # We assume we have a list of tuples:
             # (offset, linenumber) which we convert
