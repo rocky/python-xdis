@@ -3,7 +3,7 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
-import sys, types
+import re, sys, types
 from xdis import PYTHON3
 
 from collections import namedtuple
@@ -280,7 +280,7 @@ class Instruction(_Instruction):
         """
         fields = []
         if asm_format:
-            indexed_operand = set(['name', 'local', 'compare'])
+            indexed_operand = set(['name', 'local', 'compare', 'free'])
         # Column: Source code line number
         if lineno_width:
             if self.starts_line is not None:
@@ -326,6 +326,10 @@ class Instruction(_Instruction):
                     argval = self.offset + self.arg + self.inst_size
                     fields.append('L' + str(argval))
                 elif self.optype in indexed_operand:
+                    fields.append('(%s)' % argrepr)
+                    argrepr = None
+                elif (self.optype == 'const'
+                      and not re.search('\s', argrepr)):
                     fields.append('(%s)' % argrepr)
                     argrepr = None
                 else:
