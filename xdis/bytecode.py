@@ -134,7 +134,7 @@ def _get_name_info(name_index, name_list):
         argrepr = repr(argval)
     return argval, argrepr
 
-def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
+def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=None,
                            cells=None, linestarts=None, line_offset=0):
     """Iterate over the instructions in a bytecode string.
 
@@ -144,7 +144,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     arguments.
 
     """
-    labels = opc.findlabels(code, opc)
+    labels = opc.findlabels(bytecode, opc)
     extended_arg = 0
 
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
@@ -154,11 +154,11 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     starts_line = None
     # enumerate() is not an option, since we sometimes process
     # multiple elements on a single pass through the loop
-    n = len(code)
+    n = len(bytecode)
     i = 0
     extended_arg = 0
     while i < n:
-        op = code2num(code, i)
+        op = code2num(bytecode, i)
 
         offset = i
         if linestarts is not None:
@@ -174,12 +174,12 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
         optype = None
         if has_arg:
             if python_36:
-                arg = code2num(code, i) | extended_arg
+                arg = code2num(bytecode, i) | extended_arg
                 extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
                 # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
                 i += 1
             else:
-                arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
+                arg = code2num(bytecode, i) + code2num(bytecode, i+1)*256 + extended_arg
                 i += 2
                 extended_arg = arg*65536 if op == opc.EXTENDED_ARG else 0
 
@@ -216,7 +216,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                 optype = 'nargs'
                 if not python_36:
                     argrepr = ("%d positional, %d keyword pair" %
-                               (code2num(code, i-2), code2num(code, i-1)))
+                               (code2num(bytecode, i-2), code2num(bytecode, i-1)))
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
                 optype = 'vargs'
