@@ -80,15 +80,16 @@ class _Marshaller:
         except KeyError:
             if isinstance(x, Code2):
                 self.dispatch[Code2](self, x)
+                return
             elif isinstance(x, Code3):
                 self.dispatch[Code3](self, x)
+                return
             else:
                 for tp in type(x).mro():
                     func = self.dispatch.get(tp)
                     if func:
                         break
                 else:
-                    # from trepan.api import debug; debug()
                     raise ValueError("unmarshallable object")
             func(self, x)
 
@@ -211,6 +212,7 @@ class _Marshaller:
         self._write(x)
     if PYTHON_VERSION > 2.5:
         dispatch[bytes] = dump_string
+        dispatch[bytearray] = dump_string
 
     def dump_unicode(self, x):
         self._write(TYPE_UNICODE)
@@ -841,6 +843,8 @@ def dumps(x, version=version, python_version=None):
             if isinstance(b, str):
                 s2b = bytes(ord(b[j]) for j in range(len(b)))
                 buf.append(s2b)
+            elif isinstance(b, bytearray):
+                buf.append(str(b))
             else:
                 buf.append(b)
         return b''.join(buf)
