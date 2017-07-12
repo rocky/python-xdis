@@ -34,7 +34,7 @@ def init_opdata(l, from_mod, version=None, is_pypy=False):
     l['is_pypy'] = is_pypy
     l['cmp_op'] = cmp_op
     l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
-    if version < 3.5:
+    if version <= 3.5:
         l['findlinestarts'] = findlinestarts
         l['findlabels']     = findlabels
     else:

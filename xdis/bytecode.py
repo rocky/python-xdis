@@ -86,16 +86,16 @@ def findlabels(code, opc):
     except:
         code = code.co_code
         n = len(code)
-    i = 0
-    while i < n:
-        op = code2num(code, i)
-        i = i+1
+    offset = 0
+    while offset < n:
+        op = code2num(code, offset)
+        offset += 1
         if op >= opc.HAVE_ARGUMENT:
-            arg = code2num(code, i) + code2num(code, i+1)*256
-            i = i+2
+            arg = code2num(code, offset) + code2num(code, offset+1)*256
+            offset += 2
             label = -1
             if op in opc.JREL_OPS:
-                label = i+arg
+                label = offset + arg
             elif op in opc.JABS_OPS:
                 label = arg
             if label >= 0:
