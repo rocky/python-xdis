@@ -128,8 +128,15 @@ def varargs_op(l, op_name, op_code, pop=-1, push=1):
 # many Python idiocies over the years.
 
 def finalize_opcodes(l):
-    # Not sure why, but opcode.py addes has opcode.EXTENDED_ARG
+    # Not sure why, but opcode.py address has opcode.EXTENDED_ARG
     # as well as opmap['EXTENDED_ARG']
+    l['EXTENDED_ARG'] = l['opmap']['EXTENDED_ARG']
+
+    if 'ARG_MAX_VALUE' not in l:
+        # In Python 3.6+ this is 8, but we expect
+        # those opcodes to set that
+        l['ARG_MAX_VALUE'] = 1 << 16
+
     l['EXTENDED_ARG'] = l['opmap']['EXTENDED_ARG']
 
     l['opmap'] = fix_opcode_names(l['opmap'])
