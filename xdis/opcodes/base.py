@@ -14,8 +14,8 @@ if PYTHON_VERSION < 2.4:
     from sets import Set as set
     frozenset = set
 
-cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
-        'is not', 'exception match', 'BAD')
+cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not-in', 'is',
+        'is-not', 'exception-match', 'BAD')
 
 # Opcodes greater than 90 take an instruction operand or "argument"
 # as opcode.py likes to call it.
@@ -38,7 +38,7 @@ def init_opdata(l, from_mod, version=None, is_pypy=False):
     l['is_pypy'] = is_pypy
     l['cmp_op'] = cmp_op
     l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
-    if version < 3.5:
+    if version <= 3.5:
         l['findlinestarts'] = findlinestarts
         l['findlabels']     = findlabels
     else:
@@ -132,15 +132,22 @@ def varargs_op(l, op_name, op_code, pop=-1, push=1):
 # many Python idiocies over the years.
 
 def finalize_opcodes(l):
-    # Not sure why, but opcode.py addes has opcode.EXTENDED_ARG
+    # Not sure why, but opcode.py address has opcode.EXTENDED_ARG
     # as well as opmap['EXTENDED_ARG']
+    l['EXTENDED_ARG'] = l['opmap']['EXTENDED_ARG']
+
+    if 'ARG_MAX_VALUE' not in l:
+        # In Python 3.6+ this is 8, but we expect
+        # those opcodes to set that
+        l['ARG_MAX_VALUE'] = 1 << 16
+
     l['EXTENDED_ARG'] = l['opmap']['EXTENDED_ARG']
 
     l['opmap'] = fix_opcode_names(l['opmap'])
     # Now add in the attributes into the module
     for op in l['opmap']:
         l[op] = l['opmap'][op]
-    l['JUMP_OPs'] = set(l['hasjrel'] + l['hasjabs'])
+    l['JUMP_OPs'] = frozenset(l['hasjrel'] + l['hasjabs'])
     opcode_check(l)
 
 
@@ -165,22 +172,22 @@ def update_pj2(g, l):
     update_sets(l)
 
 def update_sets(l):
-    l['COMPARE_OPS'] = set(l['hascompare'])
-    l['CONST_OPS']   = set(l['hasconst'])
-    l['FREE_OPS']    = set(l['hasfree'])
-    l['JREL_OPS']    = set(l['hasjrel'])
-    l['JABS_OPS']    = set(l['hasjabs'])
-    l['JUMP_UNCONDITONAL']    = set([l['opmap']['JUMP_ABSOLUTE'],
+    l['COMPARE_OPS'] = frozenset(l['hascompare'])
+    l['CONST_OPS']   = frozenset(l['hasconst'])
+    l['FREE_OPS']    = frozenset(l['hasfree'])
+    l['JREL_OPS']    = frozenset(l['hasjrel'])
+    l['JABS_OPS']    = frozenset(l['hasjabs'])
+    l['JUMP_UNCONDITONAL']    = frozenset([l['opmap']['JUMP_ABSOLUTE'],
                                      l['opmap']['JUMP_FORWARD']])
-    l['LOOP_OPS']    = set([l['opmap']['SETUP_LOOP']])
-    l['LOCAL_OPS']   = set(l['haslocal'])
+    l['LOOP_OPS']    = frozenset([l['opmap']['SETUP_LOOP']])
+    l['LOCAL_OPS']   = frozenset(l['haslocal'])
     l['JUMP_OPS']    = (l['JABS_OPS']
                               | l['JREL_OPS']
                               | l['LOOP_OPS']
                               | l['JUMP_UNCONDITONAL'])
-    l['NAME_OPS']    = set(l['hasname'])
-    l['NARGS_OPS']   = set(l['hasnargs'])
-    l['VARGS_OPS']   = set(l['hasvargs'])
+    l['NAME_OPS']    = frozenset(l['hasname'])
+    l['NARGS_OPS']   = frozenset(l['hasnargs'])
+    l['VARGS_OPS']   = frozenset(l['hasvargs'])
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))

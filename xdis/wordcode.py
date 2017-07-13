@@ -1,35 +1,9 @@
-"""Python disassembly functions specific to wordcode from python 3.6
+"""Python disassembly functions specific to wordcode from Python 3.6+
 """
 from xdis import PYTHON3
 from xdis.bytecode import op_has_argument
 
-def _unpack_opargs(code, opc):
-    # enumerate() is not an option, since we sometimes process
-    # multiple elements on a single pass through the loop
-    extended_arg = 0
-    n = len(code)
-
-    i = 0
-    while i < n:
-        if PYTHON3:
-            op = code[i]
-        else:
-            op = ord(code[i])
-        offset = i
-        i += 1
-        arg = None
-        if op_has_argument(op, opc):
-            if PYTHON3:
-                arg = code[i] + code[i+1]*256 + extended_arg
-            else:
-                arg = ord(code[i]) + ord(code[i+1])*256 + extended_arg
-            extended_arg = 0
-            i += 2
-            if op == opc.EXTENDED_ARG:
-                extended_arg = arg*65536
-        yield (offset, op, arg)
-
-def _unpack_opargs_wordcode(code, opc):
+def unpack_opargs_wordcode(code, opc):
     extended_arg = 0
     for i in range(0, len(code), 2):
         op = code[i]
@@ -83,16 +57,11 @@ def findlabels(code, opc):
 
     """
     labels = []
-    if opc.version < 3.6:
-        unpack_opargs = _unpack_opargs
-    else:
-        unpack_opargs = _unpack_opargs_wordcode
-
-    for offset, op, arg in unpack_opargs(code, opc):
+    for offset, op, arg in unpack_opargs_wordcode(code, opc):
         if arg is not None:
             label = -1
             if op in opc.JREL_OPS:
-                label = offset + 3 + arg
+                label = offset + 2 + arg
             elif op in opc.JABS_OPS:
                 label = arg
             if label >= 0:

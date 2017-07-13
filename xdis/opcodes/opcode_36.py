@@ -16,6 +16,10 @@ from xdis.opcodes.base import(
 
 import xdis.opcodes.opcode_35 as opcode_35
 
+# Largest value a instruction can have before have.
+# After this, we need to use EXTENDED_ARG
+ARG_MAX_VALUE = 1 << 8
+
 version = 3.6
 
 l = locals()
@@ -116,7 +120,5 @@ opcode_arg_fmt = {
 }
 
 update_pj3(globals(), l)
-
-
 
 finalize_opcodes(l)

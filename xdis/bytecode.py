@@ -3,8 +3,8 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
-import sys, types
-from xdis import PYTHON3
+import re, sys, types
+from xdis import PYTHON3, PYTHON_VERSION
 
 from xdis.namedtuple24 import namedtuple
 
@@ -86,16 +86,16 @@ def findlabels(code, opc):
     except:
         code = code.co_code
         n = len(code)
-    i = 0
-    while i < n:
-        op = code2num(code, i)
-        i = i+1
+    offset = 0
+    while offset < n:
+        op = code2num(code, offset)
+        offset += 1
         if op >= opc.HAVE_ARGUMENT:
-            arg = code2num(code, i) + code2num(code, i+1)*256
-            i = i+2
+            arg = code2num(code, offset) + code2num(code, offset+1)*256
+            offset += 2
             label = -1
             if op in opc.JREL_OPS:
-                label = i+arg
+                label = offset + arg
             elif op in opc.JABS_OPS:
                 label = arg
             if label >= 0:
@@ -134,7 +134,7 @@ def _get_name_info(name_index, name_list):
         argrepr = repr(argval)
     return argval, argrepr
 
-def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
+def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=None,
                            cells=None, linestarts=None, line_offset=0):
     """Iterate over the instructions in a bytecode string.
 
@@ -144,7 +144,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     arguments.
 
     """
-    labels = opc.findlabels(code, opc)
+    labels = opc.findlabels(bytecode, opc)
     extended_arg = 0
 
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
@@ -157,11 +157,11 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
     starts_line = None
     # enumerate() is not an option, since we sometimes process
     # multiple elements on a single pass through the loop
-    n = len(code)
+    n = len(bytecode)
     i = 0
     extended_arg = 0
     while i < n:
-        op = code2num(code, i)
+        op = code2num(bytecode, i)
 
         offset = i
         if linestarts is not None:
@@ -177,7 +177,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
         optype = None
         if has_arg:
             if python_36:
-                arg = code2num(code, i) | extended_arg
+                arg = code2num(bytecode, i) | extended_arg
                 if opc == opc.EXTENDED_ARG:
                     extended_arg = (arg << 8)
                 else:
@@ -185,7 +185,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                 # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
                 i += 1
             else:
-                arg = code2num(code, i) + code2num(code, i+1)*256 + extended_arg
+                arg = code2num(bytecode, i) + code2num(bytecode, i+1)*256 + extended_arg
                 i += 2
                 if op == opc.EXTENDED_ARG:
                     extended_arg = arg*65536
@@ -225,7 +225,7 @@ def get_instructions_bytes(code, opc, varnames=None, names=None, constants=None,
                 optype = 'nargs'
                 if not python_36:
                     argrepr = ("%d positional, %d keyword pair" %
-                               (code2num(code, i-2), code2num(code, i-1)))
+                               (code2num(bytecode, i-2), code2num(bytecode, i-1)))
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
                 optype = 'vargs'
@@ -300,7 +300,7 @@ class Instruction(_Instruction):
         """
         fields = []
         if asm_format:
-            indexed_operand = set(['name', 'local', 'compare'])
+            indexed_operand = set(['name', 'local', 'compare', 'free'])
         # Column: Source code line number
         if lineno_width:
             if self.starts_line is not None:
@@ -346,6 +346,10 @@ class Instruction(_Instruction):
                     argval = self.offset + self.arg + self.inst_size
                     fields.append('L' + str(argval))
                 elif self.optype in indexed_operand:
+                    fields.append('(%s)' % argrepr)
+                    argrepr = None
+                elif (self.optype == 'const'
+                      and not re.search('\s', argrepr)):
                     fields.append('(%s)' % argrepr)
                     argrepr = None
                 else:
@@ -485,7 +489,7 @@ def list2bytecode(l, opc, varnames, consts):
                 thing = consts
             else:
                 thing = varnames
-            k = thing.index(j)
+            k = list(thing).index(j)
             if k == -1:
                 raise TypeError(
                     "operand %s [%s, %s], not found in names" %
@@ -500,6 +504,8 @@ def list2bytecode(l, opc, varnames, consts):
     else:
         if PYTHON3:
             return bytes(bc)
+        elif PYTHON_VERSION < 2.5:
+            return reduce(lambda a, b: a + chr(b), bc, '')
         else:
             return bytes(bytearray(bc))
 

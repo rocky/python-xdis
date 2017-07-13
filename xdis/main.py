@@ -115,7 +115,6 @@ def get_opcode(version, is_pypy):
                     from xdis.opcodes import opcode_pypy35
                     return opcode_pypy35
                 else:
-                    from xdis.opcodes import opcode_35
                     return opcode_35
             elif version == 3.6:
                 from xdis.opcodes import opcode_36

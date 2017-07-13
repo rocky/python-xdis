@@ -16,6 +16,13 @@ Usage:
   pydisasm [OPTIONS]... FILE
   pydisasm [--help | -h | -V | --version]
 
+Disassembles a Python bytecode file.
+
+We handle bytecode for virtually every release of Python and some releases of PyPy.
+The version of Python in the bytecode doesn't have to be the same version as
+the Python interpreter used to run this program. For example, you can disassemble Python 3.6.1
+bytecode from Python 2.7.13 and vice versa.
+
 Options:
   -a | --asm         produce assembly output more suitable for modification
   -V | --version     show version and stop
@@ -48,7 +55,7 @@ Type -h for for full help.""" % program
 
     try:
         opts, files = getopt.getopt(sys.argv[1:], 'hVUa',
-                                    ['help', 'version', 'asm'])
+                                    ['help', 'version', 'asm', 'noasm'])
     except getopt.GetoptError(e):
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
@@ -63,6 +70,8 @@ Type -h for for full help.""" % program
             sys.exit(0)
         elif opt in ('-a', '--asm'):
             asm = True
+        elif opt in ('--noasm'):
+            asm = False
         else:
             print(opt)
             sys.stderr.write(Usage_short)

@@ -29,6 +29,8 @@
 #    1: <xdis.code.Code3 instance at 0xdeadbeef0000>
 # Names:
 #    0: map
+# Varnames:
+#	right
 # Positional arguments:
 #	right
   4:           0 BUILD_LIST                0
@@ -49,6 +51,8 @@
 # Constants:
 #    0: None
 #    1: ()
+# Varnames:
+#	length
 # Positional arguments:
 #	length
   4:           0 LOAD_CONST                1 (())
