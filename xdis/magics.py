@@ -121,17 +121,17 @@ versions = {
 
 magics = __by_version(versions)
 
-for m in '2.0 2.0.1'.split():
+for m in '2.0.1'.split():
     magics[m] = magics['2.0']
 
-for m in '2.1 2.1.1 2.1.2'.split():
+for m in '2.1.1 2.1.2'.split():
     magics[m] = magics['2.1']
 
-for m in '2.2 2.2.3'.split():
+for m in '2.2.3'.split():
     magics[m] = magics['2.2']
 
 for m in '2.3 2.3.7'.split():
-    magics[m] = magics['2.1']
+    magics[m] = 62011
 
 for m in '2.4 2.4.1 2.4.2 2.4.3 2.4.5 2.4.6'.split():
     magics[m] = magics['2.4b1']
@@ -151,7 +151,7 @@ for m in '3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6'.split():
 for m in '3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6'.split():
     magics[m] = magics['3.4rc2']
 
-for m in '3.5 3.5.0 3.5.1 3.5.2'.split():
+for m in '3.5.0 3.5.1 3.5.2'.split():
     magics[m] = magics['3.5']
 
 for m in '3.6 3.6.0 3.6.1'.split():

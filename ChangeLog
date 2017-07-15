@@ -1,7 +1,70 @@
+2017-07-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 3.5.1
+
+2017-07-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: Magic cleanup
+
+2017-07-12  rocky <rb@dustyfeet.com>
+
+	* bin/pydisasm: Small pydisasm improvements -- Use click better: required and readable path arguments Expand help
+
+2017-07-12  rocky <rocky@dusytfeet.com>
+
+	* xdis/bytecode.py, xdis/main.py, xdis/opcodes/base.py: Python 3.5
+	was picking up wrong findlabels...  and other small changes
+
+2017-07-12  rocky <rocky@dusytfeet.com>
+
+	* xdis/marsh.py: Towards fixing cross Python 2/3 marshaling
+
+2017-07-12  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_36.py: Add ARG_MAX_VALUE
+	...  The maximum value an instruction operand can take before needing an
+	EXTENDED_ARG instruction
+
+2017-07-11  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/wordcode.py: Python 3.6 bytecode/wordcode
+	handling...  Correct JREL offset in findlabels for wordcode instructions Simplify
+	findlabels. I think this is right, but not totally sure.  bytecode.py: distiguish names bytecode (string) from code (object)
+	better
+
+2017-07-10  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py: Freeze 2.x now allows lnotab dict
+
+2017-07-10  rocky <rb@dustyfeet.com>
+
+	* pytest/testdata/pypy_lambda.right,
+	pytest/testdata/raise-3.0.right, xdis/util.py: xasm compatible
+	freevars disasm Things to make xasm work simpler Don't show Freevars more than once.  Show varnames: the combined positional + local vars
+
+2017-07-09  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py: --xasm option changes...  When --xasm remove indices on freevars.  For consts, remove them
+	when we can (i.e. if literal doesn't have an embedded space)
+
+2017-07-09  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py: co_lnotab fixes, freeze additions Allow co_lnotab to be a dictionary code.freeze handles co_freevars
+	and co_cellvars
+
+2017-07-09  rocky <rocky@dusytfeet.com>
+
+	* xdis/code.py, xdis/opcodes/base.py: A couple of xasm fixes: Fix 3.x lnotab calculation. Will need to redo when we handle cross
+	Python 2/3 assembly Adjust cmp_op values so they don't have space characters - this
+	helps xasm's tokenization of the COMPARE_OP operand.
+
 2017-07-08  rocky <rb@dustyfeet.com>
 
-	* : commit d9037032230bad3453b24e0013efd32f4f30eaff Author: rocky
-	<rb@dustyfeet.com> Date:   Sat Jul 8 18:44:22 2017 -0400
+	* xdis/opcodes/base.py: frozenset is more appropriate for opcode
+	sets
+
+2017-07-08  rocky <rb@dustyfeet.com>
+
 
 2017-07-08  rocky <rb@dustyfeet.com>
 
@@ -366,7 +429,7 @@
 
 	* Makefile, pytest/test_opcode.py, test/Makefile,
 	test_unit/Makefile, test_unit/test_opcode.py,
-	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py: 
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py:
 	SETUP_ASYNC_WITH is jrel ...  found by pytest/test_opcode.py opcode_35.py: correct SETUP_ASYNC_WITH Makefile: add clean target
 	opcode_3x.py: small formating change
 
@@ -3940,7 +4003,7 @@
 	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
 	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
 	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_33.py,
-	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: 
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py:
 	Another round of DRYing code
 
 2017-01-14  rocky <rocky@dusytfeet.com>
@@ -4168,7 +4231,7 @@
 
 2016-10-27  rocky <rb@dustyfeet.com>
 
-	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py: 
+	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py:
 	Clarification of EXTENDED_ARG in 3.0 and 3.1
 
 2016-10-25  rocky <rb@dustyfeet.com>
@@ -4458,7 +4521,7 @@
 
 2016-08-26  rocky <rocky@dusytfeet.com>
 
-	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py: 
+	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py:
 	Python 3.1 opcode bugs ...  verify assert statement.  test_pyenvlib.py: Allow 3.1 testing
 
 2016-08-26  rocky <rocky@dusytfeet.com>
@@ -4592,7 +4655,7 @@
 
 2016-07-25  rocky <rocky@dusytfeet.com>
 
-	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py: 
+	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py:
 	Document PyPY opts better And fix a bog in JUMP_IF_NOT_DEBUG jrel_op call
 
 2016-07-24  rocky <rocky@dusytfeet.com>
@@ -4662,7 +4725,7 @@
 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py,
 	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy26.py,
-	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py: 
+	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py:
 	Moagstar's Python 3.6 support With some small changes - fix some of my typos - handle a merge conflict in xdis/byteocde
 
 2016-07-20  rocky <rocky@dusytfeet.com>
@@ -4871,7 +4934,7 @@
 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py,
 	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
-	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py: 
+	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py:
 	pyxdis -> xdis
 
 2016-05-25  rocky <rocky@dusytfeet.com>
@@ -4931,12 +4994,12 @@
 
 	* .gitignore, pyxdis/main.py, pyxdis/opcodes/opcode_26.py,
 	pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_pypy27.py,
-	test/simple_source/05_24_float.py, test_unit/test_opcode.py: 
+	test/simple_source/05_24_float.py, test_unit/test_opcode.py:
 	Separate PYPY 2.7 from 2.7; DRY 27
 
 2016-05-22  rocky <rocky@dusytfeet.com>
 
-	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py: 
+	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py:
 	Some tolerance for pypy
 
 2016-05-22  rocky <rocky@dusytfeet.com>
@@ -4959,7 +5022,7 @@
 	* pyxdis/__init__.py, pyxdis/load.py, pyxdis/main.py,
 	pyxdis/marsh.py, pyxdis/opcodes/opcode_23.py,
 	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
-	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py: 
+	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py:
 	Allow bytecodes back to 2.3 or so. and...  Add timestamps when disassembly Rewrite to allow some tolerance to
 	older Pythons
 
@@ -5042,7 +5105,7 @@
 
 2016-05-19  rocky <rb@dustyfeet.com>
 
-	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py: 
+	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py:
 	More opcodes, more travis testing.
 
 2016-05-19  rocky <rb@dustyfeet.com>
@@ -5063,4 +5126,3 @@
 2016-05-19  rocky <rocky@dusytfeet.com>
 
 	* Start Python cross disasemble/marshal project For older history see uncompyle6
-
