@@ -1,3 +1,17 @@
+3.5.1 2017-07-14
+
+Overall: Better xasm support, pydisasm improvements
+
+- Was picking up wrong findlabels and findlinestarts in Python 3.5
+- Add ARG_MAX_VALUE: the largest operand value before needing EXTENDED_ARG
+- Allow lnotab as a dict before code freeze
+- pydisasm: don't show Freevars more than once. Do show varnames,
+  the combined positional + local vars
+- change cmp_op values so they don't have an embedded space
+  this helps xasm tokenization of COMPARE_OP's operand
+- --asm option fixes
+- a frozenset is more appropriate for opcode sets
+
 3.5.0 2017-07-08
 
 Overall: Support for bytecode assembler (xasm), Better 3.4-3.6 support
