@@ -154,7 +154,7 @@ for m in '3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6'.split():
 for m in '3.5.0 3.5.1 3.5.2'.split():
     magics[m] = magics['3.5']
 
-for m in '3.6 3.6.0 3.6.1'.split():
+for m in '3.6 3.6.0 3.6.1 3.6.2'.split():
     magics[m] = magics['3.6.0rc1']
 
 def __show(text, magic):
