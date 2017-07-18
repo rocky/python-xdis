@@ -49,18 +49,18 @@ def load_file(filename):
     """
     fp = open(filename, 'r')
     try:
-      source = fp.read()
+        source = fp.read()
 
-      try:
-          if PYTHON_VERSION < 2.6:
-              co = compile(source, filename, 'exec')
-          else:
-              co = compile(source, filename, 'exec', dont_inherit=True)
-      except SyntaxError:
-          sys.stderr.write('>>Syntax error in %s\n' % filename)
-          raise
+        try:
+            if PYTHON_VERSION < 2.6:
+                co = compile(source, filename, 'exec')
+            else:
+                co = compile(source, filename, 'exec', dont_inherit=True)
+        except SyntaxError:
+            sys.stderr.write('>>Syntax error in %s\n' % filename)
+            raise
     finally:
-      fp.close()
+        fp.close()
     return co
 
 def load_module(filename, code_objects=None, fast_load=False,
@@ -81,7 +81,7 @@ def load_module(filename, code_objects=None, fast_load=False,
     python version, etc. For that, set get_code=False.
     """
     if code_objects is None:
-      code_objects = {}
+        code_objects = {}
 
     timestamp = 0
     fp = open(filename, 'rb')
