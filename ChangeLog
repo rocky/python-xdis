@@ -1,6 +1,71 @@
+2017-07-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/version.py: Get ready for release 3.5.1
+
+2017-07-14  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: Magic cleanup
+
+2017-07-12  rocky <rb@dustyfeet.com>
+
+	* bin/pydisasm: Small pydisasm improvements -- Use click better: required and readable path arguments Expand help
+
+2017-07-12  rocky <rocky@dusytfeet.com>
+
+	* xdis/bytecode.py, xdis/main.py, xdis/opcodes/base.py: Python 3.5
+	was picking up wrong findlabels...  and other small changes
+
+2017-07-12  rocky <rocky@dusytfeet.com>
+
+	* xdis/marsh.py: Towards fixing cross Python 2/3 marshaling
+
+2017-07-12  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_36.py: Add ARG_MAX_VALUE
+	...  The maximum value an instruction operand can take before needing an
+	EXTENDED_ARG instruction
+
+2017-07-11  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/wordcode.py: Python 3.6 bytecode/wordcode
+	handling...  Correct JREL offset in findlabels for wordcode instructions Simplify
+	findlabels. I think this is right, but not totally sure.  bytecode.py: distiguish names bytecode (string) from code (object)
+	better
+
+2017-07-10  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py: Freeze 2.x now allows lnotab dict
+
+2017-07-10  rocky <rb@dustyfeet.com>
+
+	* pytest/testdata/pypy_lambda.right,
+	pytest/testdata/raise-3.0.right, xdis/util.py: xasm compatible
+	freevars disasm Things to make xasm work simpler Don't show Freevars more than once.  Show varnames: the combined positional + local vars
+
+2017-07-09  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py: --xasm option changes...  When --xasm remove indices on freevars.  For consts, remove them
+	when we can (i.e. if literal doesn't have an embedded space)
+
+2017-07-09  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py: co_lnotab fixes, freeze additions Allow co_lnotab to be a dictionary code.freeze handles co_freevars
+	and co_cellvars
+
+2017-07-09  rocky <rocky@dusytfeet.com>
+
+	* xdis/code.py, xdis/opcodes/base.py: A couple of xasm fixes: Fix 3.x lnotab calculation. Will need to redo when we handle cross
+	Python 2/3 assembly Adjust cmp_op values so they don't have space characters - this
+	helps xasm's tokenization of the COMPARE_OP operand.
+
 2017-07-08  rocky <rb@dustyfeet.com>
 
-	* xdis/version.py: Get ready for release 3.5.0
+	* xdis/opcodes/base.py: frozenset is more appropriate for opcode
+	sets
+
+2017-07-08  rocky <rb@dustyfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.5.0
 
 2017-07-08  rocky <rb@dustyfeet.com>
 
