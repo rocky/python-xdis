@@ -14,7 +14,14 @@ example:
     for op in dis.Bytecode('for i in range(10): pass'):
         print(op)
 
+There is also the ability to generate an std api for a specific version, for example:
+
+    from xdis.std import make_std_api
+    dis = make_std_api(2.4, is_pypy=False)
+    # dis can now disassemble code objects from python 2.4
+
 """
+
 
 # std
 import sys
