@@ -29,26 +29,21 @@ class _StdApi:
 
     def __init__(self, python_version=PYTHON_VERSION, is_pypy=IS_PYPY):
 
-        # Used from the outside
-        # TODO : Replace with cross version functions using version and is_pypy
-        from dis import hasconst, hasname, opmap, opname, EXTENDED_ARG, HAVE_ARGUMENT
-
-        self.hasconst = hasconst
-        self.hasname = hasname
-        self.opmap = opmap
-        self.opname = opname
-        self.EXTENDED_ARG = EXTENDED_ARG
-        self.HAVE_ARGUMENT = HAVE_ARGUMENT
-
         if python_version >= 3.6:
             import xdis.wordcode as xcode
         else:
             import xdis.bytecode as xcode
         self.xcode = xcode
 
-        self.opc = opc = get_opcode(python_version, is_pypy)
         self.python_version = python_version
         self.is_pypy = is_pypy
+        self.opc = opc = get_opcode(python_version, is_pypy)
+        self.hasconst = opc.hasconst
+        self.hasname = opc.hasname
+        self.opmap = opc.opmap
+        self.opname = opc.opname
+        self.EXTENDED_ARG = opc.EXTENDED_ARG
+        self.HAVE_ARGUMENT = opc.HAVE_ARGUMENT
 
         class Bytecode(_Bytecode):
             """The bytecode operations of a piece of code
