@@ -52,6 +52,7 @@
 .idea/**/uiDesigner.xml
 .idea/**/workspace.xml
 .idea_modules/
+.idea*
 /.cache
 /.eggs
 /.python-version
