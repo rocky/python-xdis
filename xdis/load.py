@@ -2,6 +2,7 @@
 
 import imp, marshal, os, py_compile, sys, tempfile, time
 from struct import unpack, pack
+import os.path as osp
 
 import xdis.unmarshal
 from xdis import PYTHON3, PYTHON_VERSION
@@ -21,7 +22,7 @@ def check_object_path(path):
             except:
                 pass
             pass
-        basename = os.path.basename(path)[0:-3]
+        basename = osp.basename(path)[0:-3]
         if PYTHON3:
             spath = path
         else:
@@ -81,6 +82,14 @@ def load_module(filename, code_objects=None, fast_load=False,
     """
     if code_objects is None:
         code_objects = {}
+
+    # Some sanity checks
+    if not osp.exists(filename):
+        raise ImportError("File name: '%s' doesn't exist" % filename)
+    elif not osp.isfile(filename):
+        raise ImportError("File name: '%s' isn't a file" % filename)
+    elif osp.getsize(filename) < 50:
+        raise ImportError("File name: '%s (%d bytes)' is too short to be a valid pyc file" % (filename, osp.getsize(filename)))
 
     timestamp = 0
     fp = open(filename, 'rb')
