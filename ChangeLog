@@ -1,3 +1,39 @@
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.5.2
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: Add one more Pypy version
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_dis27.py, xdis/magics.py: Pypy fixes
+
+2017-08-09  rocky <rb@dustyfeet.com>
+
+	* xdis/main.py: Old code creapt back in
+
+2017-08-09  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/main.py: Show duplicate line in asm ...  if it is not an artifact of allowing bytecode to increment by more
+	than 256
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_magic.py, xdis/magics.py: More magic fixups
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* xdis/main.py, xdis/op_imports.py: Simplify getting an opcode
+	import from a version
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, xdis/magics.py: Add mappings from versions to canonic
+	version...  And add a list of every python version we admit knowing about Python 3.3 we'll call 3.3a2 and we'll call 3.3 (what is usually in
+	place for 3.3.x) 3.3a4)
+
 2017-08-08  rocky <rocky@dusytfeet.com>
 
 	* xdis/code.py, xdis/load.py, xdis/magics.py: Python 3.x fixes
