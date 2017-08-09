@@ -1,6 +1,6 @@
 # Copyright (c) 2015-2017 by Rocky Bernstein
 
-import imp, marshal, os, py_compile, sys, tempfile, time
+import imp, marshal, py_compile, sys, tempfile, time
 from struct import unpack, pack
 import os.path as osp
 
@@ -171,7 +171,10 @@ def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
     """
     fp = open(bytecode_path, 'wb')
     try:
-        fp.write(pack('Hcc', magic_int, '\r', '\n'))
+        if PYTHON3:
+            fp.write(pack('Hcc', magic_int, b'\r', b'\n'))
+        else:
+            fp.write(pack('Hcc', magic_int, '\r', '\n'))
         fp.write(pack('I', int(time.time())))
         if (3000 <= magic_int < 20121):
             # In Python 3 you need to write out the size mod 2**32 here
