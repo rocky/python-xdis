@@ -1,6 +1,6 @@
 # Copyright (c) 2015-2017 by Rocky Bernstein
 
-import imp, marshal, os, py_compile, sys, tempfile, time
+import imp, marshal, py_compile, sys, tempfile, time
 from struct import unpack, pack
 import os.path as osp
 

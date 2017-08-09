@@ -208,7 +208,8 @@ class Code2:
 
 
         if PYTHON3:
-            delattr(self, 'co_kwonlyargcount')
+            if hasattr(self, 'co_kwonlyargcount'):
+                delattr(self, 'co_kwonlyargcount')
             return self
         else:
             args = (self.co_argcount,
