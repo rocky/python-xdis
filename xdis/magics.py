@@ -1,3 +1,7 @@
+"""
+Everything you ever wanted to know about Python versions and their
+magic numbers. And a little bit more...
+"""
 import imp, struct, sys
 
 def int2magic(magic):
@@ -9,6 +13,7 @@ def int2magic(magic):
 def magic2int(magic):
     return struct.unpack('Hcc', magic)[0]
 
+# The magic integer for the current running Python interpreter
 PYTHON_MAGIC_INT = magic2int(imp.get_magic())
 
 by_magic = {}
@@ -115,8 +120,12 @@ versions = {
                                    # PyPy adds 7 to the corresponding CPython number
     int2magic(3190): '3.3a0',  # __class__ super closure changed
     int2magic(3200): '3.3a0+', # __qualname__ added
-    int2magic(3210): '3.3',    # added size modulo 2**32 to the pyc header
     int2magic(3220): '3.3a1',  # changed PEP 380 implementation
+    int2magic(3210): '3.3a2',  # added size modulo 2**32 to the pyc header
+                               # NOTE: 3.3a2 is our name, other places call it 3.3
+                               # but most 3.3 versions are 3.3a4 which comes next.
+                               # FIXME: figure out what the history is and
+                               # what the right thing to do if this isn't it.
     int2magic(3230): '3.3a4',  # revert changes to implicit __class__ closure
     int2magic(3250): '3.4a1',  # evaluate positional default arg
                                # keyword-only defaults)
@@ -137,51 +146,45 @@ versions = {
     int2magic(3379): '3.6.0rc1',  #
 
     # Weird ones
-    int2magic(48):    '3.2', # WTF? Python 3.2.5 - PyPy 2.3.4
-                             # This doesn't follow the rule below
+    int2magic(48):    '3.2a2', # WTF? Python 3.2.5 - PyPy 2.3.4
+                               # This doesn't follow the rule below
     int2magic(112):   '3.5pypy', # pypy3.5-c-jit-latest
 }
 
 magics = __by_version(versions)
 
-for m in '1.5.1 1.5.2'.split():
-    magics[m] = magics['1.5']
+# From a Python version givin in sys.info, e.g. 3.6.1,
+# what is the "canonic" version number, e.g. '3.6.0rc1'
+canonic_python_version = {}
 
-for m in '2.0.1'.split():
-    magics[m] = magics['2.0']
+def add_canonic_versions(versions, canonic):
+    for v in versions.split():
+        canonic_python_version[v] = canonic
+        magics[v] = magics[canonic]
+        pass
+    return
 
-for m in '2.1.1 2.1.2'.split():
-    magics[m] = magics['2.1']
+add_canonic_versions('1.5.1 1.5.2', '1.5')
+add_canonic_versions('2.0.1', '2.0')
+add_canonic_versions('2.1.1 2.1.2', '2.1')
+add_canonic_versions('2.2.3', '2.2')
+add_canonic_versions('2.3 2.3.7', '2.3a0')
+add_canonic_versions('2.4 2.4.1 2.4.2 2.4.3 2.4.5 2.4.6', '2.4b1')
+add_canonic_versions('2.5 2.5.1 2.5.2 2.5.3 2.5.4 2.5.5 2.5.6', '2.5c2')
+add_canonic_versions('2.6 2.6.6 2.6.7 2.6.8 2.6.9', '2.6a1')
+add_canonic_versions('2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 '
+                     '2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13', '2.7')
+add_canonic_versions('3.3 3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6', '3.3a4')
+add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6', '3.4rc2')
+add_canonic_versions('3.5.0 3.5.1 3.5.2', '3.5')
+add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2', '3.6.0rc1')
 
-for m in '2.2.3'.split():
-    magics[m] = magics['2.2']
+# The canonic version for a canonic version is itself
+for v in versions.values():
+    canonic_python_version[v] = v
 
-for m in '2.3 2.3.7'.split():
-    magics[m] = 62011
-
-for m in '2.4 2.4.1 2.4.2 2.4.3 2.4.5 2.4.6'.split():
-    magics[m] = magics['2.4b1']
-
-for m in '2.5 2.5.1 2.5.2 2.5.3 2.5.43 2.5.5 2.5.6'.split():
-    magics[m] = magics['2.5c2']
-
-for m in '2.6 2.6.6 2.6.7 2.6.8 2.6.9'.split():
-    magics[m] = magics['2.6a1']
-
-for m in '2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13'.split():
-    magics[m] = magics['2.7']
-
-for m in '3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6'.split():
-    magics[m] = magics['3.3a4']
-
-for m in '3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6'.split():
-    magics[m] = magics['3.4rc2']
-
-for m in '3.5.0 3.5.1 3.5.2'.split():
-    magics[m] = magics['3.5']
-
-for m in '3.6 3.6.0 3.6.1 3.6.2'.split():
-    magics[m] = magics['3.6.0rc1']
+# A set of all Python versions we know about
+python_versions = set(canonic_python_version.keys())
 
 def __show(text, magic):
     print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
