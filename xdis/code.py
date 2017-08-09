@@ -1,5 +1,4 @@
 # (C) Copyright 2017 by Rocky Bernstein
-from xdis import PYTHON3
 import inspect, types
 class Code3:
     """Class for a Python3 code object used when a Python interpreter less than 3 is
@@ -70,25 +69,7 @@ class Code3:
             self.encode_lineno_tab()
 
 
-        if PYTHON3:
-            args = (self.co_argcount,
-                    self.co_kwonlyargcount,
-                    self.co_nlocals,
-                    self.co_stacksize,
-                    self.co_flags,
-                    self.co_code,
-                    self.co_consts,
-                    self.co_names,
-                    self.co_varnames,
-                    self.co_filename,
-                    self.co_name,
-                    self.co_firstlineno,
-                    self.co_lnotab,
-                    self.co_freevars,
-                    self.co_cellvars)
-            return types.CodeType(*args)
-        else:
-            return self
+        return self
 
 
     def check(self):
@@ -207,26 +188,21 @@ class Code2:
             self.encode_lineno_tab()
 
 
-        if PYTHON3:
-            if hasattr(self, 'co_kwonlyargcount'):
-                delattr(self, 'co_kwonlyargcount')
-            return self
-        else:
-            args = (self.co_argcount,
-                    self.co_nlocals,
-                    self.co_stacksize,
-                    self.co_flags,
-                    self.co_code,
-                    self.co_consts,
-                    self.co_names,
-                    self.co_varnames,
-                    self.co_filename,
-                    self.co_name,
-                    self.co_firstlineno,
-                    self.co_lnotab,
-                    self.co_freevars,
-                    self.co_cellvars)
-            return types.CodeType(*args)
+        args = (self.co_argcount,
+                self.co_nlocals,
+                self.co_stacksize,
+                self.co_flags,
+                self.co_code,
+                self.co_consts,
+                self.co_names,
+                self.co_varnames,
+                self.co_filename,
+                self.co_name,
+                self.co_firstlineno,
+                self.co_lnotab,
+                self.co_freevars,
+                self.co_cellvars)
+        return types.CodeType(*args)
 
 
     def check(self):
