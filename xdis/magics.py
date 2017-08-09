@@ -181,7 +181,7 @@ add_canonic_versions('3.5.0 3.5.1 3.5.2', '3.5')
 add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2', '3.6.0rc1')
 
 add_canonic_versions('3.2.5pypy', '3.2pypy')
-add_canonic_versions('2.7.10pypy', '2.7pypy')
+add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
 
 # The canonic version for a canonic version is itself
 for v in versions.values():

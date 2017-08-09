@@ -1,11 +1,61 @@
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* : commit 57521b2ed937189d1198ea4fefd17290e71d7e17 Author: rocky
+	<rocky@dusytfeet.com> Date:   Wed Aug 9 11:29:12 2017 -0400
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* : commit f580209dcb711b33d32b0e6f95b43c15998c0970 Author: rocky
+	<rocky@dusytfeet.com> Date:   Wed Aug 9 11:23:04 2017 -0400
+
+2017-08-09  rocky <rb@dustyfeet.com>
+
+	* test_unit/test_dis24.py, xdis/main.py: Track line number output
+	change
+
+2017-08-09  rocky <rb@dustyfeet.com>
+
+	* xdis/main.py: Old code creapt back in
+
+2017-08-09  rocky <rb@dustyfeet.com>
+
+	* : commit 1beb9d7132f61235edcfa5dc9255f3898c7ed793 Author: rocky
+	<rb@dustyfeet.com> Date:   Wed Aug 9 10:42:37 2017 -0400
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* : commit a7219cfa8d3b9258c7a628ea68001752dfa3a852 Author: rocky
+	<rocky@dusytfeet.com> Date:   Wed Aug 9 05:59:04 2017 -0400
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* : commit 094f84b89f445eb502bbbf4636bf264d7730bbc4 Author: rocky
+	<rocky@dusytfeet.com> Date:   Wed Aug 9 05:11:10 2017 -0400
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, xdis/magics.py: Add mappings from versions to canonic
+	version...  And add a list of every python version we admit knowing about Python 3.3 we'll call 3.3a2 and we'll call 3.3 (what is usually in
+	place for 3.3.x) 3.3a4)
+
 2017-08-08  rocky <rocky@dusytfeet.com>
 
-	* xdis/code.py, xdis/load.py, xdis/magics.py: Python 3.x fixes
+	* xdis/code.py: Remove PYTHON3 code; we're <= 2.5
+
+2017-08-08  rocky <rocky@dusytfeet.com>
+
+	* : commit 4d150164f99e338fb53790b17d9c247a83a5cd42 Author: rocky
+	<rocky@dusytfeet.com> Date:   Tue Aug 8 20:45:04 2017 -0400
 
 2017-07-27  rocky <rb@dustyfeet.com>
 
-	* : commit 120b49c424c293ae44582fef52c6d0ede2f95dde Author: rocky
-	<rb@dustyfeet.com> Date:   Thu Jul 27 01:58:49 2017 -0400
+	* : commit a3c6f138500cec0c144fabc644216e9c2cdcec96 Merge: 120b49c
+	2fe5e64 Author: rocky <rb@dustyfeet.com> Date:   Thu Jul 27 01:59:19
+	2017 -0400
+
+2017-07-27  rocky <rb@dustyfeet.com>
+
+	* xdis/load.py: Better error checking of invalid PYC file
 
 2017-07-24  Daniel Bradburn <moagstar@gmail.com>
 
@@ -13,13 +63,23 @@
 
 2017-07-18  rocky <rocky@dusytfeet.com>
 
-	* : commit 9479f0d64ae6cd1ea02075afbf3b2ebeb9b62ad6 Author: rocky
-	<rocky@dusytfeet.com> Date:   Tue Jul 18 08:04:45 2017 -0400
+	* : commit 156f362e814fef1afcb900d6b7512111ba505253 Merge: 9479f0d
+	94e21b6 Author: rocky <rocky@dusytfeet.com> Date:   Tue Jul 18
+	08:05:04 2017 -0400
+
+2017-07-18  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: Add 3.6.2 magic alias
 
 2017-07-18  rocky <rb@dustyfeet.com>
 
-	* : commit af9448caccd4348f3c2d8d2fea14136eebd18e10 Author: rocky
-	<rb@dustyfeet.com> Date:   Tue Jul 18 05:51:11 2017 -0400
+	* : commit 94e21b63ad4c1b70d5d6d239539bd35e36e4398b Merge: af9448c
+	ef44b03 Author: rocky <rb@dustyfeet.com> Date:   Tue Jul 18 05:51:43
+	2017 -0400
+
+2017-07-18  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py: 1.5 magics and more verbiage.
 
 2017-07-18  rocky <rocky@dusytfeet.com>
 
@@ -27,15 +87,17 @@
 
 2017-07-14  rocky <rocky@dusytfeet.com>
 
-	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.5.1
+	* : commit 45af9d2438ba3a7d0efd31bb94f2136c3ce5f81d Author: rocky
+	<rocky@dusytfeet.com> Date:   Fri Jul 14 22:15:39 2017 -0400
 
 2017-07-14  rocky <rocky@dusytfeet.com>
 
 	* xdis/magics.py: Magic cleanup
 
-2017-07-12  rocky <rb@dustyfeet.com>
+2017-07-13  rocky <rocky@dusytfeet.com>
 
-	* bin/pydisasm: Small pydisasm improvements -- Use click better: required and readable path arguments Expand help
+	* : commit 4764a11297800ab0d535d6e23630476798ad3f46 Author: rocky
+	<rb@dustyfeet.com> Date:   Wed Jul 12 22:39:18 2017 -0400
 
 2017-07-12  rocky <rocky@dusytfeet.com>
 
@@ -92,6 +154,14 @@
 
 2017-07-08  rocky <rb@dustyfeet.com>
 
+	* ChangeLog, bin/pydisasm, test_unit/test_dis24.py,
+	test_unit/test_dis27.py, xdis/code.py, xdis/marsh.py,
+	xdis/wordcode.py: release 3.5.0
+
+2017-07-08  rocky <rb@dustyfeet.com>
+
+	* : commit d9037032230bad3453b24e0013efd32f4f30eaff Author: rocky
+	<rb@dustyfeet.com> Date:   Sat Jul 8 18:44:22 2017 -0400
 
 2017-07-08  rocky <rb@dustyfeet.com>
 
@@ -456,7 +526,7 @@
 
 	* Makefile, pytest/test_opcode.py, test/Makefile,
 	test_unit/Makefile, test_unit/test_opcode.py,
-	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py:
+	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py: 
 	SETUP_ASYNC_WITH is jrel ...  found by pytest/test_opcode.py opcode_35.py: correct SETUP_ASYNC_WITH Makefile: add clean target
 	opcode_3x.py: small formating change
 
@@ -4030,7 +4100,7 @@
 	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
 	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
 	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_33.py,
-	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py:
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: 
 	Another round of DRYing code
 
 2017-01-14  rocky <rocky@dusytfeet.com>
@@ -4258,7 +4328,7 @@
 
 2016-10-27  rocky <rb@dustyfeet.com>
 
-	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py:
+	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py: 
 	Clarification of EXTENDED_ARG in 3.0 and 3.1
 
 2016-10-25  rocky <rb@dustyfeet.com>
@@ -4548,7 +4618,7 @@
 
 2016-08-26  rocky <rocky@dusytfeet.com>
 
-	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py:
+	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py: 
 	Python 3.1 opcode bugs ...  verify assert statement.  test_pyenvlib.py: Allow 3.1 testing
 
 2016-08-26  rocky <rocky@dusytfeet.com>
@@ -4682,7 +4752,7 @@
 
 2016-07-25  rocky <rocky@dusytfeet.com>
 
-	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py:
+	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py: 
 	Document PyPY opts better And fix a bog in JUMP_IF_NOT_DEBUG jrel_op call
 
 2016-07-24  rocky <rocky@dusytfeet.com>
@@ -4752,7 +4822,7 @@
 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py,
 	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy26.py,
-	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py:
+	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py: 
 	Moagstar's Python 3.6 support With some small changes - fix some of my typos - handle a merge conflict in xdis/byteocde
 
 2016-07-20  rocky <rocky@dusytfeet.com>
@@ -4961,7 +5031,7 @@
 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py,
 	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
-	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py:
+	xdis/unmarshal.py, xdis/util.py, xdis/verify.py, xdis/version.py: 
 	pyxdis -> xdis
 
 2016-05-25  rocky <rocky@dusytfeet.com>
@@ -5021,12 +5091,12 @@
 
 	* .gitignore, pyxdis/main.py, pyxdis/opcodes/opcode_26.py,
 	pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_pypy27.py,
-	test/simple_source/05_24_float.py, test_unit/test_opcode.py:
+	test/simple_source/05_24_float.py, test_unit/test_opcode.py: 
 	Separate PYPY 2.7 from 2.7; DRY 27
 
 2016-05-22  rocky <rocky@dusytfeet.com>
 
-	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py:
+	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py: 
 	Some tolerance for pypy
 
 2016-05-22  rocky <rocky@dusytfeet.com>
@@ -5049,7 +5119,7 @@
 	* pyxdis/__init__.py, pyxdis/load.py, pyxdis/main.py,
 	pyxdis/marsh.py, pyxdis/opcodes/opcode_23.py,
 	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
-	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py:
+	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py: 
 	Allow bytecodes back to 2.3 or so. and...  Add timestamps when disassembly Rewrite to allow some tolerance to
 	older Pythons
 
@@ -5132,7 +5202,7 @@
 
 2016-05-19  rocky <rb@dustyfeet.com>
 
-	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py:
+	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py: 
 	More opcodes, more travis testing.
 
 2016-05-19  rocky <rb@dustyfeet.com>
@@ -5153,3 +5223,4 @@
 2016-05-19  rocky <rocky@dusytfeet.com>
 
 	* Start Python cross disasemble/marshal project For older history see uncompyle6
+
