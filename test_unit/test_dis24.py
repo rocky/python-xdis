@@ -36,7 +36,8 @@ dis_bug708901 = """\
 %3d:           9 LOAD_CONST                2 (10)
               12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
               15 GET_ITER
-         >>   16 FOR_ITER                  6 (to 25)
+
+%3d:     >>   16 FOR_ITER                  6 (to 25)
               19 STORE_FAST                0 (res)
 
 %3d:          22 JUMP_ABSOLUTE            16 (to 16)
@@ -45,6 +46,7 @@ dis_bug708901 = """\
               29 RETURN_VALUE
 
 """%(bug708901.func_code.co_firstlineno + 1,
+     bug708901.func_code.co_firstlineno + 2,
      bug708901.func_code.co_firstlineno + 2,
      bug708901.func_code.co_firstlineno + 3)
 
