@@ -1,6 +1,33 @@
+2017-08-08  rocky <rocky@dusytfeet.com>
+
+	* xdis/code.py, xdis/load.py, xdis/magics.py: Python 3.x fixes
+
+2017-07-27  rocky <rb@dustyfeet.com>
+
+	* : commit 120b49c424c293ae44582fef52c6d0ede2f95dde Author: rocky
+	<rb@dustyfeet.com> Date:   Thu Jul 27 01:58:49 2017 -0400
+
+2017-07-24  Daniel Bradburn <moagstar@gmail.com>
+
+	* .gitignore: add .idea* to gitignore
+
+2017-07-18  rocky <rocky@dusytfeet.com>
+
+	* : commit 9479f0d64ae6cd1ea02075afbf3b2ebeb9b62ad6 Author: rocky
+	<rocky@dusytfeet.com> Date:   Tue Jul 18 08:04:45 2017 -0400
+
+2017-07-18  rocky <rb@dustyfeet.com>
+
+	* : commit af9448caccd4348f3c2d8d2fea14136eebd18e10 Author: rocky
+	<rb@dustyfeet.com> Date:   Tue Jul 18 05:51:11 2017 -0400
+
+2017-07-18  rocky <rocky@dusytfeet.com>
+
+	* xdis/load.py: Small indentation regularization
+
 2017-07-14  rocky <rocky@dusytfeet.com>
 
-	* xdis/version.py: Get ready for release 3.5.1
+	* ChangeLog, NEWS, xdis/version.py: Get ready for release 3.5.1
 
 2017-07-14  rocky <rocky@dusytfeet.com>
 
