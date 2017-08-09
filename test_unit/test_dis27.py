@@ -1,6 +1,6 @@
 # Minimal tests for dis module
 
-from xdis import PYTHON3
+from xdis import PYTHON3, IS_PYPY
 
 import sys
 
@@ -57,6 +57,29 @@ if sys.version_info[0:2] == (2, 7):
               29 RETURN_VALUE
 
 """%(bug708901.func_code.co_firstlineno + 1,
+     bug708901.func_code.co_firstlineno + 2,
+     bug708901.func_code.co_firstlineno + 3)
+
+
+    dis_bug708901pypy = """\
+%3d:           0 SETUP_LOOP               23 (to 26)
+               3 LOAD_GLOBAL               0 (range)
+               6 LOAD_CONST                1 (1)
+
+%3d:           9 LOAD_CONST                2 (10)
+              12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+              15 GET_ITER
+
+%3d:     >>   16 FOR_ITER                  6 (to 25)
+              19 STORE_FAST                0 (res)
+
+%3d:          22 JUMP_ABSOLUTE            16 (to 16)
+         >>   25 POP_BLOCK
+         >>   26 LOAD_CONST                0 (None)
+              29 RETURN_VALUE
+
+"""%(bug708901.func_code.co_firstlineno + 1,
+     bug708901.func_code.co_firstlineno + 2,
      bug708901.func_code.co_firstlineno + 2,
      bug708901.func_code.co_firstlineno + 3)
 
@@ -132,7 +155,10 @@ if sys.version_info[0:2] == (2, 7):
             self.do_disassembly_test(_f, dis_f)
 
         def test_bug_708901(self):
-            self.do_disassembly_test(bug708901, dis_bug708901)
+            if IS_PYPY:
+                self.do_disassembly_test(bug708901, dis_bug708901pypy)
+            else:
+                self.do_disassembly_test(bug708901, dis_bug708901)
 
         def test_bug_1333982(self):
             # This one is checking bytecodes generated for an `assert` statement,
