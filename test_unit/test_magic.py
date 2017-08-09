@@ -1,22 +1,27 @@
 import unittest, imp, sys
-from xdis import PYTHON_VERSION
+from xdis import PYTHON_VERSION, IS_PYPY
 import xdis.magics as magics
 
-class TestOpcodes(unittest.TestCase):
+class TestMagics(unittest.TestCase):
 
     def test_basic(self):
         """Basic test of magic numbers"""
         current = imp.get_magic()
         if hasattr(sys, 'version_info'):
             version = '.'.join([str(v) for v in sys.version_info[0:3]])
+            if IS_PYPY:
+                version += 'pypy'
             self.assertTrue(version in magics.magics.keys(),
                             "version %s is not in magic.magics.keys: %s" %
                             (version, magics.magics.keys()))
 
         self.assertEqual(current, magics.int2magic(magics.magic2int(current)))
-        self.assertTrue(str(PYTHON_VERSION) in magics.magics.keys(),
+        lookup = str(PYTHON_VERSION)
+        if IS_PYPY:
+            lookup += 'pypy'
+        self.assertTrue(lookup in magics.magics.keys(),
                         "PYTHON VERSION %s is not in magic.magics.keys: %s" %
-                        (PYTHON_VERSION, magics.magics.keys()))
+                        (lookup, magics.magics.keys()))
 
 if __name__ == '__main__':
     unittest.main()
