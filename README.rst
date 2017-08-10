@@ -19,7 +19,7 @@ from different versions of Python. The command-line routine
 
 It accepts bytecodes from Python version 1.5 to 3.6 or so. The code
 requires Python 2.4 or later and has been tested on Python running
-versions 2.4.6 2.5.6, 2.6.9, pypy-2.6.1 2.7.13, pypy-5.0.1, pypy-5.3.1,
+versions 2.4.6, 2.5.6, 2.6.9, pypy-2.6.1 2.7.13, pypy-5.0.1, pypy-5.3.1,
 3.3.6, 3.4.2, 3.5.2 and 3.6.2.
 
 To install versions for Python before 2.6 install via eggs or
