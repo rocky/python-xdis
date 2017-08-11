@@ -156,9 +156,11 @@ def load_module(filename, code_objects=None, fast_load=False,
             else:
                 co = None
         except:
+            kind, msg = sys.exc_info()[0:2]
             import traceback
             traceback.print_exc()
-            raise ImportError("Ill-formed bytecode file %s" % filename)
+            raise ImportError("Ill-formed bytecode file %s\n%s; %s"
+                              % (filename, kind, msg))
 
     finally:
       fp.close()

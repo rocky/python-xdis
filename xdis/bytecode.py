@@ -20,7 +20,7 @@ else:
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
-def findlinestarts(code):
+def findlinestarts(code, dups=False):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
@@ -38,12 +38,14 @@ def findlinestarts(code):
     addr = 0
     for byte_incr, line_incr in zip(byte_increments, line_increments):
         if byte_incr:
-            if lineno != lastlineno or 0 < byte_incr < 255:
+            if (lineno != lastlineno or
+                (not dups and 0 < byte_incr < 255)):
                 yield (addr, lineno)
                 lastlineno = lineno
             addr += byte_incr
         lineno += line_incr
-    if lineno != lastlineno or 0 < byte_incr < 255:
+    if (lineno != lastlineno or
+        (not dups and 0 < byte_incr < 255)):
         yield (addr, lineno)
 
 def offset2line(offset, linestarts):
