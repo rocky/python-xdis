@@ -45,7 +45,7 @@ def get_opcode(version, is_pypy):
 
 def disco(bytecode_version, co, timestamp, out=sys.stdout,
           is_pypy=False, magic_int=None, source_size=None,
-          header=True, asm_format=False):
+          header=True, asm_format=False, dup_lines=False):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -83,7 +83,7 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
         disco_loop(opc, bytecode_version, queue, real_out)
 
 
-def disco_loop(opc, version, queue, real_out):
+def disco_loop(opc, version, queue, real_out, dup_lines=False):
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
@@ -99,7 +99,7 @@ def disco_loop(opc, version, queue, real_out):
         if co.co_name != '<module>':
             real_out.write("\n" + format_code_info(co, version) + "\n")
 
-        bytecode = Bytecode(co, opc)
+        bytecode = Bytecode(co, opc, dup_lines=dup_lines)
         real_out.write(bytecode.dis() + "\n")
 
         for c in co.co_consts:
@@ -122,7 +122,7 @@ def disco_loop_asm_format(opc, version, co, real_out):
     if co.co_name != '<module>' or co.co_filename:
         real_out.write("\n" + format_code_info(co, version) + "\n")
 
-    bytecode = Bytecode(co, opc)
+    bytecode = Bytecode(co, opc, dup_lines=True)
     real_out.write(bytecode.dis(asm_format=True) + "\n")
 
 def disassemble_file(filename, outstream=sys.stdout, asm_format=False):

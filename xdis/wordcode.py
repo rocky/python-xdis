@@ -17,7 +17,7 @@ def unpack_opargs_wordcode(code, opc):
             arg = None
         yield (i, op, arg)
 
-def findlinestarts(code):
+def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
@@ -35,7 +35,8 @@ def findlinestarts(code):
     addr = 0
     for byte_incr, line_incr in zip(byte_increments, line_increments):
         if byte_incr:
-            if lineno != lastlineno:
+            if (lineno != lastlineno or
+                (not dup_lines and 0 < byte_incr < 255)):
                 yield (addr, lineno)
                 lastlineno = lineno
             addr += byte_incr
@@ -43,7 +44,8 @@ def findlinestarts(code):
             # line_increments is an array of 8-bit signed integers
             line_incr -= 0x100
         lineno += line_incr
-    if lineno != lastlineno:
+    if (lineno != lastlineno or
+        (not dup_lines and 0 < byte_incr < 255)):
         yield (addr, lineno)
 
 
