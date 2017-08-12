@@ -20,7 +20,7 @@ else:
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
-def findlinestarts(code):
+def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
@@ -38,12 +38,14 @@ def findlinestarts(code):
     addr = 0
     for byte_incr, line_incr in zip(byte_increments, line_increments):
         if byte_incr:
-            if lineno != lastlineno or 0 < byte_incr < 255:
+            if (lineno != lastlineno or
+                (not dup_lines and 0 < byte_incr < 255)):
                 yield (addr, lineno)
                 lastlineno = lineno
             addr += byte_incr
         lineno += line_incr
-    if lineno != lastlineno or 0 < byte_incr < 255:
+    if (lineno != lastlineno or
+        (not dup_lines and 0 < byte_incr < 255)):
         yield (addr, lineno)
 
 def offset2line(offset, linestarts):
@@ -373,7 +375,8 @@ class Bytecode(object):
 
     Iterating over this yields the bytecode operations as Instruction instances.
     """
-    def __init__(self, x, opc, first_line=None, current_offset=None):
+    def __init__(self, x, opc, first_line=None, current_offset=None,
+                 dup_lines=False):
         self.codeobj = co = get_code_object(x)
         if first_line is None:
             self.first_line = co.co_firstlineno
@@ -382,7 +385,7 @@ class Bytecode(object):
             self.first_line = first_line
             self._line_offset = first_line - co.co_firstlineno
         self._cell_names = co.co_cellvars + co.co_freevars
-        self._linestarts = dict(opc.findlinestarts(co))
+        self._linestarts = dict(opc.findlinestarts(co, dup_lines=dup_lines))
         self._original_object = x
         self.opc = opc
         self.opnames = opc.opname

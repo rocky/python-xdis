@@ -1,7 +1,10 @@
 2017-08-09  rocky <rocky@dusytfeet.com>
 
-	* : commit 57521b2ed937189d1198ea4fefd17290e71d7e17 Author: rocky
-	<rocky@dusytfeet.com> Date:   Wed Aug 9 11:29:12 2017 -0400
+	* README.rst: Mention xasm and Python 2.4 support
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* : Get ready for reelase 3.5.2
 
 2017-08-09  rocky <rocky@dusytfeet.com>
 

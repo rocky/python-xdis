@@ -1,3 +1,17 @@
+3.5.3 2017-08-12
+
+Showing all line number bolixes uncompyle6 and the trepan debuggers,
+so nuke that for now.
+
+However we show the full deal in pydisasm for asm format.  Here it is
+imporant since we recreate the line number table based on information
+given in the instructions.  We could and probably should allow showing
+all of the line number in the default format as well.  Underneath there
+is a parameter to control that.
+
+* Add pypy 3.5.3 magic number
+
+
 3.5.2 2017-08-09
 
 - magic to opcode for all known versions we handle

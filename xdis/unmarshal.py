@@ -71,7 +71,8 @@ def load_code(fp, magic_int, code_objects={}):
 
     c = chr(b)
     if c != 'c':
-        raise TypeError("File %s doesn't smell like Python bytecode" % fp.name)
+        raise TypeError("File %s doesn't smell like Python bytecode; expecting code indicator"
+                        % fp.name)
 
     fp.seek(seek_pos)
     return load_code_internal(fp, magic_int, code_objects=code_objects)
