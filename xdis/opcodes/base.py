@@ -204,15 +204,18 @@ def opcode_check(l):
     # Python 2.6 reports 2.6000000000000001
     if (abs(PYTHON_VERSION - l['python_version']) <= 0.01
         and IS_PYPY == l['is_pypy']):
-        import dis
-        opmap = fix_opcode_names(dis.opmap)
-        # print(set(opmap.items()) - set(l['opmap'].items()))
-        # print(set(l['opmap'].items()) - set(opmap.items()))
+        try:
+            import dis
+            opmap = fix_opcode_names(dis.opmap)
+            # print(set(opmap.items()) - set(l['opmap'].items()))
+            # print(set(l['opmap'].items()) - set(opmap.items()))
 
-        for item in l['opmap'].items():
-            assert item in opmap.items()
-        for item in opmap.items():
-            assert item in l['opmap'].items()
+            assert all(item in opmap.items() for item in l['opmap'].items())
+            assert all(item in l['opmap'].items() for item in opmap.items())
+        except:
+            import sys
+            print("No dis module in this version of Python:\n%s" %
+                  sys.version_info)
 
 def dump_opcodes(opmap):
     """Utility for dumping opcodes"""

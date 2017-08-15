@@ -1,3 +1,20 @@
+3.5.4 2017-08-15
+
+- Add internal switch in findlabels() to show multiple offsets for a
+  given line.  This is turned on in pydisasm --xasm mode. Otherwise it
+  is off. Sme  programs make use of findlinstart's somewhat misleading
+  behavior
+
+- Add methods for selecting from sys.version_info to the right opcode
+  module, or canonic Python string or floating-point number.
+
+- Add a notion of a canonic Python version.
+
+- Add magic values for pyston and Jython.
+
+- Some pyston tolerance. More is needed though.
+
+
 3.5.3 2017-08-12
 
 Showing all line number bolixes uncompyle6 and the trepan debuggers,

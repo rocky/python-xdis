@@ -39,13 +39,13 @@ def findlinestarts(code, dup_lines=False):
     for byte_incr, line_incr in zip(byte_increments, line_increments):
         if byte_incr:
             if (lineno != lastlineno or
-                (not dup_lines and 0 < byte_incr < 255)):
+                (dup_lines and 0 < byte_incr < 255)):
                 yield (addr, lineno)
                 lastlineno = lineno
             addr += byte_incr
         lineno += line_incr
     if (lineno != lastlineno or
-        (not dup_lines and 0 < byte_incr < 255)):
+        (dup_lines and 0 < byte_incr < 255)):
         yield (addr, lineno)
 
 def offset2line(offset, linestarts):

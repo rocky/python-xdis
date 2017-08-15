@@ -16,8 +16,13 @@ example:
 
 """
 
-# Used from the outside
-from dis import hasconst, hasname, opmap, opname, EXTENDED_ARG, HAVE_ARGUMENT
+from xdis.op_imports import get_opcode_module
+
+# hasconst, hasname, etc. are used from the outside. Set them.
+__g = globals()
+opcodes = get_opcode_module()
+for field in "hasconst hasname opmap opname EXTENDED_ARG HAVE_ARGUMENT".split():
+    __g[field] = getattr(opcodes, field)
 
 # std
 import sys
