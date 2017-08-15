@@ -19,6 +19,7 @@ from xdis.opcodes import opcode_33 as opcode_33
 from xdis.opcodes import opcode_34 as opcode_34
 from xdis.opcodes import opcode_35 as opcode_35
 from xdis.opcodes import opcode_36 as opcode_36
+from xdis.opcodes import opcode_37 as opcode_37
 
 from xdis.opcodes import opcode_pypy26 as opcode_pypy26
 from xdis.opcodes import opcode_pypy27 as opcode_pypy27
@@ -60,6 +61,8 @@ op_imports = {
     3.5    : opcode_35,
     '3.6.0rc1': opcode_36,
     3.6    : opcode_36,
+    '3.7.0alpha0': opcode_37,
+    3.7    : opcode_37,
 
     '2.6pypy':  opcode_pypy26,
     '2.7pypy':  opcode_pypy27,
@@ -75,7 +78,7 @@ def get_opcode_module(version_info=sys.version_info):
     # FIXME: DRY with magics.sysinfo2float()
     vers_str = '.'.join([str(v) for v in version_info[0:3]])
     if version_info[3] != 'final':
-        vers_str += '.' + ''.join(version_info)
+        vers_str += ''.join([str(v) for v in version_info[3:]])
     if IS_PYPY:
         vers_str += 'pypy'
     else:
