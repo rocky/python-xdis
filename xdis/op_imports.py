@@ -78,17 +78,6 @@ def get_opcode_module(version_info=sys.version_info):
         vers_str += '.' + ''.join(version_info)
     if IS_PYPY:
         vers_str += 'pypy'
-    else:
-        try:
-            import platform
-            platform = platform.python_implementation()
-            if platform in ('Jython', 'Pyston'):
-                vers_str += platform
-                pass
-        except ImportError:
-            # Python may be too old, e.g. < 2.6 or implementation may
-            # just not have platform
-            pass
     return op_imports[canonic_python_version[vers_str]]
 
 

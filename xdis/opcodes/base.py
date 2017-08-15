@@ -215,7 +215,7 @@ def opcode_check(l):
         except:
             import sys
             print("No dis module in this version of Python:\n%s" %
-                  sys.version_info)
+                  sys.version)
 
 def dump_opcodes(opmap):
     """Utility for dumping opcodes"""
