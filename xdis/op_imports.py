@@ -1,5 +1,7 @@
 """Facilitates importing opmaps for the a given Python version"""
-from xdis.magics import canonic_python_version, sysinfo2float
+import sys
+from xdis import IS_PYPY
+from xdis.magics import canonic_python_version
 
 from xdis.opcodes import opcode_15 as opcode_15
 from xdis.opcodes import opcode_20 as opcode_20
@@ -67,8 +69,25 @@ for k, v in canonic_python_version.items():
     if v in op_imports:
         op_imports[k] = op_imports[v]
 
-def get_opcode_module(py_version=sysinfo2float()):
-    return op_imports[py_version]
+def get_opcode_module(version_info=sys.version_info):
+    # FIXME: DRY with magics.sysinfo2float()
+    vers_str = '.'.join([str(v) for v in version_info[0:3]])
+    if version_info[3] != 'final':
+        vers_str += '.' + ''.join(version_info)
+    if IS_PYPY:
+        vers_str += 'pypy'
+    else:
+        try:
+            import platform
+            platform = platform.python_implementation()
+            if platform in ('Jython', 'Pyston'):
+                vers_str += platform
+                pass
+        except ImportError:
+            # Python may be too old, e.g. < 2.6 or implementation may
+            # just not have platform
+            pass
+    return op_imports[vers_str]
 
 
 if __name__ == '__main__':

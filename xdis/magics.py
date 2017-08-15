@@ -116,7 +116,7 @@ versions = {
     int2magic(3151): '3.1a0+', # optimize conditional branches
     int2magic(3160): '3.2a0',  # add SETUP_WITH
     int2magic(3170): '3.2a1',  # add DUP_TOP_TWO, remove DUP_TOPX and ROT_FOUR
-    int2magic(3180): '3.2a2',  # 3.2a2 (add DELETE_DEREF)
+o    int2magic(3180): '3.2a2',  # 3.2a2 (add DELETE_DEREF)
     int2magic(3180+7): '3.2pypy',  # Python 3.2.5 - PyPy 2.3.4
                                    # PyPy adds 7 to the corresponding CPython number
     int2magic(3190): '3.3a0',  # __class__ super closure changed
@@ -258,8 +258,7 @@ def sysinfo2float(version_info=sys.version_info):
 def sysinfo2magic(version_info=sys.version_info):
     """Convert a list sys.versions_info compatible list into a 'canonic'
     floating-point number which that can then be used to look up a
-    magic number.  Note that this
-
+    magic number.  Note that this can raise an exception.
     """
 
     # FIXME: DRY with sysinfo2float()
