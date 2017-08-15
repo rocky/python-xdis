@@ -13,14 +13,14 @@ The Python `dis` module allows you to disassemble bytecode from the same
 version of Python that you are running on. But what about bytecode from
 different versions?
 
-That's what this package is for. It can "marshal load" Python bytecodes
-from different versions of Python. The command-line routine
-*pydisasm* will show disassembly output using Python 3.5 disassembly conventions.
+That's what this package is for. It can "marshal load" Python
+bytecodes from different versions of Python. The command-line routine
+*pydisasm* will show disassembly output using Python 3.6 disassembly
+conventions.
 
 It accepts bytecodes from Python version 1.5 to 3.6 or so. The code
 requires Python 2.4 or later and has been tested on Python running
-versions 2.4.6, 2.5.6, 2.6.9, pypy-2.6.1 2.7.13, pypy-5.0.1, pypy-5.3.1,
-3.3.6, 3.4.2, 3.5.2 and 3.6.2.
+lots of Python versions.
 
 To install versions for Python before 2.6 install via eggs or
 use the python-2.4 branch of git in github.
