@@ -3,6 +3,7 @@ Everything you ever wanted to know about Python versions and their
 magic numbers. And a little bit more...
 """
 import imp, struct, sys
+from xdis import IS_PYPY
 
 def int2magic(magic):
     if (sys.version_info >= (3, 0)):
@@ -144,11 +145,14 @@ versions = {
     int2magic(3372): '3.6.0a3',   #
     int2magic(3378): '3.6.0b2',   #
     int2magic(3379): '3.6.0rc1',  #
+    int2magic(3390): '3.7.0a0',   #
 
     # Weird ones
     int2magic(48):    '3.2a2', # WTF? Python 3.2.5 - PyPy 2.3.4
                                # This doesn't follow the rule below
     int2magic(112):   '3.5pypy', # pypy3.5-c-jit-latest
+    int2magic(1011):  '2.7.1b3Jython', # jython
+    int2magic(22138): '2.7.7Pyston',  # 2.7.8pystem, pyston-0.6.0, pyston-0.6.1
 }
 
 magics = __by_version(versions)
@@ -161,7 +165,13 @@ def add_canonic_versions(versions, canonic):
     for v in versions.split():
         canonic_python_version[v] = canonic
         magics[v] = magics[canonic]
+        try:
+            magics[float(v)] = magics[canonic]
+        except:
+            pass
         pass
+
+
     return
 
 add_canonic_versions('1.5.1 1.5.2', '1.5')
@@ -181,8 +191,11 @@ add_canonic_versions('3.5.0 3.5.1 3.5.2', '3.5')
 add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2', '3.6.0rc1')
 
 add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
+add_canonic_versions('2.7.3b0Jython', '2.7.1b3Jython')
 add_canonic_versions('3.2.5pypy', '3.2pypy')
 add_canonic_versions('3.5.3pypy', '3.5pypy')
+add_canonic_versions('3.5.3pypy', '3.5pypy')
+add_canonic_versions('2.7.8Pyston', '2.7.7Pyston')
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
@@ -194,6 +207,83 @@ python_versions = set(canonic_python_version.keys())
 def __show(text, magic):
     print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
 
+def py_str2float(version):
+    """Convert a Python vresions ino a 'canonic' floating-point number which
+    that can then be used to look up a magic number.
+    A runtime error is raised if "version" is not found.
+    """
+    if version in magics:
+        magic = magics[version]
+        for v, m in list(magics.items()):
+            if m == magic:
+                try:
+                    return float(v)
+                except:
+                    pass
+                pass
+            pass
+    raise RuntimeError("Can't find a valid Python version for version %s"
+                       % version)
+    return
+
+def sysinfo2float(version_info=sys.version_info):
+    """Convert a sys.versions_info-compatible list into a 'canonic'
+    floating-point number which that can then be used to look up a
+    magic number.  Note that this can only be used for released version
+    of C Python, not interim development versions, since we can't
+    represent that as a floating-point number.
+
+    For handling Pypy, pyston, jython, etc. and interim versions of
+    C Python, use sysinfo2magic.
+    """
+    vers_str = '.'.join([str(v) for v in version_info[0:3]])
+    if version_info[3] != 'final':
+        vers_str += '.' + ''.join(version_info)
+    if IS_PYPY:
+        vers_str += 'pypy'
+    else:
+        try:
+            import platform
+            platform = platform.python_implementation()
+            if platform in ('Jython', 'Pyston'):
+                vers_str += platform
+                pass
+        except ImportError:
+            # Python may be too old, e.g. < 2.6 or implementation may
+            # just not have platform
+            pass
+    return py_str2float(vers_str)
+
+
+def sysinfo2magic(version_info=sys.version_info):
+    """Convert a list sys.versions_info compatible list into a 'canonic'
+    floating-point number which that can then be used to look up a
+    magic number.  Note that this
+
+    """
+
+    # FIXME: DRY with sysinfo2float()
+    vers_str = '.'.join([str(v) for v in version_info[0:3]])
+    if version_info[3] != 'final':
+        vers_str += '.' + ''.join(version_info)
+
+    if IS_PYPY:
+        vers_str += 'pypy'
+    else:
+        try:
+            import platform
+            platform = platform.python_implementation()
+            if platform in ('Jython', 'Pyston'):
+                vers_str += platform
+                pass
+        except ImportError:
+            # Python may be too old, e.g. < 2.6 or implementation may
+            # just not have platform
+            pass
+
+    return magics[vers_str]
+
+
 def test():
     magic_20 = magics['2.0']
     current = imp.get_magic()
@@ -203,6 +293,8 @@ def test():
     print('This Python interpreter has version', magic_current)
     print('Magic code: ', PYTHON_MAGIC_INT)
     print(type(magic_20), len(magic_20), repr(magic_20))
+    print(sysinfo2float())
+    assert sysinfo2magic() == current
 
 if __name__ == '__main__':
     test()

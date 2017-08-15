@@ -1,5 +1,5 @@
 """Facilitates importing opmaps for the a given Python version"""
-from xdis.magics import canonic_python_version
+from xdis.magics import canonic_python_version, sysinfo2float
 
 from xdis.opcodes import opcode_15 as opcode_15
 from xdis.opcodes import opcode_20 as opcode_20
@@ -25,21 +25,37 @@ from xdis.opcodes import opcode_pypy35 as opcode_pypy35
 
 op_imports = {
     '1.5'  : opcode_15,
+    1.5    : opcode_15,
     '2.0'  : opcode_20,
+    2.0    : opcode_20,
     '2.1'  : opcode_21,
+    2.1    : opcode_21,
     '2.2'  : opcode_22,
+    2.2    : opcode_22,
     '2.3a0': opcode_23,
+    2.3    : opcode_23,
     '2.4b1': opcode_24,
+    2.4    : opcode_24,
     '2.5c2': opcode_25,
+    2.5:     opcode_25,
     '2.6a1': opcode_26,
+    2.6    : opcode_26,
     '2.7'  : opcode_27,
+    2.7    : opcode_27,
     '3.0'  : opcode_30,
+    3.0    : opcode_30,
     '3.1'  : opcode_31,
+    3.1    : opcode_31,
     '3.2'  : opcode_32,
+    3.2    : opcode_32,
     '3.3a4': opcode_33,
+    3.3    : opcode_33,
     '3.4'  : opcode_34,
+    3.4    : opcode_34,
     '3.5'  : opcode_35,
+    3.5    : opcode_35,
     '3.6.0rc1': opcode_36,
+    3.6    : opcode_36,
 
     '2.6pypy':  opcode_pypy26,
     '2.7pypy':  opcode_pypy27,
@@ -50,3 +66,10 @@ op_imports = {
 for k, v in canonic_python_version.items():
     if v in op_imports:
         op_imports[k] = op_imports[v]
+
+def get_opcode_module(py_version=sysinfo2float()):
+    return op_imports[py_version]
+
+
+if __name__ == '__main__':
+    print(get_opcode_module())
