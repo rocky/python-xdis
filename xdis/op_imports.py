@@ -53,6 +53,7 @@ op_imports = {
     '3.3a4': opcode_33,
     3.3    : opcode_33,
     '3.4'  : opcode_34,
+    '3.4rc2'  : opcode_34,
     3.4    : opcode_34,
     '3.5'  : opcode_35,
     3.5    : opcode_35,
@@ -87,7 +88,7 @@ def get_opcode_module(version_info=sys.version_info):
             # Python may be too old, e.g. < 2.6 or implementation may
             # just not have platform
             pass
-    return op_imports[vers_str]
+    return op_imports[canonic_python_version[vers_str]]
 
 
 if __name__ == '__main__':
