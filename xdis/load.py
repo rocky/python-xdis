@@ -39,7 +39,7 @@ def check_object_path(path):
 def is_pypy(magic_int):
     return magic_int in (62211+7, 3180+7)
 
-def load_file(filename):
+def load_file(filename, out=sys.stdout):
     """
     load a Python source file and compile it to byte-code
     _load_file(filename: string): code_object
@@ -57,7 +57,7 @@ def load_file(filename):
           else:
               co = compile(source, filename, 'exec', dont_inherit=True)
       except SyntaxError:
-          sys.stderr.write('>>Syntax error in %s\n' % filename)
+          out.write('>>Syntax error in %s\n' % filename)
           raise
     finally:
       fp.close()
