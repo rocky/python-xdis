@@ -238,11 +238,15 @@ def op_has_argument(op, opc):
 def next_offset(op, opc, offset):
     return offset + op_size(op, opc)
 
+# FIXME: this would better be called an instr_size
+# since it is about instructions, not opcodes
 def op_size(op, opc):
-    """
-    Return size of operator with its arguments
-    for given opcode <op>.
-    """
+    """For a given opcode, `op`, in opcode module `opc`,
+    return the size, in bytes, of an `op` instruction.
+
+    This is the size of the opcode (1 byte) and any operand it has. In
+    Python before version 3.6 this will be either 1 or 3 bytes.  In
+    Python 3.6 or later, it is 2 bytes or a "word"."""
     if op < opc.HAVE_ARGUMENT:
         return 2 if opc.version >= 3.6 else 1
     else:
