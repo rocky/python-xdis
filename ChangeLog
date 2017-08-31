@@ -1,3 +1,88 @@
+2017-08-31  rocky <rb@dustyfeet.com>
+
+	* NEWS, xdis/bytecode.py, xdis/load.py, xdis/magics.py,
+	xdis/op_imports.py, xdis/opcodes/opcode_37.py, xdis/util.py,
+	xdis/version.py: Get ready for release 3.5.5
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_bytecode.py, test_unit/test_dis24.py, xdis/magics.py,
+	xdis/op_imports.py, xdis/opcodes/base.py: Get ready for release
+	3.5.4
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* : commit ff6c93eb38bf0464dff8ff0cf7b9d5a1f342a4b7 Author: rocky
+	<rocky@dusytfeet.com> Date:   Tue Aug 15 02:09:16 2017 -0400
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py, xdis/op_imports.py: Python 3.5.3 is special
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py, xdis/op_imports.py: More canonic versions.
+	op_imports.py bug
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: Remove schmutz
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* .gitignore, xdis/magics.py, xdis/op_imports.py: Fix faulty
+	sysinfo2magic
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_magic.py, xdis/magics.py, xdis/op_imports.py,
+	xdis/opcodes/base.py, xdis/std.py: Magics: handle pyston and jython
+
+2017-08-14  rocky <rocky@dusytfeet.com>
+
+	* test_unit/test_dis27.py: Adjust pypy 2.7 test data
+
+2017-08-14  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_bytecode.py, xdis/bytecode.py: Correct logic in
+	findlinestarts for dup_lines
+
+2017-08-12  rocky <rocky@dusytfeet.com>
+
+	* : commit 543caee1d756a809bdc8767bca472af5473b84b5 Author: rocky
+	<rocky@dusytfeet.com> Date:   Sat Aug 12 17:27:23 2017 -0400
+
+2017-08-12  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog, NEWS, xdis/bytecode.py, xdis/main.py, xdis/wordcode.py: 
+	Add switch to allow showing dup line numbers Python's disassembly doesn't show line numbers other than the first
+	one when there is more entry for a given line. (That's probably a
+	bug that should be reported?) Right now we show the full deal in pydisasm for asm format.  Here it
+	is imporant since we recreate the line number table based on
+	information given in the instructions.  We could and probably should allow showing all of the line number in
+	the default format as well.  Underneath this commit adds the parameter to control that.
+
+2017-08-11  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/load.py, xdis/unmarshal.py,
+	xdis/version.py: Sort of revert finlinestarts offset...  Was messing up uncompyle6 and trepan.  And better errors when bytecode is malformed.
+
+2017-08-10  rocky <rb@dustyfeet.com>
+
+	* xdis/magics.py: Add Pypy 3.5.3 magic
+
+2017-08-10  rocky <rb@dustyfeet.com>
+
+	* .travis.yml: Add Circle pypy3 testing
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* README.rst: Typo
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* README.rst: Mention xasm and Python 2.4 support
+
 2017-08-09  rocky <rocky@dusytfeet.com>
 
 	* README.rst: Mention xasm and Python 2.4 support
@@ -5,6 +90,10 @@
 2017-08-09  rocky <rocky@dusytfeet.com>
 
 	* : Get ready for reelase 3.5.2
+
+2017-08-09  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: Add one more Pypy version
 
 2017-08-09  rocky <rocky@dusytfeet.com>
 
