@@ -75,6 +75,17 @@ def pretty_flags(flags):
     names.reverse()
     return "%s (%s)" % (result, " | ".join(names))
 
+def code_has_star_arg(code):
+    """Return True iff
+    the code object has a variable positional parameter (*args-like)"""
+    return (code.co_flags & 4) != 0
+
+def code_has_star_star_arg(code):
+    """Return True iff
+    The code object has a variable keyword parameter (**kwargs-like)."""
+    return (code.co_flags & 8) != 0
+
+
 def format_code_info(co, version):
     lines = []
     lines.append("# Method Name:       %s" % co.co_name)

@@ -1,3 +1,9 @@
+3.5.5 2017-08-31
+
+- Add 3.7 opcodes
+- Add optional file parameter on load_file
+- add functions code_has_star_arg and code_has_star_star_arg (from uncompyle6)
+
 3.5.4 2017-08-15
 
 - Add internal switch in findlabels() to show multiple offsets for a

@@ -145,7 +145,7 @@ versions = {
     int2magic(3372): '3.6.0a3',   #
     int2magic(3378): '3.6.0b2',   #
     int2magic(3379): '3.6.0rc1',  #
-    int2magic(3390): '3.7.0a0',   #
+    int2magic(3390): '3.7.0alpha0',
 
     # Weird ones
     int2magic(48):    '3.2a2', # WTF? Python 3.2.5 - PyPy 2.3.4
@@ -196,6 +196,7 @@ add_canonic_versions('3.2.5pypy', '3.2pypy')
 add_canonic_versions('3.5.3pypy', '3.5pypy')
 add_canonic_versions('3.5.3pypy', '3.5pypy')
 add_canonic_versions('2.7.8Pyston', '2.7.7Pyston')
+add_canonic_versions('3.7 3.7.0', '3.7.0alpha0')
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
@@ -264,7 +265,7 @@ def sysinfo2magic(version_info=sys.version_info):
     # FIXME: DRY with sysinfo2float()
     vers_str = '.'.join([str(v) for v in version_info[0:3]])
     if version_info[3] != 'final':
-        vers_str += '.' + ''.join(version_info)
+        vers_str += ''.join([str(v) for v in version_info[3:]])
 
     if IS_PYPY:
         vers_str += 'pypy'
