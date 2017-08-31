@@ -61,7 +61,6 @@ build_script:
 
 test_script:
   # Run the project tests
-  - "%CMD_IN_ENV% python setup.py test"
   - "%CMD_IN_ENV% python test/test_pyenvlib.py --verify --simple --compile"
 
 after_test:
