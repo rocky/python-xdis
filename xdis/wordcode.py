@@ -52,11 +52,11 @@ def findlinestarts(code, dup_lines=False):
         yield (addr, lineno)
 
 
-def findlabels(code, opc):
-    """Detect all offsets in a byte code which are jump targets.
+def find_jump_targets(code, opc):
+    """Find all instruction offsets in the supplied bytecode which are the
+    targets of some sort of jump instruction.
 
     Return the list of offsets.
-
     """
     labels = []
     for offset, op, arg in unpack_opargs_wordcode(code, opc):
@@ -70,3 +70,5 @@ def findlabels(code, opc):
                 if label not in labels:
                     labels.append(label)
     return labels
+
+findlabels = find_jump_targets
