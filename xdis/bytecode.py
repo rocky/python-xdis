@@ -74,13 +74,13 @@ def offset2line(offset, linestarts):
         return linestarts[len(linestarts)-1][1]
     return linestarts[high][1]
 
-def findlabels(code, opc):
-    """Detect all offsets in a byte code which are jump targets.
+def find_jump_targets(code, opc):
+    """Find all instruction offsets in the supplied bytecode which are the
+    targets of some sort of jump instruction.
 
     Return the list of offsets.
-
     """
-    labels = []
+    offsets = []
     # enumerate() is not an option, since we sometimes process
     # multiple elements on a single pass through the loop
     try:
@@ -101,9 +101,12 @@ def findlabels(code, opc):
             elif op in opc.JABS_OPS:
                 label = arg
             if label >= 0:
-                if label not in labels:
-                    labels.append(label)
-    return labels
+                if label not in offsets:
+                    offsets.append(label)
+    return offsets
+
+findlabels = find_jump_targets
+
 
 def _get_const_info(const_index, const_list):
     """Helper to get optional details about const references
@@ -240,7 +243,7 @@ def next_offset(op, opc, offset):
 
 # FIXME: this would better be called an instr_size
 # since it is about instructions, not opcodes
-def op_size(op, opc):
+def instruction_size(op, opc):
     """For a given opcode, `op`, in opcode module `opc`,
     return the size, in bytes, of an `op` instruction.
 
@@ -251,6 +254,9 @@ def op_size(op, opc):
         return 2 if opc.version >= 3.6 else 1
     else:
         return 2 if opc.version >= 3.6 else 3
+
+# Compatiblity
+op_size = instruction_size
 
 
 _Instruction = namedtuple("_Instruction",
