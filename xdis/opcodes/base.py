@@ -18,7 +18,8 @@ cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not-in', 'is',
 HAVE_ARGUMENT = 90
 
 fields2copy = """
-hascompare hasconst hasfree hasjabs hasjrel haslocal
+hascompare hascondition
+hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasvargs oppop oppush
 """.split()
 
@@ -52,6 +53,9 @@ def compare_op(l, name, op, pop=2, push=1):
     def_op(l, name, op, pop, push)
     l['hascompare'].append(op)
 
+def conditional_op(l, name, op):
+    l['hascompare'].append(op)
+
 def const_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
     l['hasconst'].append(op)
@@ -66,13 +70,17 @@ def free_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
     l['hasfree'].append(op)
 
-def jabs_op(l, name, op, pop=0, push=0):
+def jabs_op(l, name, op, pop=0, push=0, conditional=False):
     def_op(l, name, op, pop, push)
     l['hasjabs'].append(op)
+    if conditional:
+        l['hascondition'].append(op)
 
-def jrel_op(l, name, op, pop=0, push=0):
+def jrel_op(l, name, op, pop=0, push=0, conditional=False):
     def_op(l, name, op, pop, push)
     l['hasjrel'].append(op)
+    if conditional:
+        l['hascondition'].append(op)
 
 def local_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
@@ -100,6 +108,8 @@ def rm_op(l, name, op):
        l['hasconst'].remove(op)
     if op in l['hascompare']:
        l['hascompare'].remove(op)
+    if op in l['hascondition']:
+       l['hascondition'].remove(op)
     if op in l['hasfree']:
        l['hasfree'].remove(op)
     if op in l['hasjabs']:
@@ -168,22 +178,23 @@ def update_pj2(g, l):
     update_sets(l)
 
 def update_sets(l):
-    l['COMPARE_OPS'] = frozenset(l['hascompare'])
-    l['CONST_OPS']   = frozenset(l['hasconst'])
-    l['FREE_OPS']    = frozenset(l['hasfree'])
-    l['JREL_OPS']    = frozenset(l['hasjrel'])
-    l['JABS_OPS']    = frozenset(l['hasjabs'])
+    l['COMPARE_OPS']     = frozenset(l['hascompare'])
+    l['CONDITION_OPS']   = frozenset(l['hascondition'])
+    l['CONST_OPS']       = frozenset(l['hasconst'])
+    l['FREE_OPS']        = frozenset(l['hasfree'])
+    l['JREL_OPS']        = frozenset(l['hasjrel'])
+    l['JABS_OPS']        = frozenset(l['hasjabs'])
     l['JUMP_UNCONDITONAL']    = frozenset([l['opmap']['JUMP_ABSOLUTE'],
                                      l['opmap']['JUMP_FORWARD']])
-    l['LOOP_OPS']    = frozenset([l['opmap']['SETUP_LOOP']])
-    l['LOCAL_OPS']   = frozenset(l['haslocal'])
-    l['JUMP_OPS']    = (l['JABS_OPS']
+    l['LOOP_OPS']        = frozenset([l['opmap']['SETUP_LOOP']])
+    l['LOCAL_OPS']       = frozenset(l['haslocal'])
+    l['JUMP_OPS']        = (l['JABS_OPS']
                               | l['JREL_OPS']
                               | l['LOOP_OPS']
                               | l['JUMP_UNCONDITONAL'])
-    l['NAME_OPS']    = frozenset(l['hasname'])
-    l['NARGS_OPS']   = frozenset(l['hasnargs'])
-    l['VARGS_OPS']   = frozenset(l['hasvargs'])
+    l['NAME_OPS']        = frozenset(l['hasname'])
+    l['NARGS_OPS']       = frozenset(l['hasnargs'])
+    l['VARGS_OPS']       = frozenset(l['hasvargs'])
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))

@@ -17,15 +17,16 @@ l = locals()
 
 # FIXME: DRY this with opcode_3x.
 
-hasconst = []
-hasname = []
-hasjrel = []
-hasjabs = []
-haslocal = []
-hascompare = []
-hasfree = []
-hasnargs = []  # For function-like calls
-hasvargs = []  # Similar but for operators BUILD_xxx
+hascompare   = []
+hascondition = []
+hasconst     = []
+hasfree      = []
+hasjabs      = []
+hasjrel      = []
+haslocal     = []
+hasname      = []
+hasnargs     = []  # For function-like calls
+hasvargs     = []  # Similar but for operators BUILD_xxx
 
 # opmap[opcode_name] => opcode_number
 opmap = {}
@@ -151,8 +152,9 @@ name_op(l, 'IMPORT_NAME',         107,  2,  1) # Operand is in name list
 name_op(l, 'IMPORT_FROM',         108,  0,  1) # Operand is in name list
 
 jrel_op(l, 'JUMP_FORWARD',        110,  0,  0)  # Number of bytes to skip
-jrel_op(l, 'JUMP_IF_FALSE',       111,  1,  1)  # ""
-jrel_op(l, 'JUMP_IF_TRUE',        112,  1,  1)  # ""
+jrel_op(l, 'JUMP_IF_FALSE',       111,  1,  1, True)  # ""
+
+jrel_op(l, 'JUMP_IF_TRUE',        112,  1,  1, True)  # ""
 jabs_op(l, 'JUMP_ABSOLUTE',       113,  0,  0)  # Target byte offset from beginning of code
 
 name_op(l, 'LOAD_GLOBAL',         116,  0,  1)  # Operand is in name list

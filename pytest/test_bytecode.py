@@ -20,9 +20,14 @@ def bug_loop(disassemble, tb=None):
         while tb: tb = tb.tb_next
     disassemble(tb)
 
-from xdis.bytecode import offset2line
+
+from xdis.opcodes import opcode_27
+from xdis.load import load_module
+from xdis.bytecode import offset2line, get_jump_targets
 from xdis.opcodes.opcode_27 import findlinestarts
 import sys
+
+import os.path as osp
 
 def test_offset2line():
     ary = ((20, 1), (40, 10), (60, 45))
@@ -75,3 +80,12 @@ def test_find_linestarts():
 
     got_with_dups = list(findlinestarts(bug_loop.__code__, dup_lines=True))
     assert len(got_no_dups) < len(got_with_dups)
+
+def test_get_jump_targets():
+    my_dir = osp.dirname(osp.abspath(__file__))
+    test_pyc = my_dir +'/../test/bytecode_2.7/01_dead_code.pyc'
+    (version, timestamp, magic_int, co, pypy,
+     source_size) = load_module(test_pyc)
+    dead_code_co = co.co_consts[0]
+    offsets = get_jump_targets(dead_code_co,  opcode_27)
+    assert [10] == offsets

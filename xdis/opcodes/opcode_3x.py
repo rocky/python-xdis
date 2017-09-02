@@ -19,15 +19,16 @@ l = locals()
 
 # FIXME: DRY with opcode2x.py
 
-hasconst = []
-hasname = []
-hasjrel = []
-hasjabs = []
-haslocal = []
-hascompare = []
-hasfree = []
-hasnargs = []  # For function-like calls
-hasvargs = []  # Similar but for operators BUILD_xxx
+hascompare   = []
+hascondition = []
+hasconst     = []
+hasfree      = []
+hasjabs      = []
+hasjrel      = []
+haslocal     = []
+hasname      = []
+hasnargs     = []  # For function-like calls
+hasvargs     = []  # Similar but for operators BUILD_xxx
 
 # opmap[opcode_name] => opcode_number
 opmap = {}
@@ -151,11 +152,11 @@ name_op(l, 'IMPORT_NAME',          108,  1,  1)  # Operand is in name list
 name_op(l, 'IMPORT_FROM',          109,  0,  1)  # Operand is in name list
 
 jrel_op(l, 'JUMP_FORWARD',         110,  0,  0)  # Number of bytes to skip
-jabs_op(l, 'JUMP_IF_FALSE_OR_POP', 111)          # Target byte offset from beginning of code
-jabs_op(l, 'JUMP_IF_TRUE_OR_POP',  112)          # ""
+jabs_op(l, 'JUMP_IF_FALSE_OR_POP', 111, conditional=True)  # Target byte offset from beginning of code
+jabs_op(l, 'JUMP_IF_TRUE_OR_POP',  112, conditional=True) # ""
 jabs_op(l, 'JUMP_ABSOLUTE',        113,  0,  0)  # Target byte offset from beginning of code
-jabs_op(l, 'POP_JUMP_IF_FALSE',    114)          # ""
-jabs_op(l, 'POP_JUMP_IF_TRUE',     115)          # ""
+jabs_op(l, 'POP_JUMP_IF_FALSE',    114, conditional=True) # ""
+jabs_op(l, 'POP_JUMP_IF_TRUE',     115, conditional=True) # ""
 
 name_op(l, 'LOAD_GLOBAL',          116,  0,  1)  # Operand is in name list
 

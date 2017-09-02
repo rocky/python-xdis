@@ -74,11 +74,9 @@ def offset2line(offset, linestarts):
         return linestarts[len(linestarts)-1][1]
     return linestarts[high][1]
 
-def find_jump_targets(code, opc):
-    """Find all instruction offsets in the supplied bytecode which are the
-    targets of some sort of jump instruction.
-
-    Return the list of offsets.
+def get_jump_targets(code, opc):
+    """Returns a list of instruction offsets in the supplied bytecode
+    which are the targets of some sort of jump instruction.
     """
     offsets = []
     # enumerate() is not an option, since we sometimes process
@@ -95,17 +93,17 @@ def find_jump_targets(code, opc):
         if op >= opc.HAVE_ARGUMENT:
             arg = code2num(code, offset) + code2num(code, offset+1)*256
             offset += 2
-            label = -1
+            jump_offset = -1
             if op in opc.JREL_OPS:
-                label = offset + arg
+                jump_offset = offset + arg
             elif op in opc.JABS_OPS:
-                label = arg
-            if label >= 0:
-                if label not in offsets:
-                    offsets.append(label)
+                jump_offset = arg
+            if jump_offset >= 0:
+                if jump_offset not in offsets:
+                    offsets.append(jump_offset)
     return offsets
 
-findlabels = find_jump_targets
+findlabels = get_jump_targets
 
 
 def _get_const_info(const_index, const_list):

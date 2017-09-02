@@ -37,15 +37,16 @@ l['findlabels'] = findlabels
 
 # FIXME: can we DRY this even more?
 
-hasconst = []
-hasname = []
-hasjrel = []
-hasjabs = []
-haslocal = []
-hascompare = []
-hasfree = []
-hasnargs = []  # For function-like calls
-hasvargs = []  # Similar but for operators BUILD_xxx
+hascompare   = []
+hascondition = []
+hasconst     = []
+hasfree      = []
+hasjabs      = []
+hasjrel      = []
+haslocal     = []
+hasname      = []
+hasnargs     = []  # For function-like calls
+hasvargs     = []  # Similar but for operators BUILD_xxx
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256
@@ -145,8 +146,8 @@ name_op(l, 'IMPORT_NAME',         107,  2,  1) # Operand is in name list
 name_op(l, 'IMPORT_FROM',         108,  0,  1) # Operand is in name list
 
 jrel_op(l, 'JUMP_FORWARD',        110,  0,  0)  # Number of bytes to skip
-jrel_op(l, 'JUMP_IF_FALSE',       111,  1,  1)  # ""
-jrel_op(l, 'JUMP_IF_TRUE',        112,  1,  1)  # ""
+jrel_op(l, 'JUMP_IF_FALSE',       111,  1,  1, True)  # ""
+jrel_op(l, 'JUMP_IF_TRUE',        112,  1,  1, True)  # ""
 jabs_op(l, 'JUMP_ABSOLUTE',       113,  0,  0)  # Target byte offset from beginning of code
 def_op(l, 'FOR_LOOP',             114)	        # Number of bytes to skip
 

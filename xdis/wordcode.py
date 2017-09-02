@@ -49,23 +49,51 @@ def findlinestarts(code, dup_lines=False):
         yield (addr, lineno)
 
 
-def find_jump_targets(code, opc):
-    """Find all instruction offsets in the supplied bytecode which are the
-    targets of some sort of jump instruction.
-
-    Return the list of offsets.
+def get_jump_targets(code, opc):
+    """Returns a list of instruction offsets in the supplied bytecode
+    which are the targets of some sort of jump instruction.
     """
-    labels = []
+    offsets = []
     for offset, op, arg in unpack_opargs_wordcode(code, opc):
         if arg is not None:
-            label = -1
+            jump_offset = -1
             if op in opc.JREL_OPS:
-                label = offset + 2 + arg
+                jump_offset = offset + 2 + arg
             elif op in opc.JABS_OPS:
-                label = arg
-            if label >= 0:
-                if label not in labels:
-                    labels.append(label)
-    return labels
+                jump_offset = arg
+            if jump_offset >= 0:
+                if jump_offset not in offsets:
+                    offsets.append(jump_offset)
+    return offsets
 
-findlabels = find_jump_targets
+def get_jump_target_maps(code, opc):
+    """Returns a dictionary where the key is an offset and the values are
+    a list of instruction offsets which can get run before that
+    instruction. This includes jump instructions as well as non-jump
+    instructions. Therefore, the keys of the dictionary are reachible
+    instructions. The values of the dictionary may be useful in control-flow
+    analysis.
+    """
+    offset2prev = []
+    prev_offset = None
+    for offset, op, arg in unpack_opargs_wordcode(code, opc):
+        if prev_offset:
+            prev_list = offset2prev.get(prev_offset, [])
+            prev_list.append(offset)
+            offset2prev[prev_offset] = prev_list
+        prev_offset = offset
+        if arg is not None:
+            jump_offset = -1
+            if op in opc.JREL_OPS:
+                jump_offset = offset + 2 + arg
+            elif op in opc.JABS_OPS:
+                jump_offset = arg
+                prev_offset = None
+            if jump_offset >= 0:
+                prev_list = offset2prev.get(jump_offset, [])
+                prev_list.append(offset)
+                offset2prev[jump_offset] = prev_list
+    return offset2prev
+
+
+findlabels = get_jump_targets
