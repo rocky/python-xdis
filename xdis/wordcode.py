@@ -5,7 +5,13 @@ from xdis.bytecode import op_has_argument
 
 def unpack_opargs_wordcode(code, opc):
     extended_arg = 0
-    for i in range(0, len(code), 2):
+    try:
+        n = len(code)
+    except TypeError:
+        code = code.co_code
+        n = len(code)
+
+    for i in range(0, n, 2):
         op = code[i]
         if op_has_argument(op, opc):
             if isinstance(code[i+1], str):
