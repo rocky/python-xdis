@@ -6,8 +6,10 @@ Python opcode.py structures
 """
 
 from copy import deepcopy
-from xdis.bytecode import findlinestarts, findlabels
-import xdis.wordcode
+from xdis.bytecode import (
+    findlinestarts, findlabels, get_jump_targets,
+    get_jump_target_maps)
+from xdis import wordcode
 from xdis import IS_PYPY, PYTHON_VERSION
 
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not-in', 'is',
@@ -21,6 +23,7 @@ fields2copy = """
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasvargs oppop oppush
+nofollow
 """.split()
 
 def init_opdata(l, from_mod, version=None, is_pypy=False):
@@ -38,9 +41,13 @@ def init_opdata(l, from_mod, version=None, is_pypy=False):
     if version <= 3.5:
         l['findlinestarts'] = findlinestarts
         l['findlabels']     = findlabels
+        l['get_jump_targets'] = get_jump_targets
+        l['get_jump_target_maps']  = get_jump_target_maps
     else:
-        l['findlinestarts'] = xdis.wordcode.findlinestarts
-        l['findlabels']     = xdis.wordcode.findlabels
+        l['findlinestarts'] = wordcode.findlinestarts
+        l['findlabels']     = wordcode.findlabels
+        l['get_jump_targets'] = wordcode.get_jump_targets
+        l['get_jump_target_maps']  = wordcode.get_jump_target_maps
 
     l['opmap'] = deepcopy(from_mod.opmap)
     l['opname'] = deepcopy(from_mod.opname)
@@ -60,23 +67,25 @@ def const_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
     l['hasconst'].append(op)
 
-def def_op(l, op_name, opcode, pop=-2, push=-2):
+def def_op(l, op_name, opcode, pop=-2, push=-2, fallthrough=True):
     l['opname'][opcode] = op_name
     l['opmap'][op_name] = opcode
     l['oppush'][opcode] = push
     l['oppop'][opcode] = pop
+    if not fallthrough:
+        l['nofollow'].append(opcode)
 
 def free_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
     l['hasfree'].append(op)
 
-def jabs_op(l, name, op, pop=0, push=0, conditional=False):
-    def_op(l, name, op, pop, push)
+def jabs_op(l, name, op, pop=0, push=0, conditional=False, fallthrough=True):
+    def_op(l, name, op, pop, push, fallthrough=fallthrough)
     l['hasjabs'].append(op)
     if conditional:
         l['hascondition'].append(op)
 
-def jrel_op(l, name, op, pop=0, push=0, conditional=False):
+def jrel_op(l, name, op, pop=0, push=0, conditional=False, fallthrough=True):
     def_op(l, name, op, pop, push)
     l['hasjrel'].append(op)
     if conditional:
@@ -126,6 +135,8 @@ def rm_op(l, name, op):
        l['hasnargs'].remove(op)
     if op in l['hasvargs']:
        l['hasvargs'].remove(op)
+    if op in l['nofollow']:
+       l['nofollow'].remove(op)
 
     assert l['opmap'][name] == op
     del l['opmap'][name]
@@ -154,6 +165,7 @@ def finalize_opcodes(l):
     for op in l['opmap']:
         l[op] = l['opmap'][op]
     l['JUMP_OPs'] = frozenset(l['hasjrel'] + l['hasjabs'])
+    l['NOFOLLOW'] = frozenset(l['nofollow'])
     opcode_check(l)
 
 

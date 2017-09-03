@@ -38,7 +38,7 @@ l['findlabels'] = findlabels
 # FIXME: can we DRY this even more?
 
 hascompare   = []
-hascondition = []
+hascondition = [] # conditional operator; has jump offset
 hasconst     = []
 hasfree      = []
 hasjabs      = []
@@ -47,6 +47,7 @@ haslocal     = []
 hasname      = []
 hasnargs     = []  # For function-like calls
 hasvargs     = []  # Similar but for operators BUILD_xxx
+nofollow     = []  # Instruction doesn't fall to the next opcode
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256
@@ -62,7 +63,7 @@ del op
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
-def_op(l, 'STOP_CODE', 0)
+def_op(l, 'STOP_CODE',       0,  0,  0, fallthrough=False)
 def_op(l, 'POP_TOP', 1)
 def_op(l, 'ROT_TWO', 2)
 def_op(l, 'ROT_THREE', 3)
@@ -115,7 +116,7 @@ def_op(l, 'PRINT_NEWLINE',   72, 1, 0)
 def_op(l, 'BREAK_LOOP',      80, 0, 0)
 
 def_op(l, 'LOAD_LOCALS',     82, 0, 1)
-def_op(l, 'RETURN_VALUE',    83, 1, 0)
+def_op(l, 'RETURN_VALUE',    83,  1,  0, fallthrough=False)
 
 def_op(l, 'EXEC_STMT',       85, 3, 0)
 
@@ -163,7 +164,8 @@ local_op(l, 'DELETE_FAST',        126)          # Local variable number
 
 def_op(l, 'SET_LINENO', 127)	   # Current line number
 
-def_op(l, 'RAISE_VARARGS',        130, -1,  0)  # Number of raise arguments (1, 2, or 3)
+def_op(l, 'RAISE_VARARGS',        130, -1,  0, fallthrough=False)
+                                                # Number of raise arguments (1, 2, or 3)
 nargs_op(l, 'CALL_FUNCTION',      131, -1,  1)  # #args + (#kwargs << 8)
 
 def_op(l, 'MAKE_FUNCTION',        132, -1,  1)  # Number of args with default values

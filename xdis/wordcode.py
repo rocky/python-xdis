@@ -74,21 +74,22 @@ def get_jump_target_maps(code, opc):
     instructions. The values of the dictionary may be useful in control-flow
     analysis.
     """
-    offset2prev = []
-    prev_offset = None
+    offset2prev = {}
+    prev_offset = -1
     for offset, op, arg in unpack_opargs_wordcode(code, opc):
-        if prev_offset:
-            prev_list = offset2prev.get(prev_offset, [])
-            prev_list.append(offset)
-            offset2prev[prev_offset] = prev_list
+        if prev_offset >= 0:
+            prev_list = offset2prev.get(offset, [])
+            prev_list.append(prev_offset)
+            offset2prev[offset] = prev_list
         prev_offset = offset
+        if op in opc.NOFOLLOW:
+            prev_offset = -1
         if arg is not None:
             jump_offset = -1
             if op in opc.JREL_OPS:
                 jump_offset = offset + 2 + arg
             elif op in opc.JABS_OPS:
                 jump_offset = arg
-                prev_offset = None
             if jump_offset >= 0:
                 prev_list = offset2prev.get(jump_offset, [])
                 prev_list.append(offset)

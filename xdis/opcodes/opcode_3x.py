@@ -20,7 +20,7 @@ l = locals()
 # FIXME: DRY with opcode2x.py
 
 hascompare   = []
-hascondition = []
+hascondition = [] # conditional operator; has jump offset
 hasconst     = []
 hasfree      = []
 hasjabs      = []
@@ -29,6 +29,7 @@ haslocal     = []
 hasname      = []
 hasnargs     = []  # For function-like calls
 hasvargs     = []  # Similar but for operators BUILD_xxx
+nofollow     = []  # Instruction doesn't fall to the next opcode
 
 # opmap[opcode_name] => opcode_number
 opmap = {}
@@ -50,7 +51,7 @@ del op
 
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
-def_op(l, 'STOP_CODE',             0,  0,  0)
+def_op(l, 'STOP_CODE',             0,  0,  0, fallthrough=False)
 def_op(l, 'POP_TOP',               1,  1,  0)
 def_op(l, 'ROT_TWO',               2,  2,  2)
 def_op(l, 'ROT_THREE',             3,  3,  3)
@@ -115,9 +116,9 @@ def_op(l, 'INPLACE_AND',          77,  2,  1)
 def_op(l, 'INPLACE_XOR',          78,  2,  1)
 def_op(l, 'INPLACE_OR',           79,  2,  1)
 def_op(l, 'BREAK_LOOP',           80,  0,  0)
-def_op(l, 'WITH_CLEANUP', 81)
+def_op(l, 'WITH_CLEANUP',         81)
 
-def_op(l, 'RETURN_VALUE',         83,  1,  0)
+def_op(l, 'RETURN_VALUE',         83,  1,  0, fallthrough=False)
 def_op(l, 'IMPORT_STAR',          84,  1,  0)
 
 def_op(l, 'YIELD_VALUE',          86,  1,  1)
@@ -169,7 +170,8 @@ local_op(l, 'LOAD_FAST',           124,  0,  1)  # Local variable number
 local_op(l, 'STORE_FAST',          125,  1,  0)  # Local variable number
 local_op(l, 'DELETE_FAST',         126,  0,  0)  # Local variable number
 
-def_op(l, 'RAISE_VARARGS',         130, -1,  0)  # Number of raise arguments (1, 2, or 3)
+def_op(l, 'RAISE_VARARGS',        130, -1,  0, fallthrough=False)
+                                                 # Number of raise arguments (1, 2, or 3)
 nargs_op(l, 'CALL_FUNCTION',       131, -1,  1)  # #args + (#kwargs << 8)
 
 def_op(l, 'MAKE_FUNCTION',         132, -1,  1)  # Number of args if < 3.6

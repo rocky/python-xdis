@@ -21,11 +21,11 @@ def bug_loop(disassemble, tb=None):
     disassemble(tb)
 
 
-from xdis.opcodes import opcode_27
-from xdis.load import load_module
-from xdis.bytecode import offset2line, get_jump_targets
-from xdis.opcodes.opcode_27 import findlinestarts
 import sys
+from xdis.opcodes import opcode_27, opcode_36
+from xdis.load import load_module
+from xdis.bytecode import offset2line
+from xdis.opcodes.opcode_27 import findlinestarts
 
 import os.path as osp
 
@@ -83,9 +83,36 @@ def test_find_linestarts():
 
 def test_get_jump_targets():
     my_dir = osp.dirname(osp.abspath(__file__))
+
+    # Python 2.7 code
     test_pyc = my_dir +'/../test/bytecode_2.7/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
      source_size) = load_module(test_pyc)
     dead_code_co = co.co_consts[0]
-    offsets = get_jump_targets(dead_code_co,  opcode_27)
+    offsets = opcode_27.get_jump_targets(dead_code_co,  opcode_27)
     assert [10] == offsets
+
+    # import xdis.std as dis
+    # print('\n')
+    # dis.dis(dead_code_co)
+
+    offset_map = opcode_27.get_jump_target_maps(dead_code_co,  opcode_27)
+    # print(offset_map)
+    expect = {3: [0], 6: [3], 9: [6], 10: [6], 13: [10], 17: [14]}
+    assert expect == offset_map
+
+    # Python 3.6 code wordcode
+    test_pyc = my_dir +'/../test/bytecode_3.6/01_dead_code.pyc'
+    (version, timestamp, magic_int, co, pypy,
+     source_size) = load_module(test_pyc)
+    dead_code_co = co.co_consts[0]
+    offsets = opcode_36.get_jump_targets(dead_code_co,  opcode_36)
+    assert offsets == [8]
+
+    # from xdis.main import disassemble_file
+    # print('\n')
+    # disassemble_file(test_pyc)
+
+    offset_map = opcode_36.get_jump_target_maps(dead_code_co,  opcode_36)
+    expect = {2: [0], 4: [2], 6: [4], 8: [2], 10: [8], 14: [12]}
+    assert expect == offset_map

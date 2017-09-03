@@ -74,6 +74,8 @@ def offset2line(offset, linestarts):
         return linestarts[len(linestarts)-1][1]
     return linestarts[high][1]
 
+# FIXME: create unpack_opargs_bytecode like we do for
+# Python >= 3.6
 def get_jump_targets(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
     which are the targets of some sort of jump instruction.
@@ -83,7 +85,7 @@ def get_jump_targets(code, opc):
     # multiple elements on a single pass through the loop
     try:
         n = len(code)
-    except:
+    except TypeError:
         code = code.co_code
         n = len(code)
     offset = 0
@@ -105,6 +107,48 @@ def get_jump_targets(code, opc):
 
 findlabels = get_jump_targets
 
+
+# FIXME: create unpack_opargs_bytecode like we do for
+# Python >= 3.6
+def get_jump_target_maps(code, opc):
+    """Returns a dictionary where the key is an offset and the values are
+    a list of instruction offsets which can get run before that
+    instruction. This includes jump instructions as well as non-jump
+    instructions. Therefore, the keys of the dictionary are reachible
+    instructions. The values of the dictionary may be useful in control-flow
+    analysis.
+    """
+    offset2prev = {}
+    prev_offset = -1
+    try:
+        n = len(code)
+    except TypeError:
+        code = code.co_code
+        n = len(code)
+    offset = 0
+    while offset < n:
+        if prev_offset >= 0:
+            prev_list = offset2prev.get(offset, [])
+            prev_list.append(prev_offset)
+            offset2prev[offset] = prev_list
+        prev_offset = offset
+        op = code2num(code, offset)
+        offset += 1
+        if op in opc.NOFOLLOW:
+            prev_offset = -1
+        if op >= opc.HAVE_ARGUMENT:
+            arg = code2num(code, offset) + code2num(code, offset+1)*256
+            offset += 2
+            jump_offset = -1
+            if op in opc.JREL_OPS:
+                jump_offset = offset + arg
+            elif op in opc.JABS_OPS:
+                jump_offset = arg
+            if jump_offset >= 0:
+                prev_list = offset2prev.get(jump_offset, [])
+                prev_list.append(offset)
+                offset2prev[jump_offset] = prev_list
+    return offset2prev
 
 def _get_const_info(const_index, const_list):
     """Helper to get optional details about const references
