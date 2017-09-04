@@ -11,6 +11,8 @@
 # Sometimes we need to lie and say
 # there is only one offset there.
 
+from xdis import PYTHON_VERSION
+
 def bug_loop(disassemble, tb=None):
     if tb:
         try:
@@ -79,6 +81,8 @@ def test_find_linestarts():
     got_with_dups = list(findlinestarts(bug_loop.__code__, dup_lines=True))
     assert len(got_no_dups) < len(got_with_dups)
 
+# FIXME: a feature of doing code this way is that
+# this compiles to the running version of code
 def bug708901():
     for res in range(1,
                      10):
@@ -89,14 +93,19 @@ def test_get_jump_targets():
 
     # Python 2.7 code
     code = bug708901.__code__
-    offset_map = opcode_27.get_jump_target_maps(code,  opcode_27)
 
-    expected = { 3: [0], 6: [3], 9: [6], 12: [9], 15: [12],
-                16: [15, 22], 19: [16], 22: [19], 25: [16],
-                26: [0, 25], 29: [26]}
-    assert expected == offset_map
-    offsets = opcode_27.get_jump_targets(code,  opcode_27)
-    assert offsets == [26, 25, 16]
+    # FIXME: Consider loading from a file like below to remove
+    # dependence on running interpreter
+    if PYTHON_VERSION == 2.7:
+        offset_map = opcode_27.get_jump_target_maps(code,  opcode_27)
+
+        expected = { 3: [0], 6: [3], 9: [6], 12: [9], 15: [12],
+                    16: [15, 22], 19: [16], 22: [19], 25: [16],
+                    26: [0, 25], 29: [26]}
+        assert expected == offset_map
+
+        offsets = opcode_27.get_jump_targets(code,  opcode_27)
+        assert offsets == [26, 25, 16]
 
     test_pyc = my_dir +'/../test/bytecode_2.7/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
