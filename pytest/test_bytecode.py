@@ -95,6 +95,20 @@ def test_get_jump_targets():
     # FIXME: Consider loading from a file like below to remove
     # dependence on running interpreter
     if PYTHON_VERSION == 2.7:
+        # 19:           0 SETUP_LOOP               23 (to 26)
+        #               3 LOAD_GLOBAL               0 (range)
+        #               6 LOAD_CONST                1 (1)
+        #
+        # 20:           9 LOAD_CONST                2 (10)
+        #              12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+        #              15 GET_ITER
+        #         >>   16 FOR_ITER                  6 (to 25)
+        #              19 STORE_FAST                0 (res)
+        #
+        # 21:          22 JUMP_ABSOLUTE            16 (to 16)
+        #         >>   25 POP_BLOCK
+        #         >>   26 LOAD_CONST                0 (None)
+        #              29 RETURN_VALUE
         offset_map = opcode_27.get_jump_target_maps(code,  opcode_27)
 
         expected = { 3: [0], 6: [3], 9: [6], 12: [9], 15: [12],
@@ -112,26 +126,49 @@ def test_get_jump_targets():
     offsets = opcode_27.get_jump_targets(code,  opcode_27)
     assert [10] == offsets
 
-    # import xdis.std as dis
+    # from xdis.main import disassemble_file
     # print('\n')
-    # dis.dis(dead_code_co)
+    # disassemble_file(test_pyc)
 
+    #  2:           0 LOAD_FAST                 0 (a)
+    #               3 POP_JUMP_IF_FALSE        10 (to 10)
+    #
+    #  3:           6 LOAD_CONST                1 (5)
+    #               9 RETURN_VALUE
+    #
+    #  5:     >>   10 LOAD_CONST                2 (6)
+    #              13 RETURN_VALUE
+    #              14 LOAD_CONST                0 (None)
+    #              17 RETURN_VALUE
     offset_map = opcode_27.get_jump_target_maps(code,  opcode_27)
     # print(offset_map)
     expect = {3: [0], 6: [3], 9: [6], 10: [3], 13: [10], 17: [14]}
     assert expect == offset_map
 
     # Python 3.6 code wordcode
+    # ------------------------
     test_pyc = my_dir +'/../test/bytecode_3.6/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
      source_size) = load_module(test_pyc)
     code = co.co_consts[0]
+
+    #  2:           0 LOAD_FAST                 0 (a)
+    #               2 POP_JUMP_IF_FALSE         8 (to 8)
+    #
+    #  3:           4 LOAD_CONST                1 (5)
+    #               6 RETURN_VALUE
+    #
+    #  5:           8 LOAD_CONST                2 (6)
+    #              10 RETURN_VALUE
+    #              12 LOAD_CONST                0 (None)
+    #              14 RETURN_VALUE
+
     offsets = opcode_36.get_jump_targets(code,  opcode_36)
     assert offsets == [8]
 
-    # from xdis.main import disassemble_file
-    # print('\n')
-    # disassemble_file(test_pyc)
+    from xdis.main import disassemble_file
+    print('\n')
+    disassemble_file(test_pyc)
 
     offset_map = opcode_36.get_jump_target_maps(code,  opcode_36)
     expect = {2: [0], 4: [2], 6: [4], 8: [2], 10: [8], 14: [12]}
