@@ -65,8 +65,6 @@ def test_offset2line():
         assert expect == got, \
             ("offset=%d, got=%d, expect=%d" % (offset, got, expect))
 
-
-
 def test_find_linestarts():
     co= bug_loop.__code__
     # start_line = co.co_firstlineno
@@ -81,38 +79,53 @@ def test_find_linestarts():
     got_with_dups = list(findlinestarts(bug_loop.__code__, dup_lines=True))
     assert len(got_no_dups) < len(got_with_dups)
 
+def bug708901():
+    for res in range(1,
+                     10):
+        pass
+
 def test_get_jump_targets():
     my_dir = osp.dirname(osp.abspath(__file__))
 
     # Python 2.7 code
+    code = bug708901.__code__
+    offset_map = opcode_27.get_jump_target_maps(code,  opcode_27)
+
+    expected = { 3: [0], 6: [3], 9: [6], 12: [9], 15: [12],
+                16: [15, 22], 19: [16], 22: [19], 25: [16],
+                26: [0, 25], 29: [26]}
+    assert expected == offset_map
+    offsets = opcode_27.get_jump_targets(code,  opcode_27)
+    assert offsets == [26, 25, 16]
+
     test_pyc = my_dir +'/../test/bytecode_2.7/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
      source_size) = load_module(test_pyc)
-    dead_code_co = co.co_consts[0]
-    offsets = opcode_27.get_jump_targets(dead_code_co,  opcode_27)
+    code = co.co_consts[0]
+    offsets = opcode_27.get_jump_targets(code,  opcode_27)
     assert [10] == offsets
 
     # import xdis.std as dis
     # print('\n')
     # dis.dis(dead_code_co)
 
-    offset_map = opcode_27.get_jump_target_maps(dead_code_co,  opcode_27)
+    offset_map = opcode_27.get_jump_target_maps(code,  opcode_27)
     # print(offset_map)
-    expect = {3: [0], 6: [3], 9: [6], 10: [6], 13: [10], 17: [14]}
+    expect = {3: [0], 6: [3], 9: [6], 10: [3], 13: [10], 17: [14]}
     assert expect == offset_map
 
     # Python 3.6 code wordcode
     test_pyc = my_dir +'/../test/bytecode_3.6/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
      source_size) = load_module(test_pyc)
-    dead_code_co = co.co_consts[0]
-    offsets = opcode_36.get_jump_targets(dead_code_co,  opcode_36)
+    code = co.co_consts[0]
+    offsets = opcode_36.get_jump_targets(code,  opcode_36)
     assert offsets == [8]
 
     # from xdis.main import disassemble_file
     # print('\n')
     # disassemble_file(test_pyc)
 
-    offset_map = opcode_36.get_jump_target_maps(dead_code_co,  opcode_36)
+    offset_map = opcode_36.get_jump_target_maps(code,  opcode_36)
     expect = {2: [0], 4: [2], 6: [4], 8: [2], 10: [8], 14: [12]}
     assert expect == offset_map
