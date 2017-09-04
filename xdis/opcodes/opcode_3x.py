@@ -162,9 +162,9 @@ jabs_op(l, 'POP_JUMP_IF_TRUE',     115, conditional=True) # ""
 name_op(l, 'LOAD_GLOBAL',          116,  0,  1)  # Operand is in name list
 
 jabs_op(l, 'CONTINUE_LOOP',        119,  0,  0)  # Target address
-jrel_op(l, 'SETUP_LOOP',           120,  0,  0)  # Distance to target address
-jrel_op(l, 'SETUP_EXCEPT',         121,  0,  0)  # ""
-jrel_op(l, 'SETUP_FINALLY',        122,  0,  0)  # ""
+jrel_op(l, 'SETUP_LOOP',           120,  0,  0, conditional=True) # Distance to target address
+jrel_op(l, 'SETUP_EXCEPT',         121,  0,  0, conditional=True)  # ""
+jrel_op(l, 'SETUP_FINALLY',        122,  0,  0, conditional=True)  # ""
 
 local_op(l, 'LOAD_FAST',           124,  0,  1)  # Local variable number
 local_op(l, 'STORE_FAST',          125,  1,  0)  # Local variable number

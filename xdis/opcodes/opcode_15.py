@@ -154,7 +154,7 @@ def_op(l, 'FOR_LOOP',             114)	        # Number of bytes to skip
 
 name_op(l, 'LOAD_GLOBAL',         116,  0,  1)  # Operand is in name list
 
-jrel_op(l, 'SETUP_LOOP',          120,  0,  0)  # Distance to target address
+jrel_op(l, 'SETUP_LOOP',          120,  0,  0, conditional=True)  # Distance to target address
 jrel_op(l, 'SETUP_EXCEPT',        121,  0,  0)  # ""
 jrel_op(l, 'SETUP_FINALLY',       122,  0,  0)  # ""
 
