@@ -11,8 +11,6 @@
 # Sometimes we need to lie and say
 # there is only one offset there.
 
-from xdis import PYTHON_VERSION
-
 def bug_loop(disassemble, tb=None):
     if tb:
         try:
@@ -22,8 +20,8 @@ def bug_loop(disassemble, tb=None):
         while tb: tb = tb.tb_next
     disassemble(tb)
 
-
 import sys
+from xdis import PYTHON_VERSION
 from xdis.opcodes import opcode_27, opcode_36
 from xdis.load import load_module
 from xdis.bytecode import offset2line
