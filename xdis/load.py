@@ -80,8 +80,6 @@ def load_module(filename, code_objects=None, fast_load=False,
     sometimes all you want is the module info, time string, code size,
     python version, etc. For that, set get_code=False.
     """
-    if code_objects is None:
-        code_objects = {}
 
     # Some sanity checks
     if not osp.exists(filename):
@@ -91,8 +89,20 @@ def load_module(filename, code_objects=None, fast_load=False,
     elif osp.getsize(filename) < 50:
         raise ImportError("File name: '%s (%d bytes)' is too short to be a valid pyc file" % (filename, osp.getsize(filename)))
 
-    timestamp = 0
     fp = open(filename, 'rb')
+    return load_module_from_file_object(fp, code_objects, fast_load=fast_load, get_code=get_code)
+
+def load_module_from_file_object(fp, code_objects=None, fast_load=False,
+                get_code=True):
+    """load a module from a file object without importing it.
+
+    See :func:load_module.
+    """
+
+    if code_objects is None:
+        code_objects = {}
+
+    timestamp = 0
     try:
         magic = fp.read(4)
         magic_int = magics.magic2int(magic)
