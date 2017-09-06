@@ -47,7 +47,7 @@ def findlinestarts(code, dup_lines=False):
     Generate pairs (offset, lineno) as described in Python/compile.c.
 
     """
-    if PYTHON3:
+    if not isinstance(code.co_lnotab, str):
         byte_increments = list(code.co_lnotab[0::2])
         line_increments = list(code.co_lnotab[1::2])
     else:
@@ -63,7 +63,9 @@ def findlinestarts(code, dup_lines=False):
                 (dup_lines and 0 < byte_incr < 255)):
                 yield (addr, lineno)
                 lastlineno = lineno
+                pass
             addr += byte_incr
+            pass
         lineno += line_incr
     if (lineno != lastlineno or
         (dup_lines and 0 < byte_incr < 255)):
