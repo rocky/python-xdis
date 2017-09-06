@@ -76,7 +76,7 @@ def load_module(filename, code_objects=None, fast_load=False,
     magic_int: more specific than version. The actual byte code version of the
                code object
 
-    Parsing the  code object takes a bit of parsing time, but
+    Parsing the code object takes a bit of parsing time, but
     sometimes all you want is the module info, time string, code size,
     python version, etc. For that, set get_code=False.
     """
@@ -89,8 +89,12 @@ def load_module(filename, code_objects=None, fast_load=False,
     elif osp.getsize(filename) < 50:
         raise ImportError("File name: '%s (%d bytes)' is too short to be a valid pyc file" % (filename, osp.getsize(filename)))
 
-    fp = open(filename, 'rb')
-    return load_module_from_file_object(fp, filename=filename, code_objects=code_objects, fast_load=fast_load, get_code=get_code)
+    try:
+        fp = open(filename, 'rb')
+        return load_module_from_file_object(fp, filename=filename, code_objects=code_objects,
+                                            fast_load=fast_load, get_code=get_code)
+    finally:
+        fp.close()
 
 def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fast_load=False,
                 get_code=True):
@@ -159,7 +163,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                 elif fast_load:
-                    co = xdis.marsh.load(fp, magic_int, code_objects)
+                    co = xdis.marsh.load(fp, magic.versions[magic_int])
                 else:
                     co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
                 pass
