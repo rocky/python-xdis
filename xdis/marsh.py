@@ -857,7 +857,7 @@ def dumps(x, version=version, python_version=None):
     if is_python3:
         buf = []
         for b in buffer:
-            if isinstance(b, str):
+            if isinstance(b, str) and PYTHON3:
                 s2b = bytes(ord(b[j]) for j in range(len(b)))
                 buf.append(s2b)
             elif isinstance(b, bytearray):

@@ -68,8 +68,9 @@ def load_code(fp, magic_int, code_objects={}):
 
     c = chr(b)
     if c != 'c':
-        raise TypeError("File %s doesn't smell like Python bytecode; expecting code indicator"
-                        % fp.name)
+        raise TypeError("File %s doesn't smell like Python bytecode:\n"
+                        "expecting code indicator 'c'; got '%s'"
+                        % (fp.name, c))
 
     fp.seek(seek_pos)
     return load_code_internal(fp, magic_int, code_objects=code_objects)
@@ -153,7 +154,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                              co_code, co_consts, co_names, co_varnames, co_filename, co_name,
                              co_firstlineno, co_lnotab, co_freevars, co_cellvars)
             else:
-                # Pyton3 to Python3: Ok to use native Python3's code type
+                # Python3 to Python3: Ok to use native Python3's code type
                 code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
                             co_code, co_consts, co_names, co_varnames, co_filename, co_name,
                             co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
