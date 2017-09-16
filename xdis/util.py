@@ -1,3 +1,5 @@
+import types
+
 def code2num(code, i):
     if isinstance(code, str):
         return ord(code[i])
