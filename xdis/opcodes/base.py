@@ -6,8 +6,10 @@ Python opcode.py structures
 """
 
 from copy import deepcopy
-from xdis.bytecode import findlinestarts, findlabels
-import xdis.wordcode
+from xdis.bytecode import (
+    findlinestarts, findlabels, get_jump_targets,
+    get_jump_target_maps)
+from xdis import wordcode
 from xdis import IS_PYPY, PYTHON_VERSION
 
 if PYTHON_VERSION < 2.4:
@@ -22,8 +24,10 @@ cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not-in', 'is',
 HAVE_ARGUMENT = 90
 
 fields2copy = """
-hascompare hasconst hasfree hasjabs hasjrel haslocal
+hascompare hascondition
+hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasvargs oppop oppush
+nofollow
 """.split()
 
 def init_opdata(l, from_mod, version=None, is_pypy=False):
@@ -41,9 +45,13 @@ def init_opdata(l, from_mod, version=None, is_pypy=False):
     if version <= 3.5:
         l['findlinestarts'] = findlinestarts
         l['findlabels']     = findlabels
+        l['get_jump_targets'] = get_jump_targets
+        l['get_jump_target_maps']  = get_jump_target_maps
     else:
-        l['findlinestarts'] = xdis.wordcode.findlinestarts
-        l['findlabels']     = xdis.wordcode.findlabels
+        l['findlinestarts'] = wordcode.findlinestarts
+        l['findlabels']     = wordcode.findlabels
+        l['get_jump_targets'] = wordcode.get_jump_targets
+        l['get_jump_target_maps']  = wordcode.get_jump_target_maps
 
     l['opmap'] = deepcopy(from_mod.opmap)
     l['opname'] = deepcopy(from_mod.opname)
@@ -56,27 +64,36 @@ def compare_op(l, name, op, pop=2, push=1):
     def_op(l, name, op, pop, push)
     l['hascompare'].append(op)
 
+def conditional_op(l, name, op):
+    l['hascompare'].append(op)
+
 def const_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
     l['hasconst'].append(op)
 
-def def_op(l, op_name, opcode, pop=-2, push=-2):
+def def_op(l, op_name, opcode, pop=-2, push=-2, fallthrough=True):
     l['opname'][opcode] = op_name
     l['opmap'][op_name] = opcode
     l['oppush'][opcode] = push
     l['oppop'][opcode] = pop
+    if not fallthrough:
+        l['nofollow'].append(opcode)
 
 def free_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
     l['hasfree'].append(op)
 
-def jabs_op(l, name, op, pop=0, push=0):
-    def_op(l, name, op, pop, push)
+def jabs_op(l, name, op, pop=0, push=0, conditional=False, fallthrough=True):
+    def_op(l, name, op, pop, push, fallthrough=fallthrough)
     l['hasjabs'].append(op)
+    if conditional:
+        l['hascondition'].append(op)
 
-def jrel_op(l, name, op, pop=0, push=0):
+def jrel_op(l, name, op, pop=0, push=0, conditional=False, fallthrough=True):
     def_op(l, name, op, pop, push)
     l['hasjrel'].append(op)
+    if conditional:
+        l['hascondition'].append(op)
 
 def local_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
@@ -104,6 +121,8 @@ def rm_op(l, name, op):
        l['hasconst'].remove(op)
     if op in l['hascompare']:
        l['hascompare'].remove(op)
+    if op in l['hascondition']:
+       l['hascondition'].remove(op)
     if op in l['hasfree']:
        l['hasfree'].remove(op)
     if op in l['hasjabs']:
@@ -120,6 +139,8 @@ def rm_op(l, name, op):
        l['hasnargs'].remove(op)
     if op in l['hasvargs']:
        l['hasvargs'].remove(op)
+    if op in l['nofollow']:
+       l['nofollow'].remove(op)
 
     assert l['opmap'][name] == op
     del l['opmap'][name]
@@ -132,24 +153,28 @@ def varargs_op(l, op_name, op_code, pop=-1, push=1):
 # many Python idiocies over the years.
 
 def finalize_opcodes(l):
+
     # Not sure why, but opcode.py address has opcode.EXTENDED_ARG
     # as well as opmap['EXTENDED_ARG']
     l['EXTENDED_ARG'] = l['opmap']['EXTENDED_ARG']
 
-    if 'ARG_MAX_VALUE' not in l:
-        # In Python 3.6+ this is 8, but we expect
-        # those opcodes to set that
-        l['ARG_MAX_VALUE'] = 1 << 16
+    # In Python 3.6+ this is 8, but we expect
+    # those opcodes to set that
+    if 'EXTENDED_ARG_SHIFT' not in l:
+        l['EXTENDED_ARG_SHIFT'] = 16
 
-    l['EXTENDED_ARG'] = l['opmap']['EXTENDED_ARG']
+    l['ARG_MAX_VALUE'] = (1 << l['EXTENDED_ARG_SHIFT']) - 1
+    l['EXTENDED_ARG']  = l['opmap']['EXTENDED_ARG']
 
     l['opmap'] = fix_opcode_names(l['opmap'])
+
     # Now add in the attributes into the module
     for op in l['opmap']:
         l[op] = l['opmap'][op]
     l['JUMP_OPs'] = frozenset(l['hasjrel'] + l['hasjabs'])
+    l['NOFOLLOW'] = frozenset(l['nofollow'])
     opcode_check(l)
-
+    return
 
 def fix_opcode_names(opmap):
     """
@@ -172,22 +197,23 @@ def update_pj2(g, l):
     update_sets(l)
 
 def update_sets(l):
-    l['COMPARE_OPS'] = frozenset(l['hascompare'])
-    l['CONST_OPS']   = frozenset(l['hasconst'])
-    l['FREE_OPS']    = frozenset(l['hasfree'])
-    l['JREL_OPS']    = frozenset(l['hasjrel'])
-    l['JABS_OPS']    = frozenset(l['hasjabs'])
+    l['COMPARE_OPS']     = frozenset(l['hascompare'])
+    l['CONDITION_OPS']   = frozenset(l['hascondition'])
+    l['CONST_OPS']       = frozenset(l['hasconst'])
+    l['FREE_OPS']        = frozenset(l['hasfree'])
+    l['JREL_OPS']        = frozenset(l['hasjrel'])
+    l['JABS_OPS']        = frozenset(l['hasjabs'])
     l['JUMP_UNCONDITONAL']    = frozenset([l['opmap']['JUMP_ABSOLUTE'],
                                      l['opmap']['JUMP_FORWARD']])
-    l['LOOP_OPS']    = frozenset([l['opmap']['SETUP_LOOP']])
-    l['LOCAL_OPS']   = frozenset(l['haslocal'])
-    l['JUMP_OPS']    = (l['JABS_OPS']
+    l['LOOP_OPS']        = frozenset([l['opmap']['SETUP_LOOP']])
+    l['LOCAL_OPS']       = frozenset(l['haslocal'])
+    l['JUMP_OPS']        = (l['JABS_OPS']
                               | l['JREL_OPS']
                               | l['LOOP_OPS']
                               | l['JUMP_UNCONDITONAL'])
-    l['NAME_OPS']    = frozenset(l['hasname'])
-    l['NARGS_OPS']   = frozenset(l['hasnargs'])
-    l['VARGS_OPS']   = frozenset(l['hasvargs'])
+    l['NAME_OPS']        = frozenset(l['hasname'])
+    l['NARGS_OPS']       = frozenset(l['hasnargs'])
+    l['VARGS_OPS']       = frozenset(l['hasvargs'])
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))

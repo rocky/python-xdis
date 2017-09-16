@@ -30,7 +30,7 @@ l['hasnargs'].append(202)
 varargs_op(l, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
-jrel_op(l, 'JUMP_IF_NOT_DEBUG',       204)
+jrel_op(l, 'JUMP_IF_NOT_DEBUG',      204, conditional=True)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)

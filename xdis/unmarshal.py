@@ -16,7 +16,7 @@ import sys, types
 from struct import unpack
 
 from xdis.magics import PYTHON_MAGIC_INT
-from xdis.code import Code3
+from xdis.code import Code2, Code3
 from xdis import PYTHON3, PYTHON_VERSION, IS_PYPY
 
 internStrings = []
@@ -71,8 +71,9 @@ def load_code(fp, magic_int, code_objects={}):
 
     c = chr(b)
     if c != 'c':
-        raise TypeError("File %s doesn't smell like Python bytecode; expecting code indicator"
-                        % fp.name)
+        raise TypeError("File %s doesn't smell like Python bytecode:\n"
+                        "expecting code indicator 'c'; got '%s'"
+                        % (fp.name, c))
 
     fp.seek(seek_pos)
     return load_code_internal(fp, magic_int, code_objects=code_objects)
@@ -86,6 +87,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     v15_to_22 = magic_int in (20121, 50428, 50823, 60202, 60717)
     v15_to_20 = magic_int in (20121, 50428, 50823)
     v13_to_20 = magic_int in (11913, 5892, 20121, 50428, 50823)
+    v21_to_27 = not v13_to_20 and 60202 <= magic_int <= 63000
 
     if v13_to_22:
         co_argcount = unpack('h', fp.read(2))[0]
@@ -145,19 +147,21 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     if PYTHON3:
         Code = types.CodeType
         if PYTHON_MAGIC_INT > 3020:
+            # Check for Python 3 interpreter reading Python 2 bytecode.
+            # Python 3's code objects are bytes while Python 2's are strings.
+            #
             # In later Python3 magic_ints, there is a
             # kwonlyargcount parameter which we set to 0.
-            if v15_to_20:
-                code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                            co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                            co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                            co_freevars, co_cellvars)
+            if v15_to_20 or v21_to_27:
+                code = Code2(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
+                             co_code, co_consts, co_names, co_varnames, co_filename, co_name,
+                             co_firstlineno, co_lnotab, co_freevars, co_cellvars)
             else:
+                # Python3 to Python3: Ok to use native Python3's code type
                 code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
                             co_code, co_consts, co_names, co_varnames, co_filename, co_name,
                             co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
                             co_freevars, co_cellvars)
-
         else:
             code =  Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
                         co_code, co_consts, co_names, co_varnames, co_filename, co_name,

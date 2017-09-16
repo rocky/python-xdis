@@ -19,6 +19,27 @@ else:
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
+# This is from Python 3.6's dis
+def unpack_opargs_bytecode(code, opc):
+    extended_arg = 0
+    try:
+        n = len(code)
+    except TypeError:
+        code = code.co_code
+        n = len(code)
+
+    offset = 0
+    while offset < n:
+        prev_offset = offset
+        op = code2num(code, offset)
+        offset += 1
+        if op_has_argument(op, opc):
+            arg = code2num(code, offset) | extended_arg
+            extended_arg = (arg << opc.EXTENDED_ARG_SHIFT) if op == opc.EXTENDED_ARG else 0
+            offset += 2
+        else:
+            arg = None
+        yield (prev_offset, op, arg)
 
 def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
@@ -26,7 +47,7 @@ def findlinestarts(code, dup_lines=False):
     Generate pairs (offset, lineno) as described in Python/compile.c.
 
     """
-    if PYTHON3:
+    if not isinstance(code.co_lnotab, str):
         byte_increments = list(code.co_lnotab[0::2])
         line_increments = list(code.co_lnotab[1::2])
     else:
@@ -42,7 +63,9 @@ def findlinestarts(code, dup_lines=False):
                 (dup_lines and 0 < byte_incr < 255)):
                 yield (addr, lineno)
                 lastlineno = lineno
+                pass
             addr += byte_incr
+            pass
         lineno += line_incr
     if (lineno != lastlineno or
         (dup_lines and 0 < byte_incr < 255)):
@@ -74,39 +97,56 @@ def offset2line(offset, linestarts):
         return linestarts[len(linestarts)-1][1]
     return linestarts[high][1]
 
-def find_jump_targets(code, opc):
-    """Find all instruction offsets in the supplied bytecode which are the
-    targets of some sort of jump instruction.
-
-    Return the list of offsets.
+def get_jump_targets(code, opc):
+    """Returns a list of instruction offsets in the supplied bytecode
+    which are the targets of some sort of jump instruction.
     """
     offsets = []
-    # enumerate() is not an option, since we sometimes process
-    # multiple elements on a single pass through the loop
-    try:
-        n = len(code)
-    except:
-        code = code.co_code
-        n = len(code)
-    offset = 0
-    while offset < n:
-        op = code2num(code, offset)
-        offset += 1
-        if op >= opc.HAVE_ARGUMENT:
-            arg = code2num(code, offset) + code2num(code, offset+1)*256
-            offset += 2
-            label = -1
+    for offset, op, arg in unpack_opargs_bytecode(code, opc):
+        if arg is not None:
+            jump_offset = -1
             if op in opc.JREL_OPS:
-                label = offset + arg
+                jump_offset = offset + 3 + arg
             elif op in opc.JABS_OPS:
-                label = arg
-            if label >= 0:
-                if label not in offsets:
-                    offsets.append(label)
+                jump_offset = arg
+            if jump_offset >= 0:
+                if jump_offset not in offsets:
+                    offsets.append(jump_offset)
     return offsets
 
-findlabels = find_jump_targets
+def get_jump_target_maps(code, opc):
+    """Returns a dictionary where the key is an offset and the values are
+    a list of instruction offsets which can get run before that
+    instruction. This includes jump instructions as well as non-jump
+    instructions. Therefore, the keys of the dictionary are reachible
+    instructions. The values of the dictionary may be useful in control-flow
+    analysis.
+    """
+    offset2prev = {}
+    prev_offset = -1
+    for offset, op, arg in unpack_opargs_bytecode(code, opc):
+        if prev_offset >= 0:
+            prev_list = offset2prev.get(offset, [])
+            prev_list.append(prev_offset)
+            offset2prev[offset] = prev_list
+        if op in opc.NOFOLLOW:
+            prev_offset = -1
+        else:
+            prev_offset = offset
+        if arg is not None:
+            jump_offset = -1
+            if op in opc.JREL_OPS:
+                jump_offset = offset + 3 + arg
+            elif op in opc.JABS_OPS:
+                jump_offset = arg
+            if jump_offset >= 0:
+                prev_list = offset2prev.get(jump_offset, [])
+                prev_list.append(offset)
+                offset2prev[jump_offset] = prev_list
+    return offset2prev
 
+
+findlabels = get_jump_targets
 
 def _get_const_info(const_index, const_list):
     """Helper to get optional details about const references
@@ -526,6 +566,7 @@ def list2bytecode(l, opc, varnames, consts):
 if __name__ == '__main__':
     import xdis.opcodes.opcode_27  as opcode_27
     import xdis.opcodes.opcode_34  as opcode_34
+    import xdis.opcodes.opcode_36  as opcode_36
     consts = (None, 2)
     varnames = ('a')
     instructions = [
@@ -545,4 +586,6 @@ if __name__ == '__main__':
     bc = list2bytecode(instructions, opcode_27, varnames, consts)
     print(bc)
     bc = list2bytecode(instructions, opcode_34, varnames, consts)
+    print(bc)
+    bc = list2bytecode(instructions, opcode_36, varnames, consts)
     print(bc)

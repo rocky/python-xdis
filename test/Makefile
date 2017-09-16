@@ -20,7 +20,7 @@ check: check-short
                   --bytecode-3.2 --bytecode-3.3 \
                   --bytecode-3.4 --bytecode-3.5 \
 	          --bytecode-3.6 \
-	          --bytecode-pypy2.7 --bytecode-pypy3.2 $(COMPILE)
+	          --bytecode-2.7pypy --bytecode-3.2pypy $(COMPILE)
 
 check-short:
 	$(PYTHON) test_pyenvlib.py --verify --simple

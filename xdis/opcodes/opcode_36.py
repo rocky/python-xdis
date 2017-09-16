@@ -16,9 +16,10 @@ from xdis.opcodes.base import(
 
 import xdis.opcodes.opcode_35 as opcode_35
 
-# Largest value a instruction can have before have.
-# After this, we need to use EXTENDED_ARG
-ARG_MAX_VALUE = 1 << 8
+# When we use EXTENDED_ARG, by how much do we
+# shift (or what power of two do we multiply) the operand value?
+# Note: this changes in Python 3.6
+EXTENDED_ARG_SHIFT = 8
 
 version = 3.6
 

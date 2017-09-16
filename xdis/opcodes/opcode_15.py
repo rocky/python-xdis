@@ -37,15 +37,17 @@ l['findlabels'] = findlabels
 
 # FIXME: can we DRY this even more?
 
-hasconst = []
-hasname = []
-hasjrel = []
-hasjabs = []
-haslocal = []
-hascompare = []
-hasfree = []
-hasnargs = []  # For function-like calls
-hasvargs = []  # Similar but for operators BUILD_xxx
+hascompare   = []
+hascondition = [] # conditional operator; has jump offset
+hasconst     = []
+hasfree      = []
+hasjabs      = []
+hasjrel      = []
+haslocal     = []
+hasname      = []
+hasnargs     = []  # For function-like calls
+hasvargs     = []  # Similar but for operators BUILD_xxx
+nofollow     = []  # Instruction doesn't fall to the next opcode
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256
@@ -61,7 +63,7 @@ del op
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
-def_op(l, 'STOP_CODE', 0)
+def_op(l, 'STOP_CODE',       0,  0,  0, fallthrough=False)
 def_op(l, 'POP_TOP', 1)
 def_op(l, 'ROT_TWO', 2)
 def_op(l, 'ROT_THREE', 3)
@@ -114,7 +116,7 @@ def_op(l, 'PRINT_NEWLINE',   72, 1, 0)
 def_op(l, 'BREAK_LOOP',      80, 0, 0)
 
 def_op(l, 'LOAD_LOCALS',     82, 0, 1)
-def_op(l, 'RETURN_VALUE',    83, 1, 0)
+def_op(l, 'RETURN_VALUE',    83,  1,  0, fallthrough=False)
 
 def_op(l, 'EXEC_STMT',       85, 3, 0)
 
@@ -145,14 +147,14 @@ name_op(l, 'IMPORT_NAME',         107,  2,  1) # Operand is in name list
 name_op(l, 'IMPORT_FROM',         108,  0,  1) # Operand is in name list
 
 jrel_op(l, 'JUMP_FORWARD',        110,  0,  0)  # Number of bytes to skip
-jrel_op(l, 'JUMP_IF_FALSE',       111,  1,  1)  # ""
-jrel_op(l, 'JUMP_IF_TRUE',        112,  1,  1)  # ""
+jrel_op(l, 'JUMP_IF_FALSE',       111,  1,  1, True)  # ""
+jrel_op(l, 'JUMP_IF_TRUE',        112,  1,  1, True)  # ""
 jabs_op(l, 'JUMP_ABSOLUTE',       113,  0,  0)  # Target byte offset from beginning of code
 def_op(l, 'FOR_LOOP',             114)	        # Number of bytes to skip
 
 name_op(l, 'LOAD_GLOBAL',         116,  0,  1)  # Operand is in name list
 
-jrel_op(l, 'SETUP_LOOP',          120,  0,  0)  # Distance to target address
+jrel_op(l, 'SETUP_LOOP',          120,  0,  0, conditional=True)  # Distance to target address
 jrel_op(l, 'SETUP_EXCEPT',        121,  0,  0)  # ""
 jrel_op(l, 'SETUP_FINALLY',       122,  0,  0)  # ""
 
@@ -162,7 +164,8 @@ local_op(l, 'DELETE_FAST',        126)          # Local variable number
 
 def_op(l, 'SET_LINENO', 127)	   # Current line number
 
-def_op(l, 'RAISE_VARARGS',        130, -1,  0)  # Number of raise arguments (1, 2, or 3)
+def_op(l, 'RAISE_VARARGS',        130, -1,  0, fallthrough=False)
+                                                # Number of raise arguments (1, 2, or 3)
 nargs_op(l, 'CALL_FUNCTION',      131, -1,  1)  # #args + (#kwargs << 8)
 
 def_op(l, 'MAKE_FUNCTION',        132, -1,  1)  # Number of args with default values

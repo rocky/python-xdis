@@ -8,8 +8,8 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
-    jrel_op, name_op, rm_op,
-    varargs_op, update_pj3, dump_opcodes)
+    jrel_op, name_op,
+    varargs_op, update_pj3)
 
 version = 3.5
 
@@ -32,7 +32,7 @@ l['hasvargs'].append(202)
 varargs_op(l, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
-jrel_op(l, 'JUMP_IF_NOT_DEBUG', 204)
+jrel_op(l, 'JUMP_IF_NOT_DEBUG',      204, conditional=True)
 
 # There are no opcodes to remove or change.
 # If there were, they'd be listed below.

@@ -29,7 +29,7 @@ l['hasvargs'].append(202)
 varargs_op(l, 'BUILD_LIST_FROM_ARG', 203)
 
 # Used only in assert statements
-jrel_op(l, 'JUMP_IF_NOT_DEBUG', 204)
+jrel_op(l, 'JUMP_IF_NOT_DEBUG',      204, conditional=True)
 
 # There are no opcodes to remove or change.
 # If there were, they'd be listed below.
