@@ -8,8 +8,8 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
-    jrel_op, name_op, rm_op,
-    varargs_op, update_pj3, dump_opcodes)
+    jrel_op, name_op,
+    varargs_op, update_pj3)
 
 version = 3.5
 

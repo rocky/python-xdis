@@ -25,7 +25,7 @@ def get_srcdir():
         disassemble_file,
     ),
     (
-        ('../test/bytecode_pypy2.7/04_pypy_lambda.pyc', 'testdata/pypy_lambda.right',),
+        ('../test/bytecode_2.7pypy/04_pypy_lambda.pyc', 'testdata/pypy_lambda.right',),
         disassemble_file,
     ),
     (
