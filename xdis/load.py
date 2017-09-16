@@ -113,7 +113,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
 
         # For reasons I don't understand PyPy 3.2 stores a magic
         # of '0'...  The two values below are for Python 2.x and 3.x respectively
-        if magic[0:1] in ['0', b'0']:
+        if magic[0:1] in ['0', chr(0)]:
             magic = magics.int2magic(3180+7)
 
         try:
@@ -175,61 +175,9 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             traceback.print_exc()
             raise ImportError("Ill-formed bytecode file %s\n%s; %s"
                               % (filename, kind, msg))
->>>>>>> master
 
-    try:
-        version = float(magics.versions[magic][:3])
-    except KeyError:
-        if len(magic) >= 2:
-            raise ImportError("Unknown magic number %s in %s" %
-                              (ord(magic[0])+256*ord(magic[1]), filename))
-        else:
-            raise ImportError("Bad magic number: '%s'" % magic)
-
-    if magic_int in (3361,):
-        raise ImportError("%s is interim Python %s (%d) bytecode which is "
-                          "not supported.\nFinal released versions are "
-                          "supported." % (
-                              filename, magics.versions[magic],
-                              magics.magic2int(magic)))
-    elif magic_int == 62135:
-        fp.seek(0)
-        return fix_dropbox_pyc(fp)
-    elif magic_int == 62215:
-        raise ImportError("%s is a dropbox-hacked Python %s (bytecode %d).\n"
-                          "See https://github.com/kholia/dedrop for how to "
-                          "decrypt." % (
-                              filename, version, magics.magic2int(magic)))
-
-    # print version
-    ts = fp.read(4)
-    timestamp = unpack("I", ts)[0]
-    my_magic_int = magics.magic2int(imp.get_magic())
-    magic_int = magics.magic2int(magic)
-
-    # Note: a higher magic number doesn't necessarily mean a later
-    # release.  At Python 3.0 the magic number decreased
-    # significantly. Hence the range below. Also note inclusion of
-    # the size info, occurred within a Python major/minor
-    # release. Hence the test on the magic value rather than
-    # PYTHON_VERSION, although PYTHON_VERSION would probably work.
-    if 3200 <= magic_int < 20121:
-          source_size = unpack("I", fp.read(4))[0] # size mod 2**32
-    else:
-        source_size = None
-
-    if get_code:
-        if my_magic_int == magic_int:
-            bytecode = fp.read()
-            co = marshal.loads(bytecode)
-        elif fast_load:
-            co = xdis.marsh.load(fp, magic_int, code_objects)
-        else:
-            co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
-        pass
-    else:
-        co = None
-    fp.close()
+    finally:
+      fp.close()
 
     return version, timestamp, magic_int, co, is_pypy(magic_int), source_size
 

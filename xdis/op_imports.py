@@ -97,7 +97,6 @@ def get_opcode_module(version_info=None, variant=None):
             pass
     else:
         vers_str += variant
->>>>>>> master
     return op_imports[canonic_python_version[vers_str]]
 
 

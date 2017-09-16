@@ -35,7 +35,10 @@ def unpack_opargs_bytecode(code, opc):
         offset += 1
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
-            extended_arg = (arg << opc.EXTENDED_ARG_SHIFT) if op == opc.EXTENDED_ARG else 0
+            if op == opc.EXTENDED_ARG:
+                extended_arg = (arg << opc.EXTENDED_ARG_SHIFT)
+            else:
+                extended_arg = 0
             offset += 2
         else:
             arg = None

@@ -203,4 +203,3 @@ disco = _std_api.disco
 get_instructions = _std_api.get_instructions
 findlinestarts = _std_api.findlinestarts
 findlabels = _std_api.findlabels
->>>>>>> master
