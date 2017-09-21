@@ -50,7 +50,7 @@ del op
 
 #        OP NAME           OPCODE POP PUSH
 #-----------------------------------------
-def_op(l, 'STOP_CODE',             0,  0,  0)
+def_op(l, 'STOP_CODE',             0,  0,  0, fallthrough=False)
 def_op(l, 'POP_TOP',               1,  1,  0)
 def_op(l, 'ROT_TWO',               2,  2,  2)
 def_op(l, 'ROT_THREE',             3,  3,  3)
@@ -121,7 +121,7 @@ def_op(l, 'INPLACE_OR',           79,  2,  1)
 def_op(l, 'BREAK_LOOP',           80,  0,  0)
 
 def_op(l, 'LOAD_LOCALS',          82,  0,  1)
-def_op(l, 'RETURN_VALUE',         83,  1,  0)
+def_op(l, 'RETURN_VALUE',         83,  1,  0, fallthrough=False)
 def_op(l, 'IMPORT_STAR',          84,  1,  0)
 def_op(l, 'EXEC_STMT',            85,  3,  0)
 def_op(l, 'YIELD_VALUE',          86,  1,  1)
@@ -150,26 +150,30 @@ varargs_op(l, 'BUILD_MAP',        104, -1,  1)  # Always zero for now
 name_op(l, 'LOAD_ATTR',           105,  1,  1)  # Operand is in name list
 compare_op(l, 'COMPARE_OP',       106,  2,  1)  # Comparison operator
 
-name_op(l, 'IMPORT_NAME',         107,  2,  1) # Operand is in name list
-name_op(l, 'IMPORT_FROM',         108,  0,  1) # Operand is in name list
+name_op(l, 'IMPORT_NAME',         107,  2,  1)  # Operand is in name list
+name_op(l, 'IMPORT_FROM',         108,  0,  1)  # Operand is in name list
 
-jrel_op(l, 'JUMP_FORWARD',        110,  0,  0)  # Number of bytes to skip
-jrel_op(l, 'JUMP_IF_FALSE',       111,  1,  1)  # ""
-jrel_op(l, 'JUMP_IF_TRUE',        112,  1,  1)  # ""
-jabs_op(l, 'JUMP_ABSOLUTE',       113,  0,  0)  # Target byte offset from beginning of code
+jrel_op(l, 'JUMP_FORWARD',        110,  0,  0, fallthrough=False)
+                                                # Number of bytes to skip
+jrel_op(l, 'JUMP_IF_FALSE',       111,  1,  1, True)  # ""
+
+jrel_op(l, 'JUMP_IF_TRUE',        112,  1,  1, True)  # ""
+jabs_op(l, 'JUMP_ABSOLUTE',       113,  0,  0, fallthrough=False)
+                                                # Target byte offset from beginning of code
 
 name_op(l, 'LOAD_GLOBAL',         116,  0,  1)  # Operand is in name list
 
-jabs_op(l, 'CONTINUE_LOOP',       119,  0,  0)  # Target address
-jrel_op(l, 'SETUP_LOOP',          120,  0,  0)  # Distance to target address
-jrel_op(l, 'SETUP_EXCEPT',        121,  0,  0)  # ""
-jrel_op(l, 'SETUP_FINALLY',       122,  0,  0)  # ""
+jabs_op(l, 'CONTINUE_LOOP',       119,  0,  0, fallthrough=False)  # Target address
+jrel_op(l, 'SETUP_LOOP',          120,  0,  0, conditional=True)  # Distance to target address
+jrel_op(l, 'SETUP_EXCEPT',        121,  0,  0, conditional=True)  # ""
+jrel_op(l, 'SETUP_FINALLY',       122,  0,  0, conditional=True)  # ""
 
 local_op(l, 'LOAD_FAST',          124,  0,  1)  # Local variable number
 local_op(l, 'STORE_FAST',         125,  1,  0)  # Local variable number
 local_op(l, 'DELETE_FAST',        126)          # Local variable number
 
-def_op(l, 'RAISE_VARARGS',        130, -1,  0)  # Number of raise arguments (1, 2, or 3)
+def_op(l, 'RAISE_VARARGS',        130, -1,  0, fallthrough=False)
+                                                # Number of raise arguments (1, 2, or 3)
 nargs_op(l, 'CALL_FUNCTION',      131, -1,  1)  # #args + (#kwargs << 8)
 
 def_op(l, 'MAKE_FUNCTION',        132, -1,  1)  # Number of args with default values

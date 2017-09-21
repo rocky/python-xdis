@@ -260,24 +260,41 @@ class _Marshaller:
     dispatch[dict] = dump_dict
 
     def dump_code2(self, x):
+        # Careful here: many Python 2 code objects are strings,
+        # but Python 3 marshaling, by default, will dump strings as
+        # unicode. Force marsaling this type as string.
+
         self._write(TYPE_CODE)
         self.w_long(x.co_argcount)
         self.w_long(x.co_nlocals)
         self.w_long(x.co_stacksize)
         self.w_long(x.co_flags)
-        self.dump(x.co_code)
+        self.dump_string(x.co_code)
+
+        # If running in a Python3 interpreter, some constants will get
+        # converted from string to unicode. For now, let's see if
+        # that's okay.
         self.dump(x.co_consts)
-        self.dump(x.co_names)
+
+        # The tuple "names" in Python2 must have string entries
+        self._write(TYPE_TUPLE)
+        self.w_long(len(x.co_names))
+        for name in x.co_names:
+            self.dump_string(name)
+
         self.dump(x.co_varnames)
         self.dump(x.co_freevars)
         self.dump(x.co_cellvars)
-        self.dump(x.co_filename)
-        self.dump(x.co_name)
+        self.dump_string(x.co_filename)
+        self.dump_string(x.co_name)
         self.w_long(x.co_firstlineno)
-        self.dump(x.co_lnotab)
+        self.dump_string(x.co_lnotab)
+        return
     dispatch[Code2] = dump_code2
     dispatch[Code2Compat] = dump_code2
 
+    # FIXME: will probably have to adjust similar to how we
+    # adjusted dump_code2
     def dump_code3(self, x):
         self._write(TYPE_CODE)
         self.w_long(x.co_argcount)
@@ -835,7 +852,7 @@ def dumps(x, version=version, python_version=None):
     if is_python3:
         buf = []
         for b in buffer:
-            if isinstance(b, str):
+            if isinstance(b, str) and PYTHON3:
                 s2b = bytes(ord(b[j]) for j in range(len(b)))
                 buf.append(s2b)
             elif isinstance(b, bytearray):

@@ -1,13 +1,10 @@
 import types
-from xdis import PYTHON3
 
-if PYTHON3:
-    def code2num(code, i):
-        return code[i]
-else:
-    def code2num(code, i):
+def code2num(code, i):
+    if isinstance(code, str):
         return ord(code[i])
-
+    else:
+        return code[i]
 
 def num2code(num):
     return (num & 0xff, num >> 8)

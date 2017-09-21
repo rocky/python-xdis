@@ -21,10 +21,10 @@ from xdis.opcodes import opcode_35 as opcode_35
 from xdis.opcodes import opcode_36 as opcode_36
 from xdis.opcodes import opcode_37 as opcode_37
 
-from xdis.opcodes import opcode_pypy26 as opcode_pypy26
-from xdis.opcodes import opcode_pypy27 as opcode_pypy27
-from xdis.opcodes import opcode_pypy32 as opcode_pypy32
-from xdis.opcodes import opcode_pypy35 as opcode_pypy35
+from xdis.opcodes import opcode_26pypy as opcode_26pypy
+from xdis.opcodes import opcode_27pypy as opcode_27pypy
+from xdis.opcodes import opcode_32pypy as opcode_32pypy
+from xdis.opcodes import opcode_35pypy as opcode_35pypy
 
 op_imports = {
     '1.5'  : opcode_15,
@@ -64,23 +64,39 @@ op_imports = {
     '3.7.0alpha0': opcode_37,
     3.7    : opcode_37,
 
-    '2.6pypy':  opcode_pypy26,
-    '2.7pypy':  opcode_pypy27,
-    '3.2pypy':  opcode_pypy32,
-    '3.5pypy':  opcode_pypy35,
+    '2.6pypy':  opcode_26pypy,
+    '2.7pypy':  opcode_27pypy,
+    '3.2pypy':  opcode_32pypy,
+    '3.5pypy':  opcode_35pypy,
     }
 
 for k, v in canonic_python_version.items():
     if v in op_imports:
         op_imports[k] = op_imports[v]
 
-def get_opcode_module(version_info=sys.version_info):
+def get_opcode_module(version_info=None, variant=None):
     # FIXME: DRY with magics.sysinfo2float()
+    if version_info is None:
+        version_info = sys.version_info
+        if variant is None and IS_PYPY:
+            variant = 'pypy'
+
     vers_str = '.'.join([str(v) for v in version_info[0:3]])
     if version_info[3] != 'final':
         vers_str += ''.join([str(v) for v in version_info[3:]])
-    if IS_PYPY:
-        vers_str += 'pypy'
+    if variant is None:
+        try:
+            import platform
+            variant = platform.python_implementation()
+            if platform in ('Jython', 'Pyston'):
+                vers_str += variant
+                pass
+        except ImportError:
+            # Python may be too old, e.g. < 2.6 or implementation may
+            # just not have platform
+            pass
+    else:
+        vers_str += variant
     return op_imports[canonic_python_version[vers_str]]
 
 

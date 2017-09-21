@@ -31,6 +31,16 @@ class Code3:
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
 
+    # Mimic Python 3 code access functions
+    def __len__(self):
+        return len(self.co_code)
+
+    def __getitem__(self, i):
+        op = self.co_code[i]
+        if isinstance(op, str):
+            op = ord(op)
+        return op
+
     def encode_lineno_tab(self):
         co_lnotab = ''
 
@@ -84,9 +94,10 @@ class Code3:
 
 
 class Code3Compat(Code3):
-    """A much more flexible version of Code. We don't require kwonlyargcount which
-    does't exist. You can also fill in what you want and leave the rest blank.
-    Remmeber though to call inherited function freeze when done.
+    """A much more flexible version of Code. We don't require
+    kwonlyargcount which does't exist in Python 2. You can also fill
+    in what you want and leave the rest blank.  Remmeber though to
+    call inherited function freeze when done.
     """
     def __init__(self,
                  co_argcount=0,
@@ -145,6 +156,16 @@ class Code2:
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
         return
+
+    # Mimic Python 3 code access functions
+    def __len__(self):
+        return len(self.co_code)
+
+    def __getitem__(self, i):
+        op = self.co_code[i]
+        if isinstance(op, str):
+            op = ord(op)
+        return op
 
     def encode_lineno_tab(self):
         co_lnotab = ''

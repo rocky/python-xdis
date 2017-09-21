@@ -15,10 +15,6 @@ from xdis.opcodes.base import(
 
 import xdis.opcodes.opcode_36 as opcode_36
 
-# Largest value a instruction can have before have.
-# After this, we need to use EXTENDED_ARG
-ARG_MAX_VALUE = 1 << 8
-
 version = 3.7
 
 l = locals()
