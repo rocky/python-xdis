@@ -96,7 +96,7 @@ def local_op(l, name, op, pop=0, push=1):
     l['haslocal'].append(op)
 
 def name_op(l, op_name, op_code, pop=-2, push=-2):
-    def_op(l, op_name, op_code, push, pop)
+    def_op(l, op_name, op_code, pop, push)
     l['hasname'].append(op_code)
 
 def nargs_op(l, name, op, pop=-2, push=-2):

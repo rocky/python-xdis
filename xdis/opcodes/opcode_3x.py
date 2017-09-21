@@ -38,8 +38,10 @@ opmap = {}
 opname = [''] * 256
 
 # oppush[op] => number of stack entries pushed
+# -9 means handle special. Note his forces oppush[i] - oppop[i] negative
 oppush = [0] * 256
 
+# -1 means handle special.
 # oppop[op] => number of stack entries popped
 oppop  = [0] * 256
 
@@ -84,14 +86,14 @@ def_op(l, 'INPLACE_TRUE_DIVIDE',  29,  2,  1)
 # STORE_SLICE+0 .. STORE_SLICE+3
 # DELETE_SLICE+0 .. DELETE_SLICE+3
 
-def_op(l, 'STORE_MAP', 54)
+def_op(l, 'STORE_MAP',            54,  3,  1)
 def_op(l, 'INPLACE_ADD',          55,  2,  1)
 def_op(l, 'INPLACE_SUBTRACT',     56,  2,  1)
 def_op(l, 'INPLACE_MULTIPLY',     57,  2,  1)
 
 def_op(l, 'INPLACE_MODULO',       59,  2,  1)
-def_op(l, 'STORE_SUBSCR',         60,  2,  1)
-def_op(l, 'DELETE_SUBSCR',        61,  2,  0)
+def_op(l, 'STORE_SUBSCR',         60,  3,  0) # Implements TOS1[TOS] = TOS2.
+def_op(l, 'DELETE_SUBSCR',        61,  2,  0) # Implements del TOS1[TOS].
 def_op(l, 'BINARY_LSHIFT',        62,  2,  1)
 def_op(l, 'BINARY_RSHIFT',        63,  2,  1)
 def_op(l, 'BINARY_AND',           64,  2,  1)
@@ -99,7 +101,7 @@ def_op(l, 'BINARY_XOR',           65,  2,  1)
 def_op(l, 'BINARY_OR',            66,  2,  1)
 def_op(l, 'INPLACE_POWER',        67,  2,  1)
 def_op(l, 'GET_ITER',             68,  1,  1)
-def_op(l, 'STORE_LOCALS', 69)
+def_op(l, 'STORE_LOCALS',         69,  1,  0)
 
 def_op(l, 'PRINT_EXPR',           70,  1,  0)
 def_op(l, 'LOAD_BUILD_CLASS',     71,  0,  1)
@@ -116,7 +118,8 @@ def_op(l, 'INPLACE_AND',          77,  2,  1)
 def_op(l, 'INPLACE_XOR',          78,  2,  1)
 def_op(l, 'INPLACE_OR',           79,  2,  1)
 def_op(l, 'BREAK_LOOP',           80,  0,  0)
-def_op(l, 'WITH_CLEANUP',         81)
+def_op(l, 'WITH_CLEANUP',         81, -1, -9) # Cleans up the stack when a with statement
+                                              # block exits.  Handle stack special
 
 def_op(l, 'RETURN_VALUE',         83,  1,  0, fallthrough=False)
 def_op(l, 'IMPORT_STAR',          84,  1,  0)
@@ -131,9 +134,10 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 name_op(l, 'STORE_NAME',            90,  1,  0)   # Operand is in name list
 name_op(l, 'DELETE_NAME',           91,  0,  0)   # ""
 varargs_op(l, 'UNPACK_SEQUENCE',    92, -1,  1)   # Number of tuple items
-jrel_op(l,    'FOR_ITER',           93, -1, -1)
+jrel_op(l,    'FOR_ITER',           93,  1, -9)
 
-def_op(l,  'UNPACK_EX', 94)
+def_op(l,  'UNPACK_EX',             94, -1, -9)   # assignment with a starred target
+                                                  # argument has a count
 name_op(l, 'STORE_ATTR',            95,  2,  0)   # Operand is in name list
 name_op(l, 'DELETE_ATTR',           96,  1,  0)   # ""
 name_op(l, 'STORE_GLOBAL',          97,  1,  0)   # ""
@@ -156,8 +160,8 @@ jrel_op(l, 'JUMP_FORWARD',         110,  0,  0)  # Number of bytes to skip
 jabs_op(l, 'JUMP_IF_FALSE_OR_POP', 111, conditional=True)  # Target byte offset from beginning of code
 jabs_op(l, 'JUMP_IF_TRUE_OR_POP',  112, conditional=True) # ""
 jabs_op(l, 'JUMP_ABSOLUTE',        113,  0,  0)  # Target byte offset from beginning of code
-jabs_op(l, 'POP_JUMP_IF_FALSE',    114, conditional=True) # ""
-jabs_op(l, 'POP_JUMP_IF_TRUE',     115, conditional=True) # ""
+jabs_op(l, 'POP_JUMP_IF_FALSE',    114,  1, -9, conditional=True) # ""
+jabs_op(l, 'POP_JUMP_IF_TRUE',     115,  1, -9, conditional=True) # ""
 
 name_op(l, 'LOAD_GLOBAL',          116,  0,  1)  # Operand is in name list
 
@@ -191,8 +195,10 @@ jrel_op(l, 'SETUP_WITH',           143,  0,  7)
 
 def_op(l, 'LIST_APPEND',           145,  2,  1)  # Calls list.append(TOS[-i], TOS).
                                                  # Used to implement list comprehensions.
-def_op(l, 'SET_ADD',               146,  1,  0)
-def_op(l, 'MAP_ADD',               147,  2,  1)
+def_op(l, 'SET_ADD',               146,  1,  0)  # Calls set.add(TOS1[-i], TOS).
+                                                 # Used to implement set comprehensions.
+def_op(l, 'MAP_ADD',               147,  2,  1)  # Calls dict.setitem(TOS1[-i], TOS, TOS1)
+                                                 # Used to implement dict comprehensions.
 
 def_op(l, 'EXTENDED_ARG', 144)
 EXTENDED_ARG = 144

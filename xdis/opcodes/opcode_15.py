@@ -50,9 +50,11 @@ hasvargs     = []  # Similar but for operators BUILD_xxx
 nofollow     = []  # Instruction doesn't fall to the next opcode
 
 # oppush[op] => number of stack entries pushed
+# -9 means handle special. Note his forces oppush[i] - oppop[i] negative
 oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
+# -1 means handle special.
 oppop  = [0] * 256
 
 opmap = {}
@@ -100,8 +102,8 @@ def_op(l, 'DELETE_SLICE+1',  51, 2, 0)
 def_op(l, 'DELETE_SLICE+2',  52, 2, 0)
 def_op(l, 'DELETE_SLICE+3',  53, 3, 0)
 
-def_op(l, 'STORE_SUBSCR',    60, 2, 1)
-def_op(l, 'DELETE_SUBSCR',   61, 2, 0)
+def_op(l, 'STORE_SUBSCR',    60, 3, 0) # Implements TOS1[TOS] = TOS2.
+def_op(l, 'DELETE_SUBSCR',   61, 2, 0) # Implements del TOS1[TOS].
 
 def_op(l, 'BINARY_LSHIFT',   62, 2, 1)
 def_op(l, 'BINARY_RSHIFT',   63, 2, 1)

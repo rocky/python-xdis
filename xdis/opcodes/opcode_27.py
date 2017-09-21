@@ -42,9 +42,11 @@ jabs_op(l, 'POP_JUMP_IF_FALSE',    114)  # ""
 jabs_op(l, 'POP_JUMP_IF_TRUE',     115)  # ""
 jrel_op(l, 'SETUP_WITH',           143,  0,  2)
 
-def_op(l, 'EXTENDED_ARG', 145)
-def_op(l, 'SET_ADD', 146)
-def_op(l, 'MAP_ADD', 147)
+def_op(l, 'EXTENDED_ARG',          145)
+def_op(l, 'SET_ADD',               146,  1,  0)  # Calls set.add(TOS1[-i], TOS).
+                                                 # Used to implement set comprehensions.
+def_op(l, 'MAP_ADD',               147,  2,  1)  # Calls dict.setitem(TOS1[-i], TOS, TOS1)
+                                                 # Used to implement dict comprehensions.
 
 update_pj3(globals(), l)
 
