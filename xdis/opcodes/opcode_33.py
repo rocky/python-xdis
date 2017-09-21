@@ -23,7 +23,7 @@ init_opdata(l, opcode_3x, version)
 # Below are opcode changes since Python 3.2
 
 rm_op(l,  'STOP_CODE',   0)
-def_op(l, 'YIELD_FROM', 72)
+def_op(l, 'YIELD_FROM', 72, 1, 0)
 
 update_pj3(globals(), l)
 

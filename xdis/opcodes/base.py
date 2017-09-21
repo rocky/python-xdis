@@ -22,8 +22,10 @@ cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not-in', 'is',
 HAVE_ARGUMENT = 90
 
 fields2copy = """
-hascompare hasconst hasfree hasjabs hasjrel haslocal
+hascompare hascondition
+hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasvargs oppop oppush
+nofollow
 """.split()
 
 def init_opdata(l, from_mod, version=None, is_pypy=False):
@@ -60,19 +62,23 @@ def const_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
     l['hasconst'].append(op)
 
-def def_op(l, op_name, opcode, pop=-2, push=-2):
+def def_op(l, op_name, opcode, pop=-2, push=-2, fallthrough=True):
     l['opname'][opcode] = op_name
     l['opmap'][op_name] = opcode
     l['oppush'][opcode] = push
     l['oppop'][opcode] = pop
+    if not fallthrough:
+        l['nofollow'].append(opcode)
 
 def free_op(l, name, op, pop=0, push=1):
     def_op(l, name, op, pop, push)
     l['hasfree'].append(op)
 
-def jabs_op(l, name, op, pop=0, push=0):
-    def_op(l, name, op, pop, push)
+def jabs_op(l, name, op, pop=0, push=0, conditional=False, fallthrough=True):
+    def_op(l, name, op, pop, push, fallthrough=fallthrough)
     l['hasjabs'].append(op)
+    if conditional:
+        l['hascondition'].append(op)
 
 def jrel_op(l, name, op, pop=0, push=0):
     def_op(l, name, op, pop, push)
@@ -83,7 +89,7 @@ def local_op(l, name, op, pop=0, push=1):
     l['haslocal'].append(op)
 
 def name_op(l, op_name, op_code, pop=-2, push=-2):
-    def_op(l, op_name, op_code, push, pop)
+    def_op(l, op_name, op_code, pop, push)
     l['hasname'].append(op_code)
 
 def nargs_op(l, name, op, pop=-2, push=-2):

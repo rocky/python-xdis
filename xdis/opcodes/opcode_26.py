@@ -17,7 +17,7 @@ l = locals()
 init_opdata(l, opcode_25, version)
 
 # Below are opcode changes since Python 2.5
-def_op(l, 'STORE_MAP', 54, 3, 2)
+def_op(l, 'STORE_MAP', 54, 3, 1)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)

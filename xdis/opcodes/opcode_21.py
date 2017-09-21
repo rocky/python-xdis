@@ -19,9 +19,9 @@ rm_op(l, 'BINARY_FLOOR_DIVIDE',  26)
 rm_op(l, 'BINARY_TRUE_DIVIDE',   27)
 rm_op(l, 'INPLACE_FLOOR_DIVIDE', 28)
 rm_op(l, 'INPLACE_TRUE_DIVIDE',  29)
-rm_op(l, 'GET_ITER', 68)
-rm_op(l, 'YIELD_VALUE', 86)
-rm_op(l, 'FOR_ITER', 93)
+rm_op(l, 'GET_ITER',             68)
+rm_op(l, 'YIELD_VALUE',          86)
+rm_op(l, 'FOR_ITER',             93)
 
 update_pj2(globals(), l)
 

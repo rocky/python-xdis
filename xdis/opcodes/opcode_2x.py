@@ -16,15 +16,17 @@ l = locals()
 
 # FIXME: DRY this with opcode_3x.
 
-hasconst = []
-hasname = []
-hasjrel = []
-hasjabs = []
-haslocal = []
-hascompare = []
-hasfree = []
-hasnargs = []  # For function-like calls
-hasvargs = []  # Similar but for operators BUILD_xxx
+hascompare   = []
+hascondition = [] # conditional operator; has jump offset
+hasconst     = []
+hasfree      = []
+hasjabs      = []
+hasjrel      = []
+haslocal     = []
+hasname      = []
+hasnargs     = []  # For function-like calls
+hasvargs     = []  # Similar but for operators BUILD_xxx
+nofollow     = []  # Instruction doesn't fall to the next opcode
 
 # opmap[opcode_name] => opcode_number
 opmap = {}
@@ -33,9 +35,11 @@ opmap = {}
 opname = [''] * 256
 
 # oppush[op] => number of stack entries pushed
+# -9 means handle special. Note his forces oppush[i] - oppop[i] negative
 oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
+# -1 means handle special.
 oppop  = [0] * 256
 
 for op in range(256): opname[op] = '<%r>' % (op,)
@@ -93,8 +97,8 @@ def_op(l, 'INPLACE_SUBTRACT',     56,  2,  1)
 def_op(l, 'INPLACE_MULTIPLY',     57,  2,  1)
 def_op(l, 'INPLACE_DIVIDE',       58,  2,  1)
 def_op(l, 'INPLACE_MODULO',       59,  2,  1)
-def_op(l, 'STORE_SUBSCR',         60,  2,  1)
-def_op(l, 'DELETE_SUBSCR',        61,  2,  0)
+def_op(l, 'STORE_SUBSCR',         60,  3,  0) # Implements TOS1[TOS] = TOS2.
+def_op(l, 'DELETE_SUBSCR',        61,  2,  0) # Implements del TOS1[TOS].
 
 def_op(l, 'BINARY_LSHIFT',        62,  2,  1)
 def_op(l, 'BINARY_RSHIFT',        63,  2,  1)
@@ -131,7 +135,7 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 name_op(l, 'STORE_NAME',           90,  1,  0)  # Operand is in name list
 name_op(l, 'DELETE_NAME',          91,  0,  0)  # ""
 varargs_op(l, 'UNPACK_SEQUENCE',   92, -1,  1)  # Number of tuple items
-jrel_op(l, 'FOR_ITER',             93, -1, -1)
+jrel_op(l, 'FOR_ITER',             93,  1, -9)  # TOS is read
 
 name_op(l, 'STORE_ATTR',           95,  2,  0)  # Operand is in name list
 name_op(l, 'DELETE_ATTR',          96,  1,  0)  # ""
