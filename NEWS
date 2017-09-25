@@ -1,3 +1,23 @@
+3.6.0 2017-09-25
+
+- StdApi now uses std functions and constants from the
+  correctly generated opc rather than the standard dis module (moagstar)
+- Improve accuracy of opcode stack effects; classify opcodes more correctly
+- Regularize opcode names: pypy is at the end now
+- Correct writing Python3 bytecode from Python2 and Python2 bytecode from Python 3
+- Add function to load from file object
+- Add EXTENDED_ARG_SHIFT the number of bit positions EXTENDED_ARGS shifts
+  This varies depending on where we are with respect to Python 3.6; similarly
+  add ARG_MAX_VALUE, the maixumim integer value an operand field can have before
+  needing EXTENDED_ARGS
+- add unpack_opargs_bytecode which is similar to unpack_opargs_wordcode of 3.6
+  This probably fixes a long-standing but little-noticed bug in Python 2.x disassembly
+- cross version compatability bug fixed in code2num()
+- Mark NOFOLOW opcodes (RETURN, RAISE)
+- Mark conditional opcodes (POP_JUMP_IF...)
+- Add len() and getitem() to code types code types to mimic Python3 behavior
+- More tests; add appveyor CI testing
+
 3.5.5 2017-08-31
 
 - Add 3.7 opcodes
