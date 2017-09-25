@@ -1,8 +1,190 @@
+2017-09-25  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py, xdis/opcodes/opcode_pypy35.py: 
+	Compatibility files
+
+2017-09-25  rocky <rocky@dusytfeet.com>
+
+	* NEWS, xdis/version.py: Get ready for release 3.6.0.  Sync with master.
+
+2017-09-21  rocky <rocky@dusytfeet.com>
+
+	* : commit 5ebd23ee2767f3bb1db43f0b527817443e651e16 Author: rocky
+	<rocky@dusytfeet.com> Date:   Thu Sep 21 14:58:06 2017 -0400
+
+2017-09-16  rocky <rb@dustyfeet.com>
+
+	* xdis/util.py: Python 2.4 needs "import types"
+
+2017-09-16  rocky <rb@dustyfeet.com>
+
+	* xdis/bytecode.py, xdis/load.py, xdis/op_imports.py, xdis/std.py,
+	xdis/wordcode.py: I hate merge conflicts
+
+2017-09-16  rocky <rb@dustyfeet.com>
+
+	* : commit fc257e180226f4fb265f1689938bd17f9e0da686 Author: rocky
+	<rb@dustyfeet.com> Date:   Sat Sep 16 10:38:43 2017 -0400
+
+2017-09-12  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #36 from moagstar/std-api-version-selection Std api version selection
+
+2017-07-24  Daniel Bradburn <moagstar@gmail.com>
+
+	* xdis/std.py: StdApi now uses std functions and constants from the
+	correctly generated opc rather than the standard dis module
+
+2017-07-24  Daniel Bradburn <moagstar@gmail.com>
+
+	* requirements-dev.txt: Added six as development requirement
+
+2017-07-24  Daniel Bradburn <moagstar@gmail.com>
+
+	* xdis/std.py: Refactored std.py to be a class rather than a module.
+	This std api that is generated still only supports the currently
+	running python version, however this is laying the ground work to be
+	able to fully select the api version to create
+
+2017-09-07  rocky <rocky@dusytfeet.com>
+
+	* xdis/marsh.py, xdis/unmarshal.py: Correct writing Python3 bytecode
+	from Python2
+
+2017-09-06  rocky <rocky@dusytfeet.com>
+
+	* xdis/load.py, xdis/marsh.py: Python 2 code creation from Python 3
+	and...  Small improvement in recent change to load.py: make sure to close
+	the file we opened.
+
+2017-09-05  rocky <rocky@dusytfeet.com>
+
+	* : commit 363de0a9fec8c9a183498b0aad60a48c010c5e9d Author: rocky
+	<rocky@dusytfeet.com> Date:   Tue Sep 5 23:35:36 2017 -0400
+
+2017-09-05  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #35 from kenoph/master Function to load from file object
+
+2017-09-05  kenoph <paolo.montesel@gmail.com>
+
+	* xdis/load.py: Function to load from file object
+
+2017-09-04  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_bytecode.py: Comment test with assembly code
+
+2017-09-04  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_bytecode.py: Work around a frail test
+
+2017-09-04  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_bytecode.py: Guard Python 2.7-only interpreter test
+
+2017-09-04  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_15.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_3x.py: Classify SETUP_xx opcode more correctly
+
+2017-09-04  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_bytecode.py, xdis/bytecode.py, xdis/opcodes/base.py,
+	xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_37.py, xdis/util.py: 
+	bytcode decoding a la 3.6. Add EXTENDED_ARG_SHIFT There are some big and important structural changes here.
+	unpack_opargs_bytecode is similar to unpack_opargs_wordcode of 3.6.  It probably fixes a long-standing but little-noticed bug in how
+	Python 2.x disassembles code; it also modularizes and simplifies
+	code.  Constants EXTENDED_ARG_SHIFT gives how many places EXTENDED_ARGS
+	shifts its operand value. ARG_MAX_VALUE gives the maximum integer
+	value that an operand can take.  A cross-version compatibility bug has been fixed in code2num.
+
+2017-09-02  rocky <rocky@dusytfeet.com>
+
+	* xdis/wordcode.py: Some Python 3's don't support len(code)
+
+2017-09-02  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_bytecode.py, xdis/bytecode.py, xdis/code.py,
+	xdis/opcodes/base.py, xdis/opcodes/opcode_15.py,
+	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_3x.py,
+	xdis/wordcode.py: Add get_jump_target_maps; mark NOFOLLOW opcodes...  Add __len__ and __getitem__ to code types to mimic Python3 behavior.
+
+2017-09-02  rocky <rocky@dusytfeet.com>
+
+	* : Dead code test file
+
+2017-09-02  rocky <rocky@dusytfeet.com>
+
+	* pytest/test_bytecode.py, test/simple_source/01_dead_code.py,
+	xdis/bytecode.py, xdis/opcodes/base.py, xdis/opcodes/opcode_15.py,
+	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_3x.py,
+	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
+	xdis/opcodes/opcode_pypy32.py, xdis/opcodes/opcode_pypy35.py,
+	xdis/wordcode.py: Mark conditional ops.
+
+2017-09-01  rocky <rocky@dusytfeet.com>
+
+	* xdis/bytecode.py, xdis/wordcode.py: Rename findlabels and op_size New names are find_jump_targets and instruction_size respectively
+	Old names are around for compatiblity.
+
+2017-09-01  rocky <rocky@dusytfeet.com>
+
+	* : commit 47c78ab9c1a0f45783d86896b37b401daf7d13f5 Author: rocky
+	<rocky@dusytfeet.com> Date:   Fri Sep 1 18:06:55 2017 -0400
+
+2017-08-31  rocky <rb@dustyfeet.com>
+
+	* : commit 33f73d61f2cdb220a0d55f693fb7142f1c4b762d Author: rocky
+	<rb@dustyfeet.com> Date:   Thu Aug 31 09:36:15 2017 -0400
+
+2017-08-31  rocky <rb@dustyfeet.com>
+
+	* appveyor.yml: Omit appveyor tests for now. Just see that it builds
+
+2017-08-31  rocky <rb@dustyfeet.com>
+
+	* appveyor.yml: Another appveyor try
+
+2017-08-31  rocky <rb@dustyfeet.com>
+
+	* appveyor.yml: Disable unit tests for now in appveyor
+
+2017-08-31  rocky <rb@dustyfeet.com>
+
+	* appveyor.yml: Fix up appveyor test code
+
+2017-08-31  rocky <rb@dustyfeet.com>
+
+	* appveyor.yml, appveyor/install.ps1, appveyor/run_with_env.cmd: Try
+	appveyor
+
 2017-08-31  rocky <rb@dustyfeet.com>
 
 	* NEWS, xdis/bytecode.py, xdis/load.py, xdis/magics.py,
 	xdis/op_imports.py, xdis/opcodes/opcode_37.py, xdis/util.py,
 	xdis/version.py: Get ready for release 3.5.5
+
+2017-08-31  rocky <rb@dustyfeet.com>
+
+	* NEWS, xdis/version.py: Get ready for release 3.5.5
+
+2017-08-19  rocky <rocky@dusytfeet.com>
+
+	* xdis/bytecode.py: Document op_size.
+
+2017-08-16  rocky <rocky@dusytfeet.com>
+
+	* xdis/load.py: Add optional file parameter on load_file
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py, xdis/op_imports.py, xdis/opcodes/opcode_37.py: 
+	Python 3.7.0-dev support
+
+2017-08-15  rocky <rocky@dusytfeet.com>
+
+	* xdis/util.py: Move utility code from uncompyle here.
 
 2017-08-15  rocky <rocky@dusytfeet.com>
 
