@@ -17,8 +17,14 @@ example:
 There is also the ability to generate an std api for a specific version, for example:
 
     from xdis.std import make_std_api
-    dis = make_std_api(2.4, is_pypy=False)
+    dis = make_std_api(2.4)
     # dis can now disassemble code objects from python 2.4
+
+Version 'variants' are also supported, for example:
+
+    from xdis.std import make_std_api
+    dis = make_std_api(2.6, 'pypy')
+    # dis can now disassemble pypy code objects from python 2.6
 
 """
 
@@ -26,25 +32,30 @@ There is also the ability to generate an std api for a specific version, for exa
 # std
 import sys
 # xdis
-from xdis import PYTHON_VERSION, IS_PYPY
+from xdis import IS_PYPY
 from xdis.bytecode import Bytecode as _Bytecode, _Instruction
-from xdis.main import get_opcode, disco as _disco
+from xdis.main import disco as _disco
+from xdis.op_imports import get_opcode_module
 from xdis.util import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code
+
+
+PYPY = 'pypy'
+VARIANT = PYPY if IS_PYPY else None
 
 
 class _StdApi:
 
-    def __init__(self, python_version=PYTHON_VERSION, is_pypy=IS_PYPY):
+    def __init__(self, python_version=sys.version_info, variant=VARIANT):
 
-        if python_version >= 3.6:
+        if python_version >= (3, 6):
             import xdis.wordcode as xcode
         else:
             import xdis.bytecode as xcode
         self.xcode = xcode
 
-        self.python_version = python_version
-        self.is_pypy = is_pypy
-        self.opc = opc = get_opcode(python_version, is_pypy)
+        self.opc = opc = get_opcode_module(python_version, variant)
+        self.python_version = opc.version
+        self.is_pypy = variant == PYPY
         self.hasconst = opc.hasconst
         self.hasname = opc.hasname
         self.opmap = opc.opmap
@@ -162,7 +173,7 @@ class _StdApi:
         return self.xcode.findlabels(code, self.opc)
 
 
-def make_std_api(python_version=PYTHON_VERSION, is_pypy=IS_PYPY):
+def make_std_api(python_version=sys.version_info, variant=VARIANT):
     """
     Generate an object which can be used in the same way as the python
     standard dis module. The difference is that the generated 'module' can be
@@ -171,13 +182,14 @@ def make_std_api(python_version=PYTHON_VERSION, is_pypy=IS_PYPY):
 
     :param python_version: Generate a dis module for this version of python
                            (defaults to the currently running python version.)
-    :param is_pypy:        True if we should generate a dis module that
-                           disassembles pypy bytecode (defaults to the
-                           currently running python version.)
+    :param variant:        The string denoting the variant of the python version
+                           being run, for example 'pypy' or 'alpha0', 'rc1' etc,
+                           or None to auto detect based on the currently running
+                           interpreter.
 
     :return: object which can be used like the std dis module.
     """
-    return _StdApi(python_version, is_pypy)
+    return _StdApi(python_version, variant)
 
 
 _std_api = make_std_api()
