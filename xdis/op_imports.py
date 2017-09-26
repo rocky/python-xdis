@@ -91,7 +91,7 @@ def get_opcode_module(version_info=None, variant=None):
             if platform in ('Jython', 'Pyston'):
                 vers_str += variant
                 pass
-        except ImportError:
+        except:
             # Python may be too old, e.g. < 2.6 or implementation may
             # just not have platform
             pass
