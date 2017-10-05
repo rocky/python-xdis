@@ -16,7 +16,7 @@ want to run on Python 2.7.
 # imports so this can run on older Pythons. This is
 # intended to be a more cross-version Python program
 
-import datetime, sys
+import datetime, re, sys
 from collections import deque
 
 import xdis
@@ -77,7 +77,7 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
     opc = get_opcode(bytecode_version, is_pypy)
 
     if asm_format:
-        disco_loop_asm_format(opc, bytecode_version, co, real_out)
+        disco_loop_asm_format(opc, bytecode_version, co, real_out, {})
     else:
         queue = deque([co])
         disco_loop(opc, bytecode_version, queue, real_out)
@@ -108,19 +108,39 @@ def disco_loop(opc, version, queue, real_out, dup_lines=False):
             pass
         pass
 
-def disco_loop_asm_format(opc, version, co, real_out):
+def disco_loop_asm_format(opc, version, co, real_out, fn_name_map):
     """Produces disassembly in a format more conducive to
     automatic assembly by producing inner modules before they are
     used by outer ones. Since this is recusive, we'll
     use more stack space at runtime.
     """
+    co_name = co.co_name
+    mapped_name = fn_name_map.get(co_name, co_name)
+    m = re.match("^<(.+)>$", co.co_name)
+    if m:
+        basename = m.group(1)
+        if basename != 'module':
+            mapped_name = "%s_0x%x" % (basename, id(co))
+            co_name = mapped_name
+        assert mapped_name not in fn_name_map
+        fn_name_map[co_name] = mapped_name
+        pass
+    elif co_name in fn_name_map:
+        mapped_name = "%s_0x%x" % (co_name, id(co))
+        fn_name_map[co_name] = mapped_name
+        pass
+
+    # FIXME: if co_name changed, then we need to update
+    # the co_consts name for that entry as well.
+    # And we may need to update uncompyle6 as well.
+
     for c in co.co_consts:
         if iscode(c):
-            disco_loop_asm_format(opc, version, c, real_out)
+            disco_loop_asm_format(opc, version, c, real_out, fn_name_map)
         pass
 
     if co.co_name != '<module>' or co.co_filename:
-        real_out.write("\n" + format_code_info(co, version) + "\n")
+        real_out.write("\n" + format_code_info(co, version, mapped_name) + "\n")
 
     bytecode = Bytecode(co, opc, dup_lines=True)
     real_out.write(bytecode.dis(asm_format=True) + "\n")
