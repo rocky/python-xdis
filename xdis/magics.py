@@ -210,7 +210,7 @@ def __show(text, magic):
     print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
 
 def py_str2float(version):
-    """Convert a Python vresions ino a 'canonic' floating-point number which
+    """Convert a Python version into a 'canonic' floating-point number which
     that can then be used to look up a magic number.
     A runtime error is raised if "version" is not found.
     """
@@ -219,7 +219,7 @@ def py_str2float(version):
         for v, m in list(magics.items()):
             if m == magic:
                 try:
-                    return float(v)
+                    return float(canonic_python_version[v])
                 except:
                     try:
                         m = re.match('^(\d\.)(\d+)\.(\d+)$', v)
