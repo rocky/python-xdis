@@ -19,7 +19,10 @@ else:
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
-# This is from Python 3.6's dis
+def extended_arg_val(opc, val):
+    return val << opc.EXTENDED_ARG_SHIFT
+
+# This is modified from Python 3.6's dis
 def unpack_opargs_bytecode(code, opc):
     extended_arg = 0
     try:
@@ -35,7 +38,7 @@ def unpack_opargs_bytecode(code, opc):
         offset += 1
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
-            extended_arg = (arg << opc.EXTENDED_ARG_SHIFT) if op == opc.EXTENDED_ARG else 0
+            extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
             offset += 2
         else:
             arg = None
