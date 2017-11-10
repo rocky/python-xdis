@@ -77,7 +77,8 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
     opc = get_opcode(bytecode_version, is_pypy)
 
     if asm_format:
-        disco_loop_asm_format(opc, bytecode_version, co, real_out, {})
+        disco_loop_asm_format(opc, bytecode_version, co, real_out,
+                              {}, set([]))
     else:
         queue = deque([co])
         disco_loop(opc, bytecode_version, queue, real_out)
@@ -108,7 +109,8 @@ def disco_loop(opc, version, queue, real_out, dup_lines=False):
             pass
         pass
 
-def disco_loop_asm_format(opc, version, co, real_out, fn_name_map):
+def disco_loop_asm_format(opc, version, co, real_out,
+                          fn_name_map, all_fns):
     """Produces disassembly in a format more conducive to
     automatic assembly by producing inner modules before they are
     used by outer ones. Since this is recusive, we'll
@@ -117,26 +119,35 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map):
     co_name = co.co_name
     mapped_name = fn_name_map.get(co_name, co_name)
     m = re.match("^<(.+)>$", co.co_name)
-    if m:
-        basename = m.group(1)
+    if m or co_name in all_fns:
+        if co_name in all_fns:
+            basename = co_name
+        else:
+            basename = m.group(1)
         if basename != 'module':
             mapped_name = "%s_0x%x" % (basename, id(co))
             co_name = mapped_name
         assert mapped_name not in fn_name_map
-        fn_name_map[co_name] = mapped_name
+        fn_name_map[mapped_name] = basename
         pass
     elif co_name in fn_name_map:
         mapped_name = "%s_0x%x" % (co_name, id(co))
         fn_name_map[co_name] = mapped_name
         pass
+    all_fns.add(co_name)
 
     # FIXME: if co_name changed, then we need to update
     # the co_consts name for that entry as well.
     # And we may need to update uncompyle6 as well.
 
+    new_consts = []
     for c in co.co_consts:
+        new_consts.append(c)
         if iscode(c):
-            disco_loop_asm_format(opc, version, c, real_out, fn_name_map)
+            if c.co_name in all_fns:
+                print("FIXME", c.co_name, mapped_name)
+            disco_loop_asm_format(opc, version, c, real_out,
+                                  fn_name_map, all_fns)
         pass
 
     if co.co_name != '<module>' or co.co_filename:
