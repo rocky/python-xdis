@@ -262,7 +262,7 @@ class Code2:
 class Code2Compat(Code2):
     """A much more flexible version of Code. We don't require kwonlyargcount which
     does't exist. You can also fill in what you want and leave the rest blank.
-    Remmeber though to call inherited function freeze when done.
+    Remember though to call inherited function freeze when done.
     """
     def __init__(self, co_argcount=0, co_nlocals=0,
                  co_stacksize=0, co_flags=[], co_code=[],
@@ -283,8 +283,16 @@ class Code2Compat(Code2):
         self.co_lnotab = co_lnotab
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
+    def __repr__(self):
+        return ('<code2 object %s at 0x%0x, file "%s", line %d>' % (
+            self.co_name, id(self), self.co_filename, self.co_firstlineno))
 
-
+def code2compat(co):
+    return Code2Compat(co.co_argcount, co.co_nlocals,
+                       co.co_stacksize, co.co_flags, co.co_code,
+                       co.co_consts, co.co_names, co.co_varnames,
+                       co.co_filename, co.co_name, co.co_firstlineno,
+                       co.co_lnotab, co.co_freevars, co.co_cellvars)
 def iscode(obj):
     """A replacement for inspect.iscode() which we can't used because we may be
     using a different version of Python than the version of Python used

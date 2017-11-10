@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """Setup script for the 'xdis' distribution."""
 
 from __pkginfo__ import \

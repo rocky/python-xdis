@@ -23,7 +23,7 @@ import xdis
 
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode
-from xdis.code import iscode
+from xdis.code import iscode, code2compat
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
 from xdis.version import VERSION
@@ -77,6 +77,8 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
     opc = get_opcode(bytecode_version, is_pypy)
 
     if asm_format:
+        if bytecode_version < 3.0:
+            co = code2compat(co)
         disco_loop_asm_format(opc, bytecode_version, co, real_out,
                               {}, set([]))
     else:
@@ -118,6 +120,7 @@ def disco_loop_asm_format(opc, version, co, real_out,
     """
     co_name = co.co_name
     mapped_name = fn_name_map.get(co_name, co_name)
+
     m = re.match("^<(.+)>$", co.co_name)
     if m or co_name in all_fns:
         if co_name in all_fns:
@@ -129,27 +132,27 @@ def disco_loop_asm_format(opc, version, co, real_out,
             co_name = mapped_name
         assert mapped_name not in fn_name_map
         fn_name_map[mapped_name] = basename
+        co.co_name = mapped_name
         pass
     elif co_name in fn_name_map:
         mapped_name = "%s_0x%x" % (co_name, id(co))
-        fn_name_map[co_name] = mapped_name
+        fn_name_map[mapped_name] = co_name
+        co.co_name = mapped_name
         pass
-    all_fns.add(co_name)
-
-    # FIXME: if co_name changed, then we need to update
-    # the co_consts name for that entry as well.
-    # And we may need to update uncompyle6 as well.
 
     new_consts = []
     for c in co.co_consts:
-        new_consts.append(c)
         if iscode(c):
-            if c.co_name in all_fns:
-                print("FIXME", c.co_name, mapped_name)
+            if version < 3.0:
+                c = code2compat(c)
             disco_loop_asm_format(opc, version, c, real_out,
                                   fn_name_map, all_fns)
+            c.freeze()
+        new_consts.append(c)
         pass
 
+    all_fns.add(co_name)
+    co.co_consts = new_consts
     if co.co_name != '<module>' or co.co_filename:
         real_out.write("\n" + format_code_info(co, version, mapped_name) + "\n")
 
