@@ -23,7 +23,7 @@ import xdis
 
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode
-from xdis.code import iscode, code2compat
+from xdis.code import iscode, code2compat, code3compat
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
 from xdis.version import VERSION
@@ -77,8 +77,6 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
     opc = get_opcode(bytecode_version, is_pypy)
 
     if asm_format:
-        if bytecode_version < 3.0:
-            co = code2compat(co)
         disco_loop_asm_format(opc, bytecode_version, co, real_out,
                               {}, set([]))
     else:
@@ -118,6 +116,12 @@ def disco_loop_asm_format(opc, version, co, real_out,
     used by outer ones. Since this is recusive, we'll
     use more stack space at runtime.
     """
+
+    if version < 3.0:
+        co = code2compat(co)
+    else:
+        co = code3compat(co)
+
     co_name = co.co_name
     mapped_name = fn_name_map.get(co_name, co_name)
 
@@ -145,6 +149,8 @@ def disco_loop_asm_format(opc, version, co, real_out,
         if iscode(c):
             if version < 3.0:
                 c = code2compat(c)
+            else:
+                c = code3compat(c)
             disco_loop_asm_format(opc, version, c, real_out,
                                   fn_name_map, all_fns)
             c.freeze()
@@ -153,6 +159,7 @@ def disco_loop_asm_format(opc, version, co, real_out,
 
     all_fns.add(co_name)
     co.co_consts = new_consts
+    co = co.freeze()
     if co.co_name != '<module>' or co.co_filename:
         real_out.write("\n" + format_code_info(co, version, mapped_name) + "\n")
 

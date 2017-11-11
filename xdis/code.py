@@ -78,7 +78,6 @@ class Code3:
             # into the encoded format
             self.encode_lineno_tab()
 
-
         if PYTHON3:
             args = (self.co_argcount,
                     self.co_kwonlyargcount,
@@ -140,6 +139,19 @@ class Code3Compat(Code3):
         self.co_lnotab = co_lnotab
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
+
+    def __repr__(self):
+        return ('<code3 object %s at 0x%0x, file "%s", line %d>' % (
+            self.co_name, id(self), self.co_filename, self.co_firstlineno))
+
+def code3compat(co):
+    return Code3Compat(co.co_argcount,
+                       co.co_kwonlyargcount,
+                       co.co_nlocals,
+                       co.co_stacksize, co.co_flags, co.co_code,
+                       co.co_consts, co.co_names, co.co_varnames,
+                       co.co_filename, co.co_name, co.co_firstlineno,
+                       co.co_lnotab, co.co_freevars, co.co_cellvars)
 
 class Code2:
     """Class for a Python2 code object used when a Python 3 interpreter is
