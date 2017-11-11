@@ -83,9 +83,11 @@ def code_has_star_star_arg(code):
     return (code.co_flags & 8) != 0
 
 
-def format_code_info(co, version):
+def format_code_info(co, version, name=None):
+    if not name:
+        name = co.co_name
     lines = []
-    lines.append("# Method Name:       %s" % co.co_name)
+    lines.append("# Method Name:       %s" % name)
     lines.append("# Filename:          %s" % co.co_filename)
     lines.append("# Argument count:    %s" % co.co_argcount)
     if version >= 3.0:

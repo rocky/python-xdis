@@ -1,3 +1,13 @@
+3.6.1 2017-11-10
+
+- Improve --asm option: disambiguate code objects with the same co_name
+- Update canonic versions 3.6.3, 3.5.4, etc.
+- "std" API now uses get_opcode_module rather than get_opcode()
+- Add function extended_arg_val and use it in unpack_opargs_bytecode()
+- str2version(): canonicalize version before float
+- str2float(): We now at least detect inter-python version magic changes and
+  can return something like 3.54 for 3.5.4  This assumes there never will be a 3.51
+
 3.6.0 2017-09-25
 
 - StdApi now uses std functions and constants from the

@@ -57,7 +57,8 @@ op_imports = {
     '3.4rc2'  : opcode_34,
     3.4    : opcode_34,
     '3.5'  : opcode_35,
-    '3.5.3': opcode_35,
+    '3.5.3': opcode_35,  #FIXME:  Not sure if this is right
+    '3.5.4': opcode_35,  # not sure if this is right
     3.5    : opcode_35,
     '3.6.0rc1': opcode_36,
     3.6    : opcode_36,

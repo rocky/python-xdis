@@ -118,7 +118,8 @@ def_op(l, 'INPLACE_AND',          77,  2,  1)
 def_op(l, 'INPLACE_XOR',          78,  2,  1)
 def_op(l, 'INPLACE_OR',           79,  2,  1)
 def_op(l, 'BREAK_LOOP',           80,  0,  0)
-def_op(l, 'WITH_CLEANUP',         81)
+def_op(l, 'WITH_CLEANUP',         81, -1, -9) # Cleans up the stack when a with statement
+                                              # block exits.  Handle stack special
 
 def_op(l, 'RETURN_VALUE',         83,  1,  0, fallthrough=False)
 def_op(l, 'IMPORT_STAR',          84,  1,  0)

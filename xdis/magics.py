@@ -2,7 +2,7 @@
 Everything you ever wanted to know about Python versions and their
 magic numbers. And a little bit more...
 """
-import imp, struct, sys
+import imp, re, struct, sys
 from xdis import IS_PYPY
 
 def int2magic(magic):
@@ -183,12 +183,13 @@ add_canonic_versions('2.4 2.4.1 2.4.2 2.4.3 2.4.5 2.4.6', '2.4b1')
 add_canonic_versions('2.5 2.5.1 2.5.2 2.5.3 2.5.4 2.5.5 2.5.6', '2.5c2')
 add_canonic_versions('2.6 2.6.6 2.6.7 2.6.8 2.6.9', '2.6a1')
 add_canonic_versions('2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 '
-                     '2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13', '2.7')
+                     '2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13 2.7.14', '2.7')
 add_canonic_versions('3.2 3.2.0 3.2.1 3.2.2 3.2.3 3.2.4 3.2.5 3.2.6', '3.2a2')
-add_canonic_versions('3.3 3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6', '3.3a4')
-add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6', '3.4rc2')
-add_canonic_versions('3.5.0 3.5.1 3.5.2 ', '3.5')
-add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2', '3.6.0rc1')
+add_canonic_versions('3.3 3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6 3.3.7rc1', '3.3a4')
+add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6 3.4.7', '3.4rc2')
+add_canonic_versions('3.5.0 3.5.1 3.5.2', '3.5')
+add_canonic_versions('3.5.3 3.5.4', '3.5.3')
+add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3', '3.6.0rc1')
 
 add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
 add_canonic_versions('2.7.3b0Jython', '2.7.1b3Jython')
@@ -209,7 +210,7 @@ def __show(text, magic):
     print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
 
 def py_str2float(version):
-    """Convert a Python vresions ino a 'canonic' floating-point number which
+    """Convert a Python version into a 'canonic' floating-point number which
     that can then be used to look up a magic number.
     A runtime error is raised if "version" is not found.
     """
@@ -218,8 +219,14 @@ def py_str2float(version):
         for v, m in list(magics.items()):
             if m == magic:
                 try:
-                    return float(v)
+                    return float(canonic_python_version[v])
                 except:
+                    try:
+                        m = re.match('^(\d\.)(\d+)\.(\d+)$', v)
+                        if m:
+                            return float(m.group(1)+m.group(2)+m.group(3))
+                    except:
+                        pass
                     pass
                 pass
             pass
