@@ -1,3 +1,73 @@
+2017-11-10  rocky <rb@dustyfeet.com>
+
+	* : commit 717091562378e03c43aa2bc4ffef45d48b83d986 Author: rocky
+	<rb@dustyfeet.com> Date:   Fri Nov 10 21:38:28 2017 -0500
+
+2017-11-10  rocky <rb@dustyfeet.com>
+
+	* NEWS, xdis/version.py: Get ready for release 3.6.1
+
+2017-11-10  rocky <rb@dustyfeet.com>
+
+	* xdis/code.py, xdis/main.py: --asm for Python 3
+
+2017-11-10  rocky <rb@dustyfeet.com>
+
+	* MANIFEST.in, Makefile, admin-tools/setup-master.sh,
+	admin-tools/setup-python-2.4.sh, pytest/testdata/multi-fn.py,
+	setup.py, xdis/code.py, xdis/main.py: Administriva and Python 2 asm
+	fixups main.py: handle Python 2 co_name disasmbiguation code.py: add
+	__repr__ which mimics a code object's __repr__ testdata/multi-fn*.py - sample program to test duplicate method
+	names MANIFEST.in: include Makefiles Makefile: fix up make clean and
+	run that before dist
+
+2017-11-09  rocky <rocky@dusytfeet.com>
+
+	* xdis/main.py: WIP: duplicate name disambiguation
+
+2017-10-29  rocky <rocky@dusytfeet.com>
+
+	* xdis/bytecode.py: Add function extended_arg_val and use it...  in unpack_opargs_bytecode()
+
+2017-10-10  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: str2version we should canonicalize before float
+
+2017-10-05  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py, xdis/op_imports.py: Magic update hell +
+	str2float()..  We now at least detect inter-python version magic changes and
+	str2float() can return something like 3.54 for 3.5.4 This assumes there never will be a 3.54.0, but releases get bumped
+	every year so we'll this potential problem in 3 years or so.  By then, with luck I'll be dead.
+
+2017-10-05  rocky <rocky@dusytfeet.com>
+
+	* xdis/magics.py: Update canonic versions 3.6.3, 3.5.4, etc.
+
+2017-10-05  rocky <rocky@dusytfeet.com>
+
+	* xdis/main.py, xdis/util.py: Start handling methods with the same
+	name <lambda> and <genexpr> are prime examples where one may find
+	duplicates, but users can do this in nested functions too.  This starts to address xasm issue #38, it isn't complete
+
+2017-09-26  rocky <rocky@dusytfeet.com>
+
+	* xdis/op_imports.py, xdis/opcodes/opcode_pypy26.py, xdis/std.py: 
+	Sync with master..  Tidy std implementation is_pypy->variant
+
+2017-09-26  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/opcode_pypy26.py: Typo
+
+2017-09-26  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #37 from
+	moagstar/std-api-use-get_opcode_module std api now uses get_opcode_module rather than get_opcode
+
+2017-09-25  rocky <rocky@dusytfeet.com>
+
+	* ChangeLog: Get ready for release 3.6.0
+
 2017-09-25  rocky <rocky@dusytfeet.com>
 
 	* xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py,
@@ -8,10 +78,25 @@
 
 	* NEWS, xdis/version.py: Get ready for release 3.6.0.  Sync with master.
 
+2017-09-25  rocky <rocky@dusytfeet.com>
+
+	* NEWS, xdis/opcodes/opcode_pypy26.py,
+	xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py,
+	xdis/opcodes/opcode_pypy35.py, xdis/version.py: Get ready for
+	release 3.6.0 Add opcode_pypyXX compatability Update NEWS
+
 2017-09-21  rocky <rocky@dusytfeet.com>
 
 	* : commit 5ebd23ee2767f3bb1db43f0b527817443e651e16 Author: rocky
 	<rocky@dusytfeet.com> Date:   Thu Sep 21 14:58:06 2017 -0400
+
+2017-09-21  rocky <rocky@dusytfeet.com>
+
+	* xdis/opcodes/base.py, xdis/opcodes/opcode_15.py,
+	xdis/opcodes/opcode_21.py, xdis/opcodes/opcode_26.py,
+	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_2x.py,
+	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_3x.py: Another Pass
+	over opcode stack effects
 
 2017-09-16  rocky <rb@dustyfeet.com>
 

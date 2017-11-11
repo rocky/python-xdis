@@ -78,29 +78,7 @@ class Code3:
             # into the encoded format
             self.encode_lineno_tab()
 
-
         return self
-=======
-        if PYTHON3:
-            args = (self.co_argcount,
-                    self.co_kwonlyargcount,
-                    self.co_nlocals,
-                    self.co_stacksize,
-                    self.co_flags,
-                    self.co_code,
-                    self.co_consts,
-                    self.co_names,
-                    self.co_varnames,
-                    self.co_filename,
-                    self.co_name,
-                    self.co_firstlineno,
-                    self.co_lnotab,
-                    self.co_freevars,
-                    self.co_cellvars)
-            return types.CodeType(*args)
-        else:
-            return self
->>>>>>> master
 
 
     def check(self):

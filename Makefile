@@ -49,8 +49,7 @@ clean: clean_pyc
 
 #: Create source (tarball) and wheel distribution
 dist: clean
-	$(PYTHON) ./setup.py sdist bdist_wheel
->>>>>>> master
+	$(PYTHON) ./setup.py sdist bdist_egg
 
 #: Remove .pyc files
 clean_pyc:
