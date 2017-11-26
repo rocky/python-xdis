@@ -165,7 +165,7 @@ def _get_const_info(const_index, const_list):
     # float values nan and inf are not directly representable in Python at least
     # before 3.5 and even there it is via a library constant.
     # So we will canonicalize their representation as float('nan') and float('inf')
-    if isinstance(argval, float) and str(argval) in frozenset(['nan', 'inf']):
+    if isinstance(argval, float) and str(argval) in frozenset(['nan', '-nan', 'inf', '-inf']):
         return argval, "float('%s')" % argval
     return argval, repr(argval)
 
