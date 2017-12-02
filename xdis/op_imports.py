@@ -50,6 +50,7 @@ op_imports = {
     '3.1'  : opcode_31,
     3.1    : opcode_31,
     '3.2'  : opcode_32,
+    '3.2a2': opcode_32,
     3.2    : opcode_32,
     '3.3a4': opcode_33,
     3.3    : opcode_33,
