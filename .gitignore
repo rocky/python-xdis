@@ -4,6 +4,7 @@
 *.pyc
 *_dis
 *~
+.idea*
 .idea/**/dataSources.ids
 .idea/**/dataSources.local.xml
 .idea/**/dataSources.xml
@@ -17,12 +18,12 @@
 .idea/**/uiDesigner.xml
 .idea/**/workspace.xml
 .idea_modules/
-.idea*
 /.cache
 /.eggs
 /.python-version
 /.tox
 /.venv*/*
+/ChangeLog
 /PKG-INFO
 /README
 /README.html
