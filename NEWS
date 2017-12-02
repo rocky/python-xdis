@@ -1,3 +1,7 @@
+3.6.2 2017-12-02
+- Add canonic 3.2, 3.2a2, in op_imports
+- Handle {-,}nan and {-,}inf in bytecode print attributes
+
 3.6.1 2017-11-10
 
 - Improve --asm option: disambiguate code objects with the same co_name
