@@ -28,7 +28,6 @@ Version 'variants' are also supported, for example:
 
 """
 
-
 # std
 import sys
 # xdis
