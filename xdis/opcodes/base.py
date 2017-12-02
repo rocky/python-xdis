@@ -236,8 +236,6 @@ def opcode_check(l):
             assert all(item in l['opmap'].items() for item in opmap.items())
         except:
             import sys
-            print("No dis module in this version of Python:\n%s" %
-                  sys.version_info)
 
 def dump_opcodes(opmap):
     """Utility for dumping opcodes"""
