@@ -28,7 +28,7 @@ git pull
     $ source admin-tools/setup-python-2.4.sh
     $ rm ChangeLog
 
-    # $ git merge master ?
+    $ git merge master
 
 # Update NEWS from master branch
 
@@ -43,10 +43,10 @@ git pull
 
 # Make packages and tag
 
-    $ admin-tools/make-dist-older.sh
+    $ . ./admin-tools/make-dist-older.sh
     $ git tag release-python-2.4-$VERSION
 
-    $ admin-tools/make-dist-newer.sh
+    $ . ./admin-tools/make-dist-newer.sh
     $ git tag release-$VERSION
 
 # Upload single package and look at Rst Formating
