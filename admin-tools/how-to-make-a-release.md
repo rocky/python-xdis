@@ -36,8 +36,10 @@ git pull
 
 # Check against all versions
 
+    $ bash && echo $SHLVL # Go into a subshell to protect exit
     $ source admin-tools/check-older-versions.sh
     $ source admin-tools/check-newer-versions.sh
+	$ echo $SHLVL ; exit
 
 # Make packages and tag
 
