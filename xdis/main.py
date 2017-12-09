@@ -43,6 +43,38 @@ def get_opcode(version, is_pypy):
     raise TypeError("%s is not a Python version%s I know about" %
                     (version, pypy_str))
 
+def show_module_header(bytecode_version, co, timestamp, out=sys.stdout,
+                       is_pypy=False, magic_int=None,
+                       source_size=None, header=True,
+                       show_filename=True):
+
+    real_out = out or sys.stdout
+    if is_pypy:
+        co_pypy_str = 'PyPy '
+    else:
+        co_pypy_str = ''
+
+    if IS_PYPY:
+        run_pypy_str = 'PyPy '
+    else:
+        run_pypy_str = ''
+
+    if header:
+        real_out.write(('# pydisasm version %s\n# %sPython bytecode %s%s'
+                        '\n# Disassembled from %sPython %s\n') %
+                       (VERSION, co_pypy_str, bytecode_version,
+                        " (%d)" % magic_int if magic_int else "",
+                        run_pypy_str, '\n# '.join(sys.version.split('\n'))))
+    if timestamp > 0:
+        value = datetime.datetime.fromtimestamp(timestamp)
+        real_out.write('# Timestamp in code: %d' % timestamp)
+        real_out.write(value.strftime(' (%Y-%m-%d %H:%M:%S)\n'))
+    if source_size:
+        real_out.write('# Source code size mod 2**32: %d bytes\n' % source_size)
+    if show_filename:
+        real_out.write('# Embedded file name: %s\n' % co.co_filename)
+
+
 def disco(bytecode_version, co, timestamp, out=sys.stdout,
           is_pypy=False, magic_int=None, source_size=None,
           header=True, asm_format=False, dup_lines=False):
@@ -52,23 +84,11 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
 
     assert iscode(co)
 
+    show_module_header(bytecode_version, co, timestamp, out,
+                       is_pypy, magic_int, source_size, header)
+
     # store final output stream for case of error
     real_out = out or sys.stdout
-    co_pypy_str = 'PyPy ' if is_pypy else ''
-    run_pypy_str = 'PyPy ' if IS_PYPY else ''
-    if header:
-        real_out.write(('# pydisasm version %s\n# %sPython bytecode %s%s'
-                   '\n# Disassembled from %sPython %s\n') %
-                  (VERSION, co_pypy_str, bytecode_version,
-                   " (%d)" % magic_int if magic_int else "",
-                   run_pypy_str, '\n# '.join(sys.version.split('\n'))))
-    if timestamp > 0:
-        value = datetime.datetime.fromtimestamp(timestamp)
-        real_out.write('# Timestamp in code: %d' % timestamp)
-        real_out.write(value.strftime(' (%Y-%m-%d %H:%M:%S)\n')
-)
-    if source_size:
-        real_out.write('# Source code size mod 2**32: %d bytes\n' % source_size)
 
     if co.co_filename and not asm_format:
         real_out.write(format_code_info(co, bytecode_version) + "\n")
@@ -166,7 +186,8 @@ def disco_loop_asm_format(opc, version, co, real_out,
     bytecode = Bytecode(co, opc, dup_lines=True)
     real_out.write(bytecode.dis(asm_format=True) + "\n")
 
-def disassemble_file(filename, outstream=sys.stdout, asm_format=False):
+def disassemble_file(filename, outstream=sys.stdout,
+                     asm_format=False, header=False):
     """
     disassemble Python byte-code file (.pyc)
 
@@ -175,8 +196,14 @@ def disassemble_file(filename, outstream=sys.stdout, asm_format=False):
     """
     filename = check_object_path(filename)
     version, timestamp, magic_int, co, is_pypy, source_size  = load_module(filename)
-    disco(version, co, timestamp, outstream, is_pypy, magic_int, source_size,
-          asm_format=asm_format)
+
+    if header:
+        show_module_header(version, co, timestamp, outstream,
+                           is_pypy, magic_int, source_size, show_filename=True)
+
+    else:
+        disco(version, co, timestamp, outstream, is_pypy, magic_int, source_size,
+              asm_format=asm_format)
     # print co.co_filename
     return filename, co, version, timestamp, magic_int
 
