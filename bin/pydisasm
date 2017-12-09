@@ -39,6 +39,13 @@ Examples:
 PATTERNS = ('*.pyc', '*.pyo')
 
 def main():
+    """Disassembles a Python bytecode file.
+
+    We handle bytecode for virtually every release of Python and some releases of PyPy.
+    The version of Python in the bytecode doesn't have to be the same version as
+    the Python interpreter used to run this program. For example, you can disassemble Python 3.6.1
+    bytecode from Python 2.7.13 and vice versa.
+    """
     Usage_short = """usage:
    %s FILE...
 Type -h for for full help.""" % program
@@ -60,7 +67,7 @@ Type -h for for full help.""" % program
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
 
-    asm = False
+    asm, header = False, False
     for opt, val in opts:
         if opt in ('-h', '--help'):
             print(__doc__)
@@ -72,6 +79,10 @@ Type -h for for full help.""" % program
             asm = True
         elif opt in ('--noasm'):
             asm = False
+        elif opt in ('--header'):
+            header = True
+        elif opt in ('--no-header'):
+            header = False
         else:
             print(opt)
             sys.stderr.write(Usage_short)
@@ -79,7 +90,7 @@ Type -h for for full help.""" % program
 
     for file in files:
         if os.path.exists(files[0]):
-            disassemble_file(file, sys.stdout, asm)
+            disassemble_file(file, sys.stdout, asm, header)
         else:
             sys.stderr.write("Can't read %s - skipping" % files[0])
             pass
