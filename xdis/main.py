@@ -75,10 +75,13 @@ def show_module_header(bytecode_version, co, timestamp, out=sys.stdout,
         run_pypy_str = ''
 
     if header:
+        magic_str = ''
+        if magic_int:
+            magic_str = str(magic_int)
         real_out.write(('# pydisasm version %s\n# %sPython bytecode %s%s'
                         '\n# Disassembled from %sPython %s\n') %
                        (VERSION, co_pypy_str, bytecode_version,
-                        " (%d)" % magic_int if magic_int else "",
+                        " (%s)" % magic_str,
                         run_pypy_str, '\n# '.join(sys.version.split('\n'))))
     if timestamp > 0:
         value = datetime.datetime.fromtimestamp(timestamp)

@@ -61,9 +61,9 @@ Type -h for for full help.""" % program
         sys.exit(1)
 
     try:
-        opts, files = getopt.getopt(sys.argv[1:], 'hVUa',
-                                    ['help', 'version', 'asm', 'noasm'])
-    except getopt.GetoptError(e):
+        opts, files = getopt.getopt(sys.argv[1:], 'hVUHa',
+                                    ['help', 'version', 'header', 'asm', 'noasm'])
+    except getopt.GetoptError, e:
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
 
@@ -79,7 +79,7 @@ Type -h for for full help.""" % program
             asm = True
         elif opt in ('--noasm'):
             asm = False
-        elif opt in ('--header'):
+        elif opt in ('-H', '--header'):
             header = True
         elif opt in ('--no-header'):
             header = False
