@@ -1,4 +1,13 @@
+3.6.3 2017-12-09 Dr. Gecko
+
+- Add pydisasm --header/--no-header
+  option --header shows just the module-level header information
+- Add magic.magicint2version
+  In this dictionary, the key is an magic integer, e.g. 62211,
+  and the value is its canonic versions string, e.g. '2.7'
+
 3.6.2 2017-12-02
+
 - Add canonic 3.2, 3.2a2, in op_imports
 - Handle {-,}nan and {-,}inf in bytecode print attributes
 
