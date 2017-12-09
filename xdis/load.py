@@ -111,7 +111,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
         magic = fp.read(4)
         magic_int = magics.magic2int(magic)
 
-        # For reasons I don't understand PyPy 3.2 stores a magic
+        # For reasons I don't understand, PyPy 3.2 stores a magic
         # of '0'...  The two values below are for Python 2.x and 3.x respectively
         if magic[0:1] in ['0', chr(0)]:
             magic = magics.int2magic(3180+7)
