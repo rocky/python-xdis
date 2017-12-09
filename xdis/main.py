@@ -85,7 +85,8 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
     assert iscode(co)
 
     show_module_header(bytecode_version, co, timestamp, out,
-                       is_pypy, magic_int, source_size, header)
+                       is_pypy, magic_int, source_size, header,
+                        show_filename=False)
 
     # store final output stream for case of error
     real_out = out or sys.stdout
