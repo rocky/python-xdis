@@ -18,9 +18,25 @@ bytecodes from different versions of Python. The command-line routine
 *pydisasm* will show disassembly output using Python 3.6 disassembly
 conventions.
 
-It accepts bytecodes from Python version 1.5 to 3.6 or so. The code
-requires Python 2.4 or later and has been tested on Python running
-lots of Python versions.
+Also, if you need to modfiy and write bytecode, the routines here can
+be of help. There are routines to pack and unpack the read-only tuples
+in Python's Code type. For interoperability between Python 2 and 3 we
+provide our own versions of the Code type, and we provide routines to
+reduce the tedium in writing a bytecode file.
+
+This package also has an extensive knowledge of Python bytecode magic
+numbers, including Pypy and others, and how to translate from sys_info
+major, minor, and release numbers to the corresponding magic value.
+
+So If you want to write a cross-version assembler, or an
+bytecode-level optimizer this package may also be useful. In addition
+to the kinds of instruction categorization that `dis` offers, we have
+additional categories for things that would be useful in such a
+bytecode optimizer.
+
+The programs here accept bytecodes from Python version 1.5 to 3.6 or
+so. The code requires Python 2.4 or later and has been tested on
+Python running lots of Python versions.
 
 To install versions for Python before 2.6 install via eggs or
 use the python-2.4 branch of git in github.
