@@ -1,10 +1,11 @@
 machine:
     python:
-        version: 2.7.12
+        version: 2.7.6
 
 dependencies:
     override:
         - pip install -e .
+	- pip install pytest==3.0.0
 test:
     override:
         - python ./setup.py develop && make check-full
