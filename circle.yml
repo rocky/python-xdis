@@ -7,4 +7,4 @@ dependencies:
         - pip install -e .
 test:
     override:
-        - python pip install pytest && python ./setup.py develop && make check-full
+        - pip install pytest && python ./setup.py develop && make check-full
