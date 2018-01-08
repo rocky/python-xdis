@@ -5,7 +5,7 @@ machine:
 dependencies:
     override:
         - pip install -e .
-	- pip install pytest==3.0.0
 test:
     override:
+	- pip install pytest==3.0.0
         - python ./setup.py develop && make check-full
