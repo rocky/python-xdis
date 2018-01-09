@@ -194,8 +194,8 @@ add_magic_from_int(3280,  '3.4a1+3')   # remove implicit class argument
 add_magic_from_int(3290,  '3.4a4')     # changes to __qualname__ computation
 add_magic_from_int(3300,  '3.4a4+')    # more changes to __qualname__ computation
 add_magic_from_int(3310,  '3.4rc2')    # alter __qualname__ computation
-add_magic_from_int(3350,  '3.5')       # 3.5.0, 3.5.1, 3.5.2
-add_magic_from_int(3351,  '3.5.3')     # 3.5.3
+add_magic_from_int(3350,  '3.5')       # 3.5.0..3.5.2
+add_magic_from_int(3351,  '3.5.3')     # 3.5.3, 3.5.4
 add_magic_from_int(3361,  '3.6.0a1')   # 3.6.0a1
 add_magic_from_int(3370,  '3.6.0a1+1') # 3.6.0a?
 add_magic_from_int(3370,  '3.6.0a1+2') #
@@ -246,8 +246,9 @@ add_canonic_versions('3.0 3.0.0 3.0.1',                                '3.0a5')
 add_canonic_versions('3.1 3.1.0 3.1.1 3.1.2 3.1.3 3.1.4 3.1.5',        '3.1a0+')
 add_canonic_versions('3.2 3.2.0 3.2.1 3.2.2 3.2.3 3.2.4 3.2.5 3.2.6',  '3.2a2')
 add_canonic_versions('3.3 3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6 3.3.7rc1 3.3.7', '3.3a4')
-add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3', '3.4rc2')
-add_canonic_versions('3.5.0 3.5.1 3.5.2 3.5.3 3.5.4', '3.5')
+add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 '
+                     '3.4.5 3.4.6', '3.4rc2')
+add_canonic_versions('3.5.0 3.5.1 3.5.2', '3.5')
 add_canonic_versions('3.5.3 3.5.4', '3.5.3')
 add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4', '3.6.0rc1')
 

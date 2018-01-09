@@ -24,7 +24,8 @@ class TestMagics(unittest.TestCase):
                         (lookup, magics.magics.keys()))
 
         self.assertEqual(magics.sysinfo2magic(), current,
-                        "magic from imp.get_magic() should be sysinfo2magic()")
+                        "magic from imp.get_magic() for %s "
+                        "should be sysinfo2magic()" % lookup)
 
 
 if __name__ == '__main__':
