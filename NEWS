@@ -1,3 +1,7 @@
+3.6.4 2018-01-08 Samish
+
+- Update magics for 3.3.7, 3.6.4, 3.5.3, and 3.5.4
+
 3.6.3 2017-12-09 Dr. Gecko
 
 - Add pydisasm --header/--no-header

@@ -7,4 +7,4 @@ dependencies:
         - pip install -e .
 test:
     override:
-        - python ./setup.py develop && make check-full
+        - pip install pytest==3.2.0 && python ./setup.py develop && make check-full
