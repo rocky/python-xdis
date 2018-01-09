@@ -2,7 +2,7 @@ git pull
 
 # Change version in uncompyle6/version.py.
 
-	$ emacs xdis/version.py
+    $ emacs xdis/version.py
     $ source xdis/version.py
     $ echo $VERSION
     $ git commit -m"Get ready for release $VERSION" .
@@ -13,7 +13,7 @@ git pull
 
 #  Update NEWS from ChangeLog. Then:
 
-	$ emacs NEWS
+    $ emacs NEWS
     $ make check
     $ git commit --amend .
     $ git push   # get CI testing going early
