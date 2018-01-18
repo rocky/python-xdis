@@ -204,7 +204,7 @@ def update_sets(l):
     l['JREL_OPS']        = frozenset(l['hasjrel'])
     l['JABS_OPS']        = frozenset(l['hasjabs'])
     l['JUMP_UNCONDITONAL']    = frozenset([l['opmap']['JUMP_ABSOLUTE'],
-                                     l['opmap']['JUMP_FORWARD']])
+                                           l['opmap']['JUMP_FORWARD']])
     l['LOOP_OPS']        = frozenset([l['opmap']['SETUP_LOOP']])
     l['LOCAL_OPS']       = frozenset(l['haslocal'])
     l['JUMP_OPS']        = (l['JABS_OPS']

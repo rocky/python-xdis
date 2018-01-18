@@ -26,6 +26,7 @@ from xdis.opcodes import opcode_27pypy as opcode_27pypy
 from xdis.opcodes import opcode_32pypy as opcode_32pypy
 from xdis.opcodes import opcode_35pypy as opcode_35pypy
 
+# FIXME
 op_imports = {
     '1.5'   : opcode_15,
     1.5     : opcode_15,
@@ -60,10 +61,12 @@ op_imports = {
     '3.4rc2': opcode_34,
     3.4     : opcode_34,
     '3.5'   : opcode_35,
-    '3.5.3' : opcode_35,  #FIXME:  Not sure if this is right
-    '3.5.4' : opcode_35,  # not sure if this is right
+    '3.5.1' : opcode_35,
+    '3.5.2' : opcode_35,
+    '3.5.3' : opcode_35,
+    '3.5.4' : opcode_35,
     3.5     : opcode_35,
-    '3.6.0rc1': opcode_36,
+    '3.6rc1': opcode_36,
     3.6     : opcode_36,
     '3.7.0alpha0': opcode_37,
     3.7     : opcode_37,
