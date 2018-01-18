@@ -88,7 +88,8 @@ PYTHON_MAGIC_INT = magic2int(imp.get_magic())
 # that's come before.  The tags are included in the following table, starting
 # with Python 3.2a0.
 
-# The below is taken from from Python/import.c, importlib/_bootstrap.py and other sources
+# The below is taken from from Python/import.c, and
+# Lib/importlib/_bootstrap.py and other sources
 
 #                  magic,  canonic version number
 add_magic_from_int(11913,  '1.3')
@@ -159,13 +160,13 @@ add_magic_from_int(3081,  '3.000+9')  # PEP 3137 make __file__ and __name__ unic
 add_magic_from_int(3091,  '3.000+10') # kill str8 interning
 add_magic_from_int(3101,  '3.000+11') # merge from 2.6a0, see 62151
 add_magic_from_int(3103,  '3.000+12') # __file__ points to source file
-add_magic_from_int(3111,  '3.0a4')  # WITH_CLEANUP optimization
-add_magic_from_int(3131,  '3.0a5')  # lexical exception stacking, including POP_EXCEPT)
-add_magic_from_int(3141,  '3.1a0')  # optimize list, set and dict comprehensions
-add_magic_from_int(3151,  '3.1a0+') # optimize conditional branches
-add_magic_from_int(3160,  '3.2a0')  # add SETUP_WITH
-add_magic_from_int(3170,  '3.2a1')  # add DUP_TOP_TWO, remove DUP_TOPX and ROT_FOUR
-add_magic_from_int(3180,  '3.2a2')  # 3.2a2 (add DELETE_DEREF)
+add_magic_from_int(3111,  '3.0a4')    # WITH_CLEANUP optimization
+add_magic_from_int(3131,  '3.0a5')    # lexical exception stacking, including POP_EXCEPT)
+add_magic_from_int(3141,  '3.1a0')    # optimize list, set and dict comprehensions
+add_magic_from_int(3151,  '3.1a0+')   # optimize conditional branches
+add_magic_from_int(3160,  '3.2a0')    # add SETUP_WITH
+add_magic_from_int(3170,  '3.2a1')    # add DUP_TOP_TWO, remove DUP_TOPX and ROT_FOUR
+add_magic_from_int(3180,  '3.2a2')    # 3.2a2 (add DELETE_DEREF)
 
 # Python 3.2.5 - PyPy 2.3.4 PyPy adds 7 to the corresponding CPython
 # number
@@ -189,19 +190,27 @@ add_magic_from_int(3250,  '3.4a1')
 # Add LOAD_CLASSDEREF; add_magic_from_int locals, f class to override free vars
 add_magic_from_int(3260,  '3.4a1+1')
 
-add_magic_from_int(3270,  '3.4a1+2') # various tweaks to the __class__ closure
+add_magic_from_int(3270,  '3.4a1+2')   # various tweaks to the __class__ closure
 add_magic_from_int(3280,  '3.4a1+3')   # remove implicit class argument
 add_magic_from_int(3290,  '3.4a4')     # changes to __qualname__ computation
 add_magic_from_int(3300,  '3.4a4+')    # more changes to __qualname__ computation
 add_magic_from_int(3310,  '3.4rc2')    # alter __qualname__ computation
-add_magic_from_int(3350,  '3.5')       # 3.5.0..3.5.2
-add_magic_from_int(3351,  '3.5.3')     # 3.5.3, 3.5.4
-add_magic_from_int(3361,  '3.6.0a1')   # 3.6.0a1
-add_magic_from_int(3370,  '3.6.0a1+1') # 3.6.0a?
-add_magic_from_int(3370,  '3.6.0a1+2') #
-add_magic_from_int(3372,  '3.6.0a3')   #
-add_magic_from_int(3378,  '3.6.0b2')   #
-add_magic_from_int(3379,  '3.6.0rc1')  #
+add_magic_from_int(3320,  '3.5a0')     # matrix multiplication operator
+add_magic_from_int(3330,  '3.5b1')     # pep 448: additional unpacking generalizations
+add_magic_from_int(3340,  '3.5b2')     # fix dictionary display evaluation order #11205
+add_magic_from_int(3350,  '3.5')       # add GET_YIELD_FROM_ITER opcode #24400 (also 3.5b2)
+add_magic_from_int(3351,  '3.5.2')     # fix BUILD_MAP_UNPACK_WITH_CALL opcode #27286; 3.5.3, 3.5.4
+add_magic_from_int(3360,  '3.6a0')     # add FORMAT_VALUE opcode #25483
+add_magic_from_int(3361,  '3.6a0+1')   # lineno delta of code.co_lnotab becomes signed
+add_magic_from_int(3370,  '3.6a1')     # 16 bit wordcode
+add_magic_from_int(3371,  '3.6a1+1')   # add BUILD_CONST_KEY_MAP opcode #27140
+add_magic_from_int(3372,  '3.6a1+2')   # MAKE_FUNCTION simplification, remove MAKE_CLOSURE #27095
+add_magic_from_int(3373,  '3.6b1')     # add BUILD_STRING opcode #27078
+add_magic_from_int(3375,  '3.6b1+1')   # add SETUP_ANNOTATIONS and STORE_ANNOTATION opcodes #27985
+add_magic_from_int(3376,  '3.6b1+2')   # simplify CALL_FUNCTIONs & BUILD_MAP_UNPACK_WITH_CALL
+add_magic_from_int(3377,  '3.6b1+3')   # set __class__ cell from type.__new__ #23722
+add_magic_from_int(3378,  '3.6b2')     # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
+add_magic_from_int(3379,  '3.6rc1')    # more thorough __class__ validation #23722
 add_magic_from_int(3390,  '3.7.0alpha0')
 
 # Weird ones
@@ -248,9 +257,9 @@ add_canonic_versions('3.2 3.2.0 3.2.1 3.2.2 3.2.3 3.2.4 3.2.5 3.2.6',  '3.2a2')
 add_canonic_versions('3.3 3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6 3.3.7rc1 3.3.7', '3.3a4')
 add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 '
                      '3.4.5 3.4.6', '3.4rc2')
-add_canonic_versions('3.5.0 3.5.1 3.5.2', '3.5')
-add_canonic_versions('3.5.3 3.5.4', '3.5.3')
-add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4', '3.6.0rc1')
+add_canonic_versions('3.5.0 3.5.1', '3.5')
+add_canonic_versions('3.5.3 3.5.4', '3.5.2')
+add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4', '3.6rc1')
 
 add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
 add_canonic_versions('2.7.3b0Jython', '2.7.1b3Jython')
