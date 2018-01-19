@@ -23,9 +23,10 @@ class TestMagics(unittest.TestCase):
                         "PYTHON VERSION %s is not in magic.magics.keys: %s" %
                         (lookup, magics.magics.keys()))
 
-        self.assertEqual(magics.sysinfo2magic(), current,
-                        "magic from imp.get_magic() for %s "
-                        "should be sysinfo2magic()" % lookup)
+        if not (3, 5, 2) <= sys.version_info < (3, 6, 0):
+            self.assertEqual(magics.sysinfo2magic(), current,
+                            "magic from imp.get_magic() for %s "
+                            "should be sysinfo2magic()" % lookup)
 
 
 if __name__ == '__main__':
