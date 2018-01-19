@@ -24,6 +24,7 @@ import os.path as osp
 
 import xdis.magics as magics
 from xdis.load import check_object_path
+from xdis import IS_PYPY
 
 #----- configure this for your needs
 
@@ -221,6 +222,10 @@ if __name__ == '__main__':
                 sys.exit(1)
             pass
         pass
+
+    if PYTHON_VERSION >= 3.5 and IS_PYPY:
+        print("### Doesn't work on Python 3.5 or greater")
+        sys.exit(0)
 
     for src_dir, pattern, target_dir in test_dirs:
         if os.path.exists(src_dir):
