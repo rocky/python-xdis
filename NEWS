@@ -1,3 +1,9 @@
+3.6.6 2018-01-19
+
+- Fix a bug in py_str2float for handling 3-place version number
+- pydisasm: handle --version properly and invalid files better
+- test_pyenvlib.py: can now test >= 3.5.0 (if not Pypy)
+
 3.6.5 2018-01-18
 
 - Go over 3.5 and 3.6 magics
