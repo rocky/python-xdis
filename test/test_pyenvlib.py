@@ -19,8 +19,11 @@ Step 2: Run the test:
 	  test_pyenvlib --mylib --verify # disassemble verify 'mylib'
 """
 
-import re
+import py_compile, re, tempfile
+import os.path as osp
+
 import xdis.magics as magics
+from xdis.load import check_object_path
 
 #----- configure this for your needs
 
@@ -144,6 +147,15 @@ def do_tests(src_dir, patterns, target_dir, start_with=None,
     for i, bc_file in enumerate(files):
         if verbose:
             print(os.path.join(src_dir, bc_file))
+        if sys.version_info >= (3, 4, 0) and bc_file.endswith('.py'):
+            check_bc_file = check_object_path(bc_file)
+            if not osp.exists(check_bc_file):
+                basename = osp.basename(bc_file)[0:-3]
+                new_bc_file = tempfile.mkstemp(prefix=basename + '-',
+                                           suffix='.pyc', text=False)[1]
+                py_compile.compile(bc_file, cfile=new_bc_file, doraise=True)
+                bc_file = new_bc_file
+
         bc_filename, co, version, ts, magic = main.disassemble_file(bc_file, output)
         if do_verify:
             file = co.co_filename
@@ -209,10 +221,6 @@ if __name__ == '__main__':
                 sys.exit(1)
             pass
         pass
-
-    if PYTHON_VERSION >= 3.5:
-        print("### Doesn't work on Python 3.5 or greater")
-        sys.exit(0)
 
     for src_dir, pattern, target_dir in test_dirs:
         if os.path.exists(src_dir):

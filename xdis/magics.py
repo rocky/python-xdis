@@ -294,7 +294,7 @@ def py_str2float(version):
                     try:
                         m = re.match('^(\d\.)(\d+)\.(\d+)$', v)
                         if m:
-                            return float(m.group(1)+m.group(2)+m.group(3))
+                            return float(m.group(1)+m.group(2))
                     except:
                         pass
                     pass
