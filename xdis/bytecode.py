@@ -234,7 +234,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
         if has_arg:
             if python_36:
                 arg = code2num(bytecode, i) | extended_arg
-                if opc == opc.EXTENDED_ARG:
+                if op == opc.EXTENDED_ARG:
                     extended_arg = (arg << 8)
                 else:
                     extended_arg = 0
