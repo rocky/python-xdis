@@ -212,6 +212,7 @@ add_magic_from_int(3377,  '3.6b1+3')   # set __class__ cell from type.__new__ #2
 add_magic_from_int(3378,  '3.6b2')     # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
 add_magic_from_int(3379,  '3.6rc1')    # more thorough __class__ validation #23722
 add_magic_from_int(3390,  '3.7.0alpha0')
+add_magic_from_int(3391,  '3.7.0alpha3')
 
 # Weird ones
 # WTF? Python 3.2.5 - PyPy 2.3.4  this doesn't follow the rule below
@@ -268,6 +269,7 @@ add_canonic_versions('3.5.3pypy', '3.5pypy')
 add_canonic_versions('3.5.3pypy', '3.5pypy')
 add_canonic_versions('2.7.8Pyston', '2.7.7Pyston')
 add_canonic_versions('3.7 3.7.0', '3.7.0alpha0')
+add_canonic_versions('3.7.0alpha3', '3.7.0alpha3')
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
