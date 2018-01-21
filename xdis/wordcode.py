@@ -13,6 +13,8 @@ def unpack_opargs_wordcode(code, opc):
 
     for i in range(0, n, 2):
         op = code[i]
+        if isinstance(op, str):
+            op = ord(op)
         if op_has_argument(op, opc):
             if isinstance(code[i+1], str):
                 arg = ord(code[i+1]) | extended_arg
