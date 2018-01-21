@@ -62,14 +62,14 @@ def get_jump_targets(code, opc):
     offsets = []
     for offset, op, arg in unpack_opargs_wordcode(code, opc):
         if arg is not None:
-            jump_offset = -1
             if op in opc.JREL_OPS:
                 jump_offset = offset + 2 + arg
             elif op in opc.JABS_OPS:
                 jump_offset = arg
-            if jump_offset >= 0:
-                if jump_offset not in offsets:
-                    offsets.append(jump_offset)
+            else:
+                continue
+            if jump_offset not in offsets:
+                offsets.append(jump_offset)
     return offsets
 
 def get_jump_target_maps(code, opc):
