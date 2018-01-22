@@ -11,27 +11,26 @@ def unpack_opargs_wordcode(code, opc):
         code = code.co_code
         n = len(code)
 
-    for i in range(0, n, 2):
-        op = code[i]
-        if isinstance(op, str):
-            # This happens handling Python 3.x on a 2.x interpreter
-            op = ord(op)
-        if op_has_argument(op, opc):
-            if isinstance(code[i+1], str):
-                # This happens handling Python 3.x on a 2.x interpreter
+    if isinstance(code[0], str):
+        # This happens handling Python 3.x on a 2.x interpreter
+        for i in range(0, n, 2):
+            op = ord(code[i])
+            if op_has_argument(op, opc):
                 arg = ord(code[i+1]) | extended_arg
-
-        if isinstance(op, str):
-            op = ord(op)
-        if op_has_argument(op, opc):
-            if isinstance(code[i+1], str):
-                arg = ord(code[i+1]) | extended_arg
+                extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
             else:
+                arg = None
+            yield (i, op, arg)
+    else:
+        for i in range(0, n, 2):
+            op = code[i]
+            if op_has_argument(op, opc):
                 arg = code[i+1] | extended_arg
-            extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
-        else:
-            arg = None
-        yield (i, op, arg)
+                extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
+            else:
+                arg = None
+            yield (i, op, arg)
+
 
 def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
