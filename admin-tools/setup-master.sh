@@ -1,2 +1,4 @@
 #!/bin/bash
-git checkout master && pyenv local 2.7.13
+PYTHON_VERSION=2.7.14
+
+git checkout master && git pull && pyenv local $PYTHON_VERSION
