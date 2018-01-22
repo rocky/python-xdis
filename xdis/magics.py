@@ -281,10 +281,25 @@ python_versions = set(canonic_python_version.keys())
 def __show(text, magic):
     print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
 
+def magic_int2float(magic_int):
+    """Convert a Python magic int into a 'canonic' floating-point number,
+    e.g. 2.7, 3.7. runtime error is raised if "version" is not found.
+
+    Note that there can be several magic_int's that map to a single floating-
+    point number. For example 3320 (3.5.a0), 3340 (3.5b1), and 3351 (3.5.2)
+    all map to 3.5.
+    """
+    return py_str2float(magicint2version[magic_int])
+
 def py_str2float(version):
-    """Convert a Python version into a 'canonic' floating-point number which
-    that can then be used to look up a magic number.
+    """Convert a Python version into a two-digit 'canonic' floating-point number,
+    e.g. 2.5, 3.6.
+
     A runtime error is raised if "version" is not found.
+
+    Note that there can be several strings that map to a single floating-
+    point number. For example 3.2a1, 3.2.0, 3.2.2, 3.2.6 among others all map to
+    3.2.
     """
     if version in magics:
         magic = magics[version]

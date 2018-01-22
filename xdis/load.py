@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2017 by Rocky Bernstein
+# Copyright (c) 2015-2018 by Rocky Bernstein
 
 import imp, marshal, py_compile, sys, tempfile, time
 from struct import unpack, pack
@@ -100,7 +100,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
                 get_code=True):
     """load a module from a file object without importing it.
 
-    See :func:load_module.
+    See :func:load_module for a list of return values.
     """
 
     if code_objects is None:
@@ -117,7 +117,9 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             magic = magics.int2magic(3180+7)
 
         try:
-            version = float(magics.versions[magic][:3])
+            # FIXME: use the internal routine below
+            float_version = float(magics.versions[magic][:3])
+            # float_version = magics.magic_int2float(magic_int)
         except KeyError:
             if len(magic) >= 2:
                 raise ImportError("Unknown magic number %s in %s" %
@@ -163,7 +165,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                 elif fast_load:
-                    co = xdis.marsh.load(fp, magic.versions[magic_int])
+                    co = xdis.marsh.load(fp, magics.versions[magic_int])
                 else:
                     co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
                 pass
@@ -179,7 +181,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
     finally:
       fp.close()
 
-    return version, timestamp, magic_int, co, is_pypy(magic_int), source_size
+    return float_version, timestamp, magic_int, co, is_pypy(magic_int), source_size
 
 def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
     """Write bytecode file _bytecode_path_, with code for having Python
