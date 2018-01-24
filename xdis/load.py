@@ -165,7 +165,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                 elif fast_load:
-                    co = xdis.marsh.load(fp, magics.versions[magic_int])
+                    co = xdis.marsh.load(fp, magics.magicint2version[magic_int])
                 else:
                     co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
                 pass
