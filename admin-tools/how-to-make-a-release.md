@@ -1,3 +1,22 @@
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Get latest sources:](#get-latest-sources)
+- [Change version in uncompyle6/version.py.](#change-version-in-uncompyle6versionpy)
+- [Update ChangeLog:](#update-changelog)
+- [Update NEWS from ChangeLog. Then:](#update-news-from-changelog-then)
+- [Make sure pyenv is running and check newer versions](#make-sure-pyenv-is-running-and-check-newer-versions)
+- [Switch to python-2.4, sync that up and build that first since it creates a tarball which we don't want.](#switch-to-python-24-sync-that-up-and-build-that-first-since-it-creates-a-tarball-which-we-dont-want)
+- [Update NEWS from master branch](#update-news-from-master-branch)
+- [Check against all versions](#check-against-all-versions)
+- [Make packages and tag](#make-packages-and-tag)
+- [Upload single package and look at Rst Formating](#upload-single-package-and-look-at-rst-formating)
+- [Upload rest of versions](#upload-rest-of-versions)
+- [Push tags:](#push-tags)
+- [Check on a VM](#check-on-a-vm)
+
+<!-- markdown-toc end -->
+
 # Get latest sources:
 
     $ git pull
