@@ -2,3 +2,4 @@ nose
 flake8
 pytest
 six
+hypothesis==3.8.3
