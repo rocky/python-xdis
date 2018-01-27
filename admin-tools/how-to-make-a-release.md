@@ -1,4 +1,6 @@
-git pull
+# Get latest sources:
+
+    $ git pull
 
 # Change version in uncompyle6/version.py.
 
@@ -9,6 +11,7 @@ git pull
 
 
 # Update ChangeLog:
+
     $ make ChangeLog
 
 #  Update NEWS from ChangeLog. Then:
