@@ -1,4 +1,6 @@
-git pull
+# Get latest sources:
+
+    $ git pull
 
 # Change version in uncompyle6/version.py.
 
