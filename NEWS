@@ -1,6 +1,10 @@
+3.6.9 2018-01-21
+
+- Correct improper 3.4.4 setting
+
 3.6.8 2018-01-21
 
-- Add 3.3.4
+- Add 3.4.4
 - Fix a small bug in load.py
 - improve unpack_opargs_wordcode
 
