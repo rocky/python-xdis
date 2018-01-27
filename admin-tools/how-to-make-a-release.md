@@ -9,6 +9,7 @@ git pull
 
 
 # Update ChangeLog:
+
     $ make ChangeLog
 
 #  Update NEWS from ChangeLog. Then:

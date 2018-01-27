@@ -9,10 +9,10 @@
 
 # Things that change more often go here.
 copyright   = """
-Copyright (C) 2015-2017 Rocky Bernstein <rb@dustyfeet.com>.
+Copyright (C) 2015-2018 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
-classifiers =  ['Development Status :: 4 - Beta',
+classifiers =  ['Development Status :: 5 - Production/Stable',
                 'Intended Audience :: Developers',
                 'Operating System :: OS Independent',
                 'Programming Language :: Python',
