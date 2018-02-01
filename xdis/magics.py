@@ -301,6 +301,8 @@ def py_str2float(version):
     point number. For example 3.2a1, 3.2.0, 3.2.2, 3.2.6 among others all map to
     3.2.
     """
+    if version.endswith('pypy'):
+        version = version[:-len('pypy')]
     if version in magics:
         magic = magics[version]
         for v, m in list(magics.items()):
