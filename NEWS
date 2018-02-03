@@ -1,4 +1,4 @@
-3.7.0 2018-02-3
+3.6.10 2018-02-3
 
 - Handle pypy in str2float
 - Accomodate broken or incomplete "import platform"
