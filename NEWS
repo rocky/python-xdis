@@ -1,3 +1,9 @@
+3.7.0 2018-02-3
+
+- Handle pypy in str2float
+- Accomodate broken or incomplete "import platform"
+- Pin Hypothesis to 3.0.0 - it has been broken after 3.0.0
+
 3.6.9 2018-01-21
 
 - Correct improper 3.4.4 setting
