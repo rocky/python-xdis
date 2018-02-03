@@ -347,6 +347,8 @@ def sysinfo2float(version_info=sys.version_info):
             # Python may be too old, e.g. < 2.6 or implementation may
             # just not have platform
             pass
+        except AttributeError:
+            pass
     return py_str2float(vers_str)
 
 
