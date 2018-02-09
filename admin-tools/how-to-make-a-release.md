@@ -47,8 +47,10 @@
 
 # Switch to python-2.4, sync that up and build that first since it creates a tarball which we don't want.
 
-    $ source admin-tools/setup-python-2.4.sh
-    $ git merge master
+     $ source admin-tools/setup-python-2.4.sh
+     $ git merge master
+     # Fix up any merge conflicts
+     git commit
 
 # Update NEWS from master branch
 
