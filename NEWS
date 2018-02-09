@@ -1,3 +1,7 @@
+3.6.11 2018-02-9 pycon2018.co
+
+- Add version 3.5.5 to canonic_versions
+
 3.6.10 2018-02-3
 
 - Handle pypy in str2float

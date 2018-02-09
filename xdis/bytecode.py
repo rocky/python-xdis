@@ -299,7 +299,7 @@ def op_has_argument(op, opc):
     return op >= opc.HAVE_ARGUMENT
 
 def next_offset(op, opc, offset):
-    return offset + op_size(op, opc)
+    return offset + instruction_size(op, opc)
 
 # FIXME: this would better be called an instr_size
 # since it is about instructions, not opcodes

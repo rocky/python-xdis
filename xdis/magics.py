@@ -199,7 +199,7 @@ add_magic_from_int(3320,  '3.5a0')     # matrix multiplication operator
 add_magic_from_int(3330,  '3.5b1')     # pep 448: additional unpacking generalizations
 add_magic_from_int(3340,  '3.5b2')     # fix dictionary display evaluation order #11205
 add_magic_from_int(3350,  '3.5')       # add GET_YIELD_FROM_ITER opcode #24400 (also 3.5b2)
-add_magic_from_int(3351,  '3.5.2')     # fix BUILD_MAP_UNPACK_WITH_CALL opcode #27286; 3.5.3, 3.5.4
+add_magic_from_int(3351,  '3.5.2')     # fix BUILD_MAP_UNPACK_WITH_CALL opcode #27286; 3.5.3, 3.5.4, 3.5.5
 add_magic_from_int(3360,  '3.6a0')     # add FORMAT_VALUE opcode #25483
 add_magic_from_int(3361,  '3.6a0+1')   # lineno delta of code.co_lnotab becomes signed
 add_magic_from_int(3370,  '3.6a1')     # 16 bit wordcode
@@ -259,7 +259,7 @@ add_canonic_versions('3.3 3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6 3.3.7rc1 3.3
 add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 '
                      '3.4.5 3.4.6', '3.4rc2')
 add_canonic_versions('3.5.0 3.5.1', '3.5')
-add_canonic_versions('3.5.3 3.5.4', '3.5.2')
+add_canonic_versions('3.5.3 3.5.4 3.5.5', '3.5.2')
 add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4', '3.6rc1')
 
 add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
