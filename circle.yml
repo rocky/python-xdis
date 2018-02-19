@@ -4,6 +4,7 @@ machine:
 
 dependencies:
     override:
+        - pup install --upgrade setuptools
         - pip install -e .
 test:
     override:
