@@ -1,3 +1,19 @@
+# (C) Copyright 2018 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 """Internal Python object serialization
 
 This module contains functions that can read and write Python values
@@ -176,7 +192,7 @@ class _Marshaller:
     def dump_binary_float(self, x):
         write = self._write
         write(TYPE_BINARY_FLOAT)
-        write(struct.pack('d', x))
+        write(struct.pack('<d', x))
 
     dispatch[TYPE_BINARY_FLOAT] = dump_float
 
@@ -197,8 +213,8 @@ class _Marshaller:
     def dump_binary_complex(self, x):
         write = self._write
         write(TYPE_BINARY_COMPLEX)
-        write(struct.pack('d', x.real))
-        write(struct.pack('d', x.imag))
+        write(struct.pack('<d', x.real))
+        write(struct.pack('<d', x.imag))
 
     dispatch[TYPE_BINARY_COMPLEX] = dump_binary_complex
 
@@ -478,7 +494,7 @@ class _Unmarshaller:
 
     def load_binary_float(self):
         f = self._read(8)
-        return float(struct.unpack('d', f)[0])
+        return float(struct.unpack('<d', f)[0])
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
 
     def load_complex(self):

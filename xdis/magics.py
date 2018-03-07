@@ -1,3 +1,19 @@
+# (C) Copyright 2018 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 """
 Everything you ever wanted to know about Python versions and their
 magic numbers. And a little bit more...
@@ -32,9 +48,9 @@ def int2magic(magic_int):
     """
 
     if (sys.version_info >= (3, 0)):
-        return struct.pack('Hcc', magic_int, bytes('\r', 'utf-8'), bytes('\n', 'utf-8'))
+        return struct.pack('<Hcc', magic_int, bytes('\r', 'utf-8'), bytes('\n', 'utf-8'))
     else:
-        return struct.pack('Hcc', magic_int, '\r', '\n')
+        return struct.pack('<Hcc', magic_int, '\r', '\n')
 
 def magic2int(magic):
     """Given a magic byte string, e.g. b'\x03\xf3\r\n', compute the
@@ -45,7 +61,7 @@ def magic2int(magic):
     for knonwn magic_int's.
 
     """
-    return struct.unpack('Hcc', magic)[0]
+    return struct.unpack('<Hcc', magic)[0]
 
 def __by_version(magics):
     for m, v in list(magics.items()):
@@ -252,13 +268,17 @@ add_canonic_versions('2.5 2.5.1 2.5.2 2.5.3 2.5.4 2.5.5 2.5.6', '2.5c2')
 add_canonic_versions('2.6 2.6.6 2.6.7 2.6.8 2.6.9', '2.6a1')
 add_canonic_versions('2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 '
                      '2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13 2.7.14', '2.7')
-add_canonic_versions('3.0 3.0.0 3.0.1',                                '3.0a5')
-add_canonic_versions('3.1 3.1.0 3.1.1 3.1.2 3.1.3 3.1.4 3.1.5',        '3.1a0+')
-add_canonic_versions('3.2 3.2.0 3.2.1 3.2.2 3.2.3 3.2.4 3.2.5 3.2.6',  '3.2a2')
-add_canonic_versions('3.3 3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6 3.3.7rc1 3.3.7', '3.3a4')
+add_canonic_versions('3.0 3.0.0 3.0.1',
+                     '3.0a5')
+add_canonic_versions('3.1 3.1.0 3.1.1 3.1.2 3.1.3 3.1.4 3.1.5',
+                     '3.1a0+')
+add_canonic_versions('3.2 3.2.0 3.2.1 3.2.2 3.2.3 3.2.4 3.2.5 3.2.6',
+                     '3.2a2')
+add_canonic_versions('3.3 3.3.1 3.3.0 3.3.2 3.3.3 3.3.4 3.3.5 '
+                     '3.3.6 3.3.7rc1 3.3.7', '3.3a4')
 add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 '
-                     '3.4.5 3.4.6', '3.4rc2')
-add_canonic_versions('3.5.0 3.5.1', '3.5')
+                     '3.4.5 3.4.6 3.4.7 3.4.8', '3.4rc2')
+add_canonic_versions('3.5.0 3.5.1 3.5.2 3.5.3', '3.5')
 add_canonic_versions('3.5.3 3.5.4 3.5.5', '3.5.2')
 add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4', '3.6rc1')
 
@@ -279,7 +299,7 @@ for v in versions.values():
 python_versions = set(canonic_python_version.keys())
 
 def __show(text, magic):
-    print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
+    print(text, struct.unpack('BBBB', magic), struct.unpack('<HBB', magic))
 
 def magic_int2float(magic_int):
     """Convert a Python magic int into a 'canonic' floating-point number,

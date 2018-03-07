@@ -13,6 +13,7 @@ Copyright (C) 2015-2018 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
 classifiers =  ['Development Status :: 5 - Production/Stable',
+                'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
                 'Intended Audience :: Developers',
                 'Operating System :: OS Independent',
                 'Programming Language :: Python',
