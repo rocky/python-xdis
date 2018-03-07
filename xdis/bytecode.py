@@ -1,3 +1,19 @@
+#  Copyright (c) 2018 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 """Python bytecode and instruction classes
 Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
@@ -549,29 +565,29 @@ def list2bytecode(l, opc, varnames, consts):
             return bytes(bytearray(bc))
 
 
-if __name__ == '__main__':
-    import xdis.opcodes.opcode_27  as opcode_27
-    import xdis.opcodes.opcode_34  as opcode_34
-    import xdis.opcodes.opcode_36  as opcode_36
-    consts = (None, 2)
-    varnames = ('a')
-    instructions = [
-        ('LOAD_CONST', 2),
-        ('STORE_FAST', 'a'),
-        ('LOAD_FAST', 'a'),
-        ('RETURN_VALUE',)
-    ]
-    def f():
-        a = 2
-        return a
-    if PYTHON3:
-        print(f.__code__.co_code)
-    else:
-        print(f.func_code.co_code)
+# if __name__ == '__main__':
+#     import xdis.opcodes.opcode_27  as opcode_27
+#     import xdis.opcodes.opcode_34  as opcode_34
+#     import xdis.opcodes.opcode_36  as opcode_36
+#     consts = (None, 2)
+#     varnames = ('a')
+#     instructions = [
+#         ('LOAD_CONST', 2),
+#         ('STORE_FAST', 'a'),
+#         ('LOAD_FAST', 'a'),
+#         ('RETURN_VALUE',)
+#     ]
+#     def f():
+#         a = 2
+#         return a
+#     if PYTHON3:
+#         print(f.__code__.co_code)
+#     else:
+#         print(f.func_code.co_code)
 
-    bc = list2bytecode(instructions, opcode_27, varnames, consts)
-    print(bc)
-    bc = list2bytecode(instructions, opcode_34, varnames, consts)
-    print(bc)
-    bc = list2bytecode(instructions, opcode_36, varnames, consts)
-    print(bc)
+#     bc = list2bytecode(instructions, opcode_27, varnames, consts)
+#     print(bc)
+#     bc = list2bytecode(instructions, opcode_34, varnames, consts)
+#     print(bc)
+#     bc = list2bytecode(instructions, opcode_36, varnames, consts)
+#     print(bc)

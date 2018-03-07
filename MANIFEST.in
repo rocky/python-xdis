@@ -1,8 +1,6 @@
 include README.rst
 include ChangeLog
-include COPYING.txt
-include LICENSE.mit
-include LICENSE.gpl2
+include COPYING
 include Makefile
 include test/Makefile
 include __pkginfo__.py

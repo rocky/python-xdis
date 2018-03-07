@@ -1,4 +1,11 @@
-3.6.11 2018-02-9 pycon2018.co
+3.6.12  2018-03-7
+
+License is GPL2.0 only now
+
+- Make it work on bigendian machines
+- Add canonic versions up to 3.4.8 and 3.5.5
+
+3.6.11  2018-02-9 pycon2018.co
 
 - Add version 3.5.5 to canonic_versions
 
