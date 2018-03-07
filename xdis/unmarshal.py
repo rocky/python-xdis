@@ -89,27 +89,27 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     if v13_to_22:
         co_argcount = unpack('<h', fp.read(2))[0]
     else:
-        co_argcount = unpack('i', fp.read(4))[0]
+        co_argcount = unpack('<i', fp.read(4))[0]
 
     if 3020 < magic_int < 20121:
-        kwonlyargcount = unpack('i', fp.read(4))[0]
+        kwonlyargcount = unpack('<i', fp.read(4))[0]
     else:
         kwonlyargcount = 0
 
     if v13_to_22:
         co_nlocals = unpack('<h', fp.read(2))[0]
     else:
-        co_nlocals = unpack('i', fp.read(4))[0]
+        co_nlocals = unpack('<i', fp.read(4))[0]
 
     if v15_to_22:
         co_stacksize = unpack('<h', fp.read(2))[0]
     else:
-        co_stacksize = unpack('i', fp.read(4))[0]
+        co_stacksize = unpack('<i', fp.read(4))[0]
 
     if v13_to_22:
         co_flags = unpack('<h', fp.read(2))[0]
     else:
-        co_flags = unpack('i', fp.read(4))[0]
+        co_flags = unpack('<i', fp.read(4))[0]
 
     co_code = load_code_internal(fp, magic_int, bytes_for_s=True,
                                  code_objects=code_objects)
@@ -132,7 +132,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     if v15_to_22:
         co_firstlineno = unpack('<h', fp.read(2))[0]
     else:
-        co_firstlineno = unpack('i', fp.read(4))[0]
+        co_firstlineno = unpack('<i', fp.read(4))[0]
 
     # FIXME: only if >= 1.5
     co_lnotab = load_code_internal(fp, magic_int, code_objects=code_objects)
@@ -248,10 +248,10 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         return True
     elif marshalType == 'i':
         # int32
-        return r_ref(int(unpack('i', fp.read(4))[0]), flag)
+        return r_ref(int(unpack('<i', fp.read(4))[0]), flag)
     elif marshalType == 'l':
         # long
-        n = unpack('i', fp.read(4))[0]
+        n = unpack('<i', fp.read(4))[0]
         if n == 0:
             return long(0)
         size = abs(n)
@@ -264,7 +264,7 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         return r_ref(d, flag)
     elif marshalType == 'I':
         # int64. Python 3.4 removed this.
-        return unpack('q', fp.read(8))[0]
+        return unpack('<q', fp.read(8))[0]
     elif marshalType == 'f':
         # float - Seems not in use after Python 2.4
         strsize = unpack('B', fp.read(1))[0]
@@ -272,25 +272,25 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         return r_ref(float(s), flag)
     elif marshalType == 'g':
         # binary float
-        return r_ref(float(unpack('d', fp.read(8))[0]), flag)
+        return r_ref(float(unpack('<d', fp.read(8))[0]), flag)
     elif marshalType == 'x':
         # complex
         if magic_int <= 62061:
             get_float = lambda: float(fp.read(unpack('B', fp.read(1))[0]))
         else:
-            get_float = lambda: float(fp.read(unpack('i', fp.read(4))[0]))
+            get_float = lambda: float(fp.read(unpack('<i', fp.read(4))[0]))
         real = get_float()
         imag = get_float()
         return r_ref(complex(real, imag), flag)
     elif marshalType == 'y':
         # binary complex
-        real = unpack('d', fp.read(8))[0]
-        imag = unpack('d', fp.read(8))[0]
+        real = unpack('<d', fp.read(8))[0]
+        imag = unpack('<d', fp.read(8))[0]
         return r_ref(complex(real, imag), flag)
     elif marshalType == 's':
         # string
         # Note: could mean bytes in Python3 processing Python2 bytecode
-        strsize = unpack('i', fp.read(4))[0]
+        strsize = unpack('<i', fp.read(4))[0]
         s = fp.read(strsize)
         if not bytes_for_s:
             s = compat_str(s)
@@ -298,13 +298,13 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
     elif marshalType == 'A':
         # ascii interned - Python3 3.4
         # FIXME: check
-        strsize = unpack('i', fp.read(4))[0]
+        strsize = unpack('<i', fp.read(4))[0]
         interned = compat_str(fp.read(strsize))
         internStrings.append(interned)
         return r_ref(interned, flag)
     elif marshalType == 'a':
         # ascii. Since Python 3.4
-        strsize = unpack('i', fp.read(4))[0]
+        strsize = unpack('<i', fp.read(4))[0]
         s = fp.read(strsize)
         s = compat_str(s)
         return r_ref(s, flag)
@@ -321,12 +321,12 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         return r_ref(interned, flag)
     elif marshalType == 't':
         # interned - since Python 3.4
-        strsize = unpack('i', fp.read(4))[0]
+        strsize = unpack('<i', fp.read(4))[0]
         interned = compat_str(fp.read(strsize))
         internStrings.append(interned)
         return r_ref(interned, flag)
     elif marshalType == 'u':
-        strsize = unpack('i', fp.read(4))[0]
+        strsize = unpack('<i', fp.read(4))[0]
         unicodestring = fp.read(strsize)
         if PYTHON_VERSION == 3.2 and IS_PYPY:
             # FIXME: this isn't quite right. See
@@ -346,7 +346,7 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         return r_ref_insert(ret, i)
     elif marshalType == '(':
         # tuple
-        tuplesize = unpack('i', fp.read(4))[0]
+        tuplesize = unpack('<i', fp.read(4))[0]
         ret = r_ref(tuple(), flag)
         while tuplesize > 0:
             ret += load_code_internal(fp, magic_int, code_objects=code_objects),
@@ -354,7 +354,7 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         return ret
     elif marshalType == '[':
         # list. FIXME: check me
-        n = unpack('i', fp.read(4))[0]
+        n = unpack('<i', fp.read(4))[0]
         ret = r_ref(list(), flag)
         while n > 0:
             ret += load_code_internal(fp, magic_int, code_objects=code_objects),
@@ -375,7 +375,7 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         raise KeyError(marshalType)
     elif marshalType in ['<', '>']:
         # set and frozenset
-        setsize = unpack('i', fp.read(4))[0]
+        setsize = unpack('<i', fp.read(4))[0]
         ret, i = r_ref_reserve(tuple(), flag)
         while setsize > 0:
             ret += load_code_internal(fp, magic_int, code_objects=code_objects),
@@ -386,7 +386,7 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
             return r_ref_insert(set(ret), i)
     elif marshalType == 'R':
         # Python 2 string reference
-        refnum = unpack('i', fp.read(4))[0]
+        refnum = unpack('<i', fp.read(4))[0]
         return internStrings[refnum]
     elif marshalType == 'c':
         return load_code_type(fp, magic_int, bytes_for_s=False,
@@ -396,7 +396,7 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         raise KeyError("C code is Python 1.0 - 1.2; can't handle yet")
     elif marshalType == 'r':
         # object reference - since Python 3.4
-        refnum = unpack('i', fp.read(4))[0]
+        refnum = unpack('<i', fp.read(4))[0]
         o = internObjects[refnum-1]
         return o
     elif marshalType == '?':

@@ -145,7 +145,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
         try:
             # print version
             ts = fp.read(4)
-            timestamp = unpack("I", ts)[0]
+            timestamp = unpack("<I", ts)[0]
             my_magic_int = magics.magic2int(imp.get_magic())
             magic_int = magics.magic2int(magic)
 
@@ -156,7 +156,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             # release. Hence the test on the magic value rather than
             # PYTHON_VERSION, although PYTHON_VERSION would probably work.
             if 3200 <= magic_int < 20121:
-                source_size = unpack("I", fp.read(4))[0] # size mod 2**32
+                source_size = unpack("<I", fp.read(4))[0] # size mod 2**32
             else:
                 source_size = None
 
@@ -193,10 +193,10 @@ def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
             fp.write(pack('<Hcc', magic_int, b'\r', b'\n'))
         else:
             fp.write(pack('<Hcc', magic_int, '\r', '\n'))
-        fp.write(pack('I', int(time.time())))
+        fp.write(pack('<I', int(time.time())))
         if (3000 <= magic_int < 20121):
             # In Python 3 you need to write out the size mod 2**32 here
-            fp.write(pack('I', filesize))
+            fp.write(pack('<I', filesize))
         fp.write(marshal.dumps(code))
     finally:
       fp.close()
