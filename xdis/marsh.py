@@ -178,7 +178,7 @@ class _Marshaller:
     def dump_binary_float(self, x):
         write = self._write
         write(TYPE_BINARY_FLOAT)
-        write(struct.pack('d', x))
+        write(struct.pack('<d', x))
 
     dispatch[TYPE_BINARY_FLOAT] = dump_float
 
@@ -199,8 +199,8 @@ class _Marshaller:
     def dump_binary_complex(self, x):
         write = self._write
         write(TYPE_BINARY_COMPLEX)
-        write(struct.pack('d', x.real))
-        write(struct.pack('d', x.imag))
+        write(struct.pack('<d', x.real))
+        write(struct.pack('<d', x.imag))
 
     dispatch[TYPE_BINARY_COMPLEX] = dump_binary_complex
 
@@ -480,7 +480,7 @@ class _Unmarshaller:
 
     def load_binary_float(self):
         f = self._read(8)
-        return float(struct.unpack('d', f)[0])
+        return float(struct.unpack('<d', f)[0])
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
 
     def load_complex(self):

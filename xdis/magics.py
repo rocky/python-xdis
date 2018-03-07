@@ -283,7 +283,7 @@ for v in versions.values():
 python_versions = set(canonic_python_version.keys())
 
 def __show(text, magic):
-    print(text, struct.unpack('BBBB', magic), struct.unpack('HBB', magic))
+    print(text, struct.unpack('BBBB', magic), struct.unpack('<HBB', magic))
 
 def magic_int2float(magic_int):
     """Convert a Python magic int into a 'canonic' floating-point number,

@@ -87,7 +87,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     v21_to_27 = not v13_to_20 and 60202 <= magic_int <= 63000
 
     if v13_to_22:
-        co_argcount = unpack('h', fp.read(2))[0]
+        co_argcount = unpack('<h', fp.read(2))[0]
     else:
         co_argcount = unpack('i', fp.read(4))[0]
 
@@ -97,17 +97,17 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
         kwonlyargcount = 0
 
     if v13_to_22:
-        co_nlocals = unpack('h', fp.read(2))[0]
+        co_nlocals = unpack('<h', fp.read(2))[0]
     else:
         co_nlocals = unpack('i', fp.read(4))[0]
 
     if v15_to_22:
-        co_stacksize = unpack('h', fp.read(2))[0]
+        co_stacksize = unpack('<h', fp.read(2))[0]
     else:
         co_stacksize = unpack('i', fp.read(4))[0]
 
     if v13_to_22:
-        co_flags = unpack('h', fp.read(2))[0]
+        co_flags = unpack('<h', fp.read(2))[0]
     else:
         co_flags = unpack('i', fp.read(4))[0]
 
@@ -130,7 +130,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     co_name = load_code_internal(fp, magic_int)
 
     if v15_to_22:
-        co_firstlineno = unpack('h', fp.read(2))[0]
+        co_firstlineno = unpack('<h', fp.read(2))[0]
     else:
         co_firstlineno = unpack('i', fp.read(4))[0]
 
@@ -257,7 +257,7 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         size = abs(n)
         d = long(0)
         for j in range(0, size):
-            md = int(unpack('h', fp.read(2))[0])
+            md = int(unpack('<h', fp.read(2))[0])
             d += md << j*15
         if n < 0:
             d = long(d*-1)
