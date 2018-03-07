@@ -32,9 +32,9 @@ def int2magic(magic_int):
     """
 
     if (sys.version_info >= (3, 0)):
-        return struct.pack('Hcc', magic_int, bytes('\r', 'utf-8'), bytes('\n', 'utf-8'))
+        return struct.pack('<Hcc', magic_int, bytes('\r', 'utf-8'), bytes('\n', 'utf-8'))
     else:
-        return struct.pack('Hcc', magic_int, '\r', '\n')
+        return struct.pack('<Hcc', magic_int, '\r', '\n')
 
 def magic2int(magic):
     """Given a magic byte string, e.g. b'\x03\xf3\r\n', compute the
@@ -45,7 +45,7 @@ def magic2int(magic):
     for knonwn magic_int's.
 
     """
-    return struct.unpack('Hcc', magic)[0]
+    return struct.unpack('<Hcc', magic)[0]
 
 def __by_version(magics):
     for m, v in list(magics.items()):

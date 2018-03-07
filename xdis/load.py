@@ -190,9 +190,9 @@ def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
     fp = open(bytecode_path, 'wb')
     try:
         if PYTHON3:
-            fp.write(pack('Hcc', magic_int, b'\r', b'\n'))
+            fp.write(pack('<Hcc', magic_int, b'\r', b'\n'))
         else:
-            fp.write(pack('Hcc', magic_int, '\r', '\n'))
+            fp.write(pack('<Hcc', magic_int, '\r', '\n'))
         fp.write(pack('I', int(time.time())))
         if (3000 <= magic_int < 20121):
             # In Python 3 you need to write out the size mod 2**32 here
