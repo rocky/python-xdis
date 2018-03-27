@@ -147,6 +147,10 @@ def disco_loop(opc, version, queue, real_out, dup_lines=False):
             pass
         pass
 
+def code_uniquify(basename, co_code):
+    # FIXME: better would be a hash of the co_code
+    return "%s_0x%x" % (basename, id(co_code))
+
 def disco_loop_asm_format(opc, version, co, real_out,
                           fn_name_map, all_fns):
     """Produces disassembly in a format more conducive to
@@ -163,6 +167,29 @@ def disco_loop_asm_format(opc, version, co, real_out,
     co_name = co.co_name
     mapped_name = fn_name_map.get(co_name, co_name)
 
+    new_consts = []
+    for c in co.co_consts:
+        if iscode(c):
+            if version < 3.0:
+                c_compat = code2compat(c)
+            else:
+                c_compat = code3compat(c)
+            disco_loop_asm_format(opc, version, c_compat, real_out,
+                                  fn_name_map, all_fns)
+
+            m = re.match(".* object <(.+)> at", str(c))
+            if m:
+                basename = m.group(1)
+                if basename != 'module':
+                    mapped_name = code_uniquify(basename, c.co_code)
+                    c_compat.co_name = mapped_name
+            c_compat.freeze()
+            new_consts.append(c_compat)
+        else:
+            new_consts.append(c)
+        pass
+    co.co_consts = new_consts
+
     m = re.match("^<(.+)>$", co.co_name)
     if m or co_name in all_fns:
         if co_name in all_fns:
@@ -170,34 +197,21 @@ def disco_loop_asm_format(opc, version, co, real_out,
         else:
             basename = m.group(1)
         if basename != 'module':
-            mapped_name = "%s_0x%x" % (basename, id(co))
+            mapped_name = code_uniquify(basename, co.co_code)
             co_name = mapped_name
-        assert mapped_name not in fn_name_map
+            assert mapped_name not in fn_name_map
         fn_name_map[mapped_name] = basename
         co.co_name = mapped_name
         pass
     elif co_name in fn_name_map:
-        mapped_name = "%s_0x%x" % (co_name, id(co))
+        # FIXME: better would be a hash of the co_code
+        mapped_name = code_uniquify(co_name, co.co_code)
         fn_name_map[mapped_name] = co_name
         co.co_name = mapped_name
         pass
 
-    new_consts = []
-    for c in co.co_consts:
-        if iscode(c):
-            if version < 3.0:
-                c = code2compat(c)
-            else:
-                c = code3compat(c)
-            disco_loop_asm_format(opc, version, c, real_out,
-                                  fn_name_map, all_fns)
-            c.freeze()
-        new_consts.append(c)
-        pass
-
-    all_fns.add(co_name)
-    co.co_consts = new_consts
     co = co.freeze()
+    all_fns.add(co_name)
     if co.co_name != '<module>' or co.co_filename:
         real_out.write("\n" + format_code_info(co, version, mapped_name) + "\n")
 
