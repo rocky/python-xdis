@@ -8,7 +8,7 @@ Usage-Examples:
   test_pyenvlib.py --all		# disassemble all tests across all pyenv libraries
   test_pyenvlib.py --all --verify	# disassemble all tests and verify results
   test_pyenvlib.py --test		# disassemble only the testsuite
-  test_pyenvlib.py --2.7.11 --verify	# disassemble and verify python lib 2.7.11
+  test_pyenvlib.py --2.7.14 --verify	# disassemble and verify python lib 2.7.14
 
 Adding own test-trees:
 
@@ -40,7 +40,7 @@ PYPY_TEST_VERSIONS=(('pypy-2.6.1', '2.7'), ('pypy-5.0.1', '2.7'),
 #-----
 
 
-import os, py_compile, time, shutil, sys
+import os, time, shutil, sys
 from fnmatch import fnmatch
 
 from xdis import main, PYTHON3, PYTHON_VERSION

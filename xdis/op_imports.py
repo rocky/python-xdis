@@ -84,8 +84,7 @@ op_imports = {
     3.5     : opcode_35,
     '3.6rc1': opcode_36,
     3.6     : opcode_36,
-    '3.7.0alpha0': opcode_37,
-    '3.7.0alpha3': opcode_37,
+    '3.7.0beta1': opcode_37,
     3.7     : opcode_37,
 
     '2.6pypy':  opcode_26pypy,

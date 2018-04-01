@@ -6,8 +6,8 @@ def test_opcode():
     opc = get_opcode(PYTHON_VERSION, IS_PYPY)
     opmap = dict([(k.replace('+', '_'), v)
                   for (k, v) in dis.opmap.items()])
-    # print(set(opmap.items()) - set(l['opmap'].items()))
-    # print(set(l['opmap'].items()) - set(opmap.items()))
+    # print(set(opmap.items()) - set(opc.opmap.items()))
+    # print(set(opc.opmap.items()) - set(opmap.items()))
 
     assert all(item in opmap.items() for item in opc.opmap.items())
     assert all(item in opc.opmap.items() for item in opmap.items())

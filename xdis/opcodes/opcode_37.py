@@ -23,7 +23,7 @@ of stack usage.
 from xdis.opcodes.base import(
     def_op, finalize_opcodes,
     format_extended_arg36,
-    init_opdata, name_op,
+    init_opdata, name_op, rm_op,
     update_pj3
     )
 
@@ -76,6 +76,9 @@ init_opdata(l, opcode_36, version)
 # bit (0-3) is set. They are followed by the code object and the
 # qualified name of the function.
 
+# These are removed since 3.6...
+# and STORE_ANNOTATION introduced in 3.6!
+rm_op(l, 'STORE_ANNOTATION', 127)
 
 # These are new since Python 3.7
 name_op(l, 'LOAD_METHOD', 160)
