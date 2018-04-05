@@ -1,4 +1,9 @@
-3.6.12  2018-03-7
+3.8.0 2018-04-04
+
+- Track 3.7 magic numbers, and interim releases
+- a number of varargs opcodes introduced in 3.5 were not marked as such
+
+3.7.0  2018-03-7
 
 License is GPL2.0 only now
 
