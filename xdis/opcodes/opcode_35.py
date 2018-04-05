@@ -22,7 +22,7 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op, init_opdata, finalize_opcodes,
-    format_extended_arg, jrel_op, rm_op, update_pj3)
+    format_extended_arg, jrel_op, rm_op, varargs_op, update_pj3)
 
 from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
 
@@ -52,11 +52,14 @@ def_op(l, 'GET_YIELD_FROM_ITER',         69,  0,  1)
 def_op(l, 'GET_AWAITABLE',               73,  0,  0)
 def_op(l, 'WITH_CLEANUP_START',          81,  0,  1)
 def_op(l, 'WITH_CLEANUP_FINISH',         82, -1,  1)
-def_op(l, 'BUILD_LIST_UNPACK',          149, -1,  1)
-def_op(l, 'BUILD_MAP_UNPACK',           150, -1,  1)
-def_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151, -1,  1)
-def_op(l, 'BUILD_TUPLE_UNPACK',         152, -1,  1)
-def_op(l, 'BUILD_SET_UNPACK',           153, -1,  1)
+
+# Need to coordinate with uncompyle6!
+varargs_op(l, 'BUILD_LIST_UNPACK',          149, -1,  1)
+varargs_op(l, 'BUILD_MAP_UNPACK',           150, -1,  1)
+varargs_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151, -1,  1)
+varargs_op(l, 'BUILD_TUPLE_UNPACK',         152, -1,  1)
+varargs_op(l, 'BUILD_SET_UNPACK',           153, -1,  1)
+
 jrel_op(l, 'SETUP_ASYNC_WITH',          154,  0,  6)
 
 update_pj3(globals(), l)
