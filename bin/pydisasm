@@ -37,8 +37,8 @@ def main(asm, header, files):
 Type -h for for full help.""" % (program, program)
 
 
-    if not (2.5 <= PYTHON_VERSION <= 3.6):
-        sys.stderr(print("This works on Python version 2.5..3.6; have %s" % PYTHON_VERSION))
+    if not (2.5 <= PYTHON_VERSION <= 3.7):
+        sys.stderr(print("This works on Python version 2.5..3.7; have %s" % PYTHON_VERSION))
 
     if not len(files):
         sys.stderr.write("No file(s) given..\n")

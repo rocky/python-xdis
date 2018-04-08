@@ -31,6 +31,9 @@ from xdis import IS_PYPY
 python_versions = [v for v in magics.python_versions if
                        re.match('^[0-9.]+$', v)]
 
+# Until there is a final release and magics is updated...
+python_versions.append('3.7.0')
+
 TEST_VERSIONS = tuple(python_versions)
 
 

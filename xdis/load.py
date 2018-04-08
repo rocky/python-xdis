@@ -153,14 +153,20 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             raise ImportError("%s is a dropbox-hacked Python %s (bytecode %d).\n"
                               "See https://github.com/kholia/dedrop for how to "
                               "decrypt." % (
-                                  filename, version, magics.magic2int(magic)))
+                                  filename, magics.magic2int(magic)))
 
         try:
             # print version
             ts = fp.read(4)
-            timestamp = unpack("<I", ts)[0]
             my_magic_int = magics.magic2int(imp.get_magic())
             magic_int = magics.magic2int(magic)
+
+            if magic_int == 3393:
+                timestamp = 0
+                hash_word1 = unpack("<I", ts)[0]
+                hash_word2 = unpack("<I", fp.read(4))[0]
+            else:
+                timestamp = unpack("<I", ts)[0]
 
             # Note: a higher magic number doesn't necessarily mean a later
             # release.  At Python 3.0 the magic number decreased

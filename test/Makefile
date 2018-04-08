@@ -19,7 +19,7 @@ check: check-short
 		  --bytecode-3.0 --bytecode-3.1 \
                   --bytecode-3.2 --bytecode-3.3 \
                   --bytecode-3.4 --bytecode-3.5 \
-	          --bytecode-3.6 \
+	          --bytecode-3.6 --bytecode-3.7 \
 	          --bytecode-2.7pypy --bytecode-3.2pypy $(COMPILE)
 
 check-short:
