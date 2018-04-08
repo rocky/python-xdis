@@ -52,7 +52,7 @@ def main():
    %s FILE...
 Type -h for for full help.""" % program
 
-    if not (2.4 <= PYTHON_VERSION <= 3.6):
+    if not (2.4 <= PYTHON_VERSION <= 3.7):
         sys.stderr.write("This works on Python version 2.4..3.6; have %s\n"
                          % PYTHON_VERSION)
         sys.exit(1)

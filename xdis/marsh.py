@@ -409,6 +409,9 @@ class _Unmarshaller:
         except KeyError:
             raise ValueError("bad marshal code: %c (%d)" % (c, Ord(c)))
 
+    def r_byte(self):
+        return Ord(self._read(1))
+
     def r_short(self):
         lo = Ord(self._read(1))
         hi = Ord(self._read(1))
@@ -451,6 +454,7 @@ class _Unmarshaller:
 
     def load_none(self):
         return None
+
     dispatch[TYPE_NONE] = load_none
 
     def load_true(self):
@@ -460,6 +464,10 @@ class _Unmarshaller:
     def load_false(self):
         return False
     dispatch[TYPE_FALSE] = load_false
+
+    def load_ascii(self):
+        return self.r_byte()
+    dispatch[TYPE_ASCII] = load_null
 
     def load_stopiter(self):
         return StopIteration
