@@ -84,7 +84,8 @@ op_imports = {
     3.5     : opcode_35,
     '3.6rc1': opcode_36,
     3.6     : opcode_36,
-    '3.7.0beta1': opcode_37,
+    '3.7.0beta3': opcode_37,
+    '3.7.0.beta3': opcode_37,
     3.7     : opcode_37,
 
     '2.6pypy':  opcode_26pypy,
@@ -120,6 +121,7 @@ def get_opcode_module(version_info=None, variant=None):
             pass
     else:
         vers_str += variant
+
     return op_imports[canonic_python_version[vers_str]]
 
 

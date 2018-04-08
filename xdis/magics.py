@@ -229,7 +229,8 @@ add_magic_from_int(3378,  '3.6b2')     # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
 add_magic_from_int(3379,  '3.6rc1')    # more thorough __class__ validation #23722
 add_magic_from_int(3390,  '3.7.0alpha0')
 add_magic_from_int(3391,  '3.7.0alpha3')
-add_magic_from_int(3393,  '3.7.0beta1')
+add_magic_from_int(3392,  '3.7.0beta2')  # PEP 552 - Additional word in header and possibly no timestamp
+add_magic_from_int(3393,  '3.7.0.beta3')
 
 # Weird ones
 # WTF? Python 3.2.5 - PyPy 2.3.4  this doesn't follow the rule below
@@ -281,7 +282,7 @@ add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 '
                      '3.4.5 3.4.6 3.4.7 3.4.8', '3.4rc2')
 add_canonic_versions('3.5.0 3.5.1 3.5.2 3.5.3', '3.5')
 add_canonic_versions('3.5.3 3.5.4 3.5.5', '3.5.2')
-add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4', '3.6rc1')
+add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5', '3.6rc1')
 
 add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
 add_canonic_versions('2.7.3b0Jython', '2.7.1b3Jython')
@@ -289,13 +290,12 @@ add_canonic_versions('3.2.5pypy', '3.2pypy')
 add_canonic_versions('3.5.3pypy', '3.5pypy')
 add_canonic_versions('3.5.3pypy', '3.5pypy')
 add_canonic_versions('2.7.8Pyston', '2.7.7Pyston')
-add_canonic_versions('3.7 3.7.0', '3.7.0beta1')
 add_canonic_versions('3.7.0alpha3', '3.7.0alpha3')
+add_canonic_versions('3.7.0beta3 3.7 3.7.0', '3.7.0.beta3')
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
     canonic_python_version[v] = v
-
 # A set of all Python versions we know about
 python_versions = set(canonic_python_version.keys())
 
@@ -356,7 +356,8 @@ def sysinfo2float(version_info=sys.version_info):
     """
     vers_str = '.'.join([str(v) for v in version_info[0:3]])
     if version_info[3] != 'final':
-        vers_str += '.' + ''.join(version_info)
+        vers_str += '.' + ''.join([str(i) for i in version_info[3:]])
+
     if IS_PYPY:
         vers_str += 'pypy'
     else:
