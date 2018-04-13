@@ -21,9 +21,10 @@ of stack usage.
 """
 
 from xdis.opcodes.base import(
-    def_op, finalize_opcodes,
+    finalize_opcodes,
     format_extended_arg36,
-    init_opdata, name_op, rm_op,
+    init_opdata, nargs_op,
+    name_op, rm_op,
     update_pj3
     )
 
@@ -82,7 +83,7 @@ rm_op(l, 'STORE_ANNOTATION', 127)
 
 # These are new since Python 3.7
 name_op(l, 'LOAD_METHOD', 160)
-def_op(l, 'CALL_METHOD', 161)
+nargs_op(l, 'CALL_METHOD', 161)
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
