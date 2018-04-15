@@ -8,7 +8,7 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op, finalize_opcodes, init_opdata,
-    jrel_op, name_op,
+    jrel_op, name_op, nargs_op,
     varargs_op, update_pj3)
 
 version = 3.5
@@ -25,7 +25,7 @@ init_opdata(l, opcode_35, version, is_pypy=True)
 def_op(l, 'FORMAT_VALUE',   155)
 def_op(l, 'BUILD_STRING',   157)
 name_op(l, 'LOOKUP_METHOD',  201,  1, 2)
-varargs_op(l, 'CALL_METHOD', 202, -1, 1)
+nargs_op(l, 'CALL_METHOD', 202, -1, 1)
 l['hasvargs'].append(202)
 
 # Used only in single-mode compilation list-comprehension generators
