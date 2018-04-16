@@ -19,6 +19,7 @@
 .idea/**/workspace.xml
 .idea_modules/
 /.cache
+/.pytest_cache
 /.eggs
 /.python-version
 /.tox
