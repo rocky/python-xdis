@@ -108,6 +108,8 @@ PYTHON_MAGIC_INT = magic2int(imp.get_magic())
 # Lib/importlib/_bootstrap.py and other sources
 
 #                  magic,  canonic version number
+add_magic_from_int(39170,  '1.0')
+add_magic_from_int(39171,  '1.1') # covers 1.2 as well
 add_magic_from_int(11913,  '1.3')
 add_magic_from_int(5892,   '1.4')
 

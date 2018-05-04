@@ -135,7 +135,7 @@ def disco_loop(opc, version, queue, real_out, dup_lines=False):
 
     while len(queue) > 0:
         co = queue.popleft()
-        if co.co_name != '<module>':
+        if co.co_name not in ('<module>', '?'):
             real_out.write("\n" + format_code_info(co, version) + "\n")
 
         bytecode = Bytecode(co, opc, dup_lines=dup_lines)

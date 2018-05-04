@@ -288,7 +288,7 @@ class Code2:
 
 class Code2Compat(Code2):
     """A much more flexible version of Code. We don't require kwonlyargcount which
-    does't exist. You can also fill in what you want and leave the rest blank.
+    doesn't exist. You can also fill in what you want and leave the rest blank.
     Remember though to call inherited function freeze when done.
     """
     def __init__(self, co_argcount=0, co_nlocals=0,
