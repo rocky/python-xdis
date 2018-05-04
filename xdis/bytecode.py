@@ -462,7 +462,11 @@ class Bytecode(object):
             self.first_line = first_line
             self._line_offset = first_line - co.co_firstlineno
         self._cell_names = co.co_cellvars + co.co_freevars
-        self._linestarts = dict(opc.findlinestarts(co, dup_lines=dup_lines))
+        if opc.version > 1.4:
+            self._linestarts = dict(opc.findlinestarts(co, dup_lines=dup_lines))
+        else:
+            # versions before 1.5 don't have lnotab.
+            self._linestarts = {}
         self._original_object = x
         self.opc = opc
         self.opnames = opc.opname
