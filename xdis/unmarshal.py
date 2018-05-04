@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2017 by Rocky Bernstein
+# Copyright (c) 2015-2018 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@ import sys, types
 from struct import unpack
 
 from xdis.magics import PYTHON_MAGIC_INT
-from xdis.code import Code2, Code3
+from xdis.code import Code2, Code3, Code2Compat
 from xdis import PYTHON3, PYTHON_VERSION, IS_PYPY
 
 internStrings = []
@@ -96,10 +96,10 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # Python [1.3 .. 2.2)
     # FIXME: find out what magics were for 1.3
     v13_to_22 = magic_int in (11913, 5892, 20121, 50428, 50823, 60202, 60717)
+    v11_to_14 = magic_int in (39170, 39171, 11913, 5892)
 
     # Python [1.5 .. 2.2)
     v15_to_22 = magic_int in (20121, 50428, 50823, 60202, 60717)
-    v15_to_20 = magic_int in (20121, 50428, 50823)
     v13_to_20 = magic_int in (11913, 5892, 20121, 50428, 50823)
     v21_to_27 = not v13_to_20 and 60202 <= magic_int <= 63000
 
@@ -108,7 +108,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_argcount = unpack('<i', fp.read(4))[0]
 
-    if 3020 < magic_int < 20121:
+    if 3020 < magic_int < 20121 and not v11_to_14:
         kwonlyargcount = unpack('<i', fp.read(4))[0]
     else:
         kwonlyargcount = 0
@@ -120,6 +120,8 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
 
     if v15_to_22:
         co_stacksize = unpack('<h', fp.read(2))[0]
+    elif v11_to_14:
+        co_stacksize = -1  # bogus sentinal value
     else:
         co_stacksize = unpack('<i', fp.read(4))[0]
 
@@ -148,11 +150,18 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
 
     if v15_to_22:
         co_firstlineno = unpack('<h', fp.read(2))[0]
+    elif v11_to_14:
+        # < 1.5 there is no lnotab, so no firstlineno.
+        # SET_LINENO is used instead.
+        co_firstlineno = -1 # Bogus sentinal value
     else:
         co_firstlineno = unpack('<i', fp.read(4))[0]
 
-    # FIXME: only if >= 1.5
-    co_lnotab = load_code_internal(fp, magic_int, code_objects=code_objects)
+    if v11_to_14:
+        # < 1.5 uses SET_LINENO only
+        co_lnotab = ''
+    else:
+        co_lnotab = load_code_internal(fp, magic_int, code_objects=code_objects)
 
     # The Python3 code object is different than Python2's which
     # we are reading if we get here.
@@ -166,7 +175,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
             #
             # In later Python3 magic_ints, there is a
             # kwonlyargcount parameter which we set to 0.
-            if v15_to_20 or v21_to_27:
+            if v13_to_22 or v21_to_27:
                 code = Code2(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
                              co_code, co_consts, co_names, co_varnames, co_filename, co_name,
                              co_firstlineno, co_lnotab, co_freevars, co_cellvars)
@@ -182,7 +191,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                         co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
                         co_freevars, co_cellvars)
     else:
-        if (3000 <= magic_int < 20121):
+        if (3000 <= magic_int < 20121) and not v11_to_14:
             # Python 3 encodes some fields as Unicode while Python2
             # requires the corresponding field to have string values
             for s in co_consts:
@@ -196,16 +205,21 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                     s = compat_u2s(s)
             co_filename = str(co_filename)
             co_name = str(co_name)
-        if 3020 < magic_int <= 20121:
+        if 3020 < magic_int <= 20121 and not v11_to_14:
             code =  Code3(co_argcount, kwonlyargcount,
                           co_nlocals, co_stacksize, co_flags, co_code,
                           co_consts, co_names, co_varnames, co_filename, co_name,
                           co_firstlineno, co_lnotab, co_freevars, co_cellvars)
-        else:
+        elif magic_int and not v11_to_14:
             Code = types.CodeType
             code =  Code(co_argcount, co_nlocals, co_stacksize, co_flags, co_code,
                          co_consts, co_names, co_varnames, co_filename, co_name,
                          co_firstlineno, co_lnotab, co_freevars, co_cellvars)
+            pass
+        else:
+            code =  Code2Compat(co_argcount, co_nlocals, co_stacksize, co_flags, co_code,
+                                co_consts, co_names, co_varnames, co_filename, co_name,
+                                co_firstlineno, co_lnotab, co_freevars, co_cellvars)
             pass
         pass
     code_objects[str(code)] = code
