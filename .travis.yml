@@ -4,7 +4,7 @@ sudo: true
 
 python:
   - 'pypy'
-  - '2.6'
+#  - '2.6'
   - '2.7'
   - '3.3'
   - '3.4'
@@ -13,7 +13,7 @@ python:
   - 'pypy3'
 
 install:
-- pip install setuptools
+- pip install --upgrade setuptools
 - pip install -r requirements.txt
 - pip install -r requirements-dev.txt
 
