@@ -191,35 +191,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                         co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
                         co_freevars, co_cellvars)
     else:
-        if (3000 <= magic_int < 20121) and not v11_to_14:
-            # Python 3 encodes some fields as Unicode while Python2
-            # requires the corresponding field to have string values
-            for s in co_consts:
-                if isinstance(s, unicode):
-                    s = compat_u2s(s)
-            for s in co_names:
-                if isinstance(s, unicode):
-                    s = compat_u2s(s)
-            for s in co_varnames:
-                if isinstance(s, unicode):
-                    s = compat_u2s(s)
-            co_filename = str(co_filename)
-            co_name = str(co_name)
-        if 3020 < magic_int <= 20121 and not v11_to_14:
-            code =  Code3(co_argcount, kwonlyargcount,
-                          co_nlocals, co_stacksize, co_flags, co_code,
-                          co_consts, co_names, co_varnames, co_filename, co_name,
-                          co_firstlineno, co_lnotab, co_freevars, co_cellvars)
-        elif magic_int and not v11_to_14:
-            Code = types.CodeType
-            code =  Code(co_argcount, co_nlocals, co_stacksize, co_flags, co_code,
-                         co_consts, co_names, co_varnames, co_filename, co_name,
-                         co_firstlineno, co_lnotab, co_freevars, co_cellvars)
-            pass
-        else:
-=======
         if v11_to_14:
->>>>>>> master
             code =  Code2Compat(co_argcount, co_nlocals, co_stacksize, co_flags, co_code,
                                 co_consts, co_names, co_varnames, co_filename, co_name,
                                 co_firstlineno, co_lnotab, co_freevars, co_cellvars)
@@ -227,12 +199,15 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
             if (3000 <= magic_int < 20121):
                 # Python 3 encodes some fields as Unicode while Python2
                 # requires the corresponding field to have string values
-                co_consts = tuple([compat_u2s(s) if isinstance(s, unicode)
-                                   else s for s in co_consts])
-                co_names  = tuple([compat_u2s(s) if isinstance(s, unicode)
-                                   else s for s in co_names])
-                co_varnames  = tuple([compat_u2s(s) if isinstance(s, unicode)
-                                      else s for s in co_varnames])
+                for s in co_consts:
+                    if isinstance(s, unicode):
+                        s = compat_u2s(s)
+                for s in co_names:
+                    if isinstance(s, unicode):
+                        s = compat_u2s(s)
+                for s in co_varnames:
+                    if isinstance(s, unicode):
+                        s = compat_u2s(s)
                 co_filename = str(co_filename)
                 co_name = str(co_name)
 
