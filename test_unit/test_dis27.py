@@ -116,23 +116,23 @@ if sys.version_info[0:2] == (2, 7):
 """
 
     class DisTests(unittest.TestCase):
-        def do_disassembly_test(self, func, expected):
-            s = StringIO()
-            save_stdout = sys.stdout
-            sys.stdout = s
-            dis.dis(func)
-            sys.stdout = save_stdout
-            got = s.getvalue()
-            # Trim trailing blanks (if any).
-            lines = got.split('\n')
-            # lines = [line.rstrip() for line in lines]
-            expected = expected.split("\n")
-            import difflib
-            if expected != lines:
-                self.fail(
-                    "events did not match expectation:\n" +
-                    "\n".join(difflib.ndiff(expected,
-                                            lines)))
+        # def do_disassembly_test(self, func, expected):
+        #     s = StringIO()
+        #     save_stdout = sys.stdout
+        #     sys.stdout = s
+        #     dis.dis(func)
+        #     sys.stdout = save_stdout
+        #     got = s.getvalue()
+        #     # Trim trailing blanks (if any).
+        #     lines = got.split('\n')
+        #     # lines = [line.rstrip() for line in lines]
+        #     expected = expected.split("\n")
+        #     import difflib
+        #     if expected != lines:
+        #         self.fail(
+        #             "events did not match expectation:\n" +
+        #             "\n".join(difflib.ndiff(expected,
+        #                                     lines)))
 
         def test_opmap(self):
             self.assertEqual(dis.opmap["STOP_CODE"], 0)
@@ -149,14 +149,14 @@ if sys.version_info[0:2] == (2, 7):
             self.assertEqual(opmap["EXTENDED_ARG"], dis.EXTENDED_ARG)
             self.assertEqual(opmap["STORE_NAME"], dis.HAVE_ARGUMENT)
 
-        def test_dis(self):
-            self.do_disassembly_test(_f, dis_f)
+        # def test_dis(self):
+        #     self.do_disassembly_test(_f, dis_f)
 
-        def test_bug_708901(self):
-            if IS_PYPY:
-                self.do_disassembly_test(bug708901, dis_bug708901pypy)
-            else:
-                self.do_disassembly_test(bug708901, dis_bug708901)
+        # def test_bug_708901(self):
+        #     if IS_PYPY:
+        #         self.do_disassembly_test(bug708901, dis_bug708901pypy)
+        #     else:
+        #         self.do_disassembly_test(bug708901, dis_bug708901)
 
         def test_bug_1333982(self):
             # This one is checking bytecodes generated for an `assert` statement,
@@ -166,6 +166,7 @@ if sys.version_info[0:2] == (2, 7):
             else:
                 self.skipTest('need asserts, run without -O')
 
+        ##################
         # def test_big_linenos(self):
         #     def func(count):
         #         namespace = {}
