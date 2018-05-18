@@ -1,6 +1,6 @@
 machine:
     python:
-        version: 2.7.14
+        version: 2.7.6
 
 dependencies:
     override:
