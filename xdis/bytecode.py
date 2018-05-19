@@ -78,20 +78,20 @@ def findlinestarts(code, dup_lines=False):
 
     lastlineno = None
     lineno = code.co_firstlineno
-    addr = 0
+    offset = 0
     for byte_incr, line_incr in zip(byte_increments, line_increments):
         if byte_incr:
             if (lineno != lastlineno or
                 (dup_lines and 0 < byte_incr < 255)):
-                yield (addr, lineno)
+                yield (offset, lineno)
                 lastlineno = lineno
                 pass
-            addr += byte_incr
+            offset += byte_incr
             pass
         lineno += line_incr
     if (lineno != lastlineno or
         (dup_lines and 0 < byte_incr < 255)):
-        yield (addr, lineno)
+        yield (offset, lineno)
 
 def offset2line(offset, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)
@@ -462,11 +462,7 @@ class Bytecode(object):
             self.first_line = first_line
             self._line_offset = first_line - co.co_firstlineno
         self._cell_names = co.co_cellvars + co.co_freevars
-        if opc.version > 1.4:
-            self._linestarts = dict(opc.findlinestarts(co, dup_lines=dup_lines))
-        else:
-            # versions before 1.5 don't have lnotab.
-            self._linestarts = {}
+        self._linestarts = dict(opc.findlinestarts(co, dup_lines=dup_lines))
         self._original_object = x
         self.opc = opc
         self.opnames = opc.opname

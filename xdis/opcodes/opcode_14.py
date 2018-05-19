@@ -20,8 +20,8 @@ This is used in bytecode disassembly. This is similar to the
 opcodes in Python's dis.py library.
 """
 
-# These are used from outside this module
-from xdis.bytecode import findlabels, findlinestarts
+# This is used from outside this module
+from xdis.bytecode import findlabels
 
 import xdis.opcodes.opcode_15 as opcode_15
 from xdis.opcodes.base import (
@@ -62,3 +62,19 @@ opcode_arg_fmt = {
 }
 
 finalize_opcodes(l)
+
+def findlinestarts(co, dup_lines=False):
+    code = co.co_code
+    n = len(code)
+    offset = 0
+    while offset < n:
+        op = code[offset]
+        offset += 1
+        if op == l['opmap']['SET_LINENO'] and offset > 0:
+            lineno = code[offset] + code[offset+1]*256
+            yield (offset-1, lineno)
+            pass
+        if op >= l['HAVE_ARGUMENT']:
+            offset += 2
+            pass
+        pass
