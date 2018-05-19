@@ -1,3 +1,8 @@
+3.8.2 2018-05-18 Paper Tiger
+
+- Add 2.7.15rc1/candidate1
+- Add Python 1.4 opcodes
+
 3.8.1 2018-04-16
 
 - Correct classification of CALL_METHOD
