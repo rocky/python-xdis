@@ -102,12 +102,9 @@ def load_module(filename, code_objects=None, fast_load=False,
     elif osp.getsize(filename) < 50:
         raise ImportError("File name: '%s (%d bytes)' is too short to be a valid pyc file" % (filename, osp.getsize(filename)))
 
-    try:
-        fp = open(filename, 'rb')
+    with open(filename, 'rb') as fp:
         return load_module_from_file_object(fp, filename=filename, code_objects=code_objects,
                                             fast_load=fast_load, get_code=get_code)
-    finally:
-        fp.close()
 
 def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fast_load=False,
                 get_code=True):
