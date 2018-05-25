@@ -31,6 +31,8 @@ from xdis import IS_PYPY
 python_versions = [v for v in magics.python_versions if
                        re.match('^[0-9.]+$', v)]
 
+python_versions.append('1.4')
+
 # Until there is a final release and magics is updated...
 python_versions.append('3.7.0')
 
@@ -74,6 +76,8 @@ test_options = {
 for vers in TEST_VERSIONS:
     short_vers = vers[:3]
     test_options[vers] = (lib_prefix, PYC, 'python-lib'+short_vers)
+
+test_options['1.4'] = (lib_prefix, PYC, 'python-lib1.4')
 
 for vers, short_vers in PYPY_TEST_VERSIONS:
     test_options[vers] = (os.path.join(lib_prefix, vers, 'lib-python', short_vers),
