@@ -48,13 +48,6 @@ name_op(l, 'LOAD_LOCAL',       115)
 varargs_op(l, 'SET_FUNC_ARGS', 117)  # Argcount
 varargs_op(l, 'RESERVE_FAST',  123)  # Number of local variables
 
-# 1.5 Bytecodes not in 1.4
-rm_op(l, 'BINARY_LSHIFT', 62)
-rm_op(l, 'BINARY_RSHIFT', 63)
-rm_op(l, 'BINARY_AND', 64)
-rm_op(l, 'BINARY_XOR', 65)
-rm_op(l, 'BINARY_OR', 66)
-
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
