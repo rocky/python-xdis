@@ -1,3 +1,9 @@
+3.8.3 2018-06-04 MF
+
+- Fix Python 1.4 opcodes
+- Fix misleading error message when failing to open a file
+  (courtesy of jeffenstein)
+
 3.8.2 2018-05-18 Paper Tiger
 
 - Add 2.7.15rc1/candidate1
