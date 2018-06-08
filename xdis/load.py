@@ -171,7 +171,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             # the size info, occurred within a Python major/minor
             # release. Hence the test on the magic value rather than
             # PYTHON_VERSION, although PYTHON_VERSION would probably work.
-            if 3200 <= magic_int < 20121 and magic_int not in (5892,):
+            if 3200 <= magic_int < 20121 and magic_int not in (5892, 11913, 39170, 39171):
                 source_size = unpack("<I", fp.read(4))[0] # size mod 2**32
             else:
                 source_size = None
