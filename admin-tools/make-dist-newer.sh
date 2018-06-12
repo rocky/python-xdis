@@ -22,6 +22,7 @@ source $PACKAGE/version.py
 echo $VERSION
 
 for pyversion in $PYVERSIONS; do
+    echo --- $pyversion ---
     if ! pyenv local $pyversion ; then
 	exit $?
     fi
@@ -33,6 +34,7 @@ for pyversion in $PYVERSIONS; do
     rm -fr build
     python setup.py bdist_egg bdist_wheel
     mv -v dist/${PACKAGE}-$VERSION-{py2.py3,py$first_two}-none-any.whl
+    echo === $pyversion ===
 done
 
 python ./setup.py sdist
