@@ -1,7 +1,7 @@
-|buildstatus| |Supported Python Versions|
+|buildstatus| |Latest Version| |Supported Python Versions|
 
 xdis
-==========
+====
 
 Cross-Python bytecode Disassembler and Marshal routines
 
@@ -25,8 +25,9 @@ provide our own versions of the Code type, and we provide routines to
 reduce the tedium in writing a bytecode file.
 
 This package also has an extensive knowledge of Python bytecode magic
-numbers, including Pypy and others, and how to translate from sys_info
-major, minor, and release numbers to the corresponding magic value.
+numbers, including Pypy and others, and how to translate from
+`sys.sys_info` major, minor, and release numbers to the corresponding
+magic value.
 
 So If you want to write a cross-version assembler, or a
 bytecode-level optimizer this package may also be useful. In addition
@@ -109,10 +110,11 @@ See Also
 * https://github.com/rocky/python-uncompyle6 : python bytecode deparsing
 * https://github.com/rocky/python-xasm : python bytecode assembler
 
-.. |downloads| image:: https://img.shields.io/pypi/dd/xdis.svg
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
 .. _remake: http://bashdb.sf.net/remake
 .. |buildstatus| image:: https://travis-ci.org/rocky/python-xdis.svg
 		 :target: https://travis-ci.org/rocky/python-xdis
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
+.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
+		 :target: https://badge.fury.io/py/xdis
