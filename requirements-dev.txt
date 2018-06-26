@@ -1,6 +1,5 @@
 nose
 flake8
-pytest
 six
 hypothesis==3.0.0
 pytest-runner
