@@ -73,7 +73,7 @@ jobs:
     # Test
     #   This would typically be a build job when using workflows, possibly combined with build
     # This is based on your 1.0 configuration file or project settings
-    - run: pip install pytest==3.2.0 && python ./setup.py develop && make check-full
+    - run: pip install -r requirements.txt && python ./setup.py develop && make check-full
     # Teardown
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
     # Save test results
