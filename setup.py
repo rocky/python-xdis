@@ -4,7 +4,7 @@
 from __pkginfo__ import \
     author,           author_email,       \
     license,          long_description,   classifiers,               \
-    modname,          py_modules,         setup_requires,            \
+    modname,          py_modules,         \
     scripts,          short_desc,         tests_require,             \
     VERSION,          web,                zip_safe
 
@@ -19,7 +19,7 @@ setup(
        name               = modname,
        packages           = find_packages(),
        py_modules         = py_modules,
-       setup_requires     = setup_requires,
+       # setup_requires     = setup_requires,
        scripts            = scripts,
        tests_require      = tests_require,
        url                = web,
