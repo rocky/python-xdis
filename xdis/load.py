@@ -165,6 +165,9 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
                 timestamp = 0
                 hash_word1 = unpack("<I", ts)[0]
                 hash_word2 = unpack("<I", fp.read(4))[0]
+            elif magic_int == 3394:
+                timestamp = 0
+                pep552_bits = unpack("<I", fp.read(4))[0]
             else:
                 timestamp = unpack("<I", ts)[0]
 
