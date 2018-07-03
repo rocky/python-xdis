@@ -1,3 +1,7 @@
+3.8.6 2018-07-03 Independence-1
+
+- Remove stray print that got into op_imports
+
 3.8.5 2018-07-02 Pre Independence
 
 - Add Python 3.7.0 magic and adjustments for its bytecode file reading
