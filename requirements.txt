@@ -1,2 +1,4 @@
 # Pick up stuff from setup.py
+pip==8.1.2
+pytest==3.3.0
 -e .
