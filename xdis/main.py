@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2017 by Rocky Bernstein
+# Copyright (c) 2016-2018 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -109,7 +109,8 @@ def show_module_header(bytecode_version, co, timestamp, out=sys.stdout,
 
 def disco(bytecode_version, co, timestamp, out=sys.stdout,
           is_pypy=False, magic_int=None, source_size=None,
-          header=True, asm_format=False, dup_lines=False):
+          header=True, asm_format=False, show_bytes=False,
+          dup_lines=False):
     """
     diassembles and deparses a given code block 'co'
     """
@@ -134,10 +135,12 @@ def disco(bytecode_version, co, timestamp, out=sys.stdout,
                               {}, set([]))
     else:
         queue = deque([co])
-        disco_loop(opc, bytecode_version, queue, real_out)
+        disco_loop(opc, bytecode_version, queue, real_out,
+                   show_bytes=show_bytes)
 
 
-def disco_loop(opc, version, queue, real_out, dup_lines=False):
+def disco_loop(opc, version, queue, real_out, dup_lines=False,
+               show_bytes=False):
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
@@ -154,7 +157,7 @@ def disco_loop(opc, version, queue, real_out, dup_lines=False):
             real_out.write("\n" + format_code_info(co, version) + "\n")
 
         bytecode = Bytecode(co, opc, dup_lines=dup_lines)
-        real_out.write(bytecode.dis() + "\n")
+        real_out.write(bytecode.dis(show_bytes=show_bytes) + "\n")
 
         for c in co.co_consts:
             if iscode(c):
@@ -234,7 +237,7 @@ def disco_loop_asm_format(opc, version, co, real_out,
     real_out.write(bytecode.dis(asm_format=True) + "\n")
 
 def disassemble_file(filename, outstream=sys.stdout,
-                     asm_format=False, header=False):
+                     asm_format=False, header=False, show_bytes=False):
     """
     disassemble Python byte-code file (.pyc)
 
@@ -250,7 +253,7 @@ def disassemble_file(filename, outstream=sys.stdout,
 
     else:
         disco(version, co, timestamp, outstream, is_pypy, magic_int, source_size,
-              asm_format=asm_format)
+              asm_format=asm_format, show_bytes=show_bytes)
     # print co.co_filename
     return filename, co, version, timestamp, magic_int
 

@@ -39,7 +39,6 @@ check-short: unittest
 unittest:
 	nosetests -v
 
-
 #: Clean up temporary files and .pyc files
 clean: clean_pyc
 	$(PYTHON) ./setup.py $@

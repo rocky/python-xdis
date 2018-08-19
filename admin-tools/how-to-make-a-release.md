@@ -2,7 +2,7 @@
 **Table of Contents**
 
 - [Get latest sources:](#get-latest-sources)
-- [Change version in uncompyle6/version.py.](#change-version-in-uncompyle6versionpy)
+- [Change version in xdis/version.py.](#change-version-in-uncompyle6versionpy)
 - [Update ChangeLog:](#update-changelog)
 - [Update NEWS from ChangeLog. Then:](#update-news-from-changelog-then)
 - [Make sure pyenv is running and check newer versions](#make-sure-pyenv-is-running-and-check-newer-versions)

@@ -371,7 +371,10 @@ class Instruction(_Instruction):
     """
     # FIXME: remove has_arg from initialization but keep it as a field.
 
-    def disassemble(self, lineno_width=3, mark_as_current=False, asm_format=False):
+    def disassemble(self, lineno_width=3,
+                    mark_as_current=False,
+                    asm_format=False,
+                    show_bytes=False):
         """Format instruction details for inclusion in disassembly output
 
         *lineno_width* sets the width of the line number field (0 omits it)
@@ -413,8 +416,27 @@ class Instruction(_Instruction):
         if not asm_format:
             fields.append(repr(self.offset).rjust(4))
 
+        if show_bytes:
+            hex_bytecode = "|%02x" % self.opcode
+            if self.inst_size == 1:
+                # Not 3.6 or later
+                hex_bytecode += ' ' * (2*3)
+            if self.inst_size == 2:
+                # Must by Python 3.6 or later
+                if self.has_arg:
+                    hex_bytecode += " %02x" % (self.arg % 256)
+                else :
+                    hex_bytecode += ' 00'
+            elif self.inst_size == 3:
+                # Not 3.6 or later
+                hex_bytecode += " %02x %02x" % (
+                    (self.arg >> 8, self.arg % 256))
+
+            fields.append(hex_bytecode + '|')
+
         # Column: Opcode name
         fields.append(self.opname.ljust(20))
+
         # Column: Opcode argument
         if self.arg is not None:
             argrepr = self.argrepr
@@ -433,7 +455,7 @@ class Instruction(_Instruction):
                     argrepr = None
                 else:
                     fields.append(repr(self.arg))
-            else:
+            elif not (show_bytes and argrepr):
                 fields.append(repr(self.arg).rjust(6))
             # Column: Opcode argument details
             if argrepr:
@@ -483,7 +505,7 @@ class Bytecode(object):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version)
 
-    def dis(self, asm_format=False):
+    def dis(self, asm_format=False, show_bytes=False):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         if self.current_offset is not None:
@@ -498,13 +520,14 @@ class Bytecode(object):
                                line_offset=self._line_offset,
                                file=output,
                                lasti=offset,
-                               asm_format=asm_format)
+                               asm_format=asm_format,
+                               show_bytes=show_bytes)
         return output.getvalue()
 
     def disassemble_bytes(self, code, lasti=-1, varnames=None, names=None,
                           constants=None, cells=None, linestarts=None,
                           file=sys.stdout, line_offset=0,
-                          asm_format=False):
+                          asm_format=False, show_bytes=False):
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None
         # TODO?: Adjust width upwards if max(linestarts.values()) >= 1000?
@@ -521,7 +544,8 @@ class Bytecode(object):
             if new_source_line:
                 file.write("\n")
             is_current_instr = instr.offset == lasti
-            file.write(instr.disassemble(lineno_width, is_current_instr, asm_format)
+            file.write(instr.disassemble(lineno_width, is_current_instr,
+                                         asm_format, show_bytes)
                        + "\n")
             pass
         return

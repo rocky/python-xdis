@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Mode: -*- python -*-
 #
-# Copyright (c) 2015-2017 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2018 by Rocky Bernstein <rb@dustyfeet.com>
 #
 import sys, os, getopt
 import os.path as osp
@@ -102,7 +102,7 @@ Type -h for for full help.""" % program
             sys.stderr.write("File name: '%s (%d bytes)' is too short to be a valid pyc file\n" % (path, osp.getsize(path)))
             continue
 
-        disassemble_file(path, sys.stdout, asm, header)
+        disassemble_file(path, sys.stdout, asm, header, show_bytes)
     return
 
 if __name__ == '__main__':
