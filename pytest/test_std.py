@@ -144,11 +144,11 @@ def test_get_instructions():
     assert actual_len > 0
 
 
-def test_findlinestarts():
-    actual = list(dis.findlinestarts(TEST_CODE))
-    actual_len = len(actual)
-    assert actual_len > 0
-
+def test_make_std_api():
+    api24_tup = dis.make_std_api((2, 4, 6, 'final', 0))
+    api24_float = dis.make_std_api(2.4)
+    assert api24_tup.opmap == api24_float.opmap, \
+        "Can get std_api ising a floating-point number"
 
 def test_findlabels():
     if PYTHON_VERSION < 3.6:

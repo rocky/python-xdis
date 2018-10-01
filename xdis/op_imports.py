@@ -114,7 +114,7 @@ def get_opcode_module(version_info=None, variant=None):
             variant = 'pypy'
 
     vers_str = '.'.join([str(v) for v in version_info[0:3]])
-    if version_info[3] != 'final':
+    if len(version_info) >= 3 and version_info[3] != 'final':
         vers_str += ''.join([str(v) for v in version_info[3:]])
     if variant is None:
         try:
