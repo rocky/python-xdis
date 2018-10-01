@@ -150,6 +150,11 @@ def test_make_std_api():
     assert api24_tup.opmap == api24_float.opmap, \
         "Can get std_api ising a floating-point number"
 
+def test_findlinestarts():
+    actual = list(dis.findlinestarts(TEST_CODE))
+    actual_len = len(actual)
+    assert actual_len > 0
+
 def test_findlabels():
     if PYTHON_VERSION < 3.6:
         test_code = TEST_BRANCH_CODE
