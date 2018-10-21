@@ -287,7 +287,7 @@ add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 '
                      '3.4.5 3.4.6 3.4.7 3.4.8', '3.4rc2')
 add_canonic_versions('3.5.0 3.5.1 3.5.2 3.5.3', '3.5')
 add_canonic_versions('3.5.3 3.5.4 3.5.5 3.5.6', '3.5.2')
-add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6', '3.6rc1')
+add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7', '3.6rc1')
 
 add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
 add_canonic_versions('2.7.3b0Jython', '2.7.1b3Jython')
@@ -296,7 +296,7 @@ add_canonic_versions('3.5.3pypy', '3.5pypy')
 add_canonic_versions('3.5.3pypy', '3.5pypy')
 add_canonic_versions('2.7.8Pyston', '2.7.7Pyston')
 add_canonic_versions('3.7.0alpha3', '3.7.0alpha3')
-add_canonic_versions('3.7 3.7.0beta5', '3.7.0')
+add_canonic_versions('3.7 3.7.0beta5 3.7.1', '3.7.0')
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
