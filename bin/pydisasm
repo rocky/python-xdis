@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #!/bin/bash
 mydir=$(dirname $0)
 cd $mydir && fulldir=$(pwd)
