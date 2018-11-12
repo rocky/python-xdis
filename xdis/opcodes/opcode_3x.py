@@ -54,10 +54,9 @@ opmap = {}
 opname = [''] * 256
 
 # oppush[op] => number of stack entries pushed
-# -9 means handle special. Note his forces oppush[i] - oppop[i] negative
 oppush = [0] * 256
 
-# -1 means handle special.
+# 9 means handle special. Note his forces oppush[i] - oppop[i] negative
 # oppop[op] => number of stack entries popped
 oppop  = [0] * 256
 
@@ -134,7 +133,7 @@ def_op(l, 'INPLACE_AND',          77,  2,  1)
 def_op(l, 'INPLACE_XOR',          78,  2,  1)
 def_op(l, 'INPLACE_OR',           79,  2,  1)
 def_op(l, 'BREAK_LOOP',           80,  0,  0)
-def_op(l, 'WITH_CLEANUP',         81, -1, -9) # Cleans up the stack when a with statement
+def_op(l, 'WITH_CLEANUP',         81,  1,  0) # Cleans up the stack when a with statement
                                               # block exits.  Handle stack special
 
 def_op(l, 'RETURN_VALUE',         83,  1,  0, fallthrough=False)
@@ -149,10 +148,10 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 name_op(l, 'STORE_NAME',            90,  1,  0)   # Operand is in name list
 name_op(l, 'DELETE_NAME',           91,  0,  0)   # ""
-varargs_op(l, 'UNPACK_SEQUENCE',    92, -1,  1)   # Number of tuple items
-jrel_op(l,    'FOR_ITER',           93,  1, -9)
+varargs_op(l, 'UNPACK_SEQUENCE',    92,  9,  1)  # TOS is number of tuple items
+jrel_op(l,    'FOR_ITER',           93,  9,  1)
 
-def_op(l,  'UNPACK_EX',             94, -1, -9)   # assignment with a starred target
+def_op(l,  'UNPACK_EX',             94,  9,  1)   # assignment with a starred target; TOS is #entries
                                                   # argument has a count
 name_op(l, 'STORE_ATTR',            95,  2,  0)   # Operand is in name list
 name_op(l, 'DELETE_ATTR',           96,  1,  0)   # ""
@@ -163,10 +162,10 @@ name_op(l, 'DELETE_GLOBAL',         98,  0,  0)   # ""
 
 const_op(l,   'LOAD_CONST',        100,  0,  1)  # Operand is in const list
 name_op(l,    'LOAD_NAME',         101,  0,  1)  # Operand is in name list
-varargs_op(l, 'BUILD_TUPLE',       102, -1,  1)  # TOS is count of tuple items
-varargs_op(l, 'BUILD_LIST',        103, -1,  1)  # TOS is count of list items
-varargs_op(l, 'BUILD_SET',         104, -1,  1)  # TOS is count of set items
-varargs_op(l, 'BUILD_MAP',         105, -1,  1)  # TOS is count of kwarg items
+varargs_op(l, 'BUILD_TUPLE',       102,  9,  1)  # TOS is count of tuple items
+varargs_op(l, 'BUILD_LIST',        103,  9,  1)  # TOS is count of list items
+varargs_op(l, 'BUILD_SET',         104,  9,  1)  # TOS is count of set items
+varargs_op(l, 'BUILD_MAP',         105,  0,  1)  # TOS is count of kwarg items
 name_op(l, 'LOAD_ATTR',            106,  1,  1)  # Operand is in name list
 compare_op(l, 'COMPARE_OP',        107,  2,  1)  # Comparison operator
 name_op(l, 'IMPORT_NAME',          108,  1,  1)  # Operand is in name list
@@ -176,36 +175,36 @@ jrel_op(l, 'JUMP_FORWARD',         110,  0,  0)  # Number of bytes to skip
 jabs_op(l, 'JUMP_IF_FALSE_OR_POP', 111, conditional=True)  # Target byte offset from beginning of code
 jabs_op(l, 'JUMP_IF_TRUE_OR_POP',  112, conditional=True) # ""
 jabs_op(l, 'JUMP_ABSOLUTE',        113,  0,  0)  # Target byte offset from beginning of code
-jabs_op(l, 'POP_JUMP_IF_FALSE',    114,  1, -9, conditional=True) # ""
-jabs_op(l, 'POP_JUMP_IF_TRUE',     115,  1, -9, conditional=True) # ""
+jabs_op(l, 'POP_JUMP_IF_FALSE',    114,  9,  1, conditional=True) # ""
+jabs_op(l, 'POP_JUMP_IF_TRUE',     115,  9,  1, conditional=True) # ""
 
 name_op(l, 'LOAD_GLOBAL',          116,  0,  1)  # Operand is in name list
 
 jabs_op(l, 'CONTINUE_LOOP',        119,  0,  0)  # Target address
 jrel_op(l, 'SETUP_LOOP',           120,  0,  0, conditional=True) # Distance to target address
-jrel_op(l, 'SETUP_EXCEPT',         121,  0,  0, conditional=True)  # ""
-jrel_op(l, 'SETUP_FINALLY',        122,  0,  0, conditional=True)  # ""
+jrel_op(l, 'SETUP_EXCEPT',         121,  0,  6, conditional=True)  # ""
+jrel_op(l, 'SETUP_FINALLY',        122,  0,  6, conditional=True)  # ""
 
 local_op(l, 'LOAD_FAST',           124,  0,  1)  # Local variable number
 local_op(l, 'STORE_FAST',          125,  1,  0)  # Local variable number
 local_op(l, 'DELETE_FAST',         126,  0,  0)  # Local variable number
 
-def_op(l, 'RAISE_VARARGS',        130, -1,  0, fallthrough=False)
+def_op(l, 'RAISE_VARARGS',         130,  9,  1, fallthrough=False)
                                                  # Number of raise arguments (1, 2, or 3)
-nargs_op(l, 'CALL_FUNCTION',       131, -1,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION',       131,  9,  1)  # #args + (#kwargs << 8)
 
-def_op(l, 'MAKE_FUNCTION',         132, -1,  1)  # Number of args if < 3.6
-varargs_op(l, 'BUILD_SLICE',       133, -1,  1)  # Number of items
+def_op(l, 'MAKE_FUNCTION',         132,  9,  1) # TOS is number of args if < 3.6
+varargs_op(l, 'BUILD_SLICE',       133,  9,  1) # TOS is number of items to pop
 
-def_op(l, 'MAKE_CLOSURE',          134, -1,  1)
+def_op(l, 'MAKE_CLOSURE',          134,  9,  1) # TOS is number of items to pop
 free_op(l, 'LOAD_CLOSURE',         135,  0,  1)
 free_op(l, 'LOAD_DEREF',           136,  0,  1)
 free_op(l, 'STORE_DEREF',          137,  1,  0)
 free_op(l, 'DELETE_DEREF',         138,  0,  0)
 
-nargs_op(l, 'CALL_FUNCTION_VAR',   140, -1,  1)  # #args + (#kwargs << 8)
-nargs_op(l, 'CALL_FUNCTION_KW',    141, -1,  1)  # #args + (#kwargs << 8)
-nargs_op(l, 'CALL_FUNCTION_VAR_KW',142, -1, 1)   # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_VAR',   140,  9,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_KW',    141,  9,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_VAR_KW',142,  9,  1)   # #args + (#kwargs << 8)
 
 jrel_op(l, 'SETUP_WITH',           143,  0,  7)
 

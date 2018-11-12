@@ -52,11 +52,10 @@ opmap = {}
 opname = [''] * 256
 
 # oppush[op] => number of stack entries pushed
-# -9 means handle special. Note his forces oppush[i] - oppop[i] negative
 oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
-# -1 means handle special.
+# 9 means handle special. Note his forces oppush[i] - oppop[i] negative
 oppop  = [0] * 256
 
 for op in range(256): opname[op] = '<%r>' % (op,)
@@ -65,8 +64,8 @@ del op
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
-#        OP NAME           OPCODE POP PUSH
-#-----------------------------------------
+#          OP NAME            OPCODE POP PUSH
+#--------------------------------------------
 def_op(l, 'STOP_CODE',             0,  0,  0, fallthrough=False)
 def_op(l, 'POP_TOP',               1,  1,  0)
 def_op(l, 'ROT_TWO',               2,  2,  2)
@@ -151,8 +150,8 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 name_op(l, 'STORE_NAME',           90,  1,  0)  # Operand is in name list
 name_op(l, 'DELETE_NAME',          91,  0,  0)  # ""
-varargs_op(l, 'UNPACK_SEQUENCE',   92, -1,  1)  # Number of tuple items
-jrel_op(l, 'FOR_ITER',             93,  1, -9)  # TOS is read
+varargs_op(l, 'UNPACK_SEQUENCE',   92,  9,  1)  # TOS is number of tuple items
+jrel_op(l, 'FOR_ITER',             93,  9,  1)  # TOS is read
 
 name_op(l, 'STORE_ATTR',           95,  2,  0)  # Operand is in name list
 name_op(l, 'DELETE_ATTR',          96,  1,  0)  # ""
@@ -161,9 +160,9 @@ name_op(l, 'DELETE_GLOBAL',        98,  0,  0)  # ""
 def_op(l, 'DUP_TOPX',              99,  1, -1)  # number of items to duplicate
 const_op(l, 'LOAD_CONST',         100,  0,  1)  # Operand is in const list
 name_op(l, 'LOAD_NAME',           101,  0,  1)  # Operand is in name list
-varargs_op(l, 'BUILD_TUPLE',      102, -1,  1)  # Number of tuple items
-varargs_op(l, 'BUILD_LIST',       103, -1,  1)  # Number of list items
-varargs_op(l, 'BUILD_MAP',        104, -1,  1)  # Always zero for now
+varargs_op(l, 'BUILD_TUPLE',      102,  9,  1)  # TOS is number of tuple items
+varargs_op(l, 'BUILD_LIST',       103,  9,  1)  # TOS is number of list items
+varargs_op(l, 'BUILD_MAP',        104,  0,  1)  # TOS is number of kwark items. Always zero for now
 name_op(l, 'LOAD_ATTR',           105,  1,  1)  # Operand is in name list
 compare_op(l, 'COMPARE_OP',       106,  2,  1)  # Comparison operator
 
@@ -182,8 +181,8 @@ name_op(l, 'LOAD_GLOBAL',         116,  0,  1)  # Operand is in name list
 
 jabs_op(l, 'CONTINUE_LOOP',       119,  0,  0, fallthrough=False)  # Target address
 jrel_op(l, 'SETUP_LOOP',          120,  0,  0, conditional=True)  # Distance to target address
-jrel_op(l, 'SETUP_EXCEPT',        121,  0,  0, conditional=True)  # ""
-jrel_op(l, 'SETUP_FINALLY',       122,  0,  0, conditional=True)  # ""
+jrel_op(l, 'SETUP_EXCEPT',        121,  0,  6, conditional=True)  # ""
+jrel_op(l, 'SETUP_FINALLY',       122,  0,  7, conditional=True)  # ""
 
 local_op(l, 'LOAD_FAST',          124,  0,  1)  # Local variable number
 local_op(l, 'STORE_FAST',         125,  1,  0)  # Local variable number
@@ -191,12 +190,12 @@ local_op(l, 'DELETE_FAST',        126)          # Local variable number
 
 def_op(l, 'RAISE_VARARGS',        130, -1,  0, fallthrough=False)
                                                 # Number of raise arguments (1, 2, or 3)
-nargs_op(l, 'CALL_FUNCTION',      131, -1,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION',      131,  9,  1)  # TOS is #args + (#kwargs << 8)
 
-def_op(l, 'MAKE_FUNCTION',        132, -1,  1)  # Number of args with default values
-varargs_op(l, 'BUILD_SLICE',      133, -1,  1)  # Number of items
+def_op(l, 'MAKE_FUNCTION',        132,  9,  1)  # TOS is number of args with default values
+varargs_op(l, 'BUILD_SLICE',      133,  9,  1)  # TOS is number of items
 
-def_op(l, 'MAKE_CLOSURE',         134, -1,  1)
+def_op(l, 'MAKE_CLOSURE',         134,  9,  1)
 free_op(l, 'LOAD_CLOSURE',        135,  0,  1)
 free_op(l, 'LOAD_DEREF',          136,  0,  1)
 free_op(l, 'STORE_DEREF',         137,  1,  0)
