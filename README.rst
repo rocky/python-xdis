@@ -18,7 +18,7 @@ bytecodes from different versions of Python. The command-line routine
 *pydisasm* will show disassembly output using Python 3.6 disassembly
 conventions.
 
-Also, if you need to modfiy and write bytecode, the routines here can
+Also, if you need to modify and write bytecode, the routines here can
 be of help. There are routines to pack and unpack the read-only tuples
 in Python's Code type. For interoperability between Python 2 and 3 we
 provide our own versions of the Code type, and we provide routines to
