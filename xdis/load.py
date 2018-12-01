@@ -133,7 +133,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
         except KeyError:
             if len(magic) >= 2:
                 raise ImportError("Unknown magic number %s in %s" %
-                                (ord(magic[0])+256*ord(magic[1]), filename))
+                                (ord(magic[0:1])+256*ord(magic[1:2]), filename))
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
 
