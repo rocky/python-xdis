@@ -136,7 +136,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
         except KeyError:
             if len(magic) >= 2:
                 raise ImportError("Unknown magic number %s in %s" %
-                                (ord(magic[0])+256*ord(magic[1]), filename))
+                                (ord(magic[0:1])+256*ord(magic[1:2]), filename))
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
 
@@ -153,7 +153,8 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             raise ImportError("%s is a dropbox-hacked Python %s (bytecode %d).\n"
                               "See https://github.com/kholia/dedrop for how to "
                               "decrypt." % (
-                                  filename, magics.magic2int(magic)))
+                                  filename, magics.versions[magic],
+                                  magics.magic2int(magic)))
 
         try:
             # print version
