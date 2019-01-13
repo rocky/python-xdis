@@ -23,7 +23,7 @@ from xdis.opcodes.base import(
     finalize_opcodes,
     format_extended_arg36,
     init_opdata, nargs_op,
-    def_op, rm_op,
+    def_op, jrel_op, rm_op,
     update_pj3
     )
 
@@ -35,13 +35,11 @@ l = locals()
 
 init_opdata(l, opcode_37, version)
 
-### Opcodes that have changed drastically ####
-
 # These are removed since 3.7...
 rm_op(l, 'BREAK_LOOP', 80)
 rm_op(l, 'CONTINUE_LOOP', 119)
 rm_op(l, 'SETUP_LOOP', 120)
-rm_op(l, 'SETUP_EXCEPT', 127)
+rm_op(l, 'SETUP_EXCEPT', 121)
 
 # These are new since Python 3.7
 
@@ -51,7 +49,7 @@ def_op(l, 'ROT_FOUR',           6,   4, 4)
 def_op(l, 'BEGIN_FINALLY',     53,   0, 1)
 def_op(l, 'END_ASYNC_FOR',     54,   7, 0)  # POP is 0, when not 7
 def_op(l, 'END_FINALLY',       88,   1, 0)  # POP is 6, when not 1
-def_op(l, 'CALL_FINALLY',     162,   0, 1)
+jrel_op(l, 'CALL_FINALLY',     162,   0, 1)
 nargs_op(l, 'POP_FINALLY',    163,   0, 0)  # PUSH/POP vary
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())

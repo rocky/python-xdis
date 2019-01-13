@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2018 by Rocky Bernstein
+# Copyright (c) 2015-2019 by Rocky Bernstein
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -131,13 +131,16 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             float_version = float(magics.versions[magic][:3])
             # float_version = magics.magic_int2float(magic_int)
         except KeyError:
+            if magic_int in (2657, 22138):
+                raise ImportError("This smells like Pyston which is not supported.")
+
             if len(magic) >= 2:
                 raise ImportError("Unknown magic number %s in %s" %
                                 (ord(magic[0:1])+256*ord(magic[1:2]), filename))
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
 
-        if magic_int in (3361,):
+        if magic_int in (3010, 3020, 3030, 3040, 3050, 3060, 3061, 3361, 3371):
             raise ImportError("%s is interim Python %s (%d) bytecode which is "
                               "not supported.\nFinal released versions are "
                               "supported." % (
@@ -163,7 +166,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
                 timestamp = 0
                 hash_word1 = unpack("<I", ts)[0]
                 hash_word2 = unpack("<I", fp.read(4))[0]
-            elif magic_int == 3394:
+            elif magic_int in (3394, 3401):
                 timestamp = 0
                 pep552_bits = unpack("<I", fp.read(4))[0]
             else:

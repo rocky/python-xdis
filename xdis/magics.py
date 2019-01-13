@@ -1,4 +1,4 @@
-# (C) Copyright 2018 by Rocky Bernstein
+# (C) Copyright 2018-2019 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -161,6 +161,7 @@ add_magic_from_int(62211,  '2.7')     # introduce MAP_ADD and SET_ADD
 # Dropbox-modified Python 2.7 used in versions 1.2-1.6 or so of
 # Dropbox
 add_magic_from_int(62215,  '2.7dropbox')
+add_magic_from_int(2657,   '2.7pyston-0.6.1')
 
 # PyPy including pypy-2.6.1, pypy-5.0.1 PyPy adds 7 to the corresponding CPython nmber
 add_magic_from_int(62211+7, '2.7pypy')
@@ -234,6 +235,7 @@ add_magic_from_int(3391,  '3.7.0alpha3')
 add_magic_from_int(3392,  '3.7.0beta2')  # PEP 552 - Additional word in header and possibly no timestamp
 add_magic_from_int(3393,  '3.7.0beta3')
 add_magic_from_int(3394,  '3.7.0')
+add_magic_from_int(3401,  '3.8.0alpha0')
 
 # Weird ones
 # WTF? Python 3.2.5 - PyPy 2.3.4  this doesn't follow the rule below
@@ -241,7 +243,7 @@ add_magic_from_int(3394,  '3.7.0')
 add_magic_from_int(48,     '3.2a2')
 add_magic_from_int(112,    '3.5pypy') # pypy3.5-c-jit-latest
 add_magic_from_int(1011,   '2.7.1b3Jython') # jython
-add_magic_from_int(22138,  '2.7.7Pyston')  # 2.7.8pystem, pyston-0.6.0, pyston-0.6.1
+add_magic_from_int(22138,  '2.7.7Pyston')  # 2.7.8pyston, pyston-0.6.0
 
 
 magics = __by_version(versions)
@@ -337,7 +339,7 @@ def py_str2float(version):
                     return float(canonic_python_version[v])
                 except:
                     try:
-                        m = re.match('^(\d\.)(\d+)\.(\d+)$', v)
+                        m = re.match(r'^(\d\.)(\d+)\.(\d+)$', v)
                         if m:
                             return float(m.group(1)+m.group(2))
                     except:

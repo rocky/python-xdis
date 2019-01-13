@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2019 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -215,7 +215,11 @@ def update_sets(l):
     l['JABS_OPS']        = frozenset(l['hasjabs'])
     l['JUMP_UNCONDITONAL']    = frozenset([l['opmap']['JUMP_ABSOLUTE'],
                                            l['opmap']['JUMP_FORWARD']])
-    l['LOOP_OPS']        = frozenset([l['opmap']['SETUP_LOOP']])
+    if PYTHON_VERSION < 3.8:
+        l['LOOP_OPS']        = frozenset([l['opmap']['SETUP_LOOP']])
+    else:
+        l['LOOP_OPS']        = frozenset()
+
     l['LOCAL_OPS']       = frozenset(l['haslocal'])
     l['JUMP_OPS']        = (l['JABS_OPS']
                               | l['JREL_OPS']

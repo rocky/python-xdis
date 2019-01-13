@@ -1,5 +1,5 @@
 # Mode: -*- python -*-
-# Copyright (c) 2015-2018 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2019 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -41,8 +41,8 @@ def main(asm, show_bytes, header, files):
 Type -h for for full help.""" % (program, program)
 
 
-    if not (2.5 <= PYTHON_VERSION <= 3.7):
-        sys.stderr(print("This works on Python version 2.5..3.7; have %s" % PYTHON_VERSION))
+    if not (2.5 <= PYTHON_VERSION <= 3.8):
+        sys.stderr(print("This works on Python version 2.5..3.8; have %s" % PYTHON_VERSION))
 
     if not len(files):
         sys.stderr.write("No file(s) given..\n")
