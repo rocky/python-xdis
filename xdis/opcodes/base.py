@@ -215,7 +215,7 @@ def update_sets(l):
     l['JABS_OPS']        = frozenset(l['hasjabs'])
     l['JUMP_UNCONDITONAL']    = frozenset([l['opmap']['JUMP_ABSOLUTE'],
                                            l['opmap']['JUMP_FORWARD']])
-    if PYTHON_VERSION < 3.8:
+    if l['python_version'] < 3.8:
         l['LOOP_OPS']        = frozenset([l['opmap']['SETUP_LOOP']])
     else:
         l['LOOP_OPS']        = frozenset()
