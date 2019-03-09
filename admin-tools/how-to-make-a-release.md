@@ -67,7 +67,10 @@
     $ git tag release-python-2.4-$VERSION
 
     $ . ./admin-tools/make-dist-newer.sh
-    $ git tag release-$VERSION
+
+Goto https://github.com/rocky/python-xdis/releases
+
+
 
 # Upload single package and look at Rst Formating
 
