@@ -76,6 +76,8 @@ Goto https://github.com/rocky/python-xdis/releases
 
     $ twine upload dist/xdis-${VERSION}-py3.3.egg
 
+Check on https://pypi.org/project/xdis/
+
 # Upload rest of versions
 
     $ twine upload dist/xdis-${VERSION}*
