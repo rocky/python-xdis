@@ -1,3 +1,8 @@
+3.8.10 2019-3-9
+- 3.8 opcode support
+- Add Python 2.7.16
+
+
 3.8.9 2018-10-20
 - Add magic for 3.6.8, 3.7.2
 - Dropbox-hacked bytecode fixes, and some typos (jwilk@jwilk.net)
