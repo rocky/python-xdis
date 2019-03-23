@@ -2,6 +2,10 @@
 
 # Below, we first give some test code to work on.
 
+# This code is sensitive to the line number ordering.
+# By adding test code at the top we reduce line-number
+# ordering sensistivity.
+
 # From 2.7 disassemble
 # Problem is that "while" loop
 # has two linestarts in it and
@@ -70,8 +74,8 @@ def test_find_linestarts():
 
     if sys.version_info[0:2] == (2,7):
         # FIXME base off of start_line
-        expect = [(0, 15), (6, 16), (9, 17), (19, 18), (32, 19), (42, 20),
-                  (67, 21)]
+        expect = [(0, 17), (6, 18), (9, 19), (19, 20), (32, 21), (42, 22),
+                  (67, 23)]
         assert got_no_dups == expect
 
     got_with_dups = list(findlinestarts(bug_loop.__code__, dup_lines=True))
