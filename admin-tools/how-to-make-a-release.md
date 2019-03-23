@@ -35,7 +35,7 @@
 
 #  Update NEWS from ChangeLog. Then:
 
-    $ emacs NEWS
+    $ emacs NEWS.md
     $ make check
     $ git commit --amend .
     $ git push   # get CI testing going early
