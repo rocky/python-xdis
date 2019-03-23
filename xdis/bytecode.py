@@ -313,7 +313,11 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
         yield Instruction(opname, op, optype, inst_size, arg, argval, argrepr,
                           has_arg, offset, starts_line, is_jump_target,
                           extended_arg_count != 0)
-        extended_arg_count = extended_arg_count + 1 if op == opc.EXTENDED_ARG else 0
+
+        if op == opc.EXTENDED_ARG:
+            extended_arg_count = extended_arg_count + 1
+        else:
+            extended_arg_count = 0
 
 def op_has_argument(op, opc):
     return op >= opc.HAVE_ARGUMENT
