@@ -1,9 +1,13 @@
-3.8.10 2019-3-9
-- 3.8 opcode support
-- Add Python 2.7.16
+3.8.10 2019-3-23
+===================
+
+- Correct instruction field `inst_size` in instructions that were build from `EXTENDED_OP` instructions
+- Add `has_extended_arg` field in instruction
 
 
 3.8.9 2018-10-20
+====================
+
 - Add magic for 3.6.8, 3.7.2
 - Dropbox-hacked bytecode fixes, and some typos (jwilk@jwilk.net)
 - Go over stack effects for vararg ops
@@ -11,48 +15,58 @@
 - Work around wheel munging
 
 3.8.8 2018-10-20
+=====================
 - Add magic for 3.6.7, 3.7.1
 
 3.8.7 2018-07-19
+=====================
 
 - Add magic for 3.6.5
 
 3.8.6 2018-07-03 Independence-1
+=======================================
 
 - Remove stray print that got into op_imports
 
 3.8.5 2018-07-02 Pre Independence
+==========================================
 
 - Add Python 3.7.0 magic and adjustments for its bytecode file reading
 - Note Python 3.6.6 version
 
-3.8.4 2018-06-12 When I"m 64
+3.8.4 2018-06-12 When I'm 64
+====================================
 
 - Add Python 1.3 opcodes
 
 3.8.3 2018-06-04 MF
+=========================
 
 - Fix Python 1.4 opcodes
 - Fix misleading error message when failing to open a file
   (courtesy of jeffenstein)
 
 3.8.2 2018-05-18 Paper Tiger
+===================================
 
 - Add 2.7.15rc1/candidate1
 - Add Python 1.4 opcodes
 
 3.8.1 2018-04-16
+====================
 
 - Correct classification of CALL_METHOD
 - Add 3.6.5 and 3.7.0beta{2,3}
 - Start supporting 3.7
 
 3.8.0 2018-04-04
+=====================
 
 - Track 3.7 magic numbers, and interim releases
 - a number of varargs opcodes introduced in 3.5 were not marked as such
 
 3.7.0  2018-03-7
+====================
 
 License is GPL2.0 only now
 
@@ -60,37 +74,45 @@ License is GPL2.0 only now
 - Add canonic versions up to 3.4.8 and 3.5.5
 
 3.6.11  2018-02-9 pycon2018.co
+======================================
 
 - Add version 3.5.5 to canonic_versions
 
 3.6.10 2018-02-3
+=====================
+
 
 - Handle pypy in str2float
 - Accomodate broken or incomplete "import platform"
 - Pin Hypothesis to 3.0.0 - it has been broken after 3.0.0
 
 3.6.9 2018-01-21
+=====================
 
 - Correct improper 3.4.4 setting
 
 3.6.8 2018-01-21
+=====================
 
 - Add 3.4.4
 - Fix a small bug in load.py
 - improve unpack_opargs_wordcode
 
 3.6.7 2018-01-21
+=====================
 
 - Add 3.7.0alpha3
 - Fix bug in disassembly of 3.6+ from 2.x
 
 3.6.6 2018-01-19
+=====================
 
 - Fix a bug in py_str2float for handling 3-place version number
 - pydisasm: handle --version properly and invalid files better
 - test_pyenvlib.py: can now test >= 3.5.0 (if not Pypy)
 
 3.6.5 2018-01-18
+=====================
 
 - Go over 3.5 and 3.6 magics
 - test_pyenvlib.py pick up acceptable python versions from
@@ -101,6 +123,7 @@ License is GPL2.0 only now
 - Update magics for 3.3.7, 3.6.4, 3.5.3, and 3.5.4
 
 3.6.3 2017-12-09 Dr. Gecko
+=====================
 
 - Add pydisasm --header/--no-header
   option --header shows just the module-level header information
@@ -114,6 +137,7 @@ License is GPL2.0 only now
 - Handle {-,}nan and {-,}inf in bytecode print attributes
 
 3.6.1 2017-11-10
+=====================
 
 - Improve --asm option: disambiguate code objects with the same co_name
 - Update canonic versions 3.6.3, 3.5.4, etc.
@@ -124,6 +148,7 @@ License is GPL2.0 only now
   can return something like 3.54 for 3.5.4  This assumes there never will be a 3.51
 
 3.6.0 2017-09-25
+=====================
 
 - StdApi now uses std functions and constants from the
   correctly generated opc rather than the standard dis module (moagstar)
@@ -144,12 +169,14 @@ License is GPL2.0 only now
 - More tests; add appveyor CI testing
 
 3.5.5 2017-08-31
+=====================
 
 - Add 3.7 opcodes
 - Add optional file parameter on load_file
 - add functions code_has_star_arg and code_has_star_star_arg (from uncompyle6)
 
 3.5.4 2017-08-15
+=====================
 
 - Add internal switch in findlabels() to show multiple offsets for a
   given line.  This is turned on in pydisasm --xasm mode. Otherwise it
@@ -167,6 +194,7 @@ License is GPL2.0 only now
 
 
 3.5.3 2017-08-12
+=====================
 
 Showing all line number bolixes uncompyle6 and the trepan debuggers,
 so nuke that for now.
@@ -181,12 +209,14 @@ is a parameter to control that.
 
 
 3.5.2 2017-08-09
+=====================
 
 - magic to opcode for all known versions we handle
 - simpiler import access to opcodes modules
 - magic lookup for Python 3.3 is probably more correct more often
 
 3.5.1 2017-07-14
+=====================
 
 Overall: Better xasm support, pydisasm improvements
 
@@ -201,6 +231,7 @@ Overall: Better xasm support, pydisasm improvements
 - a frozenset is more appropriate for opcode sets
 
 3.5.0 2017-07-08
+=====================
 
 Overall: Support for bytecode assembler (xasm), Better 3.4-3.6 support
 
@@ -228,6 +259,7 @@ Overall: Support for bytecode assembler (xasm), Better 3.4-3.6 support
 
 
 3.4.0 2017-06-25
+=====================
 
 - Add functions in xdis.bytecode:
   has_argument()_, next_offset(), and op_size() functions to
@@ -235,6 +267,7 @@ Overall: Support for bytecode assembler (xasm), Better 3.4-3.6 support
 - Add magic for pypy3.5
 
 3.3.1 2017-05-18 - Lewis
+=====================
 
 Python 3.6 bugs/features
 - Fix bug in handling operand of opcode after EXTENDED_ARG
@@ -245,6 +278,7 @@ Python 3.6 bugs/features
 - compile() return value, "code" no longer has a len. Use "code.co_code"
 
 3.3.0 2017-03-18
+=====================
 
 - Start supporting Python 3.x dis API functions
   This is largely due to Daniel Bradburn (moagstar)
@@ -252,6 +286,7 @@ Python 3.6 bugs/features
   This is largely due to Kirill Spitsyn
 
 3.2.4 2016-12-16
+=====================
 
 - add magic for 3.6rc
 - Fix Python 3.6 disaseembly of CALL_FUNCTION_EX
@@ -259,12 +294,14 @@ Python 3.6 bugs/features
 - Note we can now handle Python 2.4 and 2.5
 
 3.2.3 2016-11-6
+=====================
 
 - Correct Python 3.0 bytecodes
 - Go over other opcodes and add stack manipulation entries.  For
   example, for LIST_APPEND.
 
 3.2.2 2016-11-02
+=====================
 
 - Distrbute COPYING.txt
 - Correct pypy 3.2 bytecode
@@ -273,6 +310,7 @@ Python 3.6 bugs/features
 - add stack use for Python 2 and Python3 opcodes (incomplete)
 
 3.2.1 2016-10-30
+=====================
 
 - Tag pypy 2.6 and 2.7 LOOKUP_METHOD properly
   (bug introduced in 3.2.0. Thanks to alexwlchan of the hypothesis team.)
@@ -280,6 +318,7 @@ Python 3.6 bugs/features
 - disassemble output size indicates bytes explicitly
 
 3.2.0 2016-10-25
+=====================
 
 - Python 3.1 EXTENDED_ARG opcode bug fix
 - Python 3.0 opcode fixes
@@ -296,21 +335,25 @@ Python 3.6 bugs/features
 - Change licence to GPL 2.0
 
 3.1.0 2016-10-15
+=====================
 
 - expose findlabels, and findlinestarts,
 - add offset2line routine to give line number for a given offset
 - clean up requirements.txt and setup.py
 
 3.0.2 2016-10-09
+=====================
 
 - Fix Python 1.5 disassembly bugs
 - Add Python 1.3 and 1.4 magics
 
 3.0.1 2016-10-09
+=====================
 
 - botched classification of FOR_LOOP in Python 1.5
 
 3.0.0 2016-10-09
+=====================
 
 - load_module returns source-code size now.
   This is incompatible with previous (2.x) versions
@@ -323,22 +366,26 @@ Python 3.6 bugs/features
 - fix some Python 1.5 and 2.0 bytecode bugs
 
 2.3.2 2016-10-06
+=====================
 
 - Start adding Python 1.5 and 2.0, and 2.1 opcodes
 - Disassemble dropbox 2.5
 - correct pydisasm name in --help
 
 2.3.1 2016-09-11
+=====================
 
 - Add Dropbox magic numbers.
   Decode dropbox's 2.5 bytecode via code (on Python 2.x)
   from https://github.com/rumpeltux/dropboxdec
 
 2.2.3 2016-08-29
+=====================
 
 - Fix Python 3.1 opcode bugs
 
 2.2.2 2016-08-26
+=====================
 
 - Add Python 3.6 opcodes since 3.6.0.a1
 - magics.versions has more detailed version information, e.g. 62121 is 2.5c1
@@ -347,6 +394,7 @@ Python 3.6 bugs/features
 - Update opcode history
 
 2.2.1 2016-08-14
+=====================
 
 - Fix 3.6 arg parsing in wordcode
 - PyPy 2.7 LOAD_ATTR wasn't marked as a name op
@@ -354,25 +402,30 @@ Python 3.6 bugs/features
 - Doc corrections
 
 2.2.0 2016-08-05
+=====================
 
 - Add Python 2.2 bytecodes
 - Show Python magic number in disassembly output
 - Show compile flags in hex and in proper bit order
 
 2.1.0 2016-07-26
+=====================
 
 - better opcode classification hasvargs for non-function calls, e.g. BUILD
 - Support 3.6 wordcode
 
 2.0.3 2016-07-26
+=====================
 
 - Small instruction print change
 
 2.0.2 2016-07-25
+=====================
 
 - Fix some PyPy op classification bugs
 
 2.0.1 2016-07-24
+=====================
 
 - PyPy bug fixes. (More probably to come.)
   * pypy 3.x opcodes need to be their own thing
@@ -381,6 +434,7 @@ Python 3.6 bugs/features
   * some PyPy testing tolerance
 
 2.0.0 2016-07-24
+=====================
 
 - Support PyPy 2.x and 3.x
   * load() now returns whether we've loaded PyPy. This is an incompatible change
@@ -394,45 +448,55 @@ Python 3.6 bugs/features
 - Instructions store whether they have an argument
 
 1.1.7 2016-07-09
+=====================
 
 - Fix bug in 2.4 complex type unmarshalling
 
 1.1.6 2016-07-08
+=====================
 
 - Fix More Python 2.4 bugs
 
 1.1.5 2016-07-08
+=====================
 
 - Add Python 2.4 jrel, jabs sets
 
 1.1.4 2016-07-07
+=====================
 
 -  Correct bad python 3.3 magic number
 
 1.1.3 2016-06-27
+=====================
 
 - Bug - Python < 2.7 JUMP_IF_{TRUE,FALSE} are
   relative jumps, not absolute
 
 1.1.2 2016-06-24
+=====================
 
 - Bug - Python 2.4-2.6 LIST_APPEND doesn't take an extended arg
 
 1.1.1 2016-06-3
+=====================
 
 - opcode 2.3 fixes
 
 1.1.0 2016-05-31 Mom
+=====================
 
 - Expose needed opcode values and bug fixes
 - drop support for running on Python 2.5
 
 1.0.5 2016-05-29
+=====================
 
 For Python 2.3-2.5 add pseudo opcodes PJIF PJIT JA
 This simplifies code in cross-version tools like uncompyle6
 
 1.0.4 2016-05-28
+=====================
 
 Small omissions found by uncompyle6
 
@@ -443,12 +507,14 @@ Small omissions found by uncompyle6
 - Add JUMP_OPs and JPIF, JPIT, JA, JF
 
 1.0.1-1.0.3 2016-05-27
+=====================
 
 Minor fixes
 
 - small bugs and make more usable in uncompyle6
 
 1.0.0 2016-05-26 First release
+=====================
 
 - Reduce redundancy in opcodes
 - Use 3.5.1 disassembly format

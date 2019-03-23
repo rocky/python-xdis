@@ -35,7 +35,7 @@
 
 #  Update NEWS from ChangeLog. Then:
 
-    $ emacs NEWS
+    $ emacs NEWS.md
     $ make check
     $ git commit --amend .
     $ git push   # get CI testing going early
@@ -66,11 +66,16 @@
     $ git tag release-python-2.4-$VERSION
 
     $ . ./admin-tools/make-dist-newer.sh
-    $ git tag release-$VERSION
+
+Goto https://github.com/rocky/python-xdis/releases
+
+
 
 # Upload single package and look at Rst Formating
 
     $ twine upload dist/xdis-${VERSION}-py3.3.egg
+
+Check on https://pypi.org/project/xdis/
 
 # Upload rest of versions
 
