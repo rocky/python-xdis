@@ -1,8 +1,6 @@
 """xdis.bytecode testing"""
 
-# Some test code first since we wan to reduce
-# the amount of line number jiggling if this
-# teste changes.
+# Below, we first give some test code to work on.
 
 # From 2.7 disassemble
 # Problem is that "while" loop

@@ -164,11 +164,11 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
 
             if magic_int == 3393:
                 timestamp = 0
-                hash_word1 = unpack("<I", ts)[0]
-                hash_word2 = unpack("<I", fp.read(4))[0]
+                _ = unpack("<I", ts)[0]         # hash word 1
+                _ = unpack("<I", fp.read(4))[0] # hash word 2
             elif magic_int in (3394, 3401):
                 timestamp = 0
-                pep552_bits = unpack("<I", fp.read(4))[0]
+                _ = unpack("<I", fp.read(4))[0] # pep552_bits
             else:
                 timestamp = unpack("<I", ts)[0]
 
