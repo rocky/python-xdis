@@ -1,4 +1,10 @@
-3.8.10 2019-3-23
+3.9.1 2019-3-28
+===================
+
+- Go over list of available Python 	versions
+- 3.8.0alpha3 tolerance
+
+3.9.0 2019-3-23
 ===================
 
 - Correct instruction field `inst_size` in instructions that were build from `EXTENDED_OP` instructions
