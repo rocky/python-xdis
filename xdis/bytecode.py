@@ -125,7 +125,8 @@ def get_jump_targets(code, opc):
         if arg is not None:
             jump_offset = -1
             if op in opc.JREL_OPS:
-                jump_offset = offset + 3 + arg
+                op_len = op_size(op, opc)
+                jump_offset = offset + op_len + arg
             elif op in opc.JABS_OPS:
                 jump_offset = arg
             if jump_offset >= 0:
@@ -137,7 +138,7 @@ def get_jump_target_maps(code, opc):
     """Returns a dictionary where the key is an offset and the values are
     a list of instruction offsets which can get run before that
     instruction. This includes jump instructions as well as non-jump
-    instructions. Therefore, the keys of the dictionary are reachible
+    instructions. Therefore, the keys of the dictionary are reachable
     instructions. The values of the dictionary may be useful in control-flow
     analysis.
     """
@@ -155,7 +156,8 @@ def get_jump_target_maps(code, opc):
         if arg is not None:
             jump_offset = -1
             if op in opc.JREL_OPS:
-                jump_offset = offset + 3 + arg
+                op_len = op_size(op, opc)
+                jump_offset = offset + op_len + arg
             elif op in opc.JABS_OPS:
                 jump_offset = arg
             if jump_offset >= 0:
@@ -214,6 +216,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
 
     """
     labels = opc.findlabels(bytecode, opc)
+    # label_maps = get_jump_target_maps(bytecode, opc)
     extended_arg = 0
 
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
@@ -236,8 +239,18 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
             starts_line = linestarts.get(i, None)
             if starts_line is not None:
                 starts_line += line_offset
-        is_jump_target = i in labels
-        i = i+1
+        if i in labels:
+            #  come_from = label_maps[i]
+            if False: # come_from[0] > i:
+                is_jump_target = 'loop'
+                # print("XXX %s at %d" % (opc.opname[op], i))
+                # from trepan.api import debug; debug()
+            else:
+                is_jump_target = True
+        else:
+            is_jump_target = False
+
+        i += 1
         arg = None
         argval = None
         argrepr = ''
@@ -346,7 +359,10 @@ class Instruction(_Instruction):
                    don't look at argval or argrepr.
          offset - start index of operation within bytecode sequence
          starts_line - line started by this opcode (if any), otherwise None
-         is_jump_target - True if other code jumps to here, otherwise False
+         is_jump_target - True if other code jumps to here,
+                          'loop' if this is a loop beginning, which
+                          in Python can be determined jump to an earlier offset.
+                          Otherwise False
          has_extended_arg - True if the instruction was built from EXTENDED_ARG
                             opcodes
     """
