@@ -44,6 +44,7 @@ from xdis.opcodes import opcode_26pypy as opcode_26pypy
 from xdis.opcodes import opcode_27pypy as opcode_27pypy
 from xdis.opcodes import opcode_32pypy as opcode_32pypy
 from xdis.opcodes import opcode_35pypy as opcode_35pypy
+from xdis.opcodes import opcode_36pypy as opcode_36pypy
 
 # FIXME
 op_imports = {
@@ -91,6 +92,7 @@ op_imports = {
     '3.5.4' : opcode_35,
     3.5     : opcode_35,
     '3.6rc1': opcode_36,
+    '3.6rc1': opcode_36,
     3.6     : opcode_36,
     '3.7.0beta3': opcode_37,
     '3.7.0.beta3': opcode_37,
@@ -106,6 +108,8 @@ op_imports = {
     '2.7pypy':  opcode_27pypy,
     '3.2pypy':  opcode_32pypy,
     '3.5pypy':  opcode_35pypy,
+    '3.6pypy':  opcode_36pypy,
+    '3.6.1pypy':  opcode_36pypy,
     }
 
 for k, v in canonic_python_version.items():

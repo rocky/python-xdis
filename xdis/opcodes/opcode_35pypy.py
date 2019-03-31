@@ -1,6 +1,6 @@
 # (C) Copyright 2017 by Rocky Bernstein
 """
-PYPY 3.2 opcodes
+PYPY 3.5 opcodes
 
 This is a like Python 3.5's opcode.py with some classification
 of stack usage.

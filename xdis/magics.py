@@ -242,6 +242,7 @@ add_magic_from_int(3401,  '3.8.0a3+')
 
 add_magic_from_int(48,     '3.2a2')
 add_magic_from_int(112,    '3.5pypy') # pypy3.5-c-jit-latest
+add_magic_from_int(160,    '3.6pypy') # '3.6.1 ... PyPy 7.1.0-beta0'
 add_magic_from_int(1011,   '2.7.1b3Jython') # jython
 add_magic_from_int(22138,  '2.7.7Pyston')  # 2.7.8pyston, pyston-0.6.0
 
@@ -296,7 +297,7 @@ add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
 add_canonic_versions('2.7.3b0Jython', '2.7.1b3Jython')
 add_canonic_versions('3.2.5pypy', '3.2pypy')
 add_canonic_versions('3.5.3pypy', '3.5pypy')
-add_canonic_versions('3.5.3pypy', '3.5pypy')
+add_canonic_versions('3.6.1pypy', '3.6pypy')
 add_canonic_versions('2.7.8Pyston', '2.7.7Pyston')
 add_canonic_versions('3.7.0alpha3', '3.7.0alpha3')
 add_canonic_versions('3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3', '3.7.0')

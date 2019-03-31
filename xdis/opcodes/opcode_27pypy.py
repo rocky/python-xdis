@@ -32,6 +32,12 @@ def_op(l, 'BUILD_LIST_FROM_ARG', 203)
 # Used only in assert statements
 jrel_op(l, 'JUMP_IF_NOT_DEBUG',  204, conditional=True)
 
+
+# PyPy 2.7.13 (and 3.6.1) start to introduce LOAD_REVDB_VAR
+import sys
+if sys.version_info[:3] >= (2, 7, 13) and sys.version_info[4] >= 42:
+    def_op(l, 'LOAD_REVDB_VAR', 205)
+
 # There are no opcodes to remove or change.
 # If there were, they'd be listed below.
 
