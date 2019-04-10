@@ -1,3 +1,13 @@
+4.0.0 2019-4-09
+===================
+
+- Expand is_jump_target to True, 'loop', False. This is the reason for the version bump
+- Remove deprecated opcodes_pypyDD.py files. Use opcode_DDpypy instead.
+- Fix bug in setting jump offset in wordcode (3.6+) relative jumps.
+- Note that this works now in Python 3.8 (dev)
+- Add 3.6{,.1}pypy version
+- Dry opcodes 3.6 - 3.8
+
 3.9.1 2019-3-28
 ===================
 
