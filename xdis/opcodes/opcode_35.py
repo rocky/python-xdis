@@ -53,7 +53,6 @@ def_op(l, 'GET_AWAITABLE',               73,  0,  0)
 def_op(l, 'WITH_CLEANUP_START',          81,  0,  1)
 def_op(l, 'WITH_CLEANUP_FINISH',         82, -1,  1)
 
-# Need to coordinate with uncompyle6!
 varargs_op(l, 'BUILD_LIST_UNPACK',          149, -1,  1)
 varargs_op(l, 'BUILD_MAP_UNPACK',           150, -1,  1)
 varargs_op(l, 'BUILD_MAP_UNPACK_WITH_CALL', 151, -1,  1)

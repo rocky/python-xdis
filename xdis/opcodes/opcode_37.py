@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2019 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -85,35 +85,8 @@ rm_op(l, 'STORE_ANNOTATION', 127)
 name_op(l, 'LOAD_METHOD', 160)
 nargs_op(l, 'CALL_METHOD', 161)
 
-MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
-
-def format_MAKE_FUNCTION_arg(flags):
-    pattr = ''
-    for flag in MAKE_FUNCTION_FLAGS:
-        bit = flags & 1
-        if bit:
-            if pattr:
-                pattr += ", " + flag
-            else:
-                pattr = flag
-                pass
-            pass
-        flags >>= 1
-    return pattr
-
-def format_value_flags(flags):
-    if (flags & 0x03) == 0x00:
-        return ''
-    elif (flags & 0x03) == 0x01:
-        return '!s'
-    elif (flags & 0x03) == 0x02:
-        return '!r'
-    elif (flags & 0x03) == 0x03:
-        return '!a'
-    elif (flags & 0x04) == 0x04:
-        # pop fmt_spec from the stack and use it, else use an
-        # empty fmt_spec.
-        return ''
+format_MAKE_FUNCTION_arg = opcode_36.format_MAKE_FUNCTION_arg
+format_value_flags = opcode_36.format_value_flags
 
 opcode_arg_fmt = {
     'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
