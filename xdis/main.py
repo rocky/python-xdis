@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2018 by Rocky Bernstein
+# Copyright (c) 2016-2019 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -30,7 +30,7 @@ want to run on Python 2.7.
 # imports so this can run on older Pythons. This is
 # intended to be a more cross-version Python program
 
-import datetime, sys
+import datetime, re, sys
 
 try:
     from collections import deque
