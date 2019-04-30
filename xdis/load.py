@@ -50,7 +50,7 @@ def check_object_path(path):
     return path
 
 def is_pypy(magic_int):
-    return magic_int in (62211+7, 3180+7, *magics.IS_PYPY3)
+    return magic_int in ((62211+7, 3180+7) + magics.IS_PYPY3)
 
 def load_file(filename, out=sys.stdout):
     """
