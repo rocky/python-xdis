@@ -50,7 +50,7 @@ def check_object_path(path):
     return path
 
 def is_pypy(magic_int):
-    return magic_int in (62211+7, 3180+7, 48, 112, 160)
+    return magic_int in ((62211+7, 3180+7) + magics.IS_PYPY3)
 
 def load_file(filename, out=sys.stdout):
     """
@@ -183,7 +183,7 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             # PYTHON_VERSION, although PYTHON_VERSION would probably work.
             if ( ( (3200 <= magic_int < 20121) and
                    (magic_int not in (5892, 11913, 39170, 39171)) )
-                 or (magic_int in (48, 112, 160)) ):
+                 or (magic_int in magics.IS_PYPY3) ):
 
                 source_size = unpack("<I", fp.read(4))[0] # size mod 2**32
             else:

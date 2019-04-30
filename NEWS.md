@@ -1,5 +1,11 @@
+4.0.1 2019-4-30
+===============
+
+- Add magics.IS_PYPY3 and correct `is_pypy()`
+- disassemble PyPY3 versions correctly
+
 4.0.0 2019-4-09
-===================
+===============
 
 - Expand is_jump_target to True, 'loop', False. This is the reason for the version bump
 - Remove deprecated opcodes_pypyDD.py files. Use opcode_DDpypy instead.
