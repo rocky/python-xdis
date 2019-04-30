@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2019 by Rocky Bernstein
 """
 CPython 3.0 bytecode opcodes
 
@@ -40,9 +40,8 @@ def_op(l, 'LIST_APPEND',    18,  2, 1)
 jrel_op(l, 'JUMP_IF_FALSE', 111, 1, 1)
 jrel_op(l, 'JUMP_IF_TRUE',  112, 1, 1)
 
-# This op is in 3.x but its opcode is a 144 instead
-def_op(l, 'EXTENDED_ARG',  143)
-
+# Yes, pj2 not pj3 - Python 3.0 is more like 2.7 here with its
+# JUMP_IF rather than POP_JUMP_IF.
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
