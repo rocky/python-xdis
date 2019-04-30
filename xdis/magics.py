@@ -35,6 +35,8 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 import imp, re, struct, sys
 from xdis import IS_PYPY
 
+IS_PYPY3 = (48, 112, 160)
+
 def add_magic_from_int(magic_int, version):
     magicint2version[magic_int] = version
     versions[int2magic(magic_int)] = version
