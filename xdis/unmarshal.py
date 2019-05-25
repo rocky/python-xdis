@@ -57,7 +57,7 @@ def compat_u2s(u):
         # found it and this code via
         # https://www.peterbe.com/plog/unicode-to-ascii where it is a
         # dead link. That can potentially do better job in converting accents.
-        return unicodedata.normalize('NFKD', u).encode('ascii', 'ignore')
+        return unicodedata.normalize('NFKD', u)
     else:
         return str(u)
 
