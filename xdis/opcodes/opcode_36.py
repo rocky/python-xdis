@@ -96,7 +96,7 @@ varargs_op(l, 'BUILD_CONST_KEY_MAP', 156, -1, 1) # TOS is count of kwargs
 nargs_op(l,   'CALL_FUNCTION_EX', 142, -1, 1)
 def_op(l,     'SETUP_ANNOTATIONS', 85)
 def_op(l,     'BUILD_STRING',     157)
-varags_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
+varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
