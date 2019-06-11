@@ -155,6 +155,9 @@ def rm_op(l, name, op):
     assert l['opmap'][name] == op
     del l['opmap'][name]
 
+# This is not in Python. The operand indicates how
+# items on the pop from the stack. BUILD_TUPLE_UNPACK
+# is line this.
 def varargs_op(l, op_name, op_code, pop=-1, push=1):
     def_op(l, op_name, op_code, pop, push)
     l['hasvargs'].append(op_code)
