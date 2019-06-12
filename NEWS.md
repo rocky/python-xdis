@@ -1,3 +1,11 @@
+4.0.2 2019-6-12  Fleetwood at 65
+================================
+
+- To unicode strings in Python 2.x Try to convert to ascii, but if that doesn't work, leave as unicode. (x0ret)
+- `BUILD_TUPLE_UNPACK_WITH_CALL` is a vararg
+
+
+===============
 4.0.1 2019-4-30
 ===============
 
