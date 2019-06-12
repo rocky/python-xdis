@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2019 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -89,14 +89,14 @@ rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
 
 
 # These are new since Python 3.6
-name_op(l,  'STORE_ANNOTATION', 127) # Index in name list
-jrel_op(l,  'SETUP_ASYNC_WITH', 154)
-def_op(l,   'FORMAT_VALUE',     155)
+name_op(l,    'STORE_ANNOTATION', 127) # Index in name list
+jrel_op(l,    'SETUP_ASYNC_WITH', 154)
+def_op(l,     'FORMAT_VALUE',     155)
 varargs_op(l, 'BUILD_CONST_KEY_MAP', 156, -1, 1) # TOS is count of kwargs
-nargs_op(l, 'CALL_FUNCTION_EX', 142, -1, 1)
-def_op(l,   'SETUP_ANNOTATIONS', 85)
-def_op(l,   'BUILD_STRING',     157)
-def_op(l,   'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
+nargs_op(l,   'CALL_FUNCTION_EX', 142, -1, 1)
+def_op(l,     'SETUP_ANNOTATIONS', 85)
+def_op(l,     'BUILD_STRING',     157)
+varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
