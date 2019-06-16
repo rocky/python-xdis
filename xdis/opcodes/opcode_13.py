@@ -1,4 +1,4 @@
-# (C) Copyright 2018 by Rocky Bernstein
+# (C) Copyright 2018-2019 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -26,11 +26,13 @@ from xdis.bytecode import findlabels
 import xdis.opcodes.opcode_14 as opcode_14
 from xdis.opcodes.base import (
     init_opdata,
-    def_op, rm_op,
-    finalize_opcodes, format_extended_arg,
+    def_op,
+    rm_op,
+    finalize_opcodes,
+    format_extended_arg,
     # Although these aren't used here, they are exported
-    update_pj2
-    )
+    update_pj2,
+)
 
 version = 1.3
 
@@ -38,16 +40,15 @@ l = locals()
 init_opdata(l, opcode_14, version)
 
 # 1.3 - 14 bytecodes differences
-rm_op(l, 'BINARY_POWER',        19)
-def_op(l, 'LOAD_GLOBALS',       84)
+rm_op(l, "BINARY_POWER", 19)
+def_op(l, "LOAD_GLOBALS", 84)
 
 update_pj2(globals(), l)
 
-opcode_arg_fmt = {
-    'EXTENDED_ARG': format_extended_arg,
-}
+opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 finalize_opcodes(l)
+
 
 def findlinestarts(co, dup_lines=False):
     code = co.co_code
@@ -56,11 +57,11 @@ def findlinestarts(co, dup_lines=False):
     while offset < n:
         op = code[offset]
         offset += 1
-        if op == l['opmap']['SET_LINENO'] and offset > 0:
-            lineno = code[offset] + code[offset+1]*256
-            yield (offset-1, lineno)
+        if op == l["opmap"]["SET_LINENO"] and offset > 0:
+            lineno = code[offset] + code[offset + 1] * 256
+            yield (offset - 1, lineno)
             pass
-        if op >= l['HAVE_ARGUMENT']:
+        if op >= l["HAVE_ARGUMENT"]:
             offset += 2
             pass
         pass

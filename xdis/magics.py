@@ -37,9 +37,11 @@ from xdis import IS_PYPY
 
 IS_PYPY3 = (48, 112, 160)
 
+
 def add_magic_from_int(magic_int, version):
     magicint2version[magic_int] = version
     versions[int2magic(magic_int)] = version
+
 
 def int2magic(magic_int):
     """Given a magic int like 62211, compute the corresponding magic byte string
@@ -49,10 +51,13 @@ def int2magic(magic_int):
     for knonwn magic_int's.
     """
 
-    if (sys.version_info >= (3, 0)):
-        return struct.pack('<Hcc', magic_int, bytes('\r', 'utf-8'), bytes('\n', 'utf-8'))
+    if sys.version_info >= (3, 0):
+        return struct.pack(
+            "<Hcc", magic_int, bytes("\r", "utf-8"), bytes("\n", "utf-8")
+        )
     else:
-        return struct.pack('<Hcc', magic_int, '\r', '\n')
+        return struct.pack("<Hcc", magic_int, "\r", "\n")
+
 
 def magic2int(magic):
     """Given a magic byte string, e.g. b'\x03\xf3\r\n', compute the
@@ -63,7 +68,8 @@ def magic2int(magic):
     for knonwn magic_int's.
 
     """
-    return struct.unpack('<Hcc', magic)[0]
+    return struct.unpack("<Hcc", magic)[0]
+
 
 def __by_version(magics):
     for m, v in list(magics.items()):
@@ -73,6 +79,7 @@ def __by_version(magics):
             by_magic[m].add(v)
         by_version[v] = m
     return by_version
+
 
 # Documentation for the below variables is above.
 by_magic = {}
@@ -110,143 +117,153 @@ PYTHON_MAGIC_INT = magic2int(imp.get_magic())
 # Lib/importlib/_bootstrap.py and other sources
 
 #                  magic,  canonic version number
-add_magic_from_int(39170,  '1.0')
-add_magic_from_int(39171,  '1.1') # covers 1.2 as well
-add_magic_from_int(11913,  '1.3')
-add_magic_from_int(5892,   '1.4')
+add_magic_from_int(39170, "1.0")
+add_magic_from_int(39171, "1.1")  # covers 1.2 as well
+add_magic_from_int(11913, "1.3")
+add_magic_from_int(5892, "1.4")
 
 # 1.5, 1.5.1, 1.5.2
-add_magic_from_int(20121,  '1.5')
-add_magic_from_int(50428,  '1.6') # 1.6
-add_magic_from_int(50823,  '2.0') # 2.0, 2.0.1
-add_magic_from_int(60202,  '2.1') # 2.1, 2.1.1, 2.1.2
-add_magic_from_int(60717,  '2.2') # 2.2
+add_magic_from_int(20121, "1.5")
+add_magic_from_int(50428, "1.6")  # 1.6
+add_magic_from_int(50823, "2.0")  # 2.0, 2.0.1
+add_magic_from_int(60202, "2.1")  # 2.1, 2.1.1, 2.1.2
+add_magic_from_int(60717, "2.2")  # 2.2
 
 # Two magics one version!
-add_magic_from_int(62011,  '2.3a0')
-add_magic_from_int(62021,  '2.3a0')
+add_magic_from_int(62011, "2.3a0")
+add_magic_from_int(62021, "2.3a0")
 
-add_magic_from_int(62041,  '2.4a0')
-add_magic_from_int(62051,  '2.4a3')
-add_magic_from_int(62061,  '2.4b1')
-add_magic_from_int(62071,  '2.5a0')
-add_magic_from_int(62081,  '2.5a0') # ast-branch
-add_magic_from_int(62091,  '2.5a0') # with
-add_magic_from_int(62092,  '2.5a0') # changed WITH_CLEANUP opcode
-add_magic_from_int(62101,  '2.5b3') # fix wrong code: for x, in ...
-add_magic_from_int(62111,  '2.5b3') # fix wrong code: x += yield
+add_magic_from_int(62041, "2.4a0")
+add_magic_from_int(62051, "2.4a3")
+add_magic_from_int(62061, "2.4b1")
+add_magic_from_int(62071, "2.5a0")
+add_magic_from_int(62081, "2.5a0")  # ast-branch
+add_magic_from_int(62091, "2.5a0")  # with
+add_magic_from_int(62092, "2.5a0")  # changed WITH_CLEANUP opcode
+add_magic_from_int(62101, "2.5b3")  # fix wrong code: for x, in ...
+add_magic_from_int(62111, "2.5b3")  # fix wrong code: x += yield
 
 # Fix wrong lnotab with for loops and storing constants that should
 # have been removed
-add_magic_from_int(62121,  '2.5c1')
+add_magic_from_int(62121, "2.5c1")
 
 # Fix wrong code: "for x, in ..." in listcomp/genexp)
-add_magic_from_int(62131,  '2.5c2')
+add_magic_from_int(62131, "2.5c2")
 
 # Dropbox-modified Python 2.5 used in versions 1.1x and before of Dropbox
-add_magic_from_int(62135,  '2.5dropbox')
+add_magic_from_int(62135, "2.5dropbox")
 
-add_magic_from_int(62151,  '2.6a0')   # peephole optimizations & STORE_MAP
-add_magic_from_int(62161,  '2.6a1')   # WITH_CLEANUP optimization
+add_magic_from_int(62151, "2.6a0")  # peephole optimizations & STORE_MAP
+add_magic_from_int(62161, "2.6a1")  # WITH_CLEANUP optimization
 
 # Optimize list comprehensions/change LIST_APPEND
-add_magic_from_int(62171,  '2.7a0')
+add_magic_from_int(62171, "2.7a0")
 
 # Optimize conditional branches: introduce POP_JUMP_IF_FALSE and
 # POP_JUMP_IF_TRUE
-add_magic_from_int(62181,  '2.7a0+1')
+add_magic_from_int(62181, "2.7a0+1")
 
-add_magic_from_int(62191,  '2.7a0+2') # introduce SETUP_WITH
-add_magic_from_int(62201,  '2.7a0+3') # introduce BUILD_SET
-add_magic_from_int(62211,  '2.7')     # introduce MAP_ADD and SET_ADD
+add_magic_from_int(62191, "2.7a0+2")  # introduce SETUP_WITH
+add_magic_from_int(62201, "2.7a0+3")  # introduce BUILD_SET
+add_magic_from_int(62211, "2.7")  # introduce MAP_ADD and SET_ADD
 
 # Dropbox-modified Python 2.7 used in versions 1.2-1.6 or so of
 # Dropbox
-add_magic_from_int(62215,  '2.7dropbox')
-add_magic_from_int(2657,   '2.7pyston-0.6.1')
+add_magic_from_int(62215, "2.7dropbox")
+add_magic_from_int(2657, "2.7pyston-0.6.1")
 
 # PyPy including pypy-2.6.1, pypy-5.0.1 PyPy adds 7 to the corresponding CPython nmber
-add_magic_from_int(62211+7, '2.7pypy')
+add_magic_from_int(62211 + 7, "2.7pypy")
 
-add_magic_from_int(3000,  '3.000')
-add_magic_from_int(3010,  '3.000+1')  # removed UNARY_CONVERT
-add_magic_from_int(3020,  '3.000+2')  # added BUILD_SET
-add_magic_from_int(3030,  '3.000+3')  # added keyword-only parameters
-add_magic_from_int(3040,  '3.000+4')  # added signature annotations
-add_magic_from_int(3050,  '3.000+5')  # print becomes a function
-add_magic_from_int(3060,  '3.000+6')  # PEP 3115 metaclass syntax
-add_magic_from_int(3061,  '3.000+7')  # string literals become unicode
-add_magic_from_int(3071,  '3.000+8')  # PEP 3109 raise changes
-add_magic_from_int(3081,  '3.000+9')  # PEP 3137 make __file__ and __name__ unicode
-add_magic_from_int(3091,  '3.000+10') # kill str8 interning
-add_magic_from_int(3101,  '3.000+11') # merge from 2.6a0, see 62151
-add_magic_from_int(3103,  '3.000+12') # __file__ points to source file
-add_magic_from_int(3111,  '3.0a4')    # WITH_CLEANUP optimization
-add_magic_from_int(3131,  '3.0a5')    # lexical exception stacking, including POP_EXCEPT)
-add_magic_from_int(3141,  '3.1a0')    # optimize list, set and dict comprehensions
-add_magic_from_int(3151,  '3.1a0+')   # optimize conditional branches
-add_magic_from_int(3160,  '3.2a0')    # add SETUP_WITH
-add_magic_from_int(3170,  '3.2a1')    # add DUP_TOP_TWO, remove DUP_TOPX and ROT_FOUR
-add_magic_from_int(3180,  '3.2a2')    # 3.2a2 (add DELETE_DEREF)
+add_magic_from_int(3000, "3.000")
+add_magic_from_int(3010, "3.000+1")  # removed UNARY_CONVERT
+add_magic_from_int(3020, "3.000+2")  # added BUILD_SET
+add_magic_from_int(3030, "3.000+3")  # added keyword-only parameters
+add_magic_from_int(3040, "3.000+4")  # added signature annotations
+add_magic_from_int(3050, "3.000+5")  # print becomes a function
+add_magic_from_int(3060, "3.000+6")  # PEP 3115 metaclass syntax
+add_magic_from_int(3061, "3.000+7")  # string literals become unicode
+add_magic_from_int(3071, "3.000+8")  # PEP 3109 raise changes
+add_magic_from_int(3081, "3.000+9")  # PEP 3137 make __file__ and __name__ unicode
+add_magic_from_int(3091, "3.000+10")  # kill str8 interning
+add_magic_from_int(3101, "3.000+11")  # merge from 2.6a0, see 62151
+add_magic_from_int(3103, "3.000+12")  # __file__ points to source file
+add_magic_from_int(3111, "3.0a4")  # WITH_CLEANUP optimization
+add_magic_from_int(3131, "3.0a5")  # lexical exception stacking, including POP_EXCEPT)
+add_magic_from_int(3141, "3.1a0")  # optimize list, set and dict comprehensions
+add_magic_from_int(3151, "3.1a0+")  # optimize conditional branches
+add_magic_from_int(3160, "3.2a0")  # add SETUP_WITH
+add_magic_from_int(3170, "3.2a1")  # add DUP_TOP_TWO, remove DUP_TOPX and ROT_FOUR
+add_magic_from_int(3180, "3.2a2")  # 3.2a2 (add DELETE_DEREF)
 
 # Python 3.2.5 - PyPy 2.3.4 PyPy adds 7 to the corresponding CPython
 # number
-add_magic_from_int(3180+7,  '3.2pypy')
+add_magic_from_int(3180 + 7, "3.2pypy")
 
-add_magic_from_int(3190,  '3.3a0')  # __class__ super closure changed
-add_magic_from_int(3200,  '3.3a0+') # __qualname__ added
-add_magic_from_int(3220,  '3.3a1')  # changed PEP 380 implementation
+add_magic_from_int(3190, "3.3a0")  # __class__ super closure changed
+add_magic_from_int(3200, "3.3a0+")  # __qualname__ added
+add_magic_from_int(3220, "3.3a1")  # changed PEP 380 implementation
 
 # Added size modulo 2**32 to the pyc header
 # NOTE: 3.3a2 is our name, other places call it 3.3
 # but most 3.3 versions are 3.3a4 which comes next.
 # FIXME: figure out what the history is and
 # what the right thing to do if this isn't it.
-add_magic_from_int(3210,  '3.3a2')
-add_magic_from_int(3230,  '3.3a4')  # revert changes to implicit __class__ closure
+add_magic_from_int(3210, "3.3a2")
+add_magic_from_int(3230, "3.3a4")  # revert changes to implicit __class__ closure
 
 # Evaluate positional default arg keyword-only defaults)
-add_magic_from_int(3250,  '3.4a1')
+add_magic_from_int(3250, "3.4a1")
 
 # Add LOAD_CLASSDEREF; add_magic_from_int locals, f class to override free vars
-add_magic_from_int(3260,  '3.4a1+1')
+add_magic_from_int(3260, "3.4a1+1")
 
-add_magic_from_int(3270,  '3.4a1+2')   # various tweaks to the __class__ closure
-add_magic_from_int(3280,  '3.4a1+3')   # remove implicit class argument
-add_magic_from_int(3290,  '3.4a4')     # changes to __qualname__ computation
-add_magic_from_int(3300,  '3.4a4+')    # more changes to __qualname__ computation
-add_magic_from_int(3310,  '3.4rc2')    # alter __qualname__ computation
-add_magic_from_int(3320,  '3.5a0')     # matrix multiplication operator
-add_magic_from_int(3330,  '3.5b1')     # pep 448: additional unpacking generalizations
-add_magic_from_int(3340,  '3.5b2')     # fix dictionary display evaluation order #11205
-add_magic_from_int(3350,  '3.5')       # add GET_YIELD_FROM_ITER opcode #24400 (also 3.5b2)
-add_magic_from_int(3351,  '3.5.2')     # fix BUILD_MAP_UNPACK_WITH_CALL opcode #27286; 3.5.3, 3.5.4, 3.5.5
-add_magic_from_int(3360,  '3.6a0')     # add FORMAT_VALUE opcode #25483
-add_magic_from_int(3361,  '3.6a0+1')   # lineno delta of code.co_lnotab becomes signed
-add_magic_from_int(3370,  '3.6a1')     # 16 bit wordcode
-add_magic_from_int(3371,  '3.6a1+1')   # add BUILD_CONST_KEY_MAP opcode #27140
-add_magic_from_int(3372,  '3.6a1+2')   # MAKE_FUNCTION simplification, remove MAKE_CLOSURE #27095
-add_magic_from_int(3373,  '3.6b1')     # add BUILD_STRING opcode #27078
-add_magic_from_int(3375,  '3.6b1+1')   # add SETUP_ANNOTATIONS and STORE_ANNOTATION opcodes #27985
-add_magic_from_int(3376,  '3.6b1+2')   # simplify CALL_FUNCTIONs & BUILD_MAP_UNPACK_WITH_CALL
-add_magic_from_int(3377,  '3.6b1+3')   # set __class__ cell from type.__new__ #23722
-add_magic_from_int(3378,  '3.6b2')     # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
-add_magic_from_int(3379,  '3.6rc1')    # more thorough __class__ validation #23722
-add_magic_from_int(3390,  '3.7.0alpha0')
-add_magic_from_int(3391,  '3.7.0alpha3')
-add_magic_from_int(3392,  '3.7.0beta2')  # PEP 552 - Additional word in header and possibly no timestamp
-add_magic_from_int(3393,  '3.7.0beta3')
-add_magic_from_int(3394,  '3.7.0')
-add_magic_from_int(3401,  '3.8.0a3+')
+add_magic_from_int(3270, "3.4a1+2")  # various tweaks to the __class__ closure
+add_magic_from_int(3280, "3.4a1+3")  # remove implicit class argument
+add_magic_from_int(3290, "3.4a4")  # changes to __qualname__ computation
+add_magic_from_int(3300, "3.4a4+")  # more changes to __qualname__ computation
+add_magic_from_int(3310, "3.4rc2")  # alter __qualname__ computation
+add_magic_from_int(3320, "3.5a0")  # matrix multiplication operator
+add_magic_from_int(3330, "3.5b1")  # pep 448: additional unpacking generalizations
+add_magic_from_int(3340, "3.5b2")  # fix dictionary display evaluation order #11205
+add_magic_from_int(3350, "3.5")  # add GET_YIELD_FROM_ITER opcode #24400 (also 3.5b2)
+add_magic_from_int(
+    3351, "3.5.2"
+)  # fix BUILD_MAP_UNPACK_WITH_CALL opcode #27286; 3.5.3, 3.5.4, 3.5.5
+add_magic_from_int(3360, "3.6a0")  # add FORMAT_VALUE opcode #25483
+add_magic_from_int(3361, "3.6a0+1")  # lineno delta of code.co_lnotab becomes signed
+add_magic_from_int(3370, "3.6a1")  # 16 bit wordcode
+add_magic_from_int(3371, "3.6a1+1")  # add BUILD_CONST_KEY_MAP opcode #27140
+add_magic_from_int(
+    3372, "3.6a1+2"
+)  # MAKE_FUNCTION simplification, remove MAKE_CLOSURE #27095
+add_magic_from_int(3373, "3.6b1")  # add BUILD_STRING opcode #27078
+add_magic_from_int(
+    3375, "3.6b1+1"
+)  # add SETUP_ANNOTATIONS and STORE_ANNOTATION opcodes #27985
+add_magic_from_int(
+    3376, "3.6b1+2"
+)  # simplify CALL_FUNCTIONs & BUILD_MAP_UNPACK_WITH_CALL
+add_magic_from_int(3377, "3.6b1+3")  # set __class__ cell from type.__new__ #23722
+add_magic_from_int(3378, "3.6b2")  # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
+add_magic_from_int(3379, "3.6rc1")  # more thorough __class__ validation #23722
+add_magic_from_int(3390, "3.7.0alpha0")
+add_magic_from_int(3391, "3.7.0alpha3")
+add_magic_from_int(
+    3392, "3.7.0beta2"
+)  # PEP 552 - Additional word in header and possibly no timestamp
+add_magic_from_int(3393, "3.7.0beta3")
+add_magic_from_int(3394, "3.7.0")
+add_magic_from_int(3401, "3.8.0a3+")
 
 # Weird ones
 # WTF? Python 3.2.5 - PyPy 2.3.4  this doesn't follow the rule below
 
-add_magic_from_int(48,     '3.2a2')
-add_magic_from_int(112,    '3.5pypy') # pypy3.5-c-jit-latest
-add_magic_from_int(160,    '3.6pypy') # '3.6.1 ... PyPy 7.1.0-beta0'
-add_magic_from_int(1011,   '2.7.1b3Jython') # jython
-add_magic_from_int(22138,  '2.7.7Pyston')  # 2.7.8pyston, pyston-0.6.0
+add_magic_from_int(48, "3.2a2")
+add_magic_from_int(112, "3.5pypy")  # pypy3.5-c-jit-latest
+add_magic_from_int(160, "3.6pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
+add_magic_from_int(1011, "2.7.1b3Jython")  # jython
+add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
 
 magics = __by_version(versions)
@@ -254,6 +271,7 @@ magics = __by_version(versions)
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
 canonic_python_version = {}
+
 
 def add_canonic_versions(versions, canonic):
     for v in versions.split():
@@ -265,45 +283,49 @@ def add_canonic_versions(versions, canonic):
             pass
         pass
 
-
     return
 
-add_canonic_versions('1.5.1 1.5.2', '1.5')
-add_canonic_versions('2.0.1', '2.0')
-add_canonic_versions('2.1.1 2.1.2 2.1.3', '2.1')
-add_canonic_versions('2.2.3', '2.2')
-add_canonic_versions('2.3 2.3.7', '2.3a0')
-add_canonic_versions('2.4 2.4.0 2.4.1 2.4.2 2.4.3 2.4.5 2.4.6', '2.4b1')
-add_canonic_versions('2.5 2.5.0 2.5.1 2.5.2 2.5.3 2.5.4 2.5.5 2.5.6', '2.5c2')
-add_canonic_versions('2.6 2.6.6 2.6.7 2.6.8 2.6.9', '2.6a1')
-add_canonic_versions('2.7.0 2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 '
-                     '2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13 2.7.14 2.7.15 '
-                     '2.7.16',
-                     '2.7')
-add_canonic_versions('2.7.15candidate1', '2.7')
-add_canonic_versions('3.0 3.0.0 3.0.1',
-                     '3.0a5')
-add_canonic_versions('3.1 3.1.0 3.1.1 3.1.2 3.1.3 3.1.4 3.1.5',
-                     '3.1a0+')
-add_canonic_versions('3.2 3.2.0 3.2.1 3.2.2 3.2.3 3.2.4 3.2.5 3.2.6',
-                     '3.2a2')
-add_canonic_versions('3.3 3.3.0 3.3.1 3.3.2 3.3.3 3.3.4 3.3.5 '
-                     '3.3.6 3.3.7rc1 3.3.7', '3.3a4')
-add_canonic_versions('3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 '
-                     '3.4.5 3.4.6 3.4.7 3.4.8 3.4.9 3.4.10', '3.4rc2')
-add_canonic_versions('3.5.0 3.5.1', '3.5')
-add_canonic_versions('3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7', '3.5.2')
-add_canonic_versions('3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8', '3.6rc1')
 
-add_canonic_versions('2.7.10pypy 2.7.13pypy', '2.7pypy')
-add_canonic_versions('2.7.3b0Jython', '2.7.1b3Jython')
-add_canonic_versions('3.2.5pypy', '3.2pypy')
-add_canonic_versions('3.5.3pypy', '3.5pypy')
-add_canonic_versions('3.6.1pypy', '3.6pypy')
-add_canonic_versions('2.7.8Pyston', '2.7.7Pyston')
-add_canonic_versions('3.7.0alpha3', '3.7.0alpha3')
-add_canonic_versions('3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3', '3.7.0')
-add_canonic_versions('3.8 3.8.0alpha0 3.8.0alpha3 3.8.0a0', '3.8.0a3+')
+add_canonic_versions("1.5.1 1.5.2", "1.5")
+add_canonic_versions("2.0.1", "2.0")
+add_canonic_versions("2.1.1 2.1.2 2.1.3", "2.1")
+add_canonic_versions("2.2.3", "2.2")
+add_canonic_versions("2.3 2.3.7", "2.3a0")
+add_canonic_versions("2.4 2.4.0 2.4.1 2.4.2 2.4.3 2.4.5 2.4.6", "2.4b1")
+add_canonic_versions("2.5 2.5.0 2.5.1 2.5.2 2.5.3 2.5.4 2.5.5 2.5.6", "2.5c2")
+add_canonic_versions("2.6 2.6.6 2.6.7 2.6.8 2.6.9", "2.6a1")
+add_canonic_versions(
+    "2.7.0 2.7.1 2.7.2 2.7.2 2.7.3 2.7.4 2.7.5 2.7.6 2.7.7 "
+    "2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13 2.7.14 2.7.15 "
+    "2.7.16",
+    "2.7",
+)
+add_canonic_versions("2.7.15candidate1", "2.7")
+add_canonic_versions("3.0 3.0.0 3.0.1", "3.0a5")
+add_canonic_versions("3.1 3.1.0 3.1.1 3.1.2 3.1.3 3.1.4 3.1.5", "3.1a0+")
+add_canonic_versions("3.2 3.2.0 3.2.1 3.2.2 3.2.3 3.2.4 3.2.5 3.2.6", "3.2a2")
+add_canonic_versions(
+    "3.3 3.3.0 3.3.1 3.3.2 3.3.3 3.3.4 3.3.5 " "3.3.6 3.3.7rc1 3.3.7", "3.3a4"
+)
+add_canonic_versions(
+    "3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 " "3.4.5 3.4.6 3.4.7 3.4.8 3.4.9 3.4.10",
+    "3.4rc2",
+)
+add_canonic_versions("3.5.0 3.5.1", "3.5")
+add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7", "3.5.2")
+add_canonic_versions(
+    "3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8", "3.6rc1"
+)
+
+add_canonic_versions("2.7.10pypy 2.7.13pypy", "2.7pypy")
+add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
+add_canonic_versions("3.2.5pypy", "3.2pypy")
+add_canonic_versions("3.5.3pypy", "3.5pypy")
+add_canonic_versions("3.6.1pypy", "3.6pypy")
+add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
+add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
+add_canonic_versions("3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3", "3.7.0")
+add_canonic_versions("3.8 3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
@@ -311,8 +333,10 @@ for v in versions.values():
 # A set of all Python versions we know about
 python_versions = set(canonic_python_version.keys())
 
+
 def __show(text, magic):
-    print(text, struct.unpack('BBBB', magic), struct.unpack('<HBB', magic))
+    print(text, struct.unpack("BBBB", magic), struct.unpack("<HBB", magic))
+
 
 def magic_int2float(magic_int):
     """Convert a Python magic int into a 'canonic' floating-point number,
@@ -324,6 +348,7 @@ def magic_int2float(magic_int):
     """
     return py_str2float(magicint2version[magic_int])
 
+
 def py_str2float(version):
     """Convert a Python version into a two-digit 'canonic' floating-point number,
     e.g. 2.5, 3.6.
@@ -334,8 +359,8 @@ def py_str2float(version):
     point number. For example 3.2a1, 3.2.0, 3.2.2, 3.2.6 among others all map to
     3.2.
     """
-    if version.endswith('pypy'):
-        version = version[:-len('pypy')]
+    if version.endswith("pypy"):
+        version = version[: -len("pypy")]
     if version in magics:
         magic = magics[version]
         for v, m in list(magics.items()):
@@ -344,17 +369,17 @@ def py_str2float(version):
                     return float(canonic_python_version[v])
                 except:
                     try:
-                        m = re.match(r'^(\d\.)(\d+)\.(\d+)$', v)
+                        m = re.match(r"^(\d\.)(\d+)\.(\d+)$", v)
                         if m:
-                            return float(m.group(1)+m.group(2))
+                            return float(m.group(1) + m.group(2))
                     except:
                         pass
                     pass
                 pass
             pass
-    raise RuntimeError("Can't find a valid Python version for version %s"
-                       % version)
+    raise RuntimeError("Can't find a valid Python version for version %s" % version)
     return
+
 
 def sysinfo2float(version_info=sys.version_info):
     """Convert a sys.versions_info-compatible list into a 'canonic'
@@ -366,17 +391,18 @@ def sysinfo2float(version_info=sys.version_info):
     For handling Pypy, pyston, jython, etc. and interim versions of
     C Python, use sysinfo2magic.
     """
-    vers_str = '.'.join([str(v) for v in version_info[0:3]])
-    if version_info[3] != 'final':
-        vers_str += '.' + ''.join([str(i) for i in version_info[3:]])
+    vers_str = ".".join([str(v) for v in version_info[0:3]])
+    if version_info[3] != "final":
+        vers_str += "." + "".join([str(i) for i in version_info[3:]])
 
     if IS_PYPY:
-        vers_str += 'pypy'
+        vers_str += "pypy"
     else:
         try:
             import platform
+
             platform = platform.python_implementation()
-            if platform in ('Jython', 'Pyston'):
+            if platform in ("Jython", "Pyston"):
                 vers_str += platform
                 pass
         except ImportError:
@@ -395,17 +421,18 @@ def sysinfo2magic(version_info=sys.version_info):
     """
 
     # FIXME: DRY with sysinfo2float()
-    vers_str = '.'.join([str(v) for v in version_info[0:3]])
-    if version_info[3] != 'final':
-        vers_str += ''.join([str(v) for v in version_info[3:]])
+    vers_str = ".".join([str(v) for v in version_info[0:3]])
+    if version_info[3] != "final":
+        vers_str += "".join([str(v) for v in version_info[3:]])
 
     if IS_PYPY:
-        vers_str += 'pypy'
+        vers_str += "pypy"
     else:
         try:
             import platform
+
             platform = platform.python_implementation()
-            if platform in ('Jython', 'Pyston'):
+            if platform in ("Jython", "Pyston"):
                 vers_str += platform
                 pass
         except ImportError:
@@ -417,16 +444,17 @@ def sysinfo2magic(version_info=sys.version_info):
 
 
 def test():
-    magic_20 = magics['2.0']
+    magic_20 = magics["2.0"]
     current = imp.get_magic()
-    magic_current = by_magic[ current ]
+    magic_current = by_magic[current]
     print(type(magic_20), len(magic_20), repr(magic_20))
     print()
-    print('This Python interpreter has version', magic_current)
-    print('Magic code: ', PYTHON_MAGIC_INT)
+    print("This Python interpreter has version", magic_current)
+    print("Magic code: ", PYTHON_MAGIC_INT)
     print(type(magic_20), len(magic_20), repr(magic_20))
     print(sysinfo2float())
     assert sysinfo2magic() == current
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test()

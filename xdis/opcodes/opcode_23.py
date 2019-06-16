@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2019 by Rocky Bernstein
 """
 CPython 2.3 bytecode opcodes
 
@@ -8,8 +8,11 @@ of stack usage.
 
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
-    finalize_opcodes, format_extended_arg,
-    init_opdata, update_pj2)
+    finalize_opcodes,
+    format_extended_arg,
+    init_opdata,
+    update_pj2,
+)
 
 version = 2.3
 
@@ -18,8 +21,6 @@ init_opdata(l, opcode_2x, version)
 
 update_pj2(globals(), l)
 
-opcode_arg_fmt = {
-    'EXTENDED_ARG': format_extended_arg,
-}
+opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 finalize_opcodes(l)
