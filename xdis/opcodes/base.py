@@ -238,6 +238,16 @@ def format_extended_arg(arg):
 def format_extended_arg36(arg):
     return str(arg * (1 << 8))
 
+
+def format_CALL_FUNCTION_pos_name_encoded(argc):
+    """Encoded positional and named args. Used to
+    up to about 3.6 where wordcodes are used and
+    a different encoding occurs. Pypy36 though
+    sticks to this encoded version though."""
+    pos_args = argc & 0xFF
+    name = (argc >> 8) & 0xFF
+    return ("%d positional, %d named" % (pos_args, name))
+
 def opcode_check(l):
     """When the version of Python we are running happens
     to have the same opcode set as the opcode we are
