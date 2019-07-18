@@ -38,6 +38,10 @@ _six = 'six >= 1.10.0'
 # The rest in alphabetic order
 author             = "Rocky Bernstein, Hartmut Goebel and others"
 author_email       = "rb@dustyfeet.com"
+entry_points       = {
+    'console_scripts': [
+        'pydisasm=xdis.bin.pydisasm:main',
+    ]}
 ftp_url            = None
 install_requires   = [_six, 'click']
 license            = 'GPL-2.0'
