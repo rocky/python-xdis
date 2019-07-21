@@ -255,6 +255,8 @@ add_magic_from_int(
 add_magic_from_int(3393, "3.7.0beta3")
 add_magic_from_int(3394, "3.7.0")
 add_magic_from_int(3401, "3.8.0a3+")
+add_magic_from_int(3401, "3.8.0a3+")
+add_magic_from_int(3412, "3.8.0beta2")
 
 # Weird ones
 # WTF? Python 3.2.5 - PyPy 2.3.4  this doesn't follow the rule below
@@ -325,7 +327,8 @@ add_canonic_versions("3.6.1pypy", "3.6pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions("3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4", "3.7.0")
-add_canonic_versions("3.8 3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
+add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
+add_canonic_versions("3.8.0 3.8", "3.8.0beta2")
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
