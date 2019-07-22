@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2018 by Rocky Bernstein
+# Copyright (c) 2015-2019 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@ import sys, types
 from struct import unpack
 
 from xdis.magics import PYTHON_MAGIC_INT
-from xdis.code import Code2, Code3, Code2Compat
+from xdis.code import Code2, Code3, Code38, Code2Compat
 from xdis import PYTHON3, PYTHON_VERSION, IS_PYPY
 
 internStrings = []
@@ -109,6 +109,11 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_argcount = unpack('<i', fp.read(4))[0]
 
+    if magic_int in (3412,):
+        co_posonlyargcount = unpack('<i', fp.read(4))[0]
+    else:
+        co_posonlyargcount = None
+
     if 3020 < magic_int < 20121 and not v11_to_14:
         kwonlyargcount = unpack('<i', fp.read(4))[0]
     else:
@@ -181,11 +186,31 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                              co_code, co_consts, co_names, co_varnames, co_filename, co_name,
                              co_firstlineno, co_lnotab, co_freevars, co_cellvars)
             else:
-                # Python3 to Python3: Ok to use native Python3's code type
-                code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                            co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                            co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                            co_freevars, co_cellvars)
+                if PYTHON_MAGIC_INT in (3412,):
+                    if co_posonlyargcount is not None:
+                        # Python3.8 to Python3.8: Ok to use native Python3.8's code type
+                        code = Code(co_argcount, co_posonlyargcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
+                                    co_code, co_consts, co_names, co_varnames, co_filename, co_name,
+                                    co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
+                                    co_freevars, co_cellvars)
+                    else:
+                        code = Code3(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
+                                     co_code, co_consts, co_names, co_varnames, co_filename, co_name,
+                                     co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
+                                     co_freevars, co_cellvars)
+                elif co_posonlyargcount is not None:
+                    code = Code38(co_argcount, co_posonlyargcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
+                                  co_code, co_consts, co_names, co_varnames, co_filename, co_name,
+                                  co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
+                                  co_freevars, co_cellvars)
+
+                else:
+                    # Python3 (< 3.8) to Python3: Ok to use native Python3's code type
+                    code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
+                                co_code, co_consts, co_names, co_varnames, co_filename, co_name,
+                                co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
+                                co_freevars, co_cellvars)
+                    pass
         else:
             code =  Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
                         co_code, co_consts, co_names, co_varnames, co_filename, co_name,

@@ -249,9 +249,7 @@ add_magic_from_int(3378, "3.6b2")  # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
 add_magic_from_int(3379, "3.6rc1")  # more thorough __class__ validation #23722
 add_magic_from_int(3390, "3.7.0alpha0")
 add_magic_from_int(3391, "3.7.0alpha3")
-add_magic_from_int(
-    3392, "3.7.0beta2"
-)  # PEP 552 - Additional word in header and possibly no timestamp
+add_magic_from_int(3392, "3.7.0beta2")  # PEP 552 - Additional word in header and possibly no timestamp
 add_magic_from_int(3393, "3.7.0beta3")
 add_magic_from_int(3394, "3.7.0")
 add_magic_from_int(3401, "3.8.0a3+")
