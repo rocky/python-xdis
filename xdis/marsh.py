@@ -1038,7 +1038,7 @@ def dumps(x, version=version, python_version=None):
                 buf.append(str(b))
             else:
                 buf.append(b)
-        return b"".join(buf)
+        return "".join(buf)
     else:
         return "".join(buffer)
 

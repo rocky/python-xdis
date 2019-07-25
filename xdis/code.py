@@ -109,30 +109,11 @@ class Code3:
             # into the encoded format
             self.encode_lineno_tab()
 
-        if PYTHON3:
-            args = (
-                self.co_argcount,
-                self.co_kwonlyargcount,
-                self.co_nlocals,
-                self.co_stacksize,
-                self.co_flags,
-                self.co_code,
-                self.co_consts,
-                self.co_names,
-                self.co_varnames,
-                self.co_filename,
-                self.co_name,
-                self.co_firstlineno,
-                self.co_lnotab,
-                self.co_freevars,
-                self.co_cellvars,
-            )
-            return types.CodeType(*args)
-        else:
-            return self
+        return self
+
 
     def check(self):
-        for field in "co_argcount co_kwonlyargcount, co_nlocals co_flags co_firstlineno".split():
+        for field in "co_argcount co_posonlyargcount co_kw_onlyargcount co_nlocals co_flags co_firstlineno".split():
             val = getattr(self, field)
             assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
         for field in "co_consts co_names co_varnames".split():
@@ -411,13 +392,8 @@ class Code2:
             # FIXME: handle PYTHON 3
             self.encode_lineno_tab()
 
-        if PYTHON3:
-            if hasattr(self, "co_kwonlyargcount"):
-                delattr(self, "co_kwonlyargcount")
-            return self
-        else:
-            args = (
-                self.co_argcount,
+
+        args = (self.co_argcount,
                 self.co_nlocals,
                 self.co_stacksize,
                 self.co_flags,
@@ -430,10 +406,9 @@ class Code2:
                 self.co_firstlineno,
                 self.co_lnotab,
                 self.co_freevars,
-                self.co_cellvars,
-            )
-            return types.CodeType(*args)
->>>>>>> master
+                self.co_cellvars
+        )
+        return types.CodeType(*args)
 
     def check(self):
         for field in "co_argcount co_nlocals co_flags co_firstlineno".split():

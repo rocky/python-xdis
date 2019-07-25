@@ -34,7 +34,7 @@ dis_bug708901 = """\
                6 LOAD_CONST                1 (1)
 
 %3d:           9 LOAD_CONST                2 (10)
-              12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+              12 CALL_FUNCTION             2 (2 positional, 0 named)
               15 GET_ITER
          >>   16 FOR_ITER                  6 (to 25)
               19 STORE_FAST                0 (res)

@@ -130,9 +130,9 @@ def load_module_from_file_object(
 
         # For reasons I don't understand, PyPy 3.2 stores a magic
         # of '0'...  The two values below are for Python 2.x and 3.x respectively
-        if magic[0:1] in ["0", b"0"]:
+        if magic[0:1] in ["0", "0"]:
             magic = magics.int2magic(3180 + 7)
-1
+
         try:
             # FIXME: use the internal routine below
             float_version = float(magics.versions[magic][:3])
