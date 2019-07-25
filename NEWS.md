@@ -1,3 +1,13 @@
+4.0.3 2019-7-24  Mueller day
+============================
+
+- Support 3.8.0beta2; Code38 type with `posonlyargcount` field
+- Add Python versions 3.4.10, 3.7.4 and 3.6.9
+- `script` no longer works to install pydisasm; `entry_points` still works
+- Add pypy 3.6 opcode formatting for `MAKE_FUNCTION` and `EXTENDED_ARG`
+- Add `format_CALL_function` and use it or pypy36
+- Start using "blacken" to reformat Python files
+
 4.0.2 2019-6-12  Fleetwood at 65
 ================================
 

@@ -3,7 +3,7 @@
 xdis
 ====
 
-Cross-Python bytecode Disassembler and Marshal routines
+Cross-Python bytecode Disassembler, Bytecode, and Magic Number Manipulation package
 
 
 Introduction
