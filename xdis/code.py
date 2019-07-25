@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2018 by Rocky Bernstein
+# (C) Copyright 2017-2019 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -15,6 +15,8 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import inspect, types
+
+
 class Code3:
     """Class for a Python3 code object used when a Python interpreter less than 3 is
     working on Python3 bytecode. It also functions as an object that can be used
@@ -26,10 +28,25 @@ class Code3:
     instead as (mutable) lists. Likewise the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
     """
-    def __init__(self, co_argcount, co_kwonlyargcount, co_nlocals,
-                 co_stacksize, co_flags, co_code,
-                 co_consts, co_names, co_varnames, co_filename, co_name,
-                 co_firstlineno, co_lnotab, co_freevars, co_cellvars):
+
+    def __init__(
+        self,
+        co_argcount,
+        co_kwonlyargcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
+        co_code,
+        co_consts,
+        co_names,
+        co_varnames,
+        co_filename,
+        co_name,
+        co_firstlineno,
+        co_lnotab,
+        co_freevars,
+        co_cellvars,
+    ):
         self.co_argcount = co_argcount
         self.co_kwonlyargcount = co_kwonlyargcount
         self.co_nlocals = co_nlocals
@@ -57,7 +74,7 @@ class Code3:
         return op
 
     def encode_lineno_tab(self):
-        co_lnotab = ''
+        co_lnotab = ""
 
         prev_line_number = self.co_firstlineno
         prev_offset = 0
@@ -78,33 +95,151 @@ class Code3:
         self.co_lnotab = co_lnotab
 
     def freeze(self):
-        for field in 'co_consts co_names co_varnames co_freevars co_cellvars'.split():
+        for field in "co_consts co_names co_varnames co_freevars co_cellvars".split():
             val = getattr(self, field)
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
 
         if isinstance(self.co_lnotab, dict):
             d = self.co_lnotab
-            self.co_lnotab = sorted(zip(d.keys(), d.values()),
-                                    key=lambda tup: tup[0])
+            self.co_lnotab = sorted(zip(d.keys(), d.values()), key=lambda tup: tup[0])
         if isinstance(self.co_lnotab, list):
             # We assume we have a list of tuples:
             # (offset, linenumber) which we convert
             # into the encoded format
             self.encode_lineno_tab()
 
-        return self
-
+        if PYTHON3:
+            args = (
+                self.co_argcount,
+                self.co_kwonlyargcount,
+                self.co_nlocals,
+                self.co_stacksize,
+                self.co_flags,
+                self.co_code,
+                self.co_consts,
+                self.co_names,
+                self.co_varnames,
+                self.co_filename,
+                self.co_name,
+                self.co_firstlineno,
+                self.co_lnotab,
+                self.co_freevars,
+                self.co_cellvars,
+            )
+            return types.CodeType(*args)
+        else:
+            return self
 
     def check(self):
-        for field in 'co_argcount co_nlocals co_flags co_firstlineno'.split():
+        for field in "co_argcount co_kwonlyargcount, co_nlocals co_flags co_firstlineno".split():
             val = getattr(self, field)
-            assert isinstance(val, int), \
-                "%s should be int, is %s" % (field, type(val))
-        for field in 'co_consts co_names co_varnames'.split():
+            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
+        for field in "co_consts co_names co_varnames".split():
             val = getattr(self, field)
-            assert isinstance(val, tuple), \
-                "%s should be tuple, is %s" % (field, type(val))
+            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
+                field,
+                type(val),
+            )
+
+
+class Code38(Code3):
+    """Class for a Python3.8 code object used when a Python interpreter less than 3.8 is
+    working on Python3 bytecode. It also functions as an object that can be used
+    to build or write a Python3 code object, since we allow mutable structures.
+    When done mutating, call method freeze().
+
+    For convenience in generating code objects, fields like
+    `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
+    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    can be stored as a simple list of offset, line_number tuples.
+    """
+
+    def __init__(
+        self,
+        co_argcount,
+        co_posonlyargcount,
+        co_kwonlyargcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
+        co_code,
+        co_consts,
+        co_names,
+        co_varnames,
+        co_filename,
+        co_name,
+        co_firstlineno,
+        co_lnotab,
+        co_freevars,
+        co_cellvars,
+    ):
+        self.co_argcount = co_argcount
+        self.co_posonlyargcount = co_posonlyargcount
+        self.co_kwonlyargcount = co_kwonlyargcount
+        self.co_nlocals = co_nlocals
+        self.co_stacksize = co_stacksize
+        self.co_flags = co_flags
+        self.co_code = co_code
+        self.co_consts = co_consts
+        self.co_names = co_names
+        self.co_varnames = co_varnames
+        self.co_filename = co_filename
+        self.co_name = co_name
+        self.co_firstlineno = co_firstlineno
+        self.co_lnotab = co_lnotab
+        self.co_freevars = co_freevars
+        self.co_cellvars = co_cellvars
+
+    def freeze(self):
+        # FIXME we could call super and ten have just the diffs below
+        for field in "co_consts co_names co_varnames co_freevars co_cellvars".split():
+            val = getattr(self, field)
+            if isinstance(val, list):
+                setattr(self, field, tuple(val))
+
+        if isinstance(self.co_lnotab, dict):
+            d = self.co_lnotab
+            self.co_lnotab = sorted(zip(d.keys(), d.values()), key=lambda tup: tup[0])
+        if isinstance(self.co_lnotab, list):
+            # We assume we have a list of tuples:
+            # (offset, linenumber) which we convert
+            # into the encoded format
+            self.encode_lineno_tab()
+
+        if PYTHON_VERSION >= 3.8:
+            args = (
+                self.co_argcount,
+                self.co_posonlyargcount,
+                self.co_kwonlyargcount,
+                self.co_nlocals,
+                self.co_stacksize,
+                self.co_flags,
+                self.co_code,
+                self.co_consts,
+                self.co_names,
+                self.co_varnames,
+                self.co_filename,
+                self.co_name,
+                self.co_firstlineno,
+                self.co_lnotab,
+                self.co_freevars,
+                self.co_cellvars,
+            )
+            return types.CodeType(*args)
+        else:
+            return self
+
+    def check(self):
+        for field in "co_argcount co_posonlyargcount co_kw_onlyargcount co_nlocals co_flags co_firstlineno".split():
+            val = getattr(self, field)
+            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
+        for field in "co_consts co_names co_varnames".split():
+            val = getattr(self, field)
+            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
+                field,
+                type(val),
+            )
 
 
 class Code3Compat(Code3):
@@ -113,14 +248,25 @@ class Code3Compat(Code3):
     in what you want and leave the rest blank.  Remmeber though to
     call inherited function freeze when done.
     """
-    def __init__(self,
-                 co_argcount=0,
-                 co_kwonlyargcount=0,
-                 co_nlocals=0,
-                 co_stacksize=0, co_flags=[], co_code=[],
-                 co_consts=[], co_names=[], co_varnames=[], co_filename='unknown',
-                 co_name = 'unknown', co_firstlineno=1,
-                 co_lnotab='', co_freevars=[], co_cellvars=[]):
+
+    def __init__(
+        self,
+        co_argcount=0,
+        co_kwonlyargcount=0,
+        co_nlocals=0,
+        co_stacksize=0,
+        co_flags=[],
+        co_code=[],
+        co_consts=[],
+        co_names=[],
+        co_varnames=[],
+        co_filename="unknown",
+        co_name="unknown",
+        co_firstlineno=1,
+        co_lnotab="",
+        co_freevars=[],
+        co_cellvars=[],
+    ):
         self.co_argcount = co_argcount
         self.co_kwonlyargcount = co_kwonlyargcount
         self.co_nlocals = co_nlocals
@@ -138,17 +284,33 @@ class Code3Compat(Code3):
         self.co_cellvars = co_cellvars
 
     def __repr__(self):
-        return ('<code3 object %s at 0x%0x, file "%s", line %d>' % (
-            self.co_name, id(self), self.co_filename, self.co_firstlineno))
+        return '<code3 object %s at 0x%0x, file "%s", line %d>' % (
+            self.co_name,
+            id(self),
+            self.co_filename,
+            self.co_firstlineno,
+        )
+
 
 def code3compat(co):
-    return Code3Compat(co.co_argcount,
-                       co.co_kwonlyargcount,
-                       co.co_nlocals,
-                       co.co_stacksize, co.co_flags, co.co_code,
-                       co.co_consts, co.co_names, co.co_varnames,
-                       co.co_filename, co.co_name, co.co_firstlineno,
-                       co.co_lnotab, co.co_freevars, co.co_cellvars)
+    return Code3Compat(
+        co.co_argcount,
+        co.co_kwonlyargcount,
+        co.co_nlocals,
+        co.co_stacksize,
+        co.co_flags,
+        co.co_code,
+        co.co_consts,
+        co.co_names,
+        co.co_varnames,
+        co.co_filename,
+        co.co_name,
+        co.co_firstlineno,
+        co.co_lnotab,
+        co.co_freevars,
+        co.co_cellvars,
+    )
+
 
 class Code2:
     """Class for a Python2 code object used when a Python 3 interpreter is
@@ -162,10 +324,25 @@ class Code2:
     can be stored as a simple list of offset, line_number tuples.
 
     """
-    def __init__(self, co_argcount, co_kwonlyargcount, co_nlocals, co_stacksize,
-                 co_flags, co_code,
-                 co_consts, co_names, co_varnames, co_filename, co_name,
-                 co_firstlineno, co_lnotab, co_freevars, co_cellvars):
+
+    def __init__(
+        self,
+        co_argcount,
+        co_kwonlyargcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
+        co_code,
+        co_consts,
+        co_names,
+        co_varnames,
+        co_filename,
+        co_name,
+        co_firstlineno,
+        co_lnotab,
+        co_freevars,
+        co_cellvars,
+    ):
         self.co_argcount = co_argcount
         # Note: There is no kwonlyargcount in Python2
         self.co_kwonlyargcount = co_kwonlyargcount
@@ -195,7 +372,7 @@ class Code2:
         return op
 
     def encode_lineno_tab(self):
-        co_lnotab = ''
+        co_lnotab = ""
 
         prev_line_number = self.co_firstlineno
         prev_offset = 0
@@ -218,15 +395,14 @@ class Code2:
         self.co_lnotab = co_lnotab
 
     def freeze(self):
-        for field in 'co_consts co_names co_varnames co_freevars co_cellvars'.split():
+        for field in "co_consts co_names co_varnames co_freevars co_cellvars".split():
             val = getattr(self, field)
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
 
         if isinstance(self.co_lnotab, dict):
             d = self.co_lnotab
-            self.co_lnotab = sorted(zip(d.keys(), d.values()),
-                                    key=lambda tup: tup[0])
+            self.co_lnotab = sorted(zip(d.keys(), d.values()), key=lambda tup: tup[0])
         if isinstance(self.co_lnotab, list):
             # We assume we have a list of tuples:
             # (offset, linenumber) which we convert
@@ -235,8 +411,13 @@ class Code2:
             # FIXME: handle PYTHON 3
             self.encode_lineno_tab()
 
-
-        args = (self.co_argcount,
+        if PYTHON3:
+            if hasattr(self, "co_kwonlyargcount"):
+                delattr(self, "co_kwonlyargcount")
+            return self
+        else:
+            args = (
+                self.co_argcount,
                 self.co_nlocals,
                 self.co_stacksize,
                 self.co_flags,
@@ -249,30 +430,46 @@ class Code2:
                 self.co_firstlineno,
                 self.co_lnotab,
                 self.co_freevars,
-                self.co_cellvars)
-        return types.CodeType(*args)
-
+                self.co_cellvars,
+            )
+            return types.CodeType(*args)
+>>>>>>> master
 
     def check(self):
-        for field in 'co_argcount co_nlocals co_flags co_firstlineno'.split():
+        for field in "co_argcount co_nlocals co_flags co_firstlineno".split():
             val = getattr(self, field)
-            assert isinstance(val, int), \
-                "%s should be int, is %s" % (field, type(val))
-        for field in 'co_consts co_names co_varnames'.split():
+            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
+        for field in "co_consts co_names co_varnames".split():
             val = getattr(self, field)
-            assert isinstance(val, tuple), \
-                "%s should be tuple, is %s" % (field, type(val))
+            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
+                field,
+                type(val),
+            )
+
 
 class Code2Compat(Code2):
     """A much more flexible version of Code. We don't require kwonlyargcount which
     doesn't exist. You can also fill in what you want and leave the rest blank.
     Remember though to call inherited function freeze when done.
     """
-    def __init__(self, co_argcount=0, co_nlocals=0,
-                 co_stacksize=0, co_flags=[], co_code=[],
-                 co_consts=[], co_names=[], co_varnames=[], co_filename='unknown',
-                 co_name = 'unknown', co_firstlineno=1,
-                 co_lnotab='', co_freevars=[], co_cellvars=[]):
+
+    def __init__(
+        self,
+        co_argcount=0,
+        co_nlocals=0,
+        co_stacksize=0,
+        co_flags=[],
+        co_code=[],
+        co_consts=[],
+        co_names=[],
+        co_varnames=[],
+        co_filename="unknown",
+        co_name="unknown",
+        co_firstlineno=1,
+        co_lnotab="",
+        co_freevars=[],
+        co_cellvars=[],
+    ):
         self.co_argcount = co_argcount
         self.co_nlocals = co_nlocals
         self.co_stacksize = co_stacksize
@@ -287,9 +484,15 @@ class Code2Compat(Code2):
         self.co_lnotab = co_lnotab
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
+
     def __repr__(self):
-        return ('<code2 object %s at 0x%0x, file "%s", line %d>' % (
-            self.co_name, id(self), self.co_filename, self.co_firstlineno))
+        return '<code2 object %s at 0x%0x, file "%s", line %d>' % (
+            self.co_name,
+            id(self),
+            self.co_filename,
+            self.co_firstlineno,
+        )
+
 
 class Code14:
     """Class for a Python 1.4 code object used when a Python 2 or 3 interpreter is
@@ -303,10 +506,25 @@ class Code14:
     can be stored as a simple list of offset, line_number tuples.
 
     """
-    def __init__(self, co_argcount, co_kwonlyargcount, co_nlocals, co_stacksize,
-                 co_flags, co_code,
-                 co_consts, co_names, co_varnames, co_filename, co_name,
-                 co_firstlineno, co_lnotab, co_freevars, co_cellvars):
+
+    def __init__(
+        self,
+        co_argcount,
+        co_kwonlyargcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
+        co_code,
+        co_consts,
+        co_names,
+        co_varnames,
+        co_filename,
+        co_name,
+        co_firstlineno,
+        co_lnotab,
+        co_freevars,
+        co_cellvars,
+    ):
         self.co_argcount = co_argcount
         # Note: There is no kwonlyargcount in Python2
         self.co_kwonlyargcount = co_kwonlyargcount
@@ -334,15 +552,14 @@ class Code14:
         return op
 
     def freeze(self):
-        for field in 'co_consts co_names co_varnames co_freevars co_cellvars'.split():
+        for field in "co_consts co_names co_varnames co_freevars co_cellvars".split():
             val = getattr(self, field)
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
 
         if isinstance(self.co_lnotab, dict):
             d = self.co_lnotab
-            self.co_lnotab = sorted(zip(d.keys(), d.values()),
-                                    key=lambda tup: tup[0])
+            self.co_lnotab = sorted(zip(d.keys(), d.values()), key=lambda tup: tup[0])
         if isinstance(self.co_lnotab, list):
             # We assume we have a list of tuples:
             # (offset, linenumber) which we convert
@@ -351,43 +568,58 @@ class Code14:
             # FIXME: handle PYTHON 3
             self.encode_lineno_tab()
 
-
         if PYTHON3:
-            if hasattr(self, 'co_kwonlyargcount'):
-                delattr(self, 'co_kwonlyargcount')
+            if hasattr(self, "co_kwonlyargcount"):
+                delattr(self, "co_kwonlyargcount")
             return self
         else:
-            args = (self.co_argcount,
-                    self.co_nlocals,
-                    self.co_stacksize,
-                    self.co_flags,
-                    self.co_code,
-                    self.co_consts,
-                    self.co_names,
-                    self.co_varnames,
-                    self.co_filename,
-                    self.co_name,
-                    self.co_freevars,
-                    self.co_cellvars)
+            args = (
+                self.co_argcount,
+                self.co_nlocals,
+                self.co_stacksize,
+                self.co_flags,
+                self.co_code,
+                self.co_consts,
+                self.co_names,
+                self.co_varnames,
+                self.co_filename,
+                self.co_name,
+                self.co_freevars,
+                self.co_cellvars,
+            )
             return types.CodeType(*args)
 
-
     def check(self):
-        for field in 'co_argcount co_nlocals co_flags co_firstlineno'.split():
+        for field in "co_argcount co_nlocals co_flags co_firstlineno".split():
             val = getattr(self, field)
-            assert isinstance(val, int), \
-                "%s should be int, is %s" % (field, type(val))
-        for field in 'co_consts co_names co_varnames'.split():
+            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
+        for field in "co_consts co_names co_varnames".split():
             val = getattr(self, field)
-            assert isinstance(val, tuple), \
-                "%s should be tuple, is %s" % (field, type(val))
+            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
+                field,
+                type(val),
+            )
+
 
 def code2compat(co):
-    return Code2Compat(co.co_argcount, co.co_nlocals,
-                       co.co_stacksize, co.co_flags, co.co_code,
-                       co.co_consts, co.co_names, co.co_varnames,
-                       co.co_filename, co.co_name, co.co_firstlineno,
-                       co.co_lnotab, co.co_freevars, co.co_cellvars)
+    return Code2Compat(
+        co.co_argcount,
+        co.co_nlocals,
+        co.co_stacksize,
+        co.co_flags,
+        co.co_code,
+        co.co_consts,
+        co.co_names,
+        co.co_varnames,
+        co.co_filename,
+        co.co_name,
+        co.co_firstlineno,
+        co.co_lnotab,
+        co.co_freevars,
+        co.co_cellvars,
+    )
+
+
 def iscode(obj):
     """A replacement for inspect.iscode() which we can't used because we may be
     using a different version of Python than the version of Python used
@@ -395,10 +627,12 @@ def iscode(obj):
     """
     return inspect.iscode(obj) or isinstance(obj, Code3) or isinstance(obj, Code2)
 
+
 def code_has_star_arg(code):
     """Return True iff
     the code object has a variable positional parameter (*args-like)"""
     return (code.co_flags & 4) != 0
+
 
 def code_has_star_star_arg(code):
     """Return True iff

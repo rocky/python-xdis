@@ -39,18 +39,18 @@ def check_object_path(path):
         if PYTHON3:
             spath = path
         else:
-            spath = path.decode('utf-8')
-        path = tempfile.mkstemp(prefix=basename + '-',
-                                suffix='.pyc', text=False)[1]
+            spath = path.decode("utf-8")
+        path = tempfile.mkstemp(prefix=basename + "-", suffix=".pyc", text=False)[1]
         py_compile.compile(spath, cfile=path, doraise=True)
 
     if not path.endswith(".pyc") and not path.endswith(".pyo"):
-        raise ValueError("path %s must point to a .py or .pyc file\n" %
-                         path)
+        raise ValueError("path %s must point to a .py or .pyc file\n" % path)
     return path
 
+
 def is_pypy(magic_int):
-    return magic_int in ((62211+7, 3180+7) + magics.IS_PYPY3)
+    return magic_int in ((62211 + 7, 3180 + 7) + magics.IS_PYPY3)
+
 
 def load_file(filename, out=sys.stdout):
     """
@@ -63,21 +63,21 @@ def load_file(filename, out=sys.stdout):
     """
     fp = open(filename, 'r')
     try:
-      source = fp.read()
-      try:
-          if PYTHON_VERSION < 2.6:
-              co = compile(source, filename, 'exec')
-          else:
-              co = compile(source, filename, 'exec', dont_inherit=True)
-      except SyntaxError:
-          out.write('>>Syntax error in %s\n' % filename)
-          raise
+        source = fp.read()
+        try:
+            if PYTHON_VERSION < 2.6:
+                co = compile(source, filename, "exec")
+            else:
+                co = compile(source, filename, "exec", dont_inherit=True)
+        except SyntaxError:
+            out.write(">>Syntax error in %s\n" % filename)
+            raise
     finally:
         fp.close()
     return co
 
-def load_module(filename, code_objects=None, fast_load=False,
-                get_code=True):
+
+def load_module(filename, code_objects=None, fast_load=False, get_code=True):
     """load a module without importing it.
     load_module(filename: string): version, magic_int, code_object
 
@@ -100,7 +100,10 @@ def load_module(filename, code_objects=None, fast_load=False,
     elif not osp.isfile(filename):
         raise ImportError("File name: '%s' isn't a file" % filename)
     elif osp.getsize(filename) < 50:
-        raise ImportError("File name: '%s (%d bytes)' is too short to be a valid pyc file" % (filename, osp.getsize(filename)))
+        raise ImportError(
+            "File name: '%s (%d bytes)' is too short to be a valid pyc file"
+            % (filename, osp.getsize(filename))
+        )
 
     try:
         fp = open(filename, 'rb')
@@ -109,8 +112,9 @@ def load_module(filename, code_objects=None, fast_load=False,
     finally:
         fp.close()
 
-def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fast_load=False,
-                get_code=True):
+def load_module_from_file_object(
+    fp, filename="<unknown>", code_objects=None, fast_load=False, get_code=True
+):
     """load a module from a file object without importing it.
 
     See :func:load_module for a list of return values.
@@ -126,9 +130,9 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
 
         # For reasons I don't understand, PyPy 3.2 stores a magic
         # of '0'...  The two values below are for Python 2.x and 3.x respectively
-        if magic[0:1] in ['0', chr(0)]:
-            magic = magics.int2magic(3180+7)
-
+        if magic[0:1] in ["0", b"0"]:
+            magic = magics.int2magic(3180 + 7)
+1
         try:
             # FIXME: use the internal routine below
             float_version = float(magics.versions[magic][:3])
@@ -138,26 +142,29 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
                 raise ImportError("This smells like Pyston which is not supported.")
 
             if len(magic) >= 2:
-                raise ImportError("Unknown magic number %s in %s" %
-                                (ord(magic[0:1])+256*ord(magic[1:2]), filename))
+                raise ImportError(
+                    "Unknown magic number %s in %s"
+                    % (ord(magic[0:1]) + 256 * ord(magic[1:2]), filename)
+                )
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
 
         if magic_int in (3010, 3020, 3030, 3040, 3050, 3060, 3061, 3361, 3371):
-            raise ImportError("%s is interim Python %s (%d) bytecode which is "
-                              "not supported.\nFinal released versions are "
-                              "supported." % (
-                                  filename, magics.versions[magic],
-                                  magics.magic2int(magic)))
+            raise ImportError(
+                "%s is interim Python %s (%d) bytecode which is "
+                "not supported.\nFinal released versions are "
+                "supported."
+                % (filename, magics.versions[magic], magics.magic2int(magic))
+            )
         elif magic_int == 62135:
             fp.seek(0)
             return fix_dropbox_pyc(fp)
         elif magic_int == 62215:
-            raise ImportError("%s is a dropbox-hacked Python %s (bytecode %d).\n"
-                              "See https://github.com/kholia/dedrop for how to "
-                              "decrypt." % (
-                                  filename, magics.versions[magic],
-                                  magics.magic2int(magic)))
+            raise ImportError(
+                "%s is a dropbox-hacked Python %s (bytecode %d).\n"
+                "See https://github.com/kholia/dedrop for how to "
+                "decrypt." % (filename, magics.versions[magic], magics.magic2int(magic))
+            )
 
         try:
             # print version
@@ -167,11 +174,11 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
 
             if magic_int == 3393:
                 timestamp = 0
-                _ = unpack("<I", ts)[0]         # hash word 1
-                _ = unpack("<I", fp.read(4))[0] # hash word 2
-            elif magic_int in (3394, 3401):
+                _ = unpack("<I", ts)[0]  # hash word 1
+                _ = unpack("<I", fp.read(4))[0]  # hash word 2
+            elif magic_int in (3394, 3401, 3412):
                 timestamp = 0
-                _ = unpack("<I", fp.read(4))[0] # pep552_bits
+                _ = unpack("<I", fp.read(4))[0]  # pep552_bits
             else:
                 timestamp = unpack("<I", ts)[0]
 
@@ -181,11 +188,12 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
             # the size info, occurred within a Python major/minor
             # release. Hence the test on the magic value rather than
             # PYTHON_VERSION, although PYTHON_VERSION would probably work.
-            if ( ( (3200 <= magic_int < 20121) and
-                   (magic_int not in (5892, 11913, 39170, 39171)) )
-                 or (magic_int in magics.IS_PYPY3) ):
+            if (
+                (3200 <= magic_int < 20121)
+                and (magic_int not in (5892, 11913, 39170, 39171))
+            ) or (magic_int in magics.IS_PYPY3):
 
-                source_size = unpack("<I", fp.read(4))[0] # size mod 2**32
+                source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
             else:
                 source_size = None
 
@@ -203,26 +211,29 @@ def load_module_from_file_object(fp, filename='<unknown>', code_objects=None, fa
         except:
             kind, msg = sys.exc_info()[0:2]
             import traceback
+
             traceback.print_exc()
-            raise ImportError("Ill-formed bytecode file %s\n%s; %s"
-                              % (filename, kind, msg))
+            raise ImportError(
+                "Ill-formed bytecode file %s\n%s; %s" % (filename, kind, msg)
+            )
 
     finally:
-      fp.close()
+        fp.close()
 
     return float_version, timestamp, magic_int, co, is_pypy(magic_int), source_size
+
 
 def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
     """
-    fp = open(bytecode_path, 'wb')
+    fp = open(bytecode_path, "wb")
     try:
         fp.write(pack('<Hcc', magic_int, '\r', '\n'))
         fp.write(pack('<I', int(time.time())))
         if (3000 <= magic_int < 20121):
             # In Python 3 you need to write out the size mod 2**32 here
-            fp.write(pack('<I', filesize))
+            fp.write(pack("<I", filesize))
         fp.write(marshal.dumps(code))
     finally:
         fp.close()

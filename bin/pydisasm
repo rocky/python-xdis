@@ -2,4 +2,4 @@
 mydir=$(dirname $0)
 cd $mydir && fulldir=$(pwd)
 cd -
-exec python $fulldir/pydisasm.py $@
+exec python $fulldir/../xdis/bin/pydisasm.py $@
