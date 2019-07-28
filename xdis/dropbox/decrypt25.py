@@ -262,10 +262,10 @@ if 0:
         return table
 
     import re
-    re.compile('offset loc_(\w+)').findall('dd offset loc_8096DC4, offset loc_8096963, offset loc_8095462')
+    re.compile(r'offset loc_(\w+)').findall('dd offset loc_8096DC4, offset loc_8096963, offset loc_8095462')
 
     def load(name):
-        a = re.compile('offset loc_(\w+)').findall(open(name).read())
+        a = re.compile(r'offset loc_(\w+)').findall(open(name).read())
         a = [int(i, 16) for i in a]
         c = a[:]
         c.sort()
