@@ -31,6 +31,9 @@ jobs:
       - image: buildpack-deps:trusty # primary container
         environment:
           ENV: CI
+    machine:
+      python:
+        version: 2.7.14
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
@@ -43,7 +46,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run:
         working_directory: ~/rocky/python-xdis
-        command: pyenv install 2.7.16 && pyenv local 2.7.16 && pyenv rehash && pip install virtualenv && pip install nose && pip install pep8 && pyenv rehash
+        command: pip install virtualenv && pip install nose && pip install pep8 && pyenv rehash
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
