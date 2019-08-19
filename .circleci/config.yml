@@ -27,10 +27,6 @@ jobs:
     # VM instead of a container) see https://circleci.com/docs/2.0/executor-types/
     # To see the list of pre-built images that CircleCI provides for most common languages see
     # https://circleci.com/docs/2.0/circleci-images/
-    docker:
-      - image: buildpack-deps:trusty # primary container
-        environment:
-          ENV: CI
     machine:
       python:
         version: 2.7.14
