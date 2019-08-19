@@ -6,7 +6,7 @@
 # than the prescribed lifecycle of 1.0. In general, we recommend using this generated
 # configuration as a reference rather than using it in production, though in most
 # cases it should duplicate the execution of your original 1.0 config.
-version: 2
+version: 2.1
 jobs:
   build:
     working_directory: ~/rocky/python-xdis
@@ -17,6 +17,7 @@ jobs:
     environment:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+      COMPILE: --compile
     # In CircleCI 1.0 we used a pre-configured image with a large number of languages and other packages.
     # In CircleCI 2.0 you can now specify your own image, or use one of our pre-configured images.
     # The following configuration line tells CircleCI to use the specified docker image as the runtime environment for you job.
@@ -27,8 +28,9 @@ jobs:
     # To see the list of pre-built images that CircleCI provides for most common languages see
     # https://circleci.com/docs/2.0/circleci-images/
     docker:
-    - image: circleci/build-image:ubuntu-1604:201903-01
-      command: /sbin/init
+      - image: buildpack-deps:trusty # primary container
+        environment:
+          ENV: CI
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
@@ -41,7 +43,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run:
         working_directory: ~/rocky/python-xdis
-        command: pyenv install 2.7.13 && pyenv local 2.7.13 && pyenv rehash && pip install virtualenv && pip install nose && pip install pep8 && pyenv rehash
+        command: pyenv install 2.7.16 && pyenv local 2.7.16 && pyenv rehash && pip install virtualenv && pip install nose && pip install pep8 && pyenv rehash
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
@@ -54,6 +56,7 @@ jobs:
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
         - v1-dep-
     # This is based on your 1.0 configuration file or project settings
+    - run: pip install --upgrade setuptools
     - run: pip install -e .
     - run: pip install -r requirements-dev.txt
     # Save dependency cache
