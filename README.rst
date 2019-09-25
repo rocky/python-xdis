@@ -1,4 +1,4 @@
-|buildstatus| |Latest Version| |Supported Python Versions|
+|buildstatus| |Pypi Installs| |Latest Version| |Supported Python Versions|
 
 xdis
 ====
@@ -118,3 +118,4 @@ See Also
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
 .. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
 		 :target: https://badge.fury.io/py/xdis
+.. |Pypi Installs| image:: https://pepy.tech/badge/xdis/month
