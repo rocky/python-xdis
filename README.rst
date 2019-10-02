@@ -112,7 +112,7 @@ See Also
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
 .. _remake: http://bashdb.sf.net/remake
-.. |buildstatus| image:: https://travis-ci.org/rocky/python-xdis.svg
+.. |buildstatus| image:: https://travis-ci.org/rocky/python-xdis.svg?branch=master
 		 :target: https://travis-ci.org/rocky/python-xdis
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
 .. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
