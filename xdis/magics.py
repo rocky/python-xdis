@@ -249,7 +249,9 @@ add_magic_from_int(3378, "3.6b2")  # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
 add_magic_from_int(3379, "3.6rc1")  # more thorough __class__ validation #23722
 add_magic_from_int(3390, "3.7.0alpha0")
 add_magic_from_int(3391, "3.7.0alpha3")
-add_magic_from_int(3392, "3.7.0beta2")  # PEP 552 - Additional word in header and possibly no timestamp
+add_magic_from_int(
+    3392, "3.7.0beta2"
+)  # PEP 552 - Additional word in header and possibly no timestamp
 add_magic_from_int(3393, "3.7.0beta3")
 add_magic_from_int(3394, "3.7.0")
 add_magic_from_int(3401, "3.8.0a3+")
@@ -308,8 +310,7 @@ add_canonic_versions(
     "3.3 3.3.0 3.3.1 3.3.2 3.3.3 3.3.4 3.3.5 3.3.6 3.3.7rc1 3.3.7", "3.3a4"
 )
 add_canonic_versions(
-    "3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6 3.4.7 3.4.8 3.4.9 3.4.10",
-    "3.4rc2",
+    "3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6 3.4.7 3.4.8 3.4.9 3.4.10", "3.4rc2"
 )
 add_canonic_versions("3.5.0 3.5.1", "3.5")
 add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7", "3.5.2")

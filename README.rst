@@ -1,5 +1,7 @@
 |buildstatus| |Pypi Installs| |Latest Version| |Supported Python Versions|
 
+|packagestatus|
+
 xdis
 ====
 
@@ -119,3 +121,5 @@ See Also
 .. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
 		 :target: https://badge.fury.io/py/xdis
 .. |Pypi Installs| image:: https://pepy.tech/badge/xdis/month
+.. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg
+		 :target: https://repology.org/project/python:xdis/versions

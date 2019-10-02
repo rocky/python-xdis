@@ -1,3 +1,9 @@
+4.0.4 2019-10-02
+================
+
+- Add most-recent 3.8 magic number
+- Remove some 3.8 invalid escape warnings
+
 4.0.3 2019-7-24  Mueller day
 ============================
 
