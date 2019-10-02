@@ -13,7 +13,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import imp, marshal, py_compile, sys, tempfile, time
+import marshal, py_compile, sys, tempfile, time
 from struct import unpack, pack
 import os.path as osp
 
@@ -169,7 +169,12 @@ def load_module_from_file_object(
         try:
             # print version
             ts = fp.read(4)
-            my_magic_int = magics.magic2int(imp.get_magic())
+            try:
+                import importlib
+                my_magic_int = magics.magic2int(importlib.util.MAGIC_NUMBER)
+            except:
+                import imp
+                my_magic_int = magics.magic2int(imp.get_magic())
             magic_int = magics.magic2int(magic)
 
             if magic_int == 3393:

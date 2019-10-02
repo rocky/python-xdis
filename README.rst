@@ -1,4 +1,6 @@
-|buildstatus| |Latest Version| |Supported Python Versions|
+|buildstatus| |Pypi Installs| |Latest Version| |Supported Python Versions|
+
+|packagestatus|
 
 xdis
 ====
@@ -9,13 +11,13 @@ Cross-Python bytecode Disassembler, Bytecode, and Magic Number Manipulation pack
 Introduction
 ------------
 
-The Python `dis` module allows you to disassemble bytecode from the same
+The Python dis_ module allows you to disassemble bytecode from the same
 version of Python that you are running on. But what about bytecode from
 different versions?
 
 That's what this package is for. It can "marshal load" Python
 bytecodes from different versions of Python. The command-line routine
-*pydisasm* will show disassembly output using Python 3.6 disassembly
+*pydisasm* will show disassembly output using Python 3.8 disassembly
 conventions.
 
 Also, if you need to modify and write bytecode, the routines here can
@@ -35,7 +37,7 @@ to the kinds of instruction categorization that `dis` offers, we have
 additional categories for things that would be useful in such a
 bytecode optimizer.
 
-The programs here accept bytecodes from Python version 1.3 to 3.7 or
+The programs here accept bytecodes from Python version 1.3 to 3.8 or
 so. The code requires Python 2.4 or later and has been tested on
 Python running lots of Python versions.
 
@@ -46,15 +48,12 @@ use the python-2.4 branch of git in github.
 Installation
 ------------
 
-This uses setup.py, so it follows the standard Python routine:
+The standard Python routine:
 
 ::
 
-    pip install -r requirements.txt
+    pip install -e .
     pip install -r requirements-dev.txt
-    python setup.py install # may need sudo
-    # or if you have pyenv:
-    python setup.py develop
 
 A GNU makefile is also provided so :code:`make install` (possibly as root or
 sudo) will do the steps above.
@@ -118,3 +117,7 @@ See Also
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
 .. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
 		 :target: https://badge.fury.io/py/xdis
+.. |Pypi Installs| image:: https://pepy.tech/badge/xdis/month
+.. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg
+		 :target: https://repology.org/project/python:xdis/versions
+.. _dis: https://docs.python.org/3/library/dis.html
