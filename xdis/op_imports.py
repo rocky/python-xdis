@@ -19,6 +19,8 @@ import sys
 from xdis import IS_PYPY
 from xdis.magics import canonic_python_version
 
+from xdis.opcodes import opcode_10 as opcode_10
+from xdis.opcodes import opcode_11 as opcode_11
 from xdis.opcodes import opcode_13 as opcode_13
 from xdis.opcodes import opcode_14 as opcode_14
 from xdis.opcodes import opcode_15 as opcode_15
@@ -48,6 +50,12 @@ from xdis.opcodes import opcode_36pypy as opcode_36pypy
 
 # FIXME
 op_imports = {
+    1.0     : opcode_10,
+    '1.0'   : opcode_10,
+    1.1     : opcode_11,
+    '1.1'   : opcode_11,
+    1.2     : opcode_11,
+    '1.2'   : opcode_11,
     1.3     : opcode_13,
     '1.3'   : opcode_13,
     1.4     : opcode_14,

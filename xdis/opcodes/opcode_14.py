@@ -57,7 +57,6 @@ opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 finalize_opcodes(l)
 
-
 def findlinestarts(co, dup_lines=False):
     code = co.co_code
     n = len(code)

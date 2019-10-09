@@ -51,6 +51,8 @@ def int2magic(magic_int):
     for knonwn magic_int's.
     """
 
+    if magic_int in (39170, 39171):
+        return struct.pack("<H", magic_int) + b"\x99\x00"
     if sys.version_info >= (3, 0):
         return struct.pack(
             "<Hcc", magic_int, bytes("\r", "utf-8"), bytes("\n", "utf-8")

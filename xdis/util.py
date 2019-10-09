@@ -1,4 +1,4 @@
-# (C) Copyright 2018 by Rocky Bernstein
+# (C) Copyright 2018-2019 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,14 +14,17 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+
 def code2num(code, i):
     if isinstance(code, str):
         return ord(code[i])
     else:
         return code[i]
 
+
 def num2code(num):
-    return (num & 0xff, num >> 8)
+    return (num & 0xFF, num >> 8)
+
 
 # The inspect module interrogates this dictionary to build its
 # list of CO_* constants. It is also used by pretty_flags to
@@ -51,11 +54,10 @@ COMPILER_FLAG_NAMES = {
     # These are PYPY specific
     0x00100000: "KILL_DOCSTRING",
     0x00200000: "YIELD_INSIDE_TRY",
-
     0x00000100: "PYPY_SOURCE_IS_UTF8",
     0x00000200: "PYPY_DONT_IMPLY_DEDENT",
     0x00000400: "PYPY_ONLY_AST",
-    0x10000000: "PYPY_ACCEPT_NULL_BYTES"
+    0x10000000: "PYPY_ACCEPT_NULL_BYTES",
 }
 
 # Invert above dictionary so we can look up a bit value
@@ -64,7 +66,8 @@ COMPILER_FLAG_BIT = dict([v, k] for (k, v) in COMPILER_FLAG_NAMES.items())
 
 # Allow us to access by just name, prefixed with CO. e.g
 # CO_OPTIMIZED, CO_NOFREE
-globals().update(dict(['CO_'+k, v] for (k, v) in COMPILER_FLAG_BIT.items()))
+globals().update(dict(["CO_" + k, v] for (k, v) in COMPILER_FLAG_BIT.items()))
+
 
 def pretty_flags(flags):
     """Return pretty representation of code flags."""
@@ -82,10 +85,12 @@ def pretty_flags(flags):
     names.reverse()
     return "%s (%s)" % (result, " | ".join(names))
 
+
 def code_has_star_arg(code):
     """Return True iff
     the code object has a variable positional parameter (*args-like)"""
     return (code.co_flags & 4) != 0
+
 
 def code_has_star_star_arg(code):
     """Return True iff
@@ -131,7 +136,7 @@ def format_code_info(co, version, name=None):
     if len(co.co_varnames) > pos_argc:
         lines.append("# Local variables:")
         for i, n in enumerate(co.co_varnames[pos_argc:]):
-            lines.append("# %4d: %s" % (pos_argc+i, n))
+            lines.append("# %4d: %s" % (pos_argc + i, n))
     if co.co_freevars:
         lines.append("# Free variables:")
         for i_n in enumerate(co.co_freevars):
@@ -142,6 +147,7 @@ def format_code_info(co, version, name=None):
             lines.append("# %4d: %s" % i_n)
     return "\n".join(lines)
 
+
 def _try_compile(source, name):
     """Attempts to compile the given source, first as an expression and
        then as a statement if the first approach fails.
@@ -150,25 +156,25 @@ def _try_compile(source, name):
        expect code objects
     """
     try:
-        c = compile(source, name, 'eval')
+        c = compile(source, name, "eval")
     except SyntaxError:
-        c = compile(source, name, 'exec')
+        c = compile(source, name, "exec")
     return c
+
 
 def get_code_object(x):
     """Helper to handle methods, functions, generators, strings and raw code objects"""
-    if hasattr(x, '__func__'): # Method
+    if hasattr(x, "__func__"):  # Method
         x = x.__func__
-    if hasattr(x, '__code__'): # Function
+    if hasattr(x, "__code__"):  # Function
         x = x.__code__
-    if hasattr(x, 'gi_code'):  # Generator
+    if hasattr(x, "gi_code"):  # Generator
         x = x.gi_code
-    if isinstance(x, str):     # Source code
+    if isinstance(x, str):  # Source code
         x = _try_compile(x, "<disassembly>")
-    if hasattr(x, 'co_code'):  # Code object
+    if hasattr(x, "co_code"):  # Code object
         return x
-    raise TypeError("don't know how to disassemble %s objects" %
-                    type(x).__name__)
+    raise TypeError("don't know how to disassemble %s objects" % type(x).__name__)
 
 
 def code_info(x, version):
@@ -184,4 +190,4 @@ def show_code(co, version, file=None):
     if file is None:
         print(code_info(co, version))
     else:
-        file.write(code_info(co, version) + '\n')
+        file.write(code_info(co, version) + "\n")

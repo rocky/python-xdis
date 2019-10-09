@@ -37,7 +37,7 @@ to the kinds of instruction categorization that `dis` offers, we have
 additional categories for things that would be useful in such a
 bytecode optimizer.
 
-The programs here accept bytecodes from Python version 1.3 to 3.8 or
+The programs here accept bytecodes from Python version 1.0 to 3.8 or
 so. The code requires Python 2.4 or later and has been tested on
 Python running lots of Python versions.
 
