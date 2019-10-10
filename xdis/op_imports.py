@@ -24,6 +24,7 @@ from xdis.opcodes import opcode_11 as opcode_11
 from xdis.opcodes import opcode_13 as opcode_13
 from xdis.opcodes import opcode_14 as opcode_14
 from xdis.opcodes import opcode_15 as opcode_15
+from xdis.opcodes import opcode_16 as opcode_16
 from xdis.opcodes import opcode_20 as opcode_20
 from xdis.opcodes import opcode_21 as opcode_21
 from xdis.opcodes import opcode_22 as opcode_22
@@ -62,7 +63,8 @@ op_imports = {
     '1.4'   : opcode_14,
     1.5     : opcode_15,
     '1.5'   : opcode_15,
-    1.5     : opcode_15,
+    1.6     : opcode_16,
+    '1.6'   : opcode_16,
     '2.0'   : opcode_20,
     2.0     : opcode_20,
     '2.1'   : opcode_21,
