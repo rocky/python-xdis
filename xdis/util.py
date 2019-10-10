@@ -37,11 +37,9 @@ COMPILER_FLAG_NAMES = {
     0x00000010: "NESTED",
     0x00000020: "GENERATOR",
     0x00000040: "NOFREE",
-
     # These are in Python 3.x
     0x00000080: "COROUTINE",
     0x00000100: "ITERABLE_COROUTINE",
-
     # These are used only in Python 2.x */
     0x00001000: "GENERATOR_ALLOWED",
     0x00002000: "FUTURE_DIVISION",
@@ -50,7 +48,6 @@ COMPILER_FLAG_NAMES = {
     0x00010000: "FUTURE_PRINT_FUNCTION",
     0x00020000: "FUTURE_UNICODE_LITERALS",
     0x00040000: "FUTURE_BARRY_AS_DBFL",
-
     # These are PYPY specific
     0x00100000: "KILL_DOCSTRING",
     0x00200000: "YIELD_INSIDE_TRY",
@@ -104,15 +101,22 @@ def format_code_info(co, version, name=None):
     lines = []
     lines.append("# Method Name:       %s" % name)
     lines.append("# Filename:          %s" % co.co_filename)
-    lines.append("# Argument count:    %s" % co.co_argcount)
+
+    if version >= 1.3:
+        lines.append("# Argument count:    %s" % co.co_argcount)
+
     if version >= 3.0:
         lines.append("# Kw-only arguments: %s" % co.co_kwonlyargcount)
 
     pos_argc = co.co_argcount
-    lines.append("# Number of locals:  %s" % co.co_nlocals)
+    if version >= 1.3:
+        lines.append("# Number of locals:  %s" % co.co_nlocals)
     if version >= 1.5:
         lines.append("# Stack size:        %s" % co.co_stacksize)
-    lines.append("# Flags:             %s" % pretty_flags(co.co_flags))
+
+    if version >= 1.3:
+        lines.append("# Flags:             %s" % pretty_flags(co.co_flags))
+
     if version >= 1.5:
         lines.append("# First Line:        %s" % co.co_firstlineno)
     # if co.co_freevars:
