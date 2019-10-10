@@ -254,6 +254,8 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                             co_cellvars,
                         )
                     else:
+                        if not isinstance(co_lnotab, bytes):
+                            co_lnotab = bytes(co_lnotab, encoding="utf-8")
                         code = Code3(
                             co_argcount,
                             kwonlyargcount,
@@ -267,7 +269,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                             co_filename,
                             co_name,
                             co_firstlineno,
-                            bytes(co_lnotab, encoding="utf-8"),
+                            co_lnotab,
                             co_freevars,
                             co_cellvars,
                         )
@@ -293,6 +295,8 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
 
                 else:
                     # Python3 (< 3.8) to Python3: Ok to use native Python3's code type
+                    if not isinstance(co_lnotab, bytes):
+                        co_lnotab = bytes(co_lnotab, encoding="utf-8")
                     code = Code(
                         co_argcount,
                         kwonlyargcount,
@@ -306,11 +310,12 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                         co_filename,
                         co_name,
                         co_firstlineno,
-                        bytes(co_lnotab, encoding="utf-8"),
+                        co_lnotab,
                         co_freevars,
                         co_cellvars,
                     )
                     pass
+                pass
         else:
             code = Code(
                 co_argcount,
