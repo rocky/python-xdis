@@ -32,6 +32,10 @@ def get_srcdir():
         ('../test/bytecode_3.6/03_big_dict.pyc', 'testdata/big_dict-3.6.right',),
         disassemble_file,
     ),
+    (
+        ('../test/bytecode_2.7/01_hexstring.pyc', 'testdata/01_hexstring-2.7.right',),
+        disassemble_file,
+    ),
 ])
 def test_funcoutput(capfd, test_tuple, function_to_test):
     in_file, filename_expected = [

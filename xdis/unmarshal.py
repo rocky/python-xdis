@@ -116,6 +116,7 @@ def load_code(fp, magic_int, code_objects={}):
 def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # Python [1.0 .. 2.2)
     v10_to_12 = magic_int in (39170, 39171)
+
     # FIXME: find out what magics were for 1.3
     v13_to_22 = magic_int in (11913, 5892, 20121, 50428, 50823, 60202, 60717)
     v11_to_14 = magic_int in (39170, 39171, 11913, 5892)
