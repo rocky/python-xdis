@@ -12,8 +12,8 @@ COMPILE ?=
 check: check-short
 	$(PYTHON) test_pythonlib.py \
 	 	  --bytecode-1.0 --bytecode-1.1 --bytecode-1.2 --bytecode-1.3 \
-                  --bytecode-1.4 --bytecode-1.5 --bytecode-2.1 \
-	          --bytecode-2.2 --bytecode-2.3 \
+                  --bytecode-1.4 --bytecode-1.5 --bytecode-1.6 \
+	          --bytecode-2.1 --bytecode-2.2 --bytecode-2.3 \
                   --bytecode-2.4 --bytecode-2.5 \
 		  --bytecode-2.5dropbox \
                   --bytecode-2.6 --bytecode-2.7 \
