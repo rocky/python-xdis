@@ -37,22 +37,38 @@ internStrings = []
 internObjects = []
 
 if PYTHON3:
-    def long(n): return n
+
+    def long(n):
+        return n
+
+
 else:
     import unicodedata
     if PYTHON_VERSION < 2.4:
         from sets import Set as set
         frozenset = set
 
+
 def compat_str(s):
-    if (PYTHON_VERSION > 3.2 or
+    if (
+        PYTHON_VERSION > 3.2
+        or
         # FIXME: investigate
-        PYTHON_VERSION == 3.2 and IS_PYPY):
-        return s.decode('utf-8', errors='ignore')
+        PYTHON_VERSION == 3.2
+        and IS_PYPY
+    ):
+        try:
+            return s.decode("utf-8")
+        except UnicodeDecodeError:
+            # If not Unicode, return bytes
+            # and it will get converted to str when needed
+            return s
+
     elif PYTHON3:
         return s.decode()
     else:
         return str(s)
+
 
 def compat_u2s(u):
     if PYTHON_VERSION < 3.0:
@@ -60,13 +76,14 @@ def compat_u2s(u):
         # found it and this code via
         # https://www.peterbe.com/plog/unicode-to-ascii where it is a
         # dead link. That can potentially do better job in converting accents.
-        s = unicodedata.normalize('NFKD', u)
+        s = unicodedata.normalize("NFKD", u)
         try:
-            return s.encode('ascii')
+            return s.encode("ascii")
         except UnicodeEncodeError:
             return s
     else:
         return str(u)
+
 
 def load_code(fp, magic_int, code_objects={}):
     """
@@ -82,22 +99,27 @@ def load_code(fp, magic_int, code_objects={}):
     internObjects = []
     seek_pos = fp.tell()
     # Do a sanity check. Is this a code type?
-    b =  ord(fp.read(1))
+    b = ord(fp.read(1))
 
-    if (b & 0x80):
-        b = b & 0x7f
+    if b & 0x80:
+        b = b & 0x7F
 
     c = chr(b)
-    if c != 'c':
-        raise TypeError("File %s doesn't smell like Python bytecode:\n"
-                        "expecting code indicator 'c'; got '%s'"
-                        % (fp.name, c))
+    if c == "c" or (magic_int in (39170,39171) and c == "C"):
+        fp.seek(seek_pos)
+    else:
+        raise TypeError(
+            "File %s doesn't smell like Python bytecode:\n"
+            "expecting code indicator 'c'; got '%s'" % (fp.name, c)
+        )
 
-    fp.seek(seek_pos)
     return load_code_internal(fp, magic_int, code_objects=code_objects)
 
+
 def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
-    # Python [1.3 .. 2.2)
+    # Python [1.0 .. 2.2)
+    v10_to_12 = magic_int in (39170, 39171)
+
     # FIXME: find out what magics were for 1.3
     v13_to_22 = magic_int in (11913, 5892, 20121, 50428, 50823, 60202, 60717)
     v11_to_14 = magic_int in (39170, 39171, 11913, 5892)
@@ -108,46 +130,56 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     v21_to_27 = not v13_to_20 and 60202 <= magic_int <= 63000
 
     if v13_to_22:
-        co_argcount = unpack('<h', fp.read(2))[0]
+        co_argcount = unpack("<h", fp.read(2))[0]
+    elif v10_to_12:
+        co_argcount = 0
     else:
-        co_argcount = unpack('<i', fp.read(4))[0]
+        co_argcount = unpack("<i", fp.read(4))[0]
 
     if magic_int in (3412,):
-        co_posonlyargcount = unpack('<i', fp.read(4))[0]
+        co_posonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         co_posonlyargcount = None
 
     if 3020 < magic_int < 20121 and not v11_to_14:
-        kwonlyargcount = unpack('<i', fp.read(4))[0]
+        kwonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         kwonlyargcount = 0
 
     if v13_to_22:
-        co_nlocals = unpack('<h', fp.read(2))[0]
+        co_nlocals = unpack("<h", fp.read(2))[0]
+    elif v10_to_12:
+        co_nlocals = 0
     else:
-        co_nlocals = unpack('<i', fp.read(4))[0]
+        co_nlocals = unpack("<i", fp.read(4))[0]
 
     if v15_to_22:
-        co_stacksize = unpack('<h', fp.read(2))[0]
-    elif v11_to_14:
-        co_stacksize = -1  # bogus sentinal value
+        co_stacksize = unpack("<h", fp.read(2))[0]
+    elif v11_to_14 or v10_to_12:
+        co_stacksize = 0
     else:
-        co_stacksize = unpack('<i', fp.read(4))[0]
+        co_stacksize = unpack("<i", fp.read(4))[0]
 
     if v13_to_22:
-        co_flags = unpack('<h', fp.read(2))[0]
+        co_flags = unpack("<h", fp.read(2))[0]
+    elif v10_to_12:
+        co_flags = 0
     else:
-        co_flags = unpack('<i', fp.read(4))[0]
+        co_flags = unpack("<i", fp.read(4))[0]
 
-    co_code = load_code_internal(fp, magic_int, bytes_for_s=True,
-                                 code_objects=code_objects)
+    co_code = load_code_internal(
+        fp, magic_int, bytes_for_s=True, code_objects=code_objects
+    )
     co_consts = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_names = load_code_internal(fp, magic_int, code_objects=code_objects)
 
     # FIXME: only if >= 1.3
-    co_varnames = load_code_internal(fp, magic_int, code_objects=code_objects)
+    if v10_to_12:
+        co_varnames = []
+    else:
+        co_varnames = load_code_internal(fp, magic_int, code_objects=code_objects)
 
-    if not v13_to_20:
+    if not (v13_to_20 or v10_to_12):
         co_freevars = load_code_internal(fp, magic_int, code_objects=code_objects)
         co_cellvars = load_code_internal(fp, magic_int, code_objects=code_objects)
     else:
@@ -158,17 +190,17 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     co_name = load_code_internal(fp, magic_int)
 
     if v15_to_22:
-        co_firstlineno = unpack('<h', fp.read(2))[0]
+        co_firstlineno = unpack("<h", fp.read(2))[0]
     elif v11_to_14:
         # < 1.5 there is no lnotab, so no firstlineno.
         # SET_LINENO is used instead.
-        co_firstlineno = -1 # Bogus sentinal value
+        co_firstlineno = -1  # Bogus sentinal value
     else:
-        co_firstlineno = unpack('<i', fp.read(4))[0]
+        co_firstlineno = unpack("<i", fp.read(4))[0]
 
     if v11_to_14:
         # < 1.5 uses SET_LINENO only
-        co_lnotab = ''
+        co_lnotab = ""
     else:
         co_lnotab = load_code_internal(fp, magic_int, code_objects=code_objects)
 
@@ -184,48 +216,147 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
             #
             # In later Python3 magic_ints, there is a
             # kwonlyargcount parameter which we set to 0.
-            if v13_to_22 or v21_to_27:
-                code = Code2(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                             co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                             co_firstlineno, co_lnotab, co_freevars, co_cellvars)
+            if v10_to_12 or v13_to_22 or v21_to_27:
+                code = Code2(
+                    co_argcount,
+                    kwonlyargcount,
+                    co_nlocals,
+                    co_stacksize,
+                    co_flags,
+                    co_code,
+                    co_consts,
+                    co_names,
+                    co_varnames,
+                    co_filename,
+                    co_name,
+                    co_firstlineno,
+                    co_lnotab,
+                    co_freevars,
+                    co_cellvars,
+                )
             else:
                 if PYTHON_MAGIC_INT in (3412, 3413):
                     if co_posonlyargcount is not None:
                         # Python3.8 to Python3.8: Ok to use native Python3.8's code type
-                        code = Code(co_argcount, co_posonlyargcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                                    co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                                    co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                                    co_freevars, co_cellvars)
+                        code = Code(
+                            co_argcount,
+                            co_posonlyargcount,
+                            kwonlyargcount,
+                            co_nlocals,
+                            co_stacksize,
+                            co_flags,
+                            co_code,
+                            co_consts,
+                            co_names,
+                            co_varnames,
+                            co_filename,
+                            co_name,
+                            co_firstlineno,
+                            bytes(co_lnotab, encoding="utf-8"),
+                            co_freevars,
+                            co_cellvars,
+                        )
                     else:
-                        code = Code3(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                                     co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                                     co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                                     co_freevars, co_cellvars)
+                        if not isinstance(co_lnotab, bytes):
+                            co_lnotab = bytes(co_lnotab, encoding="utf-8")
+                        code = Code3(
+                            co_argcount,
+                            kwonlyargcount,
+                            co_nlocals,
+                            co_stacksize,
+                            co_flags,
+                            co_code,
+                            co_consts,
+                            co_names,
+                            co_varnames,
+                            co_filename,
+                            co_name,
+                            co_firstlineno,
+                            co_lnotab,
+                            co_freevars,
+                            co_cellvars,
+                        )
                 elif co_posonlyargcount is not None:
-                    code = Code38(co_argcount, co_posonlyargcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                                  co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                                  co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                                  co_freevars, co_cellvars)
+                    code = Code38(
+                        co_argcount,
+                        co_posonlyargcount,
+                        kwonlyargcount,
+                        co_nlocals,
+                        co_stacksize,
+                        co_flags,
+                        co_code,
+                        co_consts,
+                        co_names,
+                        co_varnames,
+                        co_filename,
+                        co_name,
+                        co_firstlineno,
+                        bytes(co_lnotab, encoding="utf-8"),
+                        co_freevars,
+                        co_cellvars,
+                    )
 
                 else:
                     # Python3 (< 3.8) to Python3: Ok to use native Python3's code type
-                    code = Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                                co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                                co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                                co_freevars, co_cellvars)
+                    if not isinstance(co_lnotab, bytes):
+                        co_lnotab = bytes(co_lnotab, encoding="utf-8")
+                    code = Code(
+                        co_argcount,
+                        kwonlyargcount,
+                        co_nlocals,
+                        co_stacksize,
+                        co_flags,
+                        co_code,
+                        co_consts,
+                        co_names,
+                        co_varnames,
+                        co_filename,
+                        co_name,
+                        co_firstlineno,
+                        co_lnotab,
+                        co_freevars,
+                        co_cellvars,
+                    )
                     pass
+                pass
         else:
-            code =  Code(co_argcount, kwonlyargcount, co_nlocals, co_stacksize, co_flags,
-                        co_code, co_consts, co_names, co_varnames, co_filename, co_name,
-                        co_firstlineno, bytes(co_lnotab, encoding='utf-8'),
-                        co_freevars, co_cellvars)
+            code = Code(
+                co_argcount,
+                kwonlyargcount,
+                co_nlocals,
+                co_stacksize,
+                co_flags,
+                co_code,
+                co_consts,
+                co_names,
+                co_varnames,
+                co_filename,
+                co_name,
+                co_firstlineno,
+                bytes(co_lnotab, encoding="utf-8"),
+                co_freevars,
+                co_cellvars,
+            )
     else:
         if v11_to_14:
-            code =  Code2Compat(co_argcount, co_nlocals, co_stacksize, co_flags, co_code,
-                                co_consts, co_names, co_varnames, co_filename, co_name,
-                                co_firstlineno, co_lnotab, co_freevars, co_cellvars)
+            code = Code2Compat(
+                co_argcount,
+                co_nlocals,
+                co_stacksize,
+                co_flags,
+                co_code,
+                co_consts,
+                co_names,
+                co_varnames,
+                co_filename,
+                co_name,
+                co_firstlineno,
+                co_lnotab,
+                co_freevars,
+                co_cellvars,
+            )
         else:
-            if (3000 <= magic_int < 20121):
+            if 3000 <= magic_int < 20121:
                 # Python 3 encodes some fields as Unicode while Python2
                 # requires the corresponding field to have string values
                 for s in co_consts:
@@ -241,20 +372,47 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                 co_name = str(co_name)
 
             if 3020 < magic_int <= 20121:
-                code =  Code3(co_argcount, kwonlyargcount,
-                              co_nlocals, co_stacksize, co_flags, co_code,
-                              co_consts, co_names, co_varnames, co_filename, co_name,
-                              co_firstlineno, co_lnotab, co_freevars, co_cellvars)
+                code = Code3(
+                    co_argcount,
+                    kwonlyargcount,
+                    co_nlocals,
+                    co_stacksize,
+                    co_flags,
+                    co_code,
+                    co_consts,
+                    co_names,
+                    co_varnames,
+                    co_filename,
+                    co_name,
+                    co_firstlineno,
+                    co_lnotab,
+                    co_freevars,
+                    co_cellvars,
+                )
             else:
                 Code = types.CodeType
-                code =  Code(co_argcount, co_nlocals, co_stacksize, co_flags, co_code,
-                             co_consts, co_names, co_varnames, co_filename, co_name,
-                             co_firstlineno, co_lnotab, co_freevars, co_cellvars)
+                code = Code(
+                    co_argcount,
+                    co_nlocals,
+                    co_stacksize,
+                    co_flags,
+                    co_code,
+                    co_consts,
+                    co_names,
+                    co_varnames,
+                    co_filename,
+                    co_name,
+                    co_firstlineno,
+                    co_lnotab,
+                    co_freevars,
+                    co_cellvars,
+                )
                 pass
             pass
         pass
     code_objects[str(code)] = code
     return code
+
 
 # Python 3.4+ support for reference objects.
 # The names follow marshal.c
@@ -265,15 +423,18 @@ def r_ref_reserve(obj, flag):
         internObjects.append(obj)
     return obj, i
 
+
 def r_ref_insert(obj, i):
     if i is not None:
         internObjects[i] = obj
     return obj
 
+
 def r_ref(obj, flag):
     if flag:
         internObjects.append(obj)
     return obj
+
 
 # Bit set on marshalType if we should
 # add obj to internObjects.
@@ -283,8 +444,7 @@ FLAG_REF = 0x80
 # FIXME: redo with a dispatch table same as
 # marshal.
 # In marshal.c this method is called r_object()
-def load_code_internal(fp, magic_int, bytes_for_s=False,
-                       code_objects={}):
+def load_code_internal(fp, magic_int, bytes_for_s=False, code_objects={}):
     global internStrings, internObjects
 
     b1 = ord(fp.read(1))
@@ -293,139 +453,139 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
     if b1 & FLAG_REF:
         # Since 3.4, "flag" is the marshal.c name
         flag = True
-        b1 = b1 & (FLAG_REF-1)
+        b1 = b1 & (FLAG_REF - 1)
     marshalType = chr(b1)
 
     # print(marshalType) # debug
-    if marshalType == '0':
+    if marshalType == "0":
         # In C this NULL. Not sure what it should
         # translate here. Note NULL != None which is below
         return None
-    elif marshalType == 'N':
+    elif marshalType == "N":
         return None
-    elif marshalType == 'S':
+    elif marshalType == "S":
         return StopIteration
-    elif marshalType == '.':
+    elif marshalType == ".":
         return Ellipsis
-    elif marshalType == 'F':
+    elif marshalType == "F":
         return False
-    elif marshalType == 'T':
+    elif marshalType == "T":
         return True
-    elif marshalType == 'i':
+    elif marshalType == "i":
         # int32
-        return r_ref(int(unpack('<i', fp.read(4))[0]), flag)
-    elif marshalType == 'l':
+        return r_ref(int(unpack("<i", fp.read(4))[0]), flag)
+    elif marshalType == "l":
         # long
-        n = unpack('<i', fp.read(4))[0]
+        n = unpack("<i", fp.read(4))[0]
         if n == 0:
             return long(0)
         size = abs(n)
         d = long(0)
         for j in range(0, size):
-            md = int(unpack('<h', fp.read(2))[0])
-            d += md << j*15
+            md = int(unpack("<h", fp.read(2))[0])
+            d += md << j * 15
         if n < 0:
-            d = long(d*-1)
+            d = long(d * -1)
         return r_ref(d, flag)
-    elif marshalType == 'I':
+    elif marshalType == "I":
         # int64. Python 3.4 removed this.
-        return unpack('<q', fp.read(8))[0]
-    elif marshalType == 'f':
+        return unpack("<q", fp.read(8))[0]
+    elif marshalType == "f":
         # float - Seems not in use after Python 2.4
-        strsize = unpack('B', fp.read(1))[0]
+        strsize = unpack("B", fp.read(1))[0]
         s = fp.read(strsize)
         return r_ref(float(s), flag)
-    elif marshalType == 'g':
+    elif marshalType == "g":
         # binary float
-        return r_ref(float(unpack('<d', fp.read(8))[0]), flag)
-    elif marshalType == 'x':
+        return r_ref(float(unpack("<d", fp.read(8))[0]), flag)
+    elif marshalType == "x":
         # complex
         if magic_int <= 62061:
-            get_float = lambda: float(fp.read(unpack('B', fp.read(1))[0]))
+            get_float = lambda: float(fp.read(unpack("B", fp.read(1))[0]))
         else:
-            get_float = lambda: float(fp.read(unpack('<i', fp.read(4))[0]))
+            get_float = lambda: float(fp.read(unpack("<i", fp.read(4))[0]))
         real = get_float()
         imag = get_float()
         return r_ref(complex(real, imag), flag)
-    elif marshalType == 'y':
+    elif marshalType == "y":
         # binary complex
-        real = unpack('<d', fp.read(8))[0]
-        imag = unpack('<d', fp.read(8))[0]
+        real = unpack("<d", fp.read(8))[0]
+        imag = unpack("<d", fp.read(8))[0]
         return r_ref(complex(real, imag), flag)
-    elif marshalType == 's':
+    elif marshalType == "s":
         # string
         # Note: could mean bytes in Python3 processing Python2 bytecode
-        strsize = unpack('<i', fp.read(4))[0]
+        strsize = unpack("<i", fp.read(4))[0]
         s = fp.read(strsize)
         if not bytes_for_s:
             s = compat_str(s)
         return r_ref(s, flag)
-    elif marshalType == 'A':
+    elif marshalType == "A":
         # ascii interned - Python3 3.4
         # FIXME: check
-        strsize = unpack('<i', fp.read(4))[0]
+        strsize = unpack("<i", fp.read(4))[0]
         interned = compat_str(fp.read(strsize))
         internStrings.append(interned)
         return r_ref(interned, flag)
-    elif marshalType == 'a':
+    elif marshalType == "a":
         # ascii. Since Python 3.4
-        strsize = unpack('<i', fp.read(4))[0]
+        strsize = unpack("<i", fp.read(4))[0]
         s = fp.read(strsize)
         s = compat_str(s)
         return r_ref(s, flag)
-    elif marshalType == 'z':
+    elif marshalType == "z":
         # short ascii - since Python 3.4
-        strsize = unpack('B', fp.read(1))[0]
+        strsize = unpack("B", fp.read(1))[0]
         return r_ref(compat_str(fp.read(strsize)), flag)
-    elif marshalType == 'Z':
+    elif marshalType == "Z":
         # short ascii interned - since Python 3.4
         # FIXME: check
-        strsize = unpack('B', fp.read(1))[0]
+        strsize = unpack("B", fp.read(1))[0]
         interned = compat_str(fp.read(strsize))
         internStrings.append(interned)
         return r_ref(interned, flag)
-    elif marshalType == 't':
+    elif marshalType == "t":
         # interned - since Python 3.4
-        strsize = unpack('<i', fp.read(4))[0]
+        strsize = unpack("<i", fp.read(4))[0]
         interned = compat_str(fp.read(strsize))
         internStrings.append(interned)
         return r_ref(interned, flag)
-    elif marshalType == 'u':
-        strsize = unpack('<i', fp.read(4))[0]
+    elif marshalType == "u":
+        strsize = unpack("<i", fp.read(4))[0]
         unicodestring = fp.read(strsize)
         if PYTHON_VERSION == 3.2 and IS_PYPY:
             # FIXME: this isn't quite right. See
             # pypy3-2.4.0/lib-python/3/email/message.py
             # '([^\ud800-\udbff]|\A)[\udc00-\udfff]([^\udc00-\udfff]|\Z)')
-            return r_ref(unicodestring.decode('utf-8', errors='ignore'), flag)
+            return r_ref(unicodestring.decode("utf-8", errors="ignore"), flag)
         else:
-            return r_ref(unicodestring.decode('utf-8'), flag)
-    elif marshalType == ')':
+            return r_ref(unicodestring.decode("utf-8"), flag)
+    elif marshalType == ")":
         # small tuple - since Python 3.4
-        tuplesize = unpack('B', fp.read(1))[0]
+        tuplesize = unpack("B", fp.read(1))[0]
         ret, i = r_ref_reserve(tuple(), flag)
         while tuplesize > 0:
-            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
+            ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
             tuplesize -= 1
             pass
         return r_ref_insert(ret, i)
-    elif marshalType == '(':
+    elif marshalType == "(":
         # tuple
-        tuplesize = unpack('<i', fp.read(4))[0]
+        tuplesize = unpack("<i", fp.read(4))[0]
         ret = r_ref(tuple(), flag)
         while tuplesize > 0:
-            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
+            ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
             tuplesize -= 1
         return ret
-    elif marshalType == '[':
+    elif marshalType == "[":
         # list. FIXME: check me
-        n = unpack('<i', fp.read(4))[0]
+        n = unpack("<i", fp.read(4))[0]
         ret = r_ref(list(), flag)
         while n > 0:
-            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
-            tuplesize -= 1
+            ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+            n -= 1
         return ret
-    elif marshalType == '{':
+    elif marshalType == "{":
         ret = r_ref(dict(), flag)
         # dictionary
         # while True:
@@ -438,36 +598,40 @@ def load_code_internal(fp, magic_int, bytes_for_s=False,
         #     ret[key] = val
         #     pass
         raise KeyError(marshalType)
-    elif marshalType in ['<', '>']:
+    elif marshalType in ["<", ">"]:
         # set and frozenset
-        setsize = unpack('<i', fp.read(4))[0]
+        setsize = unpack("<i", fp.read(4))[0]
         ret, i = r_ref_reserve(tuple(), flag)
         while setsize > 0:
-            ret += load_code_internal(fp, magic_int, code_objects=code_objects),
+            ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
             setsize -= 1
-        if marshalType == '>':
+        if marshalType == ">":
             return r_ref_insert(frozenset(ret), i)
         else:
             return r_ref_insert(set(ret), i)
-    elif marshalType == 'R':
+    elif marshalType == "R":
         # Python 2 string reference
-        refnum = unpack('<i', fp.read(4))[0]
+        refnum = unpack("<i", fp.read(4))[0]
         return internStrings[refnum]
-    elif marshalType == 'c':
-        return load_code_type(fp, magic_int, bytes_for_s=False,
-                              code_objects=code_objects)
-    elif marshalType == 'C':
-        # code type used in Python 1.0 - 1.2
-        raise KeyError("C code is Python 1.0 - 1.2; can't handle yet")
-    elif marshalType == 'r':
+    elif marshalType == "c":
+        return load_code_type(
+            fp, magic_int, bytes_for_s=False, code_objects=code_objects
+        )
+    elif marshalType == "C":
+        return load_code_type(
+            fp, magic_int, bytes_for_s=False, code_objects=code_objects
+        )
+    elif marshalType == "r":
         # object reference - since Python 3.4
-        refnum = unpack('<i', fp.read(4))[0]
-        o = internObjects[refnum-1]
+        refnum = unpack("<i", fp.read(4))[0]
+        o = internObjects[refnum - 1]
         return o
-    elif marshalType == '?':
+    elif marshalType == "?":
         # unknown
         raise KeyError(marshalType)
     else:
-        sys.stderr.write("Unknown type %i (hex %x) %c\n" %
-                         (ord(marshalType), ord(marshalType), ord(marshalType)))
+        sys.stderr.write(
+            "Unknown type %i (hex %x) %c\n"
+            % (ord(marshalType), ord(marshalType), ord(marshalType))
+        )
     return

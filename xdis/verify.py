@@ -115,12 +115,14 @@ def verify_file(real_source_filename, real_bytecode_filename):
     source_filename = os.path.join(tempdir, "testing.py")
     if not os.path.exists(real_source_filename):
         return
-    try:
+
+    if PYTHON_VERSION < 3.6:
         f = open(real_source_filename, 'U')
-    except:
-        return
+    else:
+        f = open(real_source_filename, newline=None, errors='backslashreplace')
 
     codestring = f.read()
+
     f.close()
 
     codeobject1 = compile(codestring, source_filename,'exec')
