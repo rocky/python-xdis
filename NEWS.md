@@ -3,7 +3,8 @@
 
 - Add early bytecodes: 1.0, 1.1, 1.2, and 1.6. Going off of pycdc bytecode since this is the only bytecode for these versions I know of
 - Fix bug in Python 3.x decompiling 2.x that contains strings with non-ascii characters
-- More generally, better handling of non-ascii Python 2 strings in Python 3
+- More generally, better handling of non-ascii Python 2 strings in both input and output in Python 3
+- pypy 3.6-7.1.0 tolerance
 
 4.0.4 2019-10-02
 ================

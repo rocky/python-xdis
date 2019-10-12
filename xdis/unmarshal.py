@@ -327,7 +327,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                 co_stacksize,
                 co_flags,
                 co_code,
-                co_consts,
+                tuple(co_consts),
                 co_names,
                 co_varnames,
                 co_filename,
