@@ -298,7 +298,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
             elif op in opc.NARGS_OPS:
                 optype = 'nargs'
                 if not python_36:
-                    argrepr = ("%d positional, %d keyword pair" %
+                    argrepr = ("%d positional, %d named" %
                                (code2num(bytecode, i-2), code2num(bytecode, i-1)))
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
