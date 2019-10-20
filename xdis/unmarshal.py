@@ -441,52 +441,69 @@ def r_ref(obj, flag):
 # FLAG_REF is the marchal.c name
 FLAG_REF = 0x80
 
-dispatch = {}
+# The keys in following dictionary are an unmashal codes, like "s", "c", "<", etc.
+# the values of the dictionary are routines to call that do the data unmarshaling.
+#
+# Note: we could eliminate the parameters, if this were all inside a
+# class.  This might be good from an efficiency standpoint, and bad
+# from a functional-programming standpoint. Pick your poison.
+UNMARSHAL_DISPATCH_TABLE = {}
 
 
-def t_None(fp, flag=None, bytes_for_s=None, magic_int=None):
+# In C this NULL. Not sure what it should
+# translate here. Note NULL != None which is below
+def t_C_NULL(fp, flag=None, bytes_for_s=None, magic_int=None, code_objects=None):
     return None
 
 
-dispatch["N"] = t_None
+UNMARSHAL_DISPATCH_TABLE["0"] = t_C_NULL
 
 
-def t_stopIteration(fp, flag=None, bytes_for_s=None, magic_int=None):
+def t_None(fp=None, flag=None, bytes_for_s=None, magic_int=None, code_objects=None):
+    return None
+
+
+UNMARSHAL_DISPATCH_TABLE["N"] = t_None
+
+
+def t_stopIteration(
+    fp=None, flag=None, bytes_for_s=None, magic_int=None, code_objects=None
+):
     return StopIteration
 
 
-dispatch["S"] = t_stopIteration
+UNMARSHAL_DISPATCH_TABLE["S"] = t_stopIteration
 
 
-def t_Elipsis(fp, flag=None, bytes_for_s=None, magic_int=None):
+def t_Elipsis(fp=None, flag=None, bytes_for_s=None, magic_int=None, code_objects=None):
     return Ellipsis
 
 
-dispatch["."] = t_Elipsis
+UNMARSHAL_DISPATCH_TABLE["."] = t_Elipsis
 
 
-def t_False(fp, flag=None, bytes_for_s=None, magic_int=None):
+def t_False(fp=None, flag=None, bytes_for_s=None, magic_int=None, code_objects=None):
     return False
 
 
-dispatch["F"] = t_False
+UNMARSHAL_DISPATCH_TABLE["F"] = t_False
 
 
-def t_True(fp, flag=None, bytes_for_s=None, magic_int=None):
+def t_True(fp=None, flag=None, bytes_for_s=None, magic_int=None, code_objects=None):
     return True
 
 
-dispatch["T"] = t_True
+UNMARSHAL_DISPATCH_TABLE["T"] = t_True
 
 
-def t_int32(fp, flag, bytes_for_s=None, magic_int=None):
+def t_int32(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     return r_ref(int(unpack("<i", fp.read(4))[0]), flag)
 
 
-dispatch["i"] = t_int32
+UNMARSHAL_DISPATCH_TABLE["i"] = t_int32
 
 
-def t_long(fp, flag, bytes_for_s=None, magic_int=None):
+def t_long(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     n = unpack("<i", fp.read(4))[0]
     if n == 0:
         return long(0)
@@ -500,33 +517,33 @@ def t_long(fp, flag, bytes_for_s=None, magic_int=None):
     return r_ref(d, flag)
 
 
-dispatch["l"] = t_long
+UNMARSHAL_DISPATCH_TABLE["l"] = t_long
 
 # Python 3.4 removed this.
-def t_int64(fp, flag=None, bytes_for_s=None, magic_int=None):
+def t_int64(fp, flag=None, bytes_for_s=None, magic_int=None, code_objects=None):
     return unpack("<q", fp.read(8))[0]
 
 
-dispatch["I"] = t_int64
+UNMARSHAL_DISPATCH_TABLE["I"] = t_int64
 
 # float - Seems not in use after Python 2.4
-def t_float(fp, flag, bytes_for_s=None, magic_int=None):
+def t_float(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     strsize = unpack("B", fp.read(1))[0]
     s = fp.read(strsize)
     return r_ref(float(s), flag)
 
 
-dispatch["f"] = t_float
+UNMARSHAL_DISPATCH_TABLE["f"] = t_float
 
 
-def t_binary_float(fp, flag, bytes_for_s=None, magic_int=None):
+def t_binary_float(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     return r_ref(float(unpack("<d", fp.read(8))[0]), flag)
 
 
-dispatch["g"] = t_binary_float
+UNMARSHAL_DISPATCH_TABLE["g"] = t_binary_float
 
 
-def t_complex(fp, flag, bytes_for_s=None, magic_int=None):
+def t_complex(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     if magic_int <= 62061:
         get_float = lambda: float(fp.read(unpack("B", fp.read(1))[0]))
     else:
@@ -536,20 +553,20 @@ def t_complex(fp, flag, bytes_for_s=None, magic_int=None):
     return r_ref(complex(real, imag), flag)
 
 
-dispatch["x"] = t_complex
+UNMARSHAL_DISPATCH_TABLE["x"] = t_complex
 
 
-def t_binary_complex(fp, flag, bytes_for_s=None, magic_int=None):
+def t_binary_complex(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     # binary complex
     real = unpack("<d", fp.read(8))[0]
     imag = unpack("<d", fp.read(8))[0]
     return r_ref(complex(real, imag), flag)
 
 
-dispatch["y"] = t_binary_complex
+UNMARSHAL_DISPATCH_TABLE["y"] = t_binary_complex
 
 # Note: could mean bytes in Python3 processing Python2 bytecode
-def t_string(fp, flag, bytes_for_s, magic_int=None):
+def t_string(fp, flag, bytes_for_s, magic_int=None, code_objects=None):
     strsize = unpack("<i", fp.read(4))[0]
     s = fp.read(strsize)
     if not bytes_for_s:
@@ -557,10 +574,10 @@ def t_string(fp, flag, bytes_for_s, magic_int=None):
     return r_ref(s, flag)
 
 
-dispatch["s"] = t_string
+UNMARSHAL_DISPATCH_TABLE["s"] = t_string
 
 # Python 3.4
-def t_ASCII_interned(fp, flag, bytes_for_s=None, magic_int=None):
+def t_ASCII_interned(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     # FIXME: check
     strsize = unpack("<i", fp.read(4))[0]
     interned = compat_str(fp.read(strsize))
@@ -568,28 +585,30 @@ def t_ASCII_interned(fp, flag, bytes_for_s=None, magic_int=None):
     return r_ref(interned, flag)
 
 
-dispatch["A"] = t_ASCII_interned
+UNMARSHAL_DISPATCH_TABLE["A"] = t_ASCII_interned
 
 # Since Python 3.4
-def t_ASCII(fp, flag, bytes_for_s=None, magic_int=None):
+def t_ASCII(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     strsize = unpack("<i", fp.read(4))[0]
     s = fp.read(strsize)
     s = compat_str(s)
     return r_ref(s, flag)
 
 
-dispatch["a"] = t_ASCII
+UNMARSHAL_DISPATCH_TABLE["a"] = t_ASCII
 
 # Since Python 3.4
-def t_short_ASCII(fp, flag, bytes_for_s=None, magic_int=None):
+def t_short_ASCII(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
     strsize = unpack("B", fp.read(1))[0]
     return r_ref(compat_str(fp.read(strsize)), flag)
 
 
-dispatch["z"] = t_short_ASCII
+UNMARSHAL_DISPATCH_TABLE["z"] = t_short_ASCII
 
 # Since Python 3.4
-def t_short_ASCII_interned(fp, flag, bytes_for_s=None, magic_int=None):
+def t_short_ASCII_interned(
+    fp, flag, bytes_for_s=None, magic_int=None, code_objects=None
+):
     # FIXME: check
     strsize = unpack("B", fp.read(1))[0]
     interned = compat_str(fp.read(strsize))
@@ -597,7 +616,159 @@ def t_short_ASCII_interned(fp, flag, bytes_for_s=None, magic_int=None):
     return r_ref(interned, flag)
 
 
-dispatch["Z"] = t_short_ASCII_interned
+UNMARSHAL_DISPATCH_TABLE["Z"] = t_short_ASCII_interned
+
+
+# Since Python 3.4
+def t_interned(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    strsize = unpack("<i", fp.read(4))[0]
+    interned = compat_str(fp.read(strsize))
+    internStrings.append(interned)
+    return r_ref(interned, flag)
+
+
+UNMARSHAL_DISPATCH_TABLE["t"] = t_interned
+
+
+def t_unicode(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    strsize = unpack("<i", fp.read(4))[0]
+    unicodestring = fp.read(strsize)
+    if PYTHON_VERSION == 3.2 and IS_PYPY:
+        # FIXME: this isn't quite right. See
+        # pypy3-2.4.0/lib-python/3/email/message.py
+        # '([^\ud800-\udbff]|\A)[\udc00-\udfff]([^\udc00-\udfff]|\Z)')
+        return r_ref(unicodestring.decode("utf-8", errors="ignore"), flag)
+    else:
+        return r_ref(unicodestring.decode("utf-8"), flag)
+
+
+UNMARSHAL_DISPATCH_TABLE["u"] = t_unicode
+
+
+# Since Python 3.4
+def t_small_tuple(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    # small tuple - since Python 3.4
+    tuplesize = unpack("B", fp.read(1))[0]
+    ret, i = r_ref_reserve(tuple(), flag)
+    while tuplesize > 0:
+        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        tuplesize -= 1
+        pass
+    return r_ref_insert(ret, i)
+
+
+UNMARSHAL_DISPATCH_TABLE[")"] = t_small_tuple
+
+
+def t_tuple(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    tuplesize = unpack("<i", fp.read(4))[0]
+    ret = r_ref(tuple(), flag)
+    while tuplesize > 0:
+        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        tuplesize -= 1
+    return ret
+
+
+UNMARSHAL_DISPATCH_TABLE["("] = t_tuple
+
+
+def t_list(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    # FIXME: check me
+    n = unpack("<i", fp.read(4))[0]
+    ret = r_ref(list(), flag)
+    while n > 0:
+        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        n -= 1
+    return ret
+
+
+UNMARSHAL_DISPATCH_TABLE["["] = t_list
+
+
+def t_frozenset(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    setsize = unpack("<i", fp.read(4))[0]
+    ret, i = r_ref_reserve(tuple(), flag)
+    while setsize > 0:
+        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        setsize -= 1
+    return r_ref_insert(frozenset(ret), i)
+
+
+UNMARSHAL_DISPATCH_TABLE["<"] = t_frozenset
+
+
+def t_set(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    setsize = unpack("<i", fp.read(4))[0]
+    ret, i = r_ref_reserve(tuple(), flag)
+    while setsize > 0:
+        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        setsize -= 1
+    return r_ref_insert(set(ret), i)
+
+
+UNMARSHAL_DISPATCH_TABLE[">"] = t_set
+
+
+def t_int32(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    return r_ref(int(unpack("<i", fp.read(4))[0]), flag)
+
+
+UNMARSHAL_DISPATCH_TABLE["i"] = t_int32
+
+
+def t_dict(fp, flag, bytes_for_s=None, magic_int=None, code_objects=None):
+    ret = r_ref(dict(), flag)
+    # dictionary
+    # while True:
+    #     key = load_code_internal(fp, magic_int, code_objects=code_objects)
+    #     if key is NULL:
+    #         break
+    #     val = load_code_internal(fp, magic_int, code_objects=code_objects)
+    #     if val is NULL:
+    #         break
+    #     ret[key] = val
+    #     pass
+    raise KeyError(marshalType)
+
+
+UNMARSHAL_DISPATCH_TABLE["{"] = t_dict
+
+
+def t_python2_string_reference(
+    fp, flag=None, bytes_for_s=None, magic_int=None, code_objects=None
+):
+    refnum = unpack("<i", fp.read(4))[0]
+    return internStrings[refnum]
+
+
+UNMARSHAL_DISPATCH_TABLE["R"] = t_python2_string_reference
+
+
+def t_code(fp, flag=None, bytes_for_s=None, magic_int=None, code_objects=None):
+    return load_code_type(fp, magic_int, bytes_for_s=False, code_objects=code_objects)
+
+
+UNMARSHAL_DISPATCH_TABLE["c"] = t_code
+UNMARSHAL_DISPATCH_TABLE["C"] = t_code
+
+
+# Since Python 3.4
+def t_object_reference(
+    fp, flag=None, bytes_for_s=None, magic_int=None, code_objects=None
+):
+    refnum = unpack("<i", fp.read(4))[0]
+    o = internObjects[refnum - 1]
+    return o
+
+
+UNMARSHAL_DISPATCH_TABLE["r"] = t_object_reference
+
+
+def t_unknown(fp, flag=None, bytes_for_s=None, magic_int=None, code_objects=None):
+    raise KeyError(marshalType)
+
+
+UNMARSHAL_DISPATCH_TABLE["?"] = t_unknown
 
 
 # In marshal.c this method is called r_object() and is one big case
@@ -614,102 +785,15 @@ def load_code_internal(fp, magic_int, bytes_for_s=False, code_objects={}):
         b1 = b1 & (FLAG_REF - 1)
     marshalType = chr(b1)
 
-    if marshalType in dispatch:
-        return dispatch[marshalType](fp, flag, bytes_for_s, magic_int)
-
     # print(marshalType) # debug
-    if marshalType == "0":
-        # In C this NULL. Not sure what it should
-        # translate here. Note NULL != None which is below
-        return None
-    elif marshalType == "t":
-        # interned - since Python 3.4
-        strsize = unpack("<i", fp.read(4))[0]
-        interned = compat_str(fp.read(strsize))
-        internStrings.append(interned)
-        return r_ref(interned, flag)
-    elif marshalType == "u":
-        strsize = unpack("<i", fp.read(4))[0]
-        unicodestring = fp.read(strsize)
-        if PYTHON_VERSION == 3.2 and IS_PYPY:
-            # FIXME: this isn't quite right. See
-            # pypy3-2.4.0/lib-python/3/email/message.py
-            # '([^\ud800-\udbff]|\A)[\udc00-\udfff]([^\udc00-\udfff]|\Z)')
-            return r_ref(unicodestring.decode("utf-8", errors="ignore"), flag)
-        else:
-            return r_ref(unicodestring.decode("utf-8"), flag)
-    elif marshalType == ")":
-        # small tuple - since Python 3.4
-        tuplesize = unpack("B", fp.read(1))[0]
-        ret, i = r_ref_reserve(tuple(), flag)
-        while tuplesize > 0:
-            ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
-            tuplesize -= 1
-            pass
-        return r_ref_insert(ret, i)
-    elif marshalType == "(":
-        # tuple
-        tuplesize = unpack("<i", fp.read(4))[0]
-        ret = r_ref(tuple(), flag)
-        while tuplesize > 0:
-            ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
-            tuplesize -= 1
-        return ret
-    elif marshalType == "[":
-        # list. FIXME: check me
-        n = unpack("<i", fp.read(4))[0]
-        ret = r_ref(list(), flag)
-        while n > 0:
-            ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
-            n -= 1
-        return ret
-    elif marshalType == "{":
-        ret = r_ref(dict(), flag)
-        # dictionary
-        # while True:
-        #     key = load_code_internal(fp, magic_int, code_objects=code_objects)
-        #     if key is NULL:
-        #         break
-        #     val = load_code_internal(fp, magic_int, code_objects=code_objects)
-        #     if val is NULL:
-        #         break
-        #     ret[key] = val
-        #     pass
-        raise KeyError(marshalType)
-    elif marshalType in ["<", ">"]:
-        # set and frozenset
-        setsize = unpack("<i", fp.read(4))[0]
-        ret, i = r_ref_reserve(tuple(), flag)
-        while setsize > 0:
-            ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
-            setsize -= 1
-        if marshalType == ">":
-            return r_ref_insert(frozenset(ret), i)
-        else:
-            return r_ref_insert(set(ret), i)
-    elif marshalType == "R":
-        # Python 2 string reference
-        refnum = unpack("<i", fp.read(4))[0]
-        return internStrings[refnum]
-    elif marshalType == "c":
-        return load_code_type(
-            fp, magic_int, bytes_for_s=False, code_objects=code_objects
+    if marshalType in UNMARSHAL_DISPATCH_TABLE:
+        return UNMARSHAL_DISPATCH_TABLE[marshalType](
+            fp, flag, bytes_for_s, magic_int, code_objects
         )
-    elif marshalType == "C":
-        return load_code_type(
-            fp, magic_int, bytes_for_s=False, code_objects=code_objects
-        )
-    elif marshalType == "r":
-        # object reference - since Python 3.4
-        refnum = unpack("<i", fp.read(4))[0]
-        o = internObjects[refnum - 1]
-        return o
-    elif marshalType == "?":
-        # unknown
-        raise KeyError(marshalType)
     else:
         sys.stderr.write(
             "Unknown type %i (hex %x) %c\n"
-            % (ord(marshalType), ord(marshalType), ord(marshalType))
+            % (ord(marshalType), hex(ord(marshalType)), marshalType)
         )
+
     return
