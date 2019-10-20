@@ -14,11 +14,10 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import imp, os, marshal, tempfile
+import os, marshal, tempfile
 from xdis import magics, PYTHON3, PYTHON_VERSION, IS_PYPY
 from xdis.load import load_module
 
-MAGIC = imp.get_magic()
 
 def wr_long(f, x):
     """Internal; write a 32-bit int to a file in little-endian order."""
@@ -137,7 +136,7 @@ def verify_file(real_source_filename, real_bytecode_filename):
 
     assert MAGIC == magics.int2magic(magic_int), \
       ("magic_int %d vs %d in %s/%s" %
-           (magic_int, magics.magic2int(MAGIC), os.getcwd(), real_bytecode_filename))
+           (magic_int, magics.PYTHON_MAGIC_INT, os.getcwd(), real_bytecode_filename))
     bytecode_filename1 = os.path.join(tempdir, "testing1.pyc")
     dump_compile(codeobject1, bytecode_filename1, timestamp, MAGIC)
     (version, timestamp, magic_int, codeobject3, is_pypy,
