@@ -14,7 +14,7 @@ class TestMagics(unittest.TestCase):
                             "version %s is not in magic.magics.keys: %s" %
                             (version, magics.magics.keys()))
 
-        self.assertEqual(magics.MGAIC, magics.int2magic(magics.magic2int(magics.MGAIC)))
+        self.assertEqual(magics.MAGIC, magics.int2magic(magics.magic2int(magics.MAGIC)))
         lookup = str(PYTHON_VERSION)
         if IS_PYPY:
             lookup += 'pypy'
@@ -23,7 +23,7 @@ class TestMagics(unittest.TestCase):
                         (lookup, magics.magics.keys()))
 
         if not (3, 5, 2) <= sys.version_info < (3, 6, 0):
-            self.assertEqual(magics.sysinfo2magic(), magics.MGAIC,
+            self.assertEqual(magics.sysinfo2magic(), magics.MAGIC,
                             "magic from imp.get_magic() for %s "
                             "should be sysinfo2magic()" % lookup)
 

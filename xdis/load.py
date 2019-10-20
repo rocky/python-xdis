@@ -174,7 +174,8 @@ def load_module_from_file_object(
         try:
             # print version
             ts = fp.read(4)
-            magic_int = magics.PYTHON_MAGIC_INT
+            my_magic_int = magics.PYTHON_MAGIC_INT
+            magic_int = magics.magic2int(magic)
 
             if magic_int == 3393:
                 timestamp = 0
