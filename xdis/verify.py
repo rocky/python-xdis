@@ -134,7 +134,7 @@ def verify_file(real_source_filename, real_bytecode_filename):
     if magic_int == 3180+7:
         magic_int = 48
 
-    assert MAGIC == magics.int2magic(magic_int), \
+    assert magics.MAGIC == magics.int2magic(magic_int), \
       ("magic_int %d vs %d in %s/%s" %
            (magic_int, magics.PYTHON_MAGIC_INT, os.getcwd(), real_bytecode_filename))
     bytecode_filename1 = os.path.join(tempdir, "testing1.pyc")
