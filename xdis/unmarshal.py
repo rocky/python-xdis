@@ -102,7 +102,7 @@ def load_code(fp, magic_int, code_objects={}):
         b = b & 0x7F
 
     c = chr(b)
-    if c == "c" or (magic_int in (39170,39171) and c == "C"):
+    if c == "c" or (magic_int in (39170, 39171) and c == "C"):
         fp.seek(seek_pos)
     else:
         raise TypeError(
@@ -441,9 +441,167 @@ def r_ref(obj, flag):
 # FLAG_REF is the marchal.c name
 FLAG_REF = 0x80
 
-# FIXME: redo with a dispatch table same as
-# marshal.
-# In marshal.c this method is called r_object()
+dispatch = {}
+
+
+def t_None(fp, flag=None, bytes_for_s=None, magic_int=None):
+    return None
+
+
+dispatch["N"] = t_None
+
+
+def t_stopIteration(fp, flag=None, bytes_for_s=None, magic_int=None):
+    return StopIteration
+
+
+dispatch["S"] = t_stopIteration
+
+
+def t_Elipsis(fp, flag=None, bytes_for_s=None, magic_int=None):
+    return Ellipsis
+
+
+dispatch["."] = t_Elipsis
+
+
+def t_False(fp, flag=None, bytes_for_s=None, magic_int=None):
+    return False
+
+
+dispatch["F"] = t_False
+
+
+def t_True(fp, flag=None, bytes_for_s=None, magic_int=None):
+    return True
+
+
+dispatch["T"] = t_True
+
+
+def t_int32(fp, flag, bytes_for_s=None, magic_int=None):
+    return r_ref(int(unpack("<i", fp.read(4))[0]), flag)
+
+
+dispatch["i"] = t_int32
+
+
+def t_long(fp, flag, bytes_for_s=None, magic_int=None):
+    n = unpack("<i", fp.read(4))[0]
+    if n == 0:
+        return long(0)
+    size = abs(n)
+    d = long(0)
+    for j in range(0, size):
+        md = int(unpack("<h", fp.read(2))[0])
+        d += md << j * 15
+    if n < 0:
+        d = long(d * -1)
+    return r_ref(d, flag)
+
+
+dispatch["l"] = t_long
+
+# Python 3.4 removed this.
+def t_int64(fp, flag=None, bytes_for_s=None, magic_int=None):
+    return unpack("<q", fp.read(8))[0]
+
+
+dispatch["I"] = t_int64
+
+# float - Seems not in use after Python 2.4
+def t_float(fp, flag, bytes_for_s=None, magic_int=None):
+    strsize = unpack("B", fp.read(1))[0]
+    s = fp.read(strsize)
+    return r_ref(float(s), flag)
+
+
+dispatch["f"] = t_float
+
+
+def t_binary_float(fp, flag, bytes_for_s=None, magic_int=None):
+    return r_ref(float(unpack("<d", fp.read(8))[0]), flag)
+
+
+dispatch["g"] = t_binary_float
+
+
+def t_complex(fp, flag, bytes_for_s=None, magic_int=None):
+    if magic_int <= 62061:
+        get_float = lambda: float(fp.read(unpack("B", fp.read(1))[0]))
+    else:
+        get_float = lambda: float(fp.read(unpack("<i", fp.read(4))[0]))
+    real = get_float()
+    imag = get_float()
+    return r_ref(complex(real, imag), flag)
+
+
+dispatch["x"] = t_complex
+
+
+def t_binary_complex(fp, flag, bytes_for_s=None, magic_int=None):
+    # binary complex
+    real = unpack("<d", fp.read(8))[0]
+    imag = unpack("<d", fp.read(8))[0]
+    return r_ref(complex(real, imag), flag)
+
+
+dispatch["y"] = t_binary_complex
+
+# Note: could mean bytes in Python3 processing Python2 bytecode
+def t_string(fp, flag, bytes_for_s, magic_int=None):
+    strsize = unpack("<i", fp.read(4))[0]
+    s = fp.read(strsize)
+    if not bytes_for_s:
+        s = compat_str(s)
+    return r_ref(s, flag)
+
+
+dispatch["s"] = t_string
+
+# Python 3.4
+def t_ASCII_interned(fp, flag, bytes_for_s=None, magic_int=None):
+    # FIXME: check
+    strsize = unpack("<i", fp.read(4))[0]
+    interned = compat_str(fp.read(strsize))
+    internStrings.append(interned)
+    return r_ref(interned, flag)
+
+
+dispatch["A"] = t_ASCII_interned
+
+# Since Python 3.4
+def t_ASCII(fp, flag, bytes_for_s=None, magic_int=None):
+    strsize = unpack("<i", fp.read(4))[0]
+    s = fp.read(strsize)
+    s = compat_str(s)
+    return r_ref(s, flag)
+
+
+dispatch["a"] = t_ASCII
+
+# Since Python 3.4
+def t_short_ASCII(fp, flag, bytes_for_s=None, magic_int=None):
+    strsize = unpack("B", fp.read(1))[0]
+    return r_ref(compat_str(fp.read(strsize)), flag)
+
+
+dispatch["z"] = t_short_ASCII
+
+# Since Python 3.4
+def t_short_ASCII_interned(fp, flag, bytes_for_s=None, magic_int=None):
+    # FIXME: check
+    strsize = unpack("B", fp.read(1))[0]
+    interned = compat_str(fp.read(strsize))
+    internStrings.append(interned)
+    return r_ref(interned, flag)
+
+
+dispatch["Z"] = t_short_ASCII_interned
+
+
+# In marshal.c this method is called r_object() and is one big case
+# statement
 def load_code_internal(fp, magic_int, bytes_for_s=False, code_objects={}):
     global internStrings, internObjects
 
@@ -456,94 +614,14 @@ def load_code_internal(fp, magic_int, bytes_for_s=False, code_objects={}):
         b1 = b1 & (FLAG_REF - 1)
     marshalType = chr(b1)
 
+    if marshalType in dispatch:
+        return dispatch[marshalType](fp, flag, bytes_for_s, magic_int)
+
     # print(marshalType) # debug
     if marshalType == "0":
         # In C this NULL. Not sure what it should
         # translate here. Note NULL != None which is below
         return None
-    elif marshalType == "N":
-        return None
-    elif marshalType == "S":
-        return StopIteration
-    elif marshalType == ".":
-        return Ellipsis
-    elif marshalType == "F":
-        return False
-    elif marshalType == "T":
-        return True
-    elif marshalType == "i":
-        # int32
-        return r_ref(int(unpack("<i", fp.read(4))[0]), flag)
-    elif marshalType == "l":
-        # long
-        n = unpack("<i", fp.read(4))[0]
-        if n == 0:
-            return long(0)
-        size = abs(n)
-        d = long(0)
-        for j in range(0, size):
-            md = int(unpack("<h", fp.read(2))[0])
-            d += md << j * 15
-        if n < 0:
-            d = long(d * -1)
-        return r_ref(d, flag)
-    elif marshalType == "I":
-        # int64. Python 3.4 removed this.
-        return unpack("<q", fp.read(8))[0]
-    elif marshalType == "f":
-        # float - Seems not in use after Python 2.4
-        strsize = unpack("B", fp.read(1))[0]
-        s = fp.read(strsize)
-        return r_ref(float(s), flag)
-    elif marshalType == "g":
-        # binary float
-        return r_ref(float(unpack("<d", fp.read(8))[0]), flag)
-    elif marshalType == "x":
-        # complex
-        if magic_int <= 62061:
-            get_float = lambda: float(fp.read(unpack("B", fp.read(1))[0]))
-        else:
-            get_float = lambda: float(fp.read(unpack("<i", fp.read(4))[0]))
-        real = get_float()
-        imag = get_float()
-        return r_ref(complex(real, imag), flag)
-    elif marshalType == "y":
-        # binary complex
-        real = unpack("<d", fp.read(8))[0]
-        imag = unpack("<d", fp.read(8))[0]
-        return r_ref(complex(real, imag), flag)
-    elif marshalType == "s":
-        # string
-        # Note: could mean bytes in Python3 processing Python2 bytecode
-        strsize = unpack("<i", fp.read(4))[0]
-        s = fp.read(strsize)
-        if not bytes_for_s:
-            s = compat_str(s)
-        return r_ref(s, flag)
-    elif marshalType == "A":
-        # ascii interned - Python3 3.4
-        # FIXME: check
-        strsize = unpack("<i", fp.read(4))[0]
-        interned = compat_str(fp.read(strsize))
-        internStrings.append(interned)
-        return r_ref(interned, flag)
-    elif marshalType == "a":
-        # ascii. Since Python 3.4
-        strsize = unpack("<i", fp.read(4))[0]
-        s = fp.read(strsize)
-        s = compat_str(s)
-        return r_ref(s, flag)
-    elif marshalType == "z":
-        # short ascii - since Python 3.4
-        strsize = unpack("B", fp.read(1))[0]
-        return r_ref(compat_str(fp.read(strsize)), flag)
-    elif marshalType == "Z":
-        # short ascii interned - since Python 3.4
-        # FIXME: check
-        strsize = unpack("B", fp.read(1))[0]
-        interned = compat_str(fp.read(strsize))
-        internStrings.append(interned)
-        return r_ref(interned, flag)
     elif marshalType == "t":
         # interned - since Python 3.4
         strsize = unpack("<i", fp.read(4))[0]
