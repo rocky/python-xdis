@@ -33,9 +33,6 @@ python_versions = [v for v in magics.python_versions if
 
 python_versions.append('1.4')
 
-# Until there is a final release and magics is updated...
-python_versions.append('3.7.0')
-
 TEST_VERSIONS = tuple(python_versions)
 
 
@@ -229,10 +226,6 @@ if __name__ == '__main__':
                 sys.exit(1)
             pass
         pass
-
-    if PYTHON_VERSION >= 3.5 and IS_PYPY:
-        print("### Doesn't work on Python 3.5 or greater")
-        sys.exit(0)
 
     for src_dir, pattern, target_dir in test_dirs:
         if os.path.exists(src_dir):

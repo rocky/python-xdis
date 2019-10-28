@@ -114,6 +114,7 @@ def load_code(fp, magic_int, code_objects={}):
 
 
 def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
+    # FIXME: use tables to simplify this?
     # Python [1.0 .. 2.2)
     v10_to_12 = magic_int in (39170, 39171)
 
@@ -138,7 +139,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_posonlyargcount = None
 
-    if 3020 < magic_int < 20121 and not v11_to_14:
+    if ((3020 < magic_int < 20121) or magic_int in (160,)) and not v11_to_14:
         kwonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         kwonlyargcount = 0
@@ -791,9 +792,15 @@ def load_code_internal(fp, magic_int, bytes_for_s=False, code_objects={}):
             fp, flag, bytes_for_s, magic_int, code_objects
         )
     else:
-        sys.stderr.write(
-            "Unknown type %i (hex %x) %c\n"
-            % (ord(marshalType), hex(ord(marshalType)), marshalType)
-        )
+        try:
+            sys.stderr.write(
+                "Unknown type %i (hex %x) %c\n"
+                % (ord(marshalType), hex(ord(marshalType)), marshalType)
+            )
+        except TypeError:
+            sys.stderr.write(
+                "Unknown type %i %c\n"
+                % (ord(marshalType), marshalType)
+            )
 
     return
