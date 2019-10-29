@@ -1,7 +1,6 @@
 # Method Name:       <module>
 # Filename:          simple_source/01_hexstring.py
 # Argument count:    0
-# Kw-only arguments: 0
 # Number of locals:  0
 # Stack size:        2
 # Flags:             0x00000040 (NOFREE)
@@ -33,7 +32,6 @@
 # Method Name:       f
 # Filename:          simple_source/01_hexstring.py
 # Argument count:    1
-# Kw-only arguments: 0
 # Number of locals:  1
 # Stack size:        2
 # Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
