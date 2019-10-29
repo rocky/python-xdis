@@ -140,7 +140,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_argcount = unpack("<i", fp.read(4))[0]
 
-    if magic_int in (3412,):
+    if magic_int in (3412, 3413):
         co_posonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         co_posonlyargcount = None
