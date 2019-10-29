@@ -401,6 +401,9 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                     co_filename = str(co_filename)
                     co_name = str(co_name)
                     co_varnames = tuple([str(t) for t in co_varnames])
+                    co_consts = tuple([str(t) for t in co_consts])
+                    co_freevars = tuple([str(t) for t in co_freevars])
+                    co_cellvars = tuple([str(t) for t in co_cellvars])
 
                 Code = types.CodeType
                 code = Code(
