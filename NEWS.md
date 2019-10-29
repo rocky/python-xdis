@@ -1,3 +1,13 @@
+4.1.1 2019-10-29 pre Halloween
+==============================
+
+- Fix unmarshaling 3.4+ object_ref bugs.
+  A big thanks to Armin Rigo of the PyPy team.
+- Add Pypy 3.6+, e.g. pypy3.6-7.1.0 and pypy3.6-7.1.1
+- Add Python 3.7.5 as a valid release
+- convert unmarshal `if` .. `elif` code to a dictionary lookup with function entries
+- Handle newer Python importlib - thanks to laike9m
+
 4.1.0 2019-10-12 Stony Brook Ride
 =================================
 
