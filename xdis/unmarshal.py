@@ -397,6 +397,11 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                     co_cellvars,
                 )
             else:
+                if magic_int in (160,):
+                    co_filename = str(co_filename)
+                    co_name = str(co_name)
+                    co_varnames = tuple([str(t) for t in co_varnames])
+
                 Code = types.CodeType
                 code = Code(
                     co_argcount,

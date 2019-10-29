@@ -105,7 +105,7 @@ def format_code_info(co, version, name=None):
     if version >= 1.3:
         lines.append("# Argument count:    %s" % co.co_argcount)
 
-    if version >= 3.0:
+    if hasattr(co, "co_kwonlyargcount"):
         lines.append("# Kw-only arguments: %s" % co.co_kwonlyargcount)
 
     pos_argc = co.co_argcount
