@@ -37,7 +37,7 @@
                3 LOOKUP_METHOD             0 (map)
                6 LOAD_CONST                1 (<xdis.code.thingy instance at 0xdeadbeef0000>)
                9 MAKE_FUNCTION             0
-              12 CALL_METHOD               1 (1 positional, 0 keyword pair)
+              12 CALL_METHOD               1 (1 positional, 0 named)
               15 RETURN_VALUE
 
 

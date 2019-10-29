@@ -1,4 +1,4 @@
-import unittest, imp, sys
+import unittest, sys
 from xdis import PYTHON_VERSION, IS_PYPY
 import xdis.magics as magics
 
@@ -6,7 +6,6 @@ class TestMagics(unittest.TestCase):
 
     def test_basic(self):
         """Basic test of magic numbers"""
-        current = imp.get_magic()
         if hasattr(sys, 'version_info'):
             version = '.'.join([str(v) for v in sys.version_info[0:3]])
             if IS_PYPY:
@@ -15,7 +14,7 @@ class TestMagics(unittest.TestCase):
                             "version %s is not in magic.magics.keys: %s" %
                             (version, magics.magics.keys()))
 
-        self.assertEqual(current, magics.int2magic(magics.magic2int(current)))
+        self.assertEqual(magics.MAGIC, magics.int2magic(magics.magic2int(magics.MAGIC)))
         lookup = str(PYTHON_VERSION)
         if IS_PYPY:
             lookup += 'pypy'
@@ -24,7 +23,7 @@ class TestMagics(unittest.TestCase):
                         (lookup, magics.magics.keys()))
 
         if not (3, 5, 2) <= sys.version_info < (3, 6, 0):
-            self.assertEqual(magics.sysinfo2magic(), current,
+            self.assertEqual(magics.sysinfo2magic(), magics.MAGIC,
                             "magic from imp.get_magic() for %s "
                             "should be sysinfo2magic()" % lookup)
 

@@ -73,6 +73,7 @@ Goto https://github.com/rocky/python-xdis/releases
 
 # Upload single package and look at Rst Formating
 
+	$ twine check dist/xdis-${VERSION}*
     $ twine upload dist/xdis-${VERSION}-py3.3.egg
 
 Check on https://pypi.org/project/xdis/
