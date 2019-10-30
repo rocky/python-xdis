@@ -446,7 +446,7 @@ class Instruction(_Instruction):
                     fields.append('(%s)' % argrepr)
                     argrepr = None
                 elif (self.optype == 'const'
-                      and not re.search('\s', argrepr)):
+                      and not re.search(r'\s', argrepr)):
                     fields.append('(%s)' % argrepr)
                     argrepr = None
                 else:
