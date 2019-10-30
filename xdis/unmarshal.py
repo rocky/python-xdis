@@ -29,7 +29,7 @@ to produce a code object
 import sys, types
 from struct import unpack
 
-from xdis.magics import PYTHON_MAGIC_INT
+from xdis.magics import PYTHON_MAGIC_INT, IS_PYPY3
 from xdis.code import Code2, Code3, Code38, Code2Compat
 from xdis import PYTHON3, PYTHON_VERSION, IS_PYPY
 
@@ -143,7 +143,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_argcount = unpack("<i", fp.read(4))[0]
 
-    if magic_int in (3412,):
+    if magic_int in (3412, 3413):
         co_posonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         co_posonlyargcount = None
@@ -378,7 +378,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                 co_filename = str(co_filename)
                 co_name = str(co_name)
 
-            if 3020 < magic_int <= 20121:
+            if 3020 < magic_int <= 20121 or magic_int in IS_PYPY3:
                 code = Code3(
                     co_argcount,
                     kwonlyargcount,
@@ -401,6 +401,9 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                     co_filename = str(co_filename)
                     co_name = str(co_name)
                     co_varnames = tuple([str(t) for t in co_varnames])
+                    co_consts = tuple([str(t) for t in co_consts])
+                    co_freevars = tuple([str(t) for t in co_freevars])
+                    co_cellvars = tuple([str(t) for t in co_cellvars])
 
                 Code = types.CodeType
                 code = Code(
