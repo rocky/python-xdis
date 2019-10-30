@@ -1,3 +1,9 @@
+4.1.2 2019-10-29 pre Halloween redux
+====================================
+- Python 3.8.0 magic changed
+- More Pypy 3.6 tolerance
+- Fixed DeprecationWarning; thanks to laike9m
+
 4.1.1 2019-10-29 pre Halloween
 ==============================
 
