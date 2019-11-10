@@ -116,7 +116,10 @@ def verify_file(real_source_filename, real_bytecode_filename):
     if not os.path.exists(real_source_filename):
         return
 
-    if PYTHON_VERSION < 3.5:
+    if PYTHON_VERSION == 3.0:
+        # Too hard to get working on 3.0
+        return
+    elif PYTHON_VERSION < 3.5:
         f = open(real_source_filename, 'U')
     else:
         f = open(real_source_filename, newline=None, errors='backslashreplace')

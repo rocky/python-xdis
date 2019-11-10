@@ -47,7 +47,7 @@ else:
 
 
 def compat_str(s):
-    if PYTHON_VERSION >= 3.1:
+    if PYTHON3:
         try:
             return s.decode("utf-8")
         except UnicodeDecodeError:
@@ -55,7 +55,6 @@ def compat_str(s):
             # and it will get converted to str when needed
             return s
 
-    elif PYTHON3:
         return s.decode()
     else:
         return str(s)
