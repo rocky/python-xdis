@@ -47,13 +47,7 @@ else:
 
 
 def compat_str(s):
-    if (
-        PYTHON_VERSION > 3.2
-        or
-        # FIXME: investigate
-        PYTHON_VERSION == 3.2
-        and IS_PYPY
-    ):
+    if PYTHON_VERSION >= 3.2:
         try:
             return s.decode("utf-8")
         except UnicodeDecodeError:
