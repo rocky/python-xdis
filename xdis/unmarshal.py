@@ -215,7 +215,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # bytes (which is probably more logical).
     if PYTHON3:
         Code = types.CodeType
-        if PYTHON_MAGIC_INT > 3020:
+        if PYTHON_MAGIC_INT > 3020 or PYTHON_MAGIC_INT in IS_PYPY3:
             # Check for Python 3 interpreter reading Python 2 bytecode.
             # Python 3's code objects are bytes while Python 2's are strings.
             #
