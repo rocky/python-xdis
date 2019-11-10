@@ -271,9 +271,10 @@ add_magic_from_int(3412, "3.8.0beta2")
 add_magic_from_int(3413, "3.8.0rc1+")
 
 # Weird ones
-# WTF? Python 3.2.5 - PyPy 2.3.4  this doesn't follow the rule below
+# WTF? Python 3.2.5 and PyPy have weird magic numbers
 
 add_magic_from_int(48, "3.2a2")
+add_magic_from_int(64, "3.3pypy")
 add_magic_from_int(112, "3.5pypy")  # pypy3.5-c-jit-latest
 add_magic_from_int(160, "3.6pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
 add_magic_from_int(1011, "2.7.1b3Jython")  # jython
