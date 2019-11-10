@@ -335,6 +335,7 @@ add_canonic_versions(
 add_canonic_versions("2.7.10pypy 2.7.13pypy", "2.7pypy")
 add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
 add_canonic_versions("3.2.5pypy", "3.2pypy")
+add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.1pypy", "3.6pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
