@@ -125,6 +125,7 @@ def load_code(fp, magic_int, code_objects={}):
 def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # FIXME: use tables to simplify this?
     # Python [1.0 .. 2.2)
+
     v10_to_12 = magic_int in (39170, 39171)
 
     # FIXME: find out what magics were for 1.3
@@ -148,7 +149,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_posonlyargcount = None
 
-    if ((3020 < magic_int < 20121) or magic_int in (160,)) and not v11_to_14:
+    if ((3020 < magic_int < 20121) or magic_int in (64, 160, 112)) and not v11_to_14:
         kwonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         kwonlyargcount = 0
@@ -217,7 +218,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # bytes (which is probably more logical).
     if PYTHON3:
         Code = types.CodeType
-        if PYTHON_MAGIC_INT > 3020:
+        if PYTHON_MAGIC_INT > 3020 or PYTHON_MAGIC_INT in IS_PYPY3:
             # Check for Python 3 interpreter reading Python 2 bytecode.
             # Python 3's code objects are bytes while Python 2's are strings.
             #

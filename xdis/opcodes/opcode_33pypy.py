@@ -1,8 +1,8 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2019 by Rocky Bernstein
 """
-PYPY 3.2 opcodes
+PYPY 3.3 opcodes
 
-This is a like Python 3.2's opcode.py with some classification
+This is a like Python 3.3's opcode.py with some classification
 of stack usage.
 """
 
@@ -16,12 +16,12 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 
-version = 3.2
+version = 3.3
 
-import xdis.opcodes.opcode_32 as opcode_32
+import xdis.opcodes.opcode_33 as opcode_33
 
 l = locals()
-init_opdata(l, opcode_32, version, is_pypy=True)
+init_opdata(l, opcode_33, version, is_pypy=True)
 
 ## FIXME: DRY common PYPY opcode additions
 
