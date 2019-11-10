@@ -146,7 +146,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_posonlyargcount = None
 
-    if ((3020 < magic_int < 20121) or magic_int in (160,112)) and not v11_to_14:
+    if ((3020 < magic_int < 20121) or magic_int in (64, 160, 112)) and not v11_to_14:
         kwonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         kwonlyargcount = 0
