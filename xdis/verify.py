@@ -93,9 +93,9 @@ def compare_bytecode_files(bc_file1, bc_file2):
     f.close
 
     if PYTHON_VERSION == 3.2 and IS_PYPY:
-        assert bytes1[4:] == bytes2[4:], ("byteode:\n%s\nvs\n%s" % (bytes1[4:], bytes2[4:]))
+        assert bytes1[4:] == bytes2[4:], ("bytecode:\n%s\nvs\n%s" % (bytes1[4:], bytes2[4:]))
     else:
-        assert bytes1 == bytes2, ("byteode:\n%s\nvs\n%s" % (bytes1, bytes2))
+        assert bytes1 == bytes2, ("bytecode:\n%s\nvs\n%s" % (bytes1, bytes2))
 
 def verify_file(real_source_filename, real_bytecode_filename):
     """Compile *real_source_filename* using
