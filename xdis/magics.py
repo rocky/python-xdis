@@ -22,7 +22,7 @@ by_magic: in this dictionary, the key is a magic byte string like
 # b'\x03\xf3\r\n' and its value is a canonic version string, like
 # '2.7'
 
-by_version: in this diectionary, the key is a canonic version string like '2.7,
+by_version: in this dictionary, the key is a canonic version string like '2.7,
 and its value is a magic byte string like b'\x03\xf3\r\n' canonic
 name, like '2.7'
 
@@ -35,7 +35,7 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 import re, struct, sys
 from xdis import IS_PYPY
 
-IS_PYPY3 = (48, 64, 112, 160)
+IS_PYPY3 = (48, 64, 112, 160, 192)
 
 
 def add_magic_from_int(magic_int, version):
@@ -276,7 +276,8 @@ add_magic_from_int(3413, "3.8.0rc1+")
 add_magic_from_int(48, "3.2a2")
 add_magic_from_int(64, "3.3pypy")
 add_magic_from_int(112, "3.5pypy")  # pypy3.5-c-jit-latest
-add_magic_from_int(160, "3.6pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
+add_magic_from_int(160, "3.6.1pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
+add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
 add_magic_from_int(1011, "2.7.1b3Jython")  # jython
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
@@ -314,7 +315,7 @@ add_canonic_versions(
     "2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13 2.7.14 2.7.15 "
     "2.7.15candidate1 "
     "2.7.16 "
-    "2.7.17rc1 2.7.17candidate1",
+    "2.7.17rc1 2.7.17candidate1 2.7.17",
     "2.7",
 )
 add_canonic_versions("3.0 3.0.0 3.0.1", "3.0a5")
@@ -327,7 +328,7 @@ add_canonic_versions(
     "3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6 3.4.7 3.4.8 3.4.9 3.4.10", "3.4rc2"
 )
 add_canonic_versions("3.5.0 3.5.1", "3.5")
-add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7", "3.5.2")
+add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9", "3.5.2")
 add_canonic_versions(
     "3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 3.6.9", "3.6rc1"
 )
@@ -337,7 +338,7 @@ add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
 add_canonic_versions("3.2.5pypy", "3.2pypy")
 add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
-add_canonic_versions("3.6.1pypy", "3.6pypy")
+add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions("3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5", "3.7.0")

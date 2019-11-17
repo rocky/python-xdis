@@ -50,13 +50,7 @@ else:
 
 
 def compat_str(s):
-    if (
-        PYTHON_VERSION > 3.2
-        or
-        # FIXME: investigate
-        PYTHON_VERSION == 3.2
-        and IS_PYPY
-    ):
+    if PYTHON3:
         try:
             return s.decode("utf-8")
         except UnicodeDecodeError:
@@ -64,7 +58,6 @@ def compat_str(s):
             # and it will get converted to str when needed
             return s
 
-    elif PYTHON3:
         return s.decode()
     else:
         return str(s)
@@ -149,7 +142,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_posonlyargcount = None
 
-    if ((3020 < magic_int < 20121) or magic_int in (64, 160, 112)) and not v11_to_14:
+    if ((3020 < magic_int < 20121) or magic_int in (64, 160, 112, 192)) and not v11_to_14:
         kwonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         kwonlyargcount = 0
@@ -398,7 +391,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                     co_cellvars,
                 )
             else:
-                if magic_int in (160,):
+                if magic_int in (160, 192):
                     co_filename = str(co_filename)
                     co_name = str(co_name)
                     co_varnames = tuple([str(t) for t in co_varnames])
