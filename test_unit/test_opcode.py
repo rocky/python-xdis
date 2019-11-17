@@ -17,8 +17,8 @@ class TestOpcode(unittest.TestCase):
             for item in opmap.items():
                 self.assertTrue(item in opc.opmap.items())
 
-        fields = """hascompare hasconst hasfree hasjabs hasjrel haslocal
-        hasname""".split()
+        fields_str = "hascompare hasconst hasfree hasjabs hasjrel haslocal"
+        fields = fields_str.split()
         for field in fields:
             opc_set = set(getattr(opc, field))
             dis_set = set(getattr(dis, field))
