@@ -1,3 +1,11 @@
+4.1.2 2019-10-29 JNC
+====================
+
+- Add magics for 3.5.8 and 3.5.9
+- Python 3.0 tolerance
+- Fix for unmarshaling Python 3.8 str from 3.2
+- Pypy 3.3, 3.5 3.6 and 3.6.9 magic numbers and support
+
 4.1.2 2019-10-29 pre Halloween redux
 ====================================
 - Python 3.8.0 magic changed
