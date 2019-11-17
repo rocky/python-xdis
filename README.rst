@@ -51,9 +51,8 @@ Installation
 The standard Python routine:
 
 ::
-
-    pip install -e .
-    pip install -r requirements-dev.txt
+    $ pip install -e .
+    $ pip install -r requirements-dev.txt
 
 A GNU makefile is also provided so :code:`make install` (possibly as root or
 sudo) will do the steps above.
@@ -62,8 +61,7 @@ Testing
 -------
 
 ::
-
-   make check
+   $ make check
 
 A GNU makefile has been added to smooth over setting running the right
 command, and running tests from fastest to slowest.
@@ -78,8 +76,7 @@ Usage
 Run
 
 ::
-
-     ./bin/pydisasm -h
+     $ ./bin/pydisasm -h
 
 for usage help.
 
@@ -112,12 +109,9 @@ See Also
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
 .. _remake: http://bashdb.sf.net/remake
-.. |buildstatus| image:: https://travis-ci.org/rocky/python-xdis.svg?branch=master
-		 :target: https://travis-ci.org/rocky/python-xdis
+.. |buildstatus| image:: https://travis-ci.org/rocky/python-xdis.svg?branch=master :target: https://travis-ci.org/rocky/python-xdis
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
-.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
-		 :target: https://badge.fury.io/py/xdis
+.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg :target: https://badge.fury.io/py/xdis
 .. |Pypi Installs| image:: https://pepy.tech/badge/xdis/month
-.. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg
-		 :target: https://repology.org/project/python:xdis/versions
+.. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg :target: https://repology.org/project/python:xdis/versions
 .. _dis: https://docs.python.org/3/library/dis.html
