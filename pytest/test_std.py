@@ -59,109 +59,110 @@ else:
     expected_dis = EXPECTED_DIS_36
 
 
-@pytest.fixture
-def bytecode_fixture():
-    return dis.Bytecode(TEST_SOURCE_CODE)
+if PYTHON_VERSION >= 3.2:
+    @pytest.fixture
+    def bytecode_fixture():
+        return dis.Bytecode(TEST_SOURCE_CODE)
 
 
-@pytest.fixture
-def traceback_fixture():
-    try:
-        raise Exception
-    except:
-        _, _, tb = sys.exc_info()
-        return tb
+    @pytest.fixture
+    def traceback_fixture():
+        try:
+            raise Exception
+        except:
+            _, _, tb = sys.exc_info()
+            return tb
 
 
-@pytest.yield_fixture
-def stream_fixture():
-    with closing(six.StringIO()) as s:
-        yield s
+    @pytest.yield_fixture
+    def stream_fixture():
+        with closing(six.StringIO()) as s:
+            yield s
 
 
-def test_bytecode_from_traceback(traceback_fixture):
-    assert len(list(dis.Bytecode.from_traceback(traceback_fixture))) > 0
+    def test_bytecode_from_traceback(traceback_fixture):
+        assert len(list(dis.Bytecode.from_traceback(traceback_fixture))) > 0
 
 
-def test_bytecode_codeobj(bytecode_fixture):
-    assert bytecode_fixture.codeobj is not None
+    def test_bytecode_codeobj(bytecode_fixture):
+        assert bytecode_fixture.codeobj is not None
 
 
-def test_bytecode_first_line(bytecode_fixture):
-    assert bytecode_fixture.first_line is not None
+    def test_bytecode_first_line(bytecode_fixture):
+        assert bytecode_fixture.first_line is not None
 
 
-def test_bytecode_dis(bytecode_fixture):
-    assert bytecode_fixture.dis() == expected_dis
+    def test_bytecode_dis(bytecode_fixture):
+        assert bytecode_fixture.dis() == expected_dis
 
 
-def test_bytecode_info(bytecode_fixture):
-    actual = bytecode_fixture.info()
-    assert actual == EXPECTED_CODE_INFO
+    def test_bytecode_info(bytecode_fixture):
+        actual = bytecode_fixture.info()
+        assert actual == EXPECTED_CODE_INFO
 
 
-def test_bytecode__iter__(bytecode_fixture):
-    assert len(list(bytecode_fixture)) > 0
+    def test_bytecode__iter__(bytecode_fixture):
+        assert len(list(bytecode_fixture)) > 0
 
 
-def test_code_info():
-    assert dis.code_info(TEST_SOURCE_CODE) == EXPECTED_CODE_INFO
+    def test_code_info():
+        assert dis.code_info(TEST_SOURCE_CODE) == EXPECTED_CODE_INFO
 
 
-def test_show_code(stream_fixture):
-    dis.show_code(TEST_SOURCE_CODE, file=stream_fixture)
-    actual = stream_fixture.getvalue()
-    assert actual == EXPECTED_CODE_INFO + '\n'
+    def test_show_code(stream_fixture):
+        dis.show_code(TEST_SOURCE_CODE, file=stream_fixture)
+        actual = stream_fixture.getvalue()
+        assert actual == EXPECTED_CODE_INFO + '\n'
 
 
-def test_pretty_flags():
-    assert dis.pretty_flags(1) == '0x00000001 (OPTIMIZED)'
+    def test_pretty_flags():
+        assert dis.pretty_flags(1) == '0x00000001 (OPTIMIZED)'
 
 
-def test_dis(stream_fixture):
-    dis.dis(TEST_SOURCE_CODE, file=stream_fixture)
-    actual = stream_fixture.getvalue()
-    assert actual == expected_dis + '\n'
+    def test_dis(stream_fixture):
+        dis.dis(TEST_SOURCE_CODE, file=stream_fixture)
+        actual = stream_fixture.getvalue()
+        assert actual == expected_dis + '\n'
 
 
-def test_distb(traceback_fixture, stream_fixture):
-    dis.distb(traceback_fixture, file=stream_fixture)
-    actual = stream_fixture.getvalue()
-    actual_len = len(actual)
-    assert actual_len > 0
+    def test_distb(traceback_fixture, stream_fixture):
+        dis.distb(traceback_fixture, file=stream_fixture)
+        actual = stream_fixture.getvalue()
+        actual_len = len(actual)
+        assert actual_len > 0
 
 
-def test_disassemble(stream_fixture):
-    dis.disassemble(TEST_CODE, file=stream_fixture)
-    actual = stream_fixture.getvalue()
-    expected = EXPECTED_CODE_INFO + '\n' + expected_dis + '\n'
-    assert actual == expected
+    def test_disassemble(stream_fixture):
+        dis.disassemble(TEST_CODE, file=stream_fixture)
+        actual = stream_fixture.getvalue()
+        expected = EXPECTED_CODE_INFO + '\n' + expected_dis + '\n'
+        assert actual == expected
 
 
-def test_get_instructions():
-    actual = list(dis.get_instructions(TEST_SOURCE_CODE))
-    actual_len = len(actual)
-    assert actual_len > 0
+    def test_get_instructions():
+        actual = list(dis.get_instructions(TEST_SOURCE_CODE))
+        actual_len = len(actual)
+        assert actual_len > 0
 
 
-@pytest.mark.skipif(IS_PYPY,
-                    reason="Pypy can't be converted to a floating point number")
-def test_make_std_api():
-    api24_tup = dis.make_std_api((2, 4, 6, 'final', 0))
-    api24_float = dis.make_std_api(2.4)
-    assert api24_tup.opmap == api24_float.opmap, \
-        "Can get std_api using a floating-point number"
+    @pytest.mark.skipif(IS_PYPY,
+                        reason="Pypy can't be converted to a floating point number")
+    def test_make_std_api():
+        api24_tup = dis.make_std_api((2, 4, 6, 'final', 0))
+        api24_float = dis.make_std_api(2.4)
+        assert api24_tup.opmap == api24_float.opmap, \
+            "Can get std_api using a floating-point number"
 
-def test_findlinestarts():
-    actual = list(dis.findlinestarts(TEST_CODE))
-    actual_len = len(actual)
-    assert actual_len > 0
+    def test_findlinestarts():
+        actual = list(dis.findlinestarts(TEST_CODE))
+        actual_len = len(actual)
+        assert actual_len > 0
 
-def test_findlabels():
-    if PYTHON_VERSION < 3.6:
-        test_code = TEST_BRANCH_CODE
-    else:
-        test_code = TEST_BRANCH_CODE.co_code
-    actual = list(dis.findlabels(test_code))
-    actual_len = len(actual)
-    assert actual_len > 0
+    def test_findlabels():
+        if PYTHON_VERSION < 3.6:
+            test_code = TEST_BRANCH_CODE
+        else:
+            test_code = TEST_BRANCH_CODE.co_code
+        actual = list(dis.findlabels(test_code))
+        actual_len = len(actual)
+        assert actual_len > 0

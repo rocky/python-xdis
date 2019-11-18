@@ -1,4 +1,3 @@
 nose
 flake8
 six
-hypothesis==3.0.0

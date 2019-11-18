@@ -51,6 +51,7 @@ Installation
 The standard Python routine:
 
 ::
+
     $ pip install -e .
     $ pip install -r requirements-dev.txt
 
@@ -61,6 +62,7 @@ Testing
 -------
 
 ::
+
    $ make check
 
 A GNU makefile has been added to smooth over setting running the right
@@ -76,6 +78,7 @@ Usage
 Run
 
 ::
+
      $ ./bin/pydisasm -h
 
 for usage help.
