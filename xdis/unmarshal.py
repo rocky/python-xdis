@@ -233,9 +233,9 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                     co_cellvars,
                 )
             else:
-                if PYTHON_MAGIC_INT in (3412, 3413):
+                if PYTHON_MAGIC_INT in (3412, 3413, 3422):
                     if co_posonlyargcount is not None:
-                        # Python3.8 to Python3.8: Ok to use native Python3.8's code type
+                        # Python3.8 to Python3.9: Ok to use native Python3.8's code type
                         code = Code(
                             co_argcount,
                             co_posonlyargcount,

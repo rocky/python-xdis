@@ -345,7 +345,7 @@ add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions("3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5", "3.7.0")
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 add_canonic_versions("3.8.0 3.8 3.8.0candidate1", "3.8.0rc1+")
-add_canonic_versions("3.9.0a1+ 3.9.0.alpha1", "3.9.0alpha1")
+add_canonic_versions("3.9 3.9.0 3.9.0a1+ 3.9.0.alpha1 ", "3.9.0alpha1")
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
