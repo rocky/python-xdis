@@ -1,4 +1,10 @@
-4.1.3 2019-10-29 JNC
+4.1.3 2019-10-29 gecko gecko
+============================
+
+- Add preliminary 3.9(dev) support
+- Handle 3.8-3.9 bytecode from 3.7ish
+
+4.1.3 2019-11-17 JNC
 ====================
 
 - Add magics for 3.5.8 and 3.5.9
