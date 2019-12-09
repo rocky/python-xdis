@@ -21,6 +21,7 @@ This is a like Python 3.9's opcode.py
 
 from xdis.opcodes.base import(
     const_op,
+    def_op,
     finalize_opcodes,
     format_extended_arg36,
     init_opdata,
@@ -39,6 +40,7 @@ init_opdata(l, opcode_38, version)
 
 #          OP NAME              OPCODE  POP PUSH
 #-----------------------------------------------
+def_op(l, 'RERAISE',                48,   0, 0)
 const_op(l, 'LOAD_ASSERTION_ERROR', 74,   0, 1)
 
 format_MAKE_FUNCTION_arg = opcode_38.format_MAKE_FUNCTION_arg
