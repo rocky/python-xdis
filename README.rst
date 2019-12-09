@@ -5,7 +5,7 @@
 xdis
 ====
 
-A Cross-Python bytecode isassembler, bytecode/workcode and magic-number manipulation library/package.
+A Cross-Python bytecode isassembler, bytecode/wordcode and magic-number manipulation library/package.
 
 
 Introduction

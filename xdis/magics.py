@@ -269,6 +269,7 @@ add_magic_from_int(3394, "3.7.0")
 add_magic_from_int(3401, "3.8.0a3+")
 add_magic_from_int(3412, "3.8.0beta2")
 add_magic_from_int(3413, "3.8.0rc1+")
+add_magic_from_int(3422, "3.9.0alpha1")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
@@ -344,6 +345,7 @@ add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions("3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5", "3.7.0")
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 add_canonic_versions("3.8.0 3.8 3.8.0candidate1", "3.8.0rc1+")
+add_canonic_versions("3.9 3.9.0 3.9.0a1+ 3.9.0.alpha1 ", "3.9.0alpha1")
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
@@ -387,7 +389,7 @@ def py_str2float(version):
                     return float(canonic_python_version[v])
                 except:
                     try:
-                        m = re.match(r"^(\d\.)(\d+)\.(\d+)$", v)
+                        m = re.match(r"^(\d\.)(\d+)\.(\d+)", v)
                         if m:
                             return float(m.group(1) + m.group(2))
                     except:
@@ -451,15 +453,14 @@ def sysinfo2magic(version_info=sys.version_info):
 
 def test():
     magic_20 = magics["2.0"]
-    current = imp.get_magic()
-    magic_current = by_magic[current]
+    magic_current = by_magic[MAGIC]
     print(type(magic_20), len(magic_20), repr(magic_20))
     print()
     print("This Python interpreter has version", magic_current)
     print("Magic code: ", PYTHON_MAGIC_INT)
     print(type(magic_20), len(magic_20), repr(magic_20))
     print(sysinfo2float())
-    assert sysinfo2magic() == current
+    assert sysinfo2magic() == MAGIC
 
 
 if __name__ == "__main__":

@@ -47,8 +47,8 @@ def main():
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
     The version of Python in the bytecode doesn't have to be the same version as
-    the Python interpreter used to run this program. For example, you can disassemble Python 3.6.1
-    bytecode from Python 2.7.13 and vice versa.
+    the Python interpreter used to run this program. For example, you can disassemble Python 3.6.9
+    bytecode from Python 2.7.15 and vice versa.
     """
     Usage_short = """usage:
    %s FILE...
@@ -101,7 +101,10 @@ Type -h for for full help.""" % program
             sys.stderr.write("File name: '%s' isn't a file\n" % path)
             continue
         elif osp.getsize(path) < 50:
-            sys.stderr.write("File name: '%s (%d bytes)' is too short to be a valid pyc file\n" % (path, osp.getsize(path)))
+            sys.stderr.write(
+                "File name: '%s (%d bytes)' is too short to be a valid pyc file\n"
+                % (path, osp.getsize(path))
+            )
             continue
 
         disassemble_file(path, sys.stdout, asm, header)

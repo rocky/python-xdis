@@ -58,7 +58,6 @@ clean_pyc:
 sdist:
 	$(PYTHON) ./setup.py sdist
 
-
 #: Style check. Set env var LINT to pyflakes, flake, or flake8
 lint: flake8
 
