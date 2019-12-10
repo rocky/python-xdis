@@ -1,4 +1,4 @@
-4.1.3 2019-10-29 gecko gecko
+4.2.0 2019-12-10 gecko gecko
 ============================
 
 - Add preliminary 3.9(dev) support
