@@ -21,7 +21,7 @@ jobs:
     # https://circleci.com/docs/2.0/circleci-images/
     machine:
       python:
-        version: 2.7.14
+        version: 3.8.0
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
