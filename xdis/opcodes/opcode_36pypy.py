@@ -44,8 +44,6 @@ nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, 9, 1)  # #args + (#kwargs << 8)
 # PyPy only
 # ----------
 
-def_op(l, "FORMAT_VALUE", 155)
-def_op(l, "BUILD_STRING", 157)
 name_op(l, "LOOKUP_METHOD", 201, 1, 2)
 nargs_op(l, "CALL_METHOD", 202, -1, 1)
 l["hasvargs"].append(202)

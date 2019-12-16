@@ -57,10 +57,6 @@ COMPILER_FLAG_NAMES = {
 PYPY_COMPILER_FLAG_NAMES = {
     0x00100000: "PYPY_KILL_DOCSTRING",
     0x00200000: "PYPY_YIELD_INSIDE_TRY",
-
-    # These conflict with 3.6. Until we know what to do, comment them out for now.
-    # 0x00000100: "PYPY_SOURCE_IS_UTF8",
-    # 0x00000200: "PYPY_DONT_IMPLY_DEDENT",
     0x00000400: "PYPY_ONLY_AST",
     0x10000000: "PYPY_ACCEPT_NULL_BYTES",
 }
