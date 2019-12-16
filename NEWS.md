@@ -1,3 +1,12 @@
+4.2.0 2019-12-16
+=================
+
+Correct and clean up compiler flags. Add 3.5+ `ITERABLE_COROUTINE` and
+3.6+ `ASYNC_GENERATOR`.
+
+Clean up PYPY 3.6 flags and opcodes Many thanks again to Arman
+Rigo. Split PYPY specfic compiler-specific flags into its own thing.
+
 4.2.0 2019-12-10 gecko gecko
 ============================
 
