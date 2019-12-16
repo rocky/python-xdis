@@ -11,6 +11,7 @@ jobs:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
       COMPILE: --compile
     machine:
+      image: default
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
