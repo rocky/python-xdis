@@ -38,9 +38,12 @@ COMPILER_FLAG_NAMES = {
     0x00000010: "NESTED",
     0x00000020: "GENERATOR",
     0x00000040: "NOFREE",
-    # These are in Python 3.x
+    # These are in Python 3.5 +
     0x00000080: "COROUTINE",
     0x00000100: "ITERABLE_COROUTINE",
+    # These are in Python 3.6+
+    0x00000200: "ASYNC_GENERATOR",
+
     # These are used only in Python 2.x */
     0x00001000: "GENERATOR_ALLOWED",
     0x00002000: "FUTURE_DIVISION",
@@ -49,11 +52,12 @@ COMPILER_FLAG_NAMES = {
     0x00010000: "FUTURE_PRINT_FUNCTION",
     0x00020000: "FUTURE_UNICODE_LITERALS",
     0x00040000: "FUTURE_BARRY_AS_DBFL",
-    # These are PYPY specific
-    0x00100000: "KILL_DOCSTRING",
-    0x00200000: "YIELD_INSIDE_TRY",
-    0x00000100: "PYPY_SOURCE_IS_UTF8",
-    0x00000200: "PYPY_DONT_IMPLY_DEDENT",
+}
+
+# These are PYPY specific
+PYPY_COMPILER_FLAG_NAMES = {
+    0x00100000: "PYPY_KILL_DOCSTRING",
+    0x00200000: "PYPY_YIELD_INSIDE_TRY",
     0x00000400: "PYPY_ONLY_AST",
     0x10000000: "PYPY_ACCEPT_NULL_BYTES",
 }
@@ -70,7 +74,7 @@ for (v, k) in COMPILER_FLAG_NAMES.items():
 for v, k in COMPILER_FLAG_BIT.items():
     globals().update(dict({'CO_'+v: k}))
 
-def pretty_flags(flags):
+def pretty_flags(flags, is_pypy=False):
     """Return pretty representation of code flags."""
     names = []
     result = "0x%08x" % flags
@@ -78,6 +82,8 @@ def pretty_flags(flags):
         flag = 1 << i
         if flags & flag:
             names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
+            if is_pypy:
+                names.append(PYPY_COMPILER_FLAG_NAMES.get(flag, hex(flag)))
             flags ^= flag
             if not flags:
                 break
@@ -99,7 +105,7 @@ def code_has_star_star_arg(code):
     return (code.co_flags & 8) != 0
 
 
-def format_code_info(co, version, name=None):
+def format_code_info(co, version, name=None, is_pypy=False):
     if not name:
         name = co.co_name
     lines = []
@@ -119,7 +125,7 @@ def format_code_info(co, version, name=None):
         lines.append("# Stack size:        %s" % co.co_stacksize)
 
     if version >= 1.3:
-        lines.append("# Flags:             %s" % pretty_flags(co.co_flags))
+        lines.append("# Flags:             %s" % pretty_flags(co.co_flags, is_pypy=is_pypy))
 
     if version >= 1.5:
         lines.append("# First Line:        %s" % co.co_firstlineno)
@@ -197,17 +203,17 @@ def get_code_object(x):
                     type(x).__name__)
 
 
-def code_info(x, version):
+def code_info(x, version, is_pypy=False):
     """Formatted details of methods, functions, or code."""
-    return format_code_info(get_code_object(x), version)
+    return format_code_info(get_code_object(x), version, is_pypy=is_pypy)
 
 
-def show_code(co, version, file=None):
+def show_code(co, version, file=None, is_pypy=False):
     """Print details of methods, functions, or code to *file*.
 
     If *file* is not provided, the output is printed on stdout.
     """
     if file is None:
-        print(code_info(co, version))
+        print(code_info(co, version, is_pypy=is_pypy))
     else:
         file.write(code_info(co, version) + "\n")

@@ -128,7 +128,7 @@ class _StdApi:
 
         If *file* is not provided, the output is printed on stdout.
         """
-        return _show_code(x, self.opc.version, file)
+        return _show_code(x, self.opc.version, file, is_pypy=self.is_pypy)
 
     def pretty_flags(self, flags):
         """Return pretty representation of code flags."""
