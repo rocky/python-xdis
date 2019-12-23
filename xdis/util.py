@@ -15,7 +15,11 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import types
-from math import copysign
+
+from xdis import PYTHON_VERSION
+
+if PYTHON_VERSION >= 2.6:
+    from math import copysign
 
 def code2num(code, i):
     if isinstance(code, str):
@@ -107,6 +111,8 @@ def code_has_star_star_arg(code):
 
 def is_negative_zero(n):
     """Returns true if n is -0.0"""
+    if PYTHON_VERSION < 2.6:
+        return n == 0.0
     return n == 0.0 and copysign(1, n) == -1
 
 def better_repr(v):
