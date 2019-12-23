@@ -22,7 +22,6 @@ of stack usage.
 
 from xdis.opcodes.base import(
     def_op, finalize_opcodes,
-    format_extended_arg36,
     init_opdata, jrel_op, name_op,
     nargs_op, rm_op, varargs_op,
     update_pj3
@@ -128,7 +127,9 @@ def format_value_flags(flags):
         # empty fmt_spec.
         return ''
 
-# Note this changes in 3.7
+def format_extended_arg36(arg):
+    return str(arg * (1 << 8))
+
 def format_CALL_FUNCTION_EX(flags):
     str = ""
     if flags & 0x01:

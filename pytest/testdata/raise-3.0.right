@@ -7,8 +7,8 @@
 # Flags:             0x00000040 (NOFREE)
 # First Line:        6
 # Constants:
-#    0: <xdis.code.thingy instance at 0xdeadbeef0000>
-#    1: None
+#    0: <class 'code'>	<xdis.code.thingy instance at 0xdeadbeef0000>
+#    1: <class 'NoneType'>	None
 # Names:
 #    0: compact_traceback
   6:           0 LOAD_CONST                0 (<xdis.code.thingy instance at 0xdeadbeef0000>)
@@ -27,8 +27,8 @@
 # Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
 # First Line:        6
 # Constants:
-#    0: None
-#    1: 'traceback does not exist'
+#    0: <class 'NoneType'>	None
+#    1: <class 'str'>	'traceback does not exist'
 # Names:
 #    0: AssertionError
 # Varnames:

@@ -235,10 +235,6 @@ def update_sets(l):
 def format_extended_arg(arg):
     return str(arg * (1 << 16))
 
-def format_extended_arg36(arg):
-    return str(arg * (1 << 8))
-
-
 def format_CALL_FUNCTION_pos_name_encoded(argc):
     """Encoded positional and named args. Used to
     up to about 3.6 where wordcodes are used and

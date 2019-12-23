@@ -6,10 +6,10 @@
 # Flags:             0x00000040 (NOFREE)
 # First Line:        6
 # Constants:
-#    0: <xdis.code.thingy instance at 0xdeadbeef0000>
-#    1: 'abc'
-#    2: b'abc~\x80\x81\x82'
-#    3: None
+#    0: <class 'xdis.code.Code2'>	<xdis.code.thingy instance at 0xdeadbeef0000>
+#    1: <class 'str'>	'abc'
+#    2: <class 'bytes'>	b'abc~\x80\x81\x82'
+#    3: <class 'NoneType'>	None
 # Names:
 #    0: f
 #    1: AssertionError
@@ -37,9 +37,9 @@
 # Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
 # First Line:        6
 # Constants:
-#    0: None
-#    1: b'~\x80\x81'
-#    2: b'\x82'
+#    0: <class 'NoneType'>	None
+#    1: <class 'bytes'>	b'~\x80\x81'
+#    2: <class 'bytes'>	b'\x82'
 # Varnames:
 #	x
 # Positional arguments:

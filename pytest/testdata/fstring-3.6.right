@@ -8,20 +8,20 @@
 # Flags:             0x00000040 (NOFREE)
 # First Line:        3
 # Constants:
-#    0: 0
-#    1: None
-#    2: 'Fred'
-#    3: 50
-#    4: 1991
-#    5: 10
-#    6: 12
-#    7: 'My name is '
-#    8: ', my age next year is '
-#    9: 1
-#   10: ', my anniversary is '
-#   11: '%A, %B %d, %Y'
-#   12: '.'
-#   13: 'He said his name is '
+#    0: <class 'int'>	0
+#    1: <class 'NoneType'>	None
+#    2: <class 'str'>	'Fred'
+#    3: <class 'int'>	50
+#    4: <class 'int'>	1991
+#    5: <class 'int'>	10
+#    6: <class 'int'>	12
+#    7: <class 'str'>	'My name is '
+#    8: <class 'str'>	', my age next year is '
+#    9: <class 'int'>	1
+#   10: <class 'str'>	', my anniversary is '
+#   11: <class 'str'>	'%A, %B %d, %Y'
+#   12: <class 'str'>	'.'
+#   13: <class 'str'>	'He said his name is '
 # Names:
 #    0: datetime
 #    1: name

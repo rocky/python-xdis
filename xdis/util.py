@@ -14,6 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from math import copysign
 
 def code2num(code, i):
     if isinstance(code, str):
@@ -126,24 +127,17 @@ def better_repr(v):
         # The below is however round-tripable, and Python's repr() isn't.
         return "complex(%s, %s)" % (real, imag)
     elif isinstance(v, tuple):
+        if len(v) == 1:
+            return "(%s,)" % better_repr(v[0])
         return "(%s)" % ", ".join(better_repr(i) for i in v)
     elif isinstance(v, list):
+        l = better_repr(v)
+        if len(v) == 1:
+            return "[%s,]" % better_repr(v[0])
         return "[%s]" % ", ".join(better_repr(i) for i in v)
     # TODO: elif deal with sets and dicts
     else:
         return repr(v)
-
-# Python str() for complex numbers is broken.
-def better_repr(v):
-    if isinstance(v, complex):
-        real = v.real
-        imag = v.imag
-        return "complex(%s,%s)" % (real, imag)
-    elif isinstance(v, tuple):
-        return "(%s)" % ", ".join(better_repr(i) for i in v)
-    else:
-        return repr(v)
-
 
 def format_code_info(co, version, name=None, is_pypy=False):
     if not name:
@@ -174,7 +168,7 @@ def format_code_info(co, version, name=None, is_pypy=False):
     if co.co_consts:
         lines.append("# Constants:")
         for i, c in enumerate(co.co_consts):
-            lines.append("# %4d: %s" % (i, better_repr(c)))
+            lines.append("# %4d: %s\t%s" % (i, type(c), better_repr(c)))
     if co.co_names:
         lines.append("# Names:")
         for i_n in enumerate(co.co_names):
