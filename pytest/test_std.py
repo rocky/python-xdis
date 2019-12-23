@@ -33,8 +33,8 @@ EXPECTED_CODE_INFO = ("""# Method Name:       <module>
 # Flags:             {flags}
 # First Line:        1
 # Constants:
-#    0: <class 'int'>	10
-#    1: <class 'NoneType'>	None
+#    0: 10
+#    1: None
 # Names:
 #    0: a""").format(flags='0x00000000 (0x0)' if (
     IS_PYPY and PYTHON_VERSION < 3.5) else '0x00000040 (NOFREE)')

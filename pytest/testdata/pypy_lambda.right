@@ -6,8 +6,8 @@
 # Flags:             0x00000000 (0x0)
 # First Line:        4
 # Constants:
-#    0: <class 'xdis.code.Code2'>	<xdis.code.thingy instance at 0xdeadbeef0000>
-#    1: <class 'NoneType'>	None
+#    0: <xdis.code.thingy instance at 0xdeadbeef0000>
+#    1: None
 # Names:
 #    0: f
   4:           0 LOAD_CONST                0 (<xdis.code.thingy instance at 0xdeadbeef0000>)
@@ -25,8 +25,8 @@
 # Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
 # First Line:        4
 # Constants:
-#    0: <class 'NoneType'>	None
-#    1: <class 'xdis.code.Code2'>	<xdis.code.thingy instance at 0xdeadbeef0000>
+#    0: None
+#    1: <xdis.code.thingy instance at 0xdeadbeef0000>
 # Names:
 #    0: map
 # Varnames:
@@ -49,8 +49,8 @@
 # Flags:             0x00000053 (NOFREE | NESTED | NEWLOCALS | OPTIMIZED)
 # First Line:        4
 # Constants:
-#    0: <class 'NoneType'>	None
-#    1: <class 'tuple'>	()
+#    0: None
+#    1: ()
 # Varnames:
 #	length
 # Positional arguments:

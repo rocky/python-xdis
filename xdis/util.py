@@ -168,7 +168,7 @@ def format_code_info(co, version, name=None, is_pypy=False):
     if co.co_consts:
         lines.append("# Constants:")
         for i, c in enumerate(co.co_consts):
-            lines.append("# %4d: %s\t%s" % (i, type(c), better_repr(c)))
+            lines.append("# %4d: %s" % (i, better_repr(c)))
     if co.co_names:
         lines.append("# Names:")
         for i_n in enumerate(co.co_names):
