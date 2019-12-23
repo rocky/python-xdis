@@ -16,11 +16,6 @@
 
 import types
 
-from xdis import PYTHON_VERSION
-
-if PYTHON_VERSION >= 2.6:
-    from math import copysign
-
 def code2num(code, i):
     if isinstance(code, str):
         return ord(code[i])
@@ -111,9 +106,8 @@ def code_has_star_star_arg(code):
 
 def is_negative_zero(n):
     """Returns true if n is -0.0"""
-    if PYTHON_VERSION < 2.6:
-        return n == 0.0
-    return n == 0.0 and copysign(1, n) == -1
+    # FIXME for > 2.6
+    return n == 0.0 # and copysign(1, n) == -1
 
 def better_repr(v):
     """Work around Python's unorthogonal and unhelpful repr() for primitive float
