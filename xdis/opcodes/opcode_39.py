@@ -23,10 +23,15 @@ from xdis.opcodes.base import(
     const_op,
     def_op,
     finalize_opcodes,
-    format_extended_arg36,
     init_opdata,
     update_pj3
     )
+
+from xdis.opcodes.opcode_36 import (
+    format_CALL_FUNCTION_EX,
+    format_CALL_FUNCTION_KW,
+    format_extended_arg36,
+)
 
 import xdis.opcodes.opcode_38 as opcode_38
 
@@ -47,6 +52,8 @@ format_MAKE_FUNCTION_arg = opcode_38.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_38.format_value_flags
 
 opcode_arg_fmt = {
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
+    "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
     'FORMAT_VALUE': format_value_flags,
     'EXTENDED_ARG': format_extended_arg36

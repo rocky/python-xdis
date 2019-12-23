@@ -22,7 +22,6 @@ of stack usage.
 
 from xdis.opcodes.base import(
     def_op, finalize_opcodes,
-    format_extended_arg36,
     init_opdata, jrel_op, name_op,
     nargs_op, rm_op, varargs_op,
     update_pj3
@@ -128,7 +127,21 @@ def format_value_flags(flags):
         # empty fmt_spec.
         return ''
 
+def format_extended_arg36(arg):
+    return str(arg * (1 << 8))
+
+def format_CALL_FUNCTION_EX(flags):
+    str = ""
+    if flags & 0x01:
+        str = "keyword args"
+    return str
+
+def format_CALL_FUNCTION_KW(argc):
+    return "%d total positional and keyword args" % argc
+
 opcode_arg_fmt = {
+    'CALL_FUNCTION_KW': format_CALL_FUNCTION_KW,
+    'CALL_FUNCTION_EX': format_CALL_FUNCTION_EX,
     'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
     'FORMAT_VALUE': format_value_flags,
     'EXTENDED_ARG': format_extended_arg36
