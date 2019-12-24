@@ -7,11 +7,11 @@ def test_opcode():
     opmap = dict([(k.replace('+', '_'), v)
                   for (k, v) in dis.opmap.items()])
 
-    # print("Extra in dis:", set(opmap.items()) - set(opc.opmap.items()))
-    # print("Extra in xdis:", set(opc.opmap.items()) - set(opmap.items()))
+    print("Extra in dis:", set(opmap.items()) - set(opc.opmap.items()))
+    print("Extra in xdis:", set(opc.opmap.items()) - set(opmap.items()))
 
-    # for item in opmap.items():
-    #   assert item in opc.opmap.items(), item
+    for item in opmap.items():
+        assert item in opc.opmap.items(), item
 
     fields_str = "hascompare hasconst hasfree hasjabs hasjrel haslocal"
     # PyPy 2.7.13 changes opcodes mid-version. It is too complicated

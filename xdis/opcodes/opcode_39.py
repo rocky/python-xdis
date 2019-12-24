@@ -24,6 +24,7 @@ from xdis.opcodes.base import(
     def_op,
     finalize_opcodes,
     init_opdata,
+    rm_op,
     update_pj3
     )
 
@@ -41,12 +42,22 @@ l = locals()
 
 init_opdata(l, opcode_38, version)
 
+# These are removed since 3.8...
+rm_op(l, "BEGIN_FINALLY", 53)
+rm_op(l, "WITH_CLEANUP_START", 81)
+rm_op(l, "WITH_CLEANUP_FINISH", 82)
+rm_op(l, "END_FINALLY", 88)
+rm_op(l, "CALL_FINALLY", 162)
+rm_op(l, "POP_FINALLY", 163)
+
+
 # These are new since Python 3.9
 
 #          OP NAME              OPCODE  POP PUSH
 #-----------------------------------------------
 def_op(l, 'RERAISE',                48,   0, 0)
-const_op(l, 'LOAD_ASSERTION_ERROR', 74,   0, 1)
+def_op(l, 'WITH_EXCEPT_START',      49,   3, 0)
+def_op(l, 'LOAD_ASSERTION_ERROR',   74,   0, 1)
 
 format_MAKE_FUNCTION_arg = opcode_38.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_38.format_value_flags

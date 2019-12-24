@@ -1,4 +1,13 @@
-4.2.0 2019-12-16
+4.2.2 2019-12-24 christmas + hannukah
+=====================================
+
+* Add Python versions: 3.6.10, 3.7.6. 3.8.1,
+* Update 3.9-dev to 3.9.0alpha2
+* Add interpolation of FUNCTION_CALL_{KW,EX} argument for 3.7-3.9
+* Better output of complex type values
+
+
+4.2.1 2019-12-16
 =================
 
 Correct and clean up compiler flags. Add 3.5+ `ITERABLE_COROUTINE` and
