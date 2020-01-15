@@ -33,6 +33,8 @@ from xdis.magics import PYTHON_MAGIC_INT, IS_PYPY3
 from xdis.code import Code2, Code3, Code38, Code2Compat
 from xdis import PYTHON3, PYTHON_VERSION, IS_PYPY
 
+# FIXME: When working from Python3 bytecode in Python2, we need
+# to distinguish types.
 internStrings = []
 internObjects = []
 
