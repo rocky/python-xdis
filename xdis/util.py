@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019 by Rocky Bernstein
+# (C) Copyright 2018-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -167,7 +167,6 @@ def format_code_info(co, version, name=None, is_pypy=False):
     #     lines.append("# Freevars:      %s" % str(co.co_freevars))
     if co.co_consts:
         lines.append("# Constants:")
-        from trepan.api import debug; debug()
         for i, c in enumerate(co.co_consts):
             lines.append("# %4d: %s" % (i, better_repr(c)))
     if co.co_names:
