@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -21,8 +21,12 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    def_op, finalize_opcodes, format_extended_arg,
-    init_opdata, update_pj2)
+    store_op,
+    finalize_opcodes,
+    format_extended_arg,
+    init_opdata,
+    update_pj2,
+)
 import xdis.opcodes.opcode_25 as opcode_25
 
 version = 2.6
@@ -31,13 +35,13 @@ l = locals()
 init_opdata(l, opcode_25, version)
 
 # Below are opcode changes since Python 2.5
-def_op(l, 'STORE_MAP', 54, 3, 1)
+store_op(l, "STORE_MAP", 54, 3, 1)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
-    'EXTENDED_ARG': format_extended_arg,
+    "EXTENDED_ARG": format_extended_arg,
 }
 
 finalize_opcodes(l)

@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2019 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2019-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@ of stack usage.
 from xdis.opcodes.base import(
     def_op, finalize_opcodes,
     init_opdata, jrel_op, name_op,
-    nargs_op, rm_op, varargs_op,
+    nargs_op, rm_op, store_op, varargs_op,
     update_pj3
     )
 
@@ -88,7 +88,7 @@ rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
 
 
 # These are new since Python 3.6
-name_op(l,    'STORE_ANNOTATION', 127) # Index in name list
+store_op(l,    'STORE_ANNOTATION', 127, is_type="name") # Index in name list
 jrel_op(l,    'SETUP_ASYNC_WITH', 154)
 def_op(l,     'FORMAT_VALUE',     155)
 varargs_op(l, 'BUILD_CONST_KEY_MAP', 156, -1, 1) # TOS is count of kwargs
