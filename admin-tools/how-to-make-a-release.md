@@ -69,7 +69,7 @@
     $ . ./admin-tools/make-dist-newer.sh
 	$ twine check dist/xdis-$VERSION*
 
-Goto https://github.com/rocky/python-xdis/releases
+Goto https://github.com/rocky/python-xdis/releases/new
 
 
 
