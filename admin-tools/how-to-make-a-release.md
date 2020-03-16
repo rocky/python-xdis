@@ -24,7 +24,7 @@
 # Change version in xdis/version.py.
 
     $ emacs xdis/version.py
-    $ source xdis/version.pyw
+    $ source xdis/version.py
     $ echo $VERSION
     $ git commit -m"Get ready for release $VERSION" .
 
