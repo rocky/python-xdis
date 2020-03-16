@@ -1,3 +1,11 @@
+4.2.3 2020-03-16 post ides-of-march
+===================================
+
+* Add Python versions: 3.7.7, 3.8.2, and 3.9.0alpha1,
+* Create a class for "STORE" instructions
+* facilitate code type freezing (PR #57)
+* Warn about cross-decompilation problems for byte types
+
 4.2.2 2019-12-24 christmas + hannukah
 =====================================
 
