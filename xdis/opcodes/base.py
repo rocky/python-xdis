@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ HAVE_ARGUMENT = 90
 fields2copy = """
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
-hasname hasnargs hasvargs oppop oppush
+hasname hasnargs hasstore hasvargs oppop oppush
 nofollow
 """.split()
 
@@ -159,6 +159,18 @@ def rm_op(l, name, op):
     assert l['opmap'][name] == op
     del l['opmap'][name]
 
+def store_op(l, name, op, pop=0, push=1, is_type="def"):
+    if is_type == "name":
+        name_op(l, name, op, pop, push)
+    elif is_type == "local":
+        local_op(l, name, op, pop, push)
+    elif is_type == "free":
+        free_op(l, name, op, pop, push)
+    else:
+        assert is_type == "def"
+        def_op(l, name, op, pop, push)
+    l['hasstore'].append(op)
+
 # This is not in Python. The operand indicates how
 # items on the pop from the stack. BUILD_TUPLE_UNPACK
 # is line this.
@@ -235,6 +247,7 @@ def update_sets(l):
     l['NAME_OPS']        = frozenset(l['hasname'])
     l['NARGS_OPS']       = frozenset(l['hasnargs'])
     l['VARGS_OPS']       = frozenset(l['hasvargs'])
+    l['STORE_OPS']       = frozenset(l['hasstore'])
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))

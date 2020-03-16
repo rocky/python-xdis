@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019 by Rocky Bernstein
+# (C) Copyright 2018-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -342,9 +342,9 @@ add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
-add_canonic_versions("3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6", "3.7.0")
+add_canonic_versions("3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7", "3.7.0")
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
-add_canonic_versions("3.8.0 3.8.1 3.8 3.8.0candidate1", "3.8.0rc1+")
+add_canonic_versions("3.8.0 3.8.1 3.8.2 3.8 3.8.0candidate1", "3.8.0rc1+")
 add_canonic_versions("3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1")
 
 # The canonic version for a canonic version is itself

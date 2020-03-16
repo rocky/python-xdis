@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2018 by Rocky Bernstein
+# (C) Copyright 2017-2018, 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ from xdis.opcodes.base import (
     compare_op, const_op,
     def_op, format_extended_arg,
     free_op, jabs_op, jrel_op,
-    local_op, name_op, nargs_op,
+    local_op, name_op, nargs_op, store_op,
     varargs_op
     )
 
@@ -44,6 +44,7 @@ hasjrel      = []
 haslocal     = []
 hasname      = []
 hasnargs     = []  # For function-like calls
+hasstore     = []  # Some sort of store operation
 hasvargs     = []  # Similar but for operators BUILD_xxx
 nofollow     = []  # Instruction doesn't fall to the next opcode
 
@@ -101,13 +102,13 @@ def_op(l, 'INPLACE_TRUE_DIVIDE',  29,  2,  1)
 # STORE_SLICE+0 .. STORE_SLICE+3
 # DELETE_SLICE+0 .. DELETE_SLICE+3
 
-def_op(l, 'STORE_MAP',            54,  3,  1)
+store_op(l, 'STORE_MAP',            54,  3,  1)
 def_op(l, 'INPLACE_ADD',          55,  2,  1)
 def_op(l, 'INPLACE_SUBTRACT',     56,  2,  1)
 def_op(l, 'INPLACE_MULTIPLY',     57,  2,  1)
 
 def_op(l, 'INPLACE_MODULO',       59,  2,  1)
-def_op(l, 'STORE_SUBSCR',         60,  3,  0) # Implements TOS1[TOS] = TOS2.
+store_op(l, 'STORE_SUBSCR',         60,  3,  0) # Implements TOS1[TOS] = TOS2.
 def_op(l, 'DELETE_SUBSCR',        61,  2,  0) # Implements del TOS1[TOS].
 def_op(l, 'BINARY_LSHIFT',        62,  2,  1)
 def_op(l, 'BINARY_RSHIFT',        63,  2,  1)
@@ -116,7 +117,7 @@ def_op(l, 'BINARY_XOR',           65,  2,  1)
 def_op(l, 'BINARY_OR',            66,  2,  1)
 def_op(l, 'INPLACE_POWER',        67,  2,  1)
 def_op(l, 'GET_ITER',             68,  1,  1)
-def_op(l, 'STORE_LOCALS',         69,  1,  0)
+store_op(l, 'STORE_LOCALS',         69,  1,  0)
 
 def_op(l, 'PRINT_EXPR',           70,  1,  0)
 def_op(l, 'LOAD_BUILD_CLASS',     71,  0,  1)
@@ -146,16 +147,16 @@ def_op(l, 'POP_EXCEPT',           89,  1, -1)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
-name_op(l, 'STORE_NAME',            90,  1,  0)   # Operand is in name list
+store_op(l, 'STORE_NAME',           90,  1,  0, is_type="name")   # Operand is in name list
 name_op(l, 'DELETE_NAME',           91,  0,  0)   # ""
 varargs_op(l, 'UNPACK_SEQUENCE',    92,  9,  1)  # TOS is number of tuple items
 jrel_op(l,    'FOR_ITER',           93,  9,  1)
 
 def_op(l,  'UNPACK_EX',             94,  9,  1)   # assignment with a starred target; TOS is #entries
                                                   # argument has a count
-name_op(l, 'STORE_ATTR',            95,  2,  0)   # Operand is in name list
+store_op(l, 'STORE_ATTR',           95,  2,  0, is_type="name")   # Operand is in name list
 name_op(l, 'DELETE_ATTR',           96,  1,  0)   # ""
-name_op(l, 'STORE_GLOBAL',          97,  1,  0)   # ""
+store_op(l, 'STORE_GLOBAL',         97,  1,  0, is_type="name")   # ""
 name_op(l, 'DELETE_GLOBAL',         98,  0,  0)   # ""
 
 # Python 2's DUP_TOPX is gone starting in Python 3.2
@@ -186,7 +187,7 @@ jrel_op(l, 'SETUP_EXCEPT',         121,  0,  6, conditional=True)  # ""
 jrel_op(l, 'SETUP_FINALLY',        122,  0,  6, conditional=True)  # ""
 
 local_op(l, 'LOAD_FAST',           124,  0,  1)  # Local variable number
-local_op(l, 'STORE_FAST',          125,  1,  0)  # Local variable number
+store_op(l, 'STORE_FAST',          125,  1,  0, is_type="local")  # Local variable number
 local_op(l, 'DELETE_FAST',         126,  0,  0)  # Local variable number
 
 def_op(l, 'RAISE_VARARGS',         130,  9,  1, fallthrough=False)
@@ -199,7 +200,7 @@ varargs_op(l, 'BUILD_SLICE',       133,  9,  1) # TOS is number of items to pop
 def_op(l, 'MAKE_CLOSURE',          134,  9,  1) # TOS is number of items to pop
 free_op(l, 'LOAD_CLOSURE',         135,  0,  1)
 free_op(l, 'LOAD_DEREF',           136,  0,  1)
-free_op(l, 'STORE_DEREF',          137,  1,  0)
+store_op(l, 'STORE_DEREF',         137,  1,  0, is_type="free")
 free_op(l, 'DELETE_DEREF',         138,  0,  0)
 
 nargs_op(l, 'CALL_FUNCTION_VAR',   140,  9,  1)  # #args + (#kwargs << 8)
