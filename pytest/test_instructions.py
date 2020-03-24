@@ -9,6 +9,13 @@ def extended_arg_fn36():
         return 0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0
     return 3
 
+#  Bytecode that has a single conditional jump forward and an unconditional jump backwards
+def loop():
+    x = False
+    while x:
+        x = True
+    return x
+
 from xdis.bytecode import Bytecode
 
 pytest.mark.skipif(sys.version_info == (3,6),
@@ -33,3 +40,29 @@ def test_inst_size():
         #     print(inst)
     else:
         assert True
+
+pytest.mark.skipif(sys.version_info < (2,7),
+                    reason="asssume Python 2.7 or greater")
+def test_inst_jumps():
+    if (sys.version_info >= (2,7)):
+        variant = 'pypy' if IS_PYPY else None
+        opc = get_opcode_module(sys.version_info, variant)
+        bytecode_obj = Bytecode(extended_arg_fn36, opc)
+        instructions = list(bytecode_obj.get_instructions(loop))
+        seen_pjif = False
+        seen_ja = False
+        for inst in instructions:
+            if inst.opname == "POP_JUMP_IF_FALSE":
+                assert inst.is_jump()
+                seen_pjif = True
+            elif inst.opname == "JUMP_ABSOLUTE":
+                assert inst.is_jump()
+                assert not inst.jumps_forward()
+                seen_ja = True
+                pass
+            pass
+        assert seen_pjif
+        assert seen_ja
+
+if __name__ == '__main__':
+    test_inst_jumps()
