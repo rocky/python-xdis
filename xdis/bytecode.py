@@ -487,6 +487,21 @@ class Instruction(_Instruction):
             pass
         return ' '.join(fields).rstrip()
 
+    def is_jump(self):
+        """
+        Return True if instruction is some sort of jump.
+        """
+        return self.optype in ("jabs", "jrel")
+
+    def jumps_forward(self):
+        """
+        Return True if instruction is jump backwards
+        """
+        return (
+            self.is_jump()
+            and self.offset < self.argval
+            )
+
     # FIXME: figure out how to do disassemble passing in opnames
 
 class Bytecode(object):

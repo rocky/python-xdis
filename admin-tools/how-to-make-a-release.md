@@ -63,13 +63,13 @@
 # Make packages and tag
 
     $ . ./admin-tools/make-dist-older.sh
-	$ pyenv local 3.8.1
+	$ pyenv local 3.8.2
 	$ twine check dist/xdis-$VERSION*
     $ git tag release-python-2.4-$VERSION
     $ . ./admin-tools/make-dist-newer.sh
 	$ twine check dist/xdis-$VERSION*
 
-Goto https://github.com/rocky/python-xdis/releases
+Goto https://github.com/rocky/python-xdis/releases/new
 
 
 

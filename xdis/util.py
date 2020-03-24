@@ -16,6 +16,7 @@
 
 import types
 
+
 def code2num(code, i):
     if isinstance(code, str):
         return ord(code[i])
@@ -43,7 +44,6 @@ COMPILER_FLAG_NAMES = {
     0x00000100: "ITERABLE_COROUTINE",
     # These are in Python 3.6+
     0x00000200: "ASYNC_GENERATOR",
-
     # These are used only in Python 2.x */
     0x00001000: "GENERATOR_ALLOWED",
     0x00002000: "FUTURE_DIVISION",
@@ -92,6 +92,15 @@ def pretty_flags(flags, is_pypy=False):
     names.reverse()
     return "%s (%s)" % (result, " | ".join(names))
 
+def co_flags_is_async(co_flags):
+    """
+    Return True iff co_flags indicates an async function.
+    """
+    return co_flags & (
+        COMPILER_FLAG_BIT["COROUTINE"]
+        | COMPILER_FLAG_BIT["ITERABLE_COROUTINE"]
+        | COMPILER_FLAG_BIT["ASYNC_GENERATOR"]
+    )
 
 def code_has_star_arg(code):
     """Return True iff
@@ -104,10 +113,12 @@ def code_has_star_star_arg(code):
     The code object has a variable keyword parameter (**kwargs-like)."""
     return (code.co_flags & 8) != 0
 
+
 def is_negative_zero(n):
     """Returns true if n is -0.0"""
     # FIXME for > 2.6
     return n == 0.0 # and copysign(1, n) == -1
+
 
 def better_repr(v):
     """Work around Python's unorthogonal and unhelpful repr() for primitive float
@@ -143,6 +154,7 @@ def better_repr(v):
     else:
         return repr(v)
 
+
 def format_code_info(co, version, name=None, is_pypy=False):
     if not name:
         name = co.co_name
@@ -163,7 +175,9 @@ def format_code_info(co, version, name=None, is_pypy=False):
         lines.append("# Stack size:        %s" % co.co_stacksize)
 
     if version >= 1.3:
-        lines.append("# Flags:             %s" % pretty_flags(co.co_flags, is_pypy=is_pypy))
+        lines.append(
+            "# Flags:             %s" % pretty_flags(co.co_flags, is_pypy=is_pypy)
+        )
 
     if version >= 1.5:
         lines.append("# First Line:        %s" % co.co_firstlineno)
