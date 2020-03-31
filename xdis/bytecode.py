@@ -322,6 +322,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
 
         opname = opc.opname[op]
         inst_size = op_size(op, opc) + (extended_arg_count * extended_arg_size)
+        fallthrough = op not in opc.nofollow
         yield Instruction(opname, op, optype, inst_size, arg, argval, argrepr,
                           has_arg, offset, starts_line, is_jump_target,
                           extended_arg_count != 0)
@@ -360,6 +361,7 @@ op_size = instruction_size
 
 _Instruction = namedtuple("_Instruction",
      "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg")
+     # "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg fallthrough")
 
 def from_traceback(cls, tb):
     """ Construct a Bytecode from the given traceback """
@@ -391,6 +393,9 @@ class Instruction(_Instruction):
                           Otherwise False
          has_extended_arg - True if the instruction was built from EXTENDED_ARG
                             opcodes
+         fallthrough - True if the instruction can (not must) fall through to the next
+                       instruction. Note conditionals are in this category, but
+                       returns, raise, and unconditional jumps are not
     """
     # FIXME: remove has_arg from initialization but keep it as a field.
 

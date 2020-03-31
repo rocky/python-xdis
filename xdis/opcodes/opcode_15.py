@@ -151,7 +151,7 @@ def_op(l, "PRINT_EXPR", 70, 1, 0)
 def_op(l, "PRINT_ITEM", 71, 1, 0)
 def_op(l, "PRINT_NEWLINE", 72, 1, 0)
 
-def_op(l, "BREAK_LOOP", 80, 0, 0)
+def_op(l, "BREAK_LOOP", 80, 0, 0, fallthrough=False)
 
 def_op(l, "LOAD_LOCALS", 82, 0, 1)
 def_op(l, "RETURN_VALUE", 83, 1, 0, fallthrough=False)
@@ -184,10 +184,10 @@ compare_op(l, "COMPARE_OP", 106, 2, 1)  # Comparison operator
 name_op(l, "IMPORT_NAME", 107, 2, 1)  # Operand is in name list
 name_op(l, "IMPORT_FROM", 108, 0, 1)  # Operand is in name list
 
-jrel_op(l, "JUMP_FORWARD", 110, 0, 0)  # Number of bytes to skip
+jrel_op(l, "JUMP_FORWARD", 110, 0, 0, fallthrough=False)  # Number of bytes to skip
 jrel_op(l, "JUMP_IF_FALSE", 111, 1, 1, True)  # ""
 jrel_op(l, "JUMP_IF_TRUE", 112, 1, 1, True)  # ""
-jabs_op(l, "JUMP_ABSOLUTE", 113, 0, 0)  # Target byte offset from beginning of code
+jabs_op(l, "JUMP_ABSOLUTE", 113, 0, 0, fallthrough=False)  # Target byte offset from beginning of code
 def_op(l, "FOR_LOOP", 114)  # Number of bytes to skip
 
 name_op(l, "LOAD_GLOBAL", 116, 0, 1)  # Operand is in name list

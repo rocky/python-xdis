@@ -133,7 +133,7 @@ def_op(l, 'INPLACE_RSHIFT',       76,  2,  1)
 def_op(l, 'INPLACE_AND',          77,  2,  1)
 def_op(l, 'INPLACE_XOR',          78,  2,  1)
 def_op(l, 'INPLACE_OR',           79,  2,  1)
-def_op(l, 'BREAK_LOOP',           80,  0,  0)
+def_op(l, 'BREAK_LOOP',           80,  0,  0, fallthrough=False)
 def_op(l, 'WITH_CLEANUP',         81,  1,  0) # Cleans up the stack when a with statement
                                               # block exits.  Handle stack special
 
@@ -172,16 +172,16 @@ compare_op(l, 'COMPARE_OP',        107,  2,  1)  # Comparison operator
 name_op(l, 'IMPORT_NAME',          108,  1,  1)  # Operand is in name list
 name_op(l, 'IMPORT_FROM',          109,  0,  1)  # Operand is in name list
 
-jrel_op(l, 'JUMP_FORWARD',         110,  0,  0)  # Number of bytes to skip
+jrel_op(l, 'JUMP_FORWARD',         110,  0,  0, fallthrough=False)  # Number of bytes to skip
 jabs_op(l, 'JUMP_IF_FALSE_OR_POP', 111, conditional=True)  # Target byte offset from beginning of code
 jabs_op(l, 'JUMP_IF_TRUE_OR_POP',  112, conditional=True) # ""
-jabs_op(l, 'JUMP_ABSOLUTE',        113,  0,  0)  # Target byte offset from beginning of code
+jabs_op(l, 'JUMP_ABSOLUTE',        113,  0,  0, fallthrough=False)  # Target byte offset from beginning of code
 jabs_op(l, 'POP_JUMP_IF_FALSE',    114,  9,  1, conditional=True) # ""
 jabs_op(l, 'POP_JUMP_IF_TRUE',     115,  9,  1, conditional=True) # ""
 
 name_op(l, 'LOAD_GLOBAL',          116,  0,  1)  # Operand is in name list
 
-jabs_op(l, 'CONTINUE_LOOP',        119,  0,  0)  # Target address
+jabs_op(l, 'CONTINUE_LOOP',        119,  0,  0, fallthrough=False)  # Target address
 jrel_op(l, 'SETUP_LOOP',           120,  0,  0, conditional=True) # Distance to target address
 jrel_op(l, 'SETUP_EXCEPT',         121,  0,  6, conditional=True)  # ""
 jrel_op(l, 'SETUP_FINALLY',        122,  0,  6, conditional=True)  # ""

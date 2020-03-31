@@ -1,7 +1,7 @@
 4.2.4 2020-03-24 COVID-19 time
 ==============================
 
-- Add Instruction instance methods
+- Add Instruction instance methods:
   #Instruction.is_jump() and #Instruction.jumps_forward()
 
 4.2.3 2020-03-16 post ides-of-march
