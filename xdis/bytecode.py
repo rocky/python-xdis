@@ -310,9 +310,11 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
 
         opname = opc.opname[op]
         inst_size = op_size(op, opc) + (extended_arg_count * extended_arg_size)
+        fallthrough = op not in opc.nofollow
         yield Instruction(opname, op, optype, inst_size, arg, argval, argrepr,
                           has_arg, offset, starts_line, is_jump_target,
-                          extended_arg_count != 0)
+                          extended_arg_count != 0, )
+                          # fallthrough)
         extended_arg_count = extended_arg_count + 1 if op == opc.EXTENDED_ARG else 0
 
 def op_has_argument(op, opc):
@@ -339,6 +341,7 @@ op_size = instruction_size
 
 _Instruction = namedtuple("_Instruction",
      "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg")
+     # "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg fallthrough")
 
 class Instruction(_Instruction):
     """Details for a bytecode operation
@@ -364,6 +367,9 @@ class Instruction(_Instruction):
                           Otherwise False
          has_extended_arg - True if the instruction was built from EXTENDED_ARG
                             opcodes
+         fallthrough - True if the instruction can (not must) fall through to the next
+                       instruction. Note conditionals are in this category, but
+                       returns, raise, and unconditional jumps are not
     """
     # FIXME: remove has_arg from initialization but keep it as a field.
 
