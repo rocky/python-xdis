@@ -649,7 +649,7 @@ def is_valid_variable_name(name):
     if not re.fullmatch('^[_a-zA-Z][_0-9a-zA-Z]*$', name):
         return False
     try:
-        ast.parse('{} = None' % name)
+        ast.parse('%s = None' % name)
         return True
     except (SyntaxError, ValueError, TypeError):
         return False
