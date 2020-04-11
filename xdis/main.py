@@ -264,7 +264,7 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
 
 
 def disassemble_file(
-    filename, outstream=sys.stdout, asm_format=False, header=False, show_bytes=False
+    filename, outstream=sys.stdout, asm_format=False, header=False, show_bytes=False, warn_invalid_vars=True, fix_invalid_vars=True
 ):
     """
     disassemble Python byte-code file (.pyc)
@@ -285,6 +285,7 @@ def disassemble_file(
             magic_int,
             source_size,
             show_filename=True,
+            warn_invalid_variables=warn_invalid_vars,
         )
 
     else:
@@ -298,6 +299,8 @@ def disassemble_file(
             source_size,
             asm_format=asm_format,
             show_bytes=show_bytes,
+            warn_invalid_variables=warn_invalid_vars,
+            fix_invalid_variables=fix_invalid_vars,
         )
     # print co.co_filename
     return filename, co, version, timestamp, magic_int

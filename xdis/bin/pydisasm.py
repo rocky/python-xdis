@@ -36,8 +36,18 @@ PATTERNS = ("*.pyc", "*.pyo")
     default=False,
     help="Show only the module header information",
 )
+@click.option(
+    "--warn-invalid-vars/--nowarn-invalid-vars",
+    default=True,
+    help="warn about invalid variable names",
+)
+@click.option(
+    "--fix-invalid-vars/--nofix-invalid-vars",
+    default=True,
+    help="fix the names for variables with invalid names",
+)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(asm, show_bytes, header, files):
+def main(asm, show_bytes, header, warn_invalid_vars, fix_invalid_vars, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -72,7 +82,7 @@ def main(asm, show_bytes, header, files):
             )
             continue
 
-        disassemble_file(path, sys.stdout, asm, header, show_bytes)
+        disassemble_file(path, sys.stdout, asm, header, show_bytes, warn_invalid_vars=warn_invalid_vars, fix_invalid_vars=fix_invalid_vars)
     return
 
 
