@@ -37,7 +37,7 @@ import xdis
 
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode
-from xdis.code import iscode, code2compat, code3compat
+from xdis.code import iscode, code2compat, code3compat, is_valid_variable_names, fix_variable_names
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
 from xdis.version import VERSION
@@ -68,6 +68,7 @@ def show_module_header(
     source_size=None,
     header=True,
     show_filename=True,
+    warn_invalid_variables=True,
 ):
 
     real_out = out or sys.stdout
@@ -107,7 +108,8 @@ def show_module_header(
         real_out.write("# Source code size mod 2**32: %d bytes\n" % source_size)
     if show_filename:
         real_out.write("# Embedded file name: %s\n" % co.co_filename)
-
+    if warn_invalid_variables and not is_valid_variable_names(co):
+        real_out.write("# WARNING: Code contains variables with invalid Python variable names.\n")
 
 def disco(
     bytecode_version,
@@ -121,6 +123,8 @@ def disco(
     asm_format=False,
     show_bytes=False,
     dup_lines=False,
+    warn_invalid_variables=True,
+    fix_invalid_variables=True,
 ):
     """
     diassembles and deparses a given code block 'co'
@@ -138,10 +142,14 @@ def disco(
         source_size,
         header,
         show_filename=False,
+        warn_invalid_variables=warn_invalid_variables
     )
 
     # store final output stream for case of error
     real_out = out or sys.stdout
+
+    if fix_invalid_variables:
+        co = fix_variable_names(co)
 
     if co.co_filename and not asm_format:
         real_out.write(format_code_info(co, bytecode_version) + "\n")
