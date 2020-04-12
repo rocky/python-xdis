@@ -124,7 +124,7 @@ def disco(
     show_bytes=False,
     dup_lines=False,
     warn_invalid_variables=True,
-    fix_invalid_variables=True,
+    fix_invalid_variables=False,
 ):
     """
     diassembles and deparses a given code block 'co'
@@ -264,7 +264,7 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
 
 
 def disassemble_file(
-    filename, outstream=sys.stdout, asm_format=False, header=False, show_bytes=False, warn_invalid_vars=True, fix_invalid_vars=True
+    filename, outstream=sys.stdout, asm_format=False, header=False, show_bytes=False, warn_invalid_vars=True, fix_invalid_vars=False
 ):
     """
     disassemble Python byte-code file (.pyc)
