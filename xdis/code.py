@@ -15,7 +15,10 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from xdis import PYTHON3, PYTHON_VERSION
+from xdis.util import UniqueSuffixSet
 import inspect, types
+import ast
+import re
 
 
 class Code3:
@@ -637,3 +640,63 @@ def code_has_star_star_arg(code):
     """Return True iff
     The code object has a variable keyword parameter (**kwargs-like)."""
     return (code.co_flags & 8) != 0
+
+
+# From: https://stackoverflow.com/questions/36330860/pythonically-check-if-a-variable-name-is-valid
+def is_valid_variable_name(name):
+    """Returns True iff
+    the argument is a valid Python variable name"""
+    if not re.match('^[_a-zA-Z][_0-9a-zA-Z]*$', name):
+        return False
+    try:
+        ast.parse('%s = None' % name)
+        return True
+    except (SyntaxError, ValueError, TypeError):
+        return False
+
+
+def is_valid_variable_names(code):
+    """Return True iff all of the co_names are valid Python identifier names"""
+    return all(is_valid_variable_name(name) for name in code.co_names)
+
+
+def fix_variable_name(name):
+    """Converts an invalid python variable name into a valid variable name similar to the input"""
+    # Replace invalid character with underscore
+    name = re.sub('[^_0-9a-zA-Z]', '_', name)
+    # Replace leading digit with underscore
+    name = re.sub('^[0-9]', '_', name)
+    if not is_valid_variable_name(name):
+        return '_' + name
+    else:
+        return name
+
+
+def fix_variable_names(code):
+    """Modifies a code object, transforming all invalid names into valid names and avoiding collisions."""
+    valid_names = UniqueSuffixSet()
+    fixed_names = []
+    for co_name in code.co_names:
+        fixed_name = valid_names.add(fix_variable_name(co_name))
+        fixed_names.append(fixed_name)
+
+    args = [code.co_argcount]
+    if PYTHON3:
+        args.append(code.co_kwonlyargcount)
+    args += [
+        code.co_nlocals,
+        code.co_stacksize,
+        code.co_flags,
+        code.co_code,
+        tuple(code.co_consts),
+        tuple(fixed_names), # replace code.co_names with fixed version
+        tuple(code.co_varnames),
+        str(code.co_filename),
+        str(code.co_name),
+        code.co_firstlineno,
+        code.co_lnotab if type(code.co_lnotab) == bytes else code.co_lnotab.encode('utf-8'),
+        code.co_freevars,
+        code.co_cellvars
+    ]
+
+    return types.CodeType(*args)

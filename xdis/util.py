@@ -253,3 +253,25 @@ def show_code(co, version, file=None, is_pypy=False):
         print(code_info(co, version, is_pypy=is_pypy))
     else:
         file.write(code_info(co, version) + "\n")
+
+class UniqueSuffixSet:
+    """A set that will add a numerical suffix to an added value to make sure values are unique"""
+
+    def __init__(self, initial_values=[]):
+        """Construct the initial set of value from an iterable of unique values"""
+        self.values = set(initial_values)
+        if len(self.values) != len(initial_values):
+            raise ValueError("Initial values not unique, %d != %d" % (len(self.values), len(initial_values)))
+
+    def add(self, value_candidate):
+        """Add a new value to the set and return the actual value, including suffix, added"""
+        if value_candidate in self.values:
+            for suffix_number in range(len(self.values)):
+                value = '%s_%d' % (value_candidate, suffix_number)
+                if value not in self.values:
+                    break
+        else:
+            value = value_candidate
+        assert value not in self.values, "The value was found in the set even though it should not be there."
+        self.values.add(value)
+        return value
