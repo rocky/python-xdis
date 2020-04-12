@@ -646,7 +646,7 @@ def code_has_star_star_arg(code):
 def is_valid_variable_name(name):
     """Returns True iff
     the argument is a valid Python variable name"""
-    if not re.fullmatch('^[_a-zA-Z][_0-9a-zA-Z]*$', name):
+    if not re.match('^[_a-zA-Z][_0-9a-zA-Z]*$', name):
         return False
     try:
         ast.parse('%s = None' % name)
@@ -688,13 +688,13 @@ def fix_variable_names(code):
         code.co_stacksize,
         code.co_flags,
         code.co_code,
-        code.co_consts,
+        tuple(code.co_consts),
         tuple(fixed_names), # replace code.co_names with fixed version
-        code.co_varnames,
-        code.co_filename,
-        code.co_name,
+        tuple(code.co_varnames),
+        str(code.co_filename),
+        str(code.co_name),
         code.co_firstlineno,
-        code.co_lnotab,
+        code.co_lnotab if type(code.co_lnotab) == bytes else code.co_lnotab.encode('utf-8'),
         code.co_freevars,
         code.co_cellvars
     ]

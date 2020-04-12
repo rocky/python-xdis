@@ -70,3 +70,22 @@ if PYTHON_VERSION >= 3.2:
                 with open(filename_expected + ".got", "w") as out:
                     out.write(got)
         assert got == expected
+
+    @pytest.mark.parametrize(
+        ("obfuscated_bytecode_file", "expected_variable_name"),
+        [
+            ("../test/bytecode_3.7/02_invalid_variable_name1.pyc", "y____Hello___"),
+            ("../test/bytecode_3.7/02_invalid_variable_name2.pyc", "_for"),
+            ("../test/bytecode_3.7/02_invalid_variable_name3.pyc", "_x"),
+        ],
+    )
+    def test_obfuscation(obfuscated_bytecode_file, expected_variable_name):
+        INVALID_VARS_ERROR_MSG = "# WARNING: Code contains variables with invalid Python variable names."
+        testfile = os.path.join(get_srcdir(), obfuscated_bytecode_file)
+        resout = StringIO()
+        disassemble_file(testfile, resout, header=True, warn_invalid_vars=True)
+        assert INVALID_VARS_ERROR_MSG in resout.getvalue(), "Warning about invalid variables not found when disassembling %s" % obfuscated_bytecode_file
+
+        resout = StringIO()
+        disassemble_file(testfile, resout, warn_invalid_vars=False, fix_invalid_vars=True)
+        assert expected_variable_name in resout.getvalue(), "Expected obfuscated variable in testfile %s to be repaired to %s" % (obfuscated_bytecode_file, expected_variable_name)
