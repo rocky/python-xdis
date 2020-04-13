@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2019 by Rocky Bernstein
+#  Copyright (c) 2018-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@ allow running on Python 2.
 """
 
 import re, sys, types
-from xdis import PYTHON3
+from xdis.version_info import PYTHON3
 
 from collections import namedtuple
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2019 by Rocky Bernstein
+# Copyright (c) 2015-2020 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -31,7 +31,7 @@ from struct import unpack
 
 from xdis.magics import PYTHON_MAGIC_INT, IS_PYPY3
 from xdis.code import Code2, Code3, Code38, Code2Compat
-from xdis import PYTHON3, PYTHON_VERSION, IS_PYPY
+from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
 
 # FIXME: When working from Python3 bytecode in Python2, we need
 # to distinguish types.

@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON3, PYTHON_VERSION
 import inspect, types
 
 
@@ -109,8 +109,8 @@ class Code3:
             # into the encoded format
             self.encode_lineno_tab()
 
-        if PYTHON3:
-            args = (
+        if 3.0 <= PYTHON_VERSION <= 3.7:
+            return types.CodeType(
                 self.co_argcount,
                 self.co_kwonlyargcount,
                 self.co_nlocals,
@@ -127,7 +127,6 @@ class Code3:
                 self.co_freevars,
                 self.co_cellvars,
             )
-            return types.CodeType(*args)
         else:
             return self
 
@@ -208,7 +207,7 @@ class Code38(Code3):
             self.encode_lineno_tab()
 
         if PYTHON_VERSION >= 3.8:
-            args = (
+            return types.CodeType(
                 self.co_argcount,
                 self.co_posonlyargcount,
                 self.co_kwonlyargcount,
@@ -226,7 +225,6 @@ class Code38(Code3):
                 self.co_freevars,
                 self.co_cellvars,
             )
-            return types.CodeType(*args)
         else:
             return self
 
@@ -416,7 +414,7 @@ class Code2:
                 delattr(self, "co_kwonlyargcount")
             return self
         else:
-            args = (
+            return types.CodeType(
                 self.co_argcount,
                 self.co_nlocals,
                 self.co_stacksize,
@@ -432,7 +430,6 @@ class Code2:
                 self.co_freevars,
                 self.co_cellvars,
             )
-            return types.CodeType(*args)
 
     def check(self):
         for field in "co_argcount co_nlocals co_flags co_firstlineno".split():
@@ -572,7 +569,7 @@ class Code14:
                 delattr(self, "co_kwonlyargcount")
             return self
         else:
-            args = (
+            return types.CodeType(
                 self.co_argcount,
                 self.co_nlocals,
                 self.co_stacksize,
@@ -586,7 +583,6 @@ class Code14:
                 self.co_freevars,
                 self.co_cellvars,
             )
-            return types.CodeType(*args)
 
     def check(self):
         for field in "co_argcount co_nlocals co_flags co_firstlineno".split():

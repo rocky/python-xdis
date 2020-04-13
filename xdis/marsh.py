@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019 by Rocky Bernstein
+# (C) Copyright 2018-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@ there). Details of the format may change between Python versions.
 
 import types, struct
 
-from xdis import PYTHON_VERSION, PYTHON3
+from xdis.version_info import PYTHON_VERSION, PYTHON3
 from xdis.code import Code2, Code2Compat, Code3, Code3Compat
 
 try:
