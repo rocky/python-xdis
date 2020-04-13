@@ -11,9 +11,9 @@ from __future__ import print_function
 import types
 import struct
 
-from xdis import PYTHON3
+from xdis.version_info import PYTHON3
 import xdis.marsh as xmarshal
-from xdis.code import Code2Compat
+from xdis.codetype import Code2Compat
 
 
 def rng(a, b):

@@ -39,7 +39,7 @@ from xdis.bytecode import (
     op_size
     )
 
-from xdis.code import (
+from xdis.codetype import (
     Code14,
     Code2,
     Code2Compat,

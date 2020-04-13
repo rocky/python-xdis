@@ -37,7 +37,7 @@ import xdis
 
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode
-from xdis.code import iscode, code2compat, code3compat
+from xdis.codetype import iscode, code2compat, code3compat
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
 from xdis.version import VERSION
