@@ -175,3 +175,6 @@ def test_get_jump_targets():
     offset_map = opcode_36.get_jump_target_maps(code,  opcode_36)
     expect = {2: [0], 4: [2], 6: [4], 8: [2], 10: [8], 14: [12]}
     assert expect == offset_map
+
+if __name__ == "__main__":
+    test_get_jump_targets()

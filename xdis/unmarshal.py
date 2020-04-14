@@ -15,21 +15,21 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""
-CPython magic- and version-independent Python object
+"""CPython magic- and version-independent Python object
 deserialization (unmarshal).
 
 This is needed when the bytecode extracted is from
 a different version than the currently-running Python.
 
-When the two are the same, you can simply use Python's built-in marshal.loads()
-to produce a code object
+When the running interpreter and the read-in bytecode are the same,
+you can simply use Python's built-in marshal.loads() to produce a code
+object
 """
 
 import sys, types
 from struct import unpack
 
-from xdis.magics import PYTHON_MAGIC_INT, IS_PYPY3
+from xdis.magics import magic_int2float, PYTHON_MAGIC_INT, IS_PYPY3
 from xdis.codetype import Code13, Code15, Code2, Code3, Code38, Code2Compat
 from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
 
@@ -116,56 +116,55 @@ def load_code(fp, magic_int, code_objects={}):
 
 def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # FIXME: use tables to simplify this?
-    # Python [1.0 .. 2.2)
+    # FIXME: Python 1.0 .. 1.3 isn't well known
 
+    # FIXME: REMOVE THIS and replace using "versions"
     v10_to_12 = magic_int in (39170, 39171)
-
-    # FIXME: find out what magics were for 1.3
     v13_to_22 = magic_int in (11913, 5892, 20121, 50428, 50823, 60202, 60717)
     v11_to_14 = magic_int in (39170, 39171, 11913, 5892)
-
-    # Python [1.5 .. 2.2)
     v15_to_22 = magic_int in (20121, 50428, 50823, 60202, 60717)
     v13_to_20 = magic_int in (11913, 5892, 20121, 50428, 50823)
     v21_to_27 = not v13_to_20 and 60202 <= magic_int <= 63000
 
-    if v13_to_22:
-        co_argcount = unpack("<h", fp.read(2))[0]
-    elif v10_to_12:
-        co_argcount = 0
-    else:
-        co_argcount = unpack("<i", fp.read(4))[0]
+    version = magic_int2float(magic_int)
 
-    if magic_int in (3412, 3413, 3422):
+    if version >= 2.3:
+        co_argcount = unpack("<i", fp.read(4))[0]
+    elif version >= 1.3:
+        co_argcount = unpack("<h", fp.read(2))[0]
+    else:
+        co_argcount = 0
+
+    if version >= 3.8:
         co_posonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         co_posonlyargcount = None
 
-    if ((3020 < magic_int < 20121) or magic_int in (64, 160, 112, 192)) and not v11_to_14:
+    if version >= 3.0:
         kwonlyargcount = unpack("<i", fp.read(4))[0]
     else:
         kwonlyargcount = 0
 
-    if v13_to_22:
-        co_nlocals = unpack("<h", fp.read(2))[0]
-    elif v10_to_12:
-        co_nlocals = 0
-    else:
+    if version >= 2.3:
         co_nlocals = unpack("<i", fp.read(4))[0]
-
-    if v15_to_22:
-        co_stacksize = unpack("<h", fp.read(2))[0]
-    elif v11_to_14 or v10_to_12:
-        co_stacksize = 0
+    elif version >= 1.3:
+        co_nlocals = unpack("<h", fp.read(2))[0]
     else:
+        co_nlocals = 0
+
+    if version >= 2.3:
         co_stacksize = unpack("<i", fp.read(4))[0]
-
-    if v13_to_22:
-        co_flags = unpack("<h", fp.read(2))[0]
-    elif v10_to_12:
-        co_flags = 0
+    elif version >= 1.5:
+        co_stacksize = unpack("<h", fp.read(2))[0]
     else:
+        co_stacksize = 0
+
+    if version >= 2.3:
         co_flags = unpack("<i", fp.read(4))[0]
+    elif version >= 1.3:
+        co_flags = unpack("<h", fp.read(2))[0]
+    else:
+        co_flags = 0
 
     co_code = load_code_internal(
         fp, magic_int, bytes_for_s=True, code_objects=code_objects
@@ -173,13 +172,12 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     co_consts = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_names = load_code_internal(fp, magic_int, code_objects=code_objects)
 
-    # FIXME: only if >= 1.3
-    if v10_to_12:
-        co_varnames = []
-    else:
+    if version >= 1.3:
         co_varnames = load_code_internal(fp, magic_int, code_objects=code_objects)
+    else:
+        co_varnames = []
 
-    if not (v13_to_20 or v10_to_12):
+    if version >= 2.0:
         co_freevars = load_code_internal(fp, magic_int, code_objects=code_objects)
         co_cellvars = load_code_internal(fp, magic_int, code_objects=code_objects)
     else:
@@ -189,20 +187,17 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     co_filename = load_code_internal(fp, magic_int, code_objects=code_objects)
     co_name = load_code_internal(fp, magic_int)
 
-    if v15_to_22:
-        co_firstlineno = unpack("<h", fp.read(2))[0]
-    elif v11_to_14:
+    if version >= 1.5:
+        if version >= 2.3:
+            co_firstlineno = unpack("<i", fp.read(4))[0]
+        else:
+            co_firstlineno = unpack("<h", fp.read(2))[0]
+        co_lnotab = load_code_internal(fp, magic_int, code_objects=code_objects)
+    else:
         # < 1.5 there is no lnotab, so no firstlineno.
         # SET_LINENO is used instead.
         co_firstlineno = -1  # Bogus sentinal value
-    else:
-        co_firstlineno = unpack("<i", fp.read(4))[0]
-
-    if v11_to_14:
-        # < 1.5 uses SET_LINENO only
         co_lnotab = ""
-    else:
-        co_lnotab = load_code_internal(fp, magic_int, code_objects=code_objects)
 
     # The Python3 code object is different than Python2's which
     # we are reading if we get here.
@@ -223,7 +218,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
             #   3.8..    Code38
             # FIXME the bool test have to be in this order because we
             # have set bools this way. Change to testing on version with sys2float.
-            if v21_to_27:
+            if v10_to_12 or v13_to_22 or v21_to_27:
                 code = Code2(
                     co_argcount,
                     co_nlocals,
@@ -240,34 +235,6 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                     co_freevars,
                     co_cellvars,
                 )
-            elif v15_to_22 or v13_to_20:
-                code = Code15(
-                    co_argcount,
-                    co_nlocals,
-                    co_stacksize,
-                    co_flags,
-                    co_code,
-                    co_consts,
-                    co_names,
-                    co_varnames,
-                    co_filename,
-                    co_name,
-                    co_firstlineno,
-                    co_lnotab,
-                )
-            elif v10_to_12 or v13_to_20:
-                code = Code13(
-                    co_argcount,
-                    co_nlocals,
-                    co_flags,
-                    co_code,
-                    co_consts,
-                    co_names,
-                    co_varnames,
-                    co_filename,
-                    co_name,
-                )
-
             else:
                 if PYTHON_MAGIC_INT in (3412, 3413, 3422):
                     if co_posonlyargcount is not None:
