@@ -16,7 +16,7 @@
 
 __docformat__ = "restructuredtext"
 from xdis.codetype.base import *
-from xdis.codetype.code14 import *
+from xdis.codetype.code13 import *
 from xdis.codetype.code2 import *
 from xdis.codetype.code3 import *
 from xdis.codetype.code38 import *
@@ -74,7 +74,7 @@ corresponding more flexible xdis Code type,.
             )
     elif PYTHON_VERSION < 2.0:
         # 1.x .. 1.5
-        return Code15(
+        return Code13(
             co_argcount,
             co_nlocals,
             co_stacksize,

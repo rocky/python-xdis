@@ -30,7 +30,7 @@ import sys, types
 from struct import unpack
 
 from xdis.magics import PYTHON_MAGIC_INT, IS_PYPY3
-from xdis.codetype import Code2, Code3, Code38, Code2Compat
+from xdis.codetype import Code13, Code15, Code2, Code3, Code38, Code2Compat
 from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
 
 # FIXME: When working from Python3 bytecode in Python2, we need
@@ -213,13 +213,19 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
         if PYTHON_MAGIC_INT > 3020 or PYTHON_MAGIC_INT in IS_PYPY3:
             # Check for Python 3 interpreter reading Python 2 bytecode.
             # Python 3's code objects are bytes while Python 2's are strings.
-            #
-            # In later Python3 magic_ints, there is a
-            # kwonlyargcount parameter which we set to 0.
-            if v10_to_12 or v13_to_22 or v21_to_27:
+            # The break out of code types is
+            #   1.0..1.2 sketchy
+            #   1.3..1.4 Code13
+            #   1.5      Code15
+            #   2.0      sketchy
+            #   2.1..2.7 Code2
+            #   3.0..3.7 Code3
+            #   3.8..    Code38
+            # FIXME the bool test have to be in this order because we
+            # have set bools this way. Change to testing on version with sys2float.
+            if v21_to_27:
                 code = Code2(
                     co_argcount,
-                    kwonlyargcount,
                     co_nlocals,
                     co_stacksize,
                     co_flags,
@@ -234,6 +240,34 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
                     co_freevars,
                     co_cellvars,
                 )
+            elif v15_to_22 or v13_to_20:
+                code = Code15(
+                    co_argcount,
+                    co_nlocals,
+                    co_stacksize,
+                    co_flags,
+                    co_code,
+                    co_consts,
+                    co_names,
+                    co_varnames,
+                    co_filename,
+                    co_name,
+                    co_firstlineno,
+                    co_lnotab,
+                )
+            elif v10_to_12 or v13_to_20:
+                code = Code13(
+                    co_argcount,
+                    co_nlocals,
+                    co_flags,
+                    co_code,
+                    co_consts,
+                    co_names,
+                    co_varnames,
+                    co_filename,
+                    co_name,
+                )
+
             else:
                 if PYTHON_MAGIC_INT in (3412, 3413, 3422):
                     if co_posonlyargcount is not None:

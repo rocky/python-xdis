@@ -235,7 +235,10 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
 
         offset = i
         if linestarts is not None:
-            starts_line = linestarts.get(i, None)
+            try:
+                starts_line = linestarts.get(i, None)
+            except:
+                from trepan.api import debug; debug()
             if starts_line is not None:
                 starts_line += line_offset
         if i in labels:
@@ -494,13 +497,18 @@ class Bytecode(object):
     def __init__(self, x, opc, first_line=None, current_offset=None,
                  dup_lines=False):
         self.codeobj = co = get_code_object(x)
-        if first_line is None:
-            self.first_line = co.co_firstlineno
-            self._line_offset = 0
-        else:
-            self.first_line = first_line
-            self._line_offset = first_line - co.co_firstlineno
-        self._cell_names = co.co_cellvars + co.co_freevars
+        self._line_offset = 0
+        if opc.version > 1.5:
+            if first_line is None:
+                self.first_line = co.co_firstlineno
+            else:
+                self.first_line = first_line
+                self._line_offset = first_line - co.co_firstlineno
+            if opc.version > 2.0:
+                self._cell_names = co.co_cellvars + co.co_freevars
+                pass
+            pass
+
         self._linestarts = dict(opc.findlinestarts(co, dup_lines=dup_lines))
         self._original_object = x
         self.opc = opc
@@ -537,10 +545,17 @@ class Bytecode(object):
         else:
             offset = -1
         output = StringIO()
+        if self.opc.version > 2.0:
+            cells = self._cell_names
+            linestarts = self._linestarts
+        else:
+            cells = None
+            linestarts = None
+
         self.disassemble_bytes(co.co_code, varnames=co.co_varnames,
                                names=co.co_names, constants=co.co_consts,
-                               cells=self._cell_names,
-                               linestarts=self._linestarts,
+                               cells=cells,
+                               linestarts=linestarts,
                                line_offset=self._line_offset,
                                file=output,
                                lasti=offset,

@@ -950,7 +950,6 @@ class _FastUnmarshaller:
         if PYTHON3:
             return Code2(
                 argcount,
-                0,
                 nlocals,
                 stacksize,
                 flags,

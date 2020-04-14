@@ -46,26 +46,3 @@ class CodeBase(object):
         if isinstance(op, str):
             op = ord(op)
         return op
-
-    def encode_lineno_tab(self):
-        co_lnotab = ""
-
-        prev_line_number = self.co_firstlineno
-        prev_offset = 0
-        for offset, line_number in self.co_lnotab:
-            offset_diff = offset - prev_offset
-            line_diff = line_number - prev_line_number
-            prev_offset = offset
-            prev_line_number = line_number
-            while offset_diff >= 256:
-                co_lnotab.append(chr(255))
-                co_lnotab.append(chr(0))
-                offset_diff -= 255
-            while line_diff >= 256:
-                co_lnotab.append(chr(0))
-                co_lnotab.append(chr(255))
-                line_diff -= 255
-            co_lnotab += chr(offset_diff)
-            co_lnotab += chr(line_diff)
-
-        self.co_lnotab = co_lnotab

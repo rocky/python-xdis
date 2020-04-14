@@ -40,7 +40,8 @@ from xdis.bytecode import (
     )
 
 from xdis.codetype import (
-    Code14,
+    Code13,
+    Code15,
     Code2,
     Code2Compat,
     Code3,

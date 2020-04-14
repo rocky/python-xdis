@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.codetype.base import CodeBase
+from xdis.codetype.code2 import Code2
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 import types
 
@@ -38,7 +38,7 @@ Code3Fields = tuple("""
 """.split())
 # Field co_kwonlyargcount is new. The datatypes of some fields may be different.
 
-class Code3(CodeBase):
+class Code3(Code2):
     """Class for a Python3 code object used when a Python interpreter less than 3 is
     working on Python3 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
@@ -68,21 +68,23 @@ class Code3(CodeBase):
         co_freevars,
         co_cellvars,
     ):
-        self.co_argcount = co_argcount
+        super(Code2, self).__init__(
+            co_argcount,
+            co_nlocals,
+            co_stacksize,
+            co_flags,
+            co_code,
+            co_consts,
+            co_names,
+            co_varnames,
+            co_filename,
+            co_name,
+            co_firstlineno,
+            co_lnotab,
+            co_freevars,
+            co_cellvars,
+        )
         self.co_kwonlyargcount = co_kwonlyargcount
-        self.co_nlocals = co_nlocals
-        self.co_stacksize = co_stacksize
-        self.co_flags = co_flags
-        self.co_code = co_code
-        self.co_consts = co_consts
-        self.co_names = co_names
-        self.co_varnames = co_varnames
-        self.co_filename = co_filename
-        self.co_name = co_name
-        self.co_firstlineno = co_firstlineno
-        self.co_lnotab = co_lnotab
-        self.co_freevars = co_freevars
-        self.co_cellvars = co_cellvars
 
     def encode_lineno_tab(self):
         co_lnotab = b""
