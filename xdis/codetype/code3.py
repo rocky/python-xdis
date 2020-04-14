@@ -68,7 +68,7 @@ class Code3(Code2):
         co_freevars,
         co_cellvars,
     ):
-        super(Code2, self).__init__(
+        super(Code3, self).__init__(
             co_argcount,
             co_nlocals,
             co_stacksize,

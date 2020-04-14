@@ -57,8 +57,8 @@ if PYTHON_VERSION >= 3.2:
         ]
         got_lines = [
             re.sub(
-                "<code object .*>|<xdis.codetype.Code[.]+ (object|instance) .*>",
-                "<xdis.code.thingy instance at 0xdeadbeef0000>",
+                "<code object .*>|<xdis[.]codetype.+ (object|instance) .*>",
+                "<xdis.codetype.thingy instance at 0xdeadbeef0000>",
                 line,
             )
             for line in got_lines
@@ -70,3 +70,8 @@ if PYTHON_VERSION >= 3.2:
                 with open(filename_expected + ".got", "w") as out:
                     out.write(got)
         assert got == expected
+
+if __name__ == "__main__":
+    import sys
+    test_funcoutput(sys.stdout, ("../test/bytecode_3.0/04_raise.pyc", "testdata/raise-3.0.right"),
+                    disassemble_file)

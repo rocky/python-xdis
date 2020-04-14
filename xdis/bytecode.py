@@ -235,10 +235,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
 
         offset = i
         if linestarts is not None:
-            try:
-                starts_line = linestarts.get(i, None)
-            except:
-                from trepan.api import debug; debug()
+            starts_line = linestarts.get(i, None)
             if starts_line is not None:
                 starts_line += line_offset
         if i in labels:
