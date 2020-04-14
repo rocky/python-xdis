@@ -15,10 +15,10 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from xdis.version_info import PYTHON3, PYTHON_VERSION
-from xdis.codetype.base import CodeBase
+from xdis.codetype.code14 import Code14
 import inspect, types
 
-Code14Fields = tuple("""
+Code15Fields = tuple("""
         co_argcount
         co_nlocals
         co_stacksize
@@ -29,16 +29,23 @@ Code14Fields = tuple("""
         co_varnames
         co_filename
         co_name
+        co_firstlineno
         co_lnotab
 """.split())
 
-class Code14(CodeBase):
-    """Class for a Python 1.3 .. 1.4 code object used for Python interpreters other than 1.3 .. 1.4
+class Code15(Code14):
+    """Class for a Python 1.5 code object used for Python interpreters other than 1.5
+    It also functions as an object that can be used
+    to build or write a Python 1.5 code object, since we allow mutable structures.
+
+    When done mutating, call method to_native().
 
     For convenience in generating code objects, fields like
-    `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise the line number table `co_lnotab`
-    can be stored as a simple list of offset, line_number tuples.
+    `co_consts`, co_names which are (immutable) tuples in the
+    end-result can be stored instead as (mutable) lists. Likewise the
+    line number table `co_lnotab` can be stored as a simple list of
+    offset, line_number tuples.
+
     """
 
     def __init__(
@@ -53,6 +60,7 @@ class Code14(CodeBase):
         co_varnames,
         co_filename,
         co_name,
+        co_firstlineno,
         co_lnotab,
     ):
         self.co_argcount = co_argcount
@@ -67,30 +75,8 @@ class Code14(CodeBase):
         self.co_name = co_name
         return
 
-    def freeze(self):
-        for field in "co_consts co_names co_varnames".split():
-            val = getattr(self, field)
-            if isinstance(val, list):
-                setattr(self, field, tuple(val))
-
-        if isinstance(self.co_lnotab, dict):
-            d = self.co_lnotab
-            self.co_lnotab = sorted(zip(d.keys(), d.values()), key=lambda tup: tup[0])
-        if isinstance(self.co_lnotab, list):
-            # We assume we have a list of tuples:
-            # (offset, linenumber) which we convert
-            # into the encoded format
-
-            # FIXME: handle PYTHON 3
-            self.encode_lineno_tab()
-
-        if PYTHON3:
-            if hasattr(self, "co_kwonlyargcount"):
-                delattr(self, "co_kwonlyargcount")
-        return self
-
     def check(self):
-        for field in "co_argcount co_nlocals co_flags".split():
+        for field in "co_argcount co_nlocals co_flags co_firstlineno".split():
             val = getattr(self, field)
             assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
         for field in "co_consts co_names co_varnames".split():

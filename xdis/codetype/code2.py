@@ -18,6 +18,25 @@ from xdis.version_info import PYTHON_VERSION
 from xdis.codetype.base import CodeBase
 import types
 
+Code2Fields = tuple("""
+        co_argcount
+        co_kwonlyargcount
+        co_nlocals
+        co_stacksize
+        co_flags
+        co_code
+        co_consts
+        co_names
+        co_varnames
+        co_filename
+        co_name
+        co_firstlineno
+        co_lnotab
+        co_freevars
+        co_cellvars
+""".split())
+# co_firstlineno added since 1.x
+
 class Code2(CodeBase):
     """Class for a Python2 code object used when a Python 3 interpreter is
     working on Python2 bytecode. It also functions as an object that can be used
@@ -30,7 +49,6 @@ class Code2(CodeBase):
     can be stored as a simple list of offset, line_number tuples.
 
     """
-
     def __init__(
         self,
         co_argcount,
@@ -84,6 +102,7 @@ class Code2(CodeBase):
             # FIXME: handle PYTHON 3
             self.encode_lineno_tab()
 
+        self.frozen = True
         return self
 
     def check(self):
@@ -129,7 +148,8 @@ class Code2(CodeBase):
 class Code2Compat(Code2):
     """A much more flexible version of Code. We don't require kwonlyargcount which
     doesn't exist. You can also fill in what you want and leave the rest blank.
-    Remember though to call inherited function freeze when done.
+
+    Call to_native() when done.
     """
 
     def __init__(

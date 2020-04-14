@@ -18,12 +18,32 @@ from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.codetype.code3 import Code3
 import types
 
+Code3Fields = tuple("""
+        co_argcount
+        co_posonlyargcount
+        co_kwonlyargcount
+        co_nlocals
+        co_stacksize
+        co_flags
+        co_code
+        co_consts
+        co_names
+        co_varnames
+        co_filename
+        co_name
+        co_firstlineno
+        co_lnotab
+        co_freevars
+        co_cellvars
+""".split())
+# posonlyargcount field added to 3.0 .. 3.7 field
 
 class Code38(Code3):
-    """Class for a Python3.8 code object used when a Python interpreter less than 3.8 is
+    """Class for a Python 3.8+ code object used when a Python interpreter less than 3.8 is
     working on Python3 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
-    When done mutating, call method freeze().
+
+    When done mutating, call method to_native().
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored

@@ -19,6 +19,25 @@ from xdis.version_info import PYTHON3, PYTHON_VERSION
 import types
 
 
+Code3Fields = tuple("""
+        co_argcount
+        co_kwonlyargcount
+        co_nlocals
+        co_stacksize
+        co_flags
+        co_code
+        co_consts
+        co_names
+        co_varnames
+        co_filename
+        co_name
+        co_firstlineno
+        co_lnotab
+        co_freevars
+        co_cellvars
+""".split())
+# Field co_kwonlyargcount is new. The datatypes of some fields may be different.
+
 class Code3(CodeBase):
     """Class for a Python3 code object used when a Python interpreter less than 3 is
     working on Python3 bytecode. It also functions as an object that can be used
