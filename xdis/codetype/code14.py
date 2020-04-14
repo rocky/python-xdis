@@ -21,7 +21,6 @@ import inspect, types
 Code14Fields = tuple("""
         co_argcount
         co_nlocals
-        co_stacksize
         co_flags
         co_code
         co_consts
@@ -29,11 +28,10 @@ Code14Fields = tuple("""
         co_varnames
         co_filename
         co_name
-        co_lnotab
 """.split())
 
 class Code14(CodeBase):
-    """Class for a Python 1.3 .. 1.4 code object used for Python interpreters other than 1.3 .. 1.4
+    """Class for a Python 1.3 .. 1.5 code object used for Python interpreters other than 1.3 .. 1.5
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
@@ -45,7 +43,6 @@ class Code14(CodeBase):
         self,
         co_argcount,
         co_nlocals,
-        co_stacksize,
         co_flags,
         co_code,
         co_consts,
@@ -53,11 +50,9 @@ class Code14(CodeBase):
         co_varnames,
         co_filename,
         co_name,
-        co_lnotab,
     ):
         self.co_argcount = co_argcount
         self.co_nlocals = co_nlocals
-        self.co_stacksize = co_stacksize
         self.co_flags = co_flags
         self.co_code = co_code
         self.co_consts = co_consts
@@ -72,21 +67,6 @@ class Code14(CodeBase):
             val = getattr(self, field)
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
-
-        if isinstance(self.co_lnotab, dict):
-            d = self.co_lnotab
-            self.co_lnotab = sorted(zip(d.keys(), d.values()), key=lambda tup: tup[0])
-        if isinstance(self.co_lnotab, list):
-            # We assume we have a list of tuples:
-            # (offset, linenumber) which we convert
-            # into the encoded format
-
-            # FIXME: handle PYTHON 3
-            self.encode_lineno_tab()
-
-        if PYTHON3:
-            if hasattr(self, "co_kwonlyargcount"):
-                delattr(self, "co_kwonlyargcount")
         return self
 
     def check(self):

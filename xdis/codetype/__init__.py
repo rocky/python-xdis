@@ -24,13 +24,15 @@ from xdis.codetype.code38 import *
 import types
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 
+
 def CodeType2XdisCode(code):
     """Converts a native types.CodeType code object into a the
 corresponding more flexible xdis Code type,.
     """
     if not isinstance(code, types.CodeType):
-        raise TypeError("paramater expected to be a types.CodeType type; is %s instead" %
-                        type(code))
+        raise TypeError(
+            "paramater expected to be a types.CodeType type; is %s instead" % type(code)
+        )
     if PYTHON_VERSION >= 3.0:
         if PYTHON_VERSION < 3.8:
             return Code3(
@@ -48,12 +50,12 @@ corresponding more flexible xdis Code type,.
                 co_firstlineno,
                 co_lnotab,
                 co_freevars,
-                co_cellvars
+                co_cellvars,
             )
         else:
             return Code38(
                 co_argcount,
-                co_posonlyargcount, # Not in < 3.8
+                co_posonlyargcount,  # Not in < 3.8
                 co_kwonlyargcount,
                 co_nlocals,
                 co_stacksize,
@@ -72,41 +74,18 @@ corresponding more flexible xdis Code type,.
             )
     elif PYTHON_VERSION < 2.0:
         # 1.x .. 1.5
-        if PYTHON_VERSION < 1.5:
-            return Code14(
-                co_argcount,
-                co_kwonlyargcount,
-                co_nlocals,
-                co_stacksize,
-                co_flags,
-                co_code,
-                co_consts,
-                co_names,
-                co_varnames,
-                co_filename,
-                co_name,
-                co_lnotab,
-                co_freevars,
-                co_cellvars
-                )
-        else:
-            return Code15(
-                co_argcount,
-                co_kwonlyargcount,
-                co_nlocals,
-                co_stacksize,
-                co_flags,
-                co_code,
-                co_consts,
-                co_names,
-                co_varnames,
-                co_filename,
-                co_name,
-                co_firstlineno,
-                co_lnotab,
-                co_freevars,
-                co_cellvars
-                )
+        return Code15(
+            co_argcount,
+            co_nlocals,
+            co_stacksize,
+            co_flags,
+            co_code,
+            co_consts,
+            co_names,
+            co_varnames,
+            co_filename,
+            co_name,
+        )
 
     else:
         # 2.0 .. 2.7
@@ -121,8 +100,8 @@ corresponding more flexible xdis Code type,.
             co_varnames,
             co_filename,
             co_name,
-            co_firstlineno, # Not in 1.x
-            co_lnotab,
-            co_freevars,
-            co_cellvars
+            co_firstlineno,  # not in 1.x
+            co_lnotab,       # not in 1.x
+            co_freevars,     # not in 1.x
+            co_cellvars,     # not in 1.x
         )

@@ -20,7 +20,6 @@ import types
 
 Code2Fields = tuple("""
         co_argcount
-        co_kwonlyargcount
         co_nlocals
         co_stacksize
         co_flags
