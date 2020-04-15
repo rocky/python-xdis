@@ -64,30 +64,40 @@ def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
-
     """
-    if not isinstance(code.co_lnotab, str):
-        byte_increments = list(code.co_lnotab[0::2])
-        line_increments = list(code.co_lnotab[1::2])
-    else:
-        byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
-        line_increments = [ord(c) for c in code.co_lnotab[1::2]]
+    lineno_table = code.co_lnotab
 
-    lastlineno = None
-    lineno = code.co_firstlineno
-    offset = 0
-    for byte_incr, line_incr in zip(byte_increments, line_increments):
-        if byte_incr:
-            if (lineno != lastlineno or dup_lines and 0 < byte_incr < 255):
-                yield (offset, lineno)
-                lastlineno = lineno
+    if isinstance(lineno_table, dict):
+        # We have an uncompressed line-number table
+        # The below could be done with a Python generator, but
+        # we want to be Python 2.x compatible.
+        for addr, lineno in lineno_table.items():
+            yield addr, lineno
+        # For 3.8 we have to fall through to the return rather
+        # than add raise StopIteration
+    else:
+        if not isinstance(code.co_lnotab, str):
+            byte_increments = list(code.co_lnotab[0::2])
+            line_increments = list(code.co_lnotab[1::2])
+        else:
+            byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
+            line_increments = [ord(c) for c in code.co_lnotab[1::2]]
+
+        lastlineno = None
+        lineno = code.co_firstlineno
+        offset = 0
+        for byte_incr, line_incr in zip(byte_increments, line_increments):
+            if byte_incr:
+                if (lineno != lastlineno or dup_lines and 0 < byte_incr < 255):
+                    yield (offset, lineno)
+                    lastlineno = lineno
+                    pass
+                offset += byte_incr
                 pass
-            offset += byte_incr
-            pass
-        lineno += line_incr
-    if (lineno != lastlineno or
-        (dup_lines and 0 < byte_incr < 255)):
-        yield (offset, lineno)
+            lineno += line_incr
+        if (lineno != lastlineno or
+            (dup_lines and 0 < byte_incr < 255)):
+            yield (offset, lineno)
 
 def offset2line(offset, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)

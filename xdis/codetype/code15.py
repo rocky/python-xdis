@@ -72,7 +72,32 @@ class Code15(Code13):
         self.co_stacksize = co_stacksize
         self.co_firstlineno = co_firstlineno
         self.co_lnotab = co_lnotab
+        self.decode_lineno_tab()
         return
+
+    def decode_lineno_tab(self):
+        line_number, line_number_diff = self.co_firstlineno, 0
+        offset, offset_diff = 0, 0
+        uncompressed_lnotab = {offset: line_number}
+        for i in range(0, len(self.co_lnotab), 2):
+            offset_diff = self.co_lnotab[i]
+            line_number_diff = self.co_lnotab[i+1]
+            if not isinstance(offset_diff, int):
+                offset_diff = ord(offset_diff)
+                line_number_diff = ord(line_number_diff)
+
+            assert offset_diff < 256
+            if offset_diff == 255:
+                continue
+            assert line_number_diff < 256
+            if line_number_diff == 255:
+                continue
+            line_number += line_number_diff
+            offset += offset_diff
+            line_number_diff, offset_diff = 0, 0
+            uncompressed_lnotab[offset] = line_number
+
+        self.co_lnotab = uncompressed_lnotab
 
     def encode_lineno_tab(self):
         co_lnotab = ""

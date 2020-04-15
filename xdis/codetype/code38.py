@@ -17,6 +17,7 @@
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.codetype.code30 import Code3
 import types
+from copy import deepcopy
 
 Code3Fields = tuple(
     """
@@ -106,31 +107,34 @@ class Code38(Code3):
             )
 
     def to_native(self):
-        if not (3.0 <= PYTHON_VERSION <= 3.9):
+        if not (PYTHON_VERSION >= 3.8):
             raise TypeError(
-                "Python Interpreter needs to be in range 3.0..3.9; is %s"
+                "Python Interpreter needs to be in 3.8 or greater; is %s"
                 % PYTHON_VERSION
             )
+
+        code = deepcopy(self)
+        code.freeze()
         try:
-            self.check()
+            code.check()
         except AssertionError as e:
             raise TypeError(e)
 
         return types.CodeType(
-            self.co_argcount,
-            self.co_posonlyargcount,
-            self.co_kwonlyargcount,
-            self.co_nlocals,
-            self.co_stacksize,
-            self.co_flags,
-            self.co_code,
-            self.co_consts,
-            self.co_names,
-            self.co_varnames,
-            self.co_filename,
-            self.co_name,
-            self.co_firstlineno,
-            self.co_lnotab,
-            self.co_freevars,
-            self.co_cellvars,
+            code.co_argcount,
+            code.co_posonlyargcount,
+            code.co_kwonlyargcount,
+            code.co_nlocals,
+            code.co_stacksize,
+            code.co_flags,
+            code.co_code,
+            code.co_consts,
+            code.co_names,
+            code.co_varnames,
+            code.co_filename,
+            code.co_name,
+            code.co_firstlineno,
+            code.co_lnotab,
+            code.co_freevars,
+            code.co_cellvars,
         )

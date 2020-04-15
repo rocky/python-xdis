@@ -30,7 +30,7 @@ import sys, types
 from struct import unpack
 
 from xdis.magics import magic_int2float, PYTHON_MAGIC_INT, IS_PYPY3
-from xdis.codetype import Code13, Code15, Code2, Code3, Code38, Code2Compat
+from xdis.codetype import to_portable
 from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
 
 # FIXME: When working from Python3 bytecode in Python2, we need
@@ -199,231 +199,26 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
         co_firstlineno = -1  # Bogus sentinal value
         co_lnotab = ""
 
-    # The Python3 code object is different than Python2's which
-    # we are reading if we get here.
-    # Also various parameters which were strings are now
-    # bytes (which is probably more logical).
-    if PYTHON3:
-        Code = types.CodeType
-        if PYTHON_MAGIC_INT > 3020 or PYTHON_MAGIC_INT in IS_PYPY3:
-            # Check for Python 3 interpreter reading Python 2 bytecode.
-            # Python 3's code objects are bytes while Python 2's are strings.
-            # The break out of code types is
-            #   1.0..1.2 sketchy
-            #   1.3..1.4 Code13
-            #   1.5      Code15
-            #   2.0      sketchy
-            #   2.1..2.7 Code2
-            #   3.0..3.7 Code3
-            #   3.8..    Code38
-            # FIXME the bool test have to be in this order because we
-            # have set bools this way. Change to testing on version with sys2float.
-            if v10_to_12 or v13_to_22 or v21_to_27:
-                code = Code2(
-                    co_argcount,
-                    co_nlocals,
-                    co_stacksize,
-                    co_flags,
-                    co_code,
-                    co_consts,
-                    co_names,
-                    co_varnames,
-                    co_filename,
-                    co_name,
-                    co_firstlineno,
-                    co_lnotab,
-                    co_freevars,
-                    co_cellvars,
-                )
-            else:
-                if PYTHON_MAGIC_INT in (3412, 3413, 3422):
-                    if co_posonlyargcount is not None:
-                        # Python3.8 to Python3.9: Ok to use native Python3.8's code type
-                        code = Code(
-                            co_argcount,
-                            co_posonlyargcount,
-                            kwonlyargcount,
-                            co_nlocals,
-                            co_stacksize,
-                            co_flags,
-                            co_code,
-                            co_consts,
-                            co_names,
-                            co_varnames,
-                            co_filename,
-                            co_name,
-                            co_firstlineno,
-                            bytes(co_lnotab, encoding="utf-8"),
-                            co_freevars,
-                            co_cellvars,
-                        )
-                    else:
-                        if not isinstance(co_lnotab, bytes):
-                            co_lnotab = bytes(co_lnotab, encoding="utf-8")
-                        code = Code3(
-                            co_argcount,
-                            kwonlyargcount,
-                            co_nlocals,
-                            co_stacksize,
-                            co_flags,
-                            co_code,
-                            co_consts,
-                            co_names,
-                            co_varnames,
-                            co_filename,
-                            co_name,
-                            co_firstlineno,
-                            co_lnotab,
-                            co_freevars,
-                            co_cellvars,
-                        )
-                elif co_posonlyargcount is not None:
-                    if not isinstance(co_lnotab, bytes):
-                        co_lnotab = bytes(co_lnotab, encoding="utf-8")
-                    code = Code38(
-                        co_argcount,
-                        co_posonlyargcount,
-                        kwonlyargcount,
-                        co_nlocals,
-                        co_stacksize,
-                        co_flags,
-                        co_code,
-                        co_consts,
-                        co_names,
-                        co_varnames,
-                        co_filename,
-                        co_name,
-                        co_firstlineno,
-                        co_lnotab,
-                        co_freevars,
-                        co_cellvars,
-                    )
+    code = to_portable(
+        co_argcount,
+        co_posonlyargcount,
+        kwonlyargcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
+        co_code,
+        co_consts,
+        co_names,
+        co_varnames,
+        co_filename,
+        co_name,
+        co_firstlineno,
+        co_lnotab,
+        co_freevars,
+        co_cellvars,
+        version
+    )
 
-                else:
-                    # Python3 (< 3.8) to Python3: Ok to use native Python3's code type
-                    if not isinstance(co_lnotab, bytes):
-                        co_lnotab = bytes(co_lnotab, encoding="utf-8")
-                    code = Code(
-                        co_argcount,
-                        kwonlyargcount,
-                        co_nlocals,
-                        co_stacksize,
-                        co_flags,
-                        co_code,
-                        co_consts,
-                        co_names,
-                        co_varnames,
-                        co_filename,
-                        co_name,
-                        co_firstlineno,
-                        co_lnotab,
-                        co_freevars,
-                        co_cellvars,
-                    )
-                    pass
-                pass
-        else:
-            code = Code(
-                co_argcount,
-                kwonlyargcount,
-                co_nlocals,
-                co_stacksize,
-                co_flags,
-                co_code,
-                tuple(co_consts),
-                co_names,
-                co_varnames,
-                co_filename,
-                co_name,
-                co_firstlineno,
-                bytes(co_lnotab, encoding="utf-8"),
-                co_freevars,
-                co_cellvars,
-            )
-    else:
-        if v11_to_14:
-            code = Code2Compat(
-                co_argcount,
-                co_nlocals,
-                co_stacksize,
-                co_flags,
-                co_code,
-                co_consts,
-                co_names,
-                co_varnames,
-                co_filename,
-                co_name,
-                co_firstlineno,
-                co_lnotab,
-                co_freevars,
-                co_cellvars,
-            )
-        else:
-            if 3000 <= magic_int < 20121:
-                # Python 3 encodes some fields as Unicode while Python2
-                # requires the corresponding field to have string values
-                co_consts = tuple(
-                    [compat_u2s(s) if isinstance(s, unicode) else s for s in co_consts]
-                )
-                co_names = tuple(
-                    [compat_u2s(s) if isinstance(s, unicode) else s for s in co_names]
-                )
-                co_varnames = tuple(
-                    [
-                        compat_u2s(s) if isinstance(s, unicode) else s
-                        for s in co_varnames
-                    ]
-                )
-                co_filename = str(co_filename)
-                co_name = str(co_name)
-
-            if 3020 < magic_int <= 20121 or magic_int in IS_PYPY3:
-                code = Code3(
-                    co_argcount,
-                    kwonlyargcount,
-                    co_nlocals,
-                    co_stacksize,
-                    co_flags,
-                    co_code,
-                    co_consts,
-                    co_names,
-                    co_varnames,
-                    co_filename,
-                    co_name,
-                    co_firstlineno,
-                    co_lnotab,
-                    co_freevars,
-                    co_cellvars,
-                )
-            else:
-                if magic_int in (160, 192):
-                    co_filename = str(co_filename)
-                    co_name = str(co_name)
-                    co_varnames = tuple([str(t) for t in co_varnames])
-                    co_consts = tuple([str(t) for t in co_consts])
-                    co_freevars = tuple([str(t) for t in co_freevars])
-                    co_cellvars = tuple([str(t) for t in co_cellvars])
-
-                Code = types.CodeType
-                code = Code(
-                    co_argcount,
-                    co_nlocals,
-                    co_stacksize,
-                    co_flags,
-                    co_code,
-                    co_consts,
-                    co_names,
-                    co_varnames,
-                    co_filename,
-                    co_name,
-                    co_firstlineno,
-                    co_lnotab,
-                    co_freevars,
-                    co_cellvars,
-                )
-                pass
-            pass
-        pass
     code_objects[str(code)] = code
     return code
 

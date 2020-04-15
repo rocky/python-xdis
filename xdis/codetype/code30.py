@@ -14,9 +14,11 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import types
+from copy import deepcopy
+
 from xdis.codetype.code20 import Code2
 from xdis.version_info import PYTHON3, PYTHON_VERSION
-import types
 
 Code3Fields = tuple(
     """
@@ -108,6 +110,19 @@ class Code3(Code2):
 
         self.co_lnotab = co_lnotab
 
+    def check(self, opts={}):
+        for (
+            field
+        ) in "co_argcount co_kwonlyargcount co_nlocals co_flags co_firstlineno".split():
+            val = getattr(self, field)
+            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
+        for field in "co_consts co_names co_varnames".split():
+            val = getattr(self, field)
+            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
+                field,
+                type(val),
+            )
+
     def freeze(self):
         for field in "co_consts co_names co_varnames co_freevars co_cellvars".split():
             val = getattr(self, field)
@@ -125,19 +140,6 @@ class Code3(Code2):
 
         return self
 
-    def check(self, opts={}):
-        for (
-            field
-        ) in "co_argcount co_kwonlyargcount co_nlocals co_flags co_firstlineno".split():
-            val = getattr(self, field)
-            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
-        for field in "co_consts co_names co_varnames".split():
-            val = getattr(self, field)
-            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
-                field,
-                type(val),
-            )
-
     def to_native(self):
         if not (3.0 <= PYTHON_VERSION <= 3.7):
             raise TypeError(
@@ -145,27 +147,29 @@ class Code3(Code2):
                 % PYTHON_VERSION
             )
 
+        code = deepcopy(self)
+        code.freeze()
         try:
-            self.check()
+            code.check()
         except AssertionError as e:
             raise TypeError(e)
 
         return types.CodeType(
-            self.co_argcount,
-            self.co_kwonlyargcount,
-            self.co_nlocals,
-            self.co_stacksize,
-            self.co_flags,
-            self.co_code,
-            self.co_consts,
-            self.co_names,
-            self.co_varnames,
-            self.co_filename,
-            self.co_name,
-            self.co_firstlineno,
-            self.co_lnotab,
-            self.co_freevars,
-            self.co_cellvars,
+            code.co_argcount,
+            code.co_kwonlyargcount,
+            code.co_nlocals,
+            code.co_stacksize,
+            code.co_flags,
+            code.co_code,
+            code.co_consts,
+            code.co_names,
+            code.co_varnames,
+            code.co_filename,
+            code.co_name,
+            code.co_firstlineno,
+            code.co_lnotab,
+            code.co_freevars,
+            code.co_cellvars,
         )
 
 

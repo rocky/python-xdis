@@ -14,8 +14,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-# CodeType2XDisCode -> CodeType2Portable
-
 __docformat__ = "restructuredtext"
 
 from collections import namedtuple
@@ -30,16 +28,19 @@ import types
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 
 
-def CodeType2Portable(code):
+def codeType2Portable(code, version=PYTHON_VERSION):
     """Converts a native types.CodeType code object into a the
 corresponding more flexible xdis Code type,.
     """
-    if not isinstance(code, types.CodeType):
+    if not (
+            isinstance(code, types.CodeType)
+            or isinstance(code, CodeTypeUnion)
+    ):
         raise TypeError(
-            "paramater expected to be a types.CodeType type; is %s instead" % type(code)
+            "parameter expected to be a types.CodeType type; is %s instead" % type(code)
         )
-    if PYTHON_VERSION >= 3.0:
-        if PYTHON_VERSION < 3.8:
+    if version >= 3.0:
+        if version < 3.8:
             return Code3(
                 code.co_argcount,
                 code.co_kwonlyargcount,
@@ -76,7 +77,7 @@ corresponding more flexible xdis Code type,.
                 code.co_freevars,
                 code.co_cellvars,
             )
-    elif PYTHON_VERSION > 2.0:
+    elif version > 2.0:
         # 2.0 .. 2.7
         return Code2(
             code.co_argcount,
@@ -96,7 +97,7 @@ corresponding more flexible xdis Code type,.
         )
     else:
         # 1.0 .. 1.5
-        if PYTHON_VERSION < 1.5:
+        if version < 1.5:
             # 1.0 .. 1.3
             return Code13(
                 code.co_argcount,
@@ -172,6 +173,7 @@ def to_portable(
         co_lnotab = "",           # 1.5+
         co_freevars = (None,),    # 2.0+
         co_cellvars = (None,),    # 2.0+
+        version = PYTHON_VERSION,
 ):
     code = CodeTypeUnion(
         co_argcount,
@@ -191,4 +193,4 @@ def to_portable(
         co_freevars,
         co_cellvars,
     )
-    return CodeType2Portable(code)
+    return codeType2Portable(code, version)
