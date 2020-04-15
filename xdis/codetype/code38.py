@@ -40,6 +40,7 @@ Code3FieldNames = """
         co_cellvars
 """
 
+# FIXME: use this dict in check() and to_native()
 Code38FieldTypes = {
     "co_argcount": int,
     "co_posonlyargcount": int,

@@ -18,6 +18,7 @@ from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.codetype.code13 import Code13
 import inspect, types
 
+# FIXME: use this dict in check().
 Code15FieldTypes = {
     "co_argcount": int,
     "co_nlocals": int,

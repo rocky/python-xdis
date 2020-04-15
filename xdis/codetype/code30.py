@@ -21,6 +21,7 @@ from xdis.codetype.code20 import Code2
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 
 # Below, in the Python 2.4 branch "bytes" is "str" since there may not be a "bytes" type.
+# FIXME: use this dict in check() and to_native()
 Code3FieldTypes = {
     "co_argcount": int,
     "co_kwonlyargcount": int,

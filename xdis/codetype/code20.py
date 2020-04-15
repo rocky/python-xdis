@@ -19,6 +19,7 @@ from xdis.codetype.code15 import Code15
 import types
 from copy import deepcopy
 
+# FIXME: use this dict in check() and to_native()
 Code2FieldTypes = {
     "co_argcount": int,
     "co_nlocals": int,
