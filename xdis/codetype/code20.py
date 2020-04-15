@@ -18,7 +18,8 @@ from xdis.version_info import PYTHON_VERSION
 from xdis.codetype.code15 import Code15
 import types
 
-Code2Fields = tuple("""
+Code2Fields = tuple(
+    """
         co_argcount
         co_nlocals
         co_stacksize
@@ -33,8 +34,10 @@ Code2Fields = tuple("""
         co_lnotab
         co_freevars
         co_cellvars
-""".split())
+""".split()
+)
 # co_firstlineno added since 1.x
+
 
 class Code2(Code15):
     """Class for a Python2 code object used when a Python 3 interpreter is
@@ -46,8 +49,8 @@ class Code2(Code15):
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
     instead as (mutable) lists. Likewise the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
-
     """
+
     def __init__(
         self,
         co_argcount,
@@ -170,6 +173,7 @@ class Code2Compat(Code2):
             self.co_filename,
             self.co_firstlineno,
         )
+
 
 def code2compat(co):
     return Code2Compat(

@@ -14,18 +14,23 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+# CodeType2XDisCode -> CodeType2Portable
+
 __docformat__ = "restructuredtext"
+
+from collections import namedtuple
 from xdis.codetype.base import *
 from xdis.codetype.code13 import *
-from xdis.codetype.code2 import *
-from xdis.codetype.code3 import *
+from xdis.codetype.code15 import *
+from xdis.codetype.code20 import *
+from xdis.codetype.code30 import *
 from xdis.codetype.code38 import *
 
 import types
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 
 
-def CodeType2XdisCode(code):
+def CodeType2Portable(code):
     """Converts a native types.CodeType code object into a the
 corresponding more flexible xdis Code type,.
     """
@@ -89,30 +94,101 @@ corresponding more flexible xdis Code type,.
             code.co_freevars,     # not in 1.x
             code.co_cellvars,     # not in 1.x
         )
-    elif PYTHON_VERSION == 1.5:
-        return Code15(
-            code.co_argcount,
-            code.co_nlocals,
-            code.co_stacksize,  # not in 1.0..1.4
-            code.co_flags,
-            code.co_code,
-            code.co_consts,
-            code.co_names,
-            code.co_varnames,
-            code.co_filename,
-            code.co_name,
-            code.co_firstlineno, # Not in 1.0..1.4
-            code.co_lnotab,
-        )
     else:
-        return Code13(
-            code.co_argcount,
-            code.co_nlocals,
-            code.co_flags,
-            code.co_code,
-            code.co_consts,
-            code.co_names,
-            code.co_varnames,
-            code.co_filename,
-            code.co_name,
-        )
+        # 1.0 .. 1.5
+        if PYTHON_VERSION < 1.5:
+            # 1.0 .. 1.3
+            return Code13(
+                code.co_argcount,
+                code.co_nlocals,
+                code.co_flags,
+                code.co_code,
+                code.co_consts,
+                code.co_names,
+                code.co_varnames,
+                code.co_filename,
+                code.co_name,
+            )
+        else:
+            return Code15(
+                code.co_argcount,
+                code.co_nlocals,
+                code.co_stacksize,  # not in 1.0..1.4
+                code.co_flags,
+                code.co_code,
+                code.co_consts,
+                code.co_names,
+                code.co_varnames,
+                code.co_filename,
+                code.co_name,
+                code.co_firstlineno, # Not in 1.0..1.4
+                code.co_lnotab,      # Not in 1.0..1.4
+            )
+
+def portableCodeType(version=PYTHON_VERSION):
+    """
+    Return the portable CodeType version for the supplied Python release version.
+    `version` is a floating-point number, like 2.7, or 3.9. If no version
+    number is supplied we'll use the current interpreter version.
+    """
+    if version >= 3.0:
+        if version < 3.8:
+            # 3.0 .. 3.7
+            return Code3
+        else:
+            # 3.8 ..
+            return Code38
+    elif version > 2.0:
+        # 2.0 .. 2.7
+        return Code2
+    else:
+        # 1.0 .. 1.5
+        if version <= 1.3:
+            return Code13
+        else:
+            return Code15
+    raise RuntimeError("Implementation bug: doesn't cover verson %s" % version)
+
+CodeTypeUnion = namedtuple("CodeTypeUnion",
+                           " ".join(Code3Fields))
+
+
+# Note: default values of `None` indicate a required parameter.
+# default values of -1, (None,) or "" indicate a not supplied parameter
+def to_portable(
+        co_argcount,
+        co_posonlyargcount = -1,  # 3.8+
+        co_kwonlyargcount = -1,   # 3.0+
+        co_nlocals = None,
+        co_stacksize = -1,        # 1.5+
+        co_flags = None,
+        co_code = None,
+        co_consts = None,
+        co_names = None,
+        co_varnames = None,
+        co_filename = None,
+        co_name = None,
+        co_firstlineno = -1,
+        co_lnotab = "",           # 1.5+
+        co_freevars = (None,),    # 2.0+
+        co_cellvars = (None,),    # 2.0+
+):
+    code = CodeTypeUnion(
+        co_argcount,
+        co_posonlyargcount,
+        co_kwonlyargcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
+        co_code,
+        co_consts,
+        co_names,
+        co_varnames,
+        co_filename,
+        co_name,
+        co_firstlineno,
+        co_lnotab,
+        co_freevars,
+        co_cellvars,
+    )
+    return CodeType2Portable(code)

@@ -14,12 +14,12 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.codetype.code2 import Code2
+from xdis.codetype.code20 import Code2
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 import types
 
-
-Code3Fields = tuple("""
+Code3Fields = tuple(
+    """
         co_argcount
         co_kwonlyargcount
         co_nlocals
@@ -35,8 +35,10 @@ Code3Fields = tuple("""
         co_lnotab
         co_freevars
         co_cellvars
-""".split())
-# Field co_kwonlyargcount is new. The datatypes of some fields may be different.
+""".split()
+)
+# Field co_kwonlyargcount is new from 2.x. The datatypes of some fields may be different.
+
 
 class Code3(Code2):
     """Class for a Python3 code object used when a Python interpreter less than 3 is
@@ -126,9 +128,7 @@ class Code3(Code2):
     def check(self, opts={}):
         for (
             field
-        ) in (
-            "co_argcount co_kwonlyargcount co_nlocals co_flags co_firstlineno".split()
-        ):
+        ) in "co_argcount co_kwonlyargcount co_nlocals co_flags co_firstlineno".split():
             val = getattr(self, field)
             assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
         for field in "co_consts co_names co_varnames".split():

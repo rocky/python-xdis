@@ -15,7 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from xdis.version_info import PYTHON3, PYTHON_VERSION
-from xdis.codetype.code3 import Code3
+from xdis.codetype.code30 import Code3
 import types
 
 Code3Fields = tuple(
