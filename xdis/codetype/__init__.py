@@ -36,72 +36,83 @@ corresponding more flexible xdis Code type,.
     if PYTHON_VERSION >= 3.0:
         if PYTHON_VERSION < 3.8:
             return Code3(
-                co_argcount,
-                co_kwonlyargcount,
-                co_nlocals,
-                co_stacksize,
-                co_flags,
-                co_code,
-                co_consts,
-                co_names,
-                co_varnames,
-                co_filename,
-                co_name,
-                co_firstlineno,
-                co_lnotab,
-                co_freevars,
-                co_cellvars,
+                code.co_argcount,
+                code.co_kwonlyargcount,
+                code.co_nlocals,
+                code.co_stacksize,
+                code.co_flags,
+                code.co_code,
+                code.co_consts,
+                code.co_names,
+                code.co_varnames,
+                code.co_filename,
+                code.co_name,
+                code.co_firstlineno,
+                code.co_lnotab,
+                code.co_freevars,
+                code.co_cellvars,
             )
         else:
             return Code38(
-                co_argcount,
-                co_posonlyargcount,  # Not in < 3.8
-                co_kwonlyargcount,
-                co_nlocals,
-                co_stacksize,
-                co_flags,
-                co_code,
-                co_consts,
-                co_names,
-                co_varnames,
-                co_filename,
-                co_name,
-                co_firstlineno,
-                co_lnotab,
-                co_freevars,
-                co_cellvars,
-                co_argcount,
+                code.co_argcount,
+                code.co_posonlyargcount,  # Not in < 3.8
+                code.co_kwonlyargcount,
+                code.co_nlocals,
+                code.co_stacksize,
+                code.co_flags,
+                code.co_code,
+                code.co_consts,
+                code.co_names,
+                code.co_varnames,
+                code.co_filename,
+                code.co_name,
+                code.co_firstlineno,
+                code.co_lnotab,
+                code.co_freevars,
+                code.co_cellvars,
             )
-    elif PYTHON_VERSION < 2.0:
-        # 1.x .. 1.5
-        return Code13(
-            co_argcount,
-            co_nlocals,
-            co_stacksize,
-            co_flags,
-            co_code,
-            co_consts,
-            co_names,
-            co_varnames,
-            co_filename,
-            co_name,
-        )
-
-    else:
+    elif PYTHON_VERSION > 2.0:
         # 2.0 .. 2.7
         return Code2(
-            co_argcount,
-            co_nlocals,
-            co_stacksize,
-            co_flags,
-            co_code,
-            co_consts,
-            co_names,
-            co_varnames,
-            co_filename,
-            co_name,
-            co_firstlineno,  # not in 1.x
-            co_lnotab,       # not in 1.x
-            co_freevars,     # not in 1.x
-            co_cellvars,     # not in 1.x
+            code.co_argcount,
+            code.co_nlocals,
+            code.co_stacksize,
+            code.co_flags,
+            code.co_code,
+            code.co_consts,
+            code.co_names,
+            code.co_varnames,
+            code.co_filename,
+            code.co_name,
+            code.co_firstlineno,
+            code.co_lnotab,
+            code.co_freevars,     # not in 1.x
+            code.co_cellvars,     # not in 1.x
+        )
+    elif PYTHON_VERSION == 1.5:
+        return Code15(
+            code.co_argcount,
+            code.co_nlocals,
+            code.co_stacksize,  # not in 1.0..1.4
+            code.co_flags,
+            code.co_code,
+            code.co_consts,
+            code.co_names,
+            code.co_varnames,
+            code.co_filename,
+            code.co_name,
+            code.co_firstlineno, # Not in 1.0..1.4
+            code.co_lnotab,
+        )
+    else:
+        return Code13(
+            code.co_argcount,
+            code.co_nlocals,
+            code.co_flags,
+            code.co_code,
+            code.co_consts,
+            code.co_names,
+            code.co_varnames,
+            code.co_filename,
+            code.co_name,
         )

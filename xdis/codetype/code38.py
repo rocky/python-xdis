@@ -90,12 +90,12 @@ class Code38(Code3):
             co_freevars,
             co_cellvars,
         )
-        self.co_posonlyargcount = self.co_posonlyargcount
+        self.co_posonlyargcount = co_posonlyargcount
 
     def check(self, opts={}):
         for (
             field
-        ) in "co_argcount co_posonlyargcount co_kw_onlyargcount co_nlocals co_flags co_firstlineno".split():
+        ) in "co_argcount co_posonlyargcount co_kwonlyargcount co_nlocals co_flags co_firstlineno".split():
             val = getattr(self, field)
             assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
         for field in "co_consts co_names co_varnames".split():
@@ -106,9 +106,9 @@ class Code38(Code3):
             )
 
     def to_native(self):
-        if not (3.0 <= PYTHON_VERSION <= 3.7):
+        if not (3.0 <= PYTHON_VERSION <= 3.9):
             raise TypeError(
-                "Python Interpreter needs to be in range 3.0..3.7; is %s"
+                "Python Interpreter needs to be in range 3.0..3.9; is %s"
                 % PYTHON_VERSION
             )
         try:

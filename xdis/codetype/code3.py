@@ -127,7 +127,7 @@ class Code3(Code2):
         for (
             field
         ) in (
-            "co_argcount co_kwonlyargcount, co_nlocals co_flags co_firstlineno".split()
+            "co_argcount co_kwonlyargcount co_nlocals co_flags co_firstlineno".split()
         ):
             val = getattr(self, field)
             assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
@@ -150,7 +150,9 @@ class Code3(Code2):
         except AssertionError as e:
             raise TypeError(e)
 
-        return types.Code(
+        return types.CodeType(
+            self.co_argcount,
+            self.co_kwonlyargcount,
             self.co_nlocals,
             self.co_stacksize,
             self.co_flags,

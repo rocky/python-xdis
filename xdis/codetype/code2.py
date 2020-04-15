@@ -106,7 +106,8 @@ class Code2(Code15):
         except AssertionError as e:
             raise TypeError(e)
 
-        return types.Code(
+        return types.CodeType(
+            self.co_argcount,
             self.co_nlocals,
             self.co_stacksize,
             self.co_flags,
