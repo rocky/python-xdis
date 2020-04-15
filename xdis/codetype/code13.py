@@ -18,17 +18,17 @@ from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.codetype.base import CodeBase
 import inspect, types
 
-Code13Fields = tuple("""
-        co_argcount
-        co_nlocals
-        co_flags
-        co_code
-        co_consts
-        co_names
-        co_varnames
-        co_filename
-        co_name
-""".split())
+Code13FieldTypes = {
+    "co_argcount": int,
+    "co_nlocals": int,
+    "co_flags": int,
+    "co_code": str,
+    "co_consts": tuple,
+    "co_names": tuple,
+    "co_varnames": tuple,
+    "co_filename": str,
+    "co_name": str,
+}
 
 class Code13(CodeBase):
     """Class for a Python 1.3 .. 1.5 code object used for Python interpreters other than 1.3 .. 1.5

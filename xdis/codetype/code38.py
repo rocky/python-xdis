@@ -19,8 +19,9 @@ from xdis.codetype.code30 import Code3
 import types
 from copy import deepcopy
 
-Code3Fields = tuple(
-    """
+# Note: order is the positional order. It is important to match this
+# with the 3.8 order.
+Code3FieldNames = """
         co_argcount
         co_posonlyargcount
         co_kwonlyargcount
@@ -37,8 +38,26 @@ Code3Fields = tuple(
         co_lnotab
         co_freevars
         co_cellvars
-""".split()
-)
+"""
+
+Code38FieldTypes = {
+    "co_argcount": int,
+    "co_posonlyargcount": int,
+    "co_kwonlyargcount": int,
+    "co_nlocals": int,
+    "co_stacksize": int,
+    "co_flags": int,
+    "co_code": bytes,
+    "co_consts": tuple,
+    "co_names": tuple,
+    "co_varnames": tuple,
+    "co_filename": str,
+    "co_name": str,
+    "co_firstlineno": int,
+    "co_lnotab": bytes,
+    "co_freevars": tuple,
+    "co_cellvars": tuple,
+}
 # posonlyargcount field added to 3.0 .. 3.7 field
 
 

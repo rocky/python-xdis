@@ -148,14 +148,16 @@ def portableCodeType(version=PYTHON_VERSION):
             return Code13
         else:
             return Code15
-    raise RuntimeError("Implementation bug: doesn't cover verson %s" % version)
+    raise RuntimeError("Implementation bug: can't handle version %s" % version)
 
-CodeTypeUnion = namedtuple("CodeTypeUnion",
-                           " ".join(Code3Fields))
+# In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
+# an incomplete code type, which might be converted to another code type
+# later.
+CodeTypeUnion = namedtuple("CodeTypeUnion", Code3FieldNames)
 
 
 # Note: default values of `None` indicate a required parameter.
-# default values of -1, (None,) or "" indicate a not supplied parameter
+# default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
         co_argcount,
         co_posonlyargcount = -1,  # 3.8+
@@ -163,14 +165,14 @@ def to_portable(
         co_nlocals = None,
         co_stacksize = -1,        # 1.5+
         co_flags = None,
-        co_code = None,
+        co_code = None,           # 3.0+ this type changes from <str> to <bytes>
         co_consts = None,
         co_names = None,
         co_varnames = None,
         co_filename = None,
         co_name = None,
         co_firstlineno = -1,
-        co_lnotab = "",           # 1.5+
+        co_lnotab = "",           # 1.5+; 3.0+ this type changes from <str> to <bytes>
         co_freevars = (None,),    # 2.0+
         co_cellvars = (None,),    # 2.0+
         version = PYTHON_VERSION,

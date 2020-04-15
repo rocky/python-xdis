@@ -178,3 +178,5 @@ def test_get_jump_targets():
 
 if __name__ == "__main__":
     test_get_jump_targets()
+    # test_offset2line()
+    # test_find_linestarts()

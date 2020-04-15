@@ -19,24 +19,22 @@ from xdis.codetype.code15 import Code15
 import types
 from copy import deepcopy
 
-Code2Fields = tuple(
-    """
-        co_argcount
-        co_nlocals
-        co_stacksize
-        co_flags
-        co_code
-        co_consts
-        co_names
-        co_varnames
-        co_filename
-        co_name
-        co_firstlineno
-        co_lnotab
-        co_freevars
-        co_cellvars
-""".split()
-)
+Code2FieldTypes = {
+    "co_argcount": int,
+    "co_nlocals": int,
+    "co_stacksize": int,
+    "co_flags": int,
+    "co_code": str,
+    "co_consts": tuple,
+    "co_names": tuple,
+    "co_varnames": tuple,
+    "co_filename": str,
+    "co_name": str,
+    "co_firstlineno": int,
+    "co_lnotab": str,
+    "co_freevars": tuple,
+    "co_cellvars": tuple,
+}
 # co_firstlineno added since 1.x
 
 
@@ -176,22 +174,3 @@ class Code2Compat(Code2):
             self.co_filename,
             self.co_firstlineno,
         )
-
-
-def code2compat(co):
-    return Code2Compat(
-        co.co_argcount,
-        co.co_nlocals,
-        co.co_stacksize,
-        co.co_flags,
-        co.co_code,
-        co.co_consts,
-        co.co_names,
-        co.co_varnames,
-        co.co_filename,
-        co.co_name,
-        co.co_firstlineno,
-        co.co_lnotab,
-        co.co_freevars,
-        co.co_cellvars,
-    )

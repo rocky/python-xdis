@@ -20,25 +20,25 @@ from copy import deepcopy
 from xdis.codetype.code20 import Code2
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 
-Code3Fields = tuple(
-    """
-        co_argcount
-        co_kwonlyargcount
-        co_nlocals
-        co_stacksize
-        co_flags
-        co_code
-        co_consts
-        co_names
-        co_varnames
-        co_filename
-        co_name
-        co_firstlineno
-        co_lnotab
-        co_freevars
-        co_cellvars
-""".split()
-)
+# Below, in the Python 2.4 branch "bytes" is "str" since there may not be a "bytes" type.
+Code3FieldTypes = {
+    "co_argcount": int,
+    "co_kwonlyargcount": int,
+    "co_nlocals": int,
+    "co_stacksize": int,
+    "co_flags": int,
+    "co_code": bytes,
+    "co_consts": tuple,
+    "co_names": tuple,
+    "co_varnames": tuple,
+    "co_filename": str,
+    "co_name": str,
+    "co_firstlineno": int,
+    "co_lnotab": bytes,
+    "co_freevars": tuple,
+    "co_cellvars": tuple,
+}
+
 # Field co_kwonlyargcount is new from 2.x. The datatypes of some fields may be different.
 
 

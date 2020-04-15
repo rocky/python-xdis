@@ -18,20 +18,20 @@ from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.codetype.code13 import Code13
 import inspect, types
 
-Code15Fields = tuple("""
-        co_argcount
-        co_nlocals
-        co_stacksize
-        co_flags
-        co_code
-        co_consts
-        co_names
-        co_varnames
-        co_filename
-        co_name
-        co_firstlineno
-        co_lnotab
-""".split())
+Code15FieldTypes = {
+    "co_argcount": int,
+    "co_nlocals": int,
+    "co_stacksize": int,
+    "co_flags": int,
+    "co_code": str,
+    "co_consts": tuple,
+    "co_names": tuple,
+    "co_varnames": tuple,
+    "co_filename": str,
+    "co_name": str,
+    "co_firstlineno": int,
+    "co_lnotab": str,
+}
 # stacksize, co_firstlineno, co_lnotab are new in 1.5
 
 class Code15(Code13):
