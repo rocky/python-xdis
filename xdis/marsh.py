@@ -30,7 +30,7 @@ there). Details of the format may change between Python versions.
 import types, struct
 
 from xdis.version_info import PYTHON_VERSION, PYTHON3
-from xdis.codetype import Code2, Code2Compat, Code3, Code3Compat
+from xdis.codetype import Code2, Code3
 
 try:
     intern
@@ -328,7 +328,6 @@ class _Marshaller:
         return
 
     dispatch[Code2] = dump_code2
-    dispatch[Code2Compat] = dump_code2
 
     # FIXME: will probably have to adjust similar to how we
     # adjusted dump_code2
@@ -351,7 +350,6 @@ class _Marshaller:
         self.dump(x.co_lnotab)
 
     dispatch[Code3] = dump_code3
-    dispatch[Code3Compat] = dump_code3
 
     try:
         if PYTHON3:
