@@ -20,17 +20,31 @@ import inspect, types
 from copy import deepcopy
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
-Code13FieldTypes = {
-    "co_argcount": int,
-    "co_nlocals": int,
-    "co_flags": int,
-    "co_code": (str, bytes, list, tuple),
-    "co_consts": (tuple, list),
-    "co_names": (tuple, list),
-    "co_varnames": (tuple, list),
-    "co_filename": str,
-    "co_name": str,
-}
+if PYTHON_VERSION <= 2.7:
+    Code13FieldTypes = {
+        "co_argcount": int,
+        "co_nlocals": int,
+        "co_flags": int,
+        "co_code": (str, bytes, list, tuple),
+        "co_consts": (tuple, list),
+        "co_names": (tuple, list),
+        "co_varnames": (tuple, list),
+        "co_filename": (str, unicode),
+        "co_name": (str, unicode),
+    }
+else:
+    Code13FieldTypes = {
+        "co_argcount": int,
+        "co_nlocals": int,
+        "co_flags": int,
+        "co_code": (str, bytes, list, tuple),
+        "co_consts": (tuple, list),
+        "co_names": (tuple, list),
+        "co_varnames": (tuple, list),
+        "co_filename": (str, bytes),
+        "co_name": (str, bytes),
+    }
+
 
 class Code13(CodeBase):
     """Class for a Python 1.0 .. 1.4 code object used for Python interpreters other than 1.0 .. 1.4
@@ -73,7 +87,7 @@ class Code13(CodeBase):
             if isinstance(fieldtype, tuple):
                 assert type(val) in fieldtype, "%s should be one of the types %s; is type %s" % (field, fieldtype, type(val))
             else:
-                assert isinstance(val, fieldtype), "%s should have type %s; is type %s" % (field, type(val))
+                assert isinstance(val, fieldtype), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
 
 
     # FIXME: use self.fieldtype
