@@ -10,9 +10,8 @@ jobs:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
       COMPILE: --compile
-    machine:
-      python:
-        version: 2.7.15
+    docker:
+      - image: circleci/python:2.7.7
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
