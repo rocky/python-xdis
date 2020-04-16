@@ -31,6 +31,7 @@ from xdis import IS_PYPY
 python_versions = [v for v in magics.python_versions if re.match("^[0-9.]+$", v)]
 
 python_versions.append("1.4")
+python_versions.append("1.5")
 
 TEST_VERSIONS = tuple(python_versions)
 
@@ -79,6 +80,7 @@ for vers in TEST_VERSIONS:
     test_options[vers] = (lib_prefix, PYC, "python-lib" + short_vers)
 
 test_options["1.4"] = (lib_prefix, PYC, "python-lib1.4")
+test_options["1.5"] = (lib_prefix, PYC, "python-lib1.5")
 
 for vers, short_vers in PYPY_TEST_VERSIONS:
     test_options[vers] = (

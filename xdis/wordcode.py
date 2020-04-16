@@ -16,7 +16,7 @@
 
 """Python disassembly functions specific to wordcode from Python 3.6+
 """
-from xdis import PYTHON3
+from xdis import PYTHON3, PYTHON_VERSION
 from xdis.bytecode import op_has_argument
 
 def unpack_opargs_wordcode(code, opc):
@@ -47,38 +47,49 @@ def unpack_opargs_wordcode(code, opc):
                 arg = None
             yield (i, op, arg)
 
-
+# FIXME: DRY with routine in bytecode
 def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
-
     """
-    if PYTHON3:
-        byte_increments = code.co_lnotab[0::2]
-        line_increments = code.co_lnotab[1::2]
+    lineno_table = code.co_lnotab
+
+    if isinstance(lineno_table, dict):
+        # We have an uncompressed line-number table
+        # The below could be done with a Python generator, but
+        # we want to be Python 2.x compatible.
+        for addr, lineno in lineno_table.items():
+            yield addr, lineno
+        # For 3.8 we have to fall through to the return rather
+        # than add raise StopIteration
     else:
-        byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
-        line_increments = [ord(c) for c in code.co_lnotab[1::2]]
+        # FIXME: this should driven by the datatype like the above, rather than
+        # by tested on by the Python Interpreter version.
+        if PYTHON3:
+            byte_increments = lineno_table[0::2]
+            line_increments = lineno_table[1::2]
+        else:
+            byte_increments = [ord(c) for c in lineno_table[0::2]]
+            line_increments = [ord(c) for c in lineno_table[1::2]]
 
-    lastlineno = None
-    lineno = code.co_firstlineno
-    addr = 0
-    for byte_incr, line_incr in zip(byte_increments, line_increments):
-        if byte_incr:
-            if (lineno != lastlineno or
-                (not dup_lines and 0 < byte_incr < 255)):
-                yield (addr, lineno)
-                lastlineno = lineno
-            addr += byte_incr
-        if line_incr >= 0x80:
-            # line_increments is an array of 8-bit signed integers
-            line_incr -= 0x100
-        lineno += line_incr
-    if (lineno != lastlineno or
-        (not dup_lines and 0 < byte_incr < 255)):
-        yield (addr, lineno)
-
+        lastlineno = None
+        lineno = code.co_firstlineno
+        addr = 0
+        for byte_incr, line_incr in zip(byte_increments, line_increments):
+            if byte_incr:
+                if (lineno != lastlineno or
+                    (not dup_lines and 0 < byte_incr < 255)):
+                    yield addr, lineno
+                    lastlineno = lineno
+                    addr += byte_incr
+            if line_incr >= 0x80:
+                # line_increments is an array of 8-bit signed integers
+                line_incr -= 0x100
+            lineno += line_incr
+        if (lineno != lastlineno or
+            (not dup_lines and 0 < byte_incr < 255)):
+            yield addr, lineno
 
 def get_jump_targets(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
