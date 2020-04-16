@@ -8,7 +8,7 @@ A portable version of types.CodeType was rewritten, to make it
 
 * easier to use
 * and catch more errors
-* more complete in tracking Python type.codeType changes
+* more complete in tracking Python `types.CodeType` changes
 * simpler in implementation by using type inheretence
 * more general
 

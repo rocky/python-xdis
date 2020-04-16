@@ -63,6 +63,8 @@ class Code13(CodeBase):
         self.co_filename = co_filename
         self.co_name = co_name
         self.fieldtypes = Code13FieldTypes
+        if type(self) == Code13:
+            self.check()
         return
 
     def check(self):

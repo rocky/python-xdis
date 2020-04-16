@@ -946,6 +946,8 @@ class _FastUnmarshaller:
         firstlineno = _r_long(self)
         lnotab = self.load()
         if PYTHON3:
+            if isinstance(name, bytes):
+                name = name.decode()
             return Code2(
                 argcount,
                 nlocals,
