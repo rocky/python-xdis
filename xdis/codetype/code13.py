@@ -28,8 +28,8 @@ Code13FieldTypes = {
     "co_consts": (tuple, list),
     "co_names": (tuple, list),
     "co_varnames": (tuple, list),
-    "co_filename": str,
-    "co_name": str,
+    "co_filename": (str, unicode),
+    "co_name": (str, unicode),
 }
 
 class Code13(CodeBase):
@@ -73,7 +73,7 @@ class Code13(CodeBase):
             if isinstance(fieldtype, tuple):
                 assert type(val) in fieldtype, "%s should be one of the types %s; is type %s" % (field, fieldtype, type(val))
             else:
-                assert isinstance(val, fieldtype), "%s should have type %s; is type %s" % (field, type(val))
+                assert isinstance(val, fieldtype), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
 
 
     # FIXME: use self.fieldtype
