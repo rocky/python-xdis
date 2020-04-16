@@ -1,14 +1,16 @@
 # Minimal tests for dis module
 
-from xdis import PYTHON3, IS_PYPY
+from xdis import IS_PYPY, PYTHON_VERSION
 
 import sys
 
-if PYTHON3:
-    from io import StringIO
-else:
-    from test.test_support import run_unittest
-    from StringIO import StringIO
+import unittest
+try:
+    from test.support import run_unittest
+except ImportError:
+    import sys;
+    sys.exit(0)
+from StringIO import StringIO
 
 import unittest
 import xdis.std as dis

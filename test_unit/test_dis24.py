@@ -1,6 +1,13 @@
-from test.test_support import run_unittest
+from xdis import PYTHON_VERSION
+
 import sys
 import xdis.std as dis
+try:
+    from test.support import run_unittest
+except ImportError:
+    import sys;
+    sys.exit(0)
+
 import StringIO
 
 # Minimal tests for dis module
