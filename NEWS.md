@@ -1,8 +1,75 @@
-4.2.4 2020-03-24 COVID-19 time
-==============================
+4.3.0 2020-04-16 portable code type
+===================================
 
-- Add Instruction instance methods:
-  #Instruction.is_jump() and #Instruction.jumps_forward()
+Portable Code Type
+------------------
+
+A portable version of types.CodeType was rewritten, to make it
+
+* easier to use
+* and catch more errors
+* more complete in tracking Python type.codeType changes
+* simpler in implementation by using type inheretence
+* more general
+
+Previously getting bytecode read from a bytecode file or from a code
+object requiring knowing a lot about the Python version of the code
+type and of the currently running interpreter. That is gone now.
+
+Use `codeType2Portable()` to turn a native `types.CodeType` or a structure read
+in from a bytecode file into a portable code type. The portable code
+type allows fields to be mutated, and is more flexible in the kinds of
+datatypes it allows.
+
+For example lists of thing like `co_consts`, or `varnames` can be
+Python lists as well as tuples. The line number table is stored as a
+dictionary mapping of address to bytecode offset rather than as a
+compressed structure. byte code can either be a string (which is
+advantageous if you are running Python before 3.x) or a sequence of
+bytes which is the datatype of a code object for 3.x.
+
+However when you need a `type.CodeType` which the Python interpreter
+you are running can be `eval()`'d, use the `to_native()` method on the
+portable code type returned. It will compress and encode the line
+number table, and turn lists into tuples and convert other datatypes
+to the right type as needed.
+
+If you have a *complete* `types.Codetype` structure for a particular
+Python version whether, it is the one the current Python interpreter
+is using or not, use the `to_portable()` function and it will figure
+out based on the version parameter supplied (or use the current Python
+interpreter version if none supplieed), which particlar portable code
+type is the right one.
+
+If on the other hand, you have a number of code-type fields which may
+be incomplete, but still want to work with something that has
+code-type characteristics while not worring about which fields are
+required an their exact proper datatypes, use the `CodeTypeUnion` structure.
+
+Internally, we use OO inheritence to reduce the amount of duplicate
+code. The `load_code_internal()` function from `unmarshal.py` is now a
+lot shorter and cleaner as a result of this reorganization.
+
+New Portable Code Methods, Modules and Classes
+++++++++++++++++++++++++++++++++++++++++++++++
+
+* Python 3.8-ish `replace()` method has been added to the portable code types
+* Portable code type classes `Code13`, `Code15` have been added to more precisely distinguish Python 1.3 and 1.5 code types. The other portable code classes are `Code2`, `Code3`, and `Code38`.
+* the to_native() conversts a portable code type into a native code type
+* the `decode_lineno_tab()` method on portable code types from Python 1.5 on decompresses the Python encode line number table into a dictionary mapping offset to line number.
+
+
+Incompatibility
+---------------
+
+The module `xdis.code` has been remamed to `xdis.codetype` and with
+that the function `iscode()` moved as well. In previous versions to
+use `iscode()` you might import it from `xdis.code`; now simply import
+it from `xdis`. In general function that had been imported from a
+module under `xdis` can now be imported simply from `xdis`.
+
+The classes `Compat2Code`, `Compat3Code` and function `code2compat()`
+and `code3compat()` have been removed.
 
 4.2.3 2020-03-16 post ides-of-march
 ===================================
