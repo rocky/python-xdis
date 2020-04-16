@@ -1,5 +1,4 @@
 4.3.0 2020-04-16 portable code type
-===================================
 
 Portable Code Type
 ------------------
@@ -8,7 +7,7 @@ A portable version of types.CodeType was rewritten, to make it
 
 * easier to use
 * and catch more errors
-* more complete in tracking Python type.codeType changes
+* more complete in tracking Python `types.CodeType` changes
 * simpler in implementation by using type inheretence
 * more general
 
@@ -24,15 +23,15 @@ datatypes it allows.
 For example lists of thing like `co_consts`, or `varnames` can be
 Python lists as well as tuples. The line number table is stored as a
 dictionary mapping of address to bytecode offset rather than as a
-compressed structure. byte code can either be a string (which is
+compressed structure. Bytecode can either be a string (which is
 advantageous if you are running Python before 3.x) or a sequence of
 bytes which is the datatype of a code object for 3.x.
 
-However when you need a `type.CodeType` which the Python interpreter
-you are running can be `eval()`'d, use the `to_native()` method on the
-portable code type returned. It will compress and encode the line
-number table, and turn lists into tuples and convert other datatypes
-to the right type as needed.
+However when you need a `type.CodeType` that can be can be
+`eval()`'d by the Python interpreter you are running, use the
+`to_native()` method on the portable code type returned. It will
+compress and encode the line number table, and turn lists into tuples
+and convert other datatypes to the right type as needed.
 
 If you have a *complete* `types.Codetype` structure for a particular
 Python version whether, it is the one the current Python interpreter
@@ -67,14 +66,15 @@ use `iscode()` you might import it from `xdis.code`; now simply import
 it from `xdis`. In general function that had been imported from a
 module under `xdis` can now be imported simply from `xdis`.
 
-The classes `Compat2Code`, `Compat3Code` and function `code2compat()`
-and `code3compat()` have been removed.
+The classes `Compat3Code` and function `code2compat()` and
+`code3compat()` have been removed. `Compat2Code` is still around for
+dropbox 2.5, but that is deprecated and will be removed when I can
+figure out how to remove it from dropbox 2.5.
 
 Other Changes
 -------------
 
 CI testing for older testing has been fixed now that 2.7 is even more deprecated.
-
 
 4.2.3 2020-03-16 post ides-of-march
 ===================================
