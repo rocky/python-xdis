@@ -26,6 +26,9 @@ check: check-short
 check-short:
 	$(PYTHON) test_pyenvlib.py --verify --simple
 
+check-bytecode-1.5:
+	$(PYTHON) test_pyenvlib.py --bytecode-1.5
+
 #: Test of all pyenv Python library files
 check-full check-pyenv:
 	$(PYTHON) test_pyenvlib.py --verify

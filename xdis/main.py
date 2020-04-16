@@ -52,7 +52,7 @@ import xdis
 
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode
-from xdis.code import iscode, code2compat, code3compat
+from xdis.codetype import iscode, to_portable
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
 from xdis.version import VERSION
@@ -209,21 +209,14 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
     use more stack space at runtime.
     """
 
-    if version < 3.0:
-        co = code2compat(co)
-    else:
-        co = code3compat(co)
-
+    co = to_portable(co)
     co_name = co.co_name
     mapped_name = fn_name_map.get(co_name, co_name)
 
     new_consts = []
     for c in co.co_consts:
         if iscode(c):
-            if version < 3.0:
-                c_compat = code2compat(c)
-            else:
-                c_compat = code3compat(c)
+            c_compat = to_portable(c)
             disco_loop_asm_format(
                 opc, version, c_compat, real_out, fn_name_map, all_fns
             )

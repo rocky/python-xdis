@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Copyright Hagen Fritsch, 2012, License: GPL-2.0
 # Adaption and generalization for xdis use by Rocky Bernstein
-# Copyright 2019
+# Copyright 2019-2020
 
 # Dropbox Python bytecode decryption tool for Dropbox versions of 1.1x
 # (and possibly earlier) which uses Python bytecode 2.5.
@@ -9,9 +9,11 @@
 import types
 import struct
 
-from xdis import PYTHON3
+from xdis.version_info import PYTHON3
 import xdis.marsh as xmarshal
-from xdis.code import Code2Compat
+
+# FIXME: change to use to_portable
+from xdis.codetype import Code2Compat
 
 
 def rng(a, b):
@@ -21,7 +23,7 @@ def rng(a, b):
     return (a * 69069 + c + 0x6611CB3B) & 0xFFFFFFFF
 
 
-# this is replaced by mersenne in newer versions
+# This is replaced by Mersenne in newer versions.
 def get_keys(a, b):
     ka = rng(a, b)
     kb = rng(ka, a)

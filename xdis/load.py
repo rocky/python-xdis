@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2019 by Rocky Bernstein
+# Copyright (c) 2015-2020 by Rocky Bernstein
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -18,8 +18,16 @@ from struct import unpack, pack
 import os.path as osp
 
 import xdis.unmarshal
-from xdis import PYTHON3, PYTHON_VERSION
-from xdis import magics
+from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
+from xdis.magics import (
+    IS_PYPY3,
+    PYTHON_MAGIC_INT,
+    int2magic,
+    magic2int,
+    magic_int2float,
+    magicint2version,
+    versions,
+)
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 
 def check_object_path(path):
@@ -49,7 +57,7 @@ def check_object_path(path):
 
 
 def is_pypy(magic_int):
-    return magic_int in ((62211 + 7, 3180 + 7) + magics.IS_PYPY3)
+    return magic_int in ((62211 + 7, 3180 + 7) + IS_PYPY3)
 
 
 def load_file(filename, out=sys.stdout):
@@ -126,7 +134,7 @@ def load_module_from_file_object(
     timestamp = 0
     try:
         magic = fp.read(4)
-        magic_int = magics.magic2int(magic)
+        magic_int = magic2int(magic)
 
         # For reasons I don't understand, PyPy 3.2 stores a magic
         # of '0'...  The two values below are for Python 2.x and 3.x respectively
@@ -135,8 +143,8 @@ def load_module_from_file_object(
 
         try:
             # FIXME: use the internal routine below
-            float_version = float(magics.versions[magic][:3])
-            # float_version = magics.magic_int2float(magic_int)
+            float_version = float(versions[magic][:3])
+            # float_version = magic_int2float(magic_int)
         except KeyError:
             if magic_int in (2657, 22138):
                 raise ImportError("This smells like Pyston which is not supported.")
@@ -153,8 +161,7 @@ def load_module_from_file_object(
             raise ImportError(
                 "%s is interim Python %s (%d) bytecode which is "
                 "not supported.\nFinal released versions are "
-                "supported."
-                % (filename, magics.versions[magic], magics.magic2int(magic))
+                "supported." % (filename, versions[magic], magic2int(magic))
             )
         elif magic_int == 62135:
             fp.seek(0)
@@ -163,14 +170,14 @@ def load_module_from_file_object(
             raise ImportError(
                 "%s is a dropbox-hacked Python %s (bytecode %d).\n"
                 "See https://github.com/kholia/dedrop for how to "
-                "decrypt." % (filename, magics.versions[magic], magics.magic2int(magic))
+                "decrypt." % (filename, versions[magic], magic2int(magic))
             )
 
         try:
             # print version
             ts = fp.read(4)
-            my_magic_int = magics.PYTHON_MAGIC_INT
-            magic_int = magics.magic2int(magic)
+            my_magic_int = PYTHON_MAGIC_INT
+            magic_int = magic2int(magic)
 
             if magic_int == 3393:
                 timestamp = 0
@@ -191,7 +198,7 @@ def load_module_from_file_object(
             if (
                 (3200 <= magic_int < 20121)
                 and (magic_int not in (5892, 11913, 39170, 39171))
-            ) or (magic_int in magics.IS_PYPY3):
+            ) or (magic_int in IS_PYPY3):
 
                 source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
             else:
@@ -202,7 +209,7 @@ def load_module_from_file_object(
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                 elif fast_load:
-                    co = xdis.marsh.load(fp, magics.magicint2version[magic_int])
+                    co = xdis.marsh.load(fp, magicint2version[magic_int])
                 else:
                     co = xdis.unmarshal.load_code(fp, magic_int, code_objects)
                 pass

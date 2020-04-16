@@ -203,14 +203,19 @@ def format_code_info(co, version, name=None, is_pypy=False):
         lines.append("# Local variables:")
         for i, n in enumerate(co.co_varnames[pos_argc:]):
             lines.append("# %4d: %s" % (pos_argc + i, n))
-    if co.co_freevars:
-        lines.append("# Free variables:")
-        for i_n in enumerate(co.co_freevars):
-            lines.append("# %4d: %s" % i_n)
-    if co.co_cellvars:
-        lines.append("# Cell variables:")
-        for i_n in enumerate(co.co_cellvars):
-            lines.append("# %4d: %s" % i_n)
+    if version > 2.0:
+        if co.co_freevars:
+            lines.append("# Free variables:")
+            for i_n in enumerate(co.co_freevars):
+                lines.append("# %4d: %s" % i_n)
+                pass
+            pass
+        if co.co_cellvars:
+            lines.append("# Cell variables:")
+            for i_n in enumerate(co.co_cellvars):
+                lines.append("# %4d: %s" % i_n)
+                pass
+            pass
     return "\n".join(lines)
 
 
