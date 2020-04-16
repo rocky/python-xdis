@@ -1,3 +1,12 @@
+4.3.2 2020-04-16 portable code type
+===================================
+
+Fix a few more bugs caused by the recent portablity refactoring
+
+* back off line-number table decompression for Python < 3.0 for now. This breaks decomplation.
+* bytecode fix for cell_names now that code types are more stringent.
+
+
 4.3.1 2020-04-16
 ===================================
 
@@ -5,8 +14,12 @@ Fix bug in handling Python 3.8 bytecode.
 
 Sadly, I inadvertently wasn't testing 3.8 bytecode before. That's now fixed too.
 
-4.3.0 2020-04-16 portable code type
+Release revoked - use 4.3.2
+
+4.3.0 2020-04-16
 ===================================
+
+Release revoked - use 4.3.2
 
 Portable Code Type
 ------------------
