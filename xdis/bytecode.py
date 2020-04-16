@@ -531,6 +531,7 @@ class Bytecode(object):
                  dup_lines=False):
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
+        self._cell_names = ()
         if opc.version > 1.5:
             if first_line is None:
                 self.first_line = co.co_firstlineno

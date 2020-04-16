@@ -66,7 +66,8 @@ class Code15(Code13):
         self.co_stacksize = co_stacksize
         self.co_firstlineno = co_firstlineno
         self.co_lnotab = co_lnotab
-        self.decode_lineno_tab()
+        # This messes up decompilers somehow.
+        # self.decode_lineno_tab()
         self.fieldtypes = Code15FieldTypes
         if type(self) == Code15:
             self.check()
