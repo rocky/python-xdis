@@ -66,7 +66,7 @@ def findlinestarts(code, dup_lines=False):
     else:
         # FIXME: this should driven by the datatype like the above, rather than
         # by tested on by the Python Interpreter version.
-        if PYTHON3:
+        if PYTHON3 and not isinstance(lineno_table, str):
             byte_increments = lineno_table[0::2]
             line_increments = lineno_table[1::2]
         else:
