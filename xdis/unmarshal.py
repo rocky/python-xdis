@@ -135,8 +135,13 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     else:
         co_argcount = 0
 
-    if version >= 3.8:
+    # FIXME:
+    # Note we do this by magic_int, not version which is *not*
+    # 3.8
+    if magic_int in (3412, 3413, 3422):
         co_posonlyargcount = unpack("<i", fp.read(4))[0]
+    if version >= 3.8:
+        co_posonlyargcount = 0
     else:
         co_posonlyargcount = None
 

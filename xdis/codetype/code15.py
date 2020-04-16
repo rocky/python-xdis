@@ -76,6 +76,8 @@ class Code15(Code13):
         line_number, line_number_diff = self.co_firstlineno, 0
         offset, offset_diff = 0, 0
         uncompressed_lnotab = {offset: line_number}
+        if not hasattr(self.co_lnotab, "__len__"):
+            raise TypeError("line number table should have a type with a length; is %s" % type(self.co_lnotab))
         for i in range(0, len(self.co_lnotab), 2):
             offset_diff = self.co_lnotab[i]
             line_number_diff = self.co_lnotab[i+1]
