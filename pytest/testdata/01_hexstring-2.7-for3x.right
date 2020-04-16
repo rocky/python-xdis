@@ -6,14 +6,14 @@
 # Flags:             0x00000040 (NOFREE)
 # First Line:        6
 # Constants:
-#    0: <xdis.code.thingy instance at 0xdeadbeef0000>
+#    0: <xdis.codetype.thingy instance at 0xdeadbeef0000>
 #    1: 'abc'
 #    2: b'abc~\x80\x81\x82'
 #    3: None
 # Names:
 #    0: f
 #    1: AssertionError
-  6:           0 LOAD_CONST                0 (<xdis.code.thingy instance at 0xdeadbeef0000>)
+  6:           0 LOAD_CONST                0 (<xdis.codetype.thingy instance at 0xdeadbeef0000>)
                3 MAKE_FUNCTION             0
                6 STORE_NAME                0 (f)
 

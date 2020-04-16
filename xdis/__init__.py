@@ -39,15 +39,12 @@ from xdis.bytecode import (
     op_size
     )
 
-from xdis.code import (
-    Code14,
+from xdis.codetype import (
+    Code13,
+    Code15,
     Code2,
-    Code2Compat,
     Code3,
     Code38,
-    Code3Compat,
-    code2compat,
-    code3compat,
     code_has_star_star_arg,
     code_has_star_arg,
     iscode,
