@@ -16,6 +16,10 @@ def test_codeType2Portable():
     new_code = cc.to_native()
     assert types.CodeType == type(new_code)
     assert eval(new_code) == 5
+    cc_new = cc.replace(co_name="five_renamed")
+    assert cc_new.co_name == "five_renamed"
+    assert eval(cc_new.to_native()) == 5
+
 
 if __name__ == "__main__":
     test_codeType2Portable()

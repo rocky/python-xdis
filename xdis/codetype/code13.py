@@ -17,6 +17,7 @@
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.codetype.base import CodeBase
 import inspect, types
+from copy import deepcopy
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
 Code13FieldTypes = {
@@ -80,3 +81,16 @@ class Code13(CodeBase):
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
         return self
+
+    def replace(self, **kwargs):
+        """
+        Return a copy of the code object with new values for the specified fields.
+
+        This is analoguous to the method added to types.CodeType in Python 3.8.
+        """
+        code = deepcopy(self)
+        for field, value in kwargs.items():
+            if not hasattr(self, field):
+                raise TypeError("Code object %s doesn't have field %s" % (type(self), self))
+            setattr(code, field, value)
+        return code
