@@ -92,7 +92,10 @@ def test_get_jump_targets():
     my_dir = osp.dirname(osp.abspath(__file__))
 
     # Python 2.7 code
-    code = bug708901.__code__
+    if hasattr(bug708901, "__code__"):
+        code = bug708901.__code__
+    else:
+        code = bug708901.func_code
 
     # FIXME: Consider loading from a file like below to remove
     # dependence on running interpreter
@@ -175,3 +178,8 @@ def test_get_jump_targets():
     offset_map = opcode_36.get_jump_target_maps(code,  opcode_36)
     expect = {2: [0], 4: [2], 6: [4], 8: [2], 10: [8], 14: [12]}
     assert expect == offset_map
+
+if __name__ == "__main__":
+    test_get_jump_targets()
+    # test_offset2line()
+    # test_find_linestarts()

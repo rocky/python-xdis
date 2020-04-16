@@ -179,9 +179,6 @@ add_magic_from_int(62191, "2.7a0+2")  # introduce SETUP_WITH
 add_magic_from_int(62201, "2.7a0+3")  # introduce BUILD_SET
 add_magic_from_int(62211, "2.7")  # introduce MAP_ADD and SET_ADD
 
-# Dropbox-modified Python 2.7 used in versions 1.2-1.6 or so of
-# Dropbox
-add_magic_from_int(62215, "2.7dropbox")
 add_magic_from_int(2657, "2.7pyston-0.6.1")
 
 # PyPy including pypy-2.6.1, pypy-5.0.1 PyPy adds 7 to the corresponding CPython nmber
@@ -331,7 +328,7 @@ add_canonic_versions(
 add_canonic_versions("3.5.0 3.5.1", "3.5")
 add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9", "3.5.2")
 add_canonic_versions(
-    "3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 3.6.9 3.6.10", "3.6rc1"
+    "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 3.6.9 3.6.10", "3.6rc1"
 )
 
 add_canonic_versions("2.7.10pypy 2.7.13pypy", "2.7pypy")
@@ -392,6 +389,12 @@ def py_str2float(version):
                         m = re.match(r"^(\d\.)(\d+)\.(\d+)", v)
                         if m:
                             return float(m.group(1) + m.group(2))
+                        else:
+                            # Match things like 3.5a0, 3.5b2, 3.6a1+1, 3.6rc1, 3.7.0beta3
+                            m = re.match(r"^(\d\.)(\d)(\d+)?[abr]", v)
+                            if m:
+                                return float(m.group(1) + m.group(2))
+                            pass
                     except:
                         pass
                     pass
