@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2020 by Rocky Bernstein
+# (C) Copyright 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from xdis.version_info import PYTHON3, PYTHON_VERSION
-from xdis.codetype.code30 import Code3
+from xdis.codetype.code30 import Code3, Code3FieldTypes
 import types
 from copy import deepcopy
 
@@ -40,26 +40,11 @@ Code3FieldNames = """
         co_cellvars
 """
 
-# FIXME: use this dict in check() and to_native()
-Code38FieldTypes = {
-    "co_argcount": int,
+Code38FieldTypes = deepcopy(Code3FieldTypes)
+Code38FieldTypes.update({
     "co_posonlyargcount": int,
-    "co_kwonlyargcount": int,
-    "co_nlocals": int,
-    "co_stacksize": int,
-    "co_flags": int,
-    "co_code": bytes,
-    "co_consts": tuple,
-    "co_names": tuple,
-    "co_varnames": tuple,
-    "co_filename": str,
-    "co_name": str,
-    "co_firstlineno": int,
-    "co_lnotab": bytes,
-    "co_freevars": tuple,
-    "co_cellvars": tuple,
-}
-# posonlyargcount field added to 3.0 .. 3.7 field
+})
+
 
 
 class Code38(Code3):
@@ -112,19 +97,6 @@ class Code38(Code3):
             co_cellvars,
         )
         self.co_posonlyargcount = co_posonlyargcount
-
-    def check(self, opts={}):
-        for (
-            field
-        ) in "co_argcount co_posonlyargcount co_kwonlyargcount co_nlocals co_flags co_firstlineno".split():
-            val = getattr(self, field)
-            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
-        for field in "co_consts co_names co_varnames".split():
-            val = getattr(self, field)
-            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
-                field,
-                type(val),
-            )
 
     def to_native(self):
         if not (PYTHON_VERSION >= 3.8):

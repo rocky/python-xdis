@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2020 by Rocky Bernstein
+# (C) Copyright 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -15,24 +15,17 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from xdis.version_info import PYTHON3, PYTHON_VERSION
-from xdis.codetype.code13 import Code13
+from xdis.codetype.code13 import Code13, Code13FieldTypes
 import inspect, types
+from copy import deepcopy
 
-# FIXME: use this dict in check().
-Code15FieldTypes = {
-    "co_argcount": int,
-    "co_nlocals": int,
+# If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
+Code15FieldTypes = deepcopy(Code13FieldTypes)
+Code15FieldTypes.update({
     "co_stacksize": int,
-    "co_flags": int,
-    "co_code": str,
-    "co_consts": tuple,
-    "co_names": tuple,
-    "co_varnames": tuple,
-    "co_filename": str,
-    "co_name": str,
     "co_firstlineno": int,
-    "co_lnotab": str,
-}
+    "co_lnotab": (str, bytes, dict),
+})
 # stacksize, co_firstlineno, co_lnotab are new in 1.5
 
 class Code15(Code13):
@@ -74,6 +67,7 @@ class Code15(Code13):
         self.co_firstlineno = co_firstlineno
         self.co_lnotab = co_lnotab
         self.decode_lineno_tab()
+        self.fieldtypes = Code15FieldTypes
         return
 
     def decode_lineno_tab(self):
@@ -142,14 +136,3 @@ class Code15(Code13):
 
         self.frozen = True
         return self
-
-    def check(self):
-        for field in "co_argcount co_nlocals co_flags".split():
-            val = getattr(self, field)
-            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
-        for field in "co_consts co_names co_varnames".split():
-            val = getattr(self, field)
-            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
-                field,
-                type(val),
-            )

@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2020 by Rocky Bernstein
+# (C) Copyright 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -18,20 +18,21 @@ from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.codetype.base import CodeBase
 import inspect, types
 
+# If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
 Code13FieldTypes = {
     "co_argcount": int,
     "co_nlocals": int,
     "co_flags": int,
-    "co_code": str,
-    "co_consts": tuple,
-    "co_names": tuple,
-    "co_varnames": tuple,
+    "co_code": (str, bytes, list, tuple),
+    "co_consts": (tuple, list),
+    "co_names": (tuple, list),
+    "co_varnames": (tuple, list),
     "co_filename": str,
     "co_name": str,
 }
 
 class Code13(CodeBase):
-    """Class for a Python 1.3 .. 1.5 code object used for Python interpreters other than 1.3 .. 1.5
+    """Class for a Python 1.0 .. 1.4 code object used for Python interpreters other than 1.0 .. 1.4
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
@@ -60,22 +61,22 @@ class Code13(CodeBase):
         self.co_varnames = co_varnames
         self.co_filename = co_filename
         self.co_name = co_name
+        self.fieldtypes = Code13FieldTypes
         return
 
+    def check(self):
+        for field, fieldtype in self.fieldtypes.items():
+            val = getattr(self, field)
+            if isinstance(fieldtype, tuple):
+                assert type(val) in fieldtype, "%s should be one of the types %s; is type %s" % (field, fieldtype, type(val))
+            else:
+                assert isinstance(val, fieldtype), "%s should have type %s; is type %s" % (field, type(val))
+
+
+    # FIXME: use self.fieldtype
     def freeze(self):
         for field in "co_consts co_names co_varnames".split():
             val = getattr(self, field)
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
         return self
-
-    def check(self):
-        for field in "co_argcount co_nlocals co_flags".split():
-            val = getattr(self, field)
-            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
-        for field in "co_consts co_names co_varnames".split():
-            val = getattr(self, field)
-            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
-                field,
-                type(val),
-            )

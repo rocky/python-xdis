@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2020 by Rocky Bernstein
+# (C) Copyright 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,30 +17,14 @@
 import types
 from copy import deepcopy
 
-from xdis.codetype.code20 import Code2
+from xdis.codetype.code20 import Code2, Code2FieldTypes
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 
 # Below, in the Python 2.4 branch "bytes" is "str" since there may not be a "bytes" type.
-# FIXME: use this dict in check() and to_native()
-Code3FieldTypes = {
-    "co_argcount": int,
+Code3FieldTypes = deepcopy(Code2FieldTypes)
+Code3FieldTypes.update({
     "co_kwonlyargcount": int,
-    "co_nlocals": int,
-    "co_stacksize": int,
-    "co_flags": int,
-    "co_code": bytes,
-    "co_consts": tuple,
-    "co_names": tuple,
-    "co_varnames": tuple,
-    "co_filename": str,
-    "co_name": str,
-    "co_firstlineno": int,
-    "co_lnotab": bytes,
-    "co_freevars": tuple,
-    "co_cellvars": tuple,
-}
-
-# Field co_kwonlyargcount is new from 2.x. The datatypes of some fields may be different.
+})
 
 
 class Code3(Code2):
@@ -90,6 +74,7 @@ class Code3(Code2):
             co_cellvars,
         )
         self.co_kwonlyargcount = co_kwonlyargcount
+        self.fieldtypes = Code3FieldTypes
 
     def encode_lineno_tab(self):
         co_lnotab = b""
@@ -110,19 +95,6 @@ class Code3(Code2):
             co_lnotab += bytearray([offset_diff, line_diff])
 
         self.co_lnotab = co_lnotab
-
-    def check(self, opts={}):
-        for (
-            field
-        ) in "co_argcount co_kwonlyargcount co_nlocals co_flags co_firstlineno".split():
-            val = getattr(self, field)
-            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
-        for field in "co_consts co_names co_varnames".split():
-            val = getattr(self, field)
-            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
-                field,
-                type(val),
-            )
 
     def freeze(self):
         for field in "co_consts co_names co_varnames co_freevars co_cellvars".split():

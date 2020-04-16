@@ -15,27 +15,16 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from xdis.version_info import PYTHON_VERSION
-from xdis.codetype.code15 import Code15
+from xdis.codetype.code15 import Code15, Code15FieldTypes
 import types
 from copy import deepcopy
 
-# FIXME: use this dict in check() and to_native()
-Code2FieldTypes = {
-    "co_argcount": int,
-    "co_nlocals": int,
-    "co_stacksize": int,
-    "co_flags": int,
-    "co_code": str,
-    "co_consts": tuple,
-    "co_names": tuple,
-    "co_varnames": tuple,
-    "co_filename": str,
-    "co_name": str,
-    "co_firstlineno": int,
-    "co_lnotab": str,
-    "co_freevars": tuple,
-    "co_cellvars": tuple,
-}
+# If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
+Code2FieldTypes = deepcopy(Code15FieldTypes)
+Code2FieldTypes.update({
+    "co_freevars": (tuple, list),
+    "co_cellvars": (tuple, list),
+    })
 # co_firstlineno added since 1.x
 
 
@@ -84,18 +73,8 @@ class Code2(Code15):
         )
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
+        self.fieldtypes = Code2FieldTypes
         return
-
-    def check(self):
-        for field in "co_argcount co_nlocals co_flags co_firstlineno".split():
-            val = getattr(self, field)
-            assert isinstance(val, int), "%s should be int, is %s" % (field, type(val))
-        for field in "co_consts co_names co_varnames".split():
-            val = getattr(self, field)
-            assert isinstance(val, tuple), "%s should be tuple, is %s" % (
-                field,
-                type(val),
-            )
 
     def to_native(self, opts={}):
         if not (2.0 <= PYTHON_VERSION <= 2.7):
