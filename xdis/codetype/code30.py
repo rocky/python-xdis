@@ -75,6 +75,9 @@ class Code3(Code2):
         )
         self.co_kwonlyargcount = co_kwonlyargcount
         self.fieldtypes = Code3FieldTypes
+        if type(self) == Code3:
+            self.check()
+        return
 
     def encode_lineno_tab(self):
         co_lnotab = ""

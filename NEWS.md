@@ -1,5 +1,4 @@
 4.3.0 2020-04-16 portable code type
-===================================
 
 Portable Code Type
 ------------------
@@ -8,7 +7,7 @@ A portable version of types.CodeType was rewritten, to make it
 
 * easier to use
 * and catch more errors
-* more complete in tracking Python type.codeType changes
+* more complete in tracking Python `types.CodeType` changes
 * simpler in implementation by using type inheretence
 * more general
 
@@ -50,8 +49,7 @@ Internally, we use OO inheritence to reduce the amount of duplicate
 code. The `load_code_internal()` function from `unmarshal.py` is now a
 lot shorter and cleaner as a result of this reorganization.
 
-New Portable Code Methods, Modules and Classes
-++++++++++++++++++++++++++++++++++++++++++++++
+### New Portable Code Methods, Modules and Classes
 
 * Python 3.8-ish `replace()` method has been added to the portable code types
 * Portable code type classes `Code13`, `Code15` have been added to more precisely distinguish Python 1.3 and 1.5 code types. The other portable code classes are `Code2`, `Code3`, and `Code38`.
@@ -70,6 +68,11 @@ module under `xdis` can now be imported simply from `xdis`.
 
 The classes `Compat2Code`, `Compat3Code` and function `code2compat()`
 and `code3compat()` have been removed.
+
+Other Changes
+-------------
+
+CI testing for older testing has been fixed now that 2.7 is even more deprecated.
 
 4.2.3 2020-03-16 post ides-of-march
 ===================================

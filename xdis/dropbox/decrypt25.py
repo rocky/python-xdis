@@ -12,7 +12,8 @@ import struct
 from xdis.version_info import PYTHON3
 import xdis.marsh as xmarshal
 
-# FIXME: change to use to_portable
+# FIXME to use codeType2Portable
+# from xdis.codetype import codeType2Portable
 from xdis.codetype import Code2Compat
 
 

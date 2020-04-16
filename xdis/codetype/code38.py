@@ -97,6 +97,9 @@ class Code38(Code3):
             co_cellvars,
         )
         self.co_posonlyargcount = co_posonlyargcount
+        self.fieldtypes = Code38FieldTypes
+        if type(self) == Code38:
+            self.check()
 
     def to_native(self):
         if not (PYTHON_VERSION >= 3.8):

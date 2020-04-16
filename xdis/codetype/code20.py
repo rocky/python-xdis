@@ -74,6 +74,8 @@ class Code2(Code15):
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
         self.fieldtypes = Code2FieldTypes
+        if type(self) == Code2:
+            self.check()
         return
 
     def to_native(self, opts={}):
