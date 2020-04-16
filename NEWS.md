@@ -1,4 +1,12 @@
+4.3.1 2020-04-16
+===================================
+
+Fix bug in handling Python 3.8 bytecode.
+
+Sadly, I inadvertently wasn't testing 3.8 bytecode before. That's now fixed too.
+
 4.3.0 2020-04-16 portable code type
+===================================
 
 Portable Code Type
 ------------------
@@ -78,7 +86,7 @@ CI testing for older testing has been fixed now that 2.7 is even more deprecated
 
 4.2.3 2020-03-16 post ides-of-march
 ===================================
-
+s
 * Add Python versions: 3.7.7, 3.8.2, and 3.9.0alpha1,
 * Create a set for "STORE" instructions
 * facilitate code type freezing (PR #57)
