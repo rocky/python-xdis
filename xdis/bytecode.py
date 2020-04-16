@@ -515,6 +515,8 @@ class Bytecode(object):
                 self._cell_names = co.co_cellvars + co.co_freevars
                 pass
             pass
+        else:
+            self._cell_names = ()
 
         self._linestarts = dict(opc.findlinestarts(co, dup_lines=dup_lines))
         self._original_object = x
