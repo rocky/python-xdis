@@ -27,6 +27,7 @@ EXPECTED_CODE_INFO = ("""# Method Name:       <module>
 # Filename:          <disassembly>
 # Argument count:    0
 """
++ ("# Position-only argument count: 0\n" if PYTHON_VERSION >= 3.8 else "")
 + ("# Keyword-only arguments: 0\n" if PYTHON3 else "") +
 """# Number of locals:  0
 # Stack size:        1
