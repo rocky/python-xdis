@@ -57,8 +57,8 @@ if PYTHON_VERSION >= 3.2:
         ]
         got_lines = [
             re.sub(
-                "<code object .*>|<xdis[.]codetype.+ (object|instance) .*>",
-                "<xdis.codetype.thingy instance at 0xdeadbeef0000>",
+                "<code object .*>|<Code.+ code object .*>",
+                "<code object at 0xdeadbeef0000>",
                 line,
             )
             for line in got_lines

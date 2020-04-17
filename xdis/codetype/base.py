@@ -46,3 +46,12 @@ class CodeBase(object):
         if isinstance(op, str):
             op = ord(op)
         return op
+
+    def __repr__(self):
+        msg = "<%s code object %s at 0x%x, file %s>" % (
+            (self.__class__.__name__, self.co_name, id(self), self.co_filename)
+        )
+        if hasattr(self, "co_firstlineno"):
+            msg += ", line %d" % self.co_firstlineno
+
+        return msg

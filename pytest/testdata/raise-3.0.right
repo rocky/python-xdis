@@ -7,11 +7,11 @@
 # Flags:             0x00000040 (NOFREE)
 # First Line:        6
 # Constants:
-#    0: <xdis.codetype.thingy instance at 0xdeadbeef0000>
+#    0: <code object at 0xdeadbeef0000>, line 6
 #    1: None
 # Names:
 #    0: compact_traceback
-  6:           0 LOAD_CONST                0 (<xdis.codetype.thingy instance at 0xdeadbeef0000>)
+  6:           0 LOAD_CONST                0 (<code object at 0xdeadbeef0000>, line 6)
                3 MAKE_FUNCTION             0 (0 positional, 0 name and default, 0 annotations)
                6 STORE_NAME                0 (compact_traceback)
                9 LOAD_CONST                1 (None)
