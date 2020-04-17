@@ -18,13 +18,12 @@ from struct import unpack, pack
 import os.path as osp
 
 import xdis.unmarshal
-from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
+from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.magics import (
     IS_PYPY3,
     PYTHON_MAGIC_INT,
     int2magic,
     magic2int,
-    magic_int2float,
     magicint2version,
     versions,
 )
