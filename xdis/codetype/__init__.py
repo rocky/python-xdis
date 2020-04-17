@@ -25,13 +25,15 @@ from xdis.codetype.code30 import *
 from xdis.codetype.code38 import *
 
 import types
-from xdis.version_info import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION
 
 
 def codeType2Portable(code, version=PYTHON_VERSION):
     """Converts a native types.CodeType code object into a the
 corresponding more flexible xdis Code type,.
     """
+    if isinstance(code, CodeBase):
+        return code
     if not (
             isinstance(code, types.CodeType)
             or isinstance(code, CodeTypeUnion)
@@ -153,7 +155,7 @@ def portableCodeType(version=PYTHON_VERSION):
 # In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
 # an incomplete code type, which might be converted to another code type
 # later.
-CodeTypeUnion = namedtuple("CodeTypeUnion", Code3FieldNames)
+CodeTypeUnion = namedtuple("CodeTypeUnion", Code38FieldNames)
 
 
 # Note: default values of `None` indicate a required parameter.
@@ -196,3 +198,7 @@ def to_portable(
         co_cellvars,
     )
     return codeType2Portable(code, version)
+
+if __name__ == "__main__":
+    x = codeType2Portable(to_portable.__code__)
+    print(x)

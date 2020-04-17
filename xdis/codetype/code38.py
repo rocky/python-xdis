@@ -14,14 +14,14 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION
 from xdis.codetype.code30 import Code3, Code3FieldTypes
 import types
 from copy import deepcopy
 
 # Note: order is the positional order. It is important to match this
 # with the 3.8 order.
-Code3FieldNames = """
+Code38FieldNames = """
         co_argcount
         co_posonlyargcount
         co_kwonlyargcount
