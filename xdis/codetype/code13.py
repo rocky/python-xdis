@@ -88,6 +88,8 @@ class Code13(CodeBase):
                 assert type(val) in fieldtype, "%s should be one of the types %s; is type %s" % (field, fieldtype, type(val))
             else:
                 assert isinstance(val, fieldtype), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
+                pass
+            pass
 
 
     # FIXME: use self.fieldtype

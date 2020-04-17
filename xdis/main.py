@@ -30,14 +30,14 @@ want to run on Python 2.7.
 # imports so this can run on older Pythons. This is
 # intended to be a more cross-version Python program
 
-import datetime, re, sys
+import datetime, re, sys, types
 from collections import deque
 
 import xdis
 
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode
-from xdis.codetype import iscode, to_portable
+from xdis.codetype import iscode, codeType2Portable
 from xdis.load import check_object_path, load_module
 from xdis.util import format_code_info
 from xdis.version import VERSION
@@ -194,14 +194,18 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
     use more stack space at runtime.
     """
 
-    co = to_portable(co)
+    co = codeType2Portable(co)
     co_name = co.co_name
     mapped_name = fn_name_map.get(co_name, co_name)
 
     new_consts = []
     for c in co.co_consts:
         if iscode(c):
-            c_compat = to_portable(c)
+            if isinstance(c, types.CodeType):
+                c_compat = codeType2Portable(c)
+            else:
+                c_compat = c
+
             disco_loop_asm_format(
                 opc, version, c_compat, real_out, fn_name_map, all_fns
             )

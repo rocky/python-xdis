@@ -32,6 +32,8 @@ def codeType2Portable(code, version=PYTHON_VERSION):
     """Converts a native types.CodeType code object into a the
 corresponding more flexible xdis Code type,.
     """
+    if isinstance(code, CodeBase):
+        return code
     if not (
             isinstance(code, types.CodeType)
             or isinstance(code, CodeTypeUnion)
