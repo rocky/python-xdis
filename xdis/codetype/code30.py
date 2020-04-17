@@ -106,6 +106,9 @@ class Code3(Code2):
             if isinstance(val, list):
                 setattr(self, field, tuple(val))
 
+        # for field, typename in self.fieldtypes:
+        #     pass
+
         if isinstance(self.co_lnotab, dict):
             d = self.co_lnotab
             self.co_lnotab = sorted(zip(d.keys(), d.values()), key=lambda tup: tup[0])
@@ -114,6 +117,9 @@ class Code3(Code2):
             # (offset, linenumber) which we convert
             # into the encoded format
             self.encode_lineno_tab()
+
+        if isinstance(self.co_code, str):
+            self.co_code = self.co_code.encode()
 
         return self
 

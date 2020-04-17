@@ -1044,7 +1044,14 @@ def dumps(x, version=version, python_version=None):
                 buf.append(b)
         return b"".join(buf)
     else:
-        return "".join(buffer)
+        buf = []
+        for b in buffer:
+            if isinstance(b, bytes):
+                buf.append(b.decode())
+            else:
+                buf.append(b)
+
+        return "".join(buf)
 
 
 @builtinify
