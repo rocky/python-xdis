@@ -52,7 +52,7 @@ from xdis import IS_PYPY
 from xdis.bytecode import Bytecode as _Bytecode, _Instruction
 from xdis.main import disco as _disco
 from xdis.op_imports import get_opcode_module
-from xdis.util import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code
+from xdis.dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code
 
 
 PYPY = 'pypy'

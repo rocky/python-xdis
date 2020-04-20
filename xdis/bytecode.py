@@ -24,7 +24,8 @@ from xdis.version_info import PYTHON3
 
 from collections import namedtuple
 
-from xdis.util import (get_code_object, code2num, num2code, format_code_info)
+from xdis.dis import get_code_object, format_code_info
+from xdis.util import code2num, num2code
 
 if PYTHON3:
     from io import StringIO
