@@ -1,3 +1,18 @@
+4.4.0 2020-04-20 modern-pitch A
+===============================
+
+Incompatibility: `load_module()` and `load_module_from_file_object()` now return a couple more parameters: is_pypy, and the sip_hash value when that is available. The timestamp and file_size returned on these functions is now None when they aren't available. Previously timestamp had been 0.
+
+* --asm option fixes
+* Show sip hash in 3.7+ when that is used
+* Handle PEP 552 bytecode-file variations more properly
+* Detect more intermediate Python versions in `load_code_from_file_object()`
+* 3.8+ posonlyargcount in assembly...  rename Kw-only field to Keyword-only
+* Add 3.5 canonic bytecode version Marshal `dumps()`
+* convert from byte() to str() in dumps() when needed in 3.x
+* to_native() convert to bytes from string when needed in 3.x.
+* clean up loading code by using float version values rather than magic values
+
 4.3.2 2020-04-16 portable code type
 ===================================
 

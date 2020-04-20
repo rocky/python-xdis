@@ -4,10 +4,10 @@
 - [Get latest sources:](#get-latest-sources)
 - [Change version in xdis/version.py.](#change-version-in-xdisversionpy)
 - [Update ChangeLog:](#update-changelog)
-- [Update NEWS from ChangeLog. Then:](#update-news-from-changelog-then)
+- [Update NEWS.md from ChangeLog. Then:](#update-newsmd-from-changelog-then)
 - [Make sure pyenv is running and check newer versions](#make-sure-pyenv-is-running-and-check-newer-versions)
 - [Switch to python-2.4, sync that up and build that first since it creates a tarball which we don't want.](#switch-to-python-24-sync-that-up-and-build-that-first-since-it-creates-a-tarball-which-we-dont-want)
-- [Update NEWS from master branch](#update-news-from-master-branch)
+- [Update NEWS.md from master branch](#update-newsmd-from-master-branch)
 - [Check against all versions](#check-against-all-versions)
 - [Make packages and tag](#make-packages-and-tag)
 - [Upload single package and look at Rst Formating](#upload-single-package-and-look-at-rst-formating)
@@ -33,7 +33,7 @@
 
     $ make ChangeLog
 
-#  Update NEWS from ChangeLog. Then:
+#  Update NEWS.md from ChangeLog. Then:
 
     $ emacs NEWS.md
     $ make check
@@ -50,7 +50,7 @@
     $ source admin-tools/setup-python-2.4.sh
     $ git merge master
 
-# Update NEWS from master branch
+# Update NEWS.md from master branch
 
     $ git commit -m"Get ready for release $VERSION" .
 
