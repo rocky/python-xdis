@@ -353,6 +353,19 @@ op_size = instruction_size
 _Instruction = namedtuple("_Instruction",
      "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg")
      # "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg fallthrough")
+_Instruction.opname.__doc__ = "Human readable name for operation"
+_Instruction.opcode.__doc__ = "Numeric code for operation"
+_Instruction.arg.__doc__ = "Numeric argument to operation (if any), otherwise None"
+_Instruction.argval.__doc__ = "Resolved arg value (if known), otherwise same as arg"
+_Instruction.argrepr.__doc__ = "Human readable description of operation argument"
+_Instruction.has_arg.__doc__ = "True if instruction has an operand, otherwise False"
+_Instruction.offset.__doc__ = "Start index of operation within bytecode sequence"
+_Instruction.starts_line.__doc__ = "Line started by this opcode (if any), otherwise None"
+_Instruction.is_jump_target.__doc__ = "True if other code jumps to here, otherwise False"
+_Instruction.has_extended_arg.__doc__ = "True there were EXTENDED_ARG opcodes before this, otherwise False"
+
+_OPNAME_WIDTH = 20
+_OPARG_WIDTH = 6
 
 class Instruction(_Instruction):
     """Details for a bytecode operation
@@ -448,7 +461,7 @@ class Instruction(_Instruction):
             fields.append(hex_bytecode + '|')
 
         # Column: Opcode name
-        fields.append(self.opname.ljust(20))
+        fields.append(self.opname.ljust(_OPNAME_WIDTH))
 
         # Column: Opcode argument
         if self.arg is not None:
@@ -469,7 +482,7 @@ class Instruction(_Instruction):
                 else:
                     fields.append(repr(self.arg))
             elif not (show_bytes and argrepr):
-                fields.append(repr(self.arg).rjust(6))
+                fields.append(repr(self.arg).rjust(_OPARG_WIDTH))
             # Column: Opcode argument details
             if argrepr:
                 fields.append('(%s)' % argrepr)

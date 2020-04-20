@@ -39,13 +39,22 @@ def get_code_object(x):
         x = x.__func__
     if hasattr(x, "__code__"):  # Function
         x = x.__code__
-    if hasattr(x, "gi_code"):  # Generator
+    elif hasattr(x, "func_code"):  # Function pre 2.7
+        x = x.__code__
+    elif hasattr(x, "gi_code"):  # Generator
         x = x.gi_code
-    if isinstance(x, str):  # Source code
+    elif hasattr(x, 'ag_code'):  #...an asynchronous generator object, or
+        x = x.ag_code
+    elif hasattr(x, 'cr_code'):  #...a coroutine.
+        x = x.cr_code
+    # Handle source code.
+    if isinstance(x, str):
         x = _try_compile(x, "<disassembly>")
-    if hasattr(x, "co_code"):  # Code object
+    # By now, if we don't have a code object, we can't disassemble x.
+    if hasattr(x, "co_code"):
         return x
-    raise TypeError("don't know how to disassemble %s objects" % type(x).__name__)
+    raise TypeError("don't know how to disassemble %s objects" %
+                    type(x).__name__)
 
 def code_info(x, version, is_pypy=False):
     """Formatted details of methods, functions, or code."""
