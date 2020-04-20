@@ -210,7 +210,10 @@ def load_module_from_file_object(
             ts = fp.read(4)
             if version >= 3.7:
                 # PEP 552. https://www.python.org/dev/peps/pep-0552/
-                if (ts[-1] & 1) or magic_int == 3393: # 3393 is 3.7.0beta3
+                pep_bits = ts[-1]
+                if PYTHON_VERSION < 2.7:
+                    pep_bits = ord(pep_bits)
+                if (pep_bits & 1) or magic_int == 3393: # 3393 is 3.7.0beta3
                     # SipHash
                     sip_hash = unpack("<Q", fp.read(8))[0]
                 else:
