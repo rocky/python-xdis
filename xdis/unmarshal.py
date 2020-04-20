@@ -26,10 +26,10 @@ you can simply use Python's built-in marshal.loads() to produce a code
 object
 """
 
-import sys, types
+import sys
 from struct import unpack
 
-from xdis.magics import magic_int2float, PYTHON_MAGIC_INT, IS_PYPY3
+from xdis.magics import magic_int2float
 from xdis.codetype import to_portable
 from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
 
@@ -120,14 +120,6 @@ def load_code(fp, magic_int, code_objects={}):
 def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # FIXME: use tables to simplify this?
     # FIXME: Python 1.0 .. 1.3 isn't well known
-
-    # FIXME: REMOVE THIS and replace using "versions"
-    v10_to_12 = magic_int in (39170, 39171)
-    v13_to_22 = magic_int in (11913, 5892, 20121, 50428, 50823, 60202, 60717)
-    v11_to_14 = magic_int in (39170, 39171, 11913, 5892)
-    v15_to_22 = magic_int in (20121, 50428, 50823, 60202, 60717)
-    v13_to_20 = magic_int in (11913, 5892, 20121, 50428, 50823)
-    v21_to_27 = not v13_to_20 and 60202 <= magic_int <= 63000
 
     version = magic_int2float(magic_int)
 

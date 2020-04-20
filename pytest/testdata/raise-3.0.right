@@ -1,7 +1,7 @@
 # Method Name:       <module>
 # Filename:          simple_source/stmts/04_raise.py
 # Argument count:    0
-# Kw-only arguments: 0
+# Keyword-only arguments: 0
 # Number of locals:  0
 # Stack size:        1
 # Flags:             0x00000040 (NOFREE)
@@ -21,7 +21,7 @@
 # Method Name:       compact_traceback
 # Filename:          simple_source/stmts/04_raise.py
 # Argument count:    1
-# Kw-only arguments: 0
+# Keyword-only arguments: 0
 # Number of locals:  1
 # Stack size:        2
 # Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)

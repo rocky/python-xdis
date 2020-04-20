@@ -140,9 +140,15 @@ def verify_file(real_source_filename, real_bytecode_filename):
 
     codeobject1 = compile(codestring, source_filename, "exec")
 
-    (version, timestamp, magic_int, codeobject2, is_pypy, source_size) = load_module(
-        real_bytecode_filename
-    )
+    (
+        version,
+        timestamp,
+        magic_int,
+        codeobject2,
+        is_pypy,
+        source_size,
+        _,
+    ) = load_module(real_bytecode_filename)
 
     # A hack for PyPy 3.2
     if magic_int == 3180 + 7:
@@ -156,7 +162,7 @@ def verify_file(real_source_filename, real_bytecode_filename):
     )
     bytecode_filename1 = os.path.join(tempdir, "testing1.pyc")
     dump_compile(codeobject1, bytecode_filename1, timestamp, MAGIC)
-    (version, timestamp, magic_int, codeobject3, is_pypy, source_size) = load_module(
+    (version, timestamp, magic_int, codeobject3, is_pypy, source_size, _) = load_module(
         real_bytecode_filename, fast_load=not is_pypy
     )
 

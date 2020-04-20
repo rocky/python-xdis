@@ -18,13 +18,13 @@ from struct import unpack, pack
 import os.path as osp
 
 import xdis.unmarshal
-from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
+from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.magics import (
     IS_PYPY3,
     PYTHON_MAGIC_INT,
     int2magic,
-    magic2int,
     magic_int2float,
+    magic2int,
     magicint2version,
     versions,
 )
@@ -87,19 +87,35 @@ def load_file(filename, out=sys.stdout):
 
 def load_module(filename, code_objects=None, fast_load=False, get_code=True):
     """load a module without importing it.
-    load_module(filename: string): version, magic_int, code_object
+    Parameters:
+       filename:    name of file containing Python byte-code object
+                    (normally a .pyc)
 
-    filename:	name of file containing Python byte-code object
-                (normally a .pyc)
+       code_objects: list of additional code_object from this
+                     file. This might be a types.CodeType or one of
+                     the portable xdis code types, e.g. Code38, Code3,
+                     Code2, etc. This can be empty
 
-    code_object: code_object from this file
-    version: Python major/minor value e.g. 2.7. or 3.4
-    magic_int: more specific than version. The actual byte code version of the
-               code object
+       get_code:     bool. Parsing the code object takes a bit of
+                     parsing time, but sometimes all you want is the
+                     module info, time string, code size, python
+                     version, etc. For that, set `get_code` to
+                     `False`.
 
-    Parsing the code object takes a bit of parsing time, but
-    sometimes all you want is the module info, time string, code size,
-    python version, etc. For that, set get_code=False.
+    Return values are as follows:
+        float_version: float; the floating-point version number for the given magic_int,
+                       e.g. 2.7 or 3.4
+        timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
+                        if no timestamp was stored
+        magic_int: int, a more specific than version number. The actual byte code version of the
+                   code object
+        co         : code object
+        ispypy     : True if this was a PyPy code object
+        source_size: The size of the source code mod 2**32, if that was stored in the bytecode.
+                     None otherwise.
+        sip_hash   : the SIP Hash for the file (only in Python 3.7 or greater), if the file
+                     was created with a SIP hash or None otherwise. Note that if the sip_hash is not
+                     none, then the timestamp and source_size will be invalid.
     """
 
     # Some sanity checks
@@ -143,8 +159,7 @@ def load_module_from_file_object(
 
         try:
             # FIXME: use the internal routine below
-            float_version = float(versions[magic][:3])
-            # float_version = magic_int2float(magic_int)
+            float_version = magic_int2float(magic_int)
         except KeyError:
             if magic_int in (2657, 22138):
                 raise ImportError("This smells like Pyston which is not supported.")
@@ -157,7 +172,11 @@ def load_module_from_file_object(
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
 
-        if magic_int in (3010, 3020, 3030, 3040, 3050, 3060, 3061, 3361, 3371):
+        if magic_int in (3010, 3020, 3030, 3040, 3050, 3060, 3061,
+                         3071, 3361, 3091, 3101, 3103, 3141,
+                         3270, 3280, 3290, 3300, 3320, 3330,
+                         3371, 62071, 62071, 62081, 62091, 62092, 62111,
+        ):
             raise ImportError(
                 "%s is interim Python %s (%d) bytecode which is "
                 "not supported.\nFinal released versions are "
@@ -175,34 +194,39 @@ def load_module_from_file_object(
 
         try:
             # print version
-            ts = fp.read(4)
             my_magic_int = PYTHON_MAGIC_INT
             magic_int = magic2int(magic)
+            version = magic_int2float(magic_int)
 
-            if magic_int == 3393:
-                timestamp = 0
-                _ = unpack("<I", ts)[0]  # hash word 1
-                _ = unpack("<I", fp.read(4))[0]  # hash word 2
-            elif magic_int in (3394, 3401, 3412, 3413, 3422):
-                timestamp = 0
-                _ = unpack("<I", fp.read(4))[0]  # pep552_bits
+            timestamp = None
+            source_size = None
+            sip_hash = None
+
+            ts = fp.read(4)
+            if version >= 3.7:
+                # PEP 552. https://www.python.org/dev/peps/pep-0552/
+                if (ord(ts[-1]) & 1) or magic_int == 3393: # 3393 is 3.7.0beta3
+                    # SipHash
+                    sip_hash = unpack("<Q", fp.read(8))[0]
+                else:
+                    # Uses older-style timestamp and size
+                    timestamp = unpack("<I", fp.read(4))[0]  # pep552_bits
+                    source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
+                    pass
             else:
                 timestamp = unpack("<I", ts)[0]
-
-            # Note: a higher magic number doesn't necessarily mean a later
-            # release.  At Python 3.0 the magic number decreased
-            # significantly. Hence the range below. Also note inclusion of
-            # the size info, occurred within a Python major/minor
-            # release. Hence the test on the magic value rather than
-            # PYTHON_VERSION, although PYTHON_VERSION would probably work.
-            if (
-                (3200 <= magic_int < 20121)
-                and (magic_int not in (5892, 11913, 39170, 39171))
-            ) or (magic_int in IS_PYPY3):
-
-                source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
-            else:
-                source_size = None
+                # Note: a higher magic number doesn't necessarily mean a later
+                # release.  At Python 3.0 the magic number decreased
+                # significantly. Hence the range below. Also note inclusion of
+                # the size info, occurred within a Python major/minor
+                # release. Hence the test on the magic value rather than
+                # PYTHON_VERSION, although PYTHON_VERSION would probably work.
+                if (
+                    (3200 <= magic_int < 20121)
+                    and version >= 1.5
+                    or magic_int in IS_PYPY3
+                ):
+                    source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
             if get_code:
                 if my_magic_int == magic_int:
@@ -227,7 +251,7 @@ def load_module_from_file_object(
     finally:
         fp.close()
 
-    return float_version, timestamp, magic_int, co, is_pypy(magic_int), source_size
+    return float_version, timestamp, magic_int, co, is_pypy(magic_int), source_size, sip_hash
 
 
 def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
@@ -247,13 +271,16 @@ def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
 
     return
 
-# if __name__ == '__main__':
-#         co = load_file(__file__)
-#         obj_path = check_object_path(__file__)
-#         version, timestamp, magic_int, co2, pypy, source_size = load_module(obj_path)
-#         print("version", version, "magic int", magic_int, 'is_pypy', pypy)
-#         import datetime
-#         print(datetime.datetime.fromtimestamp(timestamp))
-#         if source_size:
-#             print("source size mod 2**32: %d" % source_size)
-#         assert co == co2
+if __name__ == '__main__':
+        co = load_file(__file__)
+        obj_path = check_object_path(__file__)
+        version, timestamp, magic_int, co2, pypy, source_size, sip_hash = load_module(obj_path)
+        print("version", version, "magic int", magic_int, 'is_pypy', pypy)
+        if timestamp is not None:
+            import datetime
+            print(datetime.datetime.fromtimestamp(timestamp))
+        if source_size is not None:
+            print("source size mod 2**32: %d" % source_size)
+        if sip_hash is not None:
+            print("Sip Hash: 0x%x" % sip_hash)
+        assert co == co2

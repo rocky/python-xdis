@@ -260,7 +260,9 @@ add_magic_from_int(3390, "3.7.0alpha0")
 add_magic_from_int(3391, "3.7.0alpha3")
 add_magic_from_int(
     3392, "3.7.0beta2"
-)  # PEP 552 - Additional word in header and possibly no timestamp
+)  # Initial PEP 552 - Additional word in header and possibly no timestamp
+
+# Final PEP 552: timestamp + size field or no timestamp + SipHash
 add_magic_from_int(3393, "3.7.0beta3")
 add_magic_from_int(3394, "3.7.0")
 add_magic_from_int(3401, "3.8.0a3+")
@@ -366,7 +368,7 @@ def magic_int2float(magic_int):
     return py_str2float(magicint2version[magic_int])
 
 
-def py_str2float(version):
+def py_str2float(orig_version):
     """Convert a Python version into a two-digit 'canonic' floating-point number,
     e.g. 2.5, 3.6.
 
@@ -376,8 +378,7 @@ def py_str2float(version):
     point number. For example 3.2a1, 3.2.0, 3.2.2, 3.2.6 among others all map to
     3.2.
     """
-    if version.endswith("pypy"):
-        version = version[: -len("pypy")]
+    version = re.sub(r"(pypy|dropbox)$", "", orig_version)
     if version in magics:
         magic = magics[version]
         for v, m in list(magics.items()):
@@ -400,7 +401,7 @@ def py_str2float(version):
                     pass
                 pass
             pass
-    raise RuntimeError("Can't find a valid Python version for version %s" % version)
+    raise RuntimeError("Can't find a valid Python version for version %s" % orig_version)
     return
 
 

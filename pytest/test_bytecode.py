@@ -126,7 +126,7 @@ def test_get_jump_targets():
 
     test_pyc = my_dir +'/../test/bytecode_2.7/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
-     source_size) = load_module(test_pyc)
+     source_size, _) = load_module(test_pyc)
     code = co.co_consts[0]
     offsets = opcode_27.get_jump_targets(code,  opcode_27)
     assert [10] == offsets
@@ -154,7 +154,7 @@ def test_get_jump_targets():
     # ------------------------
     test_pyc = my_dir +'/../test/bytecode_3.6/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
-     source_size) = load_module(test_pyc)
+     source_size, _) = load_module(test_pyc)
     code = co.co_consts[0]
 
     #  2:           0 LOAD_FAST                 0 (a)

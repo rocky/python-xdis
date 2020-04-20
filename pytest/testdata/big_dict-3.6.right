@@ -2,7 +2,7 @@
 # Method Name:       <module>
 # Filename:          simple_source/03_big_dict.py
 # Argument count:    0
-# Kw-only arguments: 0
+# Keyword-only arguments: 0
 # Number of locals:  0
 # Stack size:        115
 # Flags:             0x00000040 (NOFREE)
