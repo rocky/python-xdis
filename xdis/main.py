@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2018 by Rocky Bernstein
+# Copyright (c) 2016-2018, 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -66,6 +66,7 @@ def show_module_header(
     is_pypy=False,
     magic_int=None,
     source_size=None,
+    sip_hash=None,
     header=True,
     show_filename=True,
 ):
@@ -99,12 +100,14 @@ def show_module_header(
                 "\n# ".join(sys.version.split("\n")),
             )
         )
-    if timestamp > 0:
+    if timestamp is not None:
         value = datetime.datetime.fromtimestamp(timestamp)
         real_out.write("# Timestamp in code: %d" % timestamp)
         real_out.write(value.strftime(" (%Y-%m-%d %H:%M:%S)\n"))
-    if source_size:
+    if source_size is not None:
         real_out.write("# Source code size mod 2**32: %d bytes\n" % source_size)
+    if sip_hash is not None:
+        real_out.write("# SipHash:           0x%x\n" % sip_hash)
     if show_filename:
         real_out.write("# Embedded file name: %s\n" % co.co_filename)
 
@@ -117,6 +120,7 @@ def disco(
     is_pypy=False,
     magic_int=None,
     source_size=None,
+    sip_hash=None,
     header=True,
     asm_format=False,
     show_bytes=False,
@@ -136,6 +140,7 @@ def disco(
         is_pypy,
         magic_int,
         source_size,
+        sip_hash,
         header,
         show_filename=False,
     )
@@ -262,7 +267,7 @@ def disassemble_file(
     try to find the corresponding compiled object.
     """
     filename = check_object_path(filename)
-    version, timestamp, magic_int, co, is_pypy, source_size = load_module(filename)
+    version, timestamp, magic_int, co, is_pypy, source_size, sip_hash = load_module(filename)
 
     if header:
         show_module_header(
@@ -273,6 +278,7 @@ def disassemble_file(
             is_pypy,
             magic_int,
             source_size,
+            sip_hash,
             show_filename=True,
         )
 
@@ -285,11 +291,12 @@ def disassemble_file(
             is_pypy,
             magic_int,
             source_size,
+            sip_hash,
             asm_format=asm_format,
             show_bytes=show_bytes,
         )
     # print co.co_filename
-    return filename, co, version, timestamp, magic_int
+    return filename, co, version, timestamp, magic_int, is_pypy, source_size, sip_hash
 
 
 def _test():

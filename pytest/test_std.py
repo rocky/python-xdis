@@ -167,3 +167,8 @@ if PYTHON_VERSION >= 3.2:
         actual = list(dis.findlabels(test_code))
         actual_len = len(actual)
         assert actual_len > 0
+
+if __name__ == "__main__":
+    test_disassemble(six.StringIO())
+    # test_findlabels()
+    # test_find_linestarts()

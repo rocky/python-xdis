@@ -185,7 +185,7 @@ def do_tests(
                 py_compile.compile(bc_file, cfile=new_bc_file, doraise=True)
                 bc_file = new_bc_file
 
-        bc_filename, co, version, ts, magic = main.disassemble_file(bc_file, output)
+        bc_filename, co, version, ts, magic, _, _, _ = main.disassemble_file(bc_file, output)
         if do_verify:
             file = co.co_filename
             verify_file(file, bc_filename)

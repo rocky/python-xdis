@@ -89,19 +89,35 @@ def load_file(filename, out=sys.stdout):
 
 def load_module(filename, code_objects=None, fast_load=False, get_code=True):
     """load a module without importing it.
-    load_module(filename: string): version, magic_int, code_object
+    Parameters:
+       filename:    name of file containing Python byte-code object
+                    (normally a .pyc)
 
-    filename:	name of file containing Python byte-code object
-                (normally a .pyc)
+       code_objects: list of additional code_object from this
+                     file. This might be a types.CodeType or one of
+                     the portable xdis code types, e.g. Code38, Code3,
+                     Code2, etc. This can be empty
 
-    code_object: code_object from this file
-    version: Python major/minor value e.g. 2.7. or 3.4
-    magic_int: more specific than version. The actual byte code version of the
-               code object
+       get_code:     bool. Parsing the code object takes a bit of
+                     parsing time, but sometimes all you want is the
+                     module info, time string, code size, python
+                     version, etc. For that, set `get_code` to
+                     `False`.
 
-    Parsing the code object takes a bit of parsing time, but
-    sometimes all you want is the module info, time string, code size,
-    python version, etc. For that, set get_code=False.
+    Return values are as follows:
+        float_version: float; the floating-point version number for the given magic_int,
+                       e.g. 2.7 or 3.4
+        timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
+                        if no timestamp was stored
+        magic_int: int, a more specific than version number. The actual byte code version of the
+                   code object
+        co         : code object
+        ispypy     : True if this was a PyPy code object
+        source_size: The size of the source code mod 2**32, if that was stored in the bytecode.
+                     None otherwise.
+        sip_hash   : the SIP Hash for the file (only in Python 3.7 or greater), if the file
+                     was created with a SIP hash or None otherwise. Note that if the sip_hash is not
+                     none, then the timestamp and source_size will be invalid.
     """
 
     # Some sanity checks
@@ -187,7 +203,7 @@ def load_module_from_file_object(
             magic_int = magic2int(magic)
             version = magic_int2float(magic_int)
 
-            timestamp = -1  # Invalid sentinal
+            timestamp = None
             source_size = None
             sip_hash = None
 
@@ -240,7 +256,7 @@ def load_module_from_file_object(
     finally:
         fp.close()
 
-    return float_version, timestamp, magic_int, co, is_pypy(magic_int), source_size
+    return float_version, timestamp, magic_int, co, is_pypy(magic_int), source_size, sip_hash
 
 
 def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
@@ -265,10 +281,13 @@ def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
 if __name__ == '__main__':
         co = load_file(__file__)
         obj_path = check_object_path(__file__)
-        version, timestamp, magic_int, co2, pypy, source_size = load_module(obj_path)
+        version, timestamp, magic_int, co2, pypy, source_size, sip_hash = load_module(obj_path)
         print("version", version, "magic int", magic_int, 'is_pypy', pypy)
-        import datetime
-        print(datetime.datetime.fromtimestamp(timestamp))
-        if source_size:
+        if timestamp is not None:
+            import datetime
+            print(datetime.datetime.fromtimestamp(timestamp))
+        if source_size is not None:
             print("source size mod 2**32: %d" % source_size)
+        if sip_hash is not None:
+            print("Sip Hash: 0x%x" % sip_hash)
         assert co == co2

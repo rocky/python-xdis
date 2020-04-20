@@ -156,7 +156,7 @@ class _StdApi:
 
     def disco(self, code, lasti=-1, file=None):
         """Disassemble a code object."""
-        return _disco(self.python_version, code, timestamp=0,
+        return _disco(self.python_version, code, timestamp=None,
                       out=file, is_pypy=self.is_pypy, header=False)
 
     def get_instructions(self, x, first_line=None):
