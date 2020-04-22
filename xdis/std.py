@@ -1,5 +1,5 @@
 # (C) Copyright 2018 by Daniel Bradburn
-# (C) Copyright 2018 by Rocky Bernstein
+# (C) Copyright 2018, 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -49,7 +49,8 @@ Version 'variants' are also supported, for example:
 import sys
 # xdis
 from xdis import IS_PYPY
-from xdis.bytecode import Bytecode as _Bytecode, _Instruction
+from xdis.bytecode import Bytecode as _Bytecode
+from xdis.instruction import _Instruction
 from xdis.main import disco as _disco
 from xdis.op_imports import get_opcode_module
 from xdis.dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code

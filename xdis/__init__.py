@@ -24,16 +24,19 @@ import sys
 
 __docformat__ = "restructuredtext"
 
-# Export some functions
+# Export various things from the modules
 from xdis.version_info import *
 
 from xdis.bytecode import (
     Bytecode,
-    Instruction,
     list2bytecode,
     next_offset,
     op_has_argument,
     )
+
+from xdis.instruction import (
+    Instruction,
+)
 
 from xdis.codetype import (
     Code13,
