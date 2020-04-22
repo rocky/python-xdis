@@ -24,7 +24,7 @@ from xdis.version_info import PYTHON3
 
 from collections import namedtuple
 
-from xdis.dis import get_code_object, format_code_info
+from xdis.dis import get_code_object, format_code_info, instruction_size, op_has_argument
 from xdis.util import code2num, num2code
 
 if PYTHON3:
@@ -38,67 +38,6 @@ _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
-
-# This is modified from Python 3.6's dis
-def unpack_opargs_bytecode(code, opc):
-    extended_arg = 0
-    try:
-        n = len(code)
-    except TypeError:
-        code = code.co_code
-        n = len(code)
-
-    offset = 0
-    while offset < n:
-        prev_offset = offset
-        op = code2num(code, offset)
-        offset += 1
-        if op_has_argument(op, opc):
-            arg = code2num(code, offset) | extended_arg
-            extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
-            offset += 2
-        else:
-            arg = None
-        yield (prev_offset, op, arg)
-
-def findlinestarts(code, dup_lines=False):
-    """Find the offsets in a byte code which are start of lines in the source.
-
-    Generate pairs (offset, lineno) as described in Python/compile.c.
-    """
-    lineno_table = code.co_lnotab
-
-    if isinstance(lineno_table, dict):
-        # We have an uncompressed line-number table
-        # The below could be done with a Python generator, but
-        # we want to be Python 2.x compatible.
-        for addr, lineno in lineno_table.items():
-            yield addr, lineno
-        # For 3.8 we have to fall through to the return rather
-        # than add raise StopIteration
-    else:
-        if not isinstance(code.co_lnotab, str):
-            byte_increments = list(code.co_lnotab[0::2])
-            line_increments = list(code.co_lnotab[1::2])
-        else:
-            byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
-            line_increments = [ord(c) for c in code.co_lnotab[1::2]]
-
-        lastlineno = None
-        lineno = code.co_firstlineno
-        offset = 0
-        for byte_incr, line_incr in zip(byte_increments, line_increments):
-            if byte_incr:
-                if (lineno != lastlineno or dup_lines and 0 < byte_incr < 255):
-                    yield (offset, lineno)
-                    lastlineno = lineno
-                    pass
-                offset += byte_incr
-                pass
-            lineno += line_incr
-        if (lineno != lastlineno or
-            (dup_lines and 0 < byte_incr < 255)):
-            yield (offset, lineno)
 
 def offset2line(offset, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)
@@ -125,59 +64,6 @@ def offset2line(offset, linestarts):
     if mid >= len(linestarts):
         return linestarts[len(linestarts)-1][1]
     return linestarts[high][1]
-
-def get_jump_targets(code, opc):
-    """Returns a list of instruction offsets in the supplied bytecode
-    which are the targets of some sort of jump instruction.
-    """
-    offsets = []
-    for offset, op, arg in unpack_opargs_bytecode(code, opc):
-        if arg is not None:
-            jump_offset = -1
-            if op in opc.JREL_OPS:
-                op_len = op_size(op, opc)
-                jump_offset = offset + op_len + arg
-            elif op in opc.JABS_OPS:
-                jump_offset = arg
-            if jump_offset >= 0:
-                if jump_offset not in offsets:
-                    offsets.append(jump_offset)
-    return offsets
-
-def get_jump_target_maps(code, opc):
-    """Returns a dictionary where the key is an offset and the values are
-    a list of instruction offsets which can get run before that
-    instruction. This includes jump instructions as well as non-jump
-    instructions. Therefore, the keys of the dictionary are reachable
-    instructions. The values of the dictionary may be useful in control-flow
-    analysis.
-    """
-    offset2prev = {}
-    prev_offset = -1
-    for offset, op, arg in unpack_opargs_bytecode(code, opc):
-        if prev_offset >= 0:
-            prev_list = offset2prev.get(offset, [])
-            prev_list.append(prev_offset)
-            offset2prev[offset] = prev_list
-        if op in opc.NOFOLLOW:
-            prev_offset = -1
-        else:
-            prev_offset = offset
-        if arg is not None:
-            jump_offset = -1
-            if op in opc.JREL_OPS:
-                op_len = op_size(op, opc)
-                jump_offset = offset + op_len + arg
-            elif op in opc.JABS_OPS:
-                jump_offset = arg
-            if jump_offset >= 0:
-                prev_list = offset2prev.get(jump_offset, [])
-                prev_list.append(offset)
-                offset2prev[jump_offset] = prev_list
-    return offset2prev
-
-
-findlabels = get_jump_targets
 
 def _get_const_info(const_index, const_list):
     """Helper to get optional details about const references
@@ -240,7 +126,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
     i = 0
     extended_arg_count  = 0
     extended_arg = 0
-    extended_arg_size = op_size(opc.EXTENDED_ARG, opc)
+    extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
     while i < n:
         op = code2num(bytecode, i)
 
@@ -320,7 +206,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
             i += 1
 
         opname = opc.opname[op]
-        inst_size = op_size(op, opc) + (extended_arg_count * extended_arg_size)
+        inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
         fallthrough = op not in opc.nofollow
         yield Instruction(opname, op, optype, inst_size, arg, argval, argrepr,
                           has_arg, offset, starts_line, is_jump_target,
@@ -328,27 +214,8 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
                           # fallthrough)
         extended_arg_count = extended_arg_count + 1 if op == opc.EXTENDED_ARG else 0
 
-def op_has_argument(op, opc):
-    return op >= opc.HAVE_ARGUMENT
-
 def next_offset(op, opc, offset):
     return offset + instruction_size(op, opc)
-
-def instruction_size(op, opc):
-    """For a given opcode, `op`, in opcode module `opc`,
-    return the size, in bytes, of an `op` instruction.
-
-    This is the size of the opcode (1 byte) and any operand it has. In
-    Python before version 3.6 this will be either 1 or 3 bytes.  In
-    Python 3.6 or later, it is 2 bytes or a "word"."""
-    if op < opc.HAVE_ARGUMENT:
-        return 2 if opc.version >= 3.6 else 1
-    else:
-        return 2 if opc.version >= 3.6 else 3
-
-# Compatiblity
-op_size = instruction_size
-
 
 _Instruction = namedtuple("_Instruction",
      "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg")

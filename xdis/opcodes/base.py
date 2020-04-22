@@ -20,9 +20,9 @@ Python opcode.py structures
 """
 
 from copy import deepcopy
-from xdis.bytecode import (
-    findlinestarts, findlabels, get_jump_targets,
-    get_jump_target_maps)
+from xdis.dis import (
+    findlinestarts, findlabels, get_jump_target_maps, get_jump_targets
+)
 from xdis import wordcode
 from xdis import IS_PYPY, PYTHON_VERSION
 

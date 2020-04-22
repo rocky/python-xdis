@@ -18,7 +18,8 @@
 # However it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
-from xdis.util import COMPILER_FLAG_NAMES, PYPY_COMPILER_FLAG_NAMES, better_repr
+from xdis.util import COMPILER_FLAG_NAMES, PYPY_COMPILER_FLAG_NAMES, better_repr, code2num
+
 
 def _try_compile(source, name):
     """Attempts to compile the given source, first as an expression and
@@ -32,6 +33,49 @@ def _try_compile(source, name):
     except SyntaxError:
         c = compile(source, name, "exec")
     return c
+
+def findlinestarts(code, dup_lines=False):
+    """Find the offsets in a byte code which are start of lines in the source.
+
+    Generate pairs (offset, lineno) as described in Python/compile.c.
+    """
+    lineno_table = code.co_lnotab
+
+    if isinstance(lineno_table, dict):
+        # We have an uncompressed line-number table
+        # The below could be done with a Python generator, but
+        # we want to be Python 2.x compatible.
+        for addr, lineno in lineno_table.items():
+            yield addr, lineno
+        # For 3.8 we have to fall through to the return rather
+        # than add raise StopIteration
+    else:
+        if not isinstance(code.co_lnotab, str):
+            byte_increments = list(code.co_lnotab[0::2])
+            line_increments = list(code.co_lnotab[1::2])
+        else:
+            byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
+            line_increments = [ord(c) for c in code.co_lnotab[1::2]]
+
+        lastlineno = None
+        lineno = code.co_firstlineno
+        offset = 0
+        for byte_incr, line_incr in zip(byte_increments, line_increments):
+            if byte_incr:
+                if (lineno != lastlineno or dup_lines and 0 < byte_incr < 255):
+                    yield (offset, lineno)
+                    lastlineno = lineno
+                    pass
+                offset += byte_incr
+                pass
+            lineno += line_incr
+        if (lineno != lastlineno or
+            (dup_lines and 0 < byte_incr < 255)):
+            yield (offset, lineno)
+
+def code_info(x, version, is_pypy=False):
+    """Formatted details of methods, functions, or code."""
+    return format_code_info(get_code_object(x), version, is_pypy=is_pypy)
 
 def get_code_object(x):
     """Helper to handle methods, functions, generators, strings and raw code objects"""
@@ -56,9 +100,42 @@ def get_code_object(x):
     raise TypeError("don't know how to disassemble %s objects" %
                     type(x).__name__)
 
-def code_info(x, version, is_pypy=False):
-    """Formatted details of methods, functions, or code."""
-    return format_code_info(get_code_object(x), version, is_pypy=is_pypy)
+def get_jump_targets(code, opc):
+    """Returns a list of instruction offsets in the supplied bytecode
+    which are the targets of some sort of jump instruction.
+    """
+    offsets = []
+    for offset, op, arg in unpack_opargs_bytecode(code, opc):
+        if arg is not None:
+            jump_offset = -1
+            if op in opc.JREL_OPS:
+                op_len = op_size(op, opc)
+                jump_offset = offset + op_len + arg
+            elif op in opc.JABS_OPS:
+                jump_offset = arg
+            if jump_offset >= 0:
+                if jump_offset not in offsets:
+                    offsets.append(jump_offset)
+    return offsets
+
+
+findlabels = get_jump_targets
+
+def instruction_size(op, opc):
+    """For a given opcode, `op`, in opcode module `opc`,
+    return the size, in bytes, of an `op` instruction.
+
+    This is the size of the opcode (1 byte) and any operand it has. In
+    Python before version 3.6 this will be either 1 or 3 bytes.  In
+    Python 3.6 or later, it is 2 bytes or a "word"."""
+    if op < opc.HAVE_ARGUMENT:
+        return 2 if opc.version >= 3.6 else 1
+    else:
+        return 2 if opc.version >= 3.6 else 3
+
+
+# Compatiblity
+op_size = instruction_size
 
 def show_code(co, version, file=None, is_pypy=False):
     """Print details of methods, functions, or code to *file*.
@@ -69,6 +146,9 @@ def show_code(co, version, file=None, is_pypy=False):
         print(code_info(co, version, is_pypy=is_pypy))
     else:
         file.write(code_info(co, version) + "\n")
+
+def op_has_argument(op, opc):
+    return op >= opc.HAVE_ARGUMENT
 
 def pretty_flags(flags, is_pypy=False):
     """Return pretty representation of code flags."""
@@ -154,3 +234,60 @@ def format_code_info(co, version, name=None, is_pypy=False):
                 pass
             pass
     return "\n".join(lines)
+
+def extended_arg_val(opc, val):
+    return val << opc.EXTENDED_ARG_SHIFT
+
+# This is modified from Python 3.6's dis
+def unpack_opargs_bytecode(code, opc):
+    extended_arg = 0
+    try:
+        n = len(code)
+    except TypeError:
+        code = code.co_code
+        n = len(code)
+
+    offset = 0
+    while offset < n:
+        prev_offset = offset
+        op = code2num(code, offset)
+        offset += 1
+        if op_has_argument(op, opc):
+            arg = code2num(code, offset) | extended_arg
+            extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
+            offset += 2
+        else:
+            arg = None
+        yield (prev_offset, op, arg)
+
+def get_jump_target_maps(code, opc):
+    """Returns a dictionary where the key is an offset and the values are
+    a list of instruction offsets which can get run before that
+    instruction. This includes jump instructions as well as non-jump
+    instructions. Therefore, the keys of the dictionary are reachable
+    instructions. The values of the dictionary may be useful in control-flow
+    analysis.
+    """
+    offset2prev = {}
+    prev_offset = -1
+    for offset, op, arg in unpack_opargs_bytecode(code, opc):
+        if prev_offset >= 0:
+            prev_list = offset2prev.get(offset, [])
+            prev_list.append(prev_offset)
+            offset2prev[offset] = prev_list
+        if op in opc.NOFOLLOW:
+            prev_offset = -1
+        else:
+            prev_offset = offset
+        if arg is not None:
+            jump_offset = -1
+            if op in opc.JREL_OPS:
+                op_len = op_size(op, opc)
+                jump_offset = offset + op_len + arg
+            elif op in opc.JABS_OPS:
+                jump_offset = arg
+            if jump_offset >= 0:
+                prev_list = offset2prev.get(jump_offset, [])
+                prev_list.append(offset)
+                offset2prev[jump_offset] = prev_list
+    return offset2prev

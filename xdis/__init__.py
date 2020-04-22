@@ -30,13 +30,9 @@ from xdis.version_info import *
 from xdis.bytecode import (
     Bytecode,
     Instruction,
-    extended_arg_val,
-    get_jump_targets,
-    instruction_size,
     list2bytecode,
     next_offset,
     op_has_argument,
-    op_size
     )
 
 from xdis.codetype import (
@@ -48,6 +44,20 @@ from xdis.codetype import (
     code_has_star_star_arg,
     code_has_star_arg,
     iscode,
+)
+
+from xdis.dis import (
+    code_info,
+    extended_arg_val,
+    findlinestarts,
+    findlabels,
+    format_code_info,
+    get_code_object,
+    get_jump_target_maps,
+    instruction_size,
+    pretty_flags as pretty_code_flags,
+    op_size,
+    show_code,
 )
 
 from xdis.load import (
