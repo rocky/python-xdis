@@ -169,6 +169,6 @@ if PYTHON_VERSION >= 3.2:
         assert actual_len > 0
 
 if __name__ == "__main__":
-    test_disassemble(six.StringIO())
-    # test_findlabels()
+    # test_disassemble(six.StringIO())
+    test_findlabels()
     # test_find_linestarts()

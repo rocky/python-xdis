@@ -178,7 +178,7 @@ class _StdApi:
         Generate pairs (offset, lineno) as described in Python/compile.c.
 
         """
-        return self.xcode.findlinestarts(code)
+        return self.opc.findlinestarts(code)
 
     def findlabels(self, code):
         """Detect all offsets in a byte code which are jump targets.
@@ -186,7 +186,7 @@ class _StdApi:
         Return the list of offsets.
 
         """
-        return self.xcode.findlabels(code, self.opc)
+        return self.opc.findlabels(code, self.opc)
 
 
 def make_std_api(python_version=sys.version_info, variant=VARIANT):
