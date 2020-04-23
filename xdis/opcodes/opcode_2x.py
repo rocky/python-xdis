@@ -65,6 +65,10 @@ del op
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
+# If the POP field is -1 and the opcode is var args operation
+# (hasvargs | hasnargs) operation, then
+# the operand holds the size.
+
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
 def_op(l, "STOP_CODE",             0,  0,  0, fallthrough=False)
@@ -152,7 +156,7 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 store_op(l, "STORE_NAME",          90,  1,  0, is_type="name")  # Operand is in name list
 name_op(l, "DELETE_NAME",          91,  0,  0)  # ""
 varargs_op(l, "UNPACK_SEQUENCE",   92,  9,  1)  # TOS is number of tuple items
-jrel_op(l, "FOR_ITER",             93,  9,  1)  # TOS is read
+jrel_op(l, "FOR_ITER",             93, -1,  1)  # TOS is read
 
 store_op(l, "STORE_ATTR",          95,  2,  0, is_type="name")  # Operand is in name list
 name_op(l, "DELETE_ATTR",          96,  1,  0)  # ""

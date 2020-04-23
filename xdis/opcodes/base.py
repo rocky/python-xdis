@@ -113,8 +113,8 @@ def name_op(l, op_name, op_code, pop=-2, push=-2):
     def_op(l, op_name, op_code, pop, push)
     l['hasname'].append(op_code)
 
-def nargs_op(l, name, op, pop=-2, push=-2):
-    def_op(l, name, op, pop, push)
+def nargs_op(l, name, op, pop=-2, push=-2, fallthrough=True):
+    def_op(l, name, op, pop, push, fallthrough=fallthrough)
     l['hasnargs'].append(op)
 
 def rm_op(l, name, op):

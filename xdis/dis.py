@@ -291,3 +291,56 @@ def get_jump_target_maps(code, opc):
                 prev_list.append(offset)
                 offset2prev[jump_offset] = prev_list
     return offset2prev
+
+# In CPython, this is C code. We redo this in Python using the
+# information in opc.
+def stack_effect(opcode, opc, oparg=None, jump=None):
+    """Compute the stack effect of opcode with argument oparg, using
+    oppush and oppop tables in opc.
+
+    If the code has a jump target and jump is True, stack_effect()
+    will return the stack effect of jumping. If jump is False, it will
+    return the stack effect of not jumping. And if jump is None
+    (default), it will return the maximal stack effect of both cases.
+    """
+    pop, push = opc.oppop[opcode], opc.oppush[opcode]
+    if push >= 0 and pop >= 0:
+        return push - pop
+    elif pop < 0:
+        # The amount popped depends on oparg, and opcode class
+        if opcode in opc.VARGS_OPS:
+            return push - oparg + (pop + 1)
+        elif opcode in opc.NARGS_OPS:
+            return -oparg + pop + push
+    return -100
+
+
+# if __name__ == "__main__":
+#     import dis
+#     from xdis import IS_PYPY, PYTHON_VERSION
+#     from xdis.op_imports import get_opcode_module
+#     if IS_PYPY:
+#         variant = "pypy"
+#     else:
+#         variant = ""
+#     opc = get_opcode_module(None, variant)
+#     for opname, opcode,  in opc.opmap.items():
+#         if opname in ("EXTENDED_ARG", "NOP"):
+#             continue
+#         xdis_args = [opcode, opc]
+#         dis_args = [opcode]
+#         if op_has_argument(opcode, opc):
+#             xdis_args.append(0)
+#             dis_args.append(0)
+#         if PYTHON_VERSION > 3.7:
+#             xdis_args.append(0)
+#             dis_args.append(0)
+
+#         effect = stack_effect(*xdis_args)
+#         check_effect = dis.stack_effect(*dis_args)
+#         if effect == -100:
+#             print("%d (%s) needs adjusting; should be: effect %d" % (opcode, opname, effect))
+#         elif check_effect == effect:
+#             print("%d (%s) is good: effect %d" % (opcode, opname, effect))
+#         else:
+#             print("%d (%s) not okay; effect %d vs %d" % (opcode, opname, effect, check_effect))
