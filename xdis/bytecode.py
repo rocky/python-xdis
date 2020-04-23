@@ -24,7 +24,7 @@ from xdis.version_info import PYTHON3
 
 from collections import namedtuple
 
-from xdis.dis import get_code_object, format_code_info, instruction_size, op_has_argument
+from xdis.cross_dis import get_code_object, format_code_info, instruction_size, op_has_argument
 from xdis.instruction import Instruction
 from xdis.util import code2num, num2code
 

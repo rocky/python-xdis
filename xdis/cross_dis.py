@@ -18,7 +18,12 @@
 # However it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
-from xdis.util import COMPILER_FLAG_NAMES, PYPY_COMPILER_FLAG_NAMES, better_repr, code2num
+from xdis.util import (
+    COMPILER_FLAG_NAMES,
+    PYPY_COMPILER_FLAG_NAMES,
+    better_repr,
+    code2num,
+)
 
 
 def _try_compile(source, name):
@@ -33,6 +38,7 @@ def _try_compile(source, name):
     except SyntaxError:
         c = compile(source, name, "exec")
     return c
+
 
 def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
@@ -62,20 +68,21 @@ def findlinestarts(code, dup_lines=False):
         offset = 0
         for byte_incr, line_incr in zip(byte_increments, line_increments):
             if byte_incr:
-                if (lineno != lastlineno or dup_lines and 0 < byte_incr < 255):
+                if lineno != lastlineno or dup_lines and 0 < byte_incr < 255:
                     yield (offset, lineno)
                     lastlineno = lineno
                     pass
                 offset += byte_incr
                 pass
             lineno += line_incr
-        if (lineno != lastlineno or
-            (dup_lines and 0 < byte_incr < 255)):
+        if lineno != lastlineno or (dup_lines and 0 < byte_incr < 255):
             yield (offset, lineno)
+
 
 def code_info(x, version, is_pypy=False):
     """Formatted details of methods, functions, or code."""
     return format_code_info(get_code_object(x), version, is_pypy=is_pypy)
+
 
 def get_code_object(x):
     """Helper to handle methods, functions, generators, strings and raw code objects"""
@@ -87,9 +94,9 @@ def get_code_object(x):
         x = x.__code__
     elif hasattr(x, "gi_code"):  # Generator
         x = x.gi_code
-    elif hasattr(x, 'ag_code'):  #...an asynchronous generator object, or
+    elif hasattr(x, "ag_code"):  # ...an asynchronous generator object, or
         x = x.ag_code
-    elif hasattr(x, 'cr_code'):  #...a coroutine.
+    elif hasattr(x, "cr_code"):  # ...a coroutine.
         x = x.cr_code
     # Handle source code.
     if isinstance(x, str):
@@ -97,8 +104,8 @@ def get_code_object(x):
     # By now, if we don't have a code object, we can't disassemble x.
     if hasattr(x, "co_code"):
         return x
-    raise TypeError("don't know how to disassemble %s objects" %
-                    type(x).__name__)
+    raise TypeError("don't know how to disassemble %s objects" % type(x).__name__)
+
 
 def get_jump_targets(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
@@ -121,6 +128,7 @@ def get_jump_targets(code, opc):
 
 findlabels = get_jump_targets
 
+
 def instruction_size(op, opc):
     """For a given opcode, `op`, in opcode module `opc`,
     return the size, in bytes, of an `op` instruction.
@@ -137,6 +145,7 @@ def instruction_size(op, opc):
 # Compatiblity
 op_size = instruction_size
 
+
 def show_code(co, version, file=None, is_pypy=False):
     """Print details of methods, functions, or code to *file*.
 
@@ -147,8 +156,10 @@ def show_code(co, version, file=None, is_pypy=False):
     else:
         file.write(code_info(co, version) + "\n")
 
+
 def op_has_argument(op, opc):
     return op >= opc.HAVE_ARGUMENT
+
 
 def pretty_flags(flags, is_pypy=False):
     """Return pretty representation of code flags."""
@@ -235,8 +246,10 @@ def format_code_info(co, version, name=None, is_pypy=False):
             pass
     return "\n".join(lines)
 
+
 def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
+
 
 # This is modified from Python 3.6's dis
 def unpack_opargs_bytecode(code, opc):
@@ -259,6 +272,7 @@ def unpack_opargs_bytecode(code, opc):
         else:
             arg = None
         yield (prev_offset, op, arg)
+
 
 def get_jump_target_maps(code, opc):
     """Returns a dictionary where the key is an offset and the values are
@@ -292,9 +306,10 @@ def get_jump_target_maps(code, opc):
                 offset2prev[jump_offset] = prev_list
     return offset2prev
 
+
 # In CPython, this is C code. We redo this in Python using the
 # information in opc.
-def stack_effect(opcode, opc, oparg=None, jump=None):
+def xstack_effect(opcode, opc, oparg=None, jump=None):
     """Compute the stack effect of opcode with argument oparg, using
     oppush and oppop tables in opc.
 
@@ -315,32 +330,47 @@ def stack_effect(opcode, opc, oparg=None, jump=None):
     return -100
 
 
-# if __name__ == "__main__":
-#     import dis
-#     from xdis import IS_PYPY, PYTHON_VERSION
-#     from xdis.op_imports import get_opcode_module
-#     if IS_PYPY:
-#         variant = "pypy"
-#     else:
-#         variant = ""
-#     opc = get_opcode_module(None, variant)
-#     for opname, opcode,  in opc.opmap.items():
-#         if opname in ("EXTENDED_ARG", "NOP"):
-#             continue
-#         xdis_args = [opcode, opc]
-#         dis_args = [opcode]
-#         if op_has_argument(opcode, opc):
-#             xdis_args.append(0)
-#             dis_args.append(0)
-#         if PYTHON_VERSION > 3.7:
-#             xdis_args.append(0)
-#             dis_args.append(0)
+if __name__ == "__main__":
+    import dis
+    from xdis import IS_PYPY, PYTHON_VERSION
+    from xdis.op_imports import get_opcode_module
 
-#         effect = stack_effect(*xdis_args)
-#         check_effect = dis.stack_effect(*dis_args)
-#         if effect == -100:
-#             print("%d (%s) needs adjusting; should be: effect %d" % (opcode, opname, effect))
-#         elif check_effect == effect:
-#             print("%d (%s) is good: effect %d" % (opcode, opname, effect))
-#         else:
-#             print("%d (%s) not okay; effect %d vs %d" % (opcode, opname, effect, check_effect))
+    if IS_PYPY:
+        variant = "pypy"
+    else:
+        variant = ""
+    opc = get_opcode_module(None, variant)
+    for opname, opcode, in opc.opmap.items():
+        if opname in ("EXTENDED_ARG", "NOP"):
+            continue
+        xdis_args = [opcode, opc]
+        dis_args = [opcode]
+        if op_has_argument(opcode, opc):
+            xdis_args.append(0)
+            dis_args.append(0)
+        if (
+            PYTHON_VERSION > 3.7
+            and opcode in opc.CONDITION_OPS
+            and opname not in ("JUMP_IF_FALSE_OR_POP",
+                               "JUMP_IF_TRUE_OR_POP",
+                               "POP_JUMP_IF_FALSE",
+                               "POP_JUMP_IF_TRUE",
+                               "SETUP_FINALLY",)
+        ):
+            xdis_args.append(0)
+            dis_args.append(0)
+
+        effect = xstack_effect(*xdis_args)
+        check_effect = dis.stack_effect(*dis_args)
+        if effect == -100:
+            print(
+                "%d (%s) needs adjusting; should be: should have effect %d"
+                % (opcode, opname, check_effect)
+            )
+        elif check_effect == effect:
+            print("%d (%s) is good: effect %d" % (opcode, opname, effect))
+        else:
+            print(
+                "%d (%s) not okay; effect %d vs %d"
+                % (opcode, opname, effect, check_effect)
+            )

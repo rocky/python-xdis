@@ -21,7 +21,7 @@ opcodes in Python's dis.py library.
 """
 
 # This is used from outside this module
-from xdis.dis import findlabels
+from xdis.cross_dis import findlabels
 
 import xdis.opcodes.opcode_11 as opcode_11
 from xdis.opcodes.base import (

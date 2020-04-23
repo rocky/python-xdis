@@ -49,7 +49,7 @@ from xdis.codetype import (
     iscode,
 )
 
-from xdis.dis import (
+from xdis.cross_dis import (
     code_info,
     extended_arg_val,
     findlinestarts,

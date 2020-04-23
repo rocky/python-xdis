@@ -21,7 +21,7 @@ opcodes in Python's dis.py library.
 """
 
 # These are used from outside this module
-from xdis.dis import findlabels, findlinestarts
+from xdis.cross_dis import findlabels, findlinestarts
 from xdis.opcodes.base import (
     compare_op,
     const_op,

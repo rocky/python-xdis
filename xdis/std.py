@@ -53,7 +53,7 @@ from xdis.bytecode import Bytecode as _Bytecode
 from xdis.instruction import _Instruction
 from xdis.main import disco as _disco
 from xdis.op_imports import get_opcode_module
-from xdis.dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code
+from xdis.cross_dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code
 
 
 PYPY = 'pypy'

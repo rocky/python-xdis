@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019 by Rocky Bernstein
+# (C) Copyright 2018-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ opcodes in Python's dis.py library.
 """
 
 # This is used from outside this module
-from xdis.dis import findlabels
+from xdis.cross_dis import findlabels
 
 import xdis.opcodes.opcode_15 as opcode_15
 from xdis.opcodes.base import (

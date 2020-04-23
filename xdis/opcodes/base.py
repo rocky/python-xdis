@@ -20,7 +20,7 @@ Python opcode.py structures
 """
 
 from copy import deepcopy
-from xdis.dis import (
+from xdis.cross_dis import (
     findlinestarts, findlabels, get_jump_target_maps, get_jump_targets
 )
 from xdis import wordcode

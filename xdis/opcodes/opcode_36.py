@@ -88,13 +88,13 @@ rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
 
 
 # These are new since Python 3.6
-store_op(l,    'STORE_ANNOTATION', 127, is_type="name") # Index in name list
+store_op(l,    'STORE_ANNOTATION', 127, 1, 1, is_type="name") # Index in name list
 jrel_op(l,    'SETUP_ASYNC_WITH', 154)
-def_op(l,     'FORMAT_VALUE',     155)
-varargs_op(l, 'BUILD_CONST_KEY_MAP', 156, -1, 1) # TOS is count of kwargs
-nargs_op(l,   'CALL_FUNCTION_EX', 142, -1, 1)
-def_op(l,     'SETUP_ANNOTATIONS', 85)
-def_op(l,     'BUILD_STRING',     157)
+def_op(l,     'FORMAT_VALUE',     155, 1, 1)
+varargs_op(l, 'BUILD_CONST_KEY_MAP', 156, -2, 1) # TOS is count of kwargs
+nargs_op(l,   'CALL_FUNCTION_EX', 142, -2, 1)
+def_op(l,     'SETUP_ANNOTATIONS', 85, 1, 1)
+varargs_op(l,  'BUILD_STRING',     157, 1, 2)
 varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())

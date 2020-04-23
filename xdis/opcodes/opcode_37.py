@@ -81,8 +81,8 @@ init_opdata(l, opcode_36, version)
 rm_op(l, 'STORE_ANNOTATION', 127)
 
 # These are new since Python 3.7
-name_op(l, 'LOAD_METHOD', 160)
-nargs_op(l, 'CALL_METHOD', 161)
+name_op(l, 'LOAD_METHOD', 160, 0, 1)
+nargs_op(l, 'CALL_METHOD', 161, -2, 1)
 
 format_MAKE_FUNCTION_arg = opcode_36.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_36.format_value_flags
