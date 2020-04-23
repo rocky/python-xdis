@@ -319,6 +319,24 @@ def xstack_effect(opcode, opc, oparg=None, jump=None):
     (default), it will return the maximal stack effect of both cases.
     """
     pop, push = opc.oppop[opcode], opc.oppush[opcode]
+    opname = opc.opname[opcode]
+    if opname in ("BUILD_MAP",):
+        if opc.version >= 3.5:
+            return 1 - (2 * oparg)
+    elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX"):
+        return push + oparg
+    elif opname == "MAKE_FUNCTION":
+        if opc.version >= 3.5:
+            if 0 <= oparg <= 10:
+                return [-1, -2, -2, -3, -2, -3, -3 , -4, -2, -3, -3, -4][oparg]
+            else:
+                return None
+    elif opname == "CALL_FUNCTION_EX":
+        if opc.version >= 3.5:
+            if 0 <= oparg <= 10:
+                return [-1, -2, -1][oparg]
+            else:
+                return None
     if push >= 0 and pop >= 0:
         return push - pop
     elif pop < 0:

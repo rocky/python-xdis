@@ -40,6 +40,9 @@ init_opdata(l, opcode_34, version)
 rm_op(l, 'STORE_MAP',                    54)
 rm_op(l, 'WITH_CLEANUP',                 81)
 
+# Stack effects are change from 3.4
+varargs_op(l, 'BUILD_MAP',              105, -1, -1)  # arg is count of kwarg items
+
 # These are new since Python 3.5
 #          OP NAME                   OPCODE POP PUSH
 #---------------------------------------------------

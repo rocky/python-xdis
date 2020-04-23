@@ -154,11 +154,10 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 store_op(l, 'STORE_NAME',           90,  1,  0, is_type="name")   # Operand is in name list
 name_op(l, 'DELETE_NAME',           91,  0,  0)   # ""
-varargs_op(l, 'UNPACK_SEQUENCE',    92, -3,  1)  # TOS is number of tuple items
+varargs_op(l, 'UNPACK_SEQUENCE',    92,  0, -1)  # unpacks TOS, arg is the count
 jrel_op(l,    'FOR_ITER',           93,  0,  1)
 
-varargs_op(l, 'UNPACK_EX',          94, -2,  1)   # assignment with a starred target; TOS is #entries
-                                                  # argument has a count
+varargs_op(l, 'UNPACK_EX',          94,  0,  0)  # assignment with a starred target; arg is count
 store_op(l, 'STORE_ATTR',           95,  2,  0, is_type="name")   # Operand is in name list
 name_op(l, 'DELETE_ATTR',           96,  1,  0)   # ""
 store_op(l, 'STORE_GLOBAL',         97,  1,  0, is_type="name")   # ""
@@ -171,7 +170,7 @@ name_op(l,    'LOAD_NAME',         101,  0,  1)  # Operand is in name list
 varargs_op(l, 'BUILD_TUPLE',       102, -1,  1)  # TOS is count of tuple items
 varargs_op(l, 'BUILD_LIST',        103, -1,  1)  # TOS is count of list items
 varargs_op(l, 'BUILD_SET',         104, -1,  1)  # TOS is count of set items
-varargs_op(l, 'BUILD_MAP',         105, -1,  1)  # TOS is count of kwarg items
+def_op(l, 'BUILD_MAP',             105,  0,  1)  # argument is dictionary count to be pushed
 name_op(l, 'LOAD_ATTR',            106,  1,  1)  # Operand is in name list
 compare_op(l, 'COMPARE_OP',        107,  2,  1)  # Comparison operator
 name_op(l, 'IMPORT_NAME',          108,  2,  1)  # Imports TOS and TOS1; module pushed
