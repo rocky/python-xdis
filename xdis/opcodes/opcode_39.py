@@ -55,8 +55,8 @@ rm_op(l, "POP_FINALLY", 163)
 
 #          OP NAME              OPCODE  POP PUSH
 #-----------------------------------------------
-def_op(l, 'RERAISE',                48,   0, 0)
-def_op(l, 'WITH_EXCEPT_START',      49,   3, 0)
+def_op(l, 'RERAISE',                48,   3, 0)
+def_op(l, 'WITH_EXCEPT_START',      49,   0, 1)
 def_op(l, 'LOAD_ASSERTION_ERROR',   74,   0, 1)
 
 format_MAKE_FUNCTION_arg = opcode_38.format_MAKE_FUNCTION_arg

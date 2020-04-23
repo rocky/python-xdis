@@ -53,7 +53,7 @@ from xdis.bytecode import Bytecode as _Bytecode
 from xdis.instruction import _Instruction
 from xdis.main import disco as _disco
 from xdis.op_imports import get_opcode_module
-from xdis.cross_dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code
+from xdis.cross_dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code, xstack_effect as _stack_effect
 
 
 PYPY = 'pypy'
@@ -128,6 +128,11 @@ class _StdApi:
         If *file* is not provided, the output is printed on stdout.
         """
         return _show_code(x, self.opc.version, file, is_pypy=self.is_pypy)
+
+    def stack_effect(self, oparg=None, jump=None):
+        """Compute the stack effect of *opcode* with argument *oparg*.
+        """
+        return _stack_effect(x, self.opc, oparg, jump)
 
     def pretty_flags(self, flags):
         """Return pretty representation of code flags."""

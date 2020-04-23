@@ -148,7 +148,7 @@ def_op(l, 'IMPORT_STAR',          84,  1,  0)
 def_op(l, 'YIELD_VALUE',          86,  1,  1)
 def_op(l, 'POP_BLOCK',            87,  0,  0)
 def_op(l, 'END_FINALLY',          88,  1,  0)
-def_op(l, 'POP_EXCEPT',           89,  1,  1)
+def_op(l, 'POP_EXCEPT',           89,  0,  0)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
@@ -174,7 +174,7 @@ varargs_op(l, 'BUILD_SET',         104, -1,  1)  # TOS is count of set items
 varargs_op(l, 'BUILD_MAP',         105, -1,  1)  # TOS is count of kwarg items
 name_op(l, 'LOAD_ATTR',            106,  1,  1)  # Operand is in name list
 compare_op(l, 'COMPARE_OP',        107,  2,  1)  # Comparison operator
-name_op(l, 'IMPORT_NAME',          108,  1,  0)  # Operand is in name list
+name_op(l, 'IMPORT_NAME',          108,  2,  1)  # Imports TOS and TOS1; module pushed
 name_op(l, 'IMPORT_FROM',          109,  0,  1)  # Operand is in name list
 
 jrel_op(l, 'JUMP_FORWARD',         110,  0,  0, fallthrough=False)  # Number of bytes to skip

@@ -329,10 +329,9 @@ def xstack_effect(opcode, opc, oparg=None, jump=None):
             return -oparg + pop + push
     return -100
 
-
-if __name__ == "__main__":
+def check_stack_effect():
     import dis
-    from xdis import IS_PYPY, PYTHON_VERSION
+    from xdis import IS_PYPY
     from xdis.op_imports import get_opcode_module
 
     if IS_PYPY:
@@ -368,9 +367,19 @@ if __name__ == "__main__":
                 % (opcode, opname, check_effect)
             )
         elif check_effect == effect:
-            print("%d (%s) is good: effect %d" % (opcode, opname, effect))
+            pass
+            # print("%d (%s) is good: effect %d" % (opcode, opname, effect))
         else:
             print(
                 "%d (%s) not okay; effect %d vs %d"
                 % (opcode, opname, effect, check_effect)
             )
+            pass
+        pass
+    return
+
+
+if __name__ == "__main__":
+    from xdis import PYTHON_VERSION
+    if PYTHON_VERSION >= 3.4:
+        check_stack_effect()
