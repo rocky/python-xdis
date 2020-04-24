@@ -19,8 +19,10 @@
 .idea/**/workspace.xml
 .idea_modules/
 /.cache
-/.pytest_cache
+/.coverage
 /.eggs
+/.mypy_cache
+/.pytest_cache
 /.python-version
 /.tox
 /.venv*/*
