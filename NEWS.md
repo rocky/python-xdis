@@ -1,3 +1,20 @@
+4.5.0 2020-04-20 stack_effects
+==============================
+
+* `stack_effects()` checked against Python 3.4+ is now in place.
+* Added `stack_effects()` function to `std.py` since this is part of the API
+* `cross_xdis.py` file/module now has `dis.py` functions split off from `bytecode.py`
+* `Instructions` class is in its own module too.
+* Python 2.7.18 added into magics.
+
+Incompatibility with earlier versions:
+
+Note: as a result of the reorganization, exported functions from
+bytecode are now in cross_dis.  However functions are exported from
+the top-level so use that and there will be no disruption in the
+future. For example `from xdis import iscode, instruction_size,
+code_info`.
+
 4.4.0 2020-04-20 modern-pitch A
 ===============================
 
