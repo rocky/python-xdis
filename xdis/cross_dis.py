@@ -328,7 +328,10 @@ def xstack_effect(opcode, opc, oparg=None, jump=None):
     elif opname == "MAKE_FUNCTION":
         if opc.version >= 3.5:
             if 0 <= oparg <= 10:
-                return [-1, -2, -2, -3, -2, -3, -3 , -4, -2, -3, -3, -4][oparg]
+                if opc.version == 3.5:
+                    return [-1, -2, -3, -3, -2, -3, -3 , -4, -2, -3, -3, -4][oparg]
+                elif opc.version >= 3.6:
+                    return [-1, -2, -2, -3, -2, -3, -3 , -4, -2, -3, -3, -4][oparg]
             else:
                 return None
     elif opname == "CALL_FUNCTION_EX":
