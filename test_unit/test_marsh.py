@@ -24,7 +24,7 @@ class TestMarshal(unittest.TestCase):
                             '02_complex.pyc')
 
         (version, timestamp, magic_int, co, is_pypy,
-         source_size) = load_module(mod_file)
+         source_size, sip_hash) = load_module(mod_file)
         self.assertEqual(version, 2.5,
                          "Should have picked up Python version properly")
         assert co.co_consts == (5j, None), "Code should have a complex constant"
@@ -32,7 +32,7 @@ class TestMarshal(unittest.TestCase):
         mod_file = os.path.join(get_srcdir(), '..', 'test', 'bytecode_3.3',
                             '06_frozenset.pyc')
         (version, timestamp, magic_int, co, is_pypy,
-         source_size) = load_module(mod_file)
+         source_size, sip_hash) = load_module(mod_file)
         expect = (0, None, 'attlist', 'linktype', 'link', 'element', 'Yep',
                       frozenset(['linktype', 'attlist', 'element', 'link']))
         self.assertEqual(co.co_consts, expect, "Should handle frozenset")

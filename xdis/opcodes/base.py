@@ -20,9 +20,9 @@ Python opcode.py structures
 """
 
 from copy import deepcopy
-from xdis.bytecode import (
-    findlinestarts, findlabels, get_jump_targets,
-    get_jump_target_maps)
+from xdis.cross_dis import (
+    findlinestarts, findlabels, get_jump_target_maps, get_jump_targets
+)
 from xdis import wordcode
 from xdis import IS_PYPY, PYTHON_VERSION
 
@@ -117,8 +117,8 @@ def name_op(l, op_name, op_code, pop=-2, push=-2):
     def_op(l, op_name, op_code, pop, push)
     l['hasname'].append(op_code)
 
-def nargs_op(l, name, op, pop=-2, push=-2):
-    def_op(l, name, op, pop, push)
+def nargs_op(l, name, op, pop=-2, push=-2, fallthrough=True):
+    def_op(l, name, op, pop, push, fallthrough=fallthrough)
     l['hasnargs'].append(op)
 
 def rm_op(l, name, op):

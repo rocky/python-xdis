@@ -25,7 +25,6 @@ init_opdata(l, opcode_33, version)
 rm_op(l, 'STORE_LOCALS', 69)
 
 # These are new since Python 3.3
-def_op(l,  'YIELD_FROM',       72)
 free_op(l, 'LOAD_CLASSDEREF', 148)
 
 update_pj3(globals(), l)

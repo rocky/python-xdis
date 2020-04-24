@@ -57,7 +57,6 @@ opname = [''] * 256
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256
 
-# 9 means handle special. Note his forces oppush[i] - oppop[i] negative
 # oppop[op] => number of stack entries popped
 oppop  = [0] * 256
 
@@ -66,6 +65,12 @@ del op
 
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
+
+# If the POP field is -1 and the opcode is a var args operation
+# then the operand holds the size.
+#
+# If the POP field is negative and the opcode is a nargs operation
+# then pop the operand amount plus the negative of the POP amount.
 
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
@@ -143,17 +148,16 @@ def_op(l, 'IMPORT_STAR',          84,  1,  0)
 def_op(l, 'YIELD_VALUE',          86,  1,  1)
 def_op(l, 'POP_BLOCK',            87,  0,  0)
 def_op(l, 'END_FINALLY',          88,  1,  0)
-def_op(l, 'POP_EXCEPT',           89,  1, -1)
+def_op(l, 'POP_EXCEPT',           89,  0,  0)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 store_op(l, 'STORE_NAME',           90,  1,  0, is_type="name")   # Operand is in name list
 name_op(l, 'DELETE_NAME',           91,  0,  0)   # ""
-varargs_op(l, 'UNPACK_SEQUENCE',    92,  9,  1)  # TOS is number of tuple items
-jrel_op(l,    'FOR_ITER',           93,  9,  1)
+varargs_op(l, 'UNPACK_SEQUENCE',    92,  0, -1)  # unpacks TOS, arg is the count
+jrel_op(l,    'FOR_ITER',           93,  0,  1)
 
-def_op(l,  'UNPACK_EX',             94,  9,  1)   # assignment with a starred target; TOS is #entries
-                                                  # argument has a count
+varargs_op(l, 'UNPACK_EX',          94,  0,  0)  # assignment with a starred target; arg is count
 store_op(l, 'STORE_ATTR',           95,  2,  0, is_type="name")   # Operand is in name list
 name_op(l, 'DELETE_ATTR',           96,  1,  0)   # ""
 store_op(l, 'STORE_GLOBAL',         97,  1,  0, is_type="name")   # ""
@@ -163,21 +167,21 @@ name_op(l, 'DELETE_GLOBAL',         98,  0,  0)   # ""
 
 const_op(l,   'LOAD_CONST',        100,  0,  1)  # Operand is in const list
 name_op(l,    'LOAD_NAME',         101,  0,  1)  # Operand is in name list
-varargs_op(l, 'BUILD_TUPLE',       102,  9,  1)  # TOS is count of tuple items
-varargs_op(l, 'BUILD_LIST',        103,  9,  1)  # TOS is count of list items
-varargs_op(l, 'BUILD_SET',         104,  9,  1)  # TOS is count of set items
-varargs_op(l, 'BUILD_MAP',         105,  0,  1)  # TOS is count of kwarg items
+varargs_op(l, 'BUILD_TUPLE',       102, -1,  1)  # TOS is count of tuple items
+varargs_op(l, 'BUILD_LIST',        103, -1,  1)  # TOS is count of list items
+varargs_op(l, 'BUILD_SET',         104, -1,  1)  # TOS is count of set items
+def_op(l, 'BUILD_MAP',             105,  0,  1)  # argument is dictionary count to be pushed
 name_op(l, 'LOAD_ATTR',            106,  1,  1)  # Operand is in name list
 compare_op(l, 'COMPARE_OP',        107,  2,  1)  # Comparison operator
-name_op(l, 'IMPORT_NAME',          108,  1,  1)  # Operand is in name list
+name_op(l, 'IMPORT_NAME',          108,  2,  1)  # Imports TOS and TOS1; module pushed
 name_op(l, 'IMPORT_FROM',          109,  0,  1)  # Operand is in name list
 
 jrel_op(l, 'JUMP_FORWARD',         110,  0,  0, fallthrough=False)  # Number of bytes to skip
 jabs_op(l, 'JUMP_IF_FALSE_OR_POP', 111, conditional=True)  # Target byte offset from beginning of code
 jabs_op(l, 'JUMP_IF_TRUE_OR_POP',  112, conditional=True) # ""
 jabs_op(l, 'JUMP_ABSOLUTE',        113,  0,  0, fallthrough=False)  # Target byte offset from beginning of code
-jabs_op(l, 'POP_JUMP_IF_FALSE',    114,  9,  1, conditional=True) # ""
-jabs_op(l, 'POP_JUMP_IF_TRUE',     115,  9,  1, conditional=True) # ""
+jabs_op(l, 'POP_JUMP_IF_FALSE',    114,  2,  1, conditional=True) # ""
+jabs_op(l, 'POP_JUMP_IF_TRUE',     115,  2,  1, conditional=True) # ""
 
 name_op(l, 'LOAD_GLOBAL',          116,  0,  1)  # Operand is in name list
 
@@ -190,22 +194,22 @@ local_op(l, 'LOAD_FAST',           124,  0,  1)  # Local variable number
 store_op(l, 'STORE_FAST',          125,  1,  0, is_type="local")  # Local variable number
 local_op(l, 'DELETE_FAST',         126,  0,  0)  # Local variable number
 
-def_op(l, 'RAISE_VARARGS',         130,  9,  1, fallthrough=False)
+nargs_op(l, 'RAISE_VARARGS',       130, -1,  1, fallthrough=False)
                                                  # Number of raise arguments (1, 2, or 3)
-nargs_op(l, 'CALL_FUNCTION',       131,  9,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION',       131, -1,  1)  # #args + (#kwargs << 8)
 
-def_op(l, 'MAKE_FUNCTION',         132,  9,  1) # TOS is number of args if < 3.6
-varargs_op(l, 'BUILD_SLICE',       133,  9,  1) # TOS is number of items to pop
+nargs_op(l, 'MAKE_FUNCTION',       132, -2,  1) # TOS is number of args if < 3.6
+varargs_op(l, 'BUILD_SLICE',       133,  2,  1) # TOS is number of items to pop
 
-def_op(l, 'MAKE_CLOSURE',          134,  9,  1) # TOS is number of items to pop
+nargs_op(l, 'MAKE_CLOSURE',        134, -3,  1) # TOS is number of items to pop
 free_op(l, 'LOAD_CLOSURE',         135,  0,  1)
 free_op(l, 'LOAD_DEREF',           136,  0,  1)
 store_op(l, 'STORE_DEREF',         137,  1,  0, is_type="free")
 free_op(l, 'DELETE_DEREF',         138,  0,  0)
 
-nargs_op(l, 'CALL_FUNCTION_VAR',   140,  9,  1)  # #args + (#kwargs << 8)
-nargs_op(l, 'CALL_FUNCTION_KW',    141,  9,  1)  # #args + (#kwargs << 8)
-nargs_op(l, 'CALL_FUNCTION_VAR_KW',142,  9,  1)   # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_VAR',   140,  -2,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_KW',    141,  -2,  1)  # #args + (#kwargs << 8)
+nargs_op(l, 'CALL_FUNCTION_VAR_KW',142,  -3,  1)   # #args + (#kwargs << 8)
 
 jrel_op(l, 'SETUP_WITH',           143,  0,  7)
 
@@ -213,10 +217,10 @@ def_op(l, 'LIST_APPEND',           145,  2,  1)  # Calls list.append(TOS[-i], TO
                                                  # Used to implement list comprehensions.
 def_op(l, 'SET_ADD',               146,  1,  0)  # Calls set.add(TOS1[-i], TOS).
                                                  # Used to implement set comprehensions.
-def_op(l, 'MAP_ADD',               147,  2,  1)  # Calls dict.setitem(TOS1[-i], TOS, TOS1)
+def_op(l, 'MAP_ADD',               147,  3,  1)  # Calls dict.setitem(TOS1[-i], TOS, TOS1)
                                                  # Used to implement dict comprehensions.
 
-def_op(l, 'EXTENDED_ARG', 144)
+def_op(l, 'EXTENDED_ARG',          144,  0,   0)
 EXTENDED_ARG = 144
 
 def format_MAKE_FUNCTION_arg(argc):
