@@ -65,6 +65,10 @@ del op
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
+# If the POP field is -1 and the opcode is var args operation
+# (hasvargs | hasnargs) operation, then
+# the operand holds the size.
+
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
 def_op(l, "STOP_CODE",             0,  0,  0, fallthrough=False)
@@ -114,7 +118,7 @@ def_op(l, "INPLACE_SUBTRACT",     56,  2,  1)
 def_op(l, "INPLACE_MULTIPLY",     57,  2,  1)
 def_op(l, "INPLACE_DIVIDE",       58,  2,  1)
 def_op(l, "INPLACE_MODULO",       59,  2,  1)
-store_op(l, "STORE_SUBSCR",         60,  3,  0) # Implements TOS1[TOS] = TOS2.
+store_op(l, "STORE_SUBSCR",       60,  3,  0) # Implements TOS1[TOS] = TOS2.
 def_op(l, "DELETE_SUBSCR",        61,  2,  0) # Implements del TOS1[TOS].
 
 def_op(l, "BINARY_LSHIFT",        62,  2,  1)
@@ -151,8 +155,8 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 store_op(l, "STORE_NAME",          90,  1,  0, is_type="name")  # Operand is in name list
 name_op(l, "DELETE_NAME",          91,  0,  0)  # ""
-varargs_op(l, "UNPACK_SEQUENCE",   92,  9,  1)  # TOS is number of tuple items
-jrel_op(l, "FOR_ITER",             93,  9,  1)  # TOS is read
+varargs_op(l, "UNPACK_SEQUENCE",   92, -3,  1)  # TOS is number of tuple items
+jrel_op(l, "FOR_ITER",             93,  0,  1)  # TOS is read
 
 store_op(l, "STORE_ATTR",          95,  2,  0, is_type="name")  # Operand is in name list
 name_op(l, "DELETE_ATTR",          96,  1,  0)  # ""
@@ -161,13 +165,13 @@ name_op(l, "DELETE_GLOBAL",        98,  0,  0)  # ""
 def_op(l, "DUP_TOPX",              99,  1, -1)  # number of items to duplicate
 const_op(l, "LOAD_CONST",         100,  0,  1)  # Operand is in const list
 name_op(l, "LOAD_NAME",           101,  0,  1)  # Operand is in name list
-varargs_op(l, "BUILD_TUPLE",      102,  9,  1)  # TOS is number of tuple items
-varargs_op(l, "BUILD_LIST",       103,  9,  1)  # TOS is number of list items
-varargs_op(l, "BUILD_MAP",        104,  0,  1)  # TOS is number of kwark items. Always zero for now
+varargs_op(l, "BUILD_TUPLE",      102, -1,  1)  # TOS is number of tuple items
+varargs_op(l, "BUILD_LIST",       103, -1,  1)  # TOS is number of list items
+varargs_op(l, "BUILD_MAP",        104, -1,  1)  # TOS is number of kwarg items. Always zero for now
 name_op(l, "LOAD_ATTR",           105,  1,  1)  # Operand is in name list
 compare_op(l, "COMPARE_OP",       106,  2,  1)  # Comparison operator
 
-name_op(l, "IMPORT_NAME",         107,  2,  1)  # Operand is in name list
+name_op(l, "IMPORT_NAME",         107,  2,  1)  # Imports TOS and TOS1; module pushed
 name_op(l, "IMPORT_FROM",         108,  0,  1)  # Operand is in name list
 
 jrel_op(l, "JUMP_FORWARD",        110,  0,  0, fallthrough=False)
@@ -189,21 +193,21 @@ local_op(l, "LOAD_FAST",          124,  0,  1)  # Local variable number
 store_op(l, "STORE_FAST",         125,  1,  0, is_type="local")  # Local variable number
 local_op(l, "DELETE_FAST",        126)          # Local variable number
 
-def_op(l, "RAISE_VARARGS",        130, -1,  0, fallthrough=False)
+nargs_op(l, "RAISE_VARARGS",      130, -1,  1, fallthrough=False)
                                                 # Number of raise arguments (1, 2, or 3)
-nargs_op(l, "CALL_FUNCTION",      131,  9,  1)  # TOS is #args + (#kwargs << 8)
+nargs_op(l, "CALL_FUNCTION",      131, -1,  1)  # TOS is #args + (#kwargs << 8)
 
-def_op(l, "MAKE_FUNCTION",        132,  9,  1)  # TOS is number of args with default values
-varargs_op(l, "BUILD_SLICE",      133,  9,  1)  # TOS is number of items
+def_op(l, "MAKE_FUNCTION",        132, -2,  1)  # TOS is number of args with default values
+varargs_op(l, "BUILD_SLICE",      133,  2,  1)  # TOS is number of items
 
-def_op(l, "MAKE_CLOSURE",         134,  9,  1)
+def_op(l, "MAKE_CLOSURE",         134, -3,  1)
 free_op(l, "LOAD_CLOSURE",        135,  0,  1)
 free_op(l, "LOAD_DEREF",          136,  0,  1)
 store_op(l, "STORE_DEREF",        137,  1,  0, is_type="free")
 
-nargs_op(l, "CALL_FUNCTION_VAR",  140, -1,  1)   # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_KW",   141, -1,  1)   # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -1, 1)  # #args + (#kwargs << 8)
+nargs_op(l, "CALL_FUNCTION_VAR",  140, -2,  1)   # #args + (#kwargs << 8)
+nargs_op(l, "CALL_FUNCTION_KW",   141, -2,  1)   # #args + (#kwargs << 8)
+nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -3, 1)  # #args + (#kwargs << 8)
 
 def_op(l, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143

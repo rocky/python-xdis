@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -40,6 +40,9 @@ init_opdata(l, opcode_34, version)
 rm_op(l, 'STORE_MAP',                    54)
 rm_op(l, 'WITH_CLEANUP',                 81)
 
+# Stack effects are change from 3.4
+varargs_op(l, 'BUILD_MAP',              105, -1, -1)  # arg is count of kwarg items
+
 # These are new since Python 3.5
 #          OP NAME                   OPCODE POP PUSH
 #---------------------------------------------------
@@ -47,11 +50,11 @@ def_op(l, 'BINARY_MATRIX_MULTIPLY',      16,  2,  1)
 def_op(l, 'INPLACE_MATRIX_MULTIPLY',     17,  2,  1)
 def_op(l, 'GET_AITER',                   50,  1,  1)
 def_op(l, 'GET_ANEXT',                   51,  0,  1)
-def_op(l, 'BEFORE_ASYNC_WITH',           52)
-def_op(l, 'GET_YIELD_FROM_ITER',         69,  0,  1)
+def_op(l, 'BEFORE_ASYNC_WITH',           52,  0,  1)
+def_op(l, 'GET_YIELD_FROM_ITER',         69,  1,  1)
 def_op(l, 'GET_AWAITABLE',               73,  0,  0)
 def_op(l, 'WITH_CLEANUP_START',          81,  0,  1)
-def_op(l, 'WITH_CLEANUP_FINISH',         82, -1,  1)
+def_op(l, 'WITH_CLEANUP_FINISH',         82,  1,  0)
 
 varargs_op(l, 'BUILD_LIST_UNPACK',          149, -1,  1)
 varargs_op(l, 'BUILD_MAP_UNPACK',           150, -1,  1)

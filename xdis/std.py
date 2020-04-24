@@ -1,5 +1,5 @@
 # (C) Copyright 2018 by Daniel Bradburn
-# (C) Copyright 2018 by Rocky Bernstein
+# (C) Copyright 2018, 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -49,10 +49,11 @@ Version 'variants' are also supported, for example:
 import sys
 # xdis
 from xdis import IS_PYPY
-from xdis.bytecode import Bytecode as _Bytecode, _Instruction
+from xdis.bytecode import Bytecode as _Bytecode
+from xdis.instruction import _Instruction
 from xdis.main import disco as _disco
 from xdis.op_imports import get_opcode_module
-from xdis.util import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code
+from xdis.cross_dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code, xstack_effect as _stack_effect
 
 
 PYPY = 'pypy'
@@ -128,6 +129,11 @@ class _StdApi:
         """
         return _show_code(x, self.opc.version, file, is_pypy=self.is_pypy)
 
+    def stack_effect(self, oparg=None, jump=None):
+        """Compute the stack effect of *opcode* with argument *oparg*.
+        """
+        return _stack_effect(x, self.opc, oparg, jump)
+
     def pretty_flags(self, flags):
         """Return pretty representation of code flags."""
         return _pretty_flags(flags)
@@ -178,7 +184,7 @@ class _StdApi:
         Generate pairs (offset, lineno) as described in Python/compile.c.
 
         """
-        return self.xcode.findlinestarts(code)
+        return self.opc.findlinestarts(code)
 
     def findlabels(self, code):
         """Detect all offsets in a byte code which are jump targets.
@@ -186,7 +192,7 @@ class _StdApi:
         Return the list of offsets.
 
         """
-        return self.xcode.findlabels(code, self.opc)
+        return self.opc.findlabels(code, self.opc)
 
 
 def make_std_api(python_version=sys.version_info, variant=VARIANT):

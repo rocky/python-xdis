@@ -39,7 +39,7 @@ from xdis import IS_PYPY
 from xdis.bytecode import Bytecode
 from xdis.codetype import iscode, codeType2Portable
 from xdis.load import check_object_path, load_module
-from xdis.util import format_code_info
+from xdis.cross_dis import format_code_info
 from xdis.version import VERSION
 from xdis.op_imports import op_imports
 

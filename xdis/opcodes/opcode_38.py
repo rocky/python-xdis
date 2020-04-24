@@ -1,4 +1,4 @@
-# (C) Copyright 2019 by Rocky Bernstein
+# (C) Copyright 2019-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -53,11 +53,11 @@ rm_op(l, "SETUP_EXCEPT", 121)
 #          OP NAME            OPCODE POP PUSH
 # --------------------------------------------
 def_op(l, "ROT_FOUR", 6, 4, 4)
-def_op(l, "BEGIN_FINALLY", 53, 0, 1)
+def_op(l, "BEGIN_FINALLY", 53, 0, 6)
 def_op(l, "END_ASYNC_FOR", 54, 7, 0)  # POP is 0, when not 7
-def_op(l, "END_FINALLY", 88, 1, 0)  # POP is 6, when not 1
+def_op(l, "END_FINALLY", 88, 6, 0)  # POP is 6, when not 1
 jrel_op(l, "CALL_FINALLY", 162, 0, 1)
-nargs_op(l, "POP_FINALLY", 163, 0, 0)  # PUSH/POP vary
+nargs_op(l, "POP_FINALLY", 163, 6, 0)  # PUSH/POP vary
 
 format_MAKE_FUNCTION_arg = opcode_37.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_37.format_value_flags
