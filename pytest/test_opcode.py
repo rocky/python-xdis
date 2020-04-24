@@ -37,7 +37,7 @@ def test_opcode():
                                          for i in list(opc_set ^ dis_set)])))
 
 def test_stack_effect():
-    if PYTHON_VERSION < 3.4:
+    if PYTHON_VERSION < 3.4 or IS_PYPY:
         # TODO figure out some other kind if internal checks to tod.
         print("Skipped for now - need to figure out how to test")
         return
