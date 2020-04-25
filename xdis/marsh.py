@@ -334,6 +334,8 @@ class _Marshaller:
     def dump_code3(self, x):
         self._write(TYPE_CODE)
         self.w_long(x.co_argcount)
+        if hasattr(x, "co_posonlyargcount"):
+            self.w_long(x.co_posonlyargcount)
         self.w_long(x.co_kwonlyargcount)
         self.w_long(x.co_nlocals)
         self.w_long(x.co_stacksize)
