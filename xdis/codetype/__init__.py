@@ -155,7 +155,8 @@ def portableCodeType(version=PYTHON_VERSION):
 # In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
 # an incomplete code type, which might be converted to another code type
 # later.
-CodeTypeUnion = namedtuple("CodeTypeUnion", Code38FieldNames)
+CodeTypeUnionFields = Code38FieldNames.split()
+CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 
 
 # Note: default values of `None` indicate a required parameter.
