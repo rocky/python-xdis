@@ -7,7 +7,7 @@ import os.path as osp
 
 
 def get_srcdir():
-    filename = osp.normcase(os.path.dirname(os.path.abspath(__file__)))
+    filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
     return osp.realpath(filename)
 
 def test_load_file():

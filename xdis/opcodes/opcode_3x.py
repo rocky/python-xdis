@@ -83,7 +83,7 @@ def_op(l, 'DUP_TOP',               4,  0,  1)
 # Python 3.2+
 def_op(l, 'DUP_TOP_TWO',           5,  0,  2)
 
-def_op(l, 'NOP', 9)
+def_op(l, 'NOP',                   9,  0,  0)
 def_op(l, 'UNARY_POSITIVE',       10,  1,  1)
 def_op(l, 'UNARY_NEGATIVE',       11,  1,  1)
 def_op(l, 'UNARY_NOT',            12,  1,  1)
@@ -148,7 +148,7 @@ def_op(l, 'IMPORT_STAR',          84,  1,  0)
 def_op(l, 'YIELD_VALUE',          86,  1,  1)
 def_op(l, 'POP_BLOCK',            87,  0,  0)
 def_op(l, 'END_FINALLY',          88,  1,  0)
-def_op(l, 'POP_EXCEPT',           89,  0,  0)
+def_op(l, 'POP_EXCEPT',           89,  3,  0) # Pops last 3 values
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
