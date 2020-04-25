@@ -6,7 +6,7 @@ from xdis.main import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
 import xdis
 
-if xdis.PYTHON_VERSION > 3.5:
+if xdis.PYTHON_VERSION >= 3.5:
     import importlib.util
 
     def import_file(path):
