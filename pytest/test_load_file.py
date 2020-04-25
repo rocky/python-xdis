@@ -12,16 +12,15 @@ def get_srcdir():
 
 def test_load_file():
     srcdir = get_srcdir()
-    setup_file = osp.realpath(osp.join(srcdir, "..", "xdis", "load.py"))
+    load_py = osp.realpath(osp.join(srcdir, "..", "xdis", "load.py"))
 
-    co_file = load_file(setup_file)
-    obj_path = check_object_path(setup_file)
+    co_file = load_file(load_py)
+    obj_path = check_object_path(load_py)
     (version, timestamp, magic_int, co_module, pypy,
      source_size, sip_hash) = load_module(obj_path)
     if 3.3 <= version <= 3.7:
-        statinfo = os.stat(__file__)
-        # FIXME: why does this fail?
-        # assert statinfo.st_size == source_size
+        statinfo = os.stat(load_py)
+        assert statinfo.st_size == source_size
         assert sip_hash is None
     elif version < 3.3:
         assert source_size is None, source_size
