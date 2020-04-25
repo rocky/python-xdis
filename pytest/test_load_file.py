@@ -28,6 +28,8 @@ def test_load_file():
 
     for field in CodeTypeUnionFields:
         if hasattr(co_file, field):
+            if field == "co_code" and pypy != IS_PYPY:
+                continue
             load_file_field = getattr(co_file, field)
             load_module_field = getattr(co_module, field)
             assert load_module_field == load_file_field, (
