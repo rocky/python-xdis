@@ -148,7 +148,7 @@ def_op(l, 'IMPORT_STAR',          84,  1,  0)
 def_op(l, 'YIELD_VALUE',          86,  1,  1)
 def_op(l, 'POP_BLOCK',            87,  0,  0)
 def_op(l, 'END_FINALLY',          88,  1,  0)
-def_op(l, 'POP_EXCEPT',           89,  3,  0) # Pops last 3 values
+def_op(l, 'POP_EXCEPT',           89,  0,  0)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
