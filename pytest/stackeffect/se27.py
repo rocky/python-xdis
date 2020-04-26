@@ -1,4 +1,4 @@
-# Python version 2.7 Stack effects
+# Python 2.7 Stack effects
 
 [
   -100, # 0
