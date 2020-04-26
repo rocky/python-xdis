@@ -51,8 +51,14 @@ rm_op(l, "JUMP_IF_FALSE", 111)
 rm_op(l, "EXTENDED_ARG", 143)
 rm_op(l, "JUMP_IF_TRUE", 112)
 
-#          OP NAME            OPCODE POP PUSH
-#--------------------------------------------
+# These have changed since 2.6 in stack effects.
+#          OP NAME            OPCODE   POP PUSH
+#-----------------------------------------------
+def_op(l, "END_FINALLY",            88,  3,  0)
+jrel_op(l, "SETUP_EXCEPT",         121,  0,  0, conditional=True)  # ""
+jrel_op(l, "SETUP_FINALLY" ,       122,  0,  0, conditional=True)  # ""
+
+
 def_op(l, "LIST_APPEND",            94,  2,  1)  # Calls list.append(TOS[-i], TOS).
 
 # Used to implement list comprehensions.

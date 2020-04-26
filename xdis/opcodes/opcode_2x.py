@@ -98,10 +98,10 @@ def_op(l, "BINARY_TRUE_DIVIDE",   27,  2,  1)
 def_op(l, "INPLACE_FLOOR_DIVIDE", 28,  2,  1)
 def_op(l, "INPLACE_TRUE_DIVIDE",  29,  2,  1)
 
-def_op(l, "SLICE+0",              30,  1,  1)
-def_op(l, "SLICE+1",              31,  2,  1)
-def_op(l, "SLICE+2",              32,  2,  1)
-def_op(l, "SLICE+3",              33,  3,  1)
+def_op(l, "SLICE+0",              30,  2,  2)
+def_op(l, "SLICE+1",              31,  2,  2)
+def_op(l, "SLICE+2",              32,  2,  2)
+def_op(l, "SLICE+3",              33,  3,  2)
 
 store_op(l, "STORE_SLICE+0",        40,  2,  0)
 store_op(l, "STORE_SLICE+1",        41,  3,  0)
@@ -148,7 +148,7 @@ def_op(l, "EXEC_STMT",            85,  3,  0)
 def_op(l, "YIELD_VALUE",          86,  1,  1)
 
 def_op(l, "POP_BLOCK",            87,  0,  0)
-def_op(l, "END_FINALLY",          88,  3,  0)
+def_op(l, "END_FINALLY",          88,  1,  0)
 def_op(l, "BUILD_CLASS",          89,  2,  0)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
@@ -167,11 +167,11 @@ const_op(l, "LOAD_CONST",         100,  0,  1)  # Operand is in const list
 name_op(l, "LOAD_NAME",           101,  0,  1)  # Operand is in name list
 varargs_op(l, "BUILD_TUPLE",      102, -1,  1)  # TOS is number of tuple items
 varargs_op(l, "BUILD_LIST",       103, -1,  1)  # TOS is number of list items
-varargs_op(l, "BUILD_MAP",        104, -1,  1)  # TOS is number of kwarg items. Always zero for now
+varargs_op(l, "BUILD_MAP",        104,  0,  1)  # TOS is number of kwarg items. Always zero for now
 name_op(l, "LOAD_ATTR",           105,  1,  1)  # Operand is in name list
 compare_op(l, "COMPARE_OP",       106,  2,  1)  # Comparison operator
 
-name_op(l, "IMPORT_NAME",         107,  2,  1)  # Imports TOS and TOS1; module pushed
+name_op(l, "IMPORT_NAME",         107,  2,  2)  # Imports TOS and TOS1; module pushed
 name_op(l, "IMPORT_FROM",         108,  0,  1)  # Operand is in name list
 
 jrel_op(l, "JUMP_FORWARD",        110,  0,  0, fallthrough=False)
@@ -186,8 +186,8 @@ name_op(l, "LOAD_GLOBAL",         116,  0,  1)  # Operand is in name list
 
 jabs_op(l, "CONTINUE_LOOP",       119,  0,  0, fallthrough=False)  # Target address
 jrel_op(l, "SETUP_LOOP",          120,  0,  0, conditional=True)  # Distance to target address
-jrel_op(l, "SETUP_EXCEPT",        121,  0,  0, conditional=True)  # ""
-jrel_op(l, "SETUP_FINALLY",       122,  0,  0, conditional=True)  # ""
+jrel_op(l, "SETUP_EXCEPT",        121,  0,  3, conditional=True)  # ""
+jrel_op(l, "SETUP_FINALLY",       122,  0,  3, conditional=True)  # ""
 
 local_op(l, "LOAD_FAST",          124,  0,  1)  # Local variable number
 store_op(l, "STORE_FAST",         125,  1,  0, is_type="local")  # Local variable number

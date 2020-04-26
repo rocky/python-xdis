@@ -4,8 +4,8 @@
 typedef enum {Py_LT, Py_LE, Py_EQ, Py_NE, Py_GT, Py_GE,
 } comparisons;
 
-#include "opcode27.h"
-#define PYTHON_VERSION "2.7"
+#include "opcode26.h"
+#define PYTHON_VERSION "2.6"
 
 #define NOTFIXED -100
 
@@ -52,11 +52,7 @@ opcode_stack_effect(int opcode, int oparg)
         case UNARY_INVERT:
             return 0;
 
-        case SET_ADD:
         case LIST_APPEND:
-            return -1;
-
-        case MAP_ADD:
             return -2;
 
         case BINARY_POWER:
@@ -74,13 +70,13 @@ opcode_stack_effect(int opcode, int oparg)
             return -1;
 
         case SLICE+0:
-            return 0;
+            return 1;
         case SLICE+1:
-            return -1;
+            return 0;
         case SLICE+2:
-            return -1;
+            return 0;
         case SLICE+3:
-            return -2;
+            return -1;
 
         case STORE_SLICE+0:
             return -2;
@@ -142,8 +138,6 @@ opcode_stack_effect(int opcode, int oparg)
             return -1;
         case BREAK_LOOP:
             return 0;
-        case SETUP_WITH:
-            return 4;
         case WITH_CLEANUP:
             return -1; /* XXX Sometimes more */
         case LOAD_LOCALS:
@@ -160,8 +154,7 @@ opcode_stack_effect(int opcode, int oparg)
         case POP_BLOCK:
             return 0;
         case END_FINALLY:
-            return -3; /* or -1 or -2 if no exception occurred or
-                          return/break/continue */
+            return -1; /* or -2 or -3 if exception occurred */
         case BUILD_CLASS:
             return -2;
 
@@ -172,7 +165,7 @@ opcode_stack_effect(int opcode, int oparg)
         case UNPACK_SEQUENCE:
             return oparg-1;
         case FOR_ITER:
-            return 1; /* or -1, at end of iterator */
+            return 1;
 
         case STORE_ATTR:
             return -2;
@@ -190,7 +183,6 @@ opcode_stack_effect(int opcode, int oparg)
             return 1;
         case BUILD_TUPLE:
         case BUILD_LIST:
-        case BUILD_SET:
             return 1-oparg;
         case BUILD_MAP:
             return 1;
@@ -199,19 +191,15 @@ opcode_stack_effect(int opcode, int oparg)
         case COMPARE_OP:
             return -1;
         case IMPORT_NAME:
-            return -1;
+            return 0;
         case IMPORT_FROM:
             return 1;
 
         case JUMP_FORWARD:
-        case JUMP_IF_TRUE_OR_POP:  /* -1 if jump not taken */
-        case JUMP_IF_FALSE_OR_POP:  /*  "" */
+        case JUMP_IF_FALSE:
+        case JUMP_IF_TRUE:
         case JUMP_ABSOLUTE:
             return 0;
-
-        case POP_JUMP_IF_FALSE:
-        case POP_JUMP_IF_TRUE:
-            return -1;
 
         case LOAD_GLOBAL:
             return 1;
@@ -219,9 +207,10 @@ opcode_stack_effect(int opcode, int oparg)
         case CONTINUE_LOOP:
             return 0;
         case SETUP_LOOP:
+            return 0;
         case SETUP_EXCEPT:
         case SETUP_FINALLY:
-            return 0;
+            return 3; /* actually pushed by an exception */
 
         case LOAD_FAST:
             return 1;
@@ -250,7 +239,7 @@ opcode_stack_effect(int opcode, int oparg)
                 return -1;
 
         case MAKE_CLOSURE:
-            return -oparg-1;
+            return -oparg;
         case LOAD_CLOSURE:
             return 1;
         case LOAD_DEREF:

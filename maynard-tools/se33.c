@@ -5,6 +5,7 @@ typedef enum {Py_LT, Py_LE, Py_EQ, Py_NE, Py_GT, Py_GE,
 } comparisons;
 
 #include "opcode33.h"
+#define PYTHON_VERSION "3.3"
 
 #define NOTFIXED -100
 
@@ -234,7 +235,7 @@ opcode_stack_effect(int opcode, int oparg)
 int main(int c, char *v[])
 {
     int i;
-    printf("# Python version 3.3 Stack effects\n\n");
+    printf("# Python version %s Stack effects\n\n", PYTHON_VERSION);
     printf("[\n");
     for (i = 0; i < 256; i++) {
 	int effect;

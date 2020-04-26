@@ -17,10 +17,12 @@ l = locals()
 init_opdata(l, opcode_2x, version)
 
 # Bytecodes added since 2.3
-def_op(l, 'NOP',           9,  0,  0)
-def_op(l, 'LIST_APPEND',  18,  2,  1)  # Calls list.append(TOS[-i], TOS).
-                                       # Used to implement list comprehensions.
-def_op(l, 'YIELD_VALUE',  86,  1,  1)
+#          OP NAME            OPCODE POP PUSH
+#--------------------------------------------
+def_op(l, 'NOP',                   9,  0,  0)
+def_op(l, 'LIST_APPEND',          18,  2,  0)  # Calls list.append(TOS[-i], TOS).
+                                               # Used to implement list comprehensions.
+def_op(l, 'YIELD_VALUE',          86,  1,  1)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)
