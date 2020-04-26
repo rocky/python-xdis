@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-C_PROGRAMS=se26 se27 se31 se32 se33
+C_PROGRAMS=se25 se26 se27 se30 se31 se32 se33
 #: Build all C programs
 all: $(C_PROGRAMS)
 

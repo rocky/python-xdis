@@ -4,8 +4,8 @@
 #include "opcode26.h"
 
 /*
- * When computing the stack effect for Python 3.x,
- * open up Python-3.x/Python/compile.c and copy
+ * When computing the stack effect for Python X.X,
+ * open up Python-X.X/Python/compile.c and copy
  * the static function "opcode_stack_effect" below.
  */
 /* -----8x-------------8x-------------8x----- */
