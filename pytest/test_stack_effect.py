@@ -19,7 +19,10 @@ def test_stack_effect_fixed():
     This we get from tables that are derived the Python Interpreter C source.
     Thanks are to the Maynard project for this idea.
     """
-    versions = ((2, 6), (2, 7), (3, 1), (3, 2), (3, 3))
+    versions = ((2, 6), (2, 7),
+                (3, 1), (3, 2), (3, 3),
+                (3, 4), (3, 5), (3, 6), (3, 7),
+                (3, 8), )
     for version in versions:
         v_str = "%s%s" % (version[0], version[1])
         opc = get_opcode(version, False)
@@ -60,7 +63,7 @@ def test_stack_effect_fixed():
                 "in version %s %d (%s) not okay; effect xstack_effect is %d; C source has %d"
                 % (opc.version, opcode, opname, effect, check_effect)
             )
-            # print("%d (%s) is good: effect %d" % (opcode, opname, effect))
+            # print("version %s: %d (%s) is good: effect %d" % (version, opcode, opname, effect))
             pass
         pass
     return
