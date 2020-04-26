@@ -149,7 +149,7 @@ def_op(l, "BINARY_OR", 66, 2, 1)
 
 def_op(l, "PRINT_EXPR", 70, 1, 0)
 def_op(l, "PRINT_ITEM", 71, 1, 0)
-def_op(l, "PRINT_NEWLINE", 72, 1, 0)
+def_op(l, "PRINT_NEWLINE", 72, 0, 0)
 
 def_op(l, "BREAK_LOOP", 80, 0, 0, fallthrough=False)
 

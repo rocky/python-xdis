@@ -6,29 +6,6 @@ from xdis.main import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
 import xdis
 
-if xdis.PYTHON_VERSION >= 3.5:
-    import importlib.util
-
-    def import_file(path):
-        spec = importlib.util.spec_from_file_location("module.name",
-                                                      path)
-        foo = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(foo)
-        return foo
-
-elif 3.3 <= xdis.PYTHON_VERSION <= 3.4:
-    from importlib.machinery import SourceFileLoader
-
-    def import_file(path):
-        foo = SourceFileLoader("module.name", path).load_module()
-        return foo
-elif xdis.PYTHON_VERSION <= 3.0:
-    import imp
-
-    def import_file(path):
-        foo = imp.load_source('module.name', path)
-        return foo
-
 def get_srcdir():
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
     return osp.realpath(filename)
@@ -38,23 +15,40 @@ srcdir = get_srcdir()
 opcode_stack_effect = [-100]*256
 
 def test_stack_effect_fixed():
-    for version in ([3, 3], [3, 2]):
-        opcode_stack_effect = [-100]*256
+    versions = ([2, 7], [3, 3])
+    for version in versions:
         v_str = "%s%s" % (version[0], version[1])
         opc = get_opcode(version, False)
-        se_file_py = osp.realpath(osp.join(srcdir, "stackeffect", "effect%s.py" % v_str))
-        so = import_file(se_file_py)
+        se_file_py = osp.realpath(osp.join(srcdir, "stackeffect", "se%s.py" % v_str))
+        opcode_stack_effect = eval(open(se_file_py).read())
+        assert len(opcode_stack_effect) == 256
 
-        assert opcode_stack_effect
+        for opcode in range(256):
+            check_effect = opcode_stack_effect[opcode]
+            if check_effect == -100:
+                continue
+
+            if op_has_argument(opcode, opc):
+                effect = xstack_effect(opcode, opc, 10)
+            else:
+                effect = xstack_effect(opcode, opc)
+            assert check_effect == effect, (
+                "in version %s %d (%s) not okay; effect xstack_effect is %d; C source has %d"
+                % (opc.version, opcode, opc.opname[opcode], effect, check_effect)
+            )
+            pass
 
         for opname, opcode, in opc.opmap.items():
             if op_has_argument(opcode, opc):
                 continue
+            # These are are not in the C code although they are documented as opcodes
+            elif opname in ("STOP_CODE", "NOP"):
+                continue
 
             effect = xstack_effect(opcode, opc)
-            check_effect = so.opcode_stack_effect[opcode]
+            check_effect = opcode_stack_effect[opcode]
             assert check_effect == effect, (
-                "in version %s %d (%s) not okay; effect xstack_effect is %d; wrote down %d"
+                "in version %s %d (%s) not okay; effect xstack_effect is %d; C source has %d"
                 % (opc.version, opcode, opname, effect, check_effect)
             )
             pass
@@ -129,6 +123,7 @@ def test_stack_effect_vs_dis():
         pass
     return
 
+
 if __name__ == "__main__":
     test_stack_effect_fixed()
-    test_stack_effect_vs_dis()
+    # test_stack_effect_vs_dis()

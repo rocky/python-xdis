@@ -20,7 +20,7 @@ init_opdata(l, opcode_2x, version)
 def_op(l, 'NOP',           9,  0,  0)
 def_op(l, 'LIST_APPEND',  18,  2,  1)  # Calls list.append(TOS[-i], TOS).
                                        # Used to implement list comprehensions.
-def_op(l, 'YIELD_VALUE',  86,  1,  0)
+def_op(l, 'YIELD_VALUE',  86,  1,  1)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)

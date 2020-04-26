@@ -323,8 +323,14 @@ def xstack_effect(opcode, opc, oparg=None, jump=None):
     if opname in ("BUILD_MAP",):
         if opc.version >= 3.5:
             return 1 - (2 * oparg)
-    elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX"):
+    elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX") and opc.version >= 3.0:
         return push + oparg
+    elif opname in ("BUILD_SLICE") and opc.version <= 2.7:
+        if oparg == 3:
+            return -2;
+        else:
+            return -1;
+        pass
     elif opname == "MAKE_FUNCTION":
         if opc.version >= 3.5:
             if 0 <= oparg <= 10:
