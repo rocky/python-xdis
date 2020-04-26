@@ -3,7 +3,7 @@ from xdis import IS_PYPY, PYTHON_VERSION
 from xdis.main import get_opcode
 import dis
 
-class TestOpcode(unittest.TestCase):
+class OpcodeTests(unittest.TestCase):
 
     def test_opcode(self):
         opc = get_opcode(PYTHON_VERSION, IS_PYPY)

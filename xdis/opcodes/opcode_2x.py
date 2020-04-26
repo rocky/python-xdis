@@ -97,10 +97,10 @@ def_op(l, "BINARY_TRUE_DIVIDE",   27,  2,  1)
 def_op(l, "INPLACE_FLOOR_DIVIDE", 28,  2,  1)
 def_op(l, "INPLACE_TRUE_DIVIDE",  29,  2,  1)
 
-def_op(l, "SLICE+0",              30,  1,  1)
-def_op(l, "SLICE+1",              31,  2,  1)
-def_op(l, "SLICE+2",              32,  2,  1)
-def_op(l, "SLICE+3",              33,  3,  1)
+def_op(l, "SLICE+0",              30,  2,  2)
+def_op(l, "SLICE+1",              31,  2,  2)
+def_op(l, "SLICE+2",              32,  2,  2)
+def_op(l, "SLICE+3",              33,  3,  2)
 
 store_op(l, "STORE_SLICE+0",        40,  2,  0)
 store_op(l, "STORE_SLICE+1",        41,  3,  0)
@@ -130,8 +130,8 @@ def_op(l, "GET_ITER",             68,  1,  1)
 
 def_op(l, "PRINT_EXPR",           70,  1,  0)
 def_op(l, "PRINT_ITEM",           71,  1,  0)
-def_op(l, "PRINT_NEWLINE",        72,  1,  0)
-def_op(l, "PRINT_ITEM_TO",        73,  1,  0)
+def_op(l, "PRINT_NEWLINE",        72,  0,  0)
+def_op(l, "PRINT_ITEM_TO",        73,  2,  0)
 def_op(l, "PRINT_NEWLINE_TO",     74,  1,  0)
 def_op(l, "INPLACE_LSHIFT",       75,  2,  1)
 def_op(l, "INPLACE_RSHIFT",       76,  2,  1)
@@ -148,29 +148,29 @@ def_op(l, "YIELD_VALUE",          86,  1,  1)
 
 def_op(l, "POP_BLOCK",            87,  0,  0)
 def_op(l, "END_FINALLY",          88,  1,  0)
-def_op(l, "BUILD_CLASS",          89,  3,  0)
+def_op(l, "BUILD_CLASS",          89,  2,  0)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 store_op(l, "STORE_NAME",          90,  1,  0, is_type="name")  # Operand is in name list
 name_op(l, "DELETE_NAME",          91,  0,  0)  # ""
-varargs_op(l, "UNPACK_SEQUENCE",   92, -3,  1)  # TOS is number of tuple items
+varargs_op(l, "UNPACK_SEQUENCE",   92, -1,  1)  # TOS is number of tuple items
 jrel_op(l, "FOR_ITER",             93,  0,  1)  # TOS is read
 
 store_op(l, "STORE_ATTR",          95,  2,  0, is_type="name")  # Operand is in name list
 name_op(l, "DELETE_ATTR",          96,  1,  0)  # ""
 store_op(l, "STORE_GLOBAL",        97,  1,  0, is_type="name")  # ""
 name_op(l, "DELETE_GLOBAL",        98,  0,  0)  # ""
-def_op(l, "DUP_TOPX",              99,  1, -1)  # number of items to duplicate
+nargs_op(l, "DUP_TOPX",            99, -1,  2)  # number of items to duplicate
 const_op(l, "LOAD_CONST",         100,  0,  1)  # Operand is in const list
 name_op(l, "LOAD_NAME",           101,  0,  1)  # Operand is in name list
 varargs_op(l, "BUILD_TUPLE",      102, -1,  1)  # TOS is number of tuple items
 varargs_op(l, "BUILD_LIST",       103, -1,  1)  # TOS is number of list items
-varargs_op(l, "BUILD_MAP",        104, -1,  1)  # TOS is number of kwarg items. Always zero for now
+varargs_op(l, "BUILD_MAP",        104,  0,  1)  # TOS is number of kwarg items. Always zero for now
 name_op(l, "LOAD_ATTR",           105,  1,  1)  # Operand is in name list
 compare_op(l, "COMPARE_OP",       106,  2,  1)  # Comparison operator
 
-name_op(l, "IMPORT_NAME",         107,  2,  1)  # Imports TOS and TOS1; module pushed
+name_op(l, "IMPORT_NAME",         107,  2,  2)  # Imports TOS and TOS1; module pushed
 name_op(l, "IMPORT_FROM",         108,  0,  1)  # Operand is in name list
 
 jrel_op(l, "JUMP_FORWARD",        110,  0,  0, fallthrough=False)
@@ -185,18 +185,18 @@ name_op(l, "LOAD_GLOBAL",         116,  0,  1)  # Operand is in name list
 
 jabs_op(l, "CONTINUE_LOOP",       119,  0,  0, fallthrough=False)  # Target address
 jrel_op(l, "SETUP_LOOP",          120,  0,  0, conditional=True)  # Distance to target address
-jrel_op(l, "SETUP_EXCEPT",        121,  0,  6, conditional=True)  # ""
-jrel_op(l, "SETUP_FINALLY",       122,  0,  7, conditional=True)  # ""
+jrel_op(l, "SETUP_EXCEPT",        121,  0,  3, conditional=True)  # ""
+jrel_op(l, "SETUP_FINALLY",       122,  0,  3, conditional=True)  # ""
 
 local_op(l, "LOAD_FAST",          124,  0,  1)  # Local variable number
 store_op(l, "STORE_FAST",         125,  1,  0, is_type="local")  # Local variable number
-local_op(l, "DELETE_FAST",        126)          # Local variable number
+local_op(l, "DELETE_FAST",        126,  0,  0) # Local variable number is in operand
 
-nargs_op(l, "RAISE_VARARGS",      130, -1,  1, fallthrough=False)
+nargs_op(l, "RAISE_VARARGS",      130, -1,  2, fallthrough=False)
                                                 # Number of raise arguments (1, 2, or 3)
-nargs_op(l, "CALL_FUNCTION",      131, -1,  1)  # TOS is #args + (#kwargs << 8)
+nargs_op(l, "CALL_FUNCTION",      131, -1,  2)  # TOS is #args + (#kwargs << 8)
 
-def_op(l, "MAKE_FUNCTION",        132, -2,  1)  # TOS is number of args with default values
+nargs_op(l, "MAKE_FUNCTION",      132, -1,  2)  # TOS is number of args with default values
 varargs_op(l, "BUILD_SLICE",      133,  2,  1)  # TOS is number of items
 
 def_op(l, "MAKE_CLOSURE",         134, -3,  1)

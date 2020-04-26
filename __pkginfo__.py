@@ -55,19 +55,19 @@ web                = 'https://github.com/rocky/python-xdis/'
 # tracebacks in zip files are funky and not debuggable
 zip_safe = True
 
-import os.path
+import os.path as osp
 
 
 def get_srcdir():
-    filename = os.path.normcase(os.path.dirname(os.path.abspath(__file__)))
-    return os.path.realpath(filename)
+    filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
+    return osp.realpath(filename)
 
 
 srcdir = get_srcdir()
 
 
 def read(*rnames):
-    return open(os.path.join(srcdir, *rnames)).read()
+    return open(osp.join(srcdir, *rnames)).read()
 
 
 # Get info from files; set: long_description and VERSION

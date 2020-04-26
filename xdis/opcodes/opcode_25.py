@@ -18,7 +18,9 @@ l = locals()
 init_opdata(l, opcode_24, version)
 
 # Bytecodes added in 2.5 from 2.4
-def_op(l, 'WITH_CLEANUP', 81)
+#          OP NAME            OPCODE POP PUSH
+#--------------------------------------------
+def_op(l, 'WITH_CLEANUP',      81,   4,  3)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)

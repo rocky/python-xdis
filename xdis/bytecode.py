@@ -204,7 +204,8 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
                 optype = 'free'
             elif op in opc.NARGS_OPS:
                 optype = 'nargs'
-                if not (python_36 or opc.opname[op] == "RAISE_VARARGS"):
+                if not (python_36 or opc.opname[op] in
+                        ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")):
                     argrepr = ("%d positional, %d named" %
                                (code2num(bytecode, i-2), code2num(bytecode, i-1)))
             # This has to come after hasnargs. Some are in both?

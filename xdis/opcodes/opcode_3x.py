@@ -83,7 +83,7 @@ def_op(l, 'DUP_TOP',               4,  0,  1)
 # Python 3.2+
 def_op(l, 'DUP_TOP_TWO',           5,  0,  2)
 
-def_op(l, 'NOP', 9)
+def_op(l, 'NOP',                   9,  0,  0)
 def_op(l, 'UNARY_POSITIVE',       10,  1,  1)
 def_op(l, 'UNARY_NEGATIVE',       11,  1,  1)
 def_op(l, 'UNARY_NOT',            12,  1,  1)

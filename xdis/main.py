@@ -61,6 +61,8 @@ from xdis.op_imports import op_imports
 
 def get_opcode(version, is_pypy):
     # Set up disassembler with the right opcodes
+    if type(version) in (list, tuple):
+        version = ".".join([str(x) for x in version])
     lookup = str(version)
     if is_pypy:
         lookup += "pypy"

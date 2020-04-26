@@ -37,7 +37,7 @@ check-short: unittest
 
 #: Run unittests tests
 unittest:
-	nosetests -v
+	cd test_unit && for file in test_*.py; do echo testing $$file ...; nosetests -v $$file; done
 
 #: Clean up temporary files and .pyc files
 clean: clean_pyc
