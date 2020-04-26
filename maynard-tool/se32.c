@@ -1,28 +1,7 @@
-#include <stdio.h>
-#include <stdbool.h>
+#define PYTHON_VERSION "3.2"
 
-typedef enum {Py_LT, Py_LE, Py_EQ, Py_NE, Py_GT, Py_GE,
-} comparisons;
-
-#include "opcode27.h"
-#define PYTHON_VERSION "2.7"
-
-#define NOTFIXED -100
-
-#define fprintf ignore_fprintf
-
-void fprintf(FILE *f, char *s, ...)
-{
-    ;
-}
-
-static bool fatal_error = false;
-
-void Py_FatalError(char *ignored)
-{
-    fatal_error = true;
-}
-
+#include "header.h"
+#include "opcode32.h"
 
 /*
  * When computing the stack effect for Python 3.x,
@@ -42,26 +21,23 @@ opcode_stack_effect(int opcode, int oparg)
             return 0;
         case DUP_TOP:
             return 1;
-        case ROT_FOUR:
-            return 0;
+        case DUP_TOP_TWO:
+            return 2;
 
         case UNARY_POSITIVE:
         case UNARY_NEGATIVE:
         case UNARY_NOT:
-        case UNARY_CONVERT:
         case UNARY_INVERT:
             return 0;
 
         case SET_ADD:
         case LIST_APPEND:
             return -1;
-
         case MAP_ADD:
             return -2;
 
         case BINARY_POWER:
         case BINARY_MULTIPLY:
-        case BINARY_DIVIDE:
         case BINARY_MODULO:
         case BINARY_ADD:
         case BINARY_SUBTRACT:
@@ -73,37 +49,9 @@ opcode_stack_effect(int opcode, int oparg)
         case INPLACE_TRUE_DIVIDE:
             return -1;
 
-        case SLICE+0:
-            return 0;
-        case SLICE+1:
-            return -1;
-        case SLICE+2:
-            return -1;
-        case SLICE+3:
-            return -2;
-
-        case STORE_SLICE+0:
-            return -2;
-        case STORE_SLICE+1:
-            return -3;
-        case STORE_SLICE+2:
-            return -3;
-        case STORE_SLICE+3:
-            return -4;
-
-        case DELETE_SLICE+0:
-            return -1;
-        case DELETE_SLICE+1:
-            return -2;
-        case DELETE_SLICE+2:
-            return -2;
-        case DELETE_SLICE+3:
-            return -3;
-
         case INPLACE_ADD:
         case INPLACE_SUBTRACT:
         case INPLACE_MULTIPLY:
-        case INPLACE_DIVIDE:
         case INPLACE_MODULO:
             return -1;
         case STORE_SUBSCR:
@@ -126,14 +74,8 @@ opcode_stack_effect(int opcode, int oparg)
 
         case PRINT_EXPR:
             return -1;
-        case PRINT_ITEM:
-            return -1;
-        case PRINT_NEWLINE:
-            return 0;
-        case PRINT_ITEM_TO:
-            return -2;
-        case PRINT_NEWLINE_TO:
-            return -1;
+        case LOAD_BUILD_CLASS:
+            return 1;
         case INPLACE_LSHIFT:
         case INPLACE_RSHIFT:
         case INPLACE_AND:
@@ -143,27 +85,24 @@ opcode_stack_effect(int opcode, int oparg)
         case BREAK_LOOP:
             return 0;
         case SETUP_WITH:
-            return 4;
+            return 7;
         case WITH_CLEANUP:
             return -1; /* XXX Sometimes more */
-        case LOAD_LOCALS:
-            return 1;
+        case STORE_LOCALS:
+            return -1;
         case RETURN_VALUE:
             return -1;
         case IMPORT_STAR:
             return -1;
-        case EXEC_STMT:
-            return -3;
         case YIELD_VALUE:
             return 0;
 
         case POP_BLOCK:
             return 0;
+        case POP_EXCEPT:
+            return 0;  /* -3 except if bad bytecode */
         case END_FINALLY:
-            return -3; /* or -1 or -2 if no exception occurred or
-                          return/break/continue */
-        case BUILD_CLASS:
-            return -2;
+            return -1; /* or -2 or -3 if exception occurred */
 
         case STORE_NAME:
             return -1;
@@ -171,6 +110,8 @@ opcode_stack_effect(int opcode, int oparg)
             return 0;
         case UNPACK_SEQUENCE:
             return oparg-1;
+        case UNPACK_EX:
+            return (oparg&0xFF) + (oparg>>8);
         case FOR_ITER:
             return 1; /* or -1, at end of iterator */
 
@@ -182,8 +123,6 @@ opcode_stack_effect(int opcode, int oparg)
             return -1;
         case DELETE_GLOBAL:
             return 0;
-        case DUP_TOPX:
-            return oparg;
         case LOAD_CONST:
             return 1;
         case LOAD_NAME:
@@ -219,9 +158,11 @@ opcode_stack_effect(int opcode, int oparg)
         case CONTINUE_LOOP:
             return 0;
         case SETUP_LOOP:
+            return 0;
         case SETUP_EXCEPT:
         case SETUP_FINALLY:
-            return 0;
+            return 6; /* can push 3 values for the new exception
+                + 3 others for the previous exception state */
 
         case LOAD_FAST:
             return 1;
@@ -232,7 +173,7 @@ opcode_stack_effect(int opcode, int oparg)
 
         case RAISE_VARARGS:
             return -oparg;
-#define NARGS(o) (((o) % 256) + 2*((o) / 256))
+#define NARGS(o) (((o) % 256) + 2*(((o) / 256) % 256))
         case CALL_FUNCTION:
             return -NARGS(oparg);
         case CALL_FUNCTION_VAR:
@@ -240,23 +181,25 @@ opcode_stack_effect(int opcode, int oparg)
             return -NARGS(oparg)-1;
         case CALL_FUNCTION_VAR_KW:
             return -NARGS(oparg)-2;
-#undef NARGS
         case MAKE_FUNCTION:
-            return -oparg;
+            return -NARGS(oparg) - ((oparg >> 16) & 0xffff);
+        case MAKE_CLOSURE:
+            return -1 - NARGS(oparg) - ((oparg >> 16) & 0xffff);
+#undef NARGS
         case BUILD_SLICE:
             if (oparg == 3)
                 return -2;
             else
                 return -1;
 
-        case MAKE_CLOSURE:
-            return -oparg-1;
         case LOAD_CLOSURE:
             return 1;
         case LOAD_DEREF:
             return 1;
         case STORE_DEREF:
             return -1;
+        case DELETE_DEREF:
+            return 0;
         default:
             fprintf(stderr, "opcode = %d\n", opcode);
             Py_FatalError("opcode_stack_effect()");

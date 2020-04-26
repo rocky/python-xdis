@@ -1,4 +1,5 @@
-The C programs are modified from the Maynard Python assember for Python 3.3-3.6
+The C programs are modified from a c program used in Maynard Python
+assembler for Python 3.3-3.6
 
 The following is from Maynard:
 

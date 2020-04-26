@@ -1,28 +1,7 @@
-#include <stdio.h>
-#include <stdbool.h>
+#define PYTHON_VERSION "3.3"
 
-typedef enum {Py_LT, Py_LE, Py_EQ, Py_NE, Py_GT, Py_GE,
-} comparisons;
-
-#include "opcode31.h"
-#define PYTHON_VERSION "3.1"
-
-#define NOTFIXED -100
-
-#define fprintf ignore_fprintf
-
-void fprintf(FILE *f, char *s, ...)
-{
-    ;
-}
-
-static bool fatal_error = false;
-
-void Py_FatalError(char *ignored)
-{
-    fatal_error = true;
-}
-
+#include "header.h"
+#include "opcode33.h"
 
 /*
  * When computing the stack effect for Python 3.x,
@@ -42,8 +21,8 @@ opcode_stack_effect(int opcode, int oparg)
             return 0;
         case DUP_TOP:
             return 1;
-        case ROT_FOUR:
-            return 0;
+        case DUP_TOP_TWO:
+            return 2;
 
         case UNARY_POSITIVE:
         case UNARY_NEGATIVE:
@@ -105,6 +84,8 @@ opcode_stack_effect(int opcode, int oparg)
             return -1;
         case BREAK_LOOP:
             return 0;
+        case SETUP_WITH:
+            return 7;
         case WITH_CLEANUP:
             return -1; /* XXX Sometimes more */
         case STORE_LOCALS:
@@ -115,7 +96,8 @@ opcode_stack_effect(int opcode, int oparg)
             return -1;
         case YIELD_VALUE:
             return 0;
-
+        case YIELD_FROM:
+            return -1;
         case POP_BLOCK:
             return 0;
         case POP_EXCEPT:
@@ -132,7 +114,7 @@ opcode_stack_effect(int opcode, int oparg)
         case UNPACK_EX:
             return (oparg&0xFF) + (oparg>>8);
         case FOR_ITER:
-            return 1;
+            return 1; /* or -1, at end of iterator */
 
         case STORE_ATTR:
             return -2;
@@ -142,8 +124,6 @@ opcode_stack_effect(int opcode, int oparg)
             return -1;
         case DELETE_GLOBAL:
             return 0;
-        case DUP_TOPX:
-            return oparg;
         case LOAD_CONST:
             return 1;
         case LOAD_NAME:
@@ -159,7 +139,7 @@ opcode_stack_effect(int opcode, int oparg)
         case COMPARE_OP:
             return -1;
         case IMPORT_NAME:
-            return 0;
+            return -1;
         case IMPORT_FROM:
             return 1;
 
@@ -203,9 +183,9 @@ opcode_stack_effect(int opcode, int oparg)
         case CALL_FUNCTION_VAR_KW:
             return -NARGS(oparg)-2;
         case MAKE_FUNCTION:
-            return -NARGS(oparg) - ((oparg >> 16) & 0xffff);
+            return -1 -NARGS(oparg) - ((oparg >> 16) & 0xffff);
         case MAKE_CLOSURE:
-            return -1 - NARGS(oparg) - ((oparg >> 16) & 0xffff);
+            return -2 - NARGS(oparg) - ((oparg >> 16) & 0xffff);
 #undef NARGS
         case BUILD_SLICE:
             if (oparg == 3)
@@ -219,6 +199,8 @@ opcode_stack_effect(int opcode, int oparg)
             return 1;
         case STORE_DEREF:
             return -1;
+        case DELETE_DEREF:
+            return 0;
         default:
             fprintf(stderr, "opcode = %d\n", opcode);
             Py_FatalError("opcode_stack_effect()");
