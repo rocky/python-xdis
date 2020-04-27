@@ -1,3 +1,10 @@
+4.5.1 2020-04-26 stack_effects redux
+====================================
+
+* Fix bug in marshal for 3.8+ (include posonlyargcount)
+* Go over stack effects from 2.5 to 3.4 using and idea from Maynard
+* Expand stack-effect testing
+
 4.5.0 2020-04-20 stack_effects
 ==============================
 
