@@ -1035,17 +1035,27 @@ def dumps(x, version=version, python_version=None):
         is_python3 = PYTHON3
 
     if is_python3:
-        buf = []
-        for b in buffer:
-            if isinstance(b, str) and PYTHON3:
-                s2b = bytes(ord(b[j]) for j in range(len(b)))
-                buf.append(s2b)
-            elif isinstance(b, bytearray):
-                buf.append(str(b))
-            else:
-                buf.append(b)
-        return b"".join(buf)
+        if PYTHON_VERSION >= 3.0:
+            # Python 3.x handling  Python 3.x
+            buf = []
+            for b in buffer:
+                if isinstance(b, str) and PYTHON3:
+                    s2b = bytes(ord(b[j]) for j in range(len(b)))
+                    buf.append(s2b)
+                elif isinstance(b, bytearray):
+                    buf.append(str(b))
+                else:
+                    buf.append(b)
+            return b"".join(buf)
+        else:
+            # Python 2.x handling Python 3.x
+            buf = b""
+            for b in buffer:
+                buf += b.decode(errors="ignore")
+                pass
+            return buf
     else:
+        # Python 2 or 3 handling Python 2.x
         buf = []
         for b in buffer:
             if isinstance(b, bytes):
