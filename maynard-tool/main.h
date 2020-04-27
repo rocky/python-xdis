@@ -1,3 +1,4 @@
+/* main()  portion of the se programs */
 int main(int c, char *v[])
 {
     int i;
