@@ -71,6 +71,10 @@ from xdis.load import (
     write_bytecode_file,
 )
 
+from xdis.op_imports import (
+    get_opcode_module
+)
+
 from xdis.magics import (
     int2magic,
     magic2int,

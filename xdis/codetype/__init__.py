@@ -41,6 +41,8 @@ corresponding more flexible xdis Code type,.
         raise TypeError(
             "parameter expected to be a types.CodeType type; is %s instead" % type(code)
         )
+    if isinstance(version, str):
+        version = float(version)
     if version >= 3.0:
         if version < 3.8:
             return Code3(
