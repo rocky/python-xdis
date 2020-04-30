@@ -10,7 +10,7 @@ import os.path as osp
 
 from xdis.version import VERSION
 from xdis import PYTHON_VERSION
-from xdis.main import disassemble_file
+from xdis import disassemble_file
 
 program, ext = os.path.splitext(os.path.basename(__file__))
 

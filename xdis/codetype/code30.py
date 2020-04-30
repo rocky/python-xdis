@@ -18,7 +18,7 @@ import types
 from copy import deepcopy
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
-from xdis.version_info import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION
 
 # Below, in the Python 2.4 branch "bytes" is "str" since there may not be a "bytes" type.
 Code3FieldTypes = deepcopy(Code2FieldTypes)
@@ -118,8 +118,11 @@ class Code3(Code2):
             # into the encoded format
             self.encode_lineno_tab()
 
-        if isinstance(self.co_code, str):
+        if isinstance(self.co_code, str) and PYTHON_VERSION >= 3.0:
             self.co_code = self.co_code.encode()
+
+        if isinstance(self.co_lnotab, str):
+            self.co_lnotab = self.co_lnotab.encode()
 
         return self
 

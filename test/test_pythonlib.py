@@ -29,7 +29,7 @@ Step 2: Run the test:
 
 import getopt, os, py_compile, sys, shutil, tempfile, time
 
-from xdis import main, PYTHON_VERSION
+from xdis import PYTHON_VERSION, disassemble_file
 from fnmatch import fnmatch
 
 def get_srcdir():
@@ -162,7 +162,7 @@ def do_tests(src_dir, obj_patterns, target_dir, opts):
     os.chdir(src_dir)
     try:
         for infile in files:
-            main.disassemble_file(infile, output)
+            disassemble_file(infile, output)
             if opts['do_verify']:
                 pass
             # print("Need to do something here to verify %s" % infile)

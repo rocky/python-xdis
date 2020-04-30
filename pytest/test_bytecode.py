@@ -131,7 +131,7 @@ def test_get_jump_targets():
     offsets = opcode_27.get_jump_targets(code,  opcode_27)
     assert [10] == offsets
 
-    # from xdis.main import disassemble_file
+    # from xdis import disassemble_file
     # print('\n')
     # disassemble_file(test_pyc)
 
@@ -171,7 +171,7 @@ def test_get_jump_targets():
     offsets = opcode_36.get_jump_targets(code,  opcode_36)
     assert offsets == [8]
 
-    from xdis.main import disassemble_file
+    from xdis import disassemble_file
     print('\n')
     disassemble_file(test_pyc)
 

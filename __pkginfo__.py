@@ -45,6 +45,7 @@ install_requires   = []
 license            = 'GPL-2.0'
 mailing_list       = 'python-debugger@googlegroups.com'
 modname            = 'xdis'
+packages=['xdis']
 py_modules         = None
 # setup_requires     = ['pytest-runner']
 scripts            = ['bin/pydisasm.py']
