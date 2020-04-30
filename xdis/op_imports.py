@@ -141,6 +141,11 @@ def get_opcode_module(version_info=None, variant=None):
         version_info = sys.version_info
         if variant is None and IS_PYPY:
             variant = 'pypy'
+            pass
+        pass
+    elif isinstance(version_info, float):
+        int_vers = int(version_info * 10)
+        version_info = [int_vers // 10, int_vers % 10]
 
     vers_str = '.'.join([str(v) for v in version_info[0:3]])
     if len(version_info) >= 3 and version_info[3] != 'final':

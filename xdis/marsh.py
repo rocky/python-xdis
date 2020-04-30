@@ -97,6 +97,9 @@ class _Marshaller:
         self.python_version = python_version
 
     def dump(self, x):
+        if isinstance(x, types.CodeType) and PYTHON_VERSION != self.version:
+            raise RuntimeError("code type passed for version %s but we are running version %s" %
+                               (PYTHON_VERSION, self.version))
         try:
             self.dispatch[type(x)](self, x)
         except KeyError:
@@ -1030,7 +1033,7 @@ def dumps(x, version=version, python_version=None):
     m = _Marshaller(buffer.append, python_version=python_version)
     m.dump(x)
     if python_version:
-        is_python3 = python_version >= "3.0"
+        is_python3 = python_version >= 3.0
     else:
         is_python3 = PYTHON3
 

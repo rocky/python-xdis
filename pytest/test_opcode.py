@@ -1,5 +1,5 @@
 from xdis import IS_PYPY, PYTHON_VERSION
-from xdis.main import get_opcode
+from xdis import get_opcode
 import dis
 
 def test_opcode():

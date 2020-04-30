@@ -118,8 +118,11 @@ class Code3(Code2):
             # into the encoded format
             self.encode_lineno_tab()
 
-        if isinstance(self.co_code, str):
+        if isinstance(self.co_code, str) and PYTHON_VERSION >= 3.0:
             self.co_code = self.co_code.encode()
+
+        if isinstance(self.co_lnotab, str):
+            self.co_lnotab = self.co_lnotab.encode()
 
         return self
 

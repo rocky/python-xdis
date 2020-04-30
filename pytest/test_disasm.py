@@ -2,7 +2,7 @@ import os
 import pytest
 import re
 
-from xdis.main import disassemble_file
+from xdis import disassemble_file
 from xdis import PYTHON3, PYTHON_VERSION
 
 if PYTHON3:

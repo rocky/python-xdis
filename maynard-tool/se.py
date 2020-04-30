@@ -7,7 +7,7 @@ from xdis import PYTHON_VERSION
 import dis
 NOTFIXED = -100
 from xdis.cross_dis import op_has_argument
-from xdis.main import get_opcode
+from xdis import get_opcode
 
 print("# Python %s Stack effects\n" % PYTHON_VERSION)
 assert PYTHON_VERSION >= 3.4, "This only works for Python version 3.4 and above; you have version %s." % PYTHON_VERSION
