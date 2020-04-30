@@ -4,11 +4,11 @@
 from __pkginfo__ import \
     author,           author_email,       entry_points, \
     license,          long_description,   classifiers,               \
-    modname,          py_modules,         \
+    modname,          packages,           py_modules,         \
     scripts,          short_desc,         tests_require,             \
     VERSION,          web,                zip_safe
 
-from setuptools import setup, find_packages
+from setuptools import setup
 setup(
        author             = author,
        author_email       = author_email,
@@ -19,7 +19,7 @@ setup(
        long_description   = long_description,
        long_description_content_type = "text/x-rst",
        name               = modname,
-       packages           = find_packages(),
+       packages           = packages,
        py_modules         = py_modules,
        # setup_requires     = setup_requires,
        tests_require      = tests_require,

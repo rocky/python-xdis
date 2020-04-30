@@ -1,7 +1,5 @@
 language: python
 
-sudo: true
-
 # For older versions we need older branches
 python:
   - 'pypy'

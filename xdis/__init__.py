@@ -71,6 +71,14 @@ from xdis.load import (
     write_bytecode_file,
 )
 
+from xdis.main import (
+    get_opcode,
+    show_module_header,
+    disco_loop,
+    disco_loop_asm_format,
+    disassemble_file,
+)
+
 from xdis.op_imports import (
     get_opcode_module
 )

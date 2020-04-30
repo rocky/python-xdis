@@ -1,7 +1,7 @@
 import os.path
 import pytest
 
-from xdis.main import disassemble_file
+from xdis import disassemble_file
 
 def get_srcdir():
     filename = os.path.normcase(os.path.dirname(__file__))
