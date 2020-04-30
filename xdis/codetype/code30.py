@@ -18,7 +18,7 @@ import types
 from copy import deepcopy
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
-from xdis.version_info import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION
 
 # Below, in the Python 2.4 branch "bytes" is "str" since there may not be a "bytes" type.
 Code3FieldTypes = deepcopy(Code2FieldTypes)
