@@ -19,10 +19,8 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
-import re, sys, types
+import sys, types
 from xdis.version_info import PYTHON3
-
-from collections import namedtuple
 
 from xdis.cross_dis import get_code_object, format_code_info, instruction_size, op_has_argument
 from xdis.instruction import Instruction

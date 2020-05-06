@@ -8,7 +8,6 @@ from __pkginfo__ import \
     scripts,          short_desc,         tests_require,             \
     VERSION,          web,                zip_safe
 
-from setuptools import setup
 setup(
        author             = author,
        author_email       = author_email,

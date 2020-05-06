@@ -40,7 +40,14 @@ author = "Rocky Bernstein, Hartmut Goebel and others"
 author_email = "rb@dustyfeet.com"
 entry_points = {"console_scripts": ["pydisasm=xdis.bin.pydisasm:main"]}
 ftp_url = None
+
+# Python-version | package | last-version |
+# -----------------------------------------
+# 3.2            | click   | 4.0          |
+# 3.2            | pip     | 7.1.2        |
+
 install_requires = [_six, "click"]
+
 license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
 modname = "xdis"

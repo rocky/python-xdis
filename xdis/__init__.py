@@ -29,6 +29,7 @@ from xdis.version_info import *
 
 from xdis.bytecode import (
     Bytecode,
+    extended_arg_val,
     list2bytecode,
     next_offset,
     op_has_argument,
@@ -90,4 +91,8 @@ from xdis.magics import (
     py_str2float,
     sysinfo2float,
     sysinfo2magic
+)
+
+from xdis.util import (
+    code2num
 )
