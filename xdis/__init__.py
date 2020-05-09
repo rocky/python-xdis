@@ -25,19 +25,24 @@ import sys
 __docformat__ = "restructuredtext"
 
 # Export various things from the modules
-from xdis.version_info import *
+from xdis.version_info import (
+    IS_PYPY,
+    PYTHON3,
+    PYTHON_VERSION,
+    PYTHON_VERSION_STR,
+)
 
 from xdis.bytecode import (
     Bytecode,
     extended_arg_val,
+    get_instructions_bytes,
     list2bytecode,
     next_offset,
+    offset2line,
     op_has_argument,
-    )
-
-from xdis.instruction import (
-    Instruction,
 )
+
+from xdis.instruction import Instruction
 
 from xdis.codetype import (
     Code13,
@@ -80,9 +85,7 @@ from xdis.main import (
     disassemble_file,
 )
 
-from xdis.op_imports import (
-    get_opcode_module
-)
+from xdis.op_imports import get_opcode_module
 
 from xdis.magics import (
     int2magic,
@@ -90,9 +93,7 @@ from xdis.magics import (
     magic_int2float,
     py_str2float,
     sysinfo2float,
-    sysinfo2magic
+    sysinfo2magic,
 )
 
-from xdis.util import (
-    code2num
-)
+from xdis.util import code2num
