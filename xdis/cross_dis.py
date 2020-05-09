@@ -55,13 +55,16 @@ def findlinestarts(code, dup_lines=False):
             yield addr, lineno
         # For 3.8 we have to fall through to the return rather
         # than add raise StopIteration
+    elif len(lineno_table) == 0:
+        yield 0, code.co_firstlineno
     else:
-        if not isinstance(code.co_lnotab, str):
+        if isinstance(lineno_table[0], int):
             byte_increments = list(code.co_lnotab[0::2])
             line_increments = list(code.co_lnotab[1::2])
         else:
             byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
             line_increments = [ord(c) for c in code.co_lnotab[1::2]]
+        bytecode_len = len(code.co_code)
 
         lastlineno = None
         lineno = code.co_firstlineno
@@ -72,8 +75,15 @@ def findlinestarts(code, dup_lines=False):
                     yield (offset, lineno)
                     lastlineno = lineno
                     pass
+                if offset >= bytecode_len:
+                    # The rest of the lnotab byte offsets are past the end of
+                    # the bytecode, so the lines were optimized away.
+                    return
                 offset += byte_incr
                 pass
+            if line_incr >= 0x80:
+                # line_increments is an array of 8-bit signed integers
+                line_incr -= 0x100
             lineno += line_incr
         if lineno != lastlineno or (dup_lines and 0 < byte_incr < 255):
             yield (offset, lineno)
@@ -327,17 +337,17 @@ def xstack_effect(opcode, opc, oparg=None, jump=None):
         return push + oparg
     elif opname in ("BUILD_SLICE") and opc.version <= 2.7:
         if oparg == 3:
-            return -2;
+            return -2
         else:
-            return -1;
+            return -1
         pass
     elif opname == "MAKE_FUNCTION":
         if opc.version >= 3.5:
             if 0 <= oparg <= 10:
                 if opc.version == 3.5:
-                    return [-1, -2, -3, -3, -2, -3, -3 , -4, -2, -3, -3, -4][oparg]
+                    return [-1, -2, -3, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
                 elif opc.version >= 3.6:
-                    return [-1, -2, -2, -3, -2, -3, -3 , -4, -2, -3, -3, -4][oparg]
+                    return [-1, -2, -2, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
             else:
                 return None
     elif opname == "CALL_FUNCTION_EX":
@@ -355,6 +365,7 @@ def xstack_effect(opcode, opc, oparg=None, jump=None):
         elif opcode in opc.NARGS_OPS:
             return -oparg + pop + push
     return -100
+
 
 def check_stack_effect():
     import dis
@@ -377,11 +388,14 @@ def check_stack_effect():
         if (
             PYTHON_VERSION > 3.7
             and opcode in opc.CONDITION_OPS
-            and opname not in ("JUMP_IF_FALSE_OR_POP",
-                               "JUMP_IF_TRUE_OR_POP",
-                               "POP_JUMP_IF_FALSE",
-                               "POP_JUMP_IF_TRUE",
-                               "SETUP_FINALLY",)
+            and opname
+            not in (
+                "JUMP_IF_FALSE_OR_POP",
+                "JUMP_IF_TRUE_OR_POP",
+                "POP_JUMP_IF_FALSE",
+                "POP_JUMP_IF_TRUE",
+                "SETUP_FINALLY",
+            )
         ):
             xdis_args.append(0)
             dis_args.append(0)
@@ -408,5 +422,6 @@ def check_stack_effect():
 
 if __name__ == "__main__":
     from xdis import PYTHON_VERSION
+
     if PYTHON_VERSION >= 3.4:
         check_stack_effect()

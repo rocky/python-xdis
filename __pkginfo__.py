@@ -43,8 +43,10 @@ ftp_url = None
 
 # Python-version | package | last-version |
 # -----------------------------------------
-# 3.2            | click   | 4.0          |
+# 2.6            | pip     | 1.5.6        |
+# 3.1            | pip     | 1.5.6        |
 # 3.2            | pip     | 7.1.2        |
+# 3.2            | click   | 4.0          |
 
 install_requires = [_six, "click"]
 
