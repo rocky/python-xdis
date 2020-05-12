@@ -85,6 +85,27 @@ from xdis.main import (
     disassemble_file,
 )
 
+from xdis.opcodes import (
+    opcode_13,
+    opcode_14,
+    opcode_15,
+    opcode_22,
+    opcode_23,
+    opcode_24,
+    opcode_25,
+    opcode_26,
+    opcode_27,
+    opcode_30,
+    opcode_31,
+    opcode_32,
+    opcode_33,
+    opcode_34,
+    opcode_35,
+    opcode_36,
+    opcode_37,
+    opcode_38,
+)
+
 from xdis.op_imports import get_opcode_module
 
 from xdis.magics import (
@@ -96,4 +117,25 @@ from xdis.magics import (
     sysinfo2magic,
 )
 
-from xdis.util import code2num
+from xdis.util import (
+    COMPILER_FLAG_NAMES,
+    CO_ABSOLUTE_IMPORT,
+    CO_ASYNC_GENERATOR,
+    CO_COROUTINE,
+    CO_FUTURE_BARRY_AS_DBFL,
+    CO_FUTURE_DIVISION,
+    CO_FUTURE_PRINT_FUNCTION,
+    CO_FUTURE_UNICODE_LITERALS,
+    CO_FUTURE_WITH_STATEMENT,
+    CO_GENERATOR,
+    CO_GENERATOR_ALLOWED,
+    CO_ITERABLE_COROUTINE,
+    CO_NESTED,
+    CO_NEWLOCALS,
+    CO_NOFREE,
+    CO_OPTIMIZED,
+    CO_VARARGS,
+    CO_VARKEYWORDS,
+    PYPY_COMPILER_FLAG_NAMES,
+    code2num
+)

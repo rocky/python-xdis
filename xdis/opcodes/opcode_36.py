@@ -145,7 +145,9 @@ def format_CALL_FUNCTION(argc):
 def format_CALL_FUNCTION_EX(flags):
     str = ""
     if flags & 0x01:
-        str = "keyword args"
+        str = "keyword and positional arguments"
+    else:
+        str = "positional arguments only"
     return str
 
 def format_CALL_FUNCTION_KW(argc):
