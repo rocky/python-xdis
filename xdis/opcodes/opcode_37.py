@@ -100,6 +100,7 @@ format_MAKE_FUNCTION_arg = opcode_36.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_36.format_value_flags
 
 opcode_arg_fmt = {
+    'CALL_FUNCTION': opcode_36.format_CALL_FUNCTION,
     'CALL_FUNCTION_KW': opcode_36.format_CALL_FUNCTION_KW,
     'CALL_FUNCTION_EX': opcode_36.format_CALL_FUNCTION_EX,
     'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,

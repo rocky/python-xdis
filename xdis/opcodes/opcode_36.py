@@ -102,6 +102,8 @@ varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 def format_MAKE_FUNCTION_arg(flags):
+    if flags == 0:
+        return "No defaults, keyword-only args, annotations, or closures"
     pattr = ''
     for flag in MAKE_FUNCTION_FLAGS:
         bit = flags & 1
@@ -132,6 +134,14 @@ def format_value_flags(flags):
 def format_extended_arg36(arg):
     return str(arg * (1 << 8))
 
+def format_CALL_FUNCTION(argc):
+    """argc indicates the number of positional arguments"""
+    if argc == 1:
+        plural = ""
+    else:
+        plural = "s"
+    return ("%d positional argument%s" % (argc, plural))
+
 def format_CALL_FUNCTION_EX(flags):
     str = ""
     if flags & 0x01:
@@ -142,6 +152,7 @@ def format_CALL_FUNCTION_KW(argc):
     return "%d total positional and keyword args" % argc
 
 opcode_arg_fmt = {
+    'CALL_FUNCTION': format_CALL_FUNCTION,
     'CALL_FUNCTION_KW': format_CALL_FUNCTION_KW,
     'CALL_FUNCTION_EX': format_CALL_FUNCTION_EX,
     'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
