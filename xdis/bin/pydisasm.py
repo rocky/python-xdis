@@ -65,7 +65,7 @@ def main(asm, show_bytes, header, files):
         elif not osp.isfile(path):
             sys.stderr.write("File name: '%s' isn't a file\n" % path)
             continue
-        elif osp.getsize(path) < 50:
+        elif osp.getsize(path) < 50 and not path.endswith(".py"):
             sys.stderr.write(
                 "File name: '%s (%d bytes)' is too short to be a valid pyc file\n"
                 % (path, osp.getsize(path))

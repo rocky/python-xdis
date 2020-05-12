@@ -22,7 +22,7 @@ of stack usage.
 
 from xdis.opcodes.base import(
     def_op, finalize_opcodes,
-    init_opdata, jrel_op, name_op,
+    init_opdata, jrel_op,
     nargs_op, rm_op, store_op, varargs_op,
     update_pj3
     )

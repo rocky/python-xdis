@@ -30,15 +30,16 @@ want to run on Python 2.7.
 # imports so this can run on older Pythons. This is
 # intended to be a more cross-version Python program
 
-import datetime, re, sys, types
+import datetime, os, re, sys, types
 from collections import deque
 
 import xdis
 
-from xdis import IS_PYPY
+from xdis import IS_PYPY, PYTHON_VERSION
 from xdis.bytecode import Bytecode
 from xdis.codetype import iscode, codeType2Portable
 from xdis.load import check_object_path, load_module
+from xdis.magics import PYTHON_MAGIC_INT
 from xdis.cross_dis import format_code_info
 from xdis.version import VERSION
 from xdis.op_imports import op_imports
@@ -267,9 +268,31 @@ def disassemble_file(
 
     If given a Python source file (".py") file, we'll
     try to find the corresponding compiled object.
+
+    If that fails we'll compile internally for the Python version currently running
     """
-    filename = check_object_path(filename)
-    version, timestamp, magic_int, co, is_pypy, source_size, sip_hash = load_module(filename)
+    pyc_filename = None
+    try:
+        # FIXME: add whether we want PyPy
+        pyc_filename = check_object_path(filename)
+        version, timestamp, magic_int, co, is_pypy, source_size, sip_hash = load_module(pyc_filename)
+    except:
+
+        # Hack alert: we're using pyc_filename set as a proxy for whether the filename exists.
+        # check_object_path() will succeed if the file exists.
+        if pyc_filename is None:
+            raise
+        stat = os.stat(filename)
+        source = open(filename, "r").read()
+        co = compile(source, filename, "exec")
+        is_pypy = IS_PYPY
+        magic_int = PYTHON_MAGIC_INT
+        sip_hash = 0
+        source_size = stat.st_size
+        timestamp = stat.st_mtime
+        version = PYTHON_VERSION
+    else:
+        filename = pyc_filename
 
     if header:
         show_module_header(
