@@ -35,6 +35,7 @@ import xdis.opcodes.opcode_35 as opcode_35
 EXTENDED_ARG_SHIFT = 8
 
 version = 3.6
+python_implementation = "CPython"
 
 l = locals()
 

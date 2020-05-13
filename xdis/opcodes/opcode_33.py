@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2020 by Rocky Bernstein
 """
 CPython 3.3 bytecode opcodes
 
@@ -16,6 +16,7 @@ from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
 import xdis.opcodes.opcode_3x as opcode_3x
 
 version = 3.3
+python_implementation = "CPython"
 
 l = locals()
 init_opdata(l, opcode_3x, version)

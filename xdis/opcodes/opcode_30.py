@@ -15,6 +15,7 @@ from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
 import xdis.opcodes.opcode_31 as opcode_31
 
 version = 3.0
+python_implementation = "CPython"
 
 l = locals()
 

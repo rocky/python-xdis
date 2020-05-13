@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2020 by Rocky Bernstein
 """
 PYPY 3.2 opcodes
 
@@ -17,6 +17,7 @@ from xdis.opcodes.base import (
 )
 
 version = 3.2
+python_implementation = "PyPy"
 
 import xdis.opcodes.opcode_32 as opcode_32
 
