@@ -7,9 +7,13 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    def_op, finalize_opcodes,
-    format_extended_arg, init_opdata,
-    rm_op, update_pj3)
+    def_op,
+    finalize_opcodes,
+    format_CALL_FUNCTION_pos_name_encoded,
+    format_extended_arg,
+    init_opdata,
+    rm_op,
+    update_pj3)
 
 from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
 
@@ -31,6 +35,7 @@ update_pj3(globals(), l)
 opcode_arg_fmt = {
     'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
     'EXTENDED_ARG': format_extended_arg,
+    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
 }
 
 finalize_opcodes(l)

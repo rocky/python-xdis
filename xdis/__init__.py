@@ -52,6 +52,7 @@ from xdis.codetype import (
     Code38,
     code_has_star_star_arg,
     code_has_star_arg,
+    codeType2Portable,
     iscode,
 )
 
