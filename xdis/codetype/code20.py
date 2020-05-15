@@ -21,10 +21,9 @@ from copy import deepcopy
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
 Code2FieldTypes = deepcopy(Code15FieldTypes)
-Code2FieldTypes.update({
-    "co_freevars": (tuple, list),
-    "co_cellvars": (tuple, list),
-    })
+Code2FieldTypes.update(
+    {"co_freevars": (tuple, list), "co_cellvars": (tuple, list),}
+)
 # co_firstlineno added since 1.x
 
 
