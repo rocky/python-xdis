@@ -25,18 +25,24 @@ import sys
 __docformat__ = "restructuredtext"
 
 # Export various things from the modules
-from xdis.version_info import *
+from xdis.version_info import (
+    IS_PYPY,
+    PYTHON3,
+    PYTHON_VERSION,
+    PYTHON_VERSION_STR,
+)
 
 from xdis.bytecode import (
     Bytecode,
+    extended_arg_val,
+    get_instructions_bytes,
     list2bytecode,
     next_offset,
+    offset2line,
     op_has_argument,
-    )
-
-from xdis.instruction import (
-    Instruction,
 )
+
+from xdis.instruction import Instruction
 
 from xdis.codetype import (
     Code13,
@@ -46,6 +52,7 @@ from xdis.codetype import (
     Code38,
     code_has_star_star_arg,
     code_has_star_arg,
+    codeType2Portable,
     iscode,
 )
 
@@ -79,9 +86,28 @@ from xdis.main import (
     disassemble_file,
 )
 
-from xdis.op_imports import (
-    get_opcode_module
+from xdis.opcodes import (
+    opcode_13,
+    opcode_14,
+    opcode_15,
+    opcode_22,
+    opcode_23,
+    opcode_24,
+    opcode_25,
+    opcode_26,
+    opcode_27,
+    opcode_30,
+    opcode_31,
+    opcode_32,
+    opcode_33,
+    opcode_34,
+    opcode_35,
+    opcode_36,
+    opcode_37,
+    opcode_38,
 )
+
+from xdis.op_imports import get_opcode_module
 
 from xdis.magics import (
     int2magic,
@@ -89,5 +115,29 @@ from xdis.magics import (
     magic_int2float,
     py_str2float,
     sysinfo2float,
-    sysinfo2magic
+    sysinfo2magic,
+)
+
+from xdis.util import (
+    COMPILER_FLAG_NAMES,
+    CO_ABSOLUTE_IMPORT,
+    CO_ASYNC_GENERATOR,
+    CO_COROUTINE,
+    CO_FUTURE_BARRY_AS_DBFL,
+    CO_FUTURE_DIVISION,
+    CO_FUTURE_GENERATOR_STOP,
+    CO_FUTURE_PRINT_FUNCTION,
+    CO_FUTURE_UNICODE_LITERALS,
+    CO_FUTURE_WITH_STATEMENT,
+    CO_GENERATOR,
+    CO_GENERATOR_ALLOWED,
+    CO_ITERABLE_COROUTINE,
+    CO_NESTED,
+    CO_NEWLOCALS,
+    CO_NOFREE,
+    CO_OPTIMIZED,
+    CO_VARARGS,
+    CO_VARKEYWORDS,
+    PYPY_COMPILER_FLAG_NAMES,
+    code2num
 )

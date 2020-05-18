@@ -56,13 +56,12 @@ def init_opdata(l, from_mod, version=None, is_pypy=False):
     l['is_pypy'] = is_pypy
     l['cmp_op'] = cmp_op
     l['HAVE_ARGUMENT'] = HAVE_ARGUMENT
+    l['findlinestarts'] = findlinestarts
     if version <= 3.5:
-        l['findlinestarts'] = findlinestarts
         l['findlabels']     = findlabels
         l['get_jump_targets'] = get_jump_targets
         l['get_jump_target_maps']  = get_jump_target_maps
     else:
-        l['findlinestarts'] = wordcode.findlinestarts
         l['findlabels']     = wordcode.findlabels
         l['get_jump_targets'] = wordcode.get_jump_targets
         l['get_jump_target_maps']  = wordcode.get_jump_target_maps

@@ -38,6 +38,7 @@ COMPILER_FLAG_NAMES = {
     0x00010000: "FUTURE_PRINT_FUNCTION",
     0x00020000: "FUTURE_UNICODE_LITERALS",
     0x00040000: "FUTURE_BARRY_AS_DBFL",
+    0x00080000: "FUTURE_GENERATOR_STOP",
 }
 
 # These are PYPY specific
@@ -45,6 +46,7 @@ PYPY_COMPILER_FLAG_NAMES = {
     0x00100000: "PYPY_KILL_DOCSTRING",
     0x00200000: "PYPY_YIELD_INSIDE_TRY",
     0x00000400: "PYPY_ONLY_AST",
+    0x00000800: "PYPY_IGNORE_COOKIE",
     0x10000000: "PYPY_ACCEPT_NULL_BYTES",
 }
 
@@ -114,7 +116,6 @@ def better_repr(v):
             return "(%s,)" % better_repr(v[0])
         return "(%s)" % ", ".join(better_repr(i) for i in v)
     elif isinstance(v, list):
-        l = better_repr(v)
         if len(v) == 1:
             return "[%s,]" % better_repr(v[0])
         return "[%s]" % ", ".join(better_repr(i) for i in v)

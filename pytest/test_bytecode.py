@@ -23,11 +23,10 @@ def bug_loop(disassemble, tb=None):
     disassemble(tb)
 
 import sys
-from xdis import PYTHON_VERSION
+from xdis import PYTHON_VERSION, findlinestarts
 from xdis.opcodes import opcode_27, opcode_36
 from xdis.load import load_module
 from xdis.bytecode import offset2line
-from xdis.opcodes.opcode_27 import findlinestarts
 
 import os.path as osp
 

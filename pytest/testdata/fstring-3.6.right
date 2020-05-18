@@ -45,7 +45,7 @@
               20 LOAD_CONST                4 (1991)
               22 LOAD_CONST                5 (10)
               24 LOAD_CONST                6 (12)
-              26 CALL_FUNCTION             3
+              26 CALL_FUNCTION             3 (3 positional arguments)
               28 STORE_NAME                4 (anniversary)
 
   7:          30 LOAD_NAME                 5 (print)
@@ -63,7 +63,7 @@
               54 FORMAT_VALUE              4
               56 LOAD_CONST               12 ('.')
               58 BUILD_STRING              7
-              60 CALL_FUNCTION             1
+              60 CALL_FUNCTION             1 (1 positional argument)
               62 POP_TOP
 
   8:          64 LOAD_NAME                 5 (print)
@@ -72,7 +72,7 @@
               70 FORMAT_VALUE              2 (!r)
               72 LOAD_CONST               12 ('.')
               74 BUILD_STRING              3
-              76 CALL_FUNCTION             1
+              76 CALL_FUNCTION             1 (1 positional argument)
               78 POP_TOP
               80 LOAD_CONST                1 (None)
               82 RETURN_VALUE

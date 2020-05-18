@@ -1,3 +1,3 @@
-# This file is suitable for sourcing inside bash as
+# This file is suitable for sourcing inside POSIX shell as
 # well as importing into Python
-VERSION='4.5.1'
+VERSION='4.6.0'  # noqa

@@ -1,4 +1,4 @@
-# (C) Copyright 2018 by Rocky Bernstein
+# (C) Copyright 2018, 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -18,6 +18,8 @@
 """
 from xdis import PYTHON3, PYTHON_VERSION
 from xdis.bytecode import op_has_argument
+from xdis.bytecode import op_has_argument
+
 
 def unpack_opargs_wordcode(code, opc):
     extended_arg = 0
@@ -32,7 +34,7 @@ def unpack_opargs_wordcode(code, opc):
         for i in range(0, n, 2):
             op = ord(code[i])
             if op_has_argument(op, opc):
-                arg = ord(code[i+1]) | extended_arg
+                arg = ord(code[i + 1]) | extended_arg
                 if op == opc.EXTENDED_ARG:
                     extended_arg = (arg << 8)
                 else:
@@ -45,7 +47,7 @@ def unpack_opargs_wordcode(code, opc):
         for i in range(0, n, 2):
             op = code[i]
             if op_has_argument(op, opc):
-                arg = code[i+1] | extended_arg
+                arg = code[i + 1] | extended_arg
                 if op == opc.EXTENDED_ARG:
                     extended_arg = (arg << 8)
                 else:
@@ -56,49 +58,6 @@ def unpack_opargs_wordcode(code, opc):
                 pass
             yield (i, op, arg)
 
-# FIXME: DRY with routine in bytecode
-def findlinestarts(code, dup_lines=False):
-    """Find the offsets in a byte code which are start of lines in the source.
-
-    Generate pairs (offset, lineno) as described in Python/compile.c.
-    """
-    lineno_table = code.co_lnotab
-
-    if isinstance(lineno_table, dict):
-        # We have an uncompressed line-number table
-        # The below could be done with a Python generator, but
-        # we want to be Python 2.x compatible.
-        for addr, lineno in lineno_table.items():
-            yield addr, lineno
-        # For 3.8 we have to fall through to the return rather
-        # than add raise StopIteration
-    else:
-        # FIXME: this should driven by the datatype like the above, rather than
-        # by tested on by the Python Interpreter version.
-        if PYTHON3 and not isinstance(lineno_table, str):
-            byte_increments = lineno_table[0::2]
-            line_increments = lineno_table[1::2]
-        else:
-            byte_increments = [ord(c) for c in lineno_table[0::2]]
-            line_increments = [ord(c) for c in lineno_table[1::2]]
-
-        lastlineno = None
-        lineno = code.co_firstlineno
-        addr = 0
-        for byte_incr, line_incr in zip(byte_increments, line_increments):
-            if byte_incr:
-                if (lineno != lastlineno or
-                    (not dup_lines and 0 < byte_incr < 255)):
-                    yield addr, lineno
-                    lastlineno = lineno
-                    addr += byte_incr
-            if line_incr >= 0x80:
-                # line_increments is an array of 8-bit signed integers
-                line_incr -= 0x100
-            lineno += line_incr
-        if (lineno != lastlineno or
-            (not dup_lines and 0 < byte_incr < 255)):
-            yield addr, lineno
 
 def get_jump_targets(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
@@ -116,6 +75,7 @@ def get_jump_targets(code, opc):
             if jump_offset not in offsets:
                 offsets.append(jump_offset)
     return offsets
+
 
 def get_jump_target_maps(code, opc):
     """Returns a dictionary where the key is an offset and the values are

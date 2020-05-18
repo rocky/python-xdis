@@ -18,7 +18,7 @@ TEST_TYPES=check-long check-short check-2.7 check-3.4
 #: Default target - same as "check"
 all: check
 
-# Run all tests, exluding those that need pyenv
+#: Run all tests, exluding those that need pyenv
 check: unittest
 	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
 	$(MAKE) -C test check
@@ -27,7 +27,7 @@ check-ci: unittest
 	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
 	$(MAKE) -C test check-ci
 
-# All tests including pyenv library tests
+#: All tests including pyenv library tests
 check-full: check
 	$(MAKE) -C test check-pyenv
 
@@ -42,7 +42,7 @@ unittest:
 #: Clean up temporary files and .pyc files
 clean: clean_pyc
 	$(PYTHON) ./setup.py $@
-	find . -name __pycache__ -exec rm -fr {} || true \;
+	find . -name __pycache__ -exec rm -fr {} \; || true
 	(cd test && $(MAKE) clean)
 	(cd test_unit && $(MAKE) clean)
 

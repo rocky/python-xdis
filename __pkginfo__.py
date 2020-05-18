@@ -7,6 +7,17 @@
 # less elegant than having it here with reduced code, albeit there
 # still is some room for improvement.
 
+# Python-version | package | last-version |
+# -----------------------------------------
+# 2.5            | pip     |  1.1         |
+# 2.6            | pip     |  1.5.6       |
+# 2.7            | pip     | 19.2.3       |
+# 2.7            | pip     |  1.2.1       |
+# 3.1            | pip     |  1.5.6       |
+# 3.2            | pip     |  7.1.2       |
+# 3.3            | pip     | 10.0.1       |
+# 3.4            | pip     | 19.1.1       |
+
 # Things that change more often go here.
 copyright = """
 Copyright (C) 2015-2020 Rocky Bernstein <rb@dustyfeet.com>.
@@ -45,7 +56,8 @@ install_requires   = []
 license            = 'GPL-2.0'
 mailing_list       = 'python-debugger@googlegroups.com'
 modname            = 'xdis'
-packages=['xdis']
+
+packages           = ["xdis"]
 py_modules         = None
 # setup_requires     = ['pytest-runner']
 scripts            = ['bin/pydisasm.py']

@@ -12,6 +12,7 @@ from xdis.opcodes.base import (
     finalize_opcodes, format_extended_arg, update_pj2)
 
 version = 2.4
+python_implementation = "CPython"
 
 l = locals()
 init_opdata(l, opcode_2x, version)

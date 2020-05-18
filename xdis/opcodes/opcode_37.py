@@ -32,6 +32,7 @@ from xdis.opcodes.base import(
 import xdis.opcodes.opcode_36 as opcode_36
 
 version = 3.7
+python_implementation = "CPython"
 
 l = locals()
 
@@ -100,8 +101,10 @@ format_MAKE_FUNCTION_arg = opcode_36.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_36.format_value_flags
 
 opcode_arg_fmt = {
+    'CALL_FUNCTION': opcode_36.format_CALL_FUNCTION,
     'CALL_FUNCTION_KW': opcode_36.format_CALL_FUNCTION_KW,
     'CALL_FUNCTION_EX': opcode_36.format_CALL_FUNCTION_EX,
+    'CALL_METHOD': opcode_36.format_CALL_FUNCTION,
     'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
     'FORMAT_VALUE': format_value_flags,
     'EXTENDED_ARG': opcode_36.format_extended_arg36

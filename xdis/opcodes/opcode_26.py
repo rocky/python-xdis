@@ -28,6 +28,7 @@ from xdis.opcodes.base import (
     update_pj2,
 )
 import xdis.opcodes.opcode_25 as opcode_25
+python_implementation = "CPython"
 
 version = 2.6
 

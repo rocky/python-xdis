@@ -23,6 +23,7 @@ import xdis.opcodes.opcode_32 as opcode_32
 l = locals()
 
 version = 3.1
+python_implementation = "CPython"
 
 init_opdata(l, opcode_32, version)
 

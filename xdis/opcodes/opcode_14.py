@@ -36,6 +36,7 @@ from xdis.opcodes.base import (
 )
 
 version = 1.4
+python_implementation = "CPython"
 
 l = locals()
 init_opdata(l, opcode_15, version)

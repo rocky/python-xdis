@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2020 by Rocky Bernstein
 """
 CPython 3.2 bytecode opcodes
 
@@ -16,6 +16,7 @@ from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
 # FIXME: can we DRY this even more?
 
 version = 3.2
+python_implementation = "CPython"
 
 l = locals()
 

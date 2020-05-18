@@ -19,7 +19,7 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
-import re, sys, types
+import sys, types
 from xdis.version_info import PYTHON3
 
 from xdis.namedtuple24 import namedtuple
@@ -301,6 +301,16 @@ class Bytecode(object):
                                asm_format=asm_format,
                                show_bytes=show_bytes)
         return output.getvalue()
+
+    def distb(self, tb=None):
+        """Disassemble a traceback (default: last traceback)."""
+        if tb is None:
+            try:
+                tb = sys.last_traceback
+            except AttributeError:
+                raise RuntimeError("no last traceback to disassemble")
+            while tb.tb_next: tb = tb.tb_next
+        self.disassemble(tb.tb_frame.f_code, tb.tb_lasti)
 
     def disassemble_bytes(self, code, lasti=-1, varnames=None, names=None,
                           constants=None, cells=None, linestarts=None,
