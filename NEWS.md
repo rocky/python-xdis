@@ -1,3 +1,25 @@
+4.6.0 2020-05-18 Décadi 30th Floréal - Shepherd's Crook
+=======================================================
+
+The major impetus for this release is expanding the Python in Python interpreter [x-python](https://pypi.org/project/x-python/)
+(A new release of that will go out after this.)
+
+* command program `pydisasm` disassembles more Python source files now
+* Add better arguemnt formatting on `CALL_FUNCTION` and `MAKE_FUNCTION`
+* bytecode.py now has `distb`
+* opcode modules now have variable `python_implemenation` which is either "CPython" or "PyPY"
+* Reformat a number of files using blacken, and lint using flymake
+* Update `__init__.py` exports based on what is used in projects `uncompyle6`, `decompyle3`, `trepan3k`,
+  `xasm` and `x-python`
+* Remove duplicate `findlinestarts()` code. Remove testing on the Python version and simplify
+  this where possible.
+* get_opcode_module allows either a float and string datatype for the version, and coverts
+  the bytecode datatype when needed
+* Fix a bugs in marshal and unmarshal
+
+See the commit history or ChangeLog file for a full list of changes
+
+
 4.5.1 2020-04-26 stack_effects redux
 ====================================
 
