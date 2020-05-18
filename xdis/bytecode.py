@@ -295,6 +295,16 @@ class Bytecode(object):
                                show_bytes=show_bytes)
         return output.getvalue()
 
+    def distb(self, tb=None):
+        """Disassemble a traceback (default: last traceback)."""
+        if tb is None:
+            try:
+                tb = sys.last_traceback
+            except AttributeError:
+                raise RuntimeError("no last traceback to disassemble") from None
+            while tb.tb_next: tb = tb.tb_next
+        self.disassemble(tb.tb_frame.f_code, tb.tb_lasti)
+
     def disassemble_bytes(self, code, lasti=-1, varnames=None, names=None,
                           constants=None, cells=None, linestarts=None,
                           file=sys.stdout, line_offset=0,

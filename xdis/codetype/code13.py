@@ -14,9 +14,8 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION
 from xdis.codetype.base import CodeBase
-import inspect, types
 from copy import deepcopy
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
