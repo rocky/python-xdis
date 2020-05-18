@@ -1,4 +1,4 @@
-|TravisCI| |CircleCI| |Pypi Installs| |Latest Version| |Supported Python Versions|
+|Pypi Installs| |Latest Version|
 
 |packagestatus|
 
@@ -112,15 +112,8 @@ See Also
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
 .. _remake: http://bashdb.sf.net/remake
-.. |TravisCI| image:: https://travis-ci.org/rocky/python-xdis.svg?branch=master
-		 :target: https://travis-ci.org/rocky/python-xdis
-.. |TravisCI| image:: https://travis-ci.org/rocky/python-xdis.svg?branch=master
-		 :target: https://travis-ci.org/rocky/python-xdis
-.. |CircleCI| image:: https://circleci.com/gh/rocky/python-xdis.svg?style=svg
-    :target: https://circleci.com/gh/rocky/python-xdis
-.. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
-.. |Latest Version| image:: https://badge.fury.io/py/xdis.svgyp
-		 :target: https://badge.fury.io/py/xdis
+.. |buildstatus| image:: https://travis-ci.org/rocky/python-xdis.svg?branch=master :target: https://travis-ci.org/rocky/python-xdis
+.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg :target: https://badge.fury.io/py/xdis
 .. |Pypi Installs| image:: https://pepy.tech/badge/xdis/month
 .. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg :target: https://repology.org/project/python:xdis/versions
 .. _dis: https://docs.python.org/3/library/dis.html
