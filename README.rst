@@ -114,8 +114,6 @@ See Also
 .. _remake: http://bashdb.sf.net/remake
 .. |TravisCI| image:: https://travis-ci.org/rocky/python-xdis.svg?branch=master
 		 :target: https://travis-ci.org/rocky/python-xdis
-.. |TravisCI| image:: https://travis-ci.org/rocky/python-xdis.svg?branch=master
-		 :target: https://travis-ci.org/rocky/python-xdis
 .. |CircleCI| image:: https://circleci.com/gh/rocky/python-xdis.svg?style=svg
     :target: https://circleci.com/gh/rocky/python-xdis
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
