@@ -330,7 +330,8 @@ add_canonic_versions(
 add_canonic_versions("3.5 3.5.0 3.5.1", "3.5")
 add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9", "3.5.2")
 add_canonic_versions(
-    "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 3.6.9 3.6.10", "3.6rc1"
+    "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 3.6.9 3.6.10",
+    "3.6rc1",
 )
 
 add_canonic_versions("2.7.10pypy 2.7.13pypy", "2.7pypy")
@@ -341,10 +342,14 @@ add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
-add_canonic_versions("3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7", "3.7.0")
+add_canonic_versions(
+    "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7", "3.7.0"
+)
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
-add_canonic_versions("3.8.0 3.8.1 3.8.2 3.8 3.8.0candidate1", "3.8.0rc1+")
-add_canonic_versions("3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1")
+add_canonic_versions("3.8.0 3.8.1 3.8.2 3.8.3 3.8 3.8.0candidate1", "3.8.0rc1+")
+add_canonic_versions(
+    "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
+)
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
@@ -401,7 +406,9 @@ def py_str2float(orig_version):
                     pass
                 pass
             pass
-    raise RuntimeError("Can't find a valid Python version for version %s" % orig_version)
+    raise RuntimeError(
+        "Can't find a valid Python version for version %s" % orig_version
+    )
     return
 
 
