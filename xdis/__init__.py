@@ -71,6 +71,7 @@ from xdis.cross_dis import (
 )
 
 from xdis.load import (
+    check_object_path,
     is_pypy,
     load_file,
     load_module,
@@ -110,15 +111,18 @@ from xdis.opcodes import (
 from xdis.op_imports import get_opcode_module
 
 from xdis.magics import (
+    canonic_python_version,
     int2magic,
     magic2int,
     magic_int2float,
     py_str2float,
+    PYTHON_MAGIC_INT,
     sysinfo2float,
     sysinfo2magic,
 )
 
 from xdis.util import (
+    COMPILER_FLAG_BIT,
     COMPILER_FLAG_NAMES,
     CO_ABSOLUTE_IMPORT,
     CO_ASYNC_GENERATOR,
@@ -139,5 +143,6 @@ from xdis.util import (
     CO_VARARGS,
     CO_VARKEYWORDS,
     PYPY_COMPILER_FLAG_NAMES,
-    code2num
+    code2num,
+    co_flags_is_async,
 )
