@@ -117,7 +117,7 @@ See Also
 .. |CircleCI| image:: https://circleci.com/gh/rocky/python-xdis.svg?style=svg
     :target: https://circleci.com/gh/rocky/python-xdis
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
-.. |Latest Version| image:: https://badge.fury.io/py/xdis.svgyp
+.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
 		 :target: https://badge.fury.io/py/xdis
 .. |Pypi Installs| image:: https://pepy.tech/badge/xdis/month
 .. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg
