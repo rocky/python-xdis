@@ -172,10 +172,33 @@ def load_module_from_file_object(
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
 
-        if magic_int in (3010, 3020, 3030, 3040, 3050, 3060, 3061,
-                         3071, 3361, 3091, 3101, 3103, 3141,
-                         3270, 3280, 3290, 3300, 3320, 3330,
-                         3371, 62071, 62071, 62081, 62091, 62092, 62111,
+        if magic_int in (
+            3010,
+            3020,
+            3030,
+            3040,
+            3050,
+            3060,
+            3061,
+            3071,
+            3361,
+            3091,
+            3101,
+            3103,
+            3141,
+            3270,
+            3280,
+            3290,
+            3300,
+            3320,
+            3330,
+            3371,
+            62071,
+            62071,
+            62081,
+            62091,
+            62092,
+            62111,
         ):
             raise ImportError(
                 "%s is interim Python %s (%d) bytecode which is "
@@ -208,7 +231,7 @@ def load_module_from_file_object(
                 pep_bits = ts[-1]
                 if PYTHON_VERSION <= 2.7:
                     pep_bits = ord(pep_bits)
-                if (pep_bits & 1) or magic_int == 3393: # 3393 is 3.7.0beta3
+                if (pep_bits & 1) or magic_int == 3393:  # 3393 is 3.7.0beta3
                     # SipHash
                     sip_hash = unpack("<Q", fp.read(8))[0]
                 else:
@@ -254,7 +277,15 @@ def load_module_from_file_object(
     finally:
         fp.close()
 
-    return float_version, timestamp, magic_int, co, is_pypy(magic_int), source_size, sip_hash
+    return (
+        float_version,
+        timestamp,
+        magic_int,
+        co,
+        is_pypy(magic_int),
+        source_size,
+        sip_hash,
+    )
 
 
 def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
@@ -274,16 +305,19 @@ def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
 
     return
 
-if __name__ == '__main__':
-        co = load_file(__file__)
-        obj_path = check_object_path(__file__)
-        version, timestamp, magic_int, co2, pypy, source_size, sip_hash = load_module(obj_path)
-        print("version", version, "magic int", magic_int, 'is_pypy', pypy)
-        if timestamp is not None:
-            import datetime
-            print(datetime.datetime.fromtimestamp(timestamp))
-        if source_size is not None:
-            print("source size mod 2**32: %d" % source_size)
-        if sip_hash is not None:
-            print("Sip Hash: 0x%x" % sip_hash)
-        assert co == co2
+if __name__ == "__main__":
+    co = load_file(__file__)
+    obj_path = check_object_path(__file__)
+    version, timestamp, magic_int, co2, pypy, source_size, sip_hash = load_module(
+        obj_path
+    )
+    print("version", version, "magic int", magic_int, "is_pypy", pypy)
+    if timestamp is not None:
+        import datetime
+
+        print(datetime.datetime.fromtimestamp(timestamp))
+    if source_size is not None:
+        print("source size mod 2**32: %d" % source_size)
+    if sip_hash is not None:
+        print("Sip Hash: 0x%x" % sip_hash)
+    assert co == co2

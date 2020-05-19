@@ -106,8 +106,9 @@ find the `xdis` output more informative though.
 See Also
 --------
 
-* https://github.com/rocky/python-uncompyle6 : python bytecode deparsing
-* https://github.com/rocky/python-xasm : python bytecode assembler
+* https://pypi.org/project/uncompyle6/ : Python Bytecode Deparsing
+* https://pypi.org/project/xasm/ : Python Bytecode Assembler
+* https://pypi.org/project/x-python/ : Python Bytecode Interpreter written in Python
 
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
@@ -117,7 +118,7 @@ See Also
 .. |CircleCI| image:: https://circleci.com/gh/rocky/python-xdis.svg?style=svg
     :target: https://circleci.com/gh/rocky/python-xdis
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
-.. |Latest Version| image:: https://badge.fury.io/py/xdis.svgyp
+.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
 		 :target: https://badge.fury.io/py/xdis
 .. |Pypi Installs| image:: https://pepy.tech/badge/xdis/month
 .. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg :target: https://repology.org/project/python:xdis/versions
