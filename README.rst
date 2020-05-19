@@ -106,8 +106,9 @@ find the `xdis` output more informative though.
 See Also
 --------
 
-* https://github.com/rocky/python-uncompyle6 : python bytecode deparsing
-* https://github.com/rocky/python-xasm : python bytecode assembler
+* https://pypi.org/project/uncompyle6/ : Python Bytecode Deparsing
+* https://pypi.org/project/xasm/ : Python Bytecode Assembler
+* https://pypi.org/project/x-python/ : Python Bytecode Interpreter written in Python
 
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
