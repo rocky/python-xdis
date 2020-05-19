@@ -4,6 +4,7 @@
 The major impetus for this release is expanding the Python in Python interpreter [x-python](https://pypi.org/project/x-python/)
 (A new release of that will go out after this.)
 
+* 3.8.3 added as a valid 3.8 release
 * command program `pydisasm` disassembles more Python source files now
 * Add better arguemnt formatting on `CALL_FUNCTION` and `MAKE_FUNCTION`
 * bytecode.py now has `distb`
