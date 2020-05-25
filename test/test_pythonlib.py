@@ -2,11 +2,11 @@
 # emacs-mode: -*-python-*-
 
 """
-test_pythonlib.py -- compile, uncompyle, and verify Python libraries
+test_pythonlib.py -- disassemble Python libraries
 
 Usage-Examples:
 
-  # decompile, and verify base set of python 2.7 byte-compiled files
+  # disassemble base set of python 2.7 byte-compiled files
   test_pythonlib.py --base-2.7 --verify
 
   # Same as above but compile the base set first

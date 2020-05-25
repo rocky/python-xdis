@@ -135,7 +135,7 @@ add_magic_from_int(11913, "1.3")
 add_magic_from_int(5892, "1.4")
 
 # 1.5, 1.5.1, 1.5.2
-add_magic_from_int(20121, "1.5")
+add_magic_from_int(20121, "1.5")  # 1.5.1, 1.5.2
 add_magic_from_int(50428, "1.6")  # 1.6
 add_magic_from_int(50823, "2.0")  # 2.0, 2.0.1
 add_magic_from_int(60202, "2.1")  # 2.1, 2.1.1, 2.1.2
@@ -143,7 +143,7 @@ add_magic_from_int(60717, "2.2")  # 2.2
 
 # Two magics one version!
 add_magic_from_int(62011, "2.3a0")
-add_magic_from_int(62021, "2.3a0")
+add_magic_from_int(62021, "2.3a0")  # two distinct magics for the same release
 
 add_magic_from_int(62041, "2.4a0")
 add_magic_from_int(62051, "2.4a3")
@@ -258,16 +258,39 @@ add_magic_from_int(3378, "3.6b2")  # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
 add_magic_from_int(3379, "3.6rc1")  # more thorough __class__ validation #23722
 add_magic_from_int(3390, "3.7.0alpha0")
 add_magic_from_int(3391, "3.7.0alpha3")
-add_magic_from_int(
-    3392, "3.7.0beta2"
-)  # Initial PEP 552 - Additional word in header and possibly no timestamp
+
+# Initial PEP 552 - Deterministic pycs #31650
+# Additional word in header and possibly no timestamp
+add_magic_from_int(3392, "3.7.0beta2")
 
 # Final PEP 552: timestamp + size field or no timestamp + SipHash
+# remove STORE_ANNOTATION opcode #3255
 add_magic_from_int(3393, "3.7.0beta3")
+
+# restored docstring as the first stmt in the body; this might
+# affected the first line number #32911)
 add_magic_from_int(3394, "3.7.0")
+
+# move frame block handling to compiler #17611
+add_magic_from_int(3400, "3.8.0a1")
+
+# add END_ASYNC_FOR #33041
 add_magic_from_int(3401, "3.8.0a3+")
+
+# PEP570 Python Positional-Only Parameters #36540
+add_magic_from_int(3410, "3.8.0a1+")
+
+# Reverse evaluation order of key: value in dict comprehensions
+# #35224
+add_magic_from_int(3411, "3.8.0a1+")
+
+# Swap the position of positional args and positional only args in
+# ast.arguments #37593)
 add_magic_from_int(3412, "3.8.0beta2")
+
+# Fix "break" and "continue" in "finally" #37830
 add_magic_from_int(3413, "3.8.0rc1+")
+
 add_magic_from_int(3422, "3.9.0alpha1")
 
 # Weird ones
@@ -334,6 +357,9 @@ add_canonic_versions(
     "3.6rc1",
 )
 
+add_canonic_versions("3.7b1", "3.7.0beta3")
+add_canonic_versions("3.8a1", "3.8.0beta2")
+
 add_canonic_versions("2.7.10pypy 2.7.13pypy", "2.7pypy")
 add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
 add_canonic_versions("3.2.5pypy", "3.2pypy")
@@ -346,7 +372,7 @@ add_canonic_versions(
     "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7", "3.7.0"
 )
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
-add_canonic_versions("3.8.0 3.8.1 3.8.2 3.8.3 3.8 3.8.0candidate1", "3.8.0rc1+")
+add_canonic_versions("3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3", "3.8.0rc1+")
 add_canonic_versions(
     "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
 )

@@ -155,6 +155,10 @@ class Instruction(_Instruction):
                       and not re.search(r'\s', argrepr)):
                     fields.append('(%s)' % argrepr)
                     argrepr = None
+                elif (self.optype == 'const'
+                      and not re.search(r'\s', argrepr)):
+                    fields.append('(%s)' % argrepr)
+                    argrepr = None
                 else:
                     fields.append(repr(self.arg))
             elif not (show_bytes and argrepr):
