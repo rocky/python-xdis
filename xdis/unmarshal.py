@@ -166,7 +166,11 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     co_code = load_code_internal(
         fp, magic_int, bytes_for_s=True, code_objects=code_objects
     )
-    co_consts = load_code_internal(fp, magic_int, code_objects=code_objects)
+
+    bytes_for_s = PYTHON_VERSION >= 3.0
+    co_consts = load_code_internal(fp, magic_int,
+                                   bytes_for_s=bytes_for_s,
+                                   code_objects=code_objects)
     co_names = load_code_internal(fp, magic_int, code_objects=code_objects)
 
     if version >= 1.3:
@@ -460,7 +464,7 @@ def t_small_tuple(fp, save_ref, bytes_for_s=None, magic_int=None, code_objects=N
     tuplesize = unpack("B", fp.read(1))[0]
     ret, i = r_ref_reserve(tuple(), save_ref)
     while tuplesize > 0:
-        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        ret += (load_code_internal(fp, magic_int, bytes_for_s=bytes_for_s, code_objects=code_objects),)
         tuplesize -= 1
         pass
     return r_ref_insert(ret, i)
@@ -526,7 +530,7 @@ UNMARSHAL_DISPATCH_TABLE["i"] = t_int32
 
 
 def t_dict(fp, save_ref, bytes_for_s=None, magic_int=None, code_objects=None):
-    ret = r_ref(dict(), save_ref)
+    # ret = r_ref(dict(), save_ref)
     # dictionary
     # while True:
     #     key = load_code_internal(fp, magic_int, code_objects=code_objects)
@@ -537,7 +541,8 @@ def t_dict(fp, save_ref, bytes_for_s=None, magic_int=None, code_objects=None):
     #         break
     #     ret[key] = val
     #     pass
-    raise KeyError(marshalType)
+    # raise KeyError(marshalType)
+    raise KeyError("marshaltype key '{' (dict) not implemented")
 
 
 UNMARSHAL_DISPATCH_TABLE["{"] = t_dict
@@ -577,7 +582,7 @@ UNMARSHAL_DISPATCH_TABLE["r"] = t_object_reference
 
 
 def t_unknown(fp, save_ref=None, bytes_for_s=None, magic_int=None, code_objects=None):
-    raise KeyError(marshalType)
+    raise KeyError("unknown marshal type '?'")
 
 
 UNMARSHAL_DISPATCH_TABLE["?"] = t_unknown
