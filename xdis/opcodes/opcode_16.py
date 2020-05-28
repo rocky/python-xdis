@@ -28,8 +28,9 @@ from xdis.opcodes.base import (
     init_opdata,
     nargs_op,
     finalize_opcodes,
+    format_CALL_FUNCTION_pos_name_encoded,
+    format_MAKE_FUNCTION_arg,
     format_extended_arg,
-    # Although these aren't used here, they are exported
     update_pj2,
 )
 
@@ -47,5 +48,13 @@ nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -1, 1)  # #args + (#kwargs << 8)
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
+
+opcode_arg_fmt = {
+    "EXTENDED_ARG": format_extended_arg,
+    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+}
 
 finalize_opcodes(l)
