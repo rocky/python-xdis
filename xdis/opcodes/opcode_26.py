@@ -16,8 +16,8 @@
 """
 CPython 2.6 bytecode opcodes
 
-This is a like Python 2.6's opcode.py with some classification
-of stack usage.
+This is a like Python 2.6's opcode.py with some additional classification
+of stack usage, and opererand formatting functions.
 """
 
 from xdis.opcodes.base import (
