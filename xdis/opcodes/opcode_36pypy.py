@@ -11,6 +11,7 @@ from xdis.opcodes.base import (
     def_op,
     finalize_opcodes,
     format_extended_arg,
+    format_MAKE_FUNCTION_arg,
     init_opdata,
     jrel_op,
     name_op,
@@ -23,7 +24,6 @@ from xdis.opcodes.base import (
 version = 3.6
 python_implementation = "PyPy"
 
-from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
 import xdis.opcodes.opcode_36 as opcode_36
 
 l = locals()

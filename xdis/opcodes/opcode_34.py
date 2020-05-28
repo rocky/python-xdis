@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2020 by Rocky Bernstein
 """
 CPython 3.4 bytecode opcodes
 
@@ -7,11 +7,15 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    def_op, finalize_opcodes,
-    format_extended_arg, free_op, init_opdata,
-    rm_op, update_pj3)
-
-from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
+    def_op,
+    finalize_opcodes,
+    format_MAKE_FUNCTION_arg,
+    format_extended_arg,
+    free_op,
+    init_opdata,
+    rm_op,
+    update_pj3,
+)
 
 import xdis.opcodes.opcode_33 as opcode_33
 
@@ -23,16 +27,16 @@ l = locals()
 init_opdata(l, opcode_33, version)
 
 # These are removed since Python 3.3
-rm_op(l, 'STORE_LOCALS', 69)
+rm_op(l, "STORE_LOCALS", 69)
 
 # These are new since Python 3.3
-free_op(l, 'LOAD_CLASSDEREF', 148)
+free_op(l, "LOAD_CLASSDEREF", 148)
 
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
-    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
-    'EXTENDED_ARG': format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "EXTENDED_ARG": format_extended_arg,
 }
 
 finalize_opcodes(l)

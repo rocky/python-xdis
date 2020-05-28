@@ -252,9 +252,14 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     up to about 3.6 where wordcodes are used and
     a different encoding occurs. Pypy36 though
     sticks to this encoded version though."""
-    pos_args = argc & 0xFF
-    name = (argc >> 8) & 0xFF
-    return ("%d positional, %d named" % (pos_args, name))
+    name_default, pos_args = divmod(argc, 256)
+    return ("%d positional, %d named" % (pos_args, name_default))
+
+def format_MAKE_FUNCTION_arg(argc):
+    name_and_annotate, pos_args = divmod(argc, 256)
+    annotate_args, name_default = divmod(name_and_annotate, 256)
+    return ("%d positional, %d name and default, %d annotations" %
+            (pos_args, name_default, annotate_args))
 
 def opcode_check(l):
     """When the version of Python we are running happens

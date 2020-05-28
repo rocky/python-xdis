@@ -7,10 +7,15 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    def_op, finalize_opcodes, format_extended_arg, init_opdata,
-    jrel_op, rm_op, update_pj2)
-
-from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
+    def_op,
+    finalize_opcodes,
+    format_MAKE_FUNCTION_arg,
+    format_extended_arg,
+    init_opdata,
+    jrel_op,
+    rm_op,
+    update_pj2,
+)
 
 import xdis.opcodes.opcode_31 as opcode_31
 
