@@ -23,6 +23,8 @@ of stack usage.
 from xdis.opcodes.base import (
     store_op,
     finalize_opcodes,
+    format_CALL_FUNCTION_pos_name_encoded,
+    format_MAKE_FUNCTION_arg,
     format_extended_arg,
     init_opdata,
     update_pj2,
@@ -42,7 +44,11 @@ store_op(l, "STORE_MAP", 54, 3, 1)
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
+    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
 }
 
 finalize_opcodes(l)

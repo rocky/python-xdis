@@ -8,15 +8,14 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op,
-    format_extended_arg,
     finalize_opcodes,
+    format_MAKE_FUNCTION_arg,
+    format_extended_arg,
     init_opdata,
     name_op,
     rm_op,
     update_pj3,
 )
-
-from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
 
 import xdis.opcodes.opcode_32 as opcode_32
 
