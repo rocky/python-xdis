@@ -1,3 +1,16 @@
+4.6.1 2020-04-30 Lady Elaine
+============================
+
+The main purpose of this release is to support x-python better.
+
+* Fix a bad bug in handling byte constants in 3.x. How could this go so long fixed?
+* More custom formatting across more opcodes
+   * `CALL_FUNCTION`, `CALL_FUNCTION_KW`, `CALL_FUNCTION_VAR`, etc
+   * `MAKE_FUNCTION`
+   * `LOAD_CONST` in some cases
+* Go over magics numbers, yet again
+* Update *See also* links
+
 4.6.0 2020-05-18 Décadi 30th Floréal - Shepherd's Crook
 =======================================================
 
