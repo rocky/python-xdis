@@ -104,7 +104,7 @@ MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 def format_MAKE_FUNCTION_arg(flags):
     if flags == 0:
-        return "No defaults, keyword-only args, annotations, or closures"
+        return "Neither defaults, keyword-only args, annotations, nor closures"
     pattr = ''
     for flag in MAKE_FUNCTION_FLAGS:
         bit = flags & 1
