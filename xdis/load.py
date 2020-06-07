@@ -35,8 +35,9 @@ def check_object_path(path):
     if path.endswith(".py"):
         try:
             import importlib
-
-            return importlib.util.cache_from_source(path, optimization="")
+            bytecode_path = importlib.util.cache_from_source(path, optimization="")
+            if osp.exists(bytecode_path):
+                return bytecode_path
         except:
             try:
                 import imp

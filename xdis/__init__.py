@@ -79,6 +79,14 @@ from xdis.load import (
     write_bytecode_file,
 )
 
+from xdis.lineoffsets import (
+    LineOffsetInfo,
+    LineOffsets,
+    LineOffsetsCompact,
+    lineoffsets_in_file,
+    lineoffsets_in_module,
+)
+
 from xdis.main import (
     get_opcode,
     show_module_header,
