@@ -103,6 +103,10 @@ def show_module_header(
                 "\n# ".join(sys.version.split("\n")),
             )
         )
+    if PYTHON_VERSION < 3.0 and bytecode_version >= 3.0:
+        real_out.write("\n## **Warning** bytecode strings will be converted to strings.\n")
+        real_out.write("## To avoid loss, run this from Python 3.0 or greater\n\n")
+
     if timestamp is not None:
         value = datetime.datetime.fromtimestamp(timestamp)
         real_out.write("# Timestamp in code: %d" % timestamp)
