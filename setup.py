@@ -20,7 +20,6 @@ from __pkginfo__ import (
 
 from setuptools import setup, find_packages
 
-print(find_packages())
 setup(
     author=author,
     author_email=author_email,

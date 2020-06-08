@@ -116,11 +116,11 @@ def load_code(fp, magic_int, code_objects={}):
         internObjects[0] = code
     return code
 
-
 def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # FIXME: use tables to simplify this?
     # FIXME: Python 1.0 .. 1.3 isn't well known
 
+    global version
     version = magic_int2float(magic_int)
 
     if version >= 2.3:
@@ -480,7 +480,7 @@ def t_tuple(fp, save_ref, bytes_for_s=None, magic_int=None, code_objects=None):
     tuplesize = unpack("<i", fp.read(4))[0]
     ret = r_ref(tuple(), save_ref)
     while tuplesize > 0:
-        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        ret += (load_code_internal(fp, magic_int, bytes_for_s=bytes_for_s, code_objects=code_objects),)
         tuplesize -= 1
     return ret
 
@@ -493,7 +493,7 @@ def t_list(fp, save_ref, bytes_for_s=None, magic_int=None, code_objects=None):
     n = unpack("<i", fp.read(4))[0]
     ret = r_ref(list(), save_ref)
     while n > 0:
-        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        ret += (load_code_internal(fp, magic_int, bytes_for_s=bytes_for_s, code_objects=code_objects),)
         n -= 1
     return ret
 
@@ -505,7 +505,7 @@ def t_frozenset(fp, save_ref, bytes_for_s=None, magic_int=None, code_objects=Non
     setsize = unpack("<i", fp.read(4))[0]
     ret, i = r_ref_reserve(tuple(), save_ref)
     while setsize > 0:
-        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        ret += (load_code_internal(fp, magic_int, bytes_for_s=bytes_for_s, code_objects=code_objects),)
         setsize -= 1
     return r_ref_insert(frozenset(ret), i)
 
@@ -517,7 +517,7 @@ def t_set(fp, save_ref, bytes_for_s=None, magic_int=None, code_objects=None):
     setsize = unpack("<i", fp.read(4))[0]
     ret, i = r_ref_reserve(tuple(), save_ref)
     while setsize > 0:
-        ret += (load_code_internal(fp, magic_int, code_objects=code_objects),)
+        ret += (load_code_internal(fp, magic_int, bytes_for_s=bytes_for_s, code_objects=code_objects),)
         setsize -= 1
     return r_ref_insert(set(ret), i)
 
@@ -536,10 +536,10 @@ def t_dict(fp, save_ref, bytes_for_s=None, magic_int=None, code_objects=None):
     # ret = r_ref(dict(), save_ref)
     # dictionary
     # while True:
-    #     key = load_code_internal(fp, magic_int, code_objects=code_objects)
+    #     key = load_code_internal(fp, magic_int, bytes_for_s=bytes_for_s, code_objects=code_objects)
     #     if key is NULL:
     #         break
-    #     val = load_code_internal(fp, magic_int, code_objects=code_objects)
+    #     val = load_code_internal(fp, magic_int, byte_for_s=bytes_for_s, code_objects=code_objects)
     #     if val is NULL:
     #         break
     #     ret[key] = val
