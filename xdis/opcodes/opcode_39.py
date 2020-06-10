@@ -1,4 +1,4 @@
-# (C) Copyright 2019 by Rocky Bernstein
+# (C) Copyright 2019, 2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@ from xdis.opcodes.base import(
     )
 
 from xdis.opcodes.opcode_36 import (
+    format_BUILD_MAP_UNPACK_WITH_CALL,
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
     format_extended_arg36,
@@ -64,6 +65,7 @@ format_MAKE_FUNCTION_arg = opcode_38.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_38.format_value_flags
 
 opcode_arg_fmt = {
+    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,

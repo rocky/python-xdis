@@ -154,13 +154,22 @@ def format_CALL_FUNCTION_EX(flags):
 def format_CALL_FUNCTION_KW(argc):
     return "%d total positional and keyword args" % argc
 
+# The meaning of argc changes from 3.5 where this was introduced.
+def format_BUILD_MAP_UNPACK_WITH_CALL(count):
+    """The lowest byte of oparg is the count of mappings, the relative
+    position of the corresponding callable f is encoded in the second byte
+    of oparg."""
+    count = divmod(argc, 256)
+    return ("%d mappings" % count)
+
 opcode_arg_fmt = {
-    'CALL_FUNCTION': format_CALL_FUNCTION,
-    'CALL_FUNCTION_KW': format_CALL_FUNCTION_KW,
-    'CALL_FUNCTION_EX': format_CALL_FUNCTION_EX,
-    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
-    'FORMAT_VALUE': format_value_flags,
-    'EXTENDED_ARG': format_extended_arg36
+    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
+    "CALL_FUNCTION": format_CALL_FUNCTION,
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
+    "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "FORMAT_VALUE": format_value_flags,
+    "EXTENDED_ARG": format_extended_arg36
 }
 
 update_pj3(globals(), l)
