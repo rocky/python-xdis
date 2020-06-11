@@ -165,7 +165,8 @@ def disco(
         disco_loop_asm_format(opc, bytecode_version, co, real_out, {}, set([]))
     else:
         queue = deque([co])
-        disco_loop(opc, bytecode_version, queue, real_out, show_bytes=show_bytes)
+        disco_loop(opc, bytecode_version, queue, real_out, show_bytes=show_bytes,
+                   dup_lines=True)
 
 
 def disco_loop(opc, version, queue, real_out, dup_lines=False, show_bytes=False):
