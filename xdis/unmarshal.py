@@ -117,7 +117,6 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
     # FIXME: use tables to simplify this?
     # FIXME: Python 1.0 .. 1.3 isn't well known
 
-    global version
     version = magic_int2float(magic_int)
 
     if version >= 2.3:
@@ -167,7 +166,7 @@ def load_code_type(fp, magic_int, bytes_for_s=False, code_objects={}):
         fp, magic_int, bytes_for_s=True, code_objects=code_objects
     )
 
-    bytes_for_s = PYTHON_VERSION >= 3.0
+    bytes_for_s = PYTHON_VERSION >= 3.0 and version >= 3.0
     co_consts = load_code_internal(fp, magic_int,
                                    bytes_for_s=bytes_for_s,
                                    code_objects=code_objects)
