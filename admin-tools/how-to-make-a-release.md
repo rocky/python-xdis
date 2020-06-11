@@ -10,10 +10,11 @@
 - [Update NEWS.md from master branch](#update-newsmd-from-master-branch)
 - [Check against all versions](#check-against-all-versions)
 - [Make packages and tag](#make-packages-and-tag)
-- [Upload single package and look at Rst Formating](#upload-single-package-and-look-at-rst-formating)
-- [Upload rest of versions](#upload-rest-of-versions)
+- [Check package on github](#check-package-on-github)
+- [Release on Github](#release-on-github)
+- [Get on PyPI](#get-on-pypi)
 - [Push tags:](#push-tags)
-- [Check on a VM](#check-on-a-vm)
+- [Move dist files to uploaded](#move-dist-files-to-uploaded)
 
 <!-- markdown-toc end -->
 
@@ -69,10 +70,31 @@
     $ . ./admin-tools/make-dist-newer.sh
 	$ twine check dist/xdis-$VERSION*
 
+# Check package on github
+
+	$ mkdir /tmp/gittest; cd /tmp/gittest
+	$ pyenv local 3.7.5
+	$ pip install -e git://github.com/rocky/python-xdis.git#egg=xdis
+	$ make check
+	$ pip uninstall x-python
+
+# Release on Github
+
 Goto https://github.com/rocky/python-xdis/releases/new
 
+Now check the *tagged* release. (Checking the untagged release was previously done).
 
-# Upload
+Todo: turn this into a script in `admin-tools`
+
+	$ popd
+	$ mkdir /tmp/gittest; cd /tmp/gittest
+	$ pip install -e git://github.com/rocky/python-xdis.git#egg=xdis
+	$ make check
+	$ pip uninstall x-python
+	$ popd
+
+
+# Get on PyPI
 
 	$ twine upload dist/xdis-${VERSION}*
 
@@ -82,12 +104,6 @@ Check on https://pypi.org/project/xdis/
 
     $ git push --tags
 
-# Check on a VM
+# Move dist files to uploaded
 
-    $ cd /virtual/vagrant/virtual/vagrant/ubuntu-zesty
-	$ vagrant up
-	$ vagrant ssh
-	$ pyenv local 3.5.2
-	$ pip install --upgrade xdis
-	$ exit
-	$ vagrant halt
+	$ mv -v dist/xdis-${VERSION}* dist/uploaded

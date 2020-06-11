@@ -1,4 +1,33 @@
-4.6.1 2020-04-30 Lady Elaine
+4.7.0 2020-06-12 Fleetwood66
+============================
+
+Routines for extracting line and offset information from code objects was added.
+
+Specifically in module `xdis.lineoffsets`:
+	* classes:	`LineOffsetInfo`, `LineOffsets`, and `LineOffsetsCompact`
+	* functions: `lineoffsets_in_file()`, `lineoffsets_in_module()`
+
+This is need to better support debugging which is done via module
+pyficache.
+
+In the future, I intend to make use of this to disambiguate which offset to break at when there are several for a line.  Or to indicate better which function or module the line is located in when reporting lines.
+
+For example in:
+
+```python
+  z = lambda x, y: x + y
+```
+
+there two offsets associated with that line. The first is to the assignment of `z` while the second is to the addition expression inside the lambda.
+
+In other news, a long-standing bug was fixed to handle bytestring constants in 3.x. We had been erroneously converting bytestrings into 3.x. However when decompiling 1.x or 2.x bytecode from 3.x we still need to convert bytestrings into strings.
+
+Also, operand formatting in assembly for `BUILD_UNMAP_WITH_CALL` has been improved, and
+we note how the operand encoding has changed between 3.5. and 3.6.
+
+Disassembly now properly marks offsets where the line number that doesn't change from the previous entry.
+
+4.6.1 2020-05-30 Lady Elaine
 ============================
 
 The main purpose of this release is to support x-python better.
@@ -19,9 +48,9 @@ The major impetus for this release is expanding the Python in Python interpreter
 
 * 3.8.3 added as a valid 3.8 release
 * command program `pydisasm` disassembles more Python source files now
-* Add better arguemnt formatting on `CALL_FUNCTION` and `MAKE_FUNCTION`
+* Add better argument formatting on `CALL_FUNCTION` and `MAKE_FUNCTION`
 * bytecode.py now has `distb`
-* opcode modules now have variable `python_implemenation` which is either "CPython" or "PyPY"
+* opcode modules now have variable `python_implementation` which is either "CPython" or "PyPY"
 * Reformat a number of files using blacken, and lint using flymake
 * Update `__init__.py` exports based on what is used in projects `uncompyle6`, `decompyle3`, `trepan3k`,
   `xasm` and `x-python`
@@ -76,7 +105,7 @@ Incompatibility: `load_module()` and `load_module_from_file_object()` now return
 4.3.2 2020-04-16 portable code type
 ===================================
 
-Fix a few more bugs caused by the recent portablity refactoring
+Fix a few more bugs caused by the recent portability refactoring
 
 * back off line-number table decompression for Python < 3.0 for now. This breaks decomplation.
 * bytecode fix for cell_names now that code types are more stringent.
@@ -107,43 +136,19 @@ A portable version of types.CodeType was rewritten, to make it
 * simpler in implementation by using type inheretence
 * more general
 
-Previously getting bytecode read from a bytecode file or from a code
-object requiring knowing a lot about the Python version of the code
-type and of the currently running interpreter. That is gone now.
+Previously getting bytecode read from a bytecode file or from a code object requiring knowing a lot about the Python version of the code type and of the currently running interpreter. That is gone now.
 
-Use `codeType2Portable()` to turn a native `types.CodeType` or a structure read
-in from a bytecode file into a portable code type. The portable code
-type allows fields to be mutated, and is more flexible in the kinds of
-datatypes it allows.
+Use `codeType2Portable()` to turn a native `types.CodeType` or a structure read in from a bytecode file into a portable code type. The portable code type allows fields to be mutated, and is more flexible in the kinds of datatypes it allows.
 
-For example lists of thing like `co_consts`, or `varnames` can be
-Python lists as well as tuples. The line number table is stored as a
-dictionary mapping of address to bytecode offset rather than as a
-compressed structure. Bytecode can either be a string (which is
-advantageous if you are running Python before 3.x) or a sequence of
-bytes which is the datatype of a code object for 3.x.
+For example lists of thing like `co_consts`, or `varnames` can be Python lists as well as tuples. The line number table is stored as a dictionary mapping of address to bytecode offset rather than as a compressed structure. Bytecode can either be a string (which is advantageous if you are running Python before 3.x) or a sequence of bytes which is the datatype of a code object for 3.x.
 
-However when you need a `type.CodeType` that can be can be
-`eval()`'d by the Python interpreter you are running, use the
-`to_native()` method on the portable code type returned. It will
-compress and encode the line number table, and turn lists into tuples
-and convert other datatypes to the right type as needed.
+However when you need a `type.CodeType` that can be can be `eval()`'d by the Python interpreter you are running, use the `to_native()` method on the portable code type returned. It will compress and encode the line number table, and turn lists into tuples and convert other datatypes to the right type as needed.
 
-If you have a *complete* `types.Codetype` structure for a particular
-Python version whether, it is the one the current Python interpreter
-is using or not, use the `to_portable()` function and it will figure
-out based on the version parameter supplied (or use the current Python
-interpreter version if none supplieed), which particlar portable code
-type is the right one.
+If you have a *complete* `types.Codetype` structure for a particular Python version whether, it is the one the current Python interpreter is using or not, use the `to_portable()` function and it will figure out based on the version parameter supplied (or use the current Python interpreter version if none supplieed), which particlar portable code type is the right one.
 
-If on the other hand, you have a number of code-type fields which may
-be incomplete, but still want to work with something that has
-code-type characteristics while not worring about which fields are
-required an their exact proper datatypes, use the `CodeTypeUnion` structure.
+If on the other hand, you have a number of code-type fields which may be incomplete, but still want to work with something that has code-type characteristics while not worring about which fields are required an their exact proper datatypes, use the `CodeTypeUnion` structure.
 
-Internally, we use OO inheritence to reduce the amount of duplicate
-code. The `load_code_internal()` function from `unmarshal.py` is now a
-lot shorter and cleaner as a result of this reorganization.
+Internally, we use OO inheritence to reduce the amount of duplicate code. The `load_code_internal()` function from `unmarshal.py` is now a lot shorter and cleaner as a result of this reorganization.
 
 ### New Portable Code Methods, Modules and Classes
 
@@ -156,16 +161,9 @@ lot shorter and cleaner as a result of this reorganization.
 Incompatibility
 ---------------
 
-The module `xdis.code` has been remamed to `xdis.codetype` and with
-that the function `iscode()` moved as well. In previous versions to
-use `iscode()` you might import it from `xdis.code`; now simply import
-it from `xdis`. In general function that had been imported from a
-module under `xdis` can now be imported simply from `xdis`.
+The module `xdis.code` has been remamed to `xdis.codetype` and with that the function `iscode()` moved as well. In previous versions to use `iscode()` you might import it from `xdis.code`; now simply import it from `xdis`. In general function that had been imported from a module under `xdis` can now be imported simply from `xdis`.
 
-The classes `Compat3Code` and function `code2compat()` and
-`code3compat()` have been removed. `Compat2Code` is still around for
-dropbox 2.5, but that is deprecated and will be removed when I can
-figure out how to remove it from dropbox 2.5.
+The classes `Compat3Code` and function `code2compat()` and `code3compat()` have been removed. `Compat2Code` is still around for dropbox 2.5, but that is deprecated and will be removed when I can figure out how to remove it from dropbox 2.5.
 
 Other Changes
 -------------
@@ -483,11 +481,8 @@ License is GPL2.0 only now
 Showing all line number bolixes uncompyle6 and the trepan debuggers,
 so nuke that for now.
 
-However we show the full deal in pydisasm for asm format.  Here it is
-imporant since we recreate the line number table based on information
-given in the instructions.  We could and probably should allow showing
-all of the line number in the default format as well.  Underneath there
-is a parameter to control that.
+However we show the full deal in pydisasm for asm format.  Here it is imporant since we recreate the line number table based on information
+given in the instructions.  We could and probably should allow showing all of the line number in the default format as well.  Underneath there is a parameter to control that.
 
 * Add pypy 3.5.3 magic number
 

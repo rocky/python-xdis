@@ -86,7 +86,9 @@ class LineOffsetInfo(object):
         if include_offsets:
             lines = {}
             for li in self.lines:
-                lines[li.line_number] = LineOffsetsCompact(li.code.co_name, li.offsets)
+                number = li.line_number
+                lines[number] = lines.get(number, [])
+                lines[number].append(LineOffsetsCompact(li.code.co_name, li.offsets))
                 pass
             pass
         else:
@@ -103,6 +105,8 @@ class LineOffsetInfo(object):
                 else:
                     lines += child_lines
                 pass
+        if not include_dups:
+            return list(set(lines))
         return lines
 
     pass
@@ -128,15 +132,16 @@ def lineoffsets_in_module(module, toplevel_only=False):
 
 if __name__ == "__main__":
 
+    def multi_line():
+        # We have two statements on the same line
+        x = 1; y = 2;
+        return x, y
+
     def foo():
         def bar():
             return 5
 
-        # We two statements on the same line
-        x = 1; y = 2;
-        a = 3
-        b = 4
-        return x, y, a, b
+        return bar()
 
     def print_code_info(code_info):
         children = code_info.children.keys()
@@ -161,11 +166,14 @@ if __name__ == "__main__":
         print("Offsets in %s" % code_info.name, code_info.offsets)
         lines = code_info.line_numbers(include_offsets=True, include_children=True)
         for line_num, li in lines.items():
-            print("\tname: %s, line %4d, offsets %s" % (li.name, line_num, li.offsets))
+            print("\tline: %4d: %s" % (line_num, ", ".join([str(i.offsets) for i in li])))
         print("=" * 30)
         for li in code_info.lines:
             print(li)
             pass
         return
 
-    print_code_info(lineoffsets_in_file(__file__))
+    opc = get_opcode_module()
+    print_code_info(LineOffsetInfo(opc, multi_line.__code__, include_children=True))
+
+    # print_code_info(lineoffsets_in_file(__file__))
