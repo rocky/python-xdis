@@ -159,7 +159,6 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(count):
     """The lowest byte of oparg is the count of mappings, the relative
     position of the corresponding callable f is encoded in the second byte
     of oparg."""
-    count = divmod(argc, 256)
     return ("%d mappings" % count)
 
 opcode_arg_fmt = {
