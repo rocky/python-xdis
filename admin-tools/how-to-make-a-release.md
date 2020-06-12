@@ -72,11 +72,12 @@
 
 # Check package on github
 
-	$ mkdir /tmp/gittest; cd /tmp/gittest
+	$ mkdir /tmp/gittest; pushd /tmp/gittest
 	$ pyenv local 3.7.5
 	$ pip install -e git://github.com/rocky/python-xdis.git#egg=xdis
-	$ make check
-	$ pip uninstall x-python
+	$ pydisasm --help
+	$ pip uninstall xdis
+	$ popd
 
 # Release on Github
 
@@ -89,8 +90,8 @@ Todo: turn this into a script in `admin-tools`
 	$ popd
 	$ mkdir /tmp/gittest; cd /tmp/gittest
 	$ pip install -e git://github.com/rocky/python-xdis.git#egg=xdis
-	$ make check
-	$ pip uninstall x-python
+	$ pydisasm --help
+	$ pip uninstall xdis
 	$ popd
 
 
