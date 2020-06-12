@@ -87,9 +87,8 @@ Now check the *tagged* release. (Checking the untagged release was previously do
 
 Todo: turn this into a script in `admin-tools`
 
-	$ popd
-	$ mkdir /tmp/gittest; cd /tmp/gittest
-	$ pip install -e git://github.com/rocky/python-xdis.git#egg=xdis
+	$ pushd /tmp/gittest
+	$ pip install -e git://github.com/rocky/python-xdis@$VERSION.git#egg=xdis
 	$ pydisasm --help
 	$ pip uninstall xdis
 	$ popd
@@ -104,6 +103,7 @@ Check on https://pypi.org/project/xdis/
 # Push tags:
 
     $ git push --tags
+    $ git pull --tags
 
 # Move dist files to uploaded
 
