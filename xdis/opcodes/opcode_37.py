@@ -81,33 +81,34 @@ init_opdata(l, opcode_36, version)
 
 # These are removed since 3.6...
 # and STORE_ANNOTATION introduced in 3.6!
-rm_op(l, 'STORE_ANNOTATION', 127)
+rm_op(l, "STORE_ANNOTATION", 127)
 
 # These have a changed stack effect since 3.6
 #          OP NAME            OPCODE POP PUSH
 #---------------------------------------------------------------
-def_op(l, 'WITH_CLEANUP_START',   81,  0,  2)
-def_op(l, 'WITH_CLEANUP_FINISH',  82,  3,  0)
-def_op(l, 'END_FINALLY',          88,  6,  0)
-def_op(l, 'POP_EXCEPT',           89,  3,  0) # Pops last 3 values
-jrel_op(l, 'SETUP_WITH',         143,  0,  6)
-jrel_op(l, 'SETUP_ASYNC_WITH',   154,  0,  5)
+def_op(l, "WITH_CLEANUP_START",   81,  0,  2)
+def_op(l, "WITH_CLEANUP_FINISH",  82,  3,  0)
+def_op(l, "END_FINALLY",          88,  6,  0)
+def_op(l, "POP_EXCEPT",           89,  3,  0) # Pops last 3 values
+jrel_op(l, "SETUP_WITH",         143,  0,  6)
+jrel_op(l, "SETUP_ASYNC_WITH",   154,  0,  5)
 
 # These are new since Python 3.7
-name_op(l, 'LOAD_METHOD', 160, 0, 1)
-nargs_op(l, 'CALL_METHOD', 161, -2, 1)
+name_op(l, "LOAD_METHOD", 160, 0, 1)
+nargs_op(l, "CALL_METHOD", 161, -2, 1)
 
 format_MAKE_FUNCTION_arg = opcode_36.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_36.format_value_flags
 
 opcode_arg_fmt = {
-    'CALL_FUNCTION': opcode_36.format_CALL_FUNCTION,
-    'CALL_FUNCTION_KW': opcode_36.format_CALL_FUNCTION_KW,
-    'CALL_FUNCTION_EX': opcode_36.format_CALL_FUNCTION_EX,
-    'CALL_METHOD': opcode_36.format_CALL_FUNCTION,
-    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
-    'FORMAT_VALUE': format_value_flags,
-    'EXTENDED_ARG': opcode_36.format_extended_arg36
+    "BUILD_MAP_UNPACK_WITH_CALL": opcode_36.format_BUILD_MAP_UNPACK_WITH_CALL,
+    "CALL_FUNCTION": opcode_36.format_CALL_FUNCTION,
+    "CALL_FUNCTION_KW": opcode_36.format_CALL_FUNCTION_KW,
+    "CALL_FUNCTION_EX": opcode_36.format_CALL_FUNCTION_EX,
+    "CALL_METHOD": opcode_36.format_CALL_FUNCTION,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "FORMAT_VALUE": format_value_flags,
+    "EXTENDED_ARG": opcode_36.format_extended_arg36
 }
 
 update_pj3(globals(), l)

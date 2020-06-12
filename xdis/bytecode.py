@@ -240,7 +240,7 @@ class Bytecode(object):
     Iterating over this yields the bytecode operations as Instruction instances.
     """
     def __init__(self, x, opc, first_line=None, current_offset=None,
-                 dup_lines=False):
+                 dup_lines=True):
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
         self._cell_names = ()

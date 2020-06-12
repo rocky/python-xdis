@@ -31,6 +31,7 @@ from xdis.opcodes.base import (
 
 import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.opcode_36 import (
+    format_BUILD_MAP_UNPACK_WITH_CALL,
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
     format_extended_arg36,
@@ -64,6 +65,7 @@ format_MAKE_FUNCTION_arg = opcode_37.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_37.format_value_flags
 
 opcode_arg_fmt = {
+    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
