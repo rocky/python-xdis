@@ -101,12 +101,22 @@ class LineOffsetInfo(object):
                     include_offsets=include_offsets,
                 )
                 if include_offsets:
-                    lines.update(child_lines)
+                    for line_number, li in child_lines.items():
+                        if line_number in lines:
+                            if li != lines[line_number]:
+                                lines[line_number] += li
+                            pass
+                        else:
+                            lines.update(child_lines)
+                            pass
+                        pass
                 else:
                     lines += child_lines
                 pass
         if not include_dups:
-            return list(set(lines))
+            return sorted(list(set(lines)))
+        if isinstance(lines, list):
+            return sorted(lines)
         return lines
 
     pass
@@ -174,6 +184,5 @@ if __name__ == "__main__":
         return
 
     opc = get_opcode_module()
-    print_code_info(LineOffsetInfo(opc, multi_line.__code__, include_children=True))
-
-    # print_code_info(lineoffsets_in_file(__file__))
+    print_code_info(lineoffsets_in_file(__file__))
+    # print_code_info(LineOffsetInfo(opc, multi_line.__code__, include_children=True))
