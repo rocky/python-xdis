@@ -43,10 +43,16 @@ class LineOffsetInfo(object):
         self.offsets = []
         self.linestarts = dict(opc.findlinestarts(code, dup_lines=True))
         self.instructions = []
+        self.include_children = include_children
+        self._populate_lines()
+        return
+
+    def _populate_lines(self):
+        code = self.code
         last_line_info = None
         for instr in get_instructions_bytes(
             bytecode=code.co_code,
-            opc=opc,
+            opc=self.opc,
             varnames=code.co_varnames,
             names=code.co_names,
             constants=code.co_consts,
@@ -66,21 +72,22 @@ class LineOffsetInfo(object):
                 pass
             pass
         self.lines.append(last_line_info)
-        if include_children:
+        if self.include_children:
             for c in code.co_consts:
                 if iscode(c):
-                    code_info = LineOffsetInfo(opc, c, True)
+                    code_info = LineOffsetInfo(self.opc, c, True)
                     self.children[code_info.name] = code_info
+                    self.lines += code_info.lines
                     pass
                 pass
             pass
-        return
+
 
     def __str__(self):
         return str(self.line_numbers())
 
     def line_numbers(
-        self, include_children=False, include_dups=True, include_offsets=False
+        self, include_dups=True, include_offsets=False
     ):
         """Return all of the valid lines for a given piece of code"""
         if include_offsets:
@@ -93,18 +100,6 @@ class LineOffsetInfo(object):
             pass
         else:
             lines = list(self.linestarts.values())
-        if include_children:
-            for child in self.children.values():
-                child_lines = child.line_numbers(
-                    include_children=True,
-                    include_dups=include_dups,
-                    include_offsets=include_offsets,
-                )
-                if include_offsets:
-                    lines.update(child_lines)
-                else:
-                    lines += child_lines
-                pass
         if not include_dups:
             return list(set(lines))
         return lines
