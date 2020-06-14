@@ -88,7 +88,7 @@ Now check the *tagged* release. (Checking the untagged release was previously do
 Todo: turn this into a script in `admin-tools`
 
 	$ pushd /tmp/gittest
-	$ pip install -e git://github.com/rocky/python-xdis@$VERSION.git#egg=xdis
+	$ pip install -e git://github.com/rocky/python-xdis.git@$VERSION#egg=xdis
 	$ pydisasm --help
 	$ pip uninstall xdis
 	$ popd
