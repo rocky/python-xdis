@@ -87,7 +87,7 @@ from xdis.lineoffsets import (
     lineoffsets_in_module,
 )
 
-from xdis.main import (
+from xdis.disasm import (
     get_opcode,
     show_module_header,
     disco_loop,
