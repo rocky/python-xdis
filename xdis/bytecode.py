@@ -269,7 +269,7 @@ class Bytecode(object):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version)
 
-    def dis(self, asm_format=False, show_bytes=False):
+    def dis(self, asm_format="std"):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         if self.current_offset is not None:
@@ -291,8 +291,7 @@ class Bytecode(object):
                                line_offset=self._line_offset,
                                file=output,
                                lasti=offset,
-                               asm_format=asm_format,
-                               show_bytes=show_bytes)
+                               asm_format=asm_format)
         return output.getvalue()
 
     def distb(self, tb=None):
@@ -308,7 +307,7 @@ class Bytecode(object):
     def disassemble_bytes(self, code, lasti=-1, varnames=None, names=None,
                           constants=None, cells=None, linestarts=None,
                           file=sys.stdout, line_offset=0,
-                          asm_format=False, show_bytes=False):
+                          asm_format="std"):
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None
         # TODO?: Adjust width upwards if max(linestarts.values()) >= 1000?
@@ -323,7 +322,7 @@ class Bytecode(object):
                 file.write("\n")
             is_current_instr = instr.offset == lasti
             file.write(instr.disassemble(lineno_width, is_current_instr,
-                                         asm_format, show_bytes)
+                                         asm_format)
                        + "\n")
             pass
         return

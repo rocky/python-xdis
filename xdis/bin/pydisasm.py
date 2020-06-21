@@ -1,5 +1,5 @@
 # Mode: -*- python -*-
-# Copyright (c) 2015-2019 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2020 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -21,23 +21,14 @@ PATTERNS = ("*.pyc", "*.pyo")
 
 @click.command()
 @click.option(
-    "--asm/--noasm",
-    default=False,
-    help="Produce output suitable for the xasm assembler",
-)
-@click.option(
-    "--show-bytes/--noshow-bytes",
-    default=False,
-    help="include bytecode bytes in output",
+    "--format",
+    "-F",
+    type=click.Choice(["xasm", "bytes", "std", "extended", "header"],
+                      case_sensitive=False),
 )
 @click.version_option(version=VERSION)
-@click.option(
-    "--header/--no-header",
-    default=False,
-    help="Show only the module header information",
-)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(asm, show_bytes, header, files):
+def main(format, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -72,7 +63,7 @@ def main(asm, show_bytes, header, files):
             )
             continue
 
-        disassemble_file(path, sys.stdout, asm, header, show_bytes)
+        disassemble_file(path, sys.stdout, format)
     return
 
 
