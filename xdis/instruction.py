@@ -131,7 +131,7 @@ class Instruction(_Instruction):
         if asm_format != "xasm":
             fields.append(repr(self.offset).rjust(4))
 
-        if asm_format == "bytes":
+        if asm_format in ("extended-bytes", "bytes"):
             hex_bytecode = "|%02x" % self.opcode
             if self.inst_size == 1:
                 # Not 3.6 or later
@@ -173,7 +173,7 @@ class Instruction(_Instruction):
                     argrepr = None
                 else:
                     fields.append(repr(self.arg))
-            elif asm_format == "extended":
+            elif asm_format in ("extended", "extended-bytes"):
                 op = self.opcode
                 if (
                     hasattr(opc, "opcode_extended_fmt")
@@ -183,7 +183,7 @@ class Instruction(_Instruction):
                     if new_repr:
                         argrepr = new_repr
                 pass
-            elif asm_format != "bytes" and not argrepr:
+            elif asm_format not in ("bytes", "extended-bytes") and not argrepr:
                 fields.append(repr(self.arg))
             # Column: Opcode argument details
             if argrepr:

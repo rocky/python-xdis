@@ -23,7 +23,7 @@ PATTERNS = ("*.pyc", "*.pyo")
 @click.option(
     "--format",
     "-F",
-    type=click.Choice(["xasm", "bytes", "std", "extended", "header"],
+    type=click.Choice(["xasm", "bytes", "std", "extended", "extended-bytes", "header"],
                       case_sensitive=False),
 )
 @click.version_option(version=VERSION)
