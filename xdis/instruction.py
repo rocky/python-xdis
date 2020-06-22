@@ -179,7 +179,7 @@ class Instruction(_Instruction):
                     hasattr(opc, "opcode_extended_fmt")
                     and opc.opname[op] in opc.opcode_extended_fmt
                 ):
-                    new_repr = opc.opcode_extended_fmt[opc.opname[op]](list(reversed(instructions)))
+                    new_repr = opc.opcode_extended_fmt[opc.opname[op]](opc, list(reversed(instructions)))
                     if new_repr:
                         argrepr = new_repr
                 pass

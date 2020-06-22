@@ -21,9 +21,15 @@ of stack usage.
 """
 
 from xdis.opcodes.base import(
-    def_op, finalize_opcodes,
-    init_opdata, jrel_op,
-    nargs_op, rm_op, store_op, varargs_op,
+    def_op,
+    extended_format_CALL_FUNCTION,
+    finalize_opcodes,
+    init_opdata,
+    jrel_op,
+    nargs_op,
+    rm_op,
+    store_op,
+    varargs_op,
     update_pj3
     )
 
@@ -183,7 +189,7 @@ finalize_opcodes(l)
 # extended formatting routine  should be done after updating globals and finalizing opcodes
 # since they make use of the information there.
 
-def extended_format_CALL_METHOD(instructions):
+def extended_format_CALL_METHOD(opc, instructions):
     """Inst should be a "LOAD_METHOD" instruction. Looks in `instructions`
     to see if we can find a method name.  If not we'll return None.
 
@@ -209,7 +215,7 @@ def extended_format_CALL_METHOD(instructions):
     s += format_CALL_FUNCTION(call_method_inst.arg)
     return s
 
-def extended_format_CALL_FUNCTION(instructions):
+def extended_format_CALL_FUNCTION(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -252,7 +258,7 @@ def extended_format_CALL_FUNCTION(instructions):
     s += format_CALL_FUNCTION(call_function_inst.arg)
     return s
 
-def extended_format_CALL_FUNCTION_KW(instructions):
+def extended_format_CALL_FUNCTION_KW(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.

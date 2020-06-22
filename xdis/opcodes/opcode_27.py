@@ -23,6 +23,7 @@ of stack usage.
 from xdis.opcodes.base import (
     compare_op,
     def_op,
+    extended_format_CALL_FUNCTION,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_extended_arg,
@@ -34,6 +35,7 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+
 import xdis.opcodes.opcode_26 as opcode_26
 
 version = 2.7
@@ -91,3 +93,7 @@ opcode_arg_fmt = {
 }
 
 finalize_opcodes(l)
+
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+}

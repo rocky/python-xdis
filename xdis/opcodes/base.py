@@ -244,6 +244,51 @@ def update_sets(l):
     l['VARGS_OPS']       = frozenset(l['hasvargs'])
     l['STORE_OPS']       = frozenset(l['hasstore'])
 
+
+def extended_format_CALL_FUNCTION(opc, instructions):
+    """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
+    `instructions` to see if we can find a method name.  If not we'll
+    return None.
+
+    """
+    # From opcode description: argc indicates the total number of positional and keyword arguments.
+    # Sometimes the function name is in the stack arg positions back.
+    call_function_inst = instructions[0]
+    assert call_function_inst.opname == "CALL_FUNCTION"
+    argc = call_function_inst.arg
+    name_default, pos_args, = divmod(argc, 256)
+    function_pos = pos_args + name_default*2 + 1
+    assert len(instructions) >= function_pos + 1
+    for i, inst in enumerate(instructions[1:]):
+        if i + 1 == function_pos:
+            i += 1
+            break
+        if inst.is_jump_target:
+            i += 1
+            break
+        # Make sure we are in the same basic block
+        # and ... ?
+        opcode = inst.opcode
+        if inst.optype in ("nargs", "vargs"):
+            break
+        if inst.optype != "name":
+            function_pos += (opc.oppop[opcode] - opc.oppush[opcode]) + 1
+        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
+            break
+        pass
+
+    s = ""
+    if i == function_pos:
+        if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
+                                                 "LOAD_ATTR", "LOAD_NAME"):
+            if instructions[function_pos].opname == "LOAD_ATTR":
+                s += "."
+            s += "%s() " % instructions[function_pos].argrepr
+            pass
+        pass
+    s += format_CALL_FUNCTION_pos_name_encoded(call_function_inst.arg)
+    return s
+
 def format_extended_arg(arg):
     return str(arg * (1 << 16))
 

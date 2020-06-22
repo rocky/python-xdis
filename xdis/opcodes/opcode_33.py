@@ -8,6 +8,7 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op,
+    extended_format_CALL_FUNCTION,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_MAKE_FUNCTION_arg,
@@ -40,7 +41,7 @@ opcode_arg_fmt = {
 
 finalize_opcodes(l)
 
-def extended_format_MAKE_FUNCTION(instructions):
+def extended_format_MAKE_FUNCTION(opc, instructions):
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
     """
@@ -59,5 +60,6 @@ def extended_format_MAKE_FUNCTION(instructions):
 
 
 opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
 }
