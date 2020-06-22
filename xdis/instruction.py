@@ -83,7 +83,14 @@ class Instruction(_Instruction):
 
     # FIXME: remove has_arg from initialization but keep it as a field.
 
-    def disassemble(self, lineno_width=3, mark_as_current=False, asm_format="std"):
+    def disassemble(
+        self,
+        opc,
+        lineno_width=3,
+        mark_as_current=False,
+        asm_format="std",
+        instructions=[],
+    ):
         """Format instruction details for inclusion in disassembly output
 
         *lineno_width* sets the width of the line number field (0 omits it)
@@ -147,6 +154,8 @@ class Instruction(_Instruction):
         # Column: Opcode argument
         if self.arg is not None:
             argrepr = self.argrepr
+            # The argrepr value when the instruction was created generally has all the information we require.
+            # However fo "xasm" format, want additional explicit information linking operands to tables.
             if asm_format == "xasm":
                 if self.optype == "jabs":
                     fields.append("L" + str(self.arg))
@@ -164,7 +173,17 @@ class Instruction(_Instruction):
                     argrepr = None
                 else:
                     fields.append(repr(self.arg))
-            elif not (asm_format != "compact" and argrepr):
+            elif asm_format == "extended":
+                op = self.opcode
+                if (
+                    hasattr(opc, "opcode_extended_fmt")
+                    and opc.opname[op] in opc.opcode_extended_fmt
+                ):
+                    new_repr = opc.opcode_extended_fmt[opc.opname[op]](self, list(reversed(instructions)))
+                    if new_repr:
+                        argrepr = new_repr
+                pass
+            elif asm_format != "bytes" and not argrepr:
                 fields.append(repr(self.arg))
             # Column: Opcode argument details
             if argrepr:

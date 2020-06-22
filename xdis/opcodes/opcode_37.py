@@ -111,6 +111,11 @@ opcode_arg_fmt = {
     "EXTENDED_ARG": opcode_36.format_extended_arg36
 }
 
+opcode_extended_fmt = {
+    "CALL_METHOD": opcode_36.extended_format_CALL_METHOD,
+    "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
+}
+
 update_pj3(globals(), l)
 
 finalize_opcodes(l)

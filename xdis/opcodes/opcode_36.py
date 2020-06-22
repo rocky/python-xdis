@@ -29,6 +29,9 @@ from xdis.opcodes.base import(
 
 import xdis.opcodes.opcode_35 as opcode_35
 
+oppush = {}
+oppop = {}
+
 # When we use EXTENDED_ARG, by how much do we
 # shift (or what power of two do we multiply) the operand value?
 # Note: this changes in Python 3.6
@@ -171,6 +174,80 @@ opcode_arg_fmt = {
     "EXTENDED_ARG": format_extended_arg36
 }
 
+
 update_pj3(globals(), l)
 
 finalize_opcodes(l)
+
+# extended formatting routine  should be done after updating globals and finalizing opcodes
+# since they make use of the information there.
+
+def extended_format_CALL_METHOD(call_method_inst, instructions):
+    """Inst should be a "LOAD_METHOD" instruction. Looks in `instructions`
+    to see if we can find a method name.  If not we'll return None.
+
+    """
+    # From opcode description: Loads a method named co_names[namei] from the TOS object.
+    # Sometimes the method name is in the stack arg positions back.
+    assert call_method_inst.opname == "CALL_METHOD"
+    method_pos = call_method_inst.arg + 1
+    assert len(instructions) >= method_pos
+    assert instructions[0] == call_method_inst
+    s = ""
+    for inst in instructions[1:method_pos]:
+        # Make sure we are in the same basic block
+        # and ... ?
+        if inst.opname in ("CALL_METHOD",) or inst.is_jump_target:
+            break
+        pass
+    else:
+        if instructions[method_pos].opname == "LOAD_METHOD":
+            s = "%s() " % instructions[method_pos].argrepr
+            pass
+        pass
+    s += format_CALL_FUNCTION(call_method_inst.arg)
+    return s
+
+def extended_format_CALL_FUNCTION(call_function_inst, instructions):
+    """Inst should be a "CALL_FUNCTION" instru[ction. Looks in
+    `instructions` to see if we can find a method name.  If not we'll
+    return None.
+
+    """
+    # From opcode description: argc indicates the total number of positional and keyword arguments.
+    # Sometimes the function name is in the stack arg positions back.
+    assert call_function_inst.opname == "CALL_FUNCTION"
+    function_pos = call_function_inst.arg + 1
+    assert len(instructions) >= function_pos
+    assert instructions[0] == call_function_inst
+    s = ""
+    for i, inst in enumerate(instructions[1:]):
+        if i == function_pos:
+            break
+        if inst.is_jump_target:
+            i += 1
+            break
+        # Make sure we are in the same basic block
+        # and ... ?
+        opcode = inst.opcode
+        if inst.optype == "nargs":
+            break
+        if inst.optype != "name":
+            function_pos += (oppop[opcode] - oppush[opcode]) + 1
+        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
+            break
+        pass
+
+    if i == function_pos:
+        if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
+                                                 "LOAD_ATTR", "LOAD_NAME"):
+            s = "%s() " % instructions[function_pos].argrepr
+            pass
+        pass
+    s += format_CALL_FUNCTION(call_function_inst.arg)
+    return s
+
+opcode_extended_fmt = {
+    "CALL_METHOD": extended_format_CALL_METHOD,
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+}
