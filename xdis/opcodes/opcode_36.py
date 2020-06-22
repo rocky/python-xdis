@@ -202,14 +202,14 @@ def extended_format_CALL_METHOD(call_method_inst, instructions):
         pass
     else:
         if instructions[method_pos].opname == "LOAD_METHOD":
-            s = "%s() " % instructions[method_pos].argrepr
+            s += "%s() " % instructions[method_pos].argrepr
             pass
         pass
     s += format_CALL_FUNCTION(call_method_inst.arg)
     return s
 
 def extended_format_CALL_FUNCTION(call_function_inst, instructions):
-    """Inst should be a "CALL_FUNCTION" instru[ction. Looks in
+    """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
 
@@ -230,24 +230,73 @@ def extended_format_CALL_FUNCTION(call_function_inst, instructions):
         # Make sure we are in the same basic block
         # and ... ?
         opcode = inst.opcode
-        if inst.optype == "nargs":
+        if inst.optype in ("nargs", "vargs"):
             break
         if inst.optype != "name":
             function_pos += (oppop[opcode] - oppush[opcode]) + 1
         if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
             break
         pass
+    else:
+        i += 1
 
     if i == function_pos:
         if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
                                                  "LOAD_ATTR", "LOAD_NAME"):
-            s = "%s() " % instructions[function_pos].argrepr
+            if instructions[function_pos].opname == "LOAD_ATTR":
+                s += "."
+            s += "%s() " % instructions[function_pos].argrepr
             pass
         pass
     s += format_CALL_FUNCTION(call_function_inst.arg)
     return s
 
+def extended_format_CALL_FUNCTION_KW(call_function_inst, instructions):
+    """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
+    `instructions` to see if we can find a method name.  If not we'll
+    return None.
+
+    """
+    # From opcode description: argc indicates the total number of positional and keyword arguments.
+    # Sometimes the function name is in the stack arg positions back.
+    assert call_function_inst.opname == "CALL_FUNCTION_KW"
+    function_pos = call_function_inst.arg
+    assert len(instructions) >= function_pos + 1
+    assert instructions[0] == call_function_inst
+    load_const = instructions[1]
+    if load_const.opname == "LOAD_CONST" and isinstance(load_const.argval, tuple):
+        function_pos += len(load_const.argval) + 1
+        s = ""
+        for i, inst in enumerate(instructions[2:]):
+            if i == function_pos:
+                break
+            if inst.is_jump_target:
+                i += 1
+                break
+            # Make sure we are in the same basic block
+            # and ... ?
+            opcode = inst.opcode
+            if inst.optype in ("nargs", "vargs"):
+                break
+            if inst.optype != "name":
+                function_pos += (oppop[opcode] - oppush[opcode]) + 1
+            if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
+                break
+            pass
+
+        if i == function_pos:
+            if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
+                                                     "LOAD_ATTR", "LOAD_NAME"):
+                if instructions[function_pos].opname == "LOAD_ATTR":
+                    s += "."
+                s += "%s() " % instructions[function_pos].argrepr
+                pass
+            pass
+        s += format_CALL_FUNCTION(call_function_inst.arg)
+        return s
+
 opcode_extended_fmt = {
     "CALL_METHOD": extended_format_CALL_METHOD,
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
 }

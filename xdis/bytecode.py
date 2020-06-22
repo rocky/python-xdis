@@ -317,7 +317,7 @@ class Bytecode(object):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version)
 
-    def dis(self, asm_format="std"):
+    def dis(self, asm_format="classic"):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         if self.current_offset is not None:
@@ -368,7 +368,7 @@ class Bytecode(object):
         linestarts=None,
         file=sys.stdout,
         line_offset=0,
-        asm_format="std",
+        asm_format="classic",
     ):
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None

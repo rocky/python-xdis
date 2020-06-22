@@ -88,7 +88,7 @@ class Instruction(_Instruction):
         opc,
         lineno_width=3,
         mark_as_current=False,
-        asm_format="std",
+        asm_format="classic",
         instructions=[],
     ):
         """Format instruction details for inclusion in disassembly output
@@ -183,10 +183,10 @@ class Instruction(_Instruction):
                     if new_repr:
                         argrepr = new_repr
                 pass
-            elif asm_format not in ("bytes", "extended-bytes") and not argrepr:
+            if not argrepr:
                 fields.append(repr(self.arg))
             # Column: Opcode argument details
-            if argrepr:
+            else:
                 fields.append("(%s)" % argrepr)
                 pass
             pass

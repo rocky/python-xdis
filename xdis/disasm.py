@@ -119,7 +119,7 @@ def disco(
     magic_int=None,
     source_size=None,
     sip_hash=None,
-    asm_format="std",
+    asm_format="classic",
     dup_lines=False,
 ):
     """
@@ -158,7 +158,7 @@ def disco(
                    dup_lines=True)
 
 
-def disco_loop(opc, version, queue, real_out, dup_lines=False, asm_format="std"):
+def disco_loop(opc, version, queue, real_out, dup_lines=False, asm_format="classic"):
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
@@ -255,7 +255,7 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
 
 
 def disassemble_file(
-    filename, outstream=sys.stdout, asm_format="std"
+    filename, outstream=sys.stdout, asm_format="classic"
 ):
     """
     disassemble Python byte-code file (.pyc)
