@@ -40,7 +40,7 @@ opcode_arg_fmt = {
 
 finalize_opcodes(l)
 
-def extended_format_MAKE_FUNCTION(make_function_inst, instructions):
+def extended_format_MAKE_FUNCTION(instructions):
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
     """

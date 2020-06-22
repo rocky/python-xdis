@@ -183,17 +183,17 @@ finalize_opcodes(l)
 # extended formatting routine  should be done after updating globals and finalizing opcodes
 # since they make use of the information there.
 
-def extended_format_CALL_METHOD(call_method_inst, instructions):
+def extended_format_CALL_METHOD(instructions):
     """Inst should be a "LOAD_METHOD" instruction. Looks in `instructions`
     to see if we can find a method name.  If not we'll return None.
 
     """
     # From opcode description: Loads a method named co_names[namei] from the TOS object.
     # Sometimes the method name is in the stack arg positions back.
+    call_method_inst = instructions[0]
     assert call_method_inst.opname == "CALL_METHOD"
     method_pos = call_method_inst.arg + 1
     assert len(instructions) >= method_pos
-    assert instructions[0] == call_method_inst
     s = ""
     for inst in instructions[1:method_pos]:
         # Make sure we are in the same basic block
@@ -209,7 +209,7 @@ def extended_format_CALL_METHOD(call_method_inst, instructions):
     s += format_CALL_FUNCTION(call_method_inst.arg)
     return s
 
-def extended_format_CALL_FUNCTION(call_function_inst, instructions):
+def extended_format_CALL_FUNCTION(instructions):
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -217,10 +217,10 @@ def extended_format_CALL_FUNCTION(call_function_inst, instructions):
     """
     # From opcode description: argc indicates the total number of positional and keyword arguments.
     # Sometimes the function name is in the stack arg positions back.
+    call_function_inst = instructions[0]
     assert call_function_inst.opname == "CALL_FUNCTION"
     function_pos = call_function_inst.arg + 1
     assert len(instructions) >= function_pos
-    assert instructions[0] == call_function_inst
     s = ""
     for i, inst in enumerate(instructions[1:]):
         if i == function_pos:
@@ -252,7 +252,7 @@ def extended_format_CALL_FUNCTION(call_function_inst, instructions):
     s += format_CALL_FUNCTION(call_function_inst.arg)
     return s
 
-def extended_format_CALL_FUNCTION_KW(call_function_inst, instructions):
+def extended_format_CALL_FUNCTION_KW(instructions):
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -260,10 +260,10 @@ def extended_format_CALL_FUNCTION_KW(call_function_inst, instructions):
     """
     # From opcode description: argc indicates the total number of positional and keyword arguments.
     # Sometimes the function name is in the stack arg positions back.
+    call_function_inst = instructions[0]
     assert call_function_inst.opname == "CALL_FUNCTION_KW"
     function_pos = call_function_inst.arg
     assert len(instructions) >= function_pos + 1
-    assert instructions[0] == call_function_inst
     load_const = instructions[1]
     if load_const.opname == "LOAD_CONST" and isinstance(load_const.argval, tuple):
         function_pos += len(load_const.argval) + 1
