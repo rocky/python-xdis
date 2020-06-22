@@ -29,6 +29,7 @@ from xdis.opcodes.base import(
     update_pj3
     )
 
+from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
 import xdis.opcodes.opcode_36 as opcode_36
 
 version = 3.7
@@ -112,8 +113,9 @@ opcode_arg_fmt = {
 }
 
 opcode_extended_fmt = {
-    "CALL_METHOD": opcode_36.extended_format_CALL_METHOD,
     "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
+    "CALL_METHOD": opcode_36.extended_format_CALL_METHOD,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
 }
 
 update_pj3(globals(), l)

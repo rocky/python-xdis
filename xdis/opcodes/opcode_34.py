@@ -43,4 +43,8 @@ opcode_arg_fmt = {
     "EXTENDED_ARG": format_extended_arg,
 }
 
+opcode_extended_fmt = {
+    "MAKE_FUNCTION": opcode_33.extended_format_MAKE_FUNCTION,
+}
+
 finalize_opcodes(l)

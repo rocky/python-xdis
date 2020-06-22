@@ -34,6 +34,7 @@ from xdis.opcodes.base import (
 )
 
 import xdis.opcodes.opcode_34 as opcode_34
+from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
 
 version = 3.5
 python_implementation = "CPython"
@@ -88,6 +89,10 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+}
+
+opcode_extended_fmt = {
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
 }
 
 finalize_opcodes(l)

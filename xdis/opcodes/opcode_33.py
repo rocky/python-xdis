@@ -39,3 +39,25 @@ opcode_arg_fmt = {
 }
 
 finalize_opcodes(l)
+
+def extended_format_MAKE_FUNCTION(make_function_inst, instructions):
+    """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
+    should have the function or closure name.
+    """
+    # From opcode description: argc indicates the total number of positional and keyword arguments.
+    # Sometimes the function name is in the stack arg positions back.
+    assert len(instructions) >= 2
+    inst = instructions[0]
+    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
+    s = ""
+    name_inst = instructions[1]
+    if name_inst.opname in ("LOAD_CONST",):
+        s += "%s() " % name_inst.argrepr
+        pass
+    s += format_MAKE_FUNCTION_arg(inst.arg)
+    return s
+
+
+opcode_extended_fmt = {
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+}

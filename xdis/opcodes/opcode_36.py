@@ -27,6 +27,7 @@ from xdis.opcodes.base import(
     update_pj3
     )
 
+from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
 import xdis.opcodes.opcode_35 as opcode_35
 
 oppush = {}
@@ -299,4 +300,5 @@ opcode_extended_fmt = {
     "CALL_METHOD": extended_format_CALL_METHOD,
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
 }
