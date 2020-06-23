@@ -211,8 +211,3 @@ nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -3, 1)  # #args + (#kwargs << 8)
 
 def_op(l, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
-
-def format_MAKE_FUNCTION_arg(argc):
-    name_default, pos_args, = divmod(argc, 256)
-    return ("%d positional, %d name and default" %
-            (pos_args, name_default))

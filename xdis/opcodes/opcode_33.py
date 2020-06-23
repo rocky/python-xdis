@@ -11,7 +11,6 @@ from xdis.opcodes.base import (
     extended_format_CALL_FUNCTION,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_MAKE_FUNCTION_arg,
     format_extended_arg,
     init_opdata,
     rm_op,
@@ -33,13 +32,12 @@ def_op(l, "YIELD_FROM", 72, 1, 0)
 
 update_pj3(globals(), l)
 
-opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
-    "EXTENDED_ARG": format_extended_arg,
-    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
-}
-
 finalize_opcodes(l)
+
+def format_MAKE_FUNCTION_default_pos_arg(argc):
+    name_default, pos_args, = divmod(argc, 256)
+    return ("%d positional, %d name and default" %
+            (pos_args, name_default))
 
 def extended_format_MAKE_FUNCTION(opc, instructions):
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
@@ -58,6 +56,12 @@ def extended_format_MAKE_FUNCTION(opc, instructions):
     s += format_MAKE_FUNCTION_arg(inst.arg)
     return s
 
+
+opcode_arg_fmt = {
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_pos_arg,
+    "EXTENDED_ARG": format_extended_arg,
+    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+}
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,

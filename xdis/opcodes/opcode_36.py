@@ -112,7 +112,7 @@ varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
-def format_MAKE_FUNCTION_arg(flags):
+def format_MAKE_FUNCTION_flags(flags):
     if flags == 0:
         return "Neither defaults, keyword-only args, annotations, nor closures"
     pattr = ''
@@ -176,7 +176,7 @@ opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
     "FORMAT_VALUE": format_value_flags,
     "EXTENDED_ARG": format_extended_arg36
 }

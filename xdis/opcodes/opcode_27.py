@@ -26,6 +26,7 @@ from xdis.opcodes.base import (
     extended_format_CALL_FUNCTION,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
+    format_MAKE_FUNCTION_default_argc,
     format_extended_arg,
     init_opdata,
     jabs_op,
@@ -88,6 +89,7 @@ def_op(l, "MAP_ADD",               147, 3, 1)  # Calls dict.setitem(TOS1[-i], TO
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
     "EXTENDED_ARG": format_extended_arg,
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
 }

@@ -98,7 +98,7 @@ jrel_op(l, "SETUP_ASYNC_WITH",   154,  0,  5)
 name_op(l, "LOAD_METHOD", 160, 0, 1)
 nargs_op(l, "CALL_METHOD", 161, -2, 1)
 
-format_MAKE_FUNCTION_arg = opcode_36.format_MAKE_FUNCTION_arg
+format_MAKE_FUNCTION_flags = opcode_36.format_MAKE_FUNCTION_flags
 format_value_flags = opcode_36.format_value_flags
 
 opcode_arg_fmt = {
@@ -107,7 +107,7 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": opcode_36.format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": opcode_36.format_CALL_FUNCTION_EX,
     "CALL_METHOD": opcode_36.format_CALL_FUNCTION,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
     "FORMAT_VALUE": format_value_flags,
     "EXTENDED_ARG": opcode_36.format_extended_arg36
 }

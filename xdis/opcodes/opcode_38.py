@@ -37,6 +37,7 @@ from xdis.opcodes.opcode_36 import (
     format_BUILD_MAP_UNPACK_WITH_CALL,
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
+    format_MAKE_FUNCTION_flags,
     format_extended_arg36,
 )
 
@@ -64,14 +65,13 @@ def_op(l, "END_FINALLY", 88, 6, 0)  # POP is 6, when not 1
 jrel_op(l, "CALL_FINALLY", 162, 0, 1)
 nargs_op(l, "POP_FINALLY", 163, 6, 0)  # PUSH/POP vary
 
-format_MAKE_FUNCTION_arg = opcode_37.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_37.format_value_flags
 
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
     "FORMAT_VALUE": format_value_flags,
     "EXTENDED_ARG": format_extended_arg36,
 }

@@ -24,7 +24,7 @@ from xdis.opcodes.base import (
     init_opdata,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_MAKE_FUNCTION_arg,
+    format_MAKE_FUNCTION_default_argc,
     format_extended_arg,
     rm_op,
     update_pj2,
@@ -50,7 +50,7 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
 }
 
 finalize_opcodes(l)

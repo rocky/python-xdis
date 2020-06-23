@@ -11,7 +11,6 @@ from xdis.opcodes.base import (
     def_op,
     finalize_opcodes,
     format_extended_arg,
-    format_MAKE_FUNCTION_arg,
     init_opdata,
     jrel_op,
     name_op,
@@ -25,6 +24,9 @@ version = 3.6
 python_implementation = "PyPy"
 
 import xdis.opcodes.opcode_36 as opcode_36
+from xdis.opcodes.opcode_36 import (
+    format_MAKE_FUNCTION_flags,
+)
 
 l = locals()
 init_opdata(l, opcode_36, version, is_pypy=True)
@@ -66,7 +68,7 @@ if sys.version_info[:3] >= (3, 6, 1):
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
     'CALL_FUNCTION': format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
 }

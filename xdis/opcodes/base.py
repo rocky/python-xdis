@@ -300,11 +300,16 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     name_default, pos_args = divmod(argc, 256)
     return ("%d positional, %d named" % (pos_args, name_default))
 
+# After Python 3.2
 def format_MAKE_FUNCTION_arg(argc):
     name_and_annotate, pos_args = divmod(argc, 256)
     annotate_args, name_default = divmod(name_and_annotate, 256)
     return ("%d positional, %d name and default, %d annotations" %
             (pos_args, name_default, annotate_args))
+
+# Up to and including Python 3.2
+def format_MAKE_FUNCTION_default_argc(argc):
+    return ("%d default parameters" % argc)
 
 def opcode_check(l):
     """When the version of Python we are running happens
