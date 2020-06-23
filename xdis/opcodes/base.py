@@ -302,6 +302,23 @@ def resolved_attrs(instructions):
             break
     return ".".join(reversed(resolved))
 
+def extended_format_MAKE_FUNCTION_older(opc, instructions):
+    """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
+    should have the function or closure name.
+    """
+    # From opcode description: argc indicates the total number of positional and keyword arguments.
+    # Sometimes the function name is in the stack arg positions back.
+    assert len(instructions) >= 2
+    inst = instructions[0]
+    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
+    s = ""
+    code_inst = instructions[1]
+    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
+        s += "%s() " % code_inst.argval.co_name
+        pass
+    s += format_MAKE_FUNCTION_arg(inst.arg)
+    return s
+
 def extended_format_RETURN_VALUE(opc, instructions):
     return_inst = instructions[0]
     assert return_inst.opname == "RETURN_VALUE"
