@@ -98,6 +98,7 @@ class Instruction(_Instruction):
         """
         fields = []
         indexed_operand = set(["name", "local", "compare", "free"])
+
         # Column: Source code line number
         if lineno_width:
             if self.starts_line is not None:
@@ -112,11 +113,13 @@ class Instruction(_Instruction):
                     fields.append(lineno_fmt % self.starts_line)
             else:
                 fields.append(" " * (lineno_width + 1))
+
         # Column: Current instruction indicator
         if mark_as_current and asm_format != "xasm":
             fields.append("-->")
         else:
             fields.append("   ")
+
         # Column: Jump target marker
         if self.is_jump_target:
             if asm_format != "xasm":
@@ -127,10 +130,12 @@ class Instruction(_Instruction):
                     fields.append(" ")
         else:
             fields.append("  ")
+
         # Column: Instruction offset from start of code sequence
         if asm_format != "xasm":
             fields.append(repr(self.offset).rjust(4))
 
+        # Column: Instruction bytes
         if asm_format in ("extended-bytes", "bytes"):
             hex_bytecode = "|%02x" % self.opcode
             if self.inst_size == 1:
@@ -185,8 +190,9 @@ class Instruction(_Instruction):
                 pass
             if not argrepr:
                 fields.append(repr(self.arg))
-            # Column: Opcode argument details
+
             else:
+                # Column: Opcode argument details
                 fields.append("(%s)" % argrepr)
                 pass
             pass

@@ -271,7 +271,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         opcode = inst.opcode
         if inst.optype in ("nargs", "vargs"):
             break
-        if inst.optype != "name":
+        if inst.opname == "LOAD_ATTR" or inst.optype != "name":
             function_pos += (opc.oppop[opcode] - opc.oppush[opcode]) + 1
         if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
             break
@@ -281,13 +281,26 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     if i == function_pos:
         if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
                                                  "LOAD_ATTR", "LOAD_NAME"):
-            if instructions[function_pos].opname == "LOAD_ATTR":
-                s += "."
-            s += "%s() " % instructions[function_pos].argrepr
+            s = resolved_attrs(instructions[function_pos:])
+            s += "() "
             pass
         pass
     s += format_CALL_FUNCTION_pos_name_encoded(call_function_inst.arg)
     return s
+
+def resolved_attrs(instructions):
+    resolved = []
+    for inst in instructions:
+        name = inst.argrepr
+        if name:
+            if name[0] == "'" and name[-1] == "'":
+                name = name[1:-1]
+        else:
+            name = ""
+        resolved.append(name)
+        if inst.opname != "LOAD_ATTR":
+            break
+    return ".".join(reversed(resolved))
 
 def extended_format_RETURN_VALUE(opc, instructions):
     return_inst = instructions[0]
@@ -295,11 +308,7 @@ def extended_format_RETURN_VALUE(opc, instructions):
     assert len(instructions) >= 1
     if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
                                   "LOAD_ATTR", "LOAD_NAME"):
-        s = ""
-        if instructions[1].opname == "LOAD_ATTR":
-            s += "."
-        s += "%s" % instructions[1].argrepr
-        return s
+        return resolved_attrs(instructions[1:])
     return None
 
 def format_extended_arg(arg):

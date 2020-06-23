@@ -22,11 +22,12 @@ of stack usage.
 
 from xdis.opcodes.base import(
     def_op,
-    extended_format_CALL_FUNCTION,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
     jrel_op,
     nargs_op,
+    resolved_attrs,
     rm_op,
     store_op,
     varargs_op,
@@ -250,8 +251,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     if i == function_pos:
         if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
                                                  "LOAD_ATTR", "LOAD_NAME"):
-            if instructions[function_pos].opname == "LOAD_ATTR":
-                s += "."
+            s = resolved_attrs(instructions[function_pos:])
             s += "%s() " % instructions[function_pos].argrepr
             pass
         pass
@@ -307,4 +307,5 @@ opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
 }

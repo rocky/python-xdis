@@ -9,6 +9,8 @@ of stack usage, and opererand formatting functions.
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
     def_op,
+    extended_format_CALL_FUNCTION,
+    extended_format_RETURN_VALUE,
     init_opdata,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
@@ -34,6 +36,8 @@ def_op(l, 'YIELD_VALUE',          86,  1,  1)
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)
 
+finalize_opcodes(l)
+
 opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
@@ -42,4 +46,7 @@ opcode_arg_fmt = {
     "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
 }
 
-finalize_opcodes(l)
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+}

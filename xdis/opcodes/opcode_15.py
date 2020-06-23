@@ -26,6 +26,7 @@ from xdis.opcodes.base import (
     compare_op,
     const_op,
     def_op,
+    extended_format_RETURN_VALUE,
     jabs_op,
     jrel_op,
     finalize_opcodes,
@@ -220,3 +221,7 @@ update_pj2(globals(), l)
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 finalize_opcodes(l)
+
+opcode_extended_fmt = {
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+}

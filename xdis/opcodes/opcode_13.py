@@ -27,6 +27,7 @@ import xdis.opcodes.opcode_14 as opcode_14
 from xdis.opcodes.base import (
     init_opdata,
     def_op,
+    extended_format_RETURN_VALUE,
     rm_op,
     finalize_opcodes,
     format_extended_arg,
@@ -46,8 +47,14 @@ def_op(l, "LOAD_GLOBALS", 84)
 
 update_pj2(globals(), l)
 
-opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
+opcode_arg_fmt = {
+    "EXTENDED_ARG": format_extended_arg
+}
 
 finalize_opcodes(l)
+
+opcode_extended_fmt = {
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+}
 
 findlinestarts = opcode_14.findlinestarts
