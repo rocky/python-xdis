@@ -210,7 +210,7 @@ def extended_format_CALL_METHOD(opc, instructions):
         pass
     else:
         if instructions[method_pos].opname == "LOAD_METHOD":
-            s += "%s() " % instructions[method_pos].argrepr
+            s += "%s: " % instructions[method_pos].argrepr
             pass
         pass
     s += format_CALL_FUNCTION(call_method_inst.arg)
@@ -252,7 +252,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
                                                  "LOAD_ATTR", "LOAD_NAME"):
             s = resolved_attrs(instructions[function_pos:])
-            s += "%s() " % instructions[function_pos].argrepr
+            s += "%s: " % instructions[function_pos].argrepr
             pass
         pass
     s += format_CALL_FUNCTION(call_function_inst.arg)
