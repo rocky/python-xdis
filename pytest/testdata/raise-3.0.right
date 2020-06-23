@@ -12,7 +12,7 @@
 # Names:
 #    0: compact_traceback
   6:           0 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 6)
-               3 MAKE_FUNCTION        (0 positional, 0 name and default, 0 annotations)
+               3 MAKE_FUNCTION        (0 default parameters)
                6 STORE_NAME           (compact_traceback)
                9 LOAD_CONST           (None)
               12 RETURN_VALUE

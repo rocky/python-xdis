@@ -22,6 +22,7 @@ This is similar to (but better than) the opcode portion in Python 2.0's dis.py l
 import xdis.opcodes.opcode_21 as opcode_21
 from xdis.opcodes.base import (
     init_opdata,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_MAKE_FUNCTION_default_argc,
@@ -51,6 +52,7 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 
 finalize_opcodes(l)

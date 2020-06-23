@@ -14,7 +14,7 @@
 #    0: f
 #    1: AssertionError
   6:           0 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 6)
-               3 MAKE_FUNCTION        0
+               3 MAKE_FUNCTION        (0 default parameters)
                6 STORE_NAME           (f)
 
   9:           9 LOAD_NAME            (f)

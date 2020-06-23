@@ -53,7 +53,7 @@ def extended_format_MAKE_FUNCTION(opc, instructions):
     if name_inst.opname in ("LOAD_CONST",):
         s += "%s() " % name_inst.argrepr
         pass
-    s += format_MAKE_FUNCTION_arg(inst.arg)
+    s += format_MAKE_FUNCTION_default_pos_arg(inst.arg)
     return s
 
 

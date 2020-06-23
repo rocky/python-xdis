@@ -190,6 +190,17 @@ class Instruction(_Instruction):
                 fields.append("(%s)" % argrepr)
                 pass
             pass
+        elif asm_format in ("extended", "extended-bytes"):
+            op = self.opcode
+            if (
+                hasattr(opc, "opcode_extended_fmt")
+                and opc.opname[op] in opc.opcode_extended_fmt
+            ):
+                new_repr = opc.opcode_extended_fmt[opc.opname[op]](opc, list(reversed(instructions)))
+                if new_repr:
+                    fields.append("(%s)" % new_repr)
+            pass
+
         return " ".join(fields).rstrip()
 
     def is_jump(self):

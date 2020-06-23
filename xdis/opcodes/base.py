@@ -289,6 +289,19 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     s += format_CALL_FUNCTION_pos_name_encoded(call_function_inst.arg)
     return s
 
+def extended_format_RETURN_VALUE(opc, instructions):
+    return_inst = instructions[0]
+    assert return_inst.opname == "RETURN_VALUE"
+    assert len(instructions) >= 1
+    if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
+                                  "LOAD_ATTR", "LOAD_NAME"):
+        s = ""
+        if instructions[1].opname == "LOAD_ATTR":
+            s += "."
+        s += "%s" % instructions[1].argrepr
+        return s
+    return None
+
 def format_extended_arg(arg):
     return str(arg * (1 << 16))
 

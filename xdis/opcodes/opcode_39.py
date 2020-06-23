@@ -21,6 +21,7 @@ This is a like Python 3.9's opcode.py
 
 from xdis.opcodes.base import(
     def_op,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
     rm_op,
@@ -79,6 +80,7 @@ opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 
 update_pj3(globals(), l)
