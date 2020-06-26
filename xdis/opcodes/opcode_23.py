@@ -9,6 +9,7 @@ of stack usage, and opererand formatting functions.
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
     extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
@@ -36,6 +37,7 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 

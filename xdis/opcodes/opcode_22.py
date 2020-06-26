@@ -8,6 +8,7 @@ This is similar to the opcode portion in Python 2.2's dis.py library.
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
     def_op,
+    extended_format_MAKE_FUNCTION_older,
     extended_format_RETURN_VALUE,
     init_opdata,
     finalize_opcodes,
@@ -35,5 +36,6 @@ opcode_arg_fmt = {
 }
 
 opcode_extended_fmt = {
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }

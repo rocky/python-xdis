@@ -29,7 +29,8 @@ the Python interpreter used to run this program. For example, you can disassembl
 bytecode from Python 2.7.13 and vice versa.
 
 Options:
-  -a | --asm         produce assembly output more suitable for modification
+  -F | --format {xasm | bytes | classic | extended | extended-bytes | header}
+                     specifiy assembly output format
   -V | --version     show version and stop
   -h | --help        show this message
   --header           Show only the module header information
@@ -37,7 +38,7 @@ Options:
 Examples:
   pydisasm foo.pyc
   pydisasm foo.py           # same thing as above but find the file
-  pydisasm --asm foo.py     # produce assembler-friendly output
+  pydisasm -F xasm foo.py    # produce xasm assembler-friendly output
   pydisasm foo.pyc bar.pyc  # disassemble foo.pyc and bar.pyc
 
 """
@@ -73,6 +74,7 @@ Type -h for for full help.""" % program
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
 
+    format = "classic"
     asm, header = False, False
     for opt, val in opts:
         if opt in ('-h', '--help'):

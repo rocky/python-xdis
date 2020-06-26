@@ -23,6 +23,7 @@ of stack usage, and opererand formatting functions.
 from xdis.opcodes.base import (
     store_op,
     extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_older,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_MAKE_FUNCTION_default_argc,
@@ -54,5 +55,6 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
 }
 finalize_opcodes(l)
