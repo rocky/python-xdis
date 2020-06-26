@@ -10,6 +10,7 @@ import xdis.opcodes.opcode_24 as opcode_24
 from xdis.opcodes.base import (
     def_op,
     extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_older,
     extended_format_RETURN_VALUE,
     init_opdata,
     finalize_opcodes,
@@ -44,6 +45,7 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 finalize_opcodes(l)
