@@ -22,9 +22,10 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op,
+    extended_format_CALL_FUNCTION,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_MAKE_FUNCTION_arg,
     format_extended_arg,
     init_opdata,
     jrel_op,
@@ -34,6 +35,10 @@ from xdis.opcodes.base import (
 )
 
 import xdis.opcodes.opcode_34 as opcode_34
+from xdis.opcodes.opcode_33 import (
+    extended_format_MAKE_FUNCTION,
+    format_MAKE_FUNCTION_default_pos_arg,
+)
 
 version = 3.5
 python_implementation = "CPython"
@@ -87,7 +92,13 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_pos_arg,
+}
+
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 
 finalize_opcodes(l)

@@ -25,6 +25,8 @@ from xdis.cross_dis import findlabels
 
 import xdis.opcodes.opcode_11 as opcode_11
 from xdis.opcodes.base import (
+    extended_format_CALL_FUNCTION,
+    extended_format_RETURN_VALUE,
     init_opdata,
     rm_op,
     finalize_opcodes,
@@ -48,5 +50,10 @@ update_pj2(globals(), l)
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 finalize_opcodes(l)
+
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+}
 
 findlinestarts = opcode_11.findlinestarts

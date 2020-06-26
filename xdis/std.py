@@ -51,7 +51,7 @@ import sys
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode as _Bytecode
 from xdis.instruction import _Instruction
-from xdis.main import disco as _disco
+from xdis.disasm import disco as _disco
 from xdis.op_imports import get_opcode_module
 from xdis.cross_dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code, xstack_effect as _stack_effect
 
@@ -165,7 +165,7 @@ class _StdApi:
     def disco(self, code, lasti=-1, file=None):
         """Disassemble a code object."""
         return _disco(self.python_version, code, timestamp=None,
-                      out=file, is_pypy=self.is_pypy, header=False)
+                      out=file, is_pypy=self.is_pypy)
 
     def get_instructions(self, x, first_line=None):
         """Iterator for the opcodes in methods, functions or code

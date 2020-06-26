@@ -8,8 +8,10 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op,
+    extended_format_CALL_FUNCTION,
     finalize_opcodes,
-    format_MAKE_FUNCTION_arg,
+    format_CALL_FUNCTION_pos_name_encoded,
+    format_MAKE_FUNCTION_default_argc,
     format_extended_arg,
     init_opdata,
     jrel_op,
@@ -55,8 +57,11 @@ jrel_op(l, 'JUMP_IF_TRUE',       112, 1, 1)
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
-    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_default_argc,
     'EXTENDED_ARG': format_extended_arg,
 }
 
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+}
 finalize_opcodes(l)

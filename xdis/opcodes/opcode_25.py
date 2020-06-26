@@ -9,10 +9,12 @@ of stack usage, and opererand formatting functions.
 import xdis.opcodes.opcode_24 as opcode_24
 from xdis.opcodes.base import (
     def_op,
+    extended_format_CALL_FUNCTION,
+    extended_format_RETURN_VALUE,
     init_opdata,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_MAKE_FUNCTION_arg,
+    format_MAKE_FUNCTION_default_argc,
     format_extended_arg,
     update_pj2,
     )
@@ -36,7 +38,12 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
+
 }
 
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+}
 finalize_opcodes(l)

@@ -24,7 +24,7 @@ If this file changes the other opcode files may have to be adjusted accordingly.
 
 from xdis.opcodes.base import (
     compare_op, const_op,
-    def_op, free_op, jabs_op, jrel_op,
+    def_op, format_CALL_FUNCTION_pos_name_encoded, free_op, jabs_op, jrel_op,
     local_op, name_op, nargs_op, store_op,
     varargs_op )
 
@@ -210,10 +210,3 @@ nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -3, 1)  # #args + (#kwargs << 8)
 
 def_op(l, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
-
-def format_MAKE_FUNCTION_arg(argc):
-    pos_args = argc & 0xFF
-    name_default = (argc >> 8) & 0xFF
-    annotate_args = (argc >> 16) & 0x7FFF
-    return ("%d positional, %d name and default, %d annotations" %
-            (pos_args, name_default, annotate_args))

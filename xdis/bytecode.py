@@ -24,7 +24,12 @@ from xdis.version_info import PYTHON3
 
 from xdis.namedtuple24 import namedtuple
 
-from xdis.cross_dis import get_code_object, format_code_info, instruction_size, op_has_argument
+from xdis.cross_dis import (
+    get_code_object,
+    format_code_info,
+    instruction_size,
+    op_has_argument,
+)
 from xdis.instruction import Instruction
 from xdis.util import code2num, num2code
 
@@ -37,8 +42,10 @@ else:
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
+
 def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
+
 
 def offset2line(offset, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)
@@ -63,8 +70,9 @@ def offset2line(offset, linestarts):
         pass
     # Not found. Return closest position below
     if mid >= len(linestarts):
-        return linestarts[len(linestarts)-1][1]
+        return linestarts[len(linestarts) - 1][1]
     return linestarts[high][1]
+
 
 def _get_const_info(const_index, const_list):
     """Helper to get optional details about const references
@@ -80,9 +88,12 @@ def _get_const_info(const_index, const_list):
     # float values nan and inf are not directly representable in Python at least
     # before 3.5 and even there it is via a library constant.
     # So we will canonicalize their representation as float('nan') and float('inf')
-    if isinstance(argval, float) and str(argval) in frozenset(['nan', '-nan', 'inf', '-inf']):
+    if isinstance(argval, float) and str(argval) in frozenset(
+        ["nan", "-nan", "inf", "-inf"]
+    ):
         return argval, "float('%s')" % argval
     return argval, repr(argval)
+
 
 def _get_name_info(name_index, name_list):
     """Helper to get optional details about named references
@@ -92,18 +103,29 @@ def _get_name_info(name_index, name_list):
        Otherwise returns the name index and its repr().
     """
     argval = name_index
-    if (name_list is not None
+    if (
+        name_list is not None
         # PyPY seems to "optimize" out constant names,
         # so we need for that:
-        and name_index < len(name_list)):
+        and name_index < len(name_list)
+    ):
         argval = name_list[name_index]
         argrepr = argval
     else:
         argrepr = repr(argval)
     return argval, argrepr
 
-def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=None,
-                           cells=None, linestarts=None, line_offset=0):
+
+def get_instructions_bytes(
+    bytecode,
+    opc,
+    varnames=None,
+    names=None,
+    constants=None,
+    cells=None,
+    linestarts=None,
+    line_offset=0,
+):
     """Iterate over the instructions in a bytecode string.
 
     Generates a sequence of Instruction namedtuples giving the details of each
@@ -128,7 +150,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
     # multiple elements on a single pass through the loop
     n = len(bytecode)
     i = 0
-    extended_arg_count  = 0
+    extended_arg_count = 0
     extended_arg = 0
     extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
     while i < n:
@@ -141,8 +163,8 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
                 starts_line += line_offset
         if i in labels:
             #  come_from = label_maps[i]
-            if False: # come_from[0] > i:
-                is_jump_target = 'loop'
+            if False:  # come_from[0] > i:
+                is_jump_target = "loop"
                 # print("XXX %s at %d" % (opc.opname[op], i))
                 # from trepan.api import debug; debug()
             else:
@@ -153,7 +175,7 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
         i += 1
         arg = None
         argval = None
-        argrepr = ''
+        argrepr = ""
         has_arg = op_has_argument(op, opc)
         optype = None
         if has_arg:
@@ -166,7 +188,11 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
                 # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
                 i += 1
             else:
-                arg = code2num(bytecode, i) + code2num(bytecode, i+1)*256 + extended_arg
+                arg = (
+                    code2num(bytecode, i)
+                    + code2num(bytecode, i + 1) * 256
+                    + extended_arg
+                )
                 i += 2
                 if op == opc.EXTENDED_ARG:
                     extended_arg = arg*65536
@@ -180,38 +206,42 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
             argval = arg
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
-                optype = 'const'
+                optype = "const"
             elif op in opc.NAME_OPS:
                 argval, argrepr = _get_name_info(arg, names)
-                optype = 'name'
+                optype = "name"
             elif op in opc.JREL_OPS:
                 argval = i + arg
                 argrepr = "to " + repr(argval)
-                optype = 'jrel'
+                optype = "jrel"
             elif op in opc.JABS_OPS:
                 argval = arg
                 argrepr = "to " + repr(argval)
-                optype = 'jabs'
+                optype = "jabs"
             elif op in opc.LOCAL_OPS:
                 argval, argrepr = _get_name_info(arg, varnames)
-                optype = 'local'
+                optype = "local"
             elif op in opc.COMPARE_OPS:
                 argval = opc.cmp_op[arg]
                 argrepr = argval
-                optype = 'compare'
+                optype = "compare"
             elif op in opc.FREE_OPS:
                 argval, argrepr = _get_name_info(arg, cells)
-                optype = 'free'
+                optype = "free"
             elif op in opc.NARGS_OPS:
-                optype = 'nargs'
-                if not (python_36 or opc.opname[op] in
-                        ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")):
-                    argrepr = ("%d positional, %d named" %
-                               (code2num(bytecode, i-2), code2num(bytecode, i-1)))
+                optype = "nargs"
+                if not (
+                    python_36
+                    or opc.opname[op] in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
+                ):
+                    argrepr = "%d positional, %d named" % (
+                        code2num(bytecode, i - 2),
+                        code2num(bytecode, i - 1),
+                    )
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
-                optype = 'vargs'
-            if hasattr(opc, 'opcode_arg_fmt') and opc.opname[op] in opc.opcode_arg_fmt:
+                optype = "vargs"
+            if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
         elif python_36:
             i += 1
@@ -219,17 +249,30 @@ def get_instructions_bytes(bytecode, opc, varnames=None, names=None, constants=N
         opname = opc.opname[op]
         inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
         fallthrough = op not in opc.nofollow
-        yield Instruction(opname, op, optype, inst_size, arg, argval, argrepr,
-                          has_arg, offset, starts_line, is_jump_target,
-                          extended_arg_count != 0)
-
+        yield Instruction(
+            opname,
+            op,
+            optype,
+            inst_size,
+            arg,
+            argval,
+            argrepr,
+            has_arg,
+            offset,
+            starts_line,
+            is_jump_target,
+            extended_arg_count != 0,
+        )
+        # fallthrough)
         if op == opc.EXTENDED_ARG:
             extended_arg_count = extended_arg_count + 1
         else:
             extended_arg_count = 0
 
+
 def next_offset(op, opc, offset):
     return offset + instruction_size(op, opc)
+
 
 class Bytecode(object):
     """Bytecode operations involving a Python code object.
@@ -239,8 +282,8 @@ class Bytecode(object):
 
     Iterating over this yields the bytecode operations as Instruction instances.
     """
-    def __init__(self, x, opc, first_line=None, current_offset=None,
-                 dup_lines=True):
+
+    def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines=True):
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
         self._cell_names = ()
@@ -263,20 +306,25 @@ class Bytecode(object):
 
     def __iter__(self):
         co = self.codeobj
-        return get_instructions_bytes(co.co_code, self.opc, co.co_varnames, co.co_names,
-                                      co.co_consts, self._cell_names,
-                                      self._linestarts,
-                                      line_offset=self._line_offset)
+        return get_instructions_bytes(
+            co.co_code,
+            self.opc,
+            co.co_varnames,
+            co.co_names,
+            co.co_consts,
+            self._cell_names,
+            self._linestarts,
+            line_offset=self._line_offset,
+        )
 
     def __repr__(self):
-        return "{}({!r})".format(self.__class__.__name__,
-                                 self._original_object)
+        return "%s(%r)" % (self.__class__.__name__, self._original_object)
 
     def info(self):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version)
 
-    def dis(self, asm_format=False, show_bytes=False):
+    def dis(self, asm_format="classic"):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         if self.current_offset is not None:
@@ -291,15 +339,18 @@ class Bytecode(object):
             cells = None
             linestarts = None
 
-        self.disassemble_bytes(co.co_code, varnames=co.co_varnames,
-                               names=co.co_names, constants=co.co_consts,
-                               cells=cells,
-                               linestarts=linestarts,
-                               line_offset=self._line_offset,
-                               file=output,
-                               lasti=offset,
-                               asm_format=asm_format,
-                               show_bytes=show_bytes)
+        self.disassemble_bytes(
+            co.co_code,
+            varnames=co.co_varnames,
+            names=co.co_names,
+            constants=co.co_consts,
+            cells=cells,
+            linestarts=linestarts,
+            line_offset=self._line_offset,
+            file=output,
+            lasti=offset,
+            asm_format=asm_format,
+        )
         return output.getvalue()
 
     def distb(self, tb=None):
@@ -309,13 +360,23 @@ class Bytecode(object):
                 tb = sys.last_traceback
             except AttributeError:
                 raise RuntimeError("no last traceback to disassemble")
-            while tb.tb_next: tb = tb.tb_next
+            while tb.tb_next:
+                tb = tb.tb_next
         self.disassemble(tb.tb_frame.f_code, tb.tb_lasti)
 
-    def disassemble_bytes(self, code, lasti=-1, varnames=None, names=None,
-                          constants=None, cells=None, linestarts=None,
-                          file=sys.stdout, line_offset=0,
-                          asm_format=False, show_bytes=False):
+    def disassemble_bytes(
+        self,
+        code,
+        lasti=-1,
+        varnames=None,
+        names=None,
+        constants=None,
+        cells=None,
+        linestarts=None,
+        file=sys.stdout,
+        line_offset=0,
+        asm_format="classic",
+    ):
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None
         # TODO?: Adjust width upwards if max(linestarts.values()) >= 1000?
@@ -323,18 +384,29 @@ class Bytecode(object):
             lineno_width = 3
         else:
             lineno_width = 0
-        for instr in get_instructions_bytes(code, self.opc, varnames, names,
-                                             constants, cells, linestarts,
-                                             line_offset=line_offset):
-            new_source_line = (show_lineno and
-                               instr.starts_line is not None and
-                               instr.offset > 0)
+        instructions = []
+        for instr in get_instructions_bytes(
+            code,
+            self.opc,
+            varnames,
+            names,
+            constants,
+            cells,
+            linestarts,
+            line_offset=line_offset,
+        ):
+            instructions.append(instr)
+            new_source_line = (
+                show_lineno and instr.starts_line is not None and instr.offset > 0
+            )
             if new_source_line:
                 file.write("\n")
             is_current_instr = instr.offset == lasti
-            file.write(instr.disassemble(lineno_width, is_current_instr,
-                                         asm_format, show_bytes)
-                       + "\n")
+            file.write(
+                instr.disassemble(self.opc, lineno_width, is_current_instr, asm_format,
+                                  instructions)
+                + "\n"
+            )
             pass
         return
 
@@ -356,9 +428,17 @@ class Bytecode(object):
             line_offset = first_line - co.co_firstlineno
         else:
             line_offset = 0
-        return get_instructions_bytes(co.co_code, self.opc, co.co_varnames,
-                                      co.co_names, co.co_consts, cell_names, linestarts,
-                                      line_offset)
+        return get_instructions_bytes(
+            co.co_code,
+            self.opc,
+            co.co_varnames,
+            co.co_names,
+            co.co_consts,
+            cell_names,
+            linestarts,
+            line_offset,
+        )
+
 
 def list2bytecode(l, opc, varnames, consts):
     """Convert list/tuple of list/tuples to bytecode
@@ -370,8 +450,8 @@ def list2bytecode(l, opc, varnames, consts):
         operands = opcodes[1:]
         if opname not in opc.opname:
             raise TypeError(
-                "error at item %d [%s, %s], opcode not valid" %
-                (i, opname, operands))
+                "error at item %d [%s, %s], opcode not valid" % (i, opname, operands)
+            )
         opcode = opc.opmap[opname]
         bc.append(opcode)
         print(opname, operands)
@@ -384,15 +464,15 @@ def list2bytecode(l, opc, varnames, consts):
             k = list(thing).index(j)
             if k == -1:
                 raise TypeError(
-                    "operand %s [%s, %s], not found in names" %
-                    (i, opname, operands))
+                    "operand %s [%s, %s], not found in names" % (i, opname, operands)
+                )
             else:
                 bc += num2code(k)
                 pass
             pass
         pass
     if opc.python_version < 3.0:
-        return reduce(lambda a, b: a + chr(b), bc, '')
+        return reduce(lambda a, b: a + chr(b), bc, "")
     else:
         if PYTHON3:
             return bytes(bc)

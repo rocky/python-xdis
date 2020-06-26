@@ -20,8 +20,8 @@ This is a like Python 3.9's opcode.py
 """
 
 from xdis.opcodes.base import(
-    const_op,
     def_op,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
     rm_op,
@@ -29,12 +29,16 @@ from xdis.opcodes.base import(
     )
 
 from xdis.opcodes.opcode_36 import (
+    extended_format_CALL_FUNCTION,
+    extended_format_CALL_METHOD,
+    extended_format_MAKE_FUNCTION,
     format_BUILD_MAP_UNPACK_WITH_CALL,
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
     format_extended_arg36,
 )
 
+from xdis.opcodes.opcode_36 import format_MAKE_FUNCTION_flags
 import xdis.opcodes.opcode_38 as opcode_38
 
 version = 3.9
@@ -61,16 +65,22 @@ def_op(l, 'RERAISE',                48,   3, 0)
 def_op(l, 'WITH_EXCEPT_START',      49,   0, 1)
 def_op(l, 'LOAD_ASSERTION_ERROR',   74,   0, 1)
 
-format_MAKE_FUNCTION_arg = opcode_38.format_MAKE_FUNCTION_arg
 format_value_flags = opcode_38.format_value_flags
 
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_flags,
     'FORMAT_VALUE': format_value_flags,
     'EXTENDED_ARG': format_extended_arg36
+}
+
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "CALL_METHOD": extended_format_CALL_METHOD,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 
 update_pj3(globals(), l)

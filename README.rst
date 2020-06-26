@@ -1,11 +1,11 @@
-|Pypi Installs|
+|TravisCI| |CircleCI| |PyPI Installs| |Latest Version| |Supported Python Versions|
 
 |packagestatus|
 
 xdis
 ====
 
-A Cross-Python bytecode isassembler, bytecode/wordcode and magic-number manipulation library/package.
+A Cross-Python bytecode disassembler, bytecode/wordcode and magic-number manipulation library/package.
 
 
 Introduction
@@ -114,6 +114,9 @@ See Also
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
 .. _remake: http://bashdb.sf.net/remake
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
-.. |Pypi Installs| image:: https://pepy.tech/badge/xdis/month
-.. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg :target: https://repology.org/project/python:xdis/versions
+.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
+		 :target: https://badge.fury.io/py/xdis
+.. |PyPI Installs| image:: https://pepy.tech/badge/xdis/month
+.. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg
+		 :target: https://repology.org/project/python:xdis/versions
 .. _dis: https://docs.python.org/3/library/dis.html

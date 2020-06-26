@@ -14,16 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-CPython independent disassembly routines
-
-There are two reasons we can't use Python's built-in routines
-from dis. First, the bytecode we are extracting may be from a different
-version of Python (different magic number) than the version of Python
-that is doing the extraction.
-
-Second, we need structured instruction information for the
-(de)-parsing step. Python 3.4 and up provides this, but we still do
-want to run on Python 2.7.
+CPython version-independent disassembly routines
 """
 
 # Note: we tend to eschew new Python 3 things, and even future
@@ -143,9 +134,7 @@ def disco(
     magic_int=None,
     source_size=None,
     sip_hash=None,
-    header=True,
-    asm_format=False,
-    show_bytes=False,
+    asm_format="classic",
     dup_lines=False,
 ):
     """
@@ -163,28 +152,28 @@ def disco(
         magic_int,
         source_size,
         sip_hash,
-        header,
+        header=True,
         show_filename=False,
     )
 
     # store final output stream for case of error
     real_out = out or sys.stdout
 
-    if co.co_filename and not asm_format:
+    if co.co_filename and asm_format != "xasm":
         real_out.write(format_code_info(co, bytecode_version) + "\n")
         pass
 
     opc = get_opcode(bytecode_version, is_pypy)
 
-    if asm_format:
+    if asm_format == "xasm":
         disco_loop_asm_format(opc, bytecode_version, co, real_out, {}, set([]))
     else:
         queue = deque([co])
-        disco_loop(opc, bytecode_version, queue, real_out, show_bytes=show_bytes,
+        disco_loop(opc, bytecode_version, queue, real_out, asm_format=asm_format,
                    dup_lines=True)
 
 
-def disco_loop(opc, version, queue, real_out, dup_lines=False, show_bytes=False):
+def disco_loop(opc, version, queue, real_out, dup_lines=False, asm_format="classic"):
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
@@ -201,7 +190,7 @@ def disco_loop(opc, version, queue, real_out, dup_lines=False, show_bytes=False)
             real_out.write("\n" + format_code_info(co, version) + "\n")
 
         bytecode = Bytecode(co, opc, dup_lines=dup_lines)
-        real_out.write(bytecode.dis(show_bytes=show_bytes) + "\n")
+        real_out.write(bytecode.dis(asm_format=asm_format) + "\n")
 
         for c in co.co_consts:
             if iscode(c):
@@ -277,11 +266,11 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
         real_out.write("\n" + format_code_info(co, version, mapped_name) + "\n")
 
     bytecode = Bytecode(co, opc, dup_lines=True)
-    real_out.write(bytecode.dis(asm_format=True) + "\n")
+    real_out.write(bytecode.dis(asm_format="asm") + "\n")
 
 
 def disassemble_file(
-    filename, outstream=sys.stdout, asm_format=False, header=False, show_bytes=False
+    filename, outstream=sys.stdout, asm_format="classic"
 ):
     """
     disassemble Python byte-code file (.pyc)
@@ -314,7 +303,7 @@ def disassemble_file(
     else:
         filename = pyc_filename
 
-    if header:
+    if asm_format == "header":
         show_module_header(
             version,
             co,
@@ -326,19 +315,17 @@ def disassemble_file(
             sip_hash,
             show_filename=True,
         )
-
     else:
         disco(
-            version,
-            co,
-            timestamp,
-            outstream,
-            is_pypy,
-            magic_int,
-            source_size,
-            sip_hash,
+            bytecode_version=version,
+            co=co,
+            timestamp=timestamp,
+            out=outstream,
+            is_pypy=is_pypy,
+            magic_int=magic_int,
+            source_size=source_size,
+            sip_hash=sip_hash,
             asm_format=asm_format,
-            show_bytes=show_bytes,
         )
     # print co.co_filename
     return filename, co, version, timestamp, magic_int, is_pypy, source_size, sip_hash

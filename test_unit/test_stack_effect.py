@@ -3,7 +3,7 @@ import dis
 import sys
 import os.path as osp
 from xdis.op_imports import get_opcode_module
-from xdis.main import get_opcode
+from xdis import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
 import xdis
 

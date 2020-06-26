@@ -27,6 +27,7 @@ import xdis.opcodes.opcode_15 as opcode_15
 from xdis.opcodes.base import (
     init_opdata,
     def_op,
+    extended_format_RETURN_VALUE,
     name_op,
     varargs_op,
     finalize_opcodes,
@@ -73,3 +74,7 @@ def findlinestarts(co, dup_lines=False):
             offset += 2
             pass
         pass
+
+opcode_extended_fmt = {
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+}

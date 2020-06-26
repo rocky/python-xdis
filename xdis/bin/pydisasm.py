@@ -1,5 +1,5 @@
 # Mode: -*- python -*-
-# Copyright (c) 2015-2019 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2020 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -11,6 +11,8 @@ import os.path as osp
 from xdis.version import VERSION
 from xdis import PYTHON_VERSION
 from xdis import disassemble_file
+
+FORMATS=("xasm", "bytes", "classic", "extended", "extended-bytes", "header")
 
 program, ext = os.path.splitext(os.path.basename(__file__))
 
@@ -65,8 +67,8 @@ Type -h for for full help.""" % program
         sys.exit(1)
 
     try:
-        opts, files = getopt.getopt(sys.argv[1:], 'hVUHa',
-                                    ['help', 'version', 'header', 'asm', 'noasm'])
+        opts, files = getopt.getopt(sys.argv[1:], 'hVHF:',
+                                    ['help', 'version', 'header', "format"])
     except getopt.GetoptError, e:
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
@@ -79,14 +81,19 @@ Type -h for for full help.""" % program
         elif opt in ('-V', '--version'):
             print("%s %s" % (program, VERSION))
             sys.exit(0)
-        elif opt in ('-a', '--asm'):
-            asm = True
         elif opt in ('--noasm'):
             asm = False
         elif opt in ('-H', '--header'):
             header = True
         elif opt in ('--no-header'):
             header = False
+        elif opt in ('-F', '--format'):
+            if val not in FORMATS:
+                sys.stderr.write("Invalid format option %s\n" +
+                                 "Should be one of: %s" %
+                                 (val, ", ".join(FORMATS)))
+                sys.exit(2)
+            format = val
         else:
             print(opt)
             sys.stderr.write(Usage_short)
@@ -107,7 +114,7 @@ Type -h for for full help.""" % program
             )
             continue
 
-        disassemble_file(path, sys.stdout, asm, header)
+        disassemble_file(path, sys.stdout, format)
     return
 
 if __name__ == '__main__':
