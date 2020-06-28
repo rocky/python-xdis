@@ -56,7 +56,7 @@ dist-older:
 
 #: Create newer distributions
 dist-newer:
-	bash ./admin-tools/make-dist-older.sh
+	bash ./admin-tools/make-dist-newer.sh
 
 #: Remove .pyc files
 clean_pyc:
