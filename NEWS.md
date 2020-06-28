@@ -1,3 +1,26 @@
+5.0.0 2020-06-27
+================
+
+Disassembly format and options have simplified and improved.
+
+I had this "Aha!" moment working on the cross-version interpreter x-python. It can show a better disassembly because it has materialized stack entries.
+So for example when a `COMPARE_OP` instruction is run it can show what operands are getting compared.
+
+It was then that I realized that this is also true much of the time statically. For example you'll often find a `LOAD_CONST` instruction before a `RETURN_VALUE` and when you do can show exactly what is getting returned. Although cute, the place where something like this is most appreciated and needed is in calling functions such as via `CALL_FUNCTION`. The situation here is that the name of the function is on the stack and it can be several instructions back depending on the number of parameters. However in a large number of cases, by tracking use of stack effects (added in a previous release), we can often location the `LOAD_CONST` of that function name.
+
+Note though that we don't attempt work across basic blocks to track down information. Nor do we even attempt recreate expression trees. We don't track across call which has a parameter return value which is the return from another call. Still, I find this all very useful.
+
+This is not shown by default though. Instead we use a mode called "classic". To get this, in `pydisasm` use the `--format extended` or `--format extended-bytes`.
+
+And that brings up a second change in formatting. Before, we had separate flags and command-line options for whether to show just the header, and whether to include bytecode ops in the output. Now there is just a single parameter called `asm_format`, and choice option `--format` (short option `-F`).
+
+As a result this release is incompatible with prior releases, hence the version bump.
+
+A slight change was made in "classic" output. Before we had shown the index into some code table, like `co_consts` or `co_varnames`. That no longer appears. If you want that information select either the `bytes` or `extended-bytes` formats.
+
+A bug was fixed in all offsts in the recently-added `xdis.lineoffsets` module.
+
+
 4.7.0 2020-06-12 Fleetwood66
 ============================
 

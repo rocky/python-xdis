@@ -26,6 +26,8 @@ from xdis.opcodes.base import (
     compare_op,
     const_op,
     def_op,
+    extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_older,
     extended_format_RETURN_VALUE,
     jabs_op,
     jrel_op,
@@ -223,5 +225,7 @@ opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 finalize_opcodes(l)
 
 opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }

@@ -320,7 +320,7 @@ def extended_format_MAKE_FUNCTION_older(opc, instructions):
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         s += "%s: " % code_inst.argval.co_name
         pass
-    s += format_MAKE_FUNCTION_arg(inst.arg)
+    s += format_MAKE_FUNCTION_default_argc(inst.arg)
     return s
 
 def extended_format_RETURN_VALUE(opc, instructions):
