@@ -32,12 +32,12 @@ check-full: check
 	$(MAKE) -C test check-pyenv
 
 #: Run all quick tests
-check-short: unittest
+check-short: unittest pytest
 	$(MAKE) -C test check-short
 
 #: Run unittests tests
 unittest:
-	cd test_unit && for file in test_*.py; do echo testing $$file ...; nosetests -v $$file; done
+	py.test pytest
 
 #: Clean up temporary files and .pyc files
 clean: clean_pyc
