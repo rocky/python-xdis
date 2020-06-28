@@ -31,7 +31,7 @@ check-ci: unittest
 check-full: check
 	$(MAKE) -C test check-pyenv
 
-# Run all quick tests
+#: Run all quick tests
 check-short: unittest
 	$(MAKE) -C test check-short
 
