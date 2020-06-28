@@ -11,7 +11,7 @@
 # Names:
 #    0: f
   4:           0 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 4)
-               3 MAKE_FUNCTION        0
+               3 MAKE_FUNCTION        (0 default parameters)
                6 STORE_NAME           (f)
                9 LOAD_CONST           (None)
               12 RETURN_VALUE
@@ -36,7 +36,7 @@
   4:           0 BUILD_LIST           0
                3 LOOKUP_METHOD        (map)
                6 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 4)
-               9 MAKE_FUNCTION        0
+               9 MAKE_FUNCTION        (0 default parameters)
               12 CALL_METHOD          (1 positional, 0 named)
               15 RETURN_VALUE
 

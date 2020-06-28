@@ -9,8 +9,10 @@ of stack usage.
 from xdis.opcodes.base import (
     format_CALL_FUNCTION_pos_name_encoded,
     def_op,
+    extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
+    format_RAISE_VARARGS_older,
     format_extended_arg,
     init_opdata,
     jrel_op,
@@ -24,6 +26,7 @@ from xdis.opcodes.base import (
 version = 3.6
 python_implementation = "PyPy"
 
+from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
 import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.opcode_36 import (
     format_MAKE_FUNCTION_flags,
@@ -69,12 +72,15 @@ if sys.version_info[:3] >= (3, 6, 1):
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
-    'CALL_FUNCTION': format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
+    'CALL_FUNCTION': format_CALL_FUNCTION_pos_name_encoded,
 }
 
 opcode_extended_fmt = {
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 

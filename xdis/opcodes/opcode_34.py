@@ -7,10 +7,11 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    def_op,
     extended_format_CALL_FUNCTION,
+    extended_format_RAISE_VARARGS_older,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
+    format_RAISE_VARARGS_older,
     format_extended_arg,
     free_op,
     init_opdata,
@@ -41,11 +42,13 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "MAKE_FUNCTION": opcode_33.format_MAKE_FUNCTION_default_pos_arg,
     "EXTENDED_ARG": format_extended_arg,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "MAKE_FUNCTION": opcode_33.extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
 }
 
 finalize_opcodes(l)
