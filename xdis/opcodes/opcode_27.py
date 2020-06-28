@@ -25,10 +25,12 @@ from xdis.opcodes.base import (
     def_op,
     extended_format_CALL_FUNCTION,
     extended_format_MAKE_FUNCTION_older,
+    extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_MAKE_FUNCTION_default_argc,
+    format_RAISE_VARARGS_older,
     format_extended_arg,
     init_opdata,
     jabs_op,
@@ -94,12 +96,14 @@ opcode_arg_fmt = {
     "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
     "EXTENDED_ARG": format_extended_arg,
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 finalize_opcodes(l)
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
 }

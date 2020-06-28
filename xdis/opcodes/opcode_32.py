@@ -10,10 +10,12 @@ import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.base import (
     extended_format_CALL_FUNCTION,
     extended_format_MAKE_FUNCTION_older,
+    extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_MAKE_FUNCTION_default_argc,
+    format_RAISE_VARARGS_older,
     format_extended_arg,
     init_opdata,
     update_pj3,
@@ -34,14 +36,16 @@ init_opdata(l, opcode_3x, version)
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
-    "EXTENDED_ARG": format_extended_arg,
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "EXTENDED_ARG": format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 

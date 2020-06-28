@@ -319,6 +319,15 @@ def extended_format_MAKE_FUNCTION_older(opc, instructions):
     s += format_MAKE_FUNCTION_default_argc(inst.arg)
     return s
 
+def extended_format_RAISE_VARARGS_older(opc, instructions):
+    raise_inst = instructions[0]
+    assert raise_inst.opname == "RAISE_VARARGS"
+    assert len(instructions) >= 1
+    if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
+                                  "LOAD_ATTR", "LOAD_NAME"):
+        return resolved_attrs(instructions[1:])
+    return format_RAISE_VARARGS_older(raise_inst.argval)
+
 def extended_format_RETURN_VALUE(opc, instructions):
     return_inst = instructions[0]
     assert return_inst.opname == "RETURN_VALUE"
@@ -350,6 +359,18 @@ def format_MAKE_FUNCTION_arg(argc):
 def format_MAKE_FUNCTION_default_argc(argc):
     return ("%d default parameters" % argc)
 
+# Up until 3.7
+def format_RAISE_VARARGS_older(argc):
+    assert 0 <= argc <= 3
+    if argc == 0:
+        return "reraise"
+    elif argc == 1:
+        return "exception"
+    elif argc == 2:
+        return "exception, parameter"
+    elif argc == 3:
+        return "exception, parameter, traceback"
+
 def opcode_check(l):
     """When the version of Python we are running happens
     to have the same opcode set as the opcode we are
@@ -368,7 +389,7 @@ def opcode_check(l):
             assert all(item in opmap.items() for item in l['opmap'].items())
             assert all(item in l['opmap'].items() for item in opmap.items())
         except:
-            import sys
+            pass
 
 def dump_opcodes(opmap):
     """Utility for dumping opcodes"""

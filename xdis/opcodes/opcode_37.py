@@ -24,9 +24,12 @@ from xdis.opcodes.base import(
     def_op,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
-    init_opdata, nargs_op,
+    init_opdata,
     jrel_op,
-    name_op, rm_op,
+    name_op,
+    nargs_op,
+    resolved_attrs,
+    rm_op,
     update_pj3
     )
 
@@ -102,6 +105,27 @@ nargs_op(l, "CALL_METHOD", 161, -2, 1)
 format_MAKE_FUNCTION_flags = opcode_36.format_MAKE_FUNCTION_flags
 format_value_flags = opcode_36.format_value_flags
 
+def extended_format_RAISE_VARARGS(opc, instructions):
+    raise_inst = instructions[0]
+    assert raise_inst.opname == "RAISE_VARARGS"
+    argc = raise_inst.argval
+    if argc == 0:
+        return "reraise"
+    elif argc == 1:
+        instance_arg = resolved_attrs(instructions[1:])
+        if instance_arg:
+            return "instance_arg"
+    return format_RAISE_VARARGS(raise_inst.argval)
+
+def format_RAISE_VARARGS(argc):
+    assert 0 <= argc <= 2
+    if argc == 0:
+        return "reraise"
+    elif argc == 1:
+        return "exception instance"
+    elif argc == 2:
+        return "exception instance with __cause__"
+
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": opcode_36.format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION": opcode_36.format_CALL_FUNCTION,
@@ -110,13 +134,15 @@ opcode_arg_fmt = {
     "CALL_METHOD": opcode_36.format_CALL_FUNCTION,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
     "FORMAT_VALUE": format_value_flags,
-    "EXTENDED_ARG": opcode_36.format_extended_arg36
+    "EXTENDED_ARG": opcode_36.format_extended_arg36,
+    "RAISE_VARARGS": format_RAISE_VARARGS
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
     "CALL_METHOD": opcode_36.extended_format_CALL_METHOD,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 

@@ -39,6 +39,7 @@ from xdis.opcodes.opcode_36 import (
 )
 
 from xdis.opcodes.opcode_36 import format_MAKE_FUNCTION_flags
+from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_VARARGS
 import xdis.opcodes.opcode_38 as opcode_38
 
 version = 3.9
@@ -69,17 +70,19 @@ format_value_flags = opcode_38.format_value_flags
 
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-    'MAKE_FUNCTION': format_MAKE_FUNCTION_flags,
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
+    'EXTENDED_ARG': format_extended_arg36,
     'FORMAT_VALUE': format_value_flags,
-    'EXTENDED_ARG': format_extended_arg36
+    'MAKE_FUNCTION': format_MAKE_FUNCTION_flags,
+    "RAISE_VARARGS": format_RAISE_VARARGS
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 

@@ -14,7 +14,7 @@
 #    0: f
 #    1: AssertionError
   6:           0 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 6)
-               3 MAKE_FUNCTION        0
+               3 MAKE_FUNCTION        (0 default parameters)
                6 STORE_NAME           (f)
 
   9:           9 LOAD_NAME            (f)
@@ -24,7 +24,7 @@
               21 COMPARE_OP           (==)
               24 POP_JUMP_IF_TRUE     (to 33)
               27 LOAD_GLOBAL          (AssertionError)
-              30 RAISE_VARARGS        1
+              30 RAISE_VARARGS        (exception)
          >>   33 LOAD_CONST           (None)
               36 RETURN_VALUE
 

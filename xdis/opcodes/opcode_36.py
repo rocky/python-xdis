@@ -22,8 +22,10 @@ of stack usage.
 
 from xdis.opcodes.base import(
     def_op,
+    extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
+    format_RAISE_VARARGS_older,
     init_opdata,
     jrel_op,
     nargs_op,
@@ -175,11 +177,12 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(count):
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION": format_CALL_FUNCTION,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
+    "EXTENDED_ARG": format_extended_arg36,
     "FORMAT_VALUE": format_value_flags,
-    "EXTENDED_ARG": format_extended_arg36
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older
 }
 
 
@@ -252,7 +255,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
                                                  "LOAD_ATTR", "LOAD_NAME"):
             s = resolved_attrs(instructions[function_pos:])
-            s += "%s: " % instructions[function_pos].argrepr
+            s += ": "
             pass
         pass
     s += format_CALL_FUNCTION(call_function_inst.arg)
@@ -307,5 +310,6 @@ opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }

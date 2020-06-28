@@ -1,3 +1,9 @@
+5.0.1 2020-06-28
+================
+Small extended format change: interpret RAISE_VARARGS argc.
+
+This will be useful in the upcoming trepan3k release.
+
 5.0.0 2020-06-27
 ================
 

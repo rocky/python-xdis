@@ -54,6 +54,7 @@
 # Update NEWS.md from master branch
 
     $ git commit -m"Get ready for release $VERSION" .
+    $ git push origin HEAD
 
 # Check against all versions
 
