@@ -1,8 +1,13 @@
 5.0.1 2020-06-28
 ================
-Small extended format change: interpret RAISE_VARARGS argc.
 
-This will be useful in the upcoming trepan3k release.
+Two small improvements that are usefil in the forthcoming trepan3k release:
+
+* interpret `RAISE_VARARGS`'s `argc` parameter. Some formatting was extended too
+* `check_object_path()` is more leanient in the path name (it doesn't have to end in `.py` anymore), but it is
+   more stringent about what constitutes Python source (it compiles the text to determine validity)
+* In the above `is_python_source()` is used. It is also exported.
+
 
 5.0.0 2020-06-27
 ================

@@ -73,6 +73,7 @@ from xdis.cross_dis import (
 from xdis.load import (
     check_object_path,
     is_pypy,
+    is_python_source,
     load_file,
     load_module,
     load_module_from_file_object,

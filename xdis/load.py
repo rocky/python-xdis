@@ -31,10 +31,34 @@ from xdis.magics import (
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 
 
+def is_python_source(path):
+    try:
+        data = open(path, "r").read()
+    except UnicodeDecodeError:
+        for encoding in ("utf-8", "utf-16", "latin-1", "iso-8859-15"):
+            try:
+                data = open(path, "r", encoding=encoding).read()
+            except UnicodeDecodeError:
+                pass
+            else:
+                break
+    except:
+        return False
+
+    try:
+        compile(data, path, "exec")
+    except:
+        return False
+    return True
+
+def is_bytecode_extension(path):
+    return path.endswith(".pyc") or path.endswith(".pyo")
+
 def check_object_path(path):
-    if path.endswith(".py"):
+    if not is_bytecode_extension(path) and is_python_source(path):
         try:
             import importlib
+
             bytecode_path = importlib.util.cache_from_source(path, optimization="")
             if osp.exists(bytecode_path):
                 return bytecode_path
@@ -54,8 +78,11 @@ def check_object_path(path):
         path = tempfile.mkstemp(prefix=basename + "-", suffix=".pyc", text=False)[1]
         py_compile.compile(spath, cfile=path, doraise=True)
 
-    if not path.endswith(".pyc") and not path.endswith(".pyo"):
-        raise ValueError("path %s must point to a .py or .pyc file\n" % path)
+    if not is_bytecode_extension(path):
+        raise ValueError(
+            "path %s must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
+            % path
+        )
     return path
 
 
