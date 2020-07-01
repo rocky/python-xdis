@@ -49,6 +49,7 @@ class LineOffsetInfo(object):
 
     def _populate_lines(self):
         code = self.code
+        code_map = {code.co_name: code}
         last_line_info = None
         for instr in get_instructions_bytes(
             bytecode=code.co_code,
@@ -75,12 +76,15 @@ class LineOffsetInfo(object):
         if self.include_children:
             for c in code.co_consts:
                 if iscode(c):
+                    code_map[c.co_name] = c
                     code_info = LineOffsetInfo(self.opc, c, True)
+                    code_map.update(code_info.code_map)
                     self.children[code_info.name] = code_info
                     self.lines += code_info.lines
                     pass
                 pass
             pass
+        self.code_map = code_map
 
 
     def __str__(self):
@@ -152,18 +156,17 @@ if __name__ == "__main__":
             print("%s has no children" % (code_info.name))
 
         print("\tlines with children and dups:\n\t%s" %
-              code_info.line_numbers(include_dups=True, include_children=True))
+              code_info.line_numbers(include_dups=True))
         print(
             "\tlines without children and without dups:\n\t%s" %
-            code_info.line_numbers(include_dups=False, include_children=False))
-        print(
-            "\tlines without dups and children:\n\t%s"
-            % code_info.line_numbers(include_dups=False, include_children=True)
-        )
+            code_info.line_numbers(include_dups=False))
         print("Offsets in %s" % code_info.name, code_info.offsets)
-        lines = code_info.line_numbers(include_offsets=True, include_children=True)
+        lines = code_info.line_numbers(include_offsets=True)
         for line_num, li in lines.items():
             print("\tline: %4d: %s" % (line_num, ", ".join([str(i.offsets) for i in li])))
+        print("=" * 30)
+        for mod, code in code_info.code_map.items():
+            print(mod, ":", code)
         print("=" * 30)
         for li in code_info.lines:
             print(li)
