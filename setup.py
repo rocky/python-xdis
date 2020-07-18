@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Setup script for the 'xdis' distribution."""
+from xdis.version import VERSION
 
 from __pkginfo__ import (
     author,
@@ -10,10 +11,8 @@ from __pkginfo__ import (
     classifiers,
     modname,
     py_modules,
-    scripts,
     short_desc,
     tests_require,
-    VERSION,
     web,
     zip_safe,
 )
