@@ -18,13 +18,17 @@ program, ext = os.path.splitext(os.path.basename(__file__))
 
 PATTERNS = ("*.pyc", "*.pyo")
 
+if click.__version__ >= "7.":
+    case_sensitive={"case_sensitive": False}
+else:
+    case_sensitive={}
 
 @click.command()
 @click.option(
     "--format",
     "-F",
     type=click.Choice(["xasm", "bytes", "classic", "extended", "extended-bytes", "header"],
-                      case_sensitive=False),
+                      **case_sensitive),
 )
 @click.version_option(version=VERSION)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
