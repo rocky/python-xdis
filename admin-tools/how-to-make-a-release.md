@@ -58,14 +58,12 @@
 
 # Check against all versions
 
-    $ bash && echo $SHLVL # Go into a subshell to protect exit
-    $ source admin-tools/check-older-versions.sh
-    $ echo $SHLVL ; exit
+    $ admin-tools/check-older-versions.sh
 
 # Make packages and tag
 
     $ . ./admin-tools/make-dist-older.sh
-	$ pyenv local 3.8.3
+	$ pyenv local 3.8.4
 	$ twine check dist/xdis-$VERSION*
     $ git tag release-python-2.4-$VERSION
     $ . ./admin-tools/make-dist-newer.sh
