@@ -1,3 +1,10 @@
+5.0.2 2020-06-28
+================
+
+* Add Python 3.8.4 as a 3.8 release
+* pydisasm.py Python 3.3 tolerance
+* Make pydoc's version reporting show xdis's version
+
 5.0.1 2020-06-28
 ================
 
