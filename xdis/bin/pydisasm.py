@@ -69,7 +69,7 @@ Type -h for for full help.""" % program
 
     try:
         opts, files = getopt.getopt(sys.argv[1:], 'hVHF:',
-                                    ['help', 'version', 'header', "format"])
+                                    ['help', 'version', 'header', "format="])
     except getopt.GetoptError, e:
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
@@ -91,8 +91,8 @@ Type -h for for full help.""" % program
             header = False
         elif opt in ('-F', '--format'):
             if val not in FORMATS:
-                sys.stderr.write("Invalid format option %s\n" +
-                                 "Should be one of: %s" %
+                sys.stderr.write(("Invalid format option %s\n" +
+                                 "Should be one of: %s\n") %
                                  (val, ", ".join(FORMATS)))
                 sys.exit(2)
             format = val
