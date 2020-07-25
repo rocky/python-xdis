@@ -44,7 +44,7 @@
 
 # Make sure pyenv is running and check newer versions
 
-    $ pyenv local && source admin-tools/check-newer-versions.sh
+    $ admin-tools/check-newer-versions.sh
 
 # Switch to python-2.4, sync that up and build that first since it creates a tarball which we don't want.
 
@@ -73,8 +73,8 @@
 
 # Check package on github
 
-	$ mkdir /tmp/gittest; pushd /tmp/gittest
-	$ pyenv local 3.7.5
+	$ [[ ! -d /tmp/gittest ]] && mkdir /tmp/gittest; pushd /tmp/gittest
+	$ pyenv local 3.8.3
 	$ pip install -e git://github.com/rocky/python-xdis.git#egg=xdis
 	$ pydisasm --help
 	$ pip uninstall xdis
