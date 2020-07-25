@@ -73,8 +73,8 @@
 
 # Check package on github
 
-	$ mkdir /tmp/gittest; pushd /tmp/gittest
-	$ pyenv local 3.7.5
+	$ [[ ! -d /tmp/gittest ]] && mkdir /tmp/gittest; pushd /tmp/gittest
+	$ pyenv local 3.8.3
 	$ pip install -e git://github.com/rocky/python-xdis.git#egg=xdis
 	$ pydisasm --help
 	$ pip uninstall xdis
