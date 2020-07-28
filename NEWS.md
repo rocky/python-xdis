@@ -2,7 +2,7 @@
 ================
 
 * Add versions 3.8.5, 3.7.8, and 3.6.11
-* Clarify changes to 3.8 ROT_FOUR
+* Clarify changes to 3.8 `ROT_FOUR`
 * Update 3.9 magics and opcodes
 
 5.0.2 2020-07-25
