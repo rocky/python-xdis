@@ -22,7 +22,7 @@ def test_stack_effect_fixed():
     versions = ((2, 5), (2, 6), (2, 7),
                 (3, 0), (3, 1), (3, 2), (3, 3),
                 (3, 4), (3, 5),
-                (3, 6), (3, 7), (3, 8), )
+                (3, 6), (3, 7), (3, 8), (3, 9))
     for version in versions:
         v_str = "%s%s" % (version[0], version[1])
         opc = get_opcode(version, False)
@@ -77,7 +77,10 @@ def test_stack_effect_vs_dis():
 
     def test_one(xdis_args, dis_args, has_arg):
         effect = xstack_effect(*xdis_args)
-        check_effect = dis.stack_effect(*dis_args)
+        try:
+            check_effect = dis.stack_effect(*dis_args)
+        except:
+            from trepan.api import debug; debug()
         assert effect != -100, (
             "%d (%s) needs adjusting; should be: should have effect %d"
             % (opcode, opname, check_effect)
@@ -138,5 +141,5 @@ def test_stack_effect_vs_dis():
 
 
 if __name__ == "__main__":
-    test_stack_effect_fixed()
-    # test_stack_effect_vs_dis()
+    # test_stack_effect_fixed()
+    test_stack_effect_vs_dis()
