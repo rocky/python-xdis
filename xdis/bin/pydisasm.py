@@ -46,6 +46,22 @@ Examples:
 PATTERNS = ('*.pyc', '*.pyo')
 
 def main():
+if click.__version__ >= "7.":
+    case_sensitive={"case_sensitive": False}
+else:
+    case_sensitive={}
+
+@click.command()
+@click.option(
+    "--format",
+    "-F",
+    type=click.Choice(["xasm", "bytes", "classic", "extended", "extended-bytes", "header"],
+                      **case_sensitive),
+)
+@click.version_option(version=VERSION)
+@click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
+def main(format, files):
+>>>>>>> master
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.

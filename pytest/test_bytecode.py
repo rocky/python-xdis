@@ -78,7 +78,10 @@ def test_find_linestarts():
         assert got_no_dups == expect
 
     got_with_dups = list(findlinestarts(bug_loop.__code__, dup_lines=True))
-    assert len(got_no_dups) < len(got_with_dups)
+    if sys.version_info[0:2] >= (3,9):
+        assert len(got_no_dups) <= len(got_with_dups)
+    else:
+        assert len(got_no_dups) < len(got_with_dups)
 
 # FIXME: a feature of doing code this way is that
 # this compiles to the running version of code
@@ -179,6 +182,6 @@ def test_get_jump_targets():
     assert expect == offset_map
 
 if __name__ == "__main__":
-    test_get_jump_targets()
+    # test_get_jump_targets()
     # test_offset2line()
-    # test_find_linestarts()
+    test_find_linestarts()

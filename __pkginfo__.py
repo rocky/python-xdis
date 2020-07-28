@@ -59,14 +59,6 @@ modname            = 'xdis'
 
 packages           = ["xdis"]
 py_modules         = None
-
-# Python-version | package | last-version |
-# -----------------------------------------
-# 2.6            | pip     | 1.5.6        |
-# 3.1            | pip     | 1.5.6        |
-# 3.2            | pip     | 7.1.2        |
-# 3.2            | click   | 4.0          |
-
 # setup_requires     = ['pytest-runner']
 scripts            = ['bin/pydisasm.py']
 short_desc         = 'Python cross-version byte-code disassembler and marshal routines'
@@ -91,4 +83,6 @@ def read(*rnames):
     return open(osp.join(srcdir, *rnames)).read()
 
 
+# Get info from files; set: long_description and VERSION
 long_description = read("README.rst") + "\n"
+exec(read("xdis/version.py"))

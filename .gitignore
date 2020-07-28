@@ -1,6 +1,7 @@
 *.class
 *.egg
 *.iws
+.mypy_cache
 *.pyc
 *_dis
 *~

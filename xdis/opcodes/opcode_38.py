@@ -55,16 +55,16 @@ rm_op(l, "CONTINUE_LOOP", 119)
 rm_op(l, "SETUP_LOOP", 120)
 rm_op(l, "SETUP_EXCEPT", 121)
 
-# These are new since Python 3.7
+# These are new/changed since Python 3.7
 
 #          OP NAME            OPCODE POP PUSH
 # --------------------------------------------
-def_op(l, "ROT_FOUR", 6, 4, 4)
-def_op(l, "BEGIN_FINALLY", 53, 0, 6)
-def_op(l, "END_ASYNC_FOR", 54, 7, 0)  # POP is 0, when not 7
-def_op(l, "END_FINALLY", 88, 6, 0)  # POP is 6, when not 1
-jrel_op(l, "CALL_FINALLY", 162, 0, 1)
-nargs_op(l, "POP_FINALLY", 163, 6, 0)  # PUSH/POP vary
+def_op(l, "ROT_FOUR",          6,      4, 4)  # Opcode number changed from 5 to 6. Why?
+def_op(l, "BEGIN_FINALLY",     53,     0, 6)
+def_op(l, "END_ASYNC_FOR",     54,     7, 0)  # POP is 0, when not 7
+def_op(l, "END_FINALLY",       88,     6, 0)  # POP is 6, when not 1
+jrel_op(l, "CALL_FINALLY",    162,     0, 1)
+nargs_op(l, "POP_FINALLY",    163,     6, 0)  # PUSH/POP vary
 
 format_value_flags = opcode_37.format_value_flags
 
