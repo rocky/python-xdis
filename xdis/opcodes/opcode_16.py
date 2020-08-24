@@ -25,6 +25,9 @@ from xdis.cross_dis import findlabels, findlinestarts
 
 import xdis.opcodes.opcode_15 as opcode_15
 from xdis.opcodes.base import (
+    extended_format_ATTR,
+    extended_format_MAKE_FUNCTION_older,
+    extended_format_RETURN_VALUE,
     init_opdata,
     nargs_op,
     finalize_opcodes,
@@ -57,4 +60,10 @@ opcode_arg_fmt = {
     "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
 }
 
+opcode_extended_fmt = {
+    "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
+}
 finalize_opcodes(l)

@@ -23,6 +23,7 @@ of stack usage.
 from xdis.opcodes.base import (
     compare_op,
     def_op,
+    extended_format_ATTR,
     extended_format_CALL_FUNCTION,
     extended_format_MAKE_FUNCTION_older,
     extended_format_RAISE_VARARGS_older,
@@ -89,11 +90,6 @@ def_op(l, "SET_ADD", 146, 1, 0)  # Calls set.add(TOS1[-i], TOS).
 # Used to implement set comprehensions.
 def_op(l, "MAP_ADD",               147, 3, 1)  # Calls dict.setitem(TOS1[-i], TOS, TOS1)
 # Used to implement dict comprehensions.
-
-def extended_format_ATTR(opc, instructions):
-    if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
-                                  "LOAD_ATTR", "LOAD_NAME"):
-        return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
 
 update_pj3(globals(), l)
 

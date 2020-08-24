@@ -30,7 +30,7 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 
-from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
+from xdis.opcodes.opcode_33 import extended_format_ATTR, extended_format_MAKE_FUNCTION
 import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.opcode_36 import (
     extended_format_CALL_FUNCTION,
@@ -81,9 +81,11 @@ opcode_arg_fmt = {
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_METHOD": extended_format_CALL_METHOD,
+    "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": opcode_37.extended_format_RAISE_VARARGS,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
 }
 update_pj3(globals(), l)
 

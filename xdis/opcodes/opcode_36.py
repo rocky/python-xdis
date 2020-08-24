@@ -22,6 +22,7 @@ of stack usage.
 
 from xdis.opcodes.base import(
     def_op,
+    extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
@@ -260,11 +261,6 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         pass
     s += format_CALL_FUNCTION(call_function_inst.arg)
     return s
-
-def extended_format_ATTR(opc, instructions):
-    if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
-                                  "LOAD_ATTR", "LOAD_NAME"):
-        return "%s.%s " % (instructions[1].argrepr, instructions[0].argrepr)
 
 def extended_format_CALL_FUNCTION_KW(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
