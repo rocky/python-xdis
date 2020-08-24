@@ -261,6 +261,11 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     s += format_CALL_FUNCTION(call_function_inst.arg)
     return s
 
+def extended_format_ATTR(opc, instructions):
+    if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
+                                  "LOAD_ATTR", "LOAD_NAME"):
+        return "%s.%s " % (instructions[1].argrepr, instructions[0].argrepr)
+
 def extended_format_CALL_FUNCTION_KW(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
@@ -306,10 +311,12 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
         return s
 
 opcode_extended_fmt = {
-    "CALL_METHOD": extended_format_CALL_METHOD,
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
+    "CALL_METHOD": extended_format_CALL_METHOD,
+    "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
 }

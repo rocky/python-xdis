@@ -90,6 +90,11 @@ def_op(l, "SET_ADD", 146, 1, 0)  # Calls set.add(TOS1[-i], TOS).
 def_op(l, "MAP_ADD",               147, 3, 1)  # Calls dict.setitem(TOS1[-i], TOS, TOS1)
 # Used to implement dict comprehensions.
 
+def extended_format_ATTR(opc, instructions):
+    if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
+                                  "LOAD_ATTR", "LOAD_NAME"):
+        return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
+
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
@@ -103,7 +108,9 @@ finalize_opcodes(l)
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "STORE_ATTR": extended_format_ATTR,
 }
