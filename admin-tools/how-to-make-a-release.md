@@ -74,7 +74,7 @@
 	$ [[ ! -d /tmp/gittest ]] && mkdir /tmp/gittest; pushd /tmp/gittest
 	$ pyenv local 3.8.4
 	$ pip install -e git://github.com/rocky/python-xdis.git#egg=xdis
-	$ pydisasm --help
+	$ pydisasm --version
 	$ pip uninstall xdis
 	$ popd
 
