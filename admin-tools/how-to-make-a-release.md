@@ -88,7 +88,7 @@ Todo: turn this into a script in `admin-tools`
 
 	$ pushd /tmp/gittest
 	$ pip install -e git://github.com/rocky/python-xdis.git@$VERSION#egg=xdis
-	$ pydisasm --help
+	$ pydisasm --version
 	$ pip uninstall xdis
 	$ popd
 
@@ -99,7 +99,7 @@ Todo: turn this into a script in `admin-tools`
 
 Check on https://pypi.org/project/xdis/
 
-# Push tags:
+# Push/pull tags:
 
     $ git push --tags
     $ git pull --tags

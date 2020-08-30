@@ -21,13 +21,14 @@ This is similar to (but better than) the opcode portion in Python 2.0's dis.py l
 
 import xdis.opcodes.opcode_21 as opcode_21
 from xdis.opcodes.base import (
-    init_opdata,
+    extended_format_ATTR,
     extended_format_MAKE_FUNCTION_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_MAKE_FUNCTION_default_argc,
     format_extended_arg,
+    init_opdata,
     rm_op,
     update_pj2,
 )
@@ -58,6 +59,8 @@ opcode_arg_fmt = {
 }
 
 opcode_extended_fmt = {
+    "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
 }

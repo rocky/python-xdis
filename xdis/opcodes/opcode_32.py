@@ -8,6 +8,7 @@ of stack usage.
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.base import (
+    extended_format_ATTR,
     extended_format_CALL_FUNCTION,
     extended_format_MAKE_FUNCTION_older,
     extended_format_RAISE_VARARGS_older,
@@ -44,9 +45,11 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
 }
 
 finalize_opcodes(l)

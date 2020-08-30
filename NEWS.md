@@ -1,5 +1,17 @@
+5.0.4 2020-08-30
+================
+
+* Add python versions 3.6.12, 3.7.9
+* extended arg disassembly handling for {LOAD,STORE}_ATTR
+
 5.0.3 2020-07-28
 ================
+
+* Add versions 3.8.5, 3.7.8, and 3.6.11
+* Clarify changes to 3.8 `ROT_FOUR`
+* Update 3.9 magics and opcodes
+
+5.0.2 2020-07-25
 
 * Add versions 3.8.5, 3.7.8, and 3.6.11
 * Clarify changes to 3.8 ROT_FOUR

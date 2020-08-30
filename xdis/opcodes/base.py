@@ -306,6 +306,11 @@ def resolved_attrs(instructions):
             break
     return ".".join(reversed(resolved))
 
+def extended_format_ATTR(opc, instructions):
+    if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
+                                  "LOAD_ATTR", "LOAD_NAME"):
+        return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
+
 def extended_format_MAKE_FUNCTION_older(opc, instructions):
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.

@@ -14,13 +14,14 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-CPython 3.8 bytecode opcodes
+CPython 3.9 bytecode opcodes
 
 This is a like Python 3.9's opcode.py
 """
 
 from xdis.opcodes.base import(
     def_op,
+    extended_format_ATTR,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
@@ -96,10 +97,12 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "LOAD_ATTR": extended_format_ATTR,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
 }
 
 update_pj3(globals(), l)
