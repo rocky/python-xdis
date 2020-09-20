@@ -83,6 +83,7 @@ op_imports = {
     2.6     : opcode_26,
     '2.7'   : opcode_27,
     2.7     : opcode_27,
+    '2.7.18candidate1' : opcode_27,
     '3.0'   : opcode_30,
     3.0     : opcode_30,
     '3.0a5' : opcode_30,
