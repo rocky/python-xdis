@@ -58,7 +58,7 @@ else:
     type=click.Choice(["xasm", "bytes", "classic", "extended", "extended-bytes", "header"],
                       **case_sensitive),
 )
-@click.version_option(version=VERSION)
+@click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
 def main(format, files):
 >>>>>>> master
