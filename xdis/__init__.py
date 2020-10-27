@@ -157,7 +157,5 @@ from xdis.util import (
     co_flags_is_async,
 )
 
-from xdis.version import VERSION
-
 # This ensures VERSION will appear in pydoc
-__version__ = VERSION
+from xdis.version import __version__

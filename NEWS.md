@@ -1,8 +1,17 @@
+5.1.0 2020-10-27
+================
+
+* Add support for Python2.7 on Ubuntu 20.04
+* Bump versions for Python 3.8.6 and 3.5.10
+* Release instructions moved to wiki
+* `VERSION` -> `__version__` because Python prefers it that way
+
 5.0.4 2020-08-30
 ================
 
 * Add python versions 3.6.12, 3.7.9
-* extended arg disassembly handling for {LOAD,STORE}_ATTR
+* extended arg disassembly handling for `LOAD_ATTR` and `STORE_ATTR`
+>>>>>>> master
 
 5.0.3 2020-07-28
 ================

@@ -8,7 +8,7 @@
 import sys, os, getopt
 import os.path as osp
 
-from xdis.version import VERSION
+from xdis.version import __version__
 from xdis import PYTHON_VERSION
 from xdis import disassemble_file
 
