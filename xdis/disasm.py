@@ -32,7 +32,7 @@ from xdis.codetype import iscode, codeType2Portable
 from xdis.load import check_object_path, load_module
 from xdis.magics import PYTHON_MAGIC_INT
 from xdis.cross_dis import format_code_info
-from xdis.version import VERSION
+from xdis.version import __version__
 from xdis.op_imports import op_imports
 
 
@@ -86,7 +86,7 @@ def show_module_header(
                 "\n# Disassembled from %sPython %s\n"
             )
             % (
-                VERSION,
+                __version__,
                 co_pypy_str,
                 bytecode_version,
                 " (%s)" % magic_str,
