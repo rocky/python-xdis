@@ -26,6 +26,12 @@ from xdis.opcodes.base import (
     compare_op,
     const_op,
     def_op,
+    extended_format_ATTR,
+    extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_older,
+    extended_format_RAISE_VARARGS_older,
+    extended_format_RETURN_VALUE,
+    format_RAISE_VARARGS_older,
     jabs_op,
     jrel_op,
     finalize_opcodes,
@@ -217,6 +223,18 @@ fields2copy = """cmp_op hasjabs""".split()
 
 update_pj2(globals(), l)
 
-opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
+opcode_arg_fmt = {
+    "EXTENDED_ARG": format_extended_arg,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older
+}
 
 finalize_opcodes(l)
+
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
+}

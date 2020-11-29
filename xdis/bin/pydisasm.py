@@ -1,5 +1,5 @@
 # Mode: -*- python -*-
-# Copyright (c) 2015-2019 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2020 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -10,7 +10,7 @@ import sys, os
 import click
 import os.path as osp
 
-from xdis.version import VERSION
+from xdis.version import __version__
 from xdis import PYTHON_VERSION
 from xdis import disassemble_file
 
@@ -18,26 +18,21 @@ program, ext = os.path.splitext(os.path.basename(__file__))
 
 PATTERNS = ("*.pyc", "*.pyo")
 
+if click.__version__ >= "7.":
+    case_sensitive={"case_sensitive": False}
+else:
+    case_sensitive={}
 
 @click.command()
 @click.option(
-    "--asm/--noasm",
-    default=False,
-    help="Produce output suitable for the xasm assembler",
+    "--format",
+    "-F",
+    type=click.Choice(["xasm", "bytes", "classic", "extended", "extended-bytes", "header"],
+                      **case_sensitive),
 )
-@click.option(
-    "--show-bytes/--noshow-bytes",
-    default=False,
-    help="include bytecode bytes in output",
-)
-@click.version_option(version=VERSION)
-@click.option(
-    "--header/--no-header",
-    default=False,
-    help="Show only the module header information",
-)
+@click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(asm, show_bytes, header, files):
+def main(format, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -72,7 +67,7 @@ def main(asm, show_bytes, header, files):
             )
             continue
 
-        disassemble_file(path, sys.stdout, asm, header, show_bytes)
+        disassemble_file(path, sys.stdout, format)
     return
 
 

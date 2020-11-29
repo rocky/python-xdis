@@ -25,11 +25,14 @@ from xdis.cross_dis import findlabels, findlinestarts
 
 import xdis.opcodes.opcode_15 as opcode_15
 from xdis.opcodes.base import (
+    extended_format_ATTR,
+    extended_format_MAKE_FUNCTION_older,
+    extended_format_RETURN_VALUE,
     init_opdata,
     nargs_op,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_MAKE_FUNCTION_arg,
+    format_MAKE_FUNCTION_default_argc,
     format_extended_arg,
     update_pj2,
 )
@@ -54,7 +57,13 @@ opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
 }
 
+opcode_extended_fmt = {
+    "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
+}
 finalize_opcodes(l)

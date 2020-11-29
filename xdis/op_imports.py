@@ -84,6 +84,7 @@ op_imports = {
     2.6     : opcode_26,
     '2.7'   : opcode_27,
     2.7     : opcode_27,
+    '2.7.18candidate1' : opcode_27,
     '3.0'   : opcode_30,
     3.0     : opcode_30,
     '3.0a5' : opcode_30,
@@ -121,7 +122,9 @@ op_imports = {
     '3.8' : opcode_38,
     '3.9.0alpha1' : opcode_39,
     '3.9.0alpha2' : opcode_39,
+    '3.9.0beta5' : opcode_39,
     '3.9' : opcode_39,
+    3.9 : opcode_39,
 
     '2.6pypy':  opcode_26pypy,
     '2.7pypy':  opcode_27pypy,

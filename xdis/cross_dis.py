@@ -194,7 +194,12 @@ def format_code_info(co, version, name=None, is_pypy=False):
     if not name:
         name = co.co_name
     lines = []
-    lines.append("# Method Name:       %s" % name)
+
+    if not (name == "?" and version <= 2.4):
+        lines.append("# Method Name:       %s" % name)
+
+    # Python before version 2.4 and earlier didn't store a name for the main routine.
+    # Later versions use "<module>"
     lines.append("# Filename:          %s" % co.co_filename)
 
     if version >= 1.3:

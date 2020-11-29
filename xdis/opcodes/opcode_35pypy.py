@@ -8,6 +8,8 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op,
+    extended_format_ATTR,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
     jrel_op,
@@ -48,3 +50,9 @@ jrel_op(l, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 update_pj3(globals(), l)
 
 finalize_opcodes(l)
+
+opcode_extended_fmt = {
+    "LOAD_ATTR": extended_format_ATTR,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
+}

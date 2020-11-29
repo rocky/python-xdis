@@ -23,8 +23,15 @@ of stack usage.
 from xdis.opcodes.base import (
     compare_op,
     def_op,
+    extended_format_ATTR,
+    extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_older,
+    extended_format_RAISE_VARARGS_older,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
+    format_MAKE_FUNCTION_default_argc,
+    format_RAISE_VARARGS_older,
     format_extended_arg,
     init_opdata,
     jabs_op,
@@ -34,6 +41,7 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+
 import xdis.opcodes.opcode_26 as opcode_26
 
 version = 2.7
@@ -86,8 +94,19 @@ def_op(l, "MAP_ADD",               147, 3, 1)  # Calls dict.setitem(TOS1[-i], TO
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
     "EXTENDED_ARG": format_extended_arg,
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 finalize_opcodes(l)
+
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
+}

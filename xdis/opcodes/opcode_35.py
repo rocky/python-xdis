@@ -22,9 +22,13 @@ of stack usage.
 
 from xdis.opcodes.base import (
     def_op,
+    extended_format_ATTR,
+    extended_format_CALL_FUNCTION,
+    extended_format_RAISE_VARARGS_older,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_MAKE_FUNCTION_arg,
+    format_RAISE_VARARGS_older,
     format_extended_arg,
     init_opdata,
     jrel_op,
@@ -34,6 +38,10 @@ from xdis.opcodes.base import (
 )
 
 import xdis.opcodes.opcode_34 as opcode_34
+from xdis.opcodes.opcode_33 import (
+    extended_format_MAKE_FUNCTION,
+    format_MAKE_FUNCTION_default_pos_arg,
+)
 
 version = 3.5
 python_implementation = "CPython"
@@ -74,12 +82,30 @@ jrel_op(l, "SETUP_ASYNC_WITH",          154,  0,  6)
 
 update_pj3(globals(), l)
 
+def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
+    """The lowest byte of oparg is the count of mappings, the relative
+    position of the corresponding callable f is encoded in the second byte
+    of oparg."""
+    rel_func_pos, count = divmod(oparg, 256)
+    return ("%d mappings, function at %d" % (count, count + rel_func_pos))
+
 opcode_arg_fmt = {
+    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_pos_arg,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older
+}
+
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
 }
 
 finalize_opcodes(l)

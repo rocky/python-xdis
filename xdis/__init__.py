@@ -72,14 +72,24 @@ from xdis.cross_dis import (
 
 from xdis.load import (
     check_object_path,
+    is_bytecode_extension,
     is_pypy,
+    is_python_source,
     load_file,
     load_module,
     load_module_from_file_object,
     write_bytecode_file,
 )
 
-from xdis.main import (
+from xdis.lineoffsets import (
+    LineOffsetInfo,
+    LineOffsets,
+    LineOffsetsCompact,
+    lineoffsets_in_file,
+    lineoffsets_in_module,
+)
+
+from xdis.disasm import (
     get_opcode,
     show_module_header,
     disco_loop,
@@ -146,3 +156,6 @@ from xdis.util import (
     code2num,
     co_flags_is_async,
 )
+
+# This ensures VERSION will appear in pydoc
+from xdis.version import __version__

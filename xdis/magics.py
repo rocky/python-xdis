@@ -125,7 +125,7 @@ else:
 # that's come before.  The tags are included in the following table, starting
 # with Python 3.2a0.
 
-# The below is taken from from Python/import.c, and
+# The below is taken from from Python/import.c, and more recently
 # Lib/importlib/_bootstrap.py and other sources
 
 #                  magic,  canonic version number
@@ -137,6 +137,7 @@ add_magic_from_int(5892, "1.4")
 # 1.5, 1.5.1, 1.5.2
 add_magic_from_int(20121, "1.5")  # 1.5.1, 1.5.2
 add_magic_from_int(50428, "1.6")  # 1.6
+
 add_magic_from_int(50823, "2.0")  # 2.0, 2.0.1
 add_magic_from_int(60202, "2.1")  # 2.1, 2.1.1, 2.1.2
 add_magic_from_int(60717, "2.2")  # 2.2
@@ -282,7 +283,7 @@ add_magic_from_int(3410, "3.8.0a1+")
 
 # Reverse evaluation order of key: value in dict comprehensions
 # #35224
-add_magic_from_int(3411, "3.8.0a1+")
+add_magic_from_int(3411, "3.8.0b2+")
 
 # Swap the position of positional args and positional only args in
 # ast.arguments #37593)
@@ -291,7 +292,23 @@ add_magic_from_int(3412, "3.8.0beta2")
 # Fix "break" and "continue" in "finally" #37830
 add_magic_from_int(3413, "3.8.0rc1+")
 
+# add LOAD_ASSERTION_ERROR #34880
+add_magic_from_int(3420, "3.9.0a0")
+
+# simplified bytecode for with blocks #32949
+add_magic_from_int(3421, "3.9.0a0")
+
+# Remove BEGIN_FINALLY, END_FINALLY, CALL_FINALLY, POP_FINALLY bytecodes #33387
 add_magic_from_int(3422, "3.9.0alpha1")
+
+# add IS_OP, CONTAINS_OP and JUMP_IF_NOT_EXC_MATCH bytecodes #39156
+add_magic_from_int(3423, "3.9.0a0")
+
+# simplify bytecodes for *value unpacking
+add_magic_from_int(3424, "3.9.0a2")
+
+# simplify bytecodes for **value unpacking
+add_magic_from_int(3425, "3.9.0beta5")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
@@ -338,7 +355,7 @@ add_canonic_versions(
     "2.7.8 2.7.9 2.7.10 2.7.11 2.7.12 2.7.13 2.7.14 2.7.15 "
     "2.7.15candidate1 "
     "2.7.16 "
-    "2.7.17rc1 2.7.17candidate1 2.7.17 2.7.18",
+    "2.7.17rc1 2.7.17candidate1 2.7.17 2.7.18 2.7.18candidate1",
     "2.7",
 )
 add_canonic_versions("3.0 3.0.0 3.0.1", "3.0a5")
@@ -351,9 +368,9 @@ add_canonic_versions(
     "3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6 3.4.7 3.4.8 3.4.9 3.4.10", "3.4rc2"
 )
 add_canonic_versions("3.5 3.5.0 3.5.1", "3.5")
-add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9", "3.5.2")
+add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9 3.5.10", "3.5.2")
 add_canonic_versions(
-    "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 3.6.9 3.6.10",
+    "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 3.6.9 3.6.10 3.6.11 3.6.12",
     "3.6rc1",
 )
 
@@ -369,12 +386,15 @@ add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
-    "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7", "3.7.0"
+    "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7 3.7.8 3.7.9", "3.7.0"
 )
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
-add_canonic_versions("3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3", "3.8.0rc1+")
+add_canonic_versions("3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6", "3.8.0rc1+")
 add_canonic_versions(
     "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
+)
+add_canonic_versions(
+    "3.9 3.9.0 3.9.0b5+", "3.9.0beta5"
 )
 
 # The canonic version for a canonic version is itself

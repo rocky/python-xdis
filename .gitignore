@@ -19,10 +19,10 @@
 .idea/**/uiDesigner.xml
 .idea/**/workspace.xml
 .idea_modules/
+.mypy_cache
 /.cache
 /.coverage
 /.eggs
-/.mypy_cache
 /.pytest_cache
 /.python-version
 /.tox

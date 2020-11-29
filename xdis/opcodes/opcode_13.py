@@ -25,11 +25,14 @@ from xdis.cross_dis import findlabels
 
 import xdis.opcodes.opcode_14 as opcode_14
 from xdis.opcodes.base import (
-    init_opdata,
     def_op,
-    rm_op,
+    extended_format_RAISE_VARARGS_older,
+    extended_format_RETURN_VALUE,
     finalize_opcodes,
+    format_RAISE_VARARGS_older,
     format_extended_arg,
+    init_opdata,
+    rm_op,
     # Although these aren't used here, they are exported
     update_pj2,
 )
@@ -46,8 +49,16 @@ def_op(l, "LOAD_GLOBALS", 84)
 
 update_pj2(globals(), l)
 
-opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
+opcode_arg_fmt = {
+    "EXTENDED_ARG": format_extended_arg,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
+}
 
 finalize_opcodes(l)
+
+opcode_extended_fmt = {
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+}
 
 findlinestarts = opcode_14.findlinestarts

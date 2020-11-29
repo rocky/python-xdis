@@ -64,7 +64,7 @@ install_requires = [_six, "click"]
 license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
 modname = "xdis"
-packages=['xdis']
+packages = ["xdis"]
 py_modules = None
 # setup_requires     = ['pytest-runner']
 scripts = ["bin/pydisasm.py"]
@@ -90,6 +90,4 @@ def read(*rnames):
     return open(osp.join(srcdir, *rnames)).read()
 
 
-# Get info from files; set: long_description and VERSION
 long_description = read("README.rst") + "\n"
-exec(read("xdis/version.py"))

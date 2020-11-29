@@ -83,7 +83,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     "{": "dict",
     "R": "python2_string_reference",
     "c": "code",
-    "C": "code  # Older Python code",
+    "C": "code", # Older Python code
     "r": "object_reference",
     "?": "unknown",
 }
@@ -119,7 +119,7 @@ def compat_u2s(u):
 
 class _VersionIndependentUnmarshaller():
 
-    def __init__(self, fp, magic_int, code_objects={}):
+    def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
         """
         Marshal versions:
             0/Historical: Until 2.4/magic int 62041
@@ -131,6 +131,7 @@ class _VersionIndependentUnmarshaller():
         self.fp = fp
         self.magic_int = magic_int
         self.code_objects = code_objects
+        self.bytes_for_s = bytes_for_s
         version_float = magic_int2float(self.magic_int)
         if version_float >= 3.4:
             if self.magic_int in (3250, 3260, 3270):
@@ -453,7 +454,7 @@ class _VersionIndependentUnmarshaller():
             co_flags = 0
 
         co_code = self.r_object(bytes_for_s=True)
-        bytes_for_s = PYTHON_VERSION >= 3.0
+        bytes_for_s = PYTHON_VERSION >= 3.0 and version > 3.0
         co_consts = self.r_object(bytes_for_s=True)
         co_names = self.r_object()
 
@@ -522,8 +523,8 @@ class _VersionIndependentUnmarshaller():
 #
 # user interface
 
-def load_code(fp, magic_int, code_objects={}):
+def load_code(fp, magic_int, bytes_for_s=None, code_objects={}):
     if isinstance(fp, bytes):
         fp = io.BytesIO(fp)
-    um_gen = _VersionIndependentUnmarshaller(fp, magic_int, code_objects=code_objects)
+    um_gen = _VersionIndependentUnmarshaller(fp, magic_int, bytes_for_s, code_objects=code_objects)
     return um_gen.load()

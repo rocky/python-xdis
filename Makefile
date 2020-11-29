@@ -11,7 +11,7 @@ RM      ?= rm
 LINT    = flake8
 
 #EXTRA_DIST=ipython/ipy_trepan.py trepan
-PHONY=all check clean unittest check-long dist distclean lint flake8 test rmChangeLog clean_pyc
+PHONY=all check clean dist-older dist-newer unittest check-long dist distclean lint flake8 test rmChangeLog clean_pyc
 
 TEST_TYPES=check-long check-short check-2.7 check-3.4
 
@@ -48,7 +48,15 @@ clean: clean_pyc
 
 #: Create source (tarball) and wheel distribution
 dist: clean
-	$(PYTHON) ./setup.py sdist bdist_wheel
+	$(PYTHON) ./setup.py sdist bdist_egg
+
+#: Create older distributions
+dist-older:
+	bash ./admin-tools/make-dist-older.sh
+
+#: Create newer distributions
+dist-newer:
+	bash ./admin-tools/make-dist-newer.sh
 
 #: Remove .pyc files
 clean_pyc:
