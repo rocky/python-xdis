@@ -394,7 +394,7 @@ add_canonic_versions(
     "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
 )
 add_canonic_versions(
-    "3.9 3.9.0 3.9.0b5+", "3.9.0beta5"
+    "3.9 3.9.0 3.9.1 3.9.0b5+", "3.9.0beta5"
 )
 
 # The canonic version for a canonic version is itself
