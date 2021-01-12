@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2020 by Rocky Bernstein
+# (C) Copyright 2018-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 import re, struct, sys
 from xdis import IS_PYPY
 
-IS_PYPY3 = (48, 64, 112, 160, 192)
+IS_PYPY3 = (48, 64, 112, 160, 192, 244)
 
 
 def add_magic_from_int(magic_int, version):
@@ -318,6 +318,7 @@ add_magic_from_int(64, "3.3pypy")
 add_magic_from_int(112, "3.5pypy")  # pypy3.5-c-jit-latest
 add_magic_from_int(160, "3.6.1pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
 add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
+add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(1011, "2.7.1b3Jython")  # jython
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
@@ -383,6 +384,7 @@ add_canonic_versions("3.2.5pypy", "3.2pypy")
 add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
+add_canonic_versions("3.7.9pypy", "3.7pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
