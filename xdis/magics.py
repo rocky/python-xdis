@@ -369,9 +369,11 @@ add_canonic_versions(
     "3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6 3.4.7 3.4.8 3.4.9 3.4.10", "3.4rc2"
 )
 add_canonic_versions("3.5 3.5.0 3.5.1", "3.5")
-add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9 3.5.10", "3.5.2")
+add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9 "
+                     "3.5.10", "3.5.2")
 add_canonic_versions(
-    "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 3.6.9 3.6.10 3.6.11 3.6.12",
+    "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 "
+    "3.6.9 3.6.10 3.6.11 3.6.12 3.6.13",
     "3.6rc1",
 )
 
@@ -388,16 +390,19 @@ add_canonic_versions("3.7.9pypy", "3.7pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
-    "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7 3.7.8 3.7.9", "3.7.0"
+    "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7 3.7.8 3.7.9 "
+    "3.7.10",
+    "3.7.0",
 )
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
-add_canonic_versions("3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7", "3.8.0rc1+")
+add_canonic_versions(
+    "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7",
+    "3.8.0rc1+",
+)
 add_canonic_versions(
     "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
 )
-add_canonic_versions(
-    "3.9 3.9.0 3.9.1 3.9.0b5+", "3.9.0beta5"
-)
+add_canonic_versions("3.9 3.9.0 3.9.1 3.9.0b5+", "3.9.0beta5")
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
