@@ -10,8 +10,8 @@ jobs:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
       COMPILE: --compile
-    machine:
-      image: default
+    docker:
+    - image: circleci/python:3.7.3
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
@@ -24,7 +24,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run:
         working_directory: ~/rocky/python-xdis
-        command: pip install virtualenv && pyenv local 3.5.2 && pip install nose && pip install pep8 && pyenv rehash
+        command: sudo pip install nose && sudo pip install pep8
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
@@ -35,9 +35,8 @@ jobs:
           - v2-dependencies-
 
     # This is based on your 1.0 configuration file or project settings
-    - run: pip install --upgrade setuptools
-    - run: pip install -e .
-    - run: pip install -r requirements-dev.txt
+    - run: sudo pip install -e .
+    - run: sudo pip install -r requirements-dev.txt
 
     # Save dependency cache
     - save_cache:
@@ -55,7 +54,7 @@ jobs:
     # Test
     #   This would typically be a build job when using workflows, possibly combined with build
     # This is based on your 1.0 configuration file or project settings
-    - run: python ./setup.py develop && make check-full
+    - run: sudo python ./setup.py develop && make check-full
     # Teardown
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
     # Save test results
