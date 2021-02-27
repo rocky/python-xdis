@@ -251,7 +251,9 @@ def remap_opcodes(op_obj, alternate_opmap):
                     idx = list(getattr(op_obj, set_name)).index(original_opcode)
                     frozen_set_list[idx] = alt_opcode
 
-    new_opcodes_with_args = {opname: new_opmap[opname] for opname in opcodes_with_args.keys()}
+    new_opcodes_with_args = {}
+    for opname in opcodes_with_args.keys():
+        new_opcodes_with_args[opname] = new_opmap[opname]
     lowest_opcode_with_arg = min(new_opcodes_with_args.values())
     setattr(op_obj, 'HAVE_ARGUMENT', lowest_opcode_with_arg)
     if hasattr(op_obj, 'PJIF'):
