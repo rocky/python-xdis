@@ -13,10 +13,12 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import marshal, py_compile, sys, tempfile, time
+import marshal, py_compile, sys, tempfile, time, types
 from struct import unpack, pack
+from datetime import datetime
 import os.path as osp
 
+import xdis.marsh
 import xdis.unmarshal
 from xdis.version_info import PYTHON3, PYTHON_VERSION
 from xdis.magics import (
@@ -321,24 +323,35 @@ def load_module_from_file_object(
     )
 
 
-def write_bytecode_file(bytecode_path, code, magic_int, filesize=0):
+def write_bytecode_file(bytecode_path, code_obj, magic_int, compilation_ts = None, filesize = 0):
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
     """
-    fp = open(bytecode_path, "wb")
-    try:
-        if PYTHON3:
-            fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
-        else:
-            fp.write(pack("<Hcc", magic_int, "\r", "\n"))
-        fp.write(pack("<I", int(time.time())))
-        if 3000 <= magic_int < 20121:
-            # In Python 3 you need to write out the size mod 2**32 here
-            fp.write(pack("<I", filesize))
-        fp.write(marshal.dumps(code))
-    finally:
-        fp.close()
+    fp = open(bytecode_path, 'wb')
+    version = float(magicint2version[magic_int][:3])
+    if version >= 3.0:
+        fp.write(pack('<Hcc', magic_int, b'\r', b'\n'))
+        if version >= 3.7:  # pep552 bytes
+            fp.write(pack('<I', 0))  # pep552 bytes
+    else:
+        fp.write(pack('<Hcc', magic_int, b'\r', b'\n'))
 
+    if compilation_ts:
+        if isinstance(compilation_ts, datetime):
+            fp.write(pack('<I', int(compilation_ts.timestamp())))
+        elif isinstance(compilation_ts, int):
+            fp.write(pack('<I', compilation_ts))
+    else:
+        fp.write(pack('<I', int(datetime.now().timestamp())))
+
+    if version >= 3.3:
+        # In Python 3.3+, these 4 bytes are the size of the source code_obj file (mod 2^32)
+        fp.write(pack('<I', filesize))
+    if isinstance(code_obj, types.CodeType):
+        fp.write(marshal.dumps(code_obj))
+    else:
+        fp.write(xdis.marsh.dumps(code_obj))
+    fp.close()
 
 if __name__ == "__main__":
     co = load_file(__file__)

@@ -15,6 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """Facilitates importing opmaps for the a given Python version"""
+import copy
 import sys
 from xdis import IS_PYPY
 from xdis.magics import canonic_python_version
@@ -170,6 +171,107 @@ def get_opcode_module(version_info=None, variant=None):
         vers_str += variant
 
     return op_imports[canonic_python_version[vers_str]]
+
+def remap_opcodes(op_obj, alternate_opmap):
+    # All these lists are 255 in length, with index i corresponding to opcode i
+    if hasattr(op_obj, 'REMAPPED') and op_obj.REMAPPED:
+        return op_obj
+
+    positional_opcode_lists = [
+        'opname',  # Opcode's name
+        'oppop',  # How many items this opcode pops off the stack
+        'oppush'  # How many items this opcode pushes onto the stack
+    ]
+
+    # These lists contain all the opcodes that fit a certain description
+    categorized_opcode_lists = [
+        'hascompare',
+        'hascondition',
+        'hasconst',
+        'hasfree',
+        'hasjabs',
+        'hasjrel',
+        'haslocal',
+        'hasname',
+        'hasnargs',
+        'hasvargs',
+        'nofollow'
+    ]
+
+    new_opmap = copy.deepcopy(op_obj.opmap)
+    new_lists = {}
+    for list_name in positional_opcode_lists:
+        if hasattr(op_obj, list_name):
+            new_lists[list_name] = copy.deepcopy(getattr(op_obj, list_name))
+    for list_name in categorized_opcode_lists:
+        if hasattr(op_obj, list_name):
+            new_lists[list_name] = copy.deepcopy(getattr(op_obj, list_name))
+
+    new_frozensets = {}
+    for i in dir(op_obj):
+        item = getattr(op_obj, i)
+        if isinstance(item, frozenset):
+            item = list(item)
+            new_frozensets[i] = copy.deepcopy(item)
+
+    opcodes_with_args = {opname: opcode for opname, opcode in op_obj.opmap.items() if opcode >= op_obj.HAVE_ARGUMENT}
+
+    for opname, alt_opcode in alternate_opmap.items():
+        if opname not in op_obj.opmap:
+            raise KeyError("The opname {} was not found in Python's original opmap for version {}".format(opname, op_obj.version))
+        else:
+            original_opcode = op_obj.opmap[opname]
+            new_opmap[opname] = alt_opcode
+            if original_opcode == alt_opcode:
+                continue
+
+            if hasattr(op_obj, opname):
+                setattr(op_obj, opname, alt_opcode)
+
+            for list_name in positional_opcode_lists:
+                if not hasattr(op_obj, list_name):
+                    continue
+                new_opcode_list = new_lists[list_name]
+                original_list = getattr(op_obj, list_name)
+                new_opcode_list[alt_opcode] = original_list[original_opcode]
+
+            for list_name in categorized_opcode_lists:
+                if not hasattr(op_obj, list_name):
+                    continue
+                new_opcode_list = new_lists[list_name]
+                original_list = getattr(op_obj, list_name)
+                if original_opcode in original_list:
+                    new_opcode_list[original_list.index(original_opcode)] = alt_opcode
+
+            for set_name, frozen_set_list in new_frozensets.items():
+                if original_opcode in getattr(op_obj, set_name):
+                    idx = list(getattr(op_obj, set_name)).index(original_opcode)
+                    frozen_set_list[idx] = alt_opcode
+
+    new_opcodes_with_args = {opname: new_opmap[opname] for opname in opcodes_with_args.keys()}
+    lowest_opcode_with_arg = min(new_opcodes_with_args.values())
+    setattr(op_obj, 'HAVE_ARGUMENT', lowest_opcode_with_arg)
+    if hasattr(op_obj, 'PJIF'):
+        if hasattr(op_obj, 'POP_JUMP_IF_FALSE') and 'POP_JUMP_IF_FALSE' in new_opmap:
+            # 2.7 and later
+            setattr(op_obj, 'PJIF', new_opmap['POP_JUMP_IF_FALSE'])
+        if hasattr(op_obj, 'JUMP_IF_FALSE') and 'JUMP_IF_FALSE' in new_opmap:
+            setattr(op_obj, 'PJIF', new_opmap['JUMP_IF_FALSE'])
+    if hasattr(op_obj, 'PJIT'):
+        if hasattr(op_obj, 'POP_JUMP_IF_TRUE') and 'POP_JUMP_IF_TRUE' in new_opmap:
+            # 2.7 and later
+            setattr(op_obj, 'PJIT', new_opmap['POP_JUMP_IF_TRUE'])
+        if hasattr(op_obj, 'JUMP_IF_TRUE') and 'JUMP_IF_TRUE' in new_opmap:
+            setattr(op_obj, 'PJIT', new_opmap['JUMP_IF_TRUE'])
+
+    for new_list_name, new_list in new_lists.items():
+        setattr(op_obj, new_list_name, new_list)
+    for new_frozenset_name, new_frozenset in new_frozensets.items():
+        setattr(op_obj, new_frozenset_name, frozenset(new_frozenset))
+
+    setattr(op_obj, 'opmap', new_opmap)
+    setattr(op_obj, 'REMAPPED', True)
+    return op_obj
 
 
 if __name__ == '__main__':
