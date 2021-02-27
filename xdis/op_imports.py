@@ -217,7 +217,7 @@ def remap_opcodes(op_obj, alternate_opmap):
     opcodes_with_args = {}
     for opname, opcode in op_obj.opmap.items():
         if opcode >= op_obj.HAVE_ARGUMENT:
-            opcode_with_args[opname] = opcode
+            opcodes_with_args[opname] = opcode
 
     for opname, alt_opcode in alternate_opmap.items():
         if opname not in op_obj.opmap:
