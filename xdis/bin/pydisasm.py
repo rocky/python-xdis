@@ -1,5 +1,6 @@
+#!/usr/bin/env python
 # Mode: -*- python -*-
-# Copyright (c) 2015-2020 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2021 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -46,22 +47,6 @@ Examples:
 PATTERNS = ('*.pyc', '*.pyo')
 
 def main():
-if click.__version__ >= "7.":
-    case_sensitive={"case_sensitive": False}
-else:
-    case_sensitive={}
-
-@click.command()
-@click.option(
-    "--format",
-    "-F",
-    type=click.Choice(["xasm", "bytes", "classic", "extended", "extended-bytes", "header"],
-                      **case_sensitive),
-)
-@click.version_option(version=__version__)
-@click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format, files):
->>>>>>> master
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -84,8 +69,8 @@ Type -h for for full help.""" % program
         sys.exit(1)
 
     try:
-        opts, files = getopt.getopt(sys.argv[1:], 'hVHF:',
-                                    ['help', 'version', 'header', "format="])
+        opts, files = getopt.getopt(sys.argv[1:], 'hVUHF:',
+                                    ['help', 'version', 'header', 'format'])
     except getopt.GetoptError, e:
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
@@ -99,8 +84,6 @@ Type -h for for full help.""" % program
         elif opt in ('-V', '--version'):
             print("%s %s" % (program, VERSION))
             sys.exit(0)
-        elif opt in ('--noasm'):
-            asm = False
         elif opt in ('-H', '--header'):
             header = True
         elif opt in ('--no-header'):
