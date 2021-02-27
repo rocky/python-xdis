@@ -214,7 +214,10 @@ def remap_opcodes(op_obj, alternate_opmap):
             item = list(item)
             new_frozensets[i] = copy.deepcopy(item)
 
-    opcodes_with_args = {opname: opcode for opname, opcode in op_obj.opmap.items() if opcode >= op_obj.HAVE_ARGUMENT}
+    opcodes_with_args = {}
+    for opname, opcode in op_obj.opmap.items():
+        if opcode >= op_obj.HAVE_ARGUMENT:
+            opcode_with_args[opname] = opcode
 
     for opname, alt_opcode in alternate_opmap.items():
         if opname not in op_obj.opmap:
