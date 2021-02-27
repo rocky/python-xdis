@@ -75,7 +75,7 @@ if PYTHON_VERSION >= 3.2:
             return tb
 
 
-    @pytest.yield_fixture
+    @pytest.fixture
     def stream_fixture():
         with closing(six.StringIO()) as s:
             yield s
