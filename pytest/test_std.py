@@ -9,6 +9,12 @@ import pytest
 import xdis.std as dis
 from xdis import PYTHON3, IS_PYPY, PYTHON_VERSION
 
+if PYTHON_VERSION >= 3.2:
+    if pytest.__version__ >= "3.2.0":
+        yield_fixture = pytest.fixture
+    else:
+        yield_fixture = pytest.yield_fixture
+
 
 # just a simple bit of code that should be the same across python versions,
 # we are testing the api here really, leave it to the other tests to perform
@@ -75,7 +81,7 @@ if PYTHON_VERSION >= 3.2:
             return tb
 
 
-    @pytest.fixture
+    @yield_fixture
     def stream_fixture():
         with closing(six.StringIO()) as s:
             yield s
