@@ -1,5 +1,5 @@
 # Mode: -*- python -*-
-# Copyright (c) 2015-2020 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2021 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -48,7 +48,7 @@ def main(format, files):
             )
             sys.exit(1)
         sys.stderr.write(
-            "This works on Python version 2.7..3.8; have %s.\n" % PYTHON_VERSION
+            "This works on Python version 2.7..3.9; have %s.\n" % PYTHON_VERSION
         )
         sys.exit(2)
 
