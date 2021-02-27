@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2020 by Rocky Bernstein
+# Copyright (c) 2016-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -48,10 +48,10 @@ from xdis.load import check_object_path, load_module
 from xdis.magics import PYTHON_MAGIC_INT
 from xdis.cross_dis import format_code_info
 from xdis.version import __version__
-from xdis.op_imports import op_imports
+from xdis.op_imports import op_imports, remap_opcodes
 
 
-def get_opcode(version, is_pypy):
+def get_opcode(version, is_pypy, alternate_opmap=None):
     # Set up disassembler with the right opcodes
     if type(version) in (list, tuple):
         version = ".".join([str(x) for x in version])
@@ -59,6 +59,9 @@ def get_opcode(version, is_pypy):
     if is_pypy:
         lookup += "pypy"
     if lookup in op_imports.keys():
+        if alternate_opmap is not None:
+            # TODO: change bytecode version number comment line to indicate altered
+            return remap_opcodes(op_imports[lookup], alternate_opmap)
         return op_imports[lookup]
     if is_pypy:
         pypy_str = " for pypy"
@@ -135,7 +138,9 @@ def disco(
     source_size=None,
     sip_hash=None,
     asm_format="classic",
+    show_bytes=False,
     dup_lines=False,
+    alternate_opmap=None,
 ):
     """
     diassembles and deparses a given code block 'co'
@@ -163,7 +168,7 @@ def disco(
         real_out.write(format_code_info(co, bytecode_version) + "\n")
         pass
 
-    opc = get_opcode(bytecode_version, is_pypy)
+    opc = get_opcode(bytecode_version, is_pypy, alternate_opmap)
 
     if asm_format == "xasm":
         disco_loop_asm_format(opc, bytecode_version, co, real_out, {}, set([]))
@@ -270,7 +275,12 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
 
 
 def disassemble_file(
-    filename, outstream=sys.stdout, asm_format="classic"
+    filename,
+    outstream=sys.stdout,
+    asm_format="classic",
+    header=False,
+    show_bytes=False,
+    alternate_opmap=None,
 ):
     """
     disassemble Python byte-code file (.pyc)
@@ -326,6 +336,8 @@ def disassemble_file(
             source_size=source_size,
             sip_hash=sip_hash,
             asm_format=asm_format,
+            show_bytes=show_bytes,
+            alternate_opmap=alternate_opmap,
         )
     # print co.co_filename
     return filename, co, version, timestamp, magic_int, is_pypy, source_size, sip_hash

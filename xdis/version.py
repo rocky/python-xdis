@@ -3,4 +3,4 @@
 # This file is suitable for sourcing inside POSIX shell as
 # well as importing into Python. That's why there is no
 # space around "=" below.
-__version__="5.0.7"  # noqa
+__version__="5.0.8.dev0"  # noqa

@@ -35,8 +35,8 @@ jobs:
           - v2-dependencies-
 
     # This is based on your 1.0 configuration file or project settings
-    - run: pip install -e .
-    - run: pip install -r requirements-dev.txt
+    - run: sudo pip install -e .
+    - run: sudo pip install -r requirements-dev.txt
 
     # Save dependency cache
     - save_cache:
