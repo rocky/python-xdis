@@ -1,3 +1,14 @@
+5.0.7 2021-03-13
+================
+
+- PR #73 from mitre:
+  Allow an Alternate opmap - adds the capability to disassemble python bytecode that has
+  been frozen with a custom opcode mapping. This is particularly useful for disassembling
+  malware that uses custom opcode mappings in an attempt to hinder disassembly with standard
+  tools. The updates in this pull request are used by pydecipher, a tool to unfreeze and deob  fuscate frozen python code.
+
+- Add Python versions 3.8.8 and 3.9.2
+
 5.0.6 2021-01-10
 ================
 
