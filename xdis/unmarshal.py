@@ -26,6 +26,7 @@ you can simply use Python's built-in marshal.loads() to produce a code
 object
 """
 
+import io
 import sys
 from struct import unpack
 
@@ -47,6 +48,53 @@ else:
 # FLAG_REF is the marchal.c name
 FLAG_REF = 0x80
 
+# Bit set on marshalType if we should
+# add obj to internObjects.
+# FLAG_REF is the marchal.c name
+FLAG_REF = 0x80
+
+
+# The keys in following dictionary are an unmashal codes, like "s", "c", "<", etc.
+# the values of the dictionary are names of routines to call that do the data unmarshaling.
+#
+# Note: we could eliminate the parameters, if this were all inside a
+# class.  This might be good from an efficiency standpoint, and bad
+# from a functional-programming standpoint. Pick your poison.
+# EDIT: I'm choosing efficiency over functional-programming.
+UNMARSHAL_DISPATCH_TABLE = {
+    "0": "C_NULL",
+    "N": "None",
+    "S": "stopIteration",
+    ".": "Elipsis",
+    "F": "False",
+    "T": "True",
+    "i": "int32",
+    "l": "long",
+    "I": "int64",
+    "f": "float",
+    "g": "binary_float",
+    "x": "complex",
+    "y": "binary_complex",
+    "s": "string",
+    "A": "ASCII_interned",
+    "a": "ASCII",
+    "z": "short_ASCII",
+    "Z": "short_ASCII_interned",
+    "t": "interned",
+    "u": "unicode",
+    ")": "small_tuple",
+    "(": "tuple",
+    "[": "list",
+    "<": "frozenset",
+    ">": "set",
+    "i": "int32",
+    "{": "dict",
+    "R": "python2_string_reference",
+    "c": "code",
+    "C": "code", # Older Python code
+    "r": "object_reference",
+    "?": "unknown",
+}
 
 # The keys in following dictionary are an unmashal codes, like "s", "c", "<", etc.
 # the values of the dictionary are names of routines to call that do the data unmarshaling.
