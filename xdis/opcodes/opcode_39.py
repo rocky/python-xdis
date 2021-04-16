@@ -1,4 +1,4 @@
-# (C) Copyright 2019, 2020 by Rocky Bernstein
+# (C) Copyright 2019-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -85,12 +85,26 @@ def_op(l, 'DICT_UPDATE',            165,   2, 1)
 
 format_value_flags = opcode_38.format_value_flags
 
+def format_extended_is_op(arg):
+    if arg == 0:
+      return "is"
+    else:
+       return "is not"
+
+def format_extended_contains_op(arg):
+    if arg == 0:
+        return "in"
+    else:
+        return "not in"
+
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
+    'CONTAINS_OP': format_extended_contains_op,
     'EXTENDED_ARG': format_extended_arg36,
     'FORMAT_VALUE': format_value_flags,
+    'IS_OP': format_extended_is_op,
     'MAKE_FUNCTION': format_MAKE_FUNCTION_flags,
     "RAISE_VARARGS": format_RAISE_VARARGS
 }

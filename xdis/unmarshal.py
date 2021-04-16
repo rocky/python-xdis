@@ -469,7 +469,7 @@ class _VersionIndependentUnmarshaller:
         # FIXME:
         # Note we do this by magic_int, not version which is *not*
         # 3.8
-        if self.magic_int in (3412, 3413, 3422):
+        if self.magic_int in (3412, 3413, 3422, 3425):
             co_posonlyargcount = unpack("<i", self.fp.read(4))[0]
         if version >= 3.8:
             co_posonlyargcount = 0

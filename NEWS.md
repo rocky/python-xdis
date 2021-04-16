@@ -1,15 +1,25 @@
-5.0.7 2021-03-13
+5.0.9 2021-04-16
+================
+
+In general, better Python 3.9 support.
+
+- Improve 3.9 `IS_OP` and `CONTAINS_OP` operand formatting
+- Correct disassembly of 3.9 bytecode from other bytecode
+- Accept 3.9.3 and 3.9.4 as a valid 3.9 version
+- Accept 3.8.9 as a valid 3.8 version
+
+5.0.8 2021-03-13
 ================
 
 - PR #73 from mitre:
-  Allow an Alternate opmap - adds the capability to disassemble python bytecode that has
+  Allow an alternate opmap - adds the capability to disassemble python bytecode that has
   been frozen with a custom opcode mapping. This is particularly useful for disassembling
   malware that uses custom opcode mappings in an attempt to hinder disassembly with standard
   tools. The updates in this pull request are used by pydecipher, a tool to unfreeze and deob  fuscate frozen python code.
 
 - Add Python versions 3.8.8 and 3.9.2
 
-5.0.6 2021-01-10
+5.0.7 2021-01-10
 ================
 
 * Add Python 3.8.7
