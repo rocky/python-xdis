@@ -1,4 +1,14 @@
-5.0.7 2021-03-13
+5.0.9 2021-04-16
+================
+
+In general, better Python 3.9 support.
+
+- Improve 3.9 `IS_OP` and `CONTAINS_OP` operand formatting
+- Correct disassembly of 3.9 bytecode from other bytecode
+- Accept 3.9.3 and 3.9.4 as a valid 3.9 version
+- Accept 3.8.9 as a valid 3.8 version
+
+5.0.8 2021-03-13
 ================
 
 - PR #73 from mitre:
@@ -9,7 +19,7 @@
 
 - Add Python versions 3.8.8 and 3.9.2
 
-5.0.6 2021-01-10
+5.0.7 2021-01-10
 ================
 
 * Add Python 3.8.7
