@@ -97,9 +97,9 @@ class _Marshaller:
         self.python_version = python_version
 
     def dump(self, x):
-        if isinstance(x, types.CodeType) and PYTHON_VERSION != self.version:
+        if isinstance(x, types.CodeType) and PYTHON_VERSION != self.python_version:
             raise RuntimeError("code type passed for version %s but we are running version %s" %
-                               (PYTHON_VERSION, self.version))
+                               (PYTHON_VERSION, self.python_version))
         try:
             self.dispatch[type(x)](self, x)
         except KeyError:
