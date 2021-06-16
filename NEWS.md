@@ -1,3 +1,9 @@
+5.0.10 2021-06-16
+================
+
+- Note Python versions 3.8.10 and 3.9.5
+- Incorrect variable name in marshal dump (used in writting `.pyc` files). PR #75
+
 5.0.9 2021-04-16
 ================
 
