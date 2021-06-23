@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2020 by Rocky Bernstein
+# (C) Copyright 2019-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -75,7 +75,7 @@ opcode_arg_fmt = {
     "EXTENDED_ARG": format_extended_arg36,
     "FORMAT_VALUE": format_value_flags,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
-    "RAISE_VARARGS": opcode_37.format_RAISE_VARARGS
+    "RAISE_VARARGS": opcode_37.format_RAISE_VARARGS,
 }
 
 opcode_extended_fmt = {

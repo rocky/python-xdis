@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2020 by Rocky Bernstein
+# (C) Copyright 2018-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -98,8 +98,10 @@ class _Marshaller:
 
     def dump(self, x):
         if isinstance(x, types.CodeType) and PYTHON_VERSION != self.python_version:
-            raise RuntimeError("code type passed for version %s but we are running version %s" %
-                               (PYTHON_VERSION, self.python_version))
+            raise RuntimeError(
+                "code type passed for version %s but we are running version %s"
+                % (PYTHON_VERSION, self.python_version)
+            )
         try:
             self.dispatch[type(x)](self, x)
         except KeyError:
@@ -195,7 +197,7 @@ class _Marshaller:
     except NameError:
         dispatch[int] = dump_long
     else:
-        dispatch[long] = dump_long
+        dispatch[long] = dump_long  # noqa
 
     def dump_float(self, x):
         write = self._write
@@ -261,7 +263,7 @@ class _Marshaller:
     except NameError:
         dispatch[str] = dump_unicode
     else:
-        dispatch[unicode] = dump_unicode
+        dispatch[unicode] = dump_unicode  # noqa
 
     def dump_tuple(self, x):
         self._write(TYPE_TUPLE)
