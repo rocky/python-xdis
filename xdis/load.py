@@ -13,7 +13,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import marshal, py_compile, sys, tempfile, time, types
+import marshal, py_compile, sys, tempfile, types
 from struct import unpack, pack
 from datetime import datetime
 import os.path as osp
@@ -53,8 +53,10 @@ def is_python_source(path):
         return False
     return True
 
+
 def is_bytecode_extension(path):
     return path.endswith(".pyc") or path.endswith(".pyo")
+
 
 def check_object_path(path):
     if not is_bytecode_extension(path) and is_python_source(path):
@@ -321,35 +323,38 @@ def load_module_from_file_object(
     )
 
 
-def write_bytecode_file(bytecode_path, code_obj, magic_int, compilation_ts = None, filesize = 0):
+def write_bytecode_file(
+    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize=0
+):
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
     """
-    fp = open(bytecode_path, 'wb')
+    fp = open(bytecode_path, "wb")
     version = float(magicint2version[magic_int][:3])
     if version >= 3.0:
-        fp.write(pack('<Hcc', magic_int, '\r', '\n'))
+        fp.write(pack('<Hcc', magic_int, "\r", "\n"))
         if version >= 3.7:  # pep552 bytes
-            fp.write(pack('<I', 0))  # pep552 bytes
+            fp.write(pack("<I", 0))  # pep552 bytes
     else:
-        fp.write(pack('<Hcc', magic_int, '\r', '\n'))
+        fp.write(pack('<Hcc', magic_int, "\r", "\n"))
 
     if compilation_ts:
         if isinstance(compilation_ts, datetime):
-            fp.write(pack('<I', int(compilation_ts.timestamp())))
+            fp.write(pack("<I", int(compilation_ts.timestamp())))
         elif isinstance(compilation_ts, int):
-            fp.write(pack('<I', compilation_ts))
+            fp.write(pack("<I", compilation_ts))
     else:
-        fp.write(pack('<I', int(datetime.now().timestamp())))
+        fp.write(pack("<I", int(datetime.now().timestamp())))
 
     if version >= 3.3:
         # In Python 3.3+, these 4 bytes are the size of the source code_obj file (mod 2^32)
-        fp.write(pack('<I', filesize))
+        fp.write(pack("<I", filesize))
     if isinstance(code_obj, types.CodeType):
         fp.write(marshal.dumps(code_obj))
     else:
         fp.write(xdis.marsh.dumps(code_obj))
     fp.close()
+
 
 if __name__ == "__main__":
     co = load_file(__file__)
@@ -359,8 +364,6 @@ if __name__ == "__main__":
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:
-        import datetime
-
         print(datetime.datetime.fromtimestamp(timestamp))
     if source_size is not None:
         print("source size mod 2**32: %d" % source_size)
