@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2021 by Rocky Bernstein
 """
 CPython 2.5 bytecode opcodes
 
@@ -14,14 +14,14 @@ from xdis.opcodes.base import (
     extended_format_MAKE_FUNCTION_older,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
-    init_opdata,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_MAKE_FUNCTION_default_argc,
     format_RAISE_VARARGS_older,
     format_extended_arg,
+    init_opdata,
     update_pj2,
-    )
+)
 
 version = 2.5
 python_implementation = "CPython"
@@ -29,10 +29,12 @@ python_implementation = "CPython"
 l = locals()
 init_opdata(l, opcode_24, version)
 
+# fmt: off
 # Bytecodes added in 2.5 from 2.4
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
 def_op(l, 'WITH_CLEANUP',      81,   4,  3)
+# fmt: on
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)

@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2020 by Rocky Bernstein
+# (C) Copyright 2019-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -36,7 +36,7 @@ from xdis.opcodes.base import (
     update_pj2,
 )
 
-version = 1.1 # 1.2 is the same
+version = 1.1  # 1.2 is the same
 python_implementation = "CPython"
 
 l = locals()
