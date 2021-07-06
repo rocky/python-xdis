@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2020 by Rocky Bernstein
+# (C) Copyright 2019-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ opcodes in Python's dis.py library.
 """
 
 # This is used from outside this module
-from xdis.cross_dis import findlabels, findlinestarts
+from xdis.cross_dis import findlabels, findlinestarts  # noqa
 
 import xdis.opcodes.opcode_15 as opcode_15
 from xdis.opcodes.base import (
@@ -43,9 +43,10 @@ python_implementation = "CPython"
 l = locals()
 init_opdata(l, opcode_15, version)
 
+# fmt: off
 # 1.6 Bytecodes not in 1.5
-nargs_op(l, "CALL_FUNCTION_VAR", 140, -1, 1)  # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_KW", 141, -1, 1)  # #args + (#kwargs << 8)
+nargs_op(l, "CALL_FUNCTION_VAR",    140, -1, 1)  # #args + (#kwargs << 8)
+nargs_op(l, "CALL_FUNCTION_KW",     141, -1, 1)  # #args + (#kwargs << 8)
 nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -1, 1)  # #args + (#kwargs << 8)
 
 update_pj2(globals(), l)
@@ -53,17 +54,19 @@ update_pj2(globals(), l)
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 opcode_arg_fmt = {
-    "EXTENDED_ARG": format_extended_arg,
-    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "EXTENDED_ARG":         format_extended_arg,
+    "CALL_FUNCTION":        format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_KW":     format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
+    "MAKE_FUNCTION":        format_MAKE_FUNCTION_default_argc,
 }
 
 opcode_extended_fmt = {
-    "LOAD_ATTR": extended_format_ATTR,
+    "LOAD_ATTR":     extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
+    "RETURN_VALUE":  extended_format_RETURN_VALUE,
+    "STORE_ATTR":    extended_format_ATTR,
 }
+# fmt: on
+
 finalize_opcodes(l)

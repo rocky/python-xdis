@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2018, 2020 by Rocky Bernstein
+# (C) Copyright 2017-2018, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,43 +24,51 @@ If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
 from xdis.opcodes.base import (
-    compare_op, const_op,
-    def_op, format_extended_arg,
-    free_op, jabs_op, jrel_op,
-    local_op, name_op, nargs_op, store_op,
-    varargs_op
-    )
+    compare_op,
+    const_op,
+    def_op,
+    format_extended_arg,
+    free_op,
+    jabs_op,
+    jrel_op,
+    local_op,
+    name_op,
+    nargs_op,
+    store_op,
+    varargs_op,
+)
 
 l = locals()
 
 # FIXME: DRY with opcode2x.py
 
-hascompare   = []
-hascondition = [] # conditional operator; has jump offset
-hasconst     = []
-hasfree      = []
-hasjabs      = []
-hasjrel      = []
-haslocal     = []
-hasname      = []
-hasnargs     = []  # For function-like calls
-hasstore     = []  # Some sort of store operation
-hasvargs     = []  # Similar but for operators BUILD_xxx
-nofollow     = []  # Instruction doesn't fall to the next opcode
+hascompare = []
+hascondition = []  # conditional operator; has jump offset
+hasconst = []
+hasfree = []
+hasjabs = []
+hasjrel = []
+haslocal = []
+hasname = []
+hasnargs = []  # For function-like calls
+hasstore = []  # Some sort of store operation
+hasvargs = []  # Similar but for operators BUILD_xxx
+nofollow = []  # Instruction doesn't fall to the next opcode
 
 # opmap[opcode_name] => opcode_number
 opmap = {}
 
 # opcode[i] => opcode name
-opname = [''] * 256
+opname = [""] * 256
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
-oppop  = [0] * 256
+oppop = [0] * 256
 
-for op in range(256): opname[op] = '<%r>' % (op,)
+for op in range(256):
+    opname[op] = "<%r>" % (op,)
 del op
 
 # Instruction opcodes for compiled code
@@ -72,6 +80,7 @@ del op
 # If the POP field is negative and the opcode is a nargs operation
 # then pop the operand amount plus the negative of the POP amount.
 
+# fmt: off
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
 def_op(l, 'STOP_CODE',             0,  0,  0, fallthrough=False)
@@ -221,8 +230,8 @@ def_op(l, 'MAP_ADD',               147,  3,  1)  # Calls dict.setitem(TOS1[-i], 
                                                  # Used to implement dict comprehensions.
 
 def_op(l, 'EXTENDED_ARG',          144,  0,   0)
+# fmt: on
+
 EXTENDED_ARG = 144
 
-opcode_arg_fmt = {
-    'EXTENDED_ARG': format_extended_arg
-}
+opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}

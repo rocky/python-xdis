@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -39,28 +39,30 @@ python_implementation = "CPython"
 l = locals()
 init_opdata(l, opcode_21, version)
 
+# fmt: off
 # 2.1 Bytecodes not in 2.0
 rm_op(l, "CONTINUE_LOOP", 119)
-rm_op(l, "MAKE_CLOSURE", 134)
-rm_op(l, "LOAD_CLOSURE", 135)
-rm_op(l, "LOAD_DEREF", 136)
-rm_op(l, "STORE_DEREF", 137)
+rm_op(l, "MAKE_CLOSURE",  134)
+rm_op(l, "LOAD_CLOSURE",  135)
+rm_op(l, "LOAD_DEREF",    136)
+rm_op(l, "STORE_DEREF",   137)
 
 update_pj2(globals(), l)
 
 finalize_opcodes(l)
 
 opcode_arg_fmt = {
-    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION":        format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_KW":     format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
+    "EXTENDED_ARG":         format_extended_arg,
+    "MAKE_FUNCTION":        format_MAKE_FUNCTION_default_argc,
 }
 
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION":        extended_format_MAKE_FUNCTION_older,
+    "RETURN_VALUE":         extended_format_RETURN_VALUE,
+    "STORE_ATTR":           extended_format_ATTR,
 }
+# fmt: on
