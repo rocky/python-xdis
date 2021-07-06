@@ -49,11 +49,12 @@ l = locals()
 
 init_opdata(l, opcode_37, version)
 
+# fmt: off
 # These are removed since 3.7...
-rm_op(l, "BREAK_LOOP", 80)
+rm_op(l, "BREAK_LOOP",     80)
 rm_op(l, "CONTINUE_LOOP", 119)
-rm_op(l, "SETUP_LOOP", 120)
-rm_op(l, "SETUP_EXCEPT", 121)
+rm_op(l, "SETUP_LOOP",    120)
+rm_op(l, "SETUP_EXCEPT",  121)
 
 # These are new/changed since Python 3.7
 
@@ -66,27 +67,29 @@ def_op(l, "END_FINALLY",       88,     6, 0)  # POP is 6, when not 1
 jrel_op(l, "CALL_FINALLY",    162,     0, 1)
 nargs_op(l, "POP_FINALLY",    163,     6, 0)  # PUSH/POP vary
 
+
 format_value_flags = opcode_37.format_value_flags
 
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
-    "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
-    "EXTENDED_ARG": format_extended_arg36,
-    "FORMAT_VALUE": format_value_flags,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
-    "RAISE_VARARGS": opcode_37.format_RAISE_VARARGS,
+    "CALL_FUNCTION_EX":           format_CALL_FUNCTION_EX,
+    "CALL_FUNCTION_KW":           format_CALL_FUNCTION_KW,
+    "EXTENDED_ARG":               format_extended_arg36,
+    "FORMAT_VALUE":               format_value_flags,
+    "MAKE_FUNCTION":              format_MAKE_FUNCTION_flags,
+    "RAISE_VARARGS":              opcode_37.format_RAISE_VARARGS,
 }
 
 opcode_extended_fmt = {
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "CALL_METHOD": extended_format_CALL_METHOD,
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
-    "RAISE_VARARGS": opcode_37.extended_format_RAISE_VARARGS,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
+    "CALL_FUNCTION":              extended_format_CALL_FUNCTION,
+    "CALL_METHOD":                extended_format_CALL_METHOD,
+    "LOAD_ATTR":                  extended_format_ATTR,
+    "MAKE_FUNCTION":              extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS":              opcode_37.extended_format_RAISE_VARARGS,
+    "RETURN_VALUE":               extended_format_RETURN_VALUE,
+    "STORE_ATTR":                 extended_format_ATTR,
 }
+# fmt: on
 update_pj3(globals(), l)
 
 finalize_opcodes(l)

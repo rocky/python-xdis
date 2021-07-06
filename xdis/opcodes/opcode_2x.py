@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020 by Rocky Bernstein
+# (C) Copyright 2018, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -23,42 +23,51 @@ If this file changes the other opcode files may have to be adjusted accordingly.
 """
 
 from xdis.opcodes.base import (
-    compare_op, const_op,
-    def_op, format_CALL_FUNCTION_pos_name_encoded, free_op, jabs_op, jrel_op,
-    local_op, name_op, nargs_op, store_op,
-    varargs_op )
+    compare_op,
+    const_op,
+    def_op,
+    free_op,
+    jabs_op,
+    jrel_op,
+    local_op,
+    name_op,
+    nargs_op,
+    store_op,
+    varargs_op,
+)
 
 l = locals()
 
 # FIXME: DRY this with opcode_3x.
 
-hascompare   = []
-hascondition = [] # conditional operator; has jump offset
-hasconst     = []
-hasfree      = []
-hasjabs      = []
-hasjrel      = []
-haslocal     = []
-hasname      = []
-hasnargs     = []  # For function-like calls
-hasstore     = []  # Some sort of store operation
-hasvargs     = []  # Similar but for operators BUILD_xxx
-nofollow     = []  # Instruction doesn't fall to the next opcode
+hascompare = []
+hascondition = []  # conditional operator; has jump offset
+hasconst = []
+hasfree = []
+hasjabs = []
+hasjrel = []
+haslocal = []
+hasname = []
+hasnargs = []  # For function-like calls
+hasstore = []  # Some sort of store operation
+hasvargs = []  # Similar but for operators BUILD_xxx
+nofollow = []  # Instruction doesn't fall to the next opcode
 
 # opmap[opcode_name] => opcode_number
 opmap = {}
 
 # opcode[i] => opcode name
-opname = [''] * 256
+opname = [""] * 256
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
 # 9 means handle special. Note his forces oppush[i] - oppop[i] negative
-oppop  = [0] * 256
+oppop = [0] * 256
 
-for op in range(256): opname[op] = '<%r>' % (op,)
+for op in range(256):
+    opname[op] = "<%r>" % (op,)
 del op
 
 # Instruction opcodes for compiled code
@@ -68,6 +77,7 @@ del op
 # (hasvargs | hasnargs) operation, then
 # the operand holds the size.
 
+# fmt: off
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
 def_op(l, "STOP_CODE",             0,  0,  0, fallthrough=False)
@@ -209,4 +219,6 @@ nargs_op(l, "CALL_FUNCTION_KW",   141, -2,  1)   # #args + (#kwargs << 8)
 nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -3, 1)  # #args + (#kwargs << 8)
 
 def_op(l, "EXTENDED_ARG", 143)
+# fmt: on
+
 EXTENDED_ARG = 143

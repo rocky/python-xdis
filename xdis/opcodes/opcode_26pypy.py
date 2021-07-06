@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -26,9 +26,12 @@ from xdis.opcodes.base import (
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
-    jrel_op, name_op, nargs_op, varargs_op,
-    update_pj2
-    )
+    jrel_op,
+    name_op,
+    nargs_op,
+    update_pj2,
+    varargs_op,
+)
 
 version = 2.6
 python_implementation = "PyPy"
@@ -38,17 +41,20 @@ init_opdata(l, opcode_26, version, is_pypy=True)
 
 # FIXME: DRY common PYPY opcode additions
 
+# fmt: off
 # PyPy only
 # ----------
 name_op(l,   'LOOKUP_METHOD',   201,  1, 2)
 nargs_op(l,  'CALL_METHOD',     202, -1, 1)
-l['hasnargs'].append(202)
+# fmt: on
+
+l["hasnargs"].append(202)
 
 # Used only in single-mode compilation list-comprehension generators
-varargs_op(l, 'BUILD_LIST_FROM_ARG', 203)
+varargs_op(l, "BUILD_LIST_FROM_ARG", 203)
 
 # Used only in assert statements
-jrel_op(l, 'JUMP_IF_NOT_DEBUG',      204, conditional=True)
+jrel_op(l, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)

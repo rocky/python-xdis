@@ -21,7 +21,7 @@ opcodes in Python's dis.py library.
 """
 
 # This is used from outside this module
-from xdis.cross_dis import findlabels
+from xdis.cross_dis import findlabels  # noqa
 
 import xdis.opcodes.opcode_11 as opcode_11
 from xdis.opcodes.base import (
@@ -43,9 +43,11 @@ python_implementation = "CPython"
 l = locals()
 init_opdata(l, opcode_11, version)
 
+# fmt: off
 # 1.0 - 1.1 bytecodes differences
 rm_op(l, "LOAD_GLOBALS", 84)
 rm_op(l, "EXEC_STMT", 85)
+# fmt: on
 
 update_pj2(globals(), l)
 

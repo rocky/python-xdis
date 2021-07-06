@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2020 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -50,15 +50,16 @@ python_implementation = "CPython"
 l = locals()
 init_opdata(l, opcode_26, version)
 
+# fmt: off
 # Below are opcode changes since Python 2.6
-rm_op(l, "BUILD_MAP", 104)
-rm_op(l, "LOAD_ATTR", 105)
-rm_op(l, "COMPARE_OP", 106)
-rm_op(l, "IMPORT_NAME", 107)
-rm_op(l, "IMPORT_FROM", 108)
+rm_op(l, "BUILD_MAP",     104)
+rm_op(l, "LOAD_ATTR",     105)
+rm_op(l, "COMPARE_OP",    106)
+rm_op(l, "IMPORT_NAME",   107)
+rm_op(l, "IMPORT_FROM",   108)
 rm_op(l, "JUMP_IF_FALSE", 111)
-rm_op(l, "EXTENDED_ARG", 143)
-rm_op(l, "JUMP_IF_TRUE", 112)
+rm_op(l, "EXTENDED_ARG",  143)
+rm_op(l, "JUMP_IF_TRUE",  112)
 
 # These have changed since 2.6 in stack effects.
 #          OP NAME            OPCODE   POP PUSH
@@ -72,7 +73,7 @@ def_op(l, "LIST_APPEND",            94,  2,  1)  # Calls list.append(TOS[-i], TO
 
 # Used to implement list comprehensions.
 varargs_op(l, 'BUILD_SET',         104, -1,  1)  # TOS is count of set items
-def_op(l, "BUILD_MAP",             105,  0,  1)  # count is in argument
+def_op(l,  "BUILD_MAP",            105,  0,  1)  # count is in argument
 name_op(l, "LOAD_ATTR",            106,  1,  1)  # Operand is in name list
 compare_op(l, "COMPARE_OP", 107)
 
@@ -90,6 +91,7 @@ def_op(l, "SET_ADD", 146, 1, 0)  # Calls set.add(TOS1[-i], TOS).
 # Used to implement set comprehensions.
 def_op(l, "MAP_ADD",               147, 3, 1)  # Calls dict.setitem(TOS1[-i], TOS, TOS1)
 # Used to implement dict comprehensions.
+# fmt: on
 
 update_pj3(globals(), l)
 

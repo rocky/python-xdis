@@ -1,3 +1,9 @@
+5.0.11 2021-07-05
+================
+
+* Add Python versions 3.9.6, 3.7.11, 3.8.11, and 3.6.14
+* Format Python various files using black. (Not completely done yet though)
+
 5.0.10 2021-06-16
 ================
 

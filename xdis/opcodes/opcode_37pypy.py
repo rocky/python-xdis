@@ -16,7 +16,6 @@ from xdis.opcodes.base import (
     format_RAISE_VARARGS_older,
     format_extended_arg,
     init_opdata,
-    jrel_op,
     name_op,
     nargs_op,
     rm_op,
@@ -38,51 +37,53 @@ l = locals()
 init_opdata(l, opcode_37, version, is_pypy=True)
 
 
-## FIXME: DRY common PYPY opcode additions
+# FIXME: DRY common PYPY opcode additions
 
+# fmt: off
 rm_op(l, "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
-rm_op(l, "LOAD_METHOD", 160)
+rm_op(l, "LOAD_METHOD",                  160)
 
-nargs_op(l, "CALL_FUNCTION_KW", 141, 9, 1)  # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_EX", 142, -2, 1)
+nargs_op(l, "CALL_FUNCTION_KW",          141, 9, 1)  # #args + (#kwargs << 8)
+nargs_op(l, "CALL_FUNCTION_EX",          142, -2, 1)
 
 # The following were removed from 3.7 but still in Pypy 3.7
 
-store_op(l,   'STORE_ANNOTATION', 127, 1, 0, is_type="name")
+store_op(l,   'STORE_ANNOTATION',        127, 1, 0, is_type="name")
 
 # PyPy only
 # ----------
 
-name_op(l, "LOOKUP_METHOD", 201, 1, 2)
+name_op(l, "LOOKUP_METHOD",              201, 1, 2)
 l["hasvargs"].append(202)
-nargs_op(l, "CALL_METHOD_KW", 204, -1, 1)
+nargs_op(l, "CALL_METHOD_KW",            204, -1, 1)
 
 
 # Used only in single-mode compilation list-comprehension generators
-varargs_op(l, "BUILD_LIST_FROM_ARG", 203)
+varargs_op(l, "BUILD_LIST_FROM_ARG",     203)
 
 # PyPy 3.6.1 (and 2.7.13) start to introduce LOAD_REVDB_VAR
 import sys
 
 if sys.version_info[:3] >= (3, 6, 1):
-    def_op(l, "LOAD_REVDB_VAR", 205)
+    def_op(l, "LOAD_REVDB_VAR",          205)
 
 # FIXME remove (fix uncompyle6)
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
-    "EXTENDED_ARG": format_extended_arg,
+    "EXTENDED_ARG":  format_extended_arg,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
     'CALL_FUNCTION': format_CALL_FUNCTION_pos_name_encoded,
 }
 
 opcode_extended_fmt = {
-    "LOAD_ATTR": extended_format_ATTR,
+    "LOAD_ATTR":     extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
+    "RETURN_VALUE":  extended_format_RETURN_VALUE,
+    "STORE_ATTR":    extended_format_ATTR,
 }
+# Fmtxblackn: on
 
 finalize_opcodes(l)
