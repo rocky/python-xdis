@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -21,7 +21,6 @@ of stack usage, and opererand formatting functions.
 """
 
 from xdis.opcodes.base import (
-    store_op,
     extended_format_ATTR,
     extended_format_CALL_FUNCTION,
     extended_format_MAKE_FUNCTION_older,
@@ -33,9 +32,13 @@ from xdis.opcodes.base import (
     format_RAISE_VARARGS_older,
     format_extended_arg,
     init_opdata,
+    name_op,
+    rm_op,
+    store_op,
     update_pj2,
 )
 import xdis.opcodes.opcode_25 as opcode_25
+
 python_implementation = "CPython"
 
 version = 2.6
@@ -44,7 +47,14 @@ l = locals()
 init_opdata(l, opcode_25, version)
 
 # Below are opcode changes since Python 2.5
-store_op(l, "STORE_MAP", 54, 3, 1)
+
+# fmt: off
+#          OP NAME            OPCODE POP PUSH
+#--------------------------------------------
+store_op(l, "STORE_MAP",          54,  3,  1)
+rm_op(l,    "IMPORT_NAME",       107)
+name_op(l,  "IMPORT_NAME",       107,  2,  1)  # Imports namei; TOS and TOS1 provide fromlist and level. Module pushed.
+# fmt: on
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)
