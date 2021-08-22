@@ -77,7 +77,7 @@ check-rst:
 check-newer:
 	$(BASH) admin-tools/check-newer-versions.sh
 
-#: Run tests across the newer Python versions supported
+#: Run tests across the older Python versions supported
 check-older:
 	$(BASH) admin-tools/check-older-versions.sh
 
