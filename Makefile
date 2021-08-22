@@ -77,6 +77,10 @@ check-rst:
 check-newer:
 	$(BASH) admin-tools/check-newer-versions.sh
 
+#: Run tests across the newer Python versions supported
+check-older:
+	$(BASH) admin-tools/check-older-versions.sh
+
 #: Lint program
 flake8:
 	$(LINT) xdis
