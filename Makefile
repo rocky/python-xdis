@@ -32,12 +32,12 @@ check-full: check
 	$(MAKE) -C test check-pyenv
 
 #: Run all quick tests
-check-short: unittest pytest
+check-short: unittest
 	$(MAKE) -C test check-short
 
 #: Run unittests tests
 unittest:
-	py.test pytest
+	cd test_unit && for file in test_*.py; do echo testing $$file ...; nosetests -v $$file; done
 
 #: Clean up temporary files and .pyc files
 clean: clean_pyc
@@ -76,6 +76,10 @@ check-rst:
 #: Run tests across the newer Python versions supported
 check-newer:
 	$(BASH) admin-tools/check-newer-versions.sh
+
+#: Run tests across the older Python versions supported
+check-older:
+	$(BASH) admin-tools/check-older-versions.sh
 
 #: Lint program
 flake8:
