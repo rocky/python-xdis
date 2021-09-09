@@ -35,14 +35,20 @@ from xdis.codetype import to_portable
 from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
 
 if PYTHON3:
+
     def long(n):
         return n
+
+
 else:
     import unicodedata
+    # FIXME: we should write a bytes() class with a repr
+    # that prints the b'' prefix so that Python2 can
+    # print out Python3 code correctly
 
 # Bit set on marshalType if we should
 # add obj to internObjects.
-# FLAG_REF is the marchal.c name
+# FLAG_REF is the marshal.c name
 FLAG_REF = 0x80
 
 
@@ -83,12 +89,16 @@ UNMARSHAL_DISPATCH_TABLE = {
     "{": "dict",
     "R": "python2_string_reference",
     "c": "code",
-    "C": "code", # Older Python code
+    "C": "code",  # Older Python code
     "r": "object_reference",
     "?": "unknown",
 }
 
+
 def compat_str(s):
+    """
+    This handles working with strings between Python2 and Python3.
+    """
     if PYTHON3:
         try:
             return s.decode("utf-8")
@@ -117,8 +127,7 @@ def compat_u2s(u):
         return str(u)
 
 
-class _VersionIndependentUnmarshaller():
-
+class _VersionIndependentUnmarshaller:
     def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
         """
         Marshal versions:
@@ -127,10 +136,13 @@ class _VersionIndependentUnmarshaller():
             2: [2.5, 3.4a0) (self.magic_int: 62071 until 3250)
             3: [3.4a0, 3.4a3) (self.magic_int: 3250 until 3280)
             4: [3.4a3, current) (self.magic_int: 3280 onwards)
+
+        In Python 3 a bytes type is used for strings.
         """
         self.fp = fp
         self.magic_int = magic_int
         self.code_objects = code_objects
+
         self.bytes_for_s = bytes_for_s
         version_float = magic_int2float(self.magic_int)
         if version_float >= 3.4:
@@ -148,7 +160,6 @@ class _VersionIndependentUnmarshaller():
         self.internStrings = []
         self.internObjects = []
 
-
     def load(self):
         """
         marshal.load() written in Python. When the Python bytecode magic loaded is the
@@ -162,10 +173,9 @@ class _VersionIndependentUnmarshaller():
         if self.marshal_version == 0:
             self.internStrings = []
         if self.marshal_version < 3:
-            assert(self.internObjects == [])
+            assert self.internObjects == []
 
         return self.r_object()
-
 
     # Python 3.4+ support for reference objects.
     # The names follow marshal.c
@@ -186,17 +196,23 @@ class _VersionIndependentUnmarshaller():
             self.internObjects.append(obj)
         return obj
 
-
     # In marshal.c this is one big case statement
     def r_object(self, bytes_for_s=False):
-        b1 = ord(self.fp.read(1))
+        """
+        In Python3 strings are bytes type
+        """
+        byte1 = ord(self.fp.read(1))
 
+        # FLAG_REF indiates whether we "intern" or
+        # save a reference to the object.
+        # byte1 without that reference is the
+        # marshal type code, an ASCII character.
         save_ref = False
-        if b1 & FLAG_REF:
+        if byte1 & FLAG_REF:
             # Since 3.4, "flag" is the marshal.c name
             save_ref = True
-            b1 = b1 & (FLAG_REF - 1)
-        marshalType = chr(b1)
+            byte1 = byte1 & (FLAG_REF - 1)
+        marshalType = chr(byte1)
 
         # print(marshalType) # debug
         if marshalType in UNMARSHAL_DISPATCH_TABLE:
@@ -210,7 +226,9 @@ class _VersionIndependentUnmarshaller():
                     % (ord(marshalType), hex(ord(marshalType)), marshalType)
                 )
             except TypeError:
-                sys.stderr.write("Unknown type %i %c\n" % (ord(marshalType), marshalType))
+                sys.stderr.write(
+                    "Unknown type %i %c\n" % (ord(marshalType), marshalType)
+                )
 
         return
 
@@ -283,6 +301,10 @@ class _VersionIndependentUnmarshaller():
 
     # Note: could mean bytes in Python3 processing Python2 bytecode
     def t_string(self, save_ref, bytes_for_s):
+        """
+        In Python3 this is a bytes types. In Python2 it is a string.
+        `bytes_for_s` distinguishes what we need.
+        """
         strsize = unpack("<i", self.fp.read(4))[0]
         s = self.fp.read(strsize)
         if not bytes_for_s:
@@ -291,6 +313,11 @@ class _VersionIndependentUnmarshaller():
 
     # Python 3.4
     def t_ASCII_interned(self, save_ref, bytes_for_s=None):
+        """
+        There are true strings in Python3 as opposed to
+        bytes. "interned" just means we keep a reference to
+        the string.
+        """
         # FIXME: check
         strsize = unpack("<i", self.fp.read(4))[0]
         interned = compat_str(self.fp.read(strsize))
@@ -299,6 +326,10 @@ class _VersionIndependentUnmarshaller():
 
     # Since Python 3.4
     def t_ASCII(self, save_ref, bytes_for_s=None):
+        """
+        There are true strings in Python3 as opposed to
+        bytes.
+        """
         strsize = unpack("<i", self.fp.read(4))[0]
         s = self.fp.read(strsize)
         s = compat_str(s)
@@ -336,7 +367,9 @@ class _VersionIndependentUnmarshaller():
             try:
                 return self.r_ref(unicodestring.decode("utf-8"), save_ref)
             except UnicodeDecodeError as e:
-                return self.r_ref(unicodestring.decode("utf-8", errors="ignore"), save_ref)
+                return self.r_ref(
+                    unicodestring.decode("utf-8", errors="ignore"), save_ref
+                )
 
     # Since Python 3.4
     def t_small_tuple(self, save_ref, bytes_for_s=None):
@@ -451,6 +484,7 @@ class _VersionIndependentUnmarshaller():
             co_flags = 0
 
         co_code = self.r_object(bytes_for_s=True)
+
         # FIXME: Check/verify that is true:
         bytes_for_s = PYTHON_VERSION >= 3.0 and version > 3.0
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
@@ -500,7 +534,7 @@ class _VersionIndependentUnmarshaller():
             co_lnotab,
             co_freevars,
             co_cellvars,
-            version
+            version,
         )
 
         self.code_objects[str(code)] = code
@@ -521,8 +555,11 @@ class _VersionIndependentUnmarshaller():
 #
 # user interface
 
+
 def load_code(fp, magic_int, bytes_for_s=None, code_objects={}):
     if isinstance(fp, bytes):
         fp = io.BytesIO(fp)
-    um_gen = _VersionIndependentUnmarshaller(fp, magic_int, bytes_for_s, code_objects=code_objects)
+    um_gen = _VersionIndependentUnmarshaller(
+        fp, magic_int, bytes_for_s, code_objects=code_objects
+    )
     return um_gen.load()
