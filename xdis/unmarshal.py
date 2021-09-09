@@ -234,28 +234,28 @@ class _VersionIndependentUnmarshaller:
 
     # In C this NULL. Not sure what it should
     # translate here. Note NULL != None which is below
-    def t_C_NULL(self, save_ref, bytes_for_s=None):
+    def t_C_NULL(self, save_ref, bytes_for_s=False):
         return None
 
-    def t_None(self, save_ref, bytes_for_s=None):
+    def t_None(self, save_ref, bytes_for_s=False):
         return None
 
-    def t_stopIteration(self, save_ref, bytes_for_s=None):
+    def t_stopIteration(self, save_ref, bytes_for_s=False):
         return StopIteration
 
-    def t_Elipsis(self, save_ref, bytes_for_s=None):
+    def t_Elipsis(self, save_ref, bytes_for_s=False):
         return Ellipsis
 
-    def t_False(self, save_ref, bytes_for_s=None):
+    def t_False(self, save_ref, bytes_for_s=False):
         return False
 
-    def t_True(self, save_ref, bytes_for_s=None):
+    def t_True(self, save_ref, bytes_for_s=False):
         return True
 
-    def t_int32(self, save_ref, bytes_for_s=None):
+    def t_int32(self, save_ref, bytes_for_s=False):
         return self.r_ref(int(unpack("<i", self.fp.read(4))[0]), save_ref)
 
-    def t_long(self, save_ref, bytes_for_s=None):
+    def t_long(self, save_ref, bytes_for_s=False):
         n = unpack("<i", self.fp.read(4))[0]
         if n == 0:
             return long(0)
@@ -269,22 +269,22 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(d, save_ref)
 
     # Python 3.4 removed this.
-    def t_int64(self, save_ref, bytes_for_s=None):
+    def t_int64(self, save_ref, bytes_for_s=False):
         obj = unpack("<q", self.fp.read(8))[0]
         if save_ref:
             self.internObjects.append(obj)
         return obj
 
     # float - Seems not in use after Python 2.4
-    def t_float(self, save_ref, bytes_for_s=None):
+    def t_float(self, save_ref, bytes_for_s=False):
         strsize = unpack("B", self.fp.read(1))[0]
         s = self.fp.read(strsize)
         return self.r_ref(float(s), save_ref)
 
-    def t_binary_float(self, save_ref, bytes_for_s=None):
+    def t_binary_float(self, save_ref, bytes_for_s=False):
         return self.r_ref(float(unpack("<d", self.fp.read(8))[0]), save_ref)
 
-    def t_complex(self, save_ref, bytes_for_s=None):
+    def t_complex(self, save_ref, bytes_for_s=False):
         if self.magic_int <= 62061:
             get_float = lambda: float(self.fp.read(unpack("B", self.fp.read(1))[0]))
         else:
@@ -293,7 +293,7 @@ class _VersionIndependentUnmarshaller:
         imag = get_float()
         return self.r_ref(complex(real, imag), save_ref)
 
-    def t_binary_complex(self, save_ref, bytes_for_s=None):
+    def t_binary_complex(self, save_ref, bytes_for_s=False):
         # binary complex
         real = unpack("<d", self.fp.read(8))[0]
         imag = unpack("<d", self.fp.read(8))[0]
@@ -312,7 +312,7 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(s, save_ref)
 
     # Python 3.4
-    def t_ASCII_interned(self, save_ref, bytes_for_s=None):
+    def t_ASCII_interned(self, save_ref, bytes_for_s=False):
         """
         There are true strings in Python3 as opposed to
         bytes. "interned" just means we keep a reference to
@@ -325,7 +325,7 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(interned, save_ref)
 
     # Since Python 3.4
-    def t_ASCII(self, save_ref, bytes_for_s=None):
+    def t_ASCII(self, save_ref, bytes_for_s=False):
         """
         There are true strings in Python3 as opposed to
         bytes.
@@ -336,12 +336,12 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(s, save_ref)
 
     # Since Python 3.4
-    def t_short_ASCII(self, save_ref, bytes_for_s=None):
+    def t_short_ASCII(self, save_ref, bytes_for_s=False):
         strsize = unpack("B", self.fp.read(1))[0]
         return self.r_ref(compat_str(self.fp.read(strsize)), save_ref)
 
     # Since Python 3.4
-    def t_short_ASCII_interned(self, save_ref, bytes_for_s=None):
+    def t_short_ASCII_interned(self, save_ref, bytes_for_s=False):
         # FIXME: check
         strsize = unpack("B", self.fp.read(1))[0]
         interned = compat_str(self.fp.read(strsize))
@@ -349,13 +349,13 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(interned, save_ref)
 
     # Since Python 3.4
-    def t_interned(self, save_ref, bytes_for_s=None):
+    def t_interned(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
         interned = compat_str(self.fp.read(strsize))
         self.internStrings.append(interned)
         return self.r_ref(interned, save_ref)
 
-    def t_unicode(self, save_ref, bytes_for_s=None):
+    def t_unicode(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
         unicodestring = self.fp.read(strsize)
         if PYTHON_VERSION == 3.2 and IS_PYPY:
@@ -372,7 +372,7 @@ class _VersionIndependentUnmarshaller:
                 )
 
     # Since Python 3.4
-    def t_small_tuple(self, save_ref, bytes_for_s=None):
+    def t_small_tuple(self, save_ref, bytes_for_s=False):
         # small tuple - since Python 3.4
         tuplesize = unpack("B", self.fp.read(1))[0]
         ret, i = self.r_ref_reserve(tuple(), save_ref)
@@ -382,40 +382,40 @@ class _VersionIndependentUnmarshaller:
             pass
         return self.r_ref_insert(ret, i)
 
-    def t_tuple(self, save_ref, bytes_for_s=None):
+    def t_tuple(self, save_ref, bytes_for_s=False):
         tuplesize = unpack("<i", self.fp.read(4))[0]
         ret = self.r_ref(tuple(), save_ref)
         while tuplesize > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             tuplesize -= 1
         return ret
 
-    def t_list(self, save_ref, bytes_for_s=None):
+    def t_list(self, save_ref, bytes_for_s=False):
         # FIXME: check me
         n = unpack("<i", self.fp.read(4))[0]
         ret = self.r_ref(list(), save_ref)
         while n > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             n -= 1
         return ret
 
-    def t_frozenset(self, save_ref, bytes_for_s=None):
+    def t_frozenset(self, save_ref, bytes_for_s=False):
         setsize = unpack("<i", self.fp.read(4))[0]
         ret, i = self.r_ref_reserve(tuple(), save_ref)
         while setsize > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             setsize -= 1
         return self.r_ref_insert(frozenset(ret), i)
 
-    def t_set(self, save_ref, bytes_for_s=None):
+    def t_set(self, save_ref, bytes_for_s=False):
         setsize = unpack("<i", self.fp.read(4))[0]
         ret, i = self.r_ref_reserve(tuple(), save_ref)
         while setsize > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             setsize -= 1
         return self.r_ref_insert(set(ret), i)
 
-    def t_dict(self, save_ref, bytes_for_s=None):
+    def t_dict(self, save_ref, bytes_for_s=False):
         ret = self.r_ref(dict(), save_ref)
         # dictionary
         while True:
@@ -429,11 +429,11 @@ class _VersionIndependentUnmarshaller:
             pass
         return ret
 
-    def t_python2_string_reference(self, save_ref, bytes_for_s=None):
+    def t_python2_string_reference(self, save_ref, bytes_for_s=False):
         refnum = unpack("<i", self.fp.read(4))[0]
         return self.internStrings[refnum]
 
-    def t_code(self, save_ref, bytes_for_s=None):
+    def t_code(self, save_ref, bytes_for_s=False):
         # FIXME: use tables to simplify this?
         # FIXME: Python 1.0 .. 1.3 isn't well known
 
@@ -542,12 +542,12 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref_insert(ret, i)
 
     # Since Python 3.4
-    def t_object_reference(self, save_ref=None, bytes_for_s=None):
+    def t_object_reference(self, save_ref=None, bytes_for_s=False):
         refnum = unpack("<i", self.fp.read(4))[0]
         o = self.internObjects[refnum]
         return o
 
-    def t_unknown(self, save_ref=None, bytes_for_s=None):
+    def t_unknown(self, save_ref=None, bytes_for_s=False):
         raise KeyError("?")
 
 
@@ -556,7 +556,7 @@ class _VersionIndependentUnmarshaller:
 # user interface
 
 
-def load_code(fp, magic_int, bytes_for_s=None, code_objects={}):
+def load_code(fp, magic_int, bytes_for_s=False, code_objects={}):
     if isinstance(fp, bytes):
         fp = io.BytesIO(fp)
     um_gen = _VersionIndependentUnmarshaller(
