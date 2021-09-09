@@ -344,7 +344,7 @@ class _VersionIndependentUnmarshaller():
         tuplesize = unpack("B", self.fp.read(1))[0]
         ret, i = self.r_ref_reserve(tuple(), save_ref)
         while tuplesize > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             tuplesize -= 1
             pass
         return self.r_ref_insert(ret, i)
@@ -381,9 +381,6 @@ class _VersionIndependentUnmarshaller():
             ret += (self.r_object(),)
             setsize -= 1
         return self.r_ref_insert(set(ret), i)
-
-    def t_int32(self, save_ref, bytes_for_s=None):
-        return self.r_ref(int(unpack("<i", self.fp.read(4))[0]), save_ref)
 
     def t_dict(self, save_ref, bytes_for_s=None):
         ret = self.r_ref(dict(), save_ref)
@@ -454,8 +451,9 @@ class _VersionIndependentUnmarshaller():
             co_flags = 0
 
         co_code = self.r_object(bytes_for_s=True)
+        # FIXME: Check/verify that is true:
         bytes_for_s = PYTHON_VERSION >= 3.0 and version > 3.0
-        co_consts = self.r_object(bytes_for_s=True)
+        co_consts = self.r_object(bytes_for_s=bytes_for_s)
         co_names = self.r_object()
 
         if version >= 1.3:
