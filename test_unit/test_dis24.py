@@ -1,11 +1,9 @@
 from xdis import PYTHON_VERSION
-
 import sys
 import xdis.std as dis
 try:
     from test.support import run_unittest
 except ImportError:
-    import sys;
     sys.exit(0)
 
 import StringIO
@@ -86,11 +84,12 @@ class DisTests(unittest.TestCase):
         self.assertEqual(dis.opmap["EXTENDED_ARG"], dis.EXTENDED_ARG)
         self.assertEqual(dis.opmap["STORE_NAME"], dis.HAVE_ARGUMENT)
 
-    def test_dis(self):
-        self.do_disassembly24(_f, dis_f)
+    if PYTHON_VERSION == 2.4:
+        def test_dis(self):
+            self.do_disassembly24(_f, dis_f)
 
-    def test_bug_708901(self):
-        self.do_disassembly24(bug708901, dis_bug708901)
+        def test_bug_708901(self):
+            self.do_disassembly24(bug708901, dis_bug708901)
 
 def test_main():
     run_unittest(DisTests)
