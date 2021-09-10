@@ -386,7 +386,7 @@ class _VersionIndependentUnmarshaller:
         tuplesize = unpack("<i", self.fp.read(4))[0]
         ret = self.r_ref(tuple(), save_ref)
         while tuplesize > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             tuplesize -= 1
         return ret
 
@@ -395,7 +395,7 @@ class _VersionIndependentUnmarshaller:
         n = unpack("<i", self.fp.read(4))[0]
         ret = self.r_ref(list(), save_ref)
         while n > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             n -= 1
         return ret
 
@@ -403,7 +403,7 @@ class _VersionIndependentUnmarshaller:
         setsize = unpack("<i", self.fp.read(4))[0]
         ret, i = self.r_ref_reserve(tuple(), save_ref)
         while setsize > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             setsize -= 1
         return self.r_ref_insert(frozenset(ret), i)
 
@@ -411,7 +411,7 @@ class _VersionIndependentUnmarshaller:
         setsize = unpack("<i", self.fp.read(4))[0]
         ret, i = self.r_ref_reserve(tuple(), save_ref)
         while setsize > 0:
-            ret += (self.r_object(),)
+            ret += (self.r_object(bytes_for_s=bytes_for_s),)
             setsize -= 1
         return self.r_ref_insert(set(ret), i)
 
@@ -419,10 +419,10 @@ class _VersionIndependentUnmarshaller:
         ret = self.r_ref(dict(), save_ref)
         # dictionary
         while True:
-            key = self.r_object()
+            key = self.r_object(bytes_for_s=bytes_for_s)
             if key is None:
                 break
-            val = self.r_object()
+            val = self.r_object(bytes_for_s=bytes_for_s)
             if val is None:
                 break
             ret[key] = val
@@ -488,29 +488,29 @@ class _VersionIndependentUnmarshaller:
         # FIXME: Check/verify that is true:
         bytes_for_s = PYTHON_VERSION >= 3.0 and version > 3.0
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
-        co_names = self.r_object()
+        co_names = self.r_object(bytes_for_s=bytes_for_s)
 
         if version >= 1.3:
-            co_varnames = self.r_object()
+            co_varnames = self.r_object(bytes_for_s=False)
         else:
             co_varnames = []
 
         if version >= 2.0:
-            co_freevars = self.r_object()
-            co_cellvars = self.r_object()
+            co_freevars = self.r_object(bytes_for_s=bytes_for_s)
+            co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
         else:
             co_freevars = tuple()
             co_cellvars = tuple()
 
-        co_filename = self.r_object()
-        co_name = self.r_object()
+        co_filename = self.r_object(bytes_for_s=bytes_for_s)
+        co_name = self.r_object(bytes_for_s=bytes_for_s)
 
         if version >= 1.5:
             if version >= 2.3:
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
             else:
                 co_firstlineno = unpack("<h", self.fp.read(2))[0]
-            co_lnotab = self.r_object()
+            co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
         else:
             # < 1.5 there is no lnotab, so no firstlineno.
             # SET_LINENO is used instead.
