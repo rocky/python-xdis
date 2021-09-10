@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,14 +16,30 @@
 """
 CPython 2.6 bytecode opcodes
 
-This is a like Python 2.6's opcode.py with some classification
-of stack usage.
+This is a like Python 2.6's opcode.py with some additional classification
+of stack usage, and opererand formatting functions.
 """
 
 from xdis.opcodes.base import (
-    def_op, finalize_opcodes, format_extended_arg,
-    init_opdata, update_pj2)
+    extended_format_ATTR,
+    extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_older,
+    extended_format_RAISE_VARARGS_older,
+    extended_format_RETURN_VALUE,
+    finalize_opcodes,
+    format_CALL_FUNCTION_pos_name_encoded,
+    format_MAKE_FUNCTION_default_argc,
+    format_RAISE_VARARGS_older,
+    format_extended_arg,
+    init_opdata,
+    name_op,
+    rm_op,
+    store_op,
+    update_pj2,
+)
 import xdis.opcodes.opcode_25 as opcode_25
+
+python_implementation = "CPython"
 
 version = 2.6
 
@@ -31,13 +47,33 @@ l = locals()
 init_opdata(l, opcode_25, version)
 
 # Below are opcode changes since Python 2.5
-def_op(l, 'STORE_MAP', 54, 3, 1)
+
+# fmt: off
+#          OP NAME            OPCODE POP PUSH
+#--------------------------------------------
+store_op(l, "STORE_MAP",          54,  3,  1)
+rm_op(l,    "IMPORT_NAME",       107)
+name_op(l,  "IMPORT_NAME",       107,  2,  1)  # Imports namei; TOS and TOS1 provide fromlist and level. Module pushed.
+# fmt: on
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
-    'EXTENDED_ARG': format_extended_arg,
+    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "EXTENDED_ARG": format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
+}
 finalize_opcodes(l)

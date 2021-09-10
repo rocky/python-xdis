@@ -11,14 +11,14 @@ RM      ?= rm
 LINT    = flake8
 
 #EXTRA_DIST=ipython/ipy_trepan.py trepan
-PHONY=all check clean unittest check-long dist distclean lint flake8 test rmChangeLog clean_pyc
+PHONY=all check clean dist-older dist-newer unittest check-long dist distclean lint flake8 test rmChangeLog clean_pyc
 
 TEST_TYPES=check-long check-short check-2.7 check-3.4
 
 #: Default target - same as "check"
 all: check
 
-# Run all tests, exluding those that need pyenv
+#: Run all tests, exluding those that need pyenv
 check: unittest
 	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
 	$(MAKE) -C test check
@@ -27,29 +27,36 @@ check-ci: unittest
 	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
 	$(MAKE) -C test check-ci
 
-# All tests including pyenv library tests
+#: All tests including pyenv library tests
 check-full: check
 	$(MAKE) -C test check-pyenv
 
-# Run all quick tests
+#: Run all quick tests
 check-short: unittest pytest
 	$(MAKE) -C test check-short
 
 #: Run unittests tests
 unittest:
-	python setup.py test
-
+	py.test pytest
 
 #: Clean up temporary files and .pyc files
 clean: clean_pyc
 	$(PYTHON) ./setup.py $@
-	find . -name __pycache__ -exec rm -fr {} || true \;
+	find . -name __pycache__ -exec rm -fr {} \; || true
 	(cd test && $(MAKE) clean)
 	(cd test_unit && $(MAKE) clean)
 
 #: Create source (tarball) and wheel distribution
 dist: clean
-	$(PYTHON) ./setup.py sdist bdist_wheel
+	$(PYTHON) ./setup.py sdist bdist_egg
+
+#: Create older distributions
+dist-older:
+	bash ./admin-tools/make-dist-older.sh
+
+#: Create newer distributions
+dist-newer:
+	bash ./admin-tools/make-dist-newer.sh
 
 #: Remove .pyc files
 clean_pyc:
@@ -59,13 +66,20 @@ clean_pyc:
 sdist:
 	$(PYTHON) ./setup.py sdist
 
-
 #: Style check. Set env var LINT to pyflakes, flake, or flake8
 lint: flake8
 
-# Check StructuredText long description formatting
+#: Check StructuredText long description formatting
 check-rst:
 	$(PYTHON) setup.py --long-description | rst2html.py > xdis-trepan.html
+
+#: Run tests across the newer Python versions supported
+check-newer:
+	$(BASH) admin-tools/check-newer-versions.sh
+
+#: Run tests across the older Python versions supported
+check-older:
+	$(BASH) admin-tools/check-older-versions.sh
 
 #: Lint program
 flake8:

@@ -1,8 +1,10 @@
 """xdis.bytecode testing"""
 
-# Some test code first since we wan to reduce
-# the amount of line number jiggling if this
-# teste changes.
+# Below, we first give some test code to work on.
+
+# This code is sensitive to the line number ordering.
+# By adding test code at the top we reduce line-number
+# ordering sensistivity.
 
 # From 2.7 disassemble
 # Problem is that "while" loop
@@ -21,11 +23,10 @@ def bug_loop(disassemble, tb=None):
     disassemble(tb)
 
 import sys
-from xdis import PYTHON_VERSION
+from xdis import PYTHON_VERSION, findlinestarts
 from xdis.opcodes import opcode_27, opcode_36
 from xdis.load import load_module
 from xdis.bytecode import offset2line
-from xdis.opcodes.opcode_27 import findlinestarts
 
 import os.path as osp
 
@@ -72,12 +73,15 @@ def test_find_linestarts():
 
     if sys.version_info[0:2] == (2,7):
         # FIXME base off of start_line
-        expect = [(0, 15), (6, 16), (9, 17), (19, 18), (32, 19), (42, 20),
-                  (67, 21)]
+        expect = [(0, 17), (6, 18), (9, 19), (19, 20), (32, 21), (42, 22),
+                  (67, 23)]
         assert got_no_dups == expect
 
     got_with_dups = list(findlinestarts(bug_loop.__code__, dup_lines=True))
-    assert len(got_no_dups) < len(got_with_dups)
+    if sys.version_info[0:2] >= (3,9):
+        assert len(got_no_dups) <= len(got_with_dups)
+    else:
+        assert len(got_no_dups) < len(got_with_dups)
 
 # FIXME: a feature of doing code this way is that
 # this compiles to the running version of code
@@ -121,12 +125,12 @@ def test_get_jump_targets():
 
     test_pyc = my_dir +'/../test/bytecode_2.7/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
-     source_size) = load_module(test_pyc)
+     source_size, _) = load_module(test_pyc)
     code = co.co_consts[0]
     offsets = opcode_27.get_jump_targets(code,  opcode_27)
     assert [10] == offsets
 
-    # from xdis.main import disassemble_file
+    # from xdis import disassemble_file
     # print('\n')
     # disassemble_file(test_pyc)
 
@@ -149,7 +153,7 @@ def test_get_jump_targets():
     # ------------------------
     test_pyc = my_dir +'/../test/bytecode_3.6/01_dead_code.pyc'
     (version, timestamp, magic_int, co, pypy,
-     source_size) = load_module(test_pyc)
+     source_size, _) = load_module(test_pyc)
     code = co.co_consts[0]
 
     #  2:           0 LOAD_FAST                 0 (a)
@@ -166,10 +170,15 @@ def test_get_jump_targets():
     offsets = opcode_36.get_jump_targets(code,  opcode_36)
     assert offsets == [8]
 
-    from xdis.main import disassemble_file
+    from xdis import disassemble_file
     print('\n')
     disassemble_file(test_pyc)
 
     offset_map = opcode_36.get_jump_target_maps(code,  opcode_36)
     expect = {2: [0], 4: [2], 6: [4], 8: [2], 10: [8], 14: [12]}
     assert expect == offset_map
+
+if __name__ == "__main__":
+    # test_get_jump_targets()
+    # test_offset2line()
+    test_find_linestarts()

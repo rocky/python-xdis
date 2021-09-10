@@ -40,7 +40,7 @@ def _f(a):
 dis_f = """\
 %3d:           0 LOAD_GLOBAL               0 (print)
                3 LOAD_FAST                 0 (a)
-               6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+               6 CALL_FUNCTION             1 (1 positional, 0 named)
                9 POP_TOP
 
 %3d:          10 LOAD_CONST                1 (1)
@@ -53,7 +53,7 @@ dis_f = """\
 dis_f_co_code = """\
  37:           0 LOAD_GLOBAL               0 (print)
                3 LOAD_FAST                 0 (a)
-               6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+               6 CALL_FUNCTION             1 (1 positional, 0 named)
                9 POP_TOP
 
  38:          10 LOAD_CONST                1 (1)
@@ -73,7 +73,7 @@ dis_bug708901 = """\
                6 LOAD_CONST                1 (1)
 
 %3d:           9 LOAD_CONST                2 (10)
-              12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+              12 CALL_FUNCTION             2 (2 positional, 0 named)
               15 GET_ITER
          >>   16 FOR_ITER                  6 (to 25)
               19 STORE_FAST                0 (res)
@@ -102,11 +102,11 @@ dis_bug1333982 = """\
              15 MAKE_FUNCTION             0 (0 positional, 0 name and default, 0 annotations)
              18 LOAD_FAST                 0 (x)
              21 GET_ITER
-             22 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+             22 CALL_FUNCTION             1 (1 positional, 0 named)
 
 %4d:         25 LOAD_CONST                4 (1)
              28 BINARY_ADD
-             29 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+             29 CALL_FUNCTION             1 (1 positional, 0 named)
              32 RAISE_VARARGS             1
 
 %4d:    >>   35 LOAD_CONST                0 (None)

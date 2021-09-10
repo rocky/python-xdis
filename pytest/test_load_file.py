@@ -1,21 +1,41 @@
-import os, sys, pytest
-from xdis import IS_PYPY
+import os, sys
+from xdis import IS_PYPY, PYTHON_VERSION
 from xdis.load import load_file, check_object_path, load_module
+from xdis.codetype import CodeTypeUnionFields
 
-@pytest.mark.skipif(sys.version_info >= (3,5),
-                    reason="Doesn't work on 3.5 and later")
+import os.path as osp
+
+
+def get_srcdir():
+    filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
+    return osp.realpath(filename)
+
 def test_load_file():
-    co = load_file(__file__)
-    obj_path = check_object_path(__file__)
-    (version, timestamp, magic_int, co2, pypy,
-     source_size) = load_module(obj_path)
-    if (3,3) <= sys.version_info:
-        statinfo = os.stat(__file__)
-        assert statinfo.st_size == source_size
-    else:
-        assert source_size is None
+    srcdir = get_srcdir()
+    load_py = osp.realpath(osp.join(srcdir, "..", "xdis", "load.py"))
 
-    if IS_PYPY:
-        assert str(co) == str(co2)
-    else:
-        assert co == co2
+    co_file = load_file(load_py)
+    obj_path = check_object_path(load_py)
+    (version, timestamp, magic_int, co_module, pypy,
+     source_size, sip_hash) = load_module(obj_path)
+    if 3.3 <= version <= 3.7:
+        statinfo = os.stat(load_py)
+        assert statinfo.st_size == source_size
+        assert sip_hash is None
+    elif version < 3.3:
+        assert source_size is None, source_size
+        assert sip_hash is None
+
+    for field in CodeTypeUnionFields:
+        if hasattr(co_file, field):
+            if field == "co_code" and (pypy or IS_PYPY):
+                continue
+            load_file_field = getattr(co_file, field)
+            load_module_field = getattr(co_module, field)
+            assert load_module_field == load_file_field, (
+                "field %s\nmodule:\n\t%s\nfile:\n\t%s" % (field, load_module_field, load_file_field)
+                )
+            print("ok %s" % field)
+
+if __name__ == '__main__':
+    test_load_file()

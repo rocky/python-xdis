@@ -2,11 +2,11 @@
 # emacs-mode: -*-python-*-
 
 """
-test_pythonlib.py -- compile, uncompyle, and verify Python libraries
+test_pythonlib.py -- disassemble Python libraries
 
 Usage-Examples:
 
-  # decompile, and verify base set of python 2.7 byte-compiled files
+  # disassemble base set of python 2.7 byte-compiled files
   test_pythonlib.py --base-2.7 --verify
 
   # Same as above but compile the base set first
@@ -30,7 +30,7 @@ Step 2: Run the test:
 from __future__ import print_function
 import getopt, os, py_compile, sys, shutil, tempfile, time
 
-from xdis import main, PYTHON_VERSION
+from xdis import PYTHON_VERSION, disassemble_file
 from fnmatch import fnmatch
 
 def get_srcdir():
@@ -71,10 +71,11 @@ test_options = {
                   PYOC, 'base_2.7', 2.7),
 }
 
-for vers in (1.4, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5, '2.5dropbox',
-             2.6, 2.7, 3.0, 3.1,
-             3.2, 3.3, 3.4, 3.5, '3.2pypy', '2.7pypy',
-             3.6, 3.7):
+for vers in (1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6,
+             2.1, 2.2, 2.3, 2.4, 2.5, '2.5dropbox', 2.6, 2.7,
+             3.0, 3.1, 3.2, 3.3, 3.4, 3.5, '3.2pypy', '2.7pypy',
+             '3.5pypy', '3.6pypy',
+             3.6, 3.7, 3.8):
     bytecode = "bytecode_%s" % vers
     key = "bytecode-%s" % vers
     test_options[key] = (os.path.join(src_dir, bytecode), PYC, bytecode, vers)
@@ -161,12 +162,12 @@ def do_tests(src_dir, obj_patterns, target_dir, opts):
     cwd = os.getcwd()
     os.chdir(src_dir)
     try:
-          for infile in files:
-                main.disassemble_file(infile, output)
-                if opts['do_verify']:
-                    pass
-                    # print("Need to do something here to verify %s" % infile)
-                    # msg = verify.verify_file(infile, outfile)
+        for infile in files:
+            disassemble_file(infile, output)
+            if opts['do_verify']:
+                pass
+            # print("Need to do something here to verify %s" % infile)
+            # msg = verify.verify_file(infile, outfile)
 
         # if failed_files != 0:
         #     exit(2)

@@ -1,4 +1,4 @@
-# (C) Copyright 2017 by Rocky Bernstein
+# (C) Copyright 2017, 2020 by Rocky Bernstein
 """
 CPython 3.4 bytecode opcodes
 
@@ -7,32 +7,51 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    def_op, finalize_opcodes,
-    format_extended_arg, free_op, init_opdata,
-    rm_op, update_pj3)
-
-from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_arg
+    extended_format_ATTR,
+    extended_format_CALL_FUNCTION,
+    extended_format_RAISE_VARARGS_older,
+    finalize_opcodes,
+    format_CALL_FUNCTION_pos_name_encoded,
+    format_RAISE_VARARGS_older,
+    format_extended_arg,
+    free_op,
+    init_opdata,
+    rm_op,
+    update_pj3,
+)
 
 import xdis.opcodes.opcode_33 as opcode_33
 
 version = 3.4
+python_implementation = "CPython"
 
 l = locals()
 
 init_opdata(l, opcode_33, version)
 
 # These are removed since Python 3.3
-rm_op(l, 'STORE_LOCALS', 69)
+rm_op(l, "STORE_LOCALS", 69)
 
 # These are new since Python 3.3
-def_op(l,  'YIELD_FROM',       72)
-free_op(l, 'LOAD_CLASSDEREF', 148)
+free_op(l, "LOAD_CLASSDEREF", 148)
 
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
-    'MAKE_FUNCTION': format_MAKE_FUNCTION_arg,
-    'EXTENDED_ARG': format_extended_arg,
+    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "MAKE_FUNCTION": opcode_33.format_MAKE_FUNCTION_default_pos_arg,
+    "EXTENDED_ARG": format_extended_arg,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older
+}
+
+opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_FUNCTION": opcode_33.extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+    "STORE_ATTR": extended_format_ATTR,
 }
 
 finalize_opcodes(l)

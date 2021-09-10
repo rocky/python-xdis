@@ -1,15 +1,16 @@
 language: python
 
-sudo: true
-
+# For older versions we need older branches
 python:
   - 'pypy'
 #  - '2.6'
   - '2.7'
-  - '3.3'
-  - '3.4'
+#  - '3.3'
+#  - '3.4'
   - '3.5'
   - '3.6'
+  - '3.7'
+  - '3.8'
   - 'pypy3'
 
 install:

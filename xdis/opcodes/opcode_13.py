@@ -1,4 +1,4 @@
-# (C) Copyright 2018 by Rocky Bernstein
+# (C) Copyright 2018-2020 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -21,46 +21,44 @@ opcodes in Python's dis.py library.
 """
 
 # This is used from outside this module
-from xdis.bytecode import findlabels
+from xdis.cross_dis import findlabels
 
 import xdis.opcodes.opcode_14 as opcode_14
 from xdis.opcodes.base import (
+    def_op,
+    extended_format_RAISE_VARARGS_older,
+    extended_format_RETURN_VALUE,
+    finalize_opcodes,
+    format_RAISE_VARARGS_older,
+    format_extended_arg,
     init_opdata,
-    def_op, rm_op,
-    finalize_opcodes, format_extended_arg,
+    rm_op,
     # Although these aren't used here, they are exported
-    update_pj2
-    )
+    update_pj2,
+)
 
 version = 1.3
+python_implementation = "CPython"
 
 l = locals()
 init_opdata(l, opcode_14, version)
 
-# 1.3 - 14 bytecodes differences
-rm_op(l, 'BINARY_POWER',        19)
-def_op(l, 'LOAD_GLOBALS',       84)
+# 1.3 - 1.4 bytecodes differences
+rm_op(l, "BINARY_POWER", 19)
+def_op(l, "LOAD_GLOBALS", 84)
 
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
-    'EXTENDED_ARG': format_extended_arg,
+    "EXTENDED_ARG": format_extended_arg,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 finalize_opcodes(l)
 
-def findlinestarts(co, dup_lines=False):
-    code = co.co_code
-    n = len(code)
-    offset = 0
-    while offset < n:
-        op = code[offset]
-        offset += 1
-        if op == l['opmap']['SET_LINENO'] and offset > 0:
-            lineno = code[offset] + code[offset+1]*256
-            yield (offset-1, lineno)
-            pass
-        if op >= l['HAVE_ARGUMENT']:
-            offset += 2
-            pass
-        pass
+opcode_extended_fmt = {
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+}
+
+findlinestarts = opcode_14.findlinestarts

@@ -1,0 +1,53 @@
+# Method Name:       <module>
+# Filename:          simple_source/01_hexstring.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        2
+# Flags:             0x00000040 (NOFREE)
+# First Line:        6
+# Constants:
+#    0: <code object at 0xdeadbeef0000>, line 6
+#    1: 'abc'
+#    2: b'abc~\x80\x81\x82'
+#    3: None
+# Names:
+#    0: f
+#    1: AssertionError
+  6:           0 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 6)
+               3 MAKE_FUNCTION        (0 default parameters)
+               6 STORE_NAME           (f)
+
+  9:           9 LOAD_NAME            (f)
+              12 LOAD_CONST           ('abc')
+              15 CALL_FUNCTION        (1 positional, 0 named)
+              18 LOAD_CONST           (b'abc~\x80\x81\x82')
+              21 COMPARE_OP           (==)
+              24 POP_JUMP_IF_TRUE     (to 33)
+              27 LOAD_GLOBAL          (AssertionError)
+              30 RAISE_VARARGS        (exception)
+         >>   33 LOAD_CONST           (None)
+              36 RETURN_VALUE
+
+
+# Method Name:       f
+# Filename:          simple_source/01_hexstring.py
+# Argument count:    1
+# Number of locals:  1
+# Stack size:        2
+# Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
+# First Line:        6
+# Constants:
+#    0: None
+#    1: b'~\x80\x81'
+#    2: b'\x82'
+# Varnames:
+#	x
+# Positional arguments:
+#	x
+  7:           0 LOAD_FAST            (x)
+               3 LOAD_CONST           (b'~\x80\x81')
+               6 BINARY_ADD
+               7 LOAD_CONST           (b'\x82')
+              10 BINARY_ADD
+              11 RETURN_VALUE
+

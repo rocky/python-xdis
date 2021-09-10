@@ -33,7 +33,7 @@ if sys.version_info[0:2] == (2, 7):
     dis_f = """\
 %3d:           0 LOAD_GLOBAL               0 (print)
                3 LOAD_FAST                 0 (a)
-               6 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+               6 CALL_FUNCTION             1 (1 positional, 0 named)
                9 POP_TOP
 
 %3d:          10 LOAD_CONST                1 (1)
@@ -48,7 +48,7 @@ if sys.version_info[0:2] == (2, 7):
                6 LOAD_CONST                1 (1)
 
 %3d:           9 LOAD_CONST                2 (10)
-              12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+              12 CALL_FUNCTION             2 (2 positional, 0 named)
               15 GET_ITER
          >>   16 FOR_ITER                  6 (to 25)
               19 STORE_FAST                0 (res)
@@ -69,7 +69,7 @@ if sys.version_info[0:2] == (2, 7):
                6 LOAD_CONST                1 (1)
 
 %3d:           9 LOAD_CONST                2 (10)
-              12 CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+              12 CALL_FUNCTION             2 (2 positional, 0 named)
               15 GET_ITER
          >>   16 FOR_ITER                  6 (to 25)
               19 STORE_FAST                0 (res)
@@ -99,7 +99,7 @@ if sys.version_info[0:2] == (2, 7):
 
 %3d:    >>   31 LOAD_CONST                2 (1)
              34 BINARY_ADD
-             35 CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+             35 CALL_FUNCTION             1 (1 positional, 0 named)
              38 RAISE_VARARGS             1
 
 %3d:    >>   41 LOAD_CONST                0 (None)
