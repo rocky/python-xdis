@@ -95,7 +95,7 @@ UNMARSHAL_DISPATCH_TABLE = {
 }
 
 
-def compat_str(s: str) -> str:
+def compat_str(s):
     """
     This handles working with strings between Python2 and Python3.
     """
@@ -128,7 +128,7 @@ def compat_u2s(u):
 
 
 class _VersionIndependentUnmarshaller:
-    def __init__(self, fp, magic_int, bytes_for_s: bool, code_objects={}):
+    def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
         """
         Marshal versions:
             0/Historical: Until 2.4/magic int 62041
@@ -179,7 +179,7 @@ class _VersionIndependentUnmarshaller:
 
     # Python 3.4+ support for reference objects.
     # The names follow marshal.c
-    def r_ref_reserve(self, obj, save_ref: bool):
+    def r_ref_reserve(self, obj, save_ref):
         i = None
         if save_ref:
             i = len(self.internObjects)
@@ -300,7 +300,7 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(complex(real, imag), save_ref)
 
     # Note: could mean bytes in Python3 processing Python2 bytecode
-    def t_string(self, save_ref, bytes_for_s: bool):
+    def t_string(self, save_ref, bytes_for_s):
         """
         In Python3 this is a bytes types. In Python2 it is a string.
         `bytes_for_s` distinguishes what we need.
