@@ -8,10 +8,10 @@ owd=$(pwd)
 trap finish EXIT
 
 cd $(dirname ${BASH_SOURCE[0]})
-if ! source ./pyenv-newer-versions ; then
+if ! source ./pyenv-3.3-3.5-versions ; then
     exit $?
 fi
-if ! source ./setup-master.sh ; then
+if ! source ./setup-python-3.3.sh ; then
     exit $?
 fi
 cd ..
