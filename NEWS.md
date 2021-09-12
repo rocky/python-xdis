@@ -1,3 +1,12 @@
+5.0.12 2021-09-11
+=================
+
+* Add Python version 3.9.7
+* Document unmarshal beter
+* Correct stack information for IMPORT_NAME
+* Fix bug in code type handling where bytes were showing up as strings
+* More type annotations in master branch. Create more older variations without annotations
+
 5.0.11 2021-07-05
 ================
 
