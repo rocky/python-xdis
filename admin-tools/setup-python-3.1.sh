@@ -1,5 +1,5 @@
 #!/bin/bash
-PYTHON_VERSION=3.6.14
+PYTHON_VERSION=3.1.5
 pyenv local $PYTHON_VERSION
 
 if [[ $0 == $${BASH_SOURCE[0]} ]] ; then
@@ -7,4 +7,4 @@ if [[ $0 == $${BASH_SOURCE[0]} ]] ; then
     exit 1
 fi
 
-git checkout master && git pull && pyenv local $PYTHON_VERSION
+git checkout python-3.1-to-3.2  && git pull && pyenv local $PYTHON_VERSION
