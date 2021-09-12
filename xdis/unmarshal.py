@@ -95,7 +95,7 @@ UNMARSHAL_DISPATCH_TABLE = {
 }
 
 
-def compat_str(s):
+def compat_str(s: str) -> str:
     """
     This handles working with strings between Python2 and Python3.
     """
@@ -300,7 +300,7 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(complex(real, imag), save_ref)
 
     # Note: could mean bytes in Python3 processing Python2 bytecode
-    def t_string(self, save_ref, bytes_for_s):
+    def t_string(self, save_ref, bytes_for_s: bool):
         """
         In Python3 this is a bytes types. In Python2 it is a string.
         `bytes_for_s` distinguishes what we need.
