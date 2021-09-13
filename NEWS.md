@@ -17,7 +17,7 @@
 ================
 
 - Note Python versions 3.8.10 and 3.9.5
-- Incorrect variable name in marshal dump (used in writting `.pyc` files). PR #75
+- Incorrect variable name in marshal dump (used in writing `.pyc` files). PR #75
 
 5.0.9 2021-04-16
 ================
@@ -36,7 +36,7 @@ In general, better Python 3.9 support.
   Allow an alternate opmap - adds the capability to disassemble python bytecode that has
   been frozen with a custom opcode mapping. This is particularly useful for disassembling
   malware that uses custom opcode mappings in an attempt to hinder disassembly with standard
-  tools. The updates in this pull request are used by pydecipher, a tool to unfreeze and deob  fuscate frozen python code.
+  tools. The updates in this pull request are used by pydecipher, a tool to unfreeze and deobfuscate frozen python code.
 
 - Add Python versions 3.8.8 and 3.9.2
 
@@ -84,7 +84,7 @@ In general, better Python 3.9 support.
 Two small improvements that are useful in the forthcoming [trepan3k](https://pypi.org/project/trepan3k) release:
 
 * interpret `RAISE_VARARGS`'s `argc` parameter. Some other formatting was extended too
-* `check_object_path()` is more leanient in the path name (it doesn't have to end in `.py` anymore), but it is
+* `check_object_path()` is more lenient in the path name (it doesn't have to end in `.py` anymore), but it is
    more stringent about what constitutes Python source (it compiles the text to determine validity)
 * In the above `is_python_source()` and `is_bytecode_extension()` are used. They are also exported.
 
@@ -109,7 +109,7 @@ As a result this release is incompatible with prior releases, hence the version 
 
 A slight change was made in "classic" output. Before we had shown the index into some code table, like `co_consts` or `co_varnames`. That no longer appears. If you want that information select either the `bytes` or `extended-bytes` formats.
 
-A bug was fixed in all offsts in the recently-added `xdis.lineoffsets` module.
+A bug was fixed in all offsets in the recently-added `xdis.lineoffsets` module.
 
 
 4.7.0 2020-06-12 Fleetwood66
@@ -262,7 +262,7 @@ If you have a *complete* `types.Codetype` structure for a particular Python vers
 
 If on the other hand, you have a number of code-type fields which may be incomplete, but still want to work with something that has code-type characteristics while not worring about which fields are required an their exact proper datatypes, use the `CodeTypeUnion` structure.
 
-Internally, we use OO inheritence to reduce the amount of duplicate code. The `load_code_internal()` function from `unmarshal.py` is now a lot shorter and cleaner as a result of this reorganization.
+Internally, we use OO inheretence to reduce the amount of duplicate code. The `load_code_internal()` function from `unmarshal.py` is now a lot shorter and cleaner as a result of this reorganization.
 
 ### New Portable Code Methods, Modules and Classes
 
