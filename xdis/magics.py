@@ -35,7 +35,7 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 import re, struct, sys
 from xdis import IS_PYPY
 
-IS_PYPY3 = (48, 64, 112, 160, 192, 244)
+IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244)
 
 
 def add_magic_from_int(magic_int, version):
@@ -319,6 +319,7 @@ add_magic_from_int(112, "3.5pypy")  # pypy3.5-c-jit-latest
 add_magic_from_int(160, "3.6.1pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
 add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
 add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
+add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(1011, "2.7.1b3Jython")  # jython
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
@@ -369,8 +370,9 @@ add_canonic_versions(
     "3.4 3.4.0 3.4.1 3.4.2 3.4.3 3.4.4 3.4.5 3.4.6 3.4.7 3.4.8 3.4.9 3.4.10", "3.4rc2"
 )
 add_canonic_versions("3.5 3.5.0 3.5.1", "3.5")
-add_canonic_versions("3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9 "
-                     "3.5.10", "3.5.2")
+add_canonic_versions(
+    "3.5.2 3.5.3 3.5.4 3.5.5 3.5.6 3.5.7 3.5.8 3.5.9 " "3.5.10", "3.5.2"
+)
 add_canonic_versions(
     "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 "
     "3.6.9 3.6.10 3.6.11 3.6.12 3.6.13 3.6.14",
@@ -402,7 +404,9 @@ add_canonic_versions(
 add_canonic_versions(
     "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
 )
-add_canonic_versions("3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.0b5+", "3.9.0beta5")
+add_canonic_versions(
+    "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.0b5+", "3.9.0beta5"
+)
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
