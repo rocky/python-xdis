@@ -19,12 +19,12 @@ fi
 
 cd ..
 source $PACKAGE/version.py
-echo $VERSION
+echo $__version__
 
 for pyversion in $PYVERSIONS; do
     echo --- $pyversion ---
     if ! pyenv local $pyversion ; then
-	exit $?
+  	    exit $?
     fi
     # pip bdist_egg create too-general wheels. So
     # we narrow that by moving the generated wheel.
@@ -33,8 +33,13 @@ for pyversion in $PYVERSIONS; do
     first_two=$(echo $pyversion | cut -d'.' -f 1-2 | sed -e 's/\.//')
     rm -fr build
     python setup.py bdist_egg bdist_wheel
-    mv -v dist/${PACKAGE}-$VERSION-{py3,py$first_two}-none-any.whl
+    mv -v dist/${PACKAGE}-${__version__}-{py3,py$first_two}-none-any.whl
     echo === $pyversion ===
 done
 
 python ./setup.py sdist
+
+tarball=dist/${PACKAGE}-${__version__}.tar.gz
+if [[ -f $tarball ]]; then
+    mv -v $tarball dist/${PACKAGE}_33-${__version__}.tar.gz
+fi
