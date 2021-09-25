@@ -1,3 +1,17 @@
+5.0.13 2021-09-24
+=================
+
+Added knowledge of Python versions 3.6.15 and 3.7.12.
+
+However the main motivation was to impove packaging to handle administration
+of the 3 different branches or dialects of Python 2.4-2.7, 3.1-3.2, 3.3-3.5, and 3.6+
+
+Restrict wheel packaging for Python 3 only.
+
+Use the wheel for only the 3.x and newer version of Python.
+Use eggs for 2.x versions (and others as well).
+
+
 5.0.12 2021-09-11
 =================
 
