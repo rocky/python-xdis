@@ -263,7 +263,7 @@ def load_module_from_file_object(
             sip_hash = None
 
             ts = fp.read(4)
-            if version >= 3.7:
+            if magic_int in (3439,) or version >= 3.7:
                 # PEP 552. https://www.python.org/dev/peps/pep-0552/
                 pep_bits = ts[-1]
                 if PYTHON_VERSION <= 2.7:

@@ -304,11 +304,9 @@ add_magic_from_int(3422, "3.9.0alpha1")
 # add IS_OP, CONTAINS_OP and JUMP_IF_NOT_EXC_MATCH bytecodes #39156
 add_magic_from_int(3423, "3.9.0a0")
 
-# simplify bytecodes for *value unpacking
 add_magic_from_int(3424, "3.9.0a2")
-
-# simplify bytecodes for **value unpacking
 add_magic_from_int(3425, "3.9.0beta5")
+add_magic_from_int(3439, "3.10.0rc2")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
@@ -406,6 +404,10 @@ add_canonic_versions(
 )
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.0b5+", "3.9.0beta5"
+)
+
+add_canonic_versions(
+    "3.10 3.10.0", "3.10.0rc2"
 )
 
 # The canonic version for a canonic version is itself

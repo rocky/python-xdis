@@ -43,7 +43,7 @@ def main(format, files):
     if not (2.7 <= PYTHON_VERSION <= 3.9):
         if 2.4 <= PYTHON_VERSION <= 2.6:
             sys.stderr.write(
-                "This code works on 2.7..3.8. code that works for %s can be found in the python-2.4 branch\n"
+                "This code works on 2.7..3.9. code that works for %s can be found in the python-2.4 branch\n"
                 % PYTHON_VERSION
             )
             sys.exit(1)
