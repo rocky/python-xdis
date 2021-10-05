@@ -30,11 +30,13 @@ l = locals()
 
 init_opdata(l, opcode_33, version)
 
+# fmt: off
 # These are removed since Python 3.3
-rm_op(l, "STORE_LOCALS", 69)
+rm_op(l, "STORE_LOCALS",       69)
 
 # These are new since Python 3.3
 free_op(l, "LOAD_CLASSDEREF", 148)
+# fmt: on
 
 update_pj3(globals(), l)
 

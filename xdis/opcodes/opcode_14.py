@@ -43,16 +43,18 @@ python_implementation = "CPython"
 l = locals()
 init_opdata(l, opcode_15, version)
 
+# fmt: off
 # 1.4 Bytecodes not in 1.5
-def_op(l, "UNARY_CALL", 14)
-def_op(l, "BINARY_CALL", 26)
-def_op(l, "RAISE_EXCEPTION", 81)
-def_op(l, "BUILD_FUNCTION", 86)
-varargs_op(l, "UNPACK_ARG", 94)  # Number of arguments expected
-varargs_op(l, "UNPACK_VARARG", 99)  # Minimal number of arguments
-name_op(l, "LOAD_LOCAL", 115)
+def_op(l, "UNARY_CALL",         14)
+def_op(l, "BINARY_CALL",        26)
+def_op(l, "RAISE_EXCEPTION",    81)
+def_op(l, "BUILD_FUNCTION",     86)
+varargs_op(l, "UNPACK_ARG",     94)  # Number of arguments expected
+varargs_op(l, "UNPACK_VARARG",  99)  # Minimal number of arguments
+name_op(l, "LOAD_LOCAL",       115)
 varargs_op(l, "SET_FUNC_ARGS", 117)  # Argcount
-varargs_op(l, "RESERVE_FAST", 123)  # Number of local variables
+varargs_op(l, "RESERVE_FAST",  123)  # Number of local variables
+# fmt: on
 
 update_pj2(globals(), l)
 

@@ -104,6 +104,7 @@ rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
 # qualified name of the function.
 
 
+# fmt: off
 # These are new since Python 3.6
 #          OP NAME                OPCODE POP PUSH
 #---------------------------------------------------

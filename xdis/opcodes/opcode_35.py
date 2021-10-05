@@ -51,6 +51,7 @@ l = locals()
 
 init_opdata(l, opcode_34, version)
 
+# fmt: off
 # These are removed since Python 3.5.
 # Removals happen before adds since
 # some opcodes are reused
@@ -80,6 +81,7 @@ varargs_op(l, "BUILD_TUPLE_UNPACK",         152, -1,  1)
 varargs_op(l, "BUILD_SET_UNPACK",           153, -1,  1)
 
 jrel_op(l, "SETUP_ASYNC_WITH",          154,  0,  6)
+# fmt: on
 
 update_pj3(globals(), l)
 

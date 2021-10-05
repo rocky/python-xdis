@@ -30,6 +30,7 @@ python_implementation = "CPython"
 l = locals()
 init_opdata(l, opcode_2x, version)
 
+# fmt: off
 # Bytecodes added since 2.3
 #          OP NAME            OPCODE POP PUSH
  # Used to implement list comprehensions.
@@ -62,3 +63,4 @@ opcode_extended_fmt = {
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,
 }
+# fmt: on
