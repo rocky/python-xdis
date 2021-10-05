@@ -20,7 +20,7 @@ from xdis.opcodes.base import (
     format_MAKE_FUNCTION_default_argc,
     format_RAISE_VARARGS_older,
     format_extended_arg,
-    update_pj2
+    update_pj2,
 )
 
 version = 2.4
@@ -32,11 +32,13 @@ init_opdata(l, opcode_2x, version)
 
 # Bytecodes added since 2.3
 #          OP NAME            OPCODE POP PUSH
-#--------------------------------------------
-def_op(l, 'NOP',                   9,  0,  0)
-def_op(l, 'LIST_APPEND',          18,  2,  0)  # Calls list.append(TOS[-i], TOS).
-                                               # Used to implement list comprehensions.
+ # Used to implement list comprehensions.
 def_op(l, 'YIELD_VALUE',          86,  1,  1)
+# --------------------------------------------
+def_op(l, "NOP", 9, 0, 0)
+def_op(l, "LIST_APPEND", 18, 2, 0)  # Calls list.append(TOS[-i], TOS).
+# Used to implement list comprehensions.
+def_op(l, "YIELD_VALUE", 86, 1, 1)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)
