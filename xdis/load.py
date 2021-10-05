@@ -20,7 +20,7 @@ import os.path as osp
 
 import xdis.marsh
 import xdis.unmarshal
-from xdis.version_info import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
 from xdis.magics import (
     IS_PYPY3,
     PYTHON_MAGIC_INT,
@@ -107,7 +107,7 @@ def load_file(filename, out=sys.stdout):
     try:
         source = fp.read()
         try:
-            if PYTHON_VERSION < 2.6:
+            if PYTHON_VERSION_TRIPLE < (2, 6):
                 co = compile(source, filename, "exec")
             else:
                 co = compile(source, filename, "exec", dont_inherit=True)
@@ -266,7 +266,7 @@ def load_module_from_file_object(
             if magic_int in (3439,) or version >= 3.7:
                 # PEP 552. https://www.python.org/dev/peps/pep-0552/
                 pep_bits = ts[-1]
-                if PYTHON_VERSION <= 2.7:
+                if PYTHON_VERSION_TRIPLE <= (2, 7):
                     pep_bits = ord(pep_bits)
                 if (pep_bits & 1) or magic_int == 3393:  # 3393 is 3.7.0beta3
                     # SipHash
@@ -366,7 +366,10 @@ if __name__ == "__main__":
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:
-        print(datetime.datetime.fromtimestamp(timestamp))
+        if PYTHON_VERSION_TRIPLE < (3, 10):
+            print(datetime.datetime.fromtimestamp(timestamp))
+        else:
+            print(datetime.fromtimestamp(timestamp))
     if source_size is not None:
         print("source size mod 2**32: %d" % source_size)
     if sip_hash is not None:

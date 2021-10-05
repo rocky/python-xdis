@@ -25,6 +25,7 @@ from xdis.opcodes.base import (
 )
 
 version = 3.7
+version_tuple = (3, 7)
 python_implementation = "PyPy"
 
 from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION

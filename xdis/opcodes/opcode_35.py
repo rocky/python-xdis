@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2020 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -44,6 +44,7 @@ from xdis.opcodes.opcode_33 import (
 )
 
 version = 3.5
+version_tuple = (3, 5)
 python_implementation = "CPython"
 
 l = locals()

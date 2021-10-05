@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
 """
 CPython 3.4 bytecode opcodes
 
@@ -23,6 +23,7 @@ from xdis.opcodes.base import (
 import xdis.opcodes.opcode_33 as opcode_33
 
 version = 3.4
+version_tuple = (3, 4)
 python_implementation = "CPython"
 
 l = locals()

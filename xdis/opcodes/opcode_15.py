@@ -46,6 +46,7 @@ from xdis.opcodes.base import (
 )
 
 version = 1.5
+version_tuple = (1, 5)
 python_implementation = "CPython"
 
 cmp_op = (

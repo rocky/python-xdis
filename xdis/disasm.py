@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2018, 2020 by Rocky Bernstein
+# Copyright (c) 2016-2018, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -26,13 +26,13 @@ from collections import deque
 
 import xdis
 
-from xdis import IS_PYPY, PYTHON_VERSION
 from xdis.bytecode import Bytecode
 from xdis.codetype import iscode, codeType2Portable
 from xdis.load import check_object_path, load_module
 from xdis.magics import PYTHON_MAGIC_INT
 from xdis.cross_dis import format_code_info
 from xdis.version import __version__
+from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 from xdis.op_imports import op_imports, remap_opcodes
 
 
@@ -97,7 +97,7 @@ def show_module_header(
                 "\n# ".join(sys.version.split("\n")),
             )
         )
-    if PYTHON_VERSION < 3.0 and bytecode_version >= 3.0:
+    if PYTHON_VERSION_TRIPLE < (3, 0) and bytecode_version >= 3.0:
         real_out.write("\n## **Warning** bytecode strings will be converted to strings.\n")
         real_out.write("## To avoid loss, run this from Python 3.0 or greater\n\n")
 

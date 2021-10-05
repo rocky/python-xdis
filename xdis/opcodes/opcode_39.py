@@ -45,6 +45,7 @@ from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_V
 import xdis.opcodes.opcode_38 as opcode_38
 
 version = 3.9
+version_tuple = (3, 9)
 python_implementation = "CPython"
 
 l = locals()

@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,6 +17,8 @@
 # Here we are more closely modeling Python's Lib/dis.py organization.
 # However it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
+
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 from xdis.util import (
     COMPILER_FLAG_NAMES,
@@ -147,9 +149,9 @@ def instruction_size(op, opc):
     Python before version 3.6 this will be either 1 or 3 bytes.  In
     Python 3.6 or later, it is 2 bytes or a "word"."""
     if op < opc.HAVE_ARGUMENT:
-        return 2 if opc.version >= 3.6 else 1
+        return 2 if opc.version_tuple >= (3, 6) else 1
     else:
-        return 2 if opc.version >= 3.6 else 3
+        return 2 if opc.version_tuple >= (3, 6) else 3
 
 
 # Compatiblity
@@ -336,27 +338,27 @@ def xstack_effect(opcode, opc, oparg=None, jump=None):
     pop, push = opc.oppop[opcode], opc.oppush[opcode]
     opname = opc.opname[opcode]
     if opname in ("BUILD_MAP",):
-        if opc.version >= 3.5:
+        if opc.version_tuple >= (3, 5):
             return 1 - (2 * oparg)
-    elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX") and opc.version >= 3.0:
+    elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX") and opc.version_tuple >= (3,0):
         return push + oparg
-    elif opname in ("BUILD_SLICE") and opc.version <= 2.7:
+    elif opname in ("BUILD_SLICE") and opc.version_tuple <= (2,7):
         if oparg == 3:
             return -2
         else:
             return -1
         pass
     elif opname == "MAKE_FUNCTION":
-        if opc.version >= 3.5:
+        if opc.version_tuple >= (3, 5):
             if 0 <= oparg <= 10:
-                if opc.version == 3.5:
+                if opc.version_tuple == (3, 5):
                     return [-1, -2, -3, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
-                elif opc.version >= 3.6:
+                elif opc.version_tuple >= (3, 6):
                     return [-1, -2, -2, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
             else:
                 return None
     elif opname == "CALL_FUNCTION_EX":
-        if opc.version >= 3.5:
+        if opc.version_tuple >= (3, 5):
             if 0 <= oparg <= 10:
                 return [-1, -2, -1][oparg]
             else:
@@ -391,7 +393,7 @@ def check_stack_effect():
             xdis_args.append(0)
             dis_args.append(0)
         if (
-            PYTHON_VERSION > 3.7
+            PYTHON_VERSION_TRIPLE > (3,7)
             and opcode in opc.CONDITION_OPS
             and opname
             not in (
@@ -426,7 +428,6 @@ def check_stack_effect():
 
 
 if __name__ == "__main__":
-    from xdis import PYTHON_VERSION
 
-    if PYTHON_VERSION >= 3.4:
+    if PYTHON_VERSION_TRIPLE >= (3,4):
         check_stack_effect()

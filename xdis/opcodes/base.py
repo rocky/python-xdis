@@ -27,7 +27,7 @@ from xdis.cross_dis import (
     get_jump_targets,
 )
 from xdis import wordcode
-from xdis import IS_PYPY, PYTHON_VERSION
+from xdis.version_info import IS_PYPY, PYTHON_VERSION, PYTHON_VERSION_TRIPLE
 
 cmp_op = (
     "<",
@@ -262,7 +262,7 @@ def update_sets(l):
     l["JUMP_UNCONDITONAL"] = frozenset(
         [l["opmap"]["JUMP_ABSOLUTE"], l["opmap"]["JUMP_FORWARD"]]
     )
-    if PYTHON_VERSION < 4.0 and l["python_version"] < 3.8:
+    if PYTHON_VERSION_TRIPLE < (3,8,0) and l["python_version"] < 3.8:
         l["LOOP_OPS"] = frozenset([l["opmap"]["SETUP_LOOP"]])
     else:
         l["LOOP_OPS"] = frozenset()

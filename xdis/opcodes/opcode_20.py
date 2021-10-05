@@ -34,6 +34,7 @@ from xdis.opcodes.base import (
 )
 
 version = 2.0
+version_tuple = (2, 0)
 python_implementation = "CPython"
 
 l = locals()

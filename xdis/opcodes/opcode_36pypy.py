@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2020 by Rocky Bernstein
+# (C) Copyright 2019-2021 by Rocky Bernstein
 """
 PYPY 3.6 opcodes
 
@@ -25,6 +25,7 @@ from xdis.opcodes.base import (
 )
 
 version = 3.6
+version_tuple = (3, 6)
 python_implementation = "PyPy"
 
 from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION

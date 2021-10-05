@@ -23,6 +23,7 @@ from xdis.opcodes.base import (
 import xdis.opcodes.opcode_3x as opcode_3x
 
 version = 3.3
+version_tuple = (3, 3)
 python_implementation = "CPython"
 
 l = locals()

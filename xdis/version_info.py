@@ -28,6 +28,7 @@ PYTHON3 = (sys.version_info >= (3, 0))
 # floating point so we can't divide 26 by 10 and get
 # 2.6
 PYTHON_VERSION = sys.version_info[0] + (sys.version_info[1] / 10.0)
+PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
 PYTHON_VERSION_STR  = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 IS_PYPY = '__pypy__' in sys.builtin_module_names

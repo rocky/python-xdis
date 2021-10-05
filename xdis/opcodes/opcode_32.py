@@ -25,6 +25,7 @@ from xdis.opcodes.base import (
 # FIXME: can we DRY this even more?
 
 version = 3.2
+version_tuple = (3, 2)
 python_implementation = "CPython"
 
 l = locals()

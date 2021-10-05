@@ -45,6 +45,7 @@ from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_V
 import xdis.opcodes.opcode_39 as opcode_39
 
 version = 3.10
+version_tuple = (3, 10)
 python_implementation = "CPython"
 
 l = locals()
@@ -57,7 +58,7 @@ format_value_flags = opcode_39.format_value_flags
 #---------------------------------------------------
 
 # These are removed since 3.9...
-# rm_op(l, "SETUP_LOOP",      120)
+rm_op(l, "RERAISE",      48)
 
 def format_extended_is_op(arg):
     return "is" if arg == 0 else "is not"

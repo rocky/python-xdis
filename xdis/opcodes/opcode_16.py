@@ -38,6 +38,7 @@ from xdis.opcodes.base import (
 )
 
 version = 1.6
+version_tuple = (1, 6)
 python_implementation = "CPython"
 
 l = locals()

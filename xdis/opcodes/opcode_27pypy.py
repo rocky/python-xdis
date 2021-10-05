@@ -27,6 +27,7 @@ from xdis.opcodes.base import (
 )
 
 version = 2.7
+version_tuple = (2, 7)
 python_implementation = "PyPy"
 
 l = locals()

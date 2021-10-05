@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
 """
 CPython 3.1 bytecode opcodes
 
@@ -24,6 +24,7 @@ import xdis.opcodes.opcode_32 as opcode_32
 l = locals()
 
 version = 3.1
+version_tuple = (3, 1)
 python_implementation = "CPython"
 
 init_opdata(l, opcode_32, version)
