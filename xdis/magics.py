@@ -421,7 +421,7 @@ def __show(text, magic):
     print(text, struct.unpack("BBBB", magic), struct.unpack("<HBB", magic))
 
 
-def magic_int2float(magic_int):
+def magic_int2float(magic_int: int):
     """Convert a Python magic int into a 'canonic' floating-point number,
     e.g. 2.7, 3.7. runtime error is raised if "version" is not found.
 
@@ -432,7 +432,18 @@ def magic_int2float(magic_int):
     return py_str2float(magicint2version[magic_int])
 
 
-def py_str2float(orig_version):
+def magic_int2tuple(magic_int: int) -> tuple:
+    """Convert a Python magic int into a 'canonic' tuple
+    e.g. (2, 7), (3, 7). runtime error is raised if "version" is not found.
+
+    Note that there can be several magic_int's that map to a single floating-
+    point number. For example 3320 (3.5.a0), 3340 (3.5b1)
+    all map to 3.5.
+    """
+    return py_str2tuple(magicint2version[magic_int])
+
+
+def py_str2float(orig_version: str) -> float:
     """Convert a Python version into a two-digit 'canonic' floating-point number,
     e.g. 2.5, 3.6.
 
@@ -465,6 +476,35 @@ def py_str2float(orig_version):
                     pass
                 pass
             pass
+    raise RuntimeError(
+        "Can't find a valid Python version for version %s" % orig_version
+    )
+    return
+
+
+def py_str2tuple(orig_version):
+    """Convert a Python version into a tuple number,
+    e.g. (2, 5), (3, 6).
+
+    A runtime error is raised if "version" is not found.
+
+    Note that there can be several strings that map to a single
+    tuple. For example 3.2a1, 3.2.0, 3.2.2, 3.2.6 among others all map
+    to (3, 2).
+    """
+    version = re.sub(r"(pypy|dropbox)$", "", orig_version)
+    if version in magics:
+        magic = magics[version]
+        m = re.match(r"^(\d)\.(\d+)\.(\d+)", version)
+        if m:
+            return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        else:
+            # Match things like 3.5a0, 3.5b2, 3.6a1+1, 3.6rc1, 3.7.0beta3
+            m = re.match(r"^(\d)\.(\d)(\d+)?[abr]?", version)
+            if m:
+                return (int(m.group(1)), int(m.group(2)))
+            pass
+        pass
     raise RuntimeError(
         "Can't find a valid Python version for version %s" % orig_version
     )

@@ -1,2 +1,3 @@
 /.coverage
 /.mypy_cache
+/.python-version
