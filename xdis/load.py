@@ -138,8 +138,8 @@ def load_module(filename, code_objects=None, fast_load=False, get_code=True):
                      `False`.
 
     Return values are as follows:
-        float_version: float; the floating-point version number for the given magic_int,
-                       e.g. 2.7 or 3.4
+        float_tuple    a tuple version number for the given magic_int,
+                       e.g. (2, 7) or (3, 4)
         timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
                         if no timestamp was stored
         magic_int: int, a more specific than version number. The actual byte code version of the
@@ -316,7 +316,7 @@ def load_module_from_file_object(
         fp.close()
 
     return (
-        float_version,
+        tuple_version,
         timestamp,
         magic_int,
         co,

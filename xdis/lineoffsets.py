@@ -86,13 +86,10 @@ class LineOffsetInfo(object):
             pass
         self.code_map = code_map
 
-
     def __str__(self):
         return str(self.line_numbers())
 
-    def line_numbers(
-        self, include_dups=True, include_offsets=False
-    ):
+    def line_numbers(self, include_dups=True, include_offsets=False):
         """Return all of the valid lines for a given piece of code"""
         if include_offsets:
             lines = {}
@@ -135,7 +132,8 @@ if __name__ == "__main__":
 
     def multi_line():
         # We have two statements on the same line
-        x = 1; y = 2;
+        x = 1
+        y = 2
         return x, y
 
     def foo():
@@ -155,15 +153,20 @@ if __name__ == "__main__":
         else:
             print("%s has no children" % (code_info.name))
 
-        print("\tlines with children and dups:\n\t%s" %
-              code_info.line_numbers(include_dups=True))
         print(
-            "\tlines without children and without dups:\n\t%s" %
-            code_info.line_numbers(include_dups=False))
+            "\tlines with children and dups:\n\t%s"
+            % code_info.line_numbers(include_dups=True)
+        )
+        print(
+            "\tlines without children and without dups:\n\t%s"
+            % code_info.line_numbers(include_dups=False)
+        )
         print("Offsets in %s" % code_info.name, code_info.offsets)
         lines = code_info.line_numbers(include_offsets=True)
         for line_num, li in lines.items():
-            print("\tline: %4d: %s" % (line_num, ", ".join([str(i.offsets) for i in li])))
+            print(
+                "\tline: %4d: %s" % (line_num, ", ".join([str(i.offsets) for i in li]))
+            )
         print("=" * 30)
         for mod, code in code_info.code_map.items():
             print(mod, ":", code)

@@ -130,7 +130,6 @@ op_imports = {
     "3.10.0rc2": opcode_310,
     "3.10": opcode_310,
     3.10: opcode_310,
-
     "2.6pypy": opcode_26pypy,
     "2.7pypy": opcode_27pypy,
     "3.2pypy": opcode_32pypy,

@@ -56,7 +56,7 @@ def get_opcode(version, is_pypy, alternate_opmap=None):
 
 
 def show_module_header(
-    bytecode_version,
+    version_tuple,
     co,
     timestamp,
     out=sys.stdout,
@@ -68,6 +68,7 @@ def show_module_header(
     show_filename=True,
 ):
 
+    bytecode_version = ".".join((str(i) for i in version_tuple))
     real_out = out or sys.stdout
     if is_pypy:
         co_pypy_str = "PyPy "
@@ -98,7 +99,9 @@ def show_module_header(
             )
         )
     if PYTHON_VERSION_TRIPLE < (3, 0) and bytecode_version >= 3.0:
-        real_out.write("\n## **Warning** bytecode strings will be converted to strings.\n")
+        real_out.write(
+            "\n## **Warning** bytecode strings will be converted to strings.\n"
+        )
         real_out.write("## To avoid loss, run this from Python 3.0 or greater\n\n")
 
     if timestamp is not None:
@@ -114,7 +117,7 @@ def show_module_header(
 
 
 def disco(
-    bytecode_version,
+    version_tuple,
     co,
     timestamp,
     out=sys.stdout,
@@ -133,8 +136,10 @@ def disco(
 
     assert iscode(co)
 
+    bytecode_version = ".".join((str(i) for i in version_tuple))
+
     show_module_header(
-        bytecode_version,
+        version_tuple,
         co,
         timestamp,
         out,
@@ -150,20 +155,23 @@ def disco(
     real_out = out or sys.stdout
 
     if co.co_filename and asm_format != "xasm":
-        real_out.write(format_code_info(co, bytecode_version) + "\n")
+        real_out.write(format_code_info(co, version_tuple) + "\n")
         pass
 
     opc = get_opcode(bytecode_version, is_pypy, alternate_opmap)
 
     if asm_format == "xasm":
-        disco_loop_asm_format(opc, bytecode_version, co, real_out, {}, set([]))
+        disco_loop_asm_format(opc, version_tuple, co, real_out, {}, set([]))
     else:
         queue = deque([co])
-        disco_loop(opc, bytecode_version, queue, real_out, asm_format=asm_format,
-                   dup_lines=True)
+        disco_loop(
+            opc, version_tuple, queue, real_out, asm_format=asm_format, dup_lines=True
+        )
 
 
-def disco_loop(opc, version, queue, real_out, dup_lines=False, asm_format="classic"):
+def disco_loop(
+    opc, version_tuple, queue, real_out, dup_lines=False, asm_format="classic"
+):
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
@@ -177,7 +185,7 @@ def disco_loop(opc, version, queue, real_out, dup_lines=False, asm_format="class
     while len(queue) > 0:
         co = queue.popleft()
         if co.co_name not in ("<module>", "?"):
-            real_out.write("\n" + format_code_info(co, version) + "\n")
+            real_out.write("\n" + format_code_info(co, version_tuple) + "\n")
 
         bytecode = Bytecode(co, opc, dup_lines=dup_lines)
         real_out.write(bytecode.dis(asm_format=asm_format) + "\n")
@@ -194,7 +202,7 @@ def code_uniquify(basename, co_code):
     return "%s_0x%x" % (basename, id(co_code))
 
 
-def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
+def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns):
     """Produces disassembly in a format more conducive to
     automatic assembly by producing inner modules before they are
     used by outer ones. Since this is recusive, we'll
@@ -214,7 +222,7 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
                 c_compat = c
 
             disco_loop_asm_format(
-                opc, version, c_compat, real_out, fn_name_map, all_fns
+                opc, version_tuple, c_compat, real_out, fn_name_map, all_fns
             )
 
             m = re.match(".* object <(.+)> at", str(c))
@@ -253,7 +261,7 @@ def disco_loop_asm_format(opc, version, co, real_out, fn_name_map, all_fns):
     co = co.freeze()
     all_fns.add(co_name)
     if co.co_name != "<module>" or co.co_filename:
-        real_out.write("\n" + format_code_info(co, version, mapped_name) + "\n")
+        real_out.write("\n" + format_code_info(co, version_tuple, mapped_name) + "\n")
 
     bytecode = Bytecode(co, opc, dup_lines=True)
     real_out.write(bytecode.dis(asm_format="asm") + "\n")
@@ -279,7 +287,15 @@ def disassemble_file(
     try:
         # FIXME: add whether we want PyPy
         pyc_filename = check_object_path(filename)
-        version, timestamp, magic_int, co, is_pypy, source_size, sip_hash = load_module(pyc_filename)
+        (
+            version_tuple,
+            timestamp,
+            magic_int,
+            co,
+            is_pypy,
+            source_size,
+            sip_hash,
+        ) = load_module(pyc_filename)
     except:
 
         # Hack alert: we're using pyc_filename set as a proxy for whether the filename exists.
@@ -294,13 +310,13 @@ def disassemble_file(
         sip_hash = 0
         source_size = stat.st_size
         timestamp = stat.st_mtime
-        version = PYTHON_VERSION
+        version_tuple = PYTHON_VERSION_TRIPLE
     else:
         filename = pyc_filename
 
     if asm_format == "header":
         show_module_header(
-            version,
+            version_tuple,
             co,
             timestamp,
             outstream,
@@ -312,7 +328,7 @@ def disassemble_file(
         )
     else:
         disco(
-            bytecode_version=version,
+            version_tuple=version_tuple,
             co=co,
             timestamp=timestamp,
             out=outstream,
@@ -325,7 +341,16 @@ def disassemble_file(
             alternate_opmap=alternate_opmap,
         )
     # print co.co_filename
-    return filename, co, version, timestamp, magic_int, is_pypy, source_size, sip_hash
+    return (
+        filename,
+        co,
+        version_tuple,
+        timestamp,
+        magic_int,
+        is_pypy,
+        source_size,
+        sip_hash,
+    )
 
 
 def _test():
