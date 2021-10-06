@@ -24,7 +24,6 @@ from xdis.cross_dis import (
     findlinestarts,
     findlabels,
     get_jump_target_maps,
-    get_jump_targets,
 )
 from xdis import wordcode
 from xdis.version_info import IS_PYPY, PYTHON_VERSION, PYTHON_VERSION_TRIPLE
@@ -71,11 +70,11 @@ def init_opdata(l, from_mod, version_tuple=None, is_pypy=False):
     l["findlinestarts"] = findlinestarts
     if version_tuple <= (3, 5):
         l["findlabels"] = findlabels
-        l["get_jump_targets"] = get_jump_targets
+        l["get_jump_targets"] = findlabels
         l["get_jump_target_maps"] = get_jump_target_maps
     else:
         l["findlabels"] = wordcode.findlabels
-        l["get_jump_targets"] = wordcode.get_jump_targets
+        l["get_jump_targets"] = wordcode.findlabels
         l["get_jump_target_maps"] = wordcode.get_jump_target_maps
 
     l["opmap"] = deepcopy(from_mod.opmap)

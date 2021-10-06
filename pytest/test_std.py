@@ -1,10 +1,13 @@
 # std
 import sys
 from contextlib import closing
+
 # compat
 import six
+
 # 3rd party
 import pytest
+
 # local
 import xdis.std as dis
 from xdis import PYTHON3, IS_PYPY, PYTHON_VERSION_TRIPLE
@@ -166,16 +169,18 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
         actual_len = len(actual)
         assert actual_len > 0
 
+    @pytest.mark.skipif(PYTHON_VERSION_TRIPLE >= (3, 10),
+                        reason="Python 3.10 and above doesn't have branches in this code")
     def test_findlabels():
         if PYTHON_VERSION_TRIPLE < (3, 6):
             test_code = TEST_BRANCH_CODE
         else:
             test_code = TEST_BRANCH_CODE.co_code
+
         actual = list(dis.findlabels(test_code))
         actual_len = len(actual)
         assert actual_len > 0
 
 if __name__ == "__main__":
-    # test_disassemble(six.StringIO())
     test_findlabels()
     # test_find_linestarts()

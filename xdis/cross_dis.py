@@ -119,7 +119,7 @@ def get_code_object(x):
     raise TypeError("don't know how to disassemble %s objects" % type(x).__name__)
 
 
-def get_jump_targets(code, opc):
+def findlabels(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
     which are the targets of some sort of jump instruction.
     """
@@ -136,9 +136,6 @@ def get_jump_targets(code, opc):
                 if jump_offset not in offsets:
                     offsets.append(jump_offset)
     return offsets
-
-
-findlabels = get_jump_targets
 
 
 def instruction_size(op, opc):
