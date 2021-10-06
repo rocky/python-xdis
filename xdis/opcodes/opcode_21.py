@@ -36,7 +36,7 @@ version_tuple = (2, 1)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_22, version)
+init_opdata(l, opcode_22, version_tuple)
 
 # 2.1 bytecodes changes from 2.2
 rm_op(l, "BINARY_FLOOR_DIVIDE", 26)

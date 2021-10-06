@@ -42,7 +42,7 @@ version_tuple = (1, 3)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_14, version)
+init_opdata(l, opcode_14, version_tuple)
 
 # 1.3 - 1.4 bytecodes differences
 rm_op(l, "BINARY_POWER", 19)

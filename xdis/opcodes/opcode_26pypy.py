@@ -38,7 +38,7 @@ version_tuple = (2, 6)
 python_implementation = "PyPy"
 
 l = locals()
-init_opdata(l, opcode_26, version, is_pypy=True)
+init_opdata(l, opcode_26, version_tuple, is_pypy=True)
 
 # FIXME: DRY common PYPY opcode additions
 

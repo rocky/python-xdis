@@ -35,7 +35,7 @@ from xdis.opcodes.opcode_36 import (
 )
 
 l = locals()
-init_opdata(l, opcode_36, version, is_pypy=True)
+init_opdata(l, opcode_36, version_tuple, is_pypy=True)
 
 ## FIXME: DRY common PYPY opcode additions
 

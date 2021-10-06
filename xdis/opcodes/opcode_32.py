@@ -30,7 +30,7 @@ python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_3x, version)
+init_opdata(l, opcode_3x, version_tuple)
 
 # There are no opcodes to add or change.
 # If there were, they'd be listed below.

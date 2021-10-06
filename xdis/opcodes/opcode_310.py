@@ -50,7 +50,7 @@ python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_39, version)
+init_opdata(l, opcode_39, version_tuple)
 
 # fmt: off
 format_value_flags = opcode_39.format_value_flags

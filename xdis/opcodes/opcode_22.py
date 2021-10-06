@@ -22,7 +22,7 @@ version_tuple = (2, 2)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_2x, version)
+init_opdata(l, opcode_2x, version_tuple)
 
 # 2.2 Bytecodes not in 2.3
 def_op(l, "FOR_LOOP", 114)

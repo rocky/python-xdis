@@ -38,7 +38,7 @@ version_tuple = (2, 0)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_21, version)
+init_opdata(l, opcode_21, version_tuple)
 
 # fmt: off
 # 2.1 Bytecodes not in 2.0

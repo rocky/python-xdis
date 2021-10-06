@@ -28,7 +28,7 @@ version_tuple = (2, 5)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_24, version)
+init_opdata(l, opcode_24, version_tuple)
 
 # fmt: off
 # Bytecodes added in 2.5 from 2.4

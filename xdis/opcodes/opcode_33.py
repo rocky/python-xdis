@@ -27,7 +27,7 @@ version_tuple = (3, 3)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_3x, version)
+init_opdata(l, opcode_3x, version_tuple)
 
 # Below are opcode changes since Python 3.2
 

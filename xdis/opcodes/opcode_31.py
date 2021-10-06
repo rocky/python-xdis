@@ -27,7 +27,7 @@ version = 3.1
 version_tuple = (3, 1)
 python_implementation = "CPython"
 
-init_opdata(l, opcode_32, version)
+init_opdata(l, opcode_32, version_tuple)
 
 # fmt: off
 # These are in Python 3.2 but not in Python 3.1

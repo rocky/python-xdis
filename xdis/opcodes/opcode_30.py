@@ -27,7 +27,7 @@ python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_31, version)
+init_opdata(l, opcode_31, version_tuple)
 
 # These are in Python 3.x but not in Python 3.0
 

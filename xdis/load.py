@@ -26,6 +26,7 @@ from xdis.magics import (
     PYTHON_MAGIC_INT,
     int2magic,
     magic_int2float,
+    magic_int2tuple,
     magic2int,
     magicint2version,
     versions,
@@ -197,6 +198,7 @@ def load_module_from_file_object(
         try:
             # FIXME: use the internal routine below
             float_version = magic_int2float(magic_int)
+            tuple_version = magic_int2tuple(magic_int)
         except KeyError:
             if magic_int in (2657, 22138):
                 raise ImportError("This smells like Pyston which is not supported.")
@@ -253,17 +255,16 @@ def load_module_from_file_object(
             )
 
         try:
-            # print version
             my_magic_int = PYTHON_MAGIC_INT
             magic_int = magic2int(magic)
-            version = magic_int2float(magic_int)
+            version = magic_int2tuple(magic_int)
 
             timestamp = None
             source_size = None
             sip_hash = None
 
             ts = fp.read(4)
-            if magic_int in (3439,) or version >= 3.7:
+            if magic_int in (3439,) or version >= (3, 7):
                 # PEP 552. https://www.python.org/dev/peps/pep-0552/
                 pep_bits = ts[-1]
                 if PYTHON_VERSION_TRIPLE <= (2, 7):
@@ -286,7 +287,7 @@ def load_module_from_file_object(
                 # PYTHON_VERSION, although PYTHON_VERSION would probably work.
                 if (
                     (3200 <= magic_int < 20121)
-                    and version >= 1.5
+                    and version >= (1, 5)
                     or magic_int in IS_PYPY3
                 ):
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
@@ -332,10 +333,10 @@ def write_bytecode_file(
     magic_int (i.e. bytecode associated with some version of Python)
     """
     fp = open(bytecode_path, "wb")
-    version = float(magicint2version[magic_int][:3])
-    if version >= 3.0:
+    version = magicint2tuple(magic_int)
+    if version >= (3, 0):
         fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
-        if version >= 3.7:  # pep552 bytes
+        if version >= (3, 7):  # pep552 bytes
             fp.write(pack("<I", 0))  # pep552 bytes
     else:
         fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
@@ -348,7 +349,7 @@ def write_bytecode_file(
     else:
         fp.write(pack("<I", int(datetime.now().timestamp())))
 
-    if version >= 3.3:
+    if version >= (3, 3):
         # In Python 3.3+, these 4 bytes are the size of the source code_obj file (mod 2^32)
         fp.write(pack("<I", filesize))
     if isinstance(code_obj, types.CodeType):

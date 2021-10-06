@@ -45,7 +45,7 @@ version = 2.6
 version_tuple = (2, 6)
 
 l = locals()
-init_opdata(l, opcode_25, version)
+init_opdata(l, opcode_25, version_tuple)
 
 # Below are opcode changes since Python 2.5
 

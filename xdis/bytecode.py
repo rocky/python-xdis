@@ -138,7 +138,7 @@ def get_instructions_bytes(
 
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
     # See below FIXME
-    python_36 = True if opc.python_version >= 3.6 else False
+    python_36 = True if opc.python_version >= (3, 6) else False
 
     starts_line = None
     # enumerate() is not an option, since we sometimes process

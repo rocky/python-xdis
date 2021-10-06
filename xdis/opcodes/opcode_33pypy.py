@@ -25,7 +25,7 @@ python_implementation = "PyPy"
 import xdis.opcodes.opcode_33 as opcode_33
 
 l = locals()
-init_opdata(l, opcode_33, version, is_pypy=True)
+init_opdata(l, opcode_33, version_tuple, is_pypy=True)
 
 ## FIXME: DRY common PYPY opcode additions
 

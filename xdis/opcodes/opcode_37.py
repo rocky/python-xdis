@@ -42,7 +42,7 @@ python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_36, version)
+init_opdata(l, opcode_36, version_tuple)
 
 ### Opcodes that have changed drastically ####
 

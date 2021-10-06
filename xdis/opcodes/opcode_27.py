@@ -49,7 +49,7 @@ version_tuple = (2, 7)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_26, version)
+init_opdata(l, opcode_26, version_tuple)
 
 # fmt: off
 # Below are opcode changes since Python 2.6

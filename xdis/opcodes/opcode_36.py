@@ -54,7 +54,7 @@ python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_35, version)
+init_opdata(l, opcode_35, version_tuple)
 
 # fmt: off
 # These are removed since Python 3.6

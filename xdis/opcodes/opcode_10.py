@@ -42,7 +42,7 @@ version_tuple = (1, 0)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_11, version)
+init_opdata(l, opcode_11, version_tuple)
 
 # fmt: off
 # 1.0 - 1.1 bytecodes differences
