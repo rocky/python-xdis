@@ -448,13 +448,12 @@ class _VersionIndependentUnmarshaller:
         else:
             co_argcount = 0
 
-        # FIXME:
-        # Note we do this by magic_int, not version_tuple which is *not*
-        # 3.8
-        if self.magic_int in (3412, 3413, 3422, 3425):
-            co_posonlyargcount = unpack("<i", self.fp.read(4))[0]
         if version_tuple >= (3, 8):
-            co_posonlyargcount = 0
+            co_posonlyargcount = (
+                0
+                if self.magic_int in (3400, 3401, 3410, 3411)
+                else unpack("<i", self.fp.read(4))[0]
+            )
         else:
             co_posonlyargcount = None
 
