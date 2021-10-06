@@ -36,11 +36,9 @@ from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 from xdis.op_imports import op_imports, remap_opcodes
 
 
-def get_opcode(version, is_pypy, alternate_opmap=None):
+def get_opcode(version_tuple, is_pypy, alternate_opmap=None):
     # Set up disassembler with the right opcodes
-    if type(version) in (list, tuple):
-        version = ".".join([str(x) for x in version])
-    lookup = str(version)
+    lookup = ".".join((str(i) for i in version_tuple))
     if is_pypy:
         lookup += "pypy"
     if lookup in op_imports.keys():
@@ -158,7 +156,7 @@ def disco(
         real_out.write(format_code_info(co, version_tuple) + "\n")
         pass
 
-    opc = get_opcode(bytecode_version, is_pypy, alternate_opmap)
+    opc = get_opcode(version_tuple, is_pypy, alternate_opmap)
 
     if asm_format == "xasm":
         disco_loop_asm_format(opc, version_tuple, co, real_out, {}, set([]))

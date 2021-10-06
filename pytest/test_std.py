@@ -7,9 +7,9 @@ import six
 import pytest
 # local
 import xdis.std as dis
-from xdis import PYTHON3, IS_PYPY, PYTHON_VERSION
+from xdis import PYTHON3, IS_PYPY, PYTHON_VERSION_TRIPLE
 
-if PYTHON_VERSION >= 3.2:
+if PYTHON_VERSION_TRIPLE >= (3, 2):
     if pytest.__version__ >= "3.2.0":
         yield_fixture = pytest.fixture
     else:
@@ -33,7 +33,7 @@ EXPECTED_CODE_INFO = ("""# Method Name:       <module>
 # Filename:          <disassembly>
 # Argument count:    0
 """
-+ ("# Position-only argument count: 0\n" if PYTHON_VERSION >= 3.8 else "")
++ ("# Position-only argument count: 0\n" if PYTHON_VERSION_TRIPLE >= (3, 8) else "")
 + ("# Keyword-only arguments: 0\n" if PYTHON3 else "") +
 """# Number of locals:  0
 # Stack size:        1
@@ -44,7 +44,7 @@ EXPECTED_CODE_INFO = ("""# Method Name:       <module>
 #    1: None
 # Names:
 #    0: a""").format(flags='0x00000000 (0x0)' if (
-    IS_PYPY and PYTHON_VERSION < 3.5) else '0x00000040 (NOFREE)')
+    IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5)) else '0x00000040 (NOFREE)')
 
 EXPECTED_DIS = """\
   1:           0 LOAD_CONST           (10)
@@ -60,13 +60,13 @@ EXPECTED_DIS_36 = """\
                6 RETURN_VALUE
 """
 
-if PYTHON_VERSION < 3.6:
+if PYTHON_VERSION_TRIPLE < (3, 6):
     expected_dis = EXPECTED_DIS
 else:
     expected_dis = EXPECTED_DIS_36
 
 
-if PYTHON_VERSION >= 3.2:
+if PYTHON_VERSION_TRIPLE >= (3, 2):
     @pytest.fixture
     def bytecode_fixture():
         return dis.Bytecode(TEST_SOURCE_CODE)
@@ -167,7 +167,7 @@ if PYTHON_VERSION >= 3.2:
         assert actual_len > 0
 
     def test_findlabels():
-        if PYTHON_VERSION < 3.6:
+        if PYTHON_VERSION_TRIPLE < (3, 6):
             test_code = TEST_BRANCH_CODE
         else:
             test_code = TEST_BRANCH_CODE.co_code

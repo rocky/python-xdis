@@ -1,10 +1,10 @@
-from xdis import IS_PYPY, PYTHON_VERSION
+from xdis import IS_PYPY, PYTHON_VERSION_TRIPLE
 from xdis import get_opcode
 import dis
 
 
 def test_opcode():
-    opc = get_opcode(PYTHON_VERSION, IS_PYPY)
+    opc = get_opcode(PYTHON_VERSION_TRIPLE, IS_PYPY)
     opmap = dict([(k.replace("+", "_"), v) for (k, v) in dis.opmap.items()])
 
     print("Extra in dis:", set(opmap.items()) - set(opc.opmap.items()))

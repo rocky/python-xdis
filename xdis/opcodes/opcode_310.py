@@ -60,8 +60,15 @@ rm_op(l,  "RERAISE",                  48)
 # These are added since 3.9...
 #         OP NAME                 OPCODE  POP PUSH
 #------------------------------------------------
+def_op(l, "GET_LEN",                  30,   0, 1)
+def_op(l, "MATCH_MAPPING",            31,   0, 1)
+def_op(l, "MATCH_SEQUENCE",           32,   0, 1)
+def_op(l, "MATCH_KEYS",               33,   0, 2)
+def_op(l, "COPY_DICT_WITHOUT_KEYS",   34,   2, 2)
 def_op(l, "ROT_N",                    99,   0, 0)
+def_op(l, "RERAISE",                 119,   3, 0)
 def_op(l, "GEN_START",               129,   1, 0)
+def_op(l, "MATCH_CLASS",             152,   2, 1)
 # fmt: on
 
 
