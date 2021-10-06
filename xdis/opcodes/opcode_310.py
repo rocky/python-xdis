@@ -54,11 +54,16 @@ init_opdata(l, opcode_39, version_tuple)
 
 # fmt: off
 format_value_flags = opcode_39.format_value_flags
-#          OP NAME                   OPCODE POP PUSH
-#---------------------------------------------------
-
 # These are removed since 3.9...
-rm_op(l, "RERAISE",      48)
+rm_op(l,  "RERAISE",                  48)
+
+# These are added since 3.9...
+#         OP NAME                 OPCODE  POP PUSH
+#------------------------------------------------
+def_op(l, "ROT_N",                    99,   0, 0)
+def_op(l, "GEN_START",               129,   1, 0)
+# fmt: on
+
 
 def format_extended_is_op(arg):
     return "is" if arg == 0 else "is not"
@@ -72,22 +77,22 @@ opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
-    "CONTAINS_OP":      format_extended_contains_op,
-    "EXTENDED_ARG":     format_extended_arg36,
-    "FORMAT_VALUE":     format_value_flags,
-    "IS_OP":            format_extended_is_op,
-    "MAKE_FUNCTION":    format_MAKE_FUNCTION_flags,
-    "RAISE_VARARGS":    format_RAISE_VARARGS,
+    "CONTAINS_OP": format_extended_contains_op,
+    "EXTENDED_ARG": format_extended_arg36,
+    "FORMAT_VALUE": format_value_flags,
+    "IS_OP": format_extended_is_op,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
+    "RAISE_VARARGS": format_RAISE_VARARGS,
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "CALL_METHOD":   extended_format_CALL_METHOD,
-    "LOAD_ATTR":     extended_format_ATTR,
+    "CALL_METHOD": extended_format_CALL_METHOD,
+    "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS,
-    "RETURN_VALUE":  extended_format_RETURN_VALUE,
-    "STORE_ATTR":    extended_format_ATTR,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
 }
 # fmt: on
 
