@@ -120,6 +120,32 @@ def get_code_object(x):
 
 
 def findlabels(code, opc):
+    if opc.version_tuple < (3, 10):
+        return findlabels_pre_310(code, opc)
+    else:
+        return findlabels_310(code, opc)
+
+
+def findlabels_310(code, opc):
+    """Returns a list of instruction offsets in the supplied bytecode
+    which are the targets of some sort of jump instruction.
+    """
+    labels = []
+    for offset, op, arg in unpack_opargs_bytecode_310(code, opc):
+        if arg is not None:
+            jump_offset = -1
+            if op in opc.JREL_OPS:
+                label = offset + 2 + arg * 2
+            elif op in opc.JABS_OPS:
+                label = arg * 2
+            else:
+                continue
+            if label not in labels:
+                labels.append(label)
+    return labels
+
+
+def findlabels_pre_310(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
     which are the targets of some sort of jump instruction.
     """
@@ -263,6 +289,23 @@ def format_code_info(co, version_tuple, name=None, is_pypy=False):
 
 def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
+
+
+def unpack_opargs_bytecode_310(code, opc):
+    extended_arg = 0
+    try:
+        n = len(code)
+    except TypeError:
+        code = code.co_code
+        n = len(code)
+    for offset in range(0, n, 2):
+        op = code2num(code, offset)
+        if op_has_argument(op, opc):
+            arg = code2num(code, offset + 1) | extended_arg
+            extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
+        else:
+            arg = None
+        yield (offset, op, arg)
 
 
 # This is modified from Python 3.6's dis
@@ -428,6 +471,12 @@ def check_stack_effect():
 
 
 if __name__ == "__main__":
+    from dis import findlabels as findlabels_std
 
+    code = findlabels.__code__.co_code
+    from xdis.op_imports import get_opcode_module
+
+    opc = get_opcode_module()
+    assert findlabels(code, opc) == findlabels_std(code)
     if PYTHON_VERSION_TRIPLE >= (3, 4):
         check_stack_effect()
