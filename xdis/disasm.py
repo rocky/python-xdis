@@ -300,6 +300,7 @@ def disassemble_file(
         # check_object_path() will succeed if the file exists.
         if pyc_filename is None:
             raise
+        import os
         stat = os.stat(filename)
         source = open(filename, "r").read()
         co = compile(source, filename, "exec")
