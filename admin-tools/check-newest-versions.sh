@@ -11,9 +11,9 @@ cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-newest-versions ; then
     exit $?
 fi
-if ! source ./setup-master.sh ; then
-    exit $?
-fi
+# if ! source ./setup-master.sh ; then
+#     exit $?
+# fi
 cd ..
 for version in $PYVERSIONS; do
     echo --- $version ---
