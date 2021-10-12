@@ -419,7 +419,7 @@ def __show(text, magic):
     print(text, struct.unpack("BBBB", magic), struct.unpack("<HBB", magic))
 
 
-def magic_int2float(magic_int: int):
+def magic_int2float(magic_int):
     """Convert a Python magic int into a 'canonic' floating-point number,
     e.g. 2.7, 3.7. runtime error is raised if "version" is not found.
 
@@ -430,7 +430,7 @@ def magic_int2float(magic_int: int):
     return py_str2float(magicint2version[magic_int])
 
 
-def magic_int2tuple(magic_int: int) -> tuple:
+def magic_int2tuple(magic_int):
     """Convert a Python magic int into a 'canonic' tuple
     e.g. (2, 7), (3, 7). runtime error is raised if "version" is not found.
 
@@ -441,7 +441,7 @@ def magic_int2tuple(magic_int: int) -> tuple:
     return py_str2tuple(magicint2version[magic_int])
 
 
-def py_str2float(orig_version: str) -> float:
+def py_str2float(orig_version):
     """Convert a Python version into a two-digit 'canonic' floating-point number,
     e.g. 2.5, 3.6.
 

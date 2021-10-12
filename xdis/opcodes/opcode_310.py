@@ -73,12 +73,17 @@ def_op(l, "MATCH_CLASS",             152,   2, 1)
 
 
 def format_extended_is_op(arg):
-    return "is" if arg == 0 else "is not"
+    if arg == 0:
+      return "is"
+    else:
+       return "is not"
 
 
 def format_extended_contains_op(arg):
-    return "in" if arg == 0 else "not in"
-
+    if arg == 0:
+        return "in"
+    else:
+        return "not in"
 
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,

@@ -17,7 +17,7 @@ class LoadTests(unittest.TestCase):
         if os.path.exists(obj_path):
             (version, timestamp, magic_int, co2, is_pypy,
              source_size, sip_hash) = load_module(obj_path)
-            self.assertEqual(sys.version[0:3], str(version))
+            self.assertEqual(sys.version_info[:2], version)
             if IS_PYPY:
                 self.assertTrue("Skipped until we get better code comparison on PYPY")
             else:

@@ -3,11 +3,11 @@
 import os
 
 from xdis.load import load_module
-from xdis import PYTHON_VERSION
+from xdis import PYTHON_VERSION_TRIPLE
 
 import unittest
 
-if PYTHON_VERSION < 2.4:
+if PYTHON_VERSION_TRIPLE < (2, 4):
     from sets import Set as set
     frozenset = set
 
@@ -27,7 +27,7 @@ class MarshalTest(unittest.TestCase):
 
         (version, timestamp, magic_int, co, is_pypy,
          source_size, sip_hash) = load_module(mod_file)
-        self.assertEqual(version, 2.5,
+        self.assertEqual(version[:2], (2, 5),
                          "Should have picked up Python version properly")
         self.assertEqual(co.co_consts, (5j, None), "Code should have a complex constant")
 

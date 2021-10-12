@@ -307,7 +307,10 @@ def unpack_opargs_bytecode_310(code, opc):
         op = code2num(code, offset)
         if op_has_argument(op, opc):
             arg = code2num(code, offset + 1) | extended_arg
-            extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
+            if op == opc.EXTENDED_ARG:
+                extended_arg = extended_arg_val(opc, arg)
+            else:
+                extended_arg = 0
         else:
             arg = None
         yield (offset, op, arg)

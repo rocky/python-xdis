@@ -66,7 +66,10 @@ def findlabels(code, opc):
     offsets = []
     for offset, op, arg in unpack_opargs_wordcode(code, opc):
         if arg is not None:
-            arg2 = arg * 2 if opc.version_tuple >= (3, 10) else arg
+            if opc.version_tuple >= (3, 10):
+                arg2 = arg * 2
+            else:
+                arg2 = arg
             if op in opc.JREL_OPS:
                 jump_offset = offset + 2 + arg2
             elif op in opc.JABS_OPS:

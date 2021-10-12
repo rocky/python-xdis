@@ -265,7 +265,7 @@ def load_module_from_file_object(
             if magic_int in (3439,) or version >= (3, 7):
                 # PEP 552. https://www.python.org/dev/peps/pep-0552/
                 pep_bits = ts[-1]
-                if PYTHON_VERSION_TRIPLE <= (2, 7):
+                if PYTHON_VERSION_TRIPLE[:2] <= (2, 7):
                     pep_bits = ord(pep_bits)
                 if (pep_bits & 1) or magic_int == 3393:  # 3393 is 3.7.0beta3
                     # SipHash
@@ -333,7 +333,7 @@ def write_bytecode_file(
     fp = open(bytecode_path, "wb")
     version = magicint2tuple(magic_int)
     if version >= (3, 0):
-        fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
+        fp.write(pack("<Hcc", magic_int, "\r", "\n"))
         if version >= (3, 7):  # pep552 bytes
             fp.write(pack("<I", 0))  # pep552 bytes
     else:

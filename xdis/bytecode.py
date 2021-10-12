@@ -144,9 +144,6 @@ def get_instructions_bytes(
         python_36 = True
     else:
         python_36 = False
-=======
-    python_36 = True if opc.python_version >= (3, 6) else False
->>>>>>> python-3.3-to-3.5
 
     starts_line = None
     # enumerate() is not an option, since we sometimes process
