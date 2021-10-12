@@ -25,6 +25,7 @@ from xdis.opcodes.base import (
 )
 
 version = 3.7
+version_tuple = (3, 7)
 python_implementation = "PyPy"
 
 from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
@@ -34,7 +35,7 @@ from xdis.opcodes.opcode_37 import (
 )
 
 l = locals()
-init_opdata(l, opcode_37, version, is_pypy=True)
+init_opdata(l, opcode_37, version_tuple, is_pypy=True)
 
 
 # FIXME: DRY common PYPY opcode additions

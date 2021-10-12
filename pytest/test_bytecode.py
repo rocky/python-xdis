@@ -90,7 +90,7 @@ def bug708901():
                      10):
         pass
 
-def test_get_jump_targets():
+def findlabels():
     my_dir = osp.dirname(osp.abspath(__file__))
 
     # Python 2.7 code

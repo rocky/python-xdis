@@ -45,11 +45,12 @@ from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_V
 import xdis.opcodes.opcode_38 as opcode_38
 
 version = 3.9
+version_tuple = (3, 9)
 python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_38, version)
+init_opdata(l, opcode_38, version_tuple)
 
 # fmt: off
 # These are removed since 3.8...

@@ -55,30 +55,30 @@ _OPARG_WIDTH = 6
 class Instruction(_Instruction):
     """Details for a bytecode operation
 
-       Defined fields:
-         opname - human readable name for operation
-         opcode - numeric code for operation
-         optype - opcode classification. One of
-            compare, const, free, jabs, jrel, local, name, nargs
-         inst_size - number of bytes the instruction occupies
-         arg - numeric argument to operation (if any), otherwise None
-         argval - resolved arg value (if known), otherwise same as arg
-         argrepr - human readable description of operation argument
-         has_arg - True opcode takes an argument. In that case,
-                   argval and argepr will have that value. False
-                   if this opcode doesn't take an argument. In that case,
-                   don't look at argval or argrepr.
-         offset - start index of operation within bytecode sequence
-         starts_line - line started by this opcode (if any), otherwise None
-         is_jump_target - True if other code jumps to here,
-                          'loop' if this is a loop beginning, which
-                          in Python can be determined jump to an earlier offset.
-                          Otherwise False
-         has_extended_arg - True if the instruction was built from EXTENDED_ARG
-                            opcodes
-         fallthrough - True if the instruction can (not must) fall through to the next
-                       instruction. Note conditionals are in this category, but
-                       returns, raise, and unconditional jumps are not
+    Defined fields:
+      opname - human readable name for operation
+      opcode - numeric code for operation
+      optype - opcode classification. One of
+         compare, const, free, jabs, jrel, local, name, nargs
+      inst_size - number of bytes the instruction occupies
+      arg - numeric argument to operation (if any), otherwise None
+      argval - resolved arg value (if known), otherwise same as arg
+      argrepr - human readable description of operation argument
+      has_arg - True opcode takes an argument. In that case,
+                argval and argepr will have that value. False
+                if this opcode doesn't take an argument. In that case,
+                don't look at argval or argrepr.
+      offset - start index of operation within bytecode sequence
+      starts_line - line started by this opcode (if any), otherwise None
+      is_jump_target - True if other code jumps to here,
+                       'loop' if this is a loop beginning, which
+                       in Python can be determined jump to an earlier offset.
+                       Otherwise False
+      has_extended_arg - True if the instruction was built from EXTENDED_ARG
+                         opcodes
+      fallthrough - True if the instruction can (not must) fall through to the next
+                    instruction. Note conditionals are in this category, but
+                    returns, raise, and unconditional jumps are not
     """
 
     # FIXME: remove has_arg from initialization but keep it as a field.
@@ -184,7 +184,9 @@ class Instruction(_Instruction):
                     hasattr(opc, "opcode_extended_fmt")
                     and opc.opname[op] in opc.opcode_extended_fmt
                 ):
-                    new_repr = opc.opcode_extended_fmt[opc.opname[op]](opc, list(reversed(instructions)))
+                    new_repr = opc.opcode_extended_fmt[opc.opname[op]](
+                        opc, list(reversed(instructions))
+                    )
                     if new_repr:
                         argrepr = new_repr
                 pass
@@ -202,7 +204,9 @@ class Instruction(_Instruction):
                 hasattr(opc, "opcode_extended_fmt")
                 and opc.opname[op] in opc.opcode_extended_fmt
             ):
-                new_repr = opc.opcode_extended_fmt[opc.opname[op]](opc, list(reversed(instructions)))
+                new_repr = opc.opcode_extended_fmt[opc.opname[op]](
+                    opc, list(reversed(instructions))
+                )
                 if new_repr:
                     fields.append("(%s)" % new_repr)
             pass

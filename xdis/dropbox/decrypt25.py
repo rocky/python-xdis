@@ -290,7 +290,7 @@ def fix_dropbox_pyc(fp, fixed_pyc="/tmp/test.pyc"):
     timestamp = struct.unpack("I", ts)[0]
     b = fp.read()
     co = loads(b)
-    return 2.5, timestamp, 62131, co, False, source_size, None
+    return (2, 5), timestamp, 62131, co, False, source_size, None
 
 
 def fix_dir(path):

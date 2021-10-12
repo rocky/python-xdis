@@ -20,12 +20,13 @@ from xdis.opcodes.base import (
 )
 
 version = 3.5
+version_tuple = (3, 5)
 python_implementation = "PyPy"
 
 import xdis.opcodes.opcode_35 as opcode_35
 
 l = locals()
-init_opdata(l, opcode_35, version, is_pypy=True)
+init_opdata(l, opcode_35, version_tuple, is_pypy=True)
 
 ## FIXME: DRY common PYPY opcode additions
 

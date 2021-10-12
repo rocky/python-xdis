@@ -38,10 +38,11 @@ from xdis.opcodes.base import (
 )
 
 version = 1.6
+version_tuple = (1, 6)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_15, version)
+init_opdata(l, opcode_15, version_tuple)
 
 # fmt: off
 # 1.6 Bytecodes not in 1.5

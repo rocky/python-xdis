@@ -27,11 +27,12 @@ from xdis.opcodes.base import (
 )
 
 version = 2.7
+version_tuple = (2, 7)
 python_implementation = "PyPy"
 
 l = locals()
 
-init_opdata(l, opcode_27, version, is_pypy=True)
+init_opdata(l, opcode_27, version_tuple, is_pypy=True)
 
 # FIXME: DRY common PYPY opcode additions
 

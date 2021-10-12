@@ -49,11 +49,12 @@ oppop = {}
 EXTENDED_ARG_SHIFT = 8
 
 version = 3.6
+version_tuple = (3, 6)
 python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_35, version)
+init_opdata(l, opcode_35, version_tuple)
 
 # fmt: off
 # These are removed since Python 3.6
@@ -103,6 +104,7 @@ rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
 # qualified name of the function.
 
 
+# fmt: off
 # These are new since Python 3.6
 #          OP NAME                OPCODE POP PUSH
 #---------------------------------------------------

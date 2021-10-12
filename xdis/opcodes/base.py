@@ -24,10 +24,9 @@ from xdis.cross_dis import (
     findlinestarts,
     findlabels,
     get_jump_target_maps,
-    get_jump_targets,
 )
 from xdis import wordcode
-from xdis import IS_PYPY, PYTHON_VERSION
+from xdis.version_info import IS_PYPY, PYTHON_VERSION, PYTHON_VERSION_TRIPLE
 
 cmp_op = (
     "<",
@@ -56,26 +55,26 @@ nofollow
 """.split()
 
 
-def init_opdata(l, from_mod, version=None, is_pypy=False):
+def init_opdata(l, from_mod, version_tuple=None, is_pypy=False):
     """Sets up a number of the structures found in Python's
     opcode.py. Python opcode.py routines assign attributes to modules.
     In order to do this in a modular way here, the local dictionary
     for the module is passed.
     """
 
-    if version:
-        l["python_version"] = version
+    if version_tuple:
+        l["python_version"] = version_tuple
     l["is_pypy"] = is_pypy
     l["cmp_op"] = cmp_op
     l["HAVE_ARGUMENT"] = HAVE_ARGUMENT
     l["findlinestarts"] = findlinestarts
-    if version <= 3.5:
+    if version_tuple <= (3, 5):
         l["findlabels"] = findlabels
-        l["get_jump_targets"] = get_jump_targets
+        l["get_jump_targets"] = findlabels
         l["get_jump_target_maps"] = get_jump_target_maps
     else:
         l["findlabels"] = wordcode.findlabels
-        l["get_jump_targets"] = wordcode.get_jump_targets
+        l["get_jump_targets"] = wordcode.findlabels
         l["get_jump_target_maps"] = wordcode.get_jump_target_maps
 
     l["opmap"] = deepcopy(from_mod.opmap)
@@ -262,7 +261,7 @@ def update_sets(l):
     l["JUMP_UNCONDITONAL"] = frozenset(
         [l["opmap"]["JUMP_ABSOLUTE"], l["opmap"]["JUMP_FORWARD"]]
     )
-    if l["python_version"] < 3.8:
+    if PYTHON_VERSION_TRIPLE < (3,8,0) and l["python_version"] < (3, 8):
         l["LOOP_OPS"] = frozenset([l["opmap"]["SETUP_LOOP"]])
     else:
         l["LOOP_OPS"] = frozenset()
@@ -447,8 +446,7 @@ def opcode_check(l):
     importing, we perform checks to make sure our opcode
     set matches exactly.
     """
-    # Python 2.6 reports 2.6000000000000001
-    if abs(PYTHON_VERSION - l["python_version"]) <= 0.01 and IS_PYPY == l["is_pypy"]:
+    if PYTHON_VERSION_TRIPLE[:2] == l["python_version"][:2] and IS_PYPY == l["is_pypy"]:
         try:
             import dis
 

@@ -10,7 +10,7 @@ import sys, os, getopt
 import os.path as osp
 
 from xdis.version import __version__
-from xdis import PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION_STR, PYTHON_VERSION_TRIPLE
 from xdis import disassemble_file
 
 FORMATS=("xasm", "bytes", "classic", "extended", "extended-bytes", "header")
@@ -54,6 +54,7 @@ def main():
     the Python interpreter used to run this program. For example, you can disassemble Python 3.6.9
     bytecode from Python 2.7.15 and vice versa.
     """
+<<<<<<< HEAD
     Usage_short = """usage:
    %s FILE...
 Type -h for for full help.""" % program
@@ -99,6 +100,19 @@ Type -h for for full help.""" % program
             print(opt)
             sys.stderr.write(Usage_short)
             sys.exit(1)
+=======
+    if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 11)):
+        if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 6):
+            sys.stderr.write(
+                "This code works on 2.7 to 3.10. code that works for %s can be found in the python-2.4 branch\n"
+                % PYTHON_VERSION_STR
+            )
+            sys.exit(1)
+        sys.stderr.write(
+            "This works on Python version 2.7 to 3.10; have %s.\n" % PYTHON_VERSION_STR
+        )
+        sys.exit(2)
+>>>>>>> python-3.3-to-3.5
 
     for path in files:
         # Some sanity checks

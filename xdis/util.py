@@ -72,6 +72,7 @@ def co_flags_is_async(co_flags):
         | COMPILER_FLAG_BIT["ASYNC_GENERATOR"]
     )
 
+
 def code_has_star_arg(code):
     """Return True iff
     the code object has a variable positional parameter (*args-like)"""

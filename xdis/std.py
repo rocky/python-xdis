@@ -1,5 +1,5 @@
 # (C) Copyright 2018 by Daniel Bradburn
-# (C) Copyright 2018, 2020 by Rocky Bernstein
+# (C) Copyright 2018, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -47,23 +47,28 @@ Version 'variants' are also supported, for example:
 
 # std
 import sys
+
 # xdis
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode as _Bytecode
 from xdis.instruction import _Instruction
 from xdis.disasm import disco as _disco
 from xdis.op_imports import get_opcode_module
-from xdis.cross_dis import code_info as _code_info, pretty_flags as _pretty_flags, show_code as _show_code, xstack_effect as _stack_effect
+from xdis.cross_dis import (
+    code_info as _code_info,
+    pretty_flags as _pretty_flags,
+    show_code as _show_code,
+    xstack_effect as _stack_effect,
+)
 
 
-PYPY = 'pypy'
+PYPY = "pypy"
 if IS_PYPY:
     VARIANT = PYPY
 else:
     VARIANT = None
 
 class _StdApi:
-
     def __init__(self, python_version=sys.version_info, variant=VARIANT):
 
         if python_version >= (3, 6):
@@ -74,6 +79,7 @@ class _StdApi:
 
         self.opc = opc = get_opcode_module(python_version, variant)
         self.python_version = opc.version
+        self.python_version_tuple = opc.version_tuple
         self.is_pypy = variant == PYPY
         self.hasconst = opc.hasconst
         self.hasname = opc.hasname
@@ -90,50 +96,53 @@ class _StdApi:
 
             Iterating over this yields the bytecode operations as Instruction instances.
             """
+
             def __init__(self, x, first_line=None, current_offset=None):
-                super(Bytecode, self).__init__(x, opc=opc, first_line=first_line,
-                                               current_offset=current_offset)
+                super(Bytecode, self).__init__(
+                    x, opc=opc, first_line=first_line, current_offset=current_offset
+                )
+
         self.Bytecode = Bytecode
 
         class Instruction(_Instruction):
             """Details for a bytecode operation
 
-               Defined fields:
-                 opname - human readable name for operation
-                 opcode - numeric code for operation
-                 arg - numeric argument to operation (if any), otherwise None
-                 argval - resolved arg value (if known), otherwise same as arg
-                 argrepr - human readable description of operation argument
-                 offset - start index of operation within bytecode sequence
-                 starts_line - line started by this opcode (if any), otherwise None
-                 is_jump_target - True if other code jumps to here, otherwise False
+            Defined fields:
+              opname - human readable name for operation
+              opcode - numeric code for operation
+              arg - numeric argument to operation (if any), otherwise None
+              argval - resolved arg value (if known), otherwise same as arg
+              argrepr - human readable description of operation argument
+              offset - start index of operation within bytecode sequence
+              starts_line - line started by this opcode (if any), otherwise None
+              is_jump_target - True if other code jumps to here, otherwise False
             """
 
             def __init__(self, *args, **kwargs):
                 _Instruction(*args, **kwargs)
                 self.opc = opc
+
         self.Instruction = Instruction
 
     def _print(self, x, file=None):
         if file is None:
             print(x)
         else:
-            file.write(str(x) + '\n')
+            file.write(str(x) + "\n")
 
     def code_info(self, x):
         """Formatted details of methods, functions, or code."""
-        return _code_info(x, self.python_version)
+        return _code_info(x, self.python_version_tuple)
 
     def show_code(self, x, file=None):
         """Print details of methods, functions, or code to *file*.
 
         If *file* is not provided, the output is printed on stdout.
         """
-        return _show_code(x, self.opc.version, file, is_pypy=self.is_pypy)
+        return _show_code(x, self.opc.version_tuple, file, is_pypy=self.is_pypy)
 
     def stack_effect(self, oparg=None, jump=None):
-        """Compute the stack effect of *opcode* with argument *oparg*.
-        """
+        """Compute the stack effect of *opcode* with argument *oparg*."""
         return _stack_effect(x, self.opc, oparg, jump)
 
     def pretty_flags(self, flags):
@@ -155,7 +164,8 @@ class _StdApi:
                 tb = sys.last_traceback
             except AttributeError:
                 raise RuntimeError("no last traceback to disassemble")
-            while tb.tb_next: tb = tb.tb_next
+            while tb.tb_next:
+                tb = tb.tb_next
         self.disassemble(tb.tb_frame.f_code, tb.tb_lasti, file=file)
 
     def disassemble(self, code, lasti=-1, file=None):
@@ -164,8 +174,13 @@ class _StdApi:
 
     def disco(self, code, lasti=-1, file=None):
         """Disassemble a code object."""
-        return _disco(self.python_version, code, timestamp=None,
-                      out=file, is_pypy=self.is_pypy)
+        return _disco(
+            self.python_version_tuple,
+            code,
+            timestamp=None,
+            out=file,
+            is_pypy=self.is_pypy,
+        )
 
     def get_instructions(self, x, first_line=None):
         """Iterator for the opcodes in methods, functions or code
@@ -218,6 +233,7 @@ def make_std_api(python_version=sys.version_info, variant=VARIANT):
         minor = int(((python_version - major) + 0.05) * 10)
         python_version = (major, minor)
     return _StdApi(python_version, variant)
+
 
 _std_api = make_std_api()
 

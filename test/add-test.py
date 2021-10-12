@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """ Trivial helper program to bytecompile
 """
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 import os, sys, py_compile
 assert len(sys.argv) == 2
 path = sys.argv[1]
 short = os.path.basename(path)
-version = sys.version[0:3]
+version = ".".join([str(v) for v in PYTHON_VERSION_TRIPLE[:2]])
 if hasattr(sys, 'pypy_version_info'):
     cfile =  "bytecode_pypy%s/%s" % (version, short) + 'c'
 else:
