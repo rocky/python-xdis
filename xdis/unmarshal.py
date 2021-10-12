@@ -30,9 +30,9 @@ import io
 import sys
 from struct import unpack
 
-from xdis.magics import magic_int2float
+from xdis.magics import magic_int2tuple
 from xdis.codetype import to_portable
-from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
+from xdis.version_info import PYTHON3, PYTHON_VERSION, PYTHON_VERSION_TRIPLE, IS_PYPY
 
 if PYTHON3:
 
@@ -42,6 +42,7 @@ if PYTHON3:
 
 else:
     import unicodedata
+
     # FIXME: we should write a bytes() class with a repr
     # that prints the b'' prefix so that Python2 can
     # print out Python3 code correctly
@@ -144,15 +145,15 @@ class _VersionIndependentUnmarshaller:
         self.code_objects = code_objects
 
         self.bytes_for_s = bytes_for_s
-        version_float = magic_int2float(self.magic_int)
-        if version_float >= 3.4:
+        version = magic_int2tuple(self.magic_int)
+        if version >= (3, 4):
             if self.magic_int in (3250, 3260, 3270):
                 self.marshal_version = 3
             else:
                 self.marshal_version = 4
-        elif version_float < 3.4 and version_float >= 2.5:
+        elif version < (3, 4) and version >= (2, 5):
             self.marshal_version = 2
-        elif version_float < 2.5 and version_float >= 2.4:
+        elif version < (2, 5) and version >= (2, 4):
             self.marshal_version = 1
         else:
             self.marshal_version = 0
@@ -358,7 +359,7 @@ class _VersionIndependentUnmarshaller:
     def t_unicode(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
         unicodestring = self.fp.read(strsize)
-        if PYTHON_VERSION == 3.2 and IS_PYPY:
+        if PYTHON_VERSION_TRIPLE == (3, 2) and IS_PYPY:
             # FIXME: this isn't quite right. See
             # pypy3-2.4.0/lib-python/3/email/message.py
             # '([^\ud800-\udbff]|\A)[\udc00-\udfff]([^\udc00-\udfff]|\Z)')
@@ -438,47 +439,46 @@ class _VersionIndependentUnmarshaller:
         # FIXME: Python 1.0 .. 1.3 isn't well known
 
         ret, i = self.r_ref_reserve(None, save_ref)
-        version = magic_int2float(self.magic_int)
+        version_tuple = magic_int2tuple(self.magic_int)
 
-        if version >= 2.3:
+        if version_tuple >= (2, 3):
             co_argcount = unpack("<i", self.fp.read(4))[0]
-        elif version >= 1.3:
+        elif version_tuple >= (1, 3):
             co_argcount = unpack("<h", self.fp.read(2))[0]
         else:
             co_argcount = 0
 
-        # FIXME:
-        # Note we do this by magic_int, not version which is *not*
-        # 3.8
-        if self.magic_int in (3412, 3413, 3422, 3425):
-            co_posonlyargcount = unpack("<i", self.fp.read(4))[0]
-        if version >= 3.8:
-            co_posonlyargcount = 0
+        if version_tuple >= (3, 8):
+            co_posonlyargcount = (
+                0
+                if self.magic_int in (3400, 3401, 3410, 3411)
+                else unpack("<i", self.fp.read(4))[0]
+            )
         else:
             co_posonlyargcount = None
 
-        if version >= 3.0:
+        if version_tuple >= (3, 0):
             kwonlyargcount = unpack("<i", self.fp.read(4))[0]
         else:
             kwonlyargcount = 0
 
-        if version >= 2.3:
+        if version_tuple >= (2, 3):
             co_nlocals = unpack("<i", self.fp.read(4))[0]
-        elif version >= 1.3:
+        elif version_tuple >= (1, 3):
             co_nlocals = unpack("<h", self.fp.read(2))[0]
         else:
             co_nlocals = 0
 
-        if version >= 2.3:
+        if version_tuple >= (2, 3):
             co_stacksize = unpack("<i", self.fp.read(4))[0]
-        elif version >= 1.5:
+        elif version_tuple >= (1, 5):
             co_stacksize = unpack("<h", self.fp.read(2))[0]
         else:
             co_stacksize = 0
 
-        if version >= 2.3:
+        if version_tuple >= (2, 3):
             co_flags = unpack("<i", self.fp.read(4))[0]
-        elif version >= 1.3:
+        elif version_tuple >= (1, 3):
             co_flags = unpack("<h", self.fp.read(2))[0]
         else:
             co_flags = 0
@@ -486,16 +486,16 @@ class _VersionIndependentUnmarshaller:
         co_code = self.r_object(bytes_for_s=True)
 
         # FIXME: Check/verify that is true:
-        bytes_for_s = PYTHON_VERSION >= 3.0 and version > 3.0
+        bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (version_tuple > (3, 0))
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        if version >= 1.3:
+        if version_tuple >= (1, 3):
             co_varnames = self.r_object(bytes_for_s=False)
         else:
             co_varnames = []
 
-        if version >= 2.0:
+        if version_tuple >= (2, 0):
             co_freevars = self.r_object(bytes_for_s=bytes_for_s)
             co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
         else:
@@ -505,8 +505,8 @@ class _VersionIndependentUnmarshaller:
         co_filename = self.r_object(bytes_for_s=bytes_for_s)
         co_name = self.r_object(bytes_for_s=bytes_for_s)
 
-        if version >= 1.5:
-            if version >= 2.3:
+        if version_tuple >= (1, 5):
+            if version_tuple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
             else:
                 co_firstlineno = unpack("<h", self.fp.read(2))[0]
@@ -534,7 +534,7 @@ class _VersionIndependentUnmarshaller:
             co_lnotab,
             co_freevars,
             co_cellvars,
-            version,
+            version_tuple,
         )
 
         self.code_objects[str(code)] = code

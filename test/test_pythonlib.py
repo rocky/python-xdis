@@ -75,7 +75,7 @@ for vers in (1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6,
              2.1, 2.2, 2.3, 2.4, 2.5, '2.5dropbox', 2.6, 2.7,
              3.0, 3.1, 3.2, 3.3, 3.4, 3.5, '3.2pypy', '2.7pypy',
              '3.5pypy', '3.6pypy',
-             3.6, 3.7, 3.8):
+             3.6, 3.7, 3.8, '3.9', '3.10'):
     bytecode = "bytecode_%s" % vers
     key = "bytecode-%s" % vers
     test_options[key] = (os.path.join(src_dir, bytecode), PYC, bytecode, vers)

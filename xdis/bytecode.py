@@ -75,9 +75,9 @@ def offset2line(offset, linestarts):
 def _get_const_info(const_index, const_list):
     """Helper to get optional details about const references
 
-       Returns the dereferenced constant and its repr if the constant
-       list is defined.
-       Otherwise returns the constant index and its repr().
+    Returns the dereferenced constant and its repr if the constant
+    list is defined.
+    Otherwise returns the constant index and its repr().
     """
     argval = const_index
     if const_list is not None:
@@ -96,9 +96,9 @@ def _get_const_info(const_index, const_list):
 def _get_name_info(name_index, name_list):
     """Helper to get optional details about named references
 
-       Returns the dereferenced name as both value and repr if the name
-       list is defined.
-       Otherwise returns the name index and its repr().
+    Returns the dereferenced name as both value and repr if the name
+    list is defined.
+    Otherwise returns the name index and its repr().
     """
     argval = name_index
     if (
@@ -138,7 +138,7 @@ def get_instructions_bytes(
 
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
     # See below FIXME
-    python_36 = True if opc.python_version >= 3.6 else False
+    python_36 = True if opc.python_version >= (3, 6) else False
 
     starts_line = None
     # enumerate() is not an option, since we sometimes process
@@ -201,10 +201,14 @@ def get_instructions_bytes(
                 optype = "name"
             elif op in opc.JREL_OPS:
                 argval = i + arg
+                if opc.python_version >= (3, 10):
+                    argval *= 2
                 argrepr = "to " + repr(argval)
                 optype = "jrel"
             elif op in opc.JABS_OPS:
                 argval = arg
+                if opc.python_version >= (3, 10):
+                    argval *= 2
                 argrepr = "to " + repr(argval)
                 optype = "jabs"
             elif op in opc.LOCAL_OPS:
@@ -308,14 +312,14 @@ class Bytecode(object):
 
     @classmethod
     def from_traceback(cls, tb):
-        """ Construct a Bytecode from the given traceback """
+        """Construct a Bytecode from the given traceback"""
         while tb.tb_next:
             tb = tb.tb_next
         return cls(tb.tb_frame.f_code, current_offset=tb.tb_lasti)
 
     def info(self):
         """Return formatted information about the code object."""
-        return format_code_info(self.codeobj, self.opc.version)
+        return format_code_info(self.codeobj, self.opc.version_tuple)
 
     def dis(self, asm_format="classic"):
         """Return a formatted view of the bytecode operations."""
@@ -393,8 +397,9 @@ class Bytecode(object):
                 file.write("\n")
             is_current_instr = instr.offset == lasti
             file.write(
-                instr.disassemble(self.opc, lineno_width, is_current_instr, asm_format,
-                                  instructions)
+                instr.disassemble(
+                    self.opc, lineno_width, is_current_instr, asm_format, instructions
+                )
                 + "\n"
             )
             pass

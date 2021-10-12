@@ -20,12 +20,13 @@ import os.path as osp
 
 import xdis.marsh
 import xdis.unmarshal
-from xdis.version_info import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
 from xdis.magics import (
     IS_PYPY3,
     PYTHON_MAGIC_INT,
     int2magic,
     magic_int2float,
+    magic_int2tuple,
     magic2int,
     magicint2version,
     versions,
@@ -107,7 +108,7 @@ def load_file(filename, out=sys.stdout):
     try:
         source = fp.read()
         try:
-            if PYTHON_VERSION < 2.6:
+            if PYTHON_VERSION_TRIPLE < (2, 6):
                 co = compile(source, filename, "exec")
             else:
                 co = compile(source, filename, "exec", dont_inherit=True)
@@ -137,8 +138,8 @@ def load_module(filename, code_objects=None, fast_load=False, get_code=True):
                      `False`.
 
     Return values are as follows:
-        float_version: float; the floating-point version number for the given magic_int,
-                       e.g. 2.7 or 3.4
+        float_tuple    a tuple version number for the given magic_int,
+                       e.g. (2, 7) or (3, 4)
         timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
                         if no timestamp was stored
         magic_int: int, a more specific than version number. The actual byte code version of the
@@ -197,6 +198,7 @@ def load_module_from_file_object(
         try:
             # FIXME: use the internal routine below
             float_version = magic_int2float(magic_int)
+            tuple_version = magic_int2tuple(magic_int)
         except KeyError:
             if magic_int in (2657, 22138):
                 raise ImportError("This smells like Pyston which is not supported.")
@@ -253,20 +255,19 @@ def load_module_from_file_object(
             )
 
         try:
-            # print version
             my_magic_int = PYTHON_MAGIC_INT
             magic_int = magic2int(magic)
-            version = magic_int2float(magic_int)
+            version = magic_int2tuple(magic_int)
 
             timestamp = None
             source_size = None
             sip_hash = None
 
             ts = fp.read(4)
-            if version >= 3.7:
+            if magic_int in (3439,) or version >= (3, 7):
                 # PEP 552. https://www.python.org/dev/peps/pep-0552/
                 pep_bits = ts[-1]
-                if PYTHON_VERSION <= 2.7:
+                if PYTHON_VERSION_TRIPLE <= (2, 7):
                     pep_bits = ord(pep_bits)
                 if (pep_bits & 1) or magic_int == 3393:  # 3393 is 3.7.0beta3
                     # SipHash
@@ -286,7 +287,7 @@ def load_module_from_file_object(
                 # PYTHON_VERSION, although PYTHON_VERSION would probably work.
                 if (
                     (3200 <= magic_int < 20121)
-                    and version >= 1.5
+                    and version >= (1, 5)
                     or magic_int in IS_PYPY3
                 ):
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
@@ -315,7 +316,7 @@ def load_module_from_file_object(
         fp.close()
 
     return (
-        float_version,
+        tuple_version,
         timestamp,
         magic_int,
         co,
@@ -332,10 +333,10 @@ def write_bytecode_file(
     magic_int (i.e. bytecode associated with some version of Python)
     """
     fp = open(bytecode_path, "wb")
-    version = float(magicint2version[magic_int][:3])
-    if version >= 3.0:
+    version = magicint2tuple(magic_int)
+    if version >= (3, 0):
         fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
-        if version >= 3.7:  # pep552 bytes
+        if version >= (3, 7):  # pep552 bytes
             fp.write(pack("<I", 0))  # pep552 bytes
     else:
         fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
@@ -348,7 +349,7 @@ def write_bytecode_file(
     else:
         fp.write(pack("<I", int(datetime.now().timestamp())))
 
-    if version >= 3.3:
+    if version >= (3, 3):
         # In Python 3.3+, these 4 bytes are the size of the source code_obj file (mod 2^32)
         fp.write(pack("<I", filesize))
     if isinstance(code_obj, types.CodeType):
@@ -366,7 +367,10 @@ if __name__ == "__main__":
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:
-        print(datetime.datetime.fromtimestamp(timestamp))
+        if PYTHON_VERSION_TRIPLE < (3, 10):
+            print(datetime.datetime.fromtimestamp(timestamp))
+        else:
+            print(datetime.fromtimestamp(timestamp))
     if source_size is not None:
         print("source size mod 2**32: %d" % source_size)
     if sip_hash is not None:

@@ -45,10 +45,11 @@ from xdis.opcodes.base import (
 import xdis.opcodes.opcode_26 as opcode_26
 
 version = 2.7
+version_tuple = (2, 7)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_26, version)
+init_opdata(l, opcode_26, version_tuple)
 
 # fmt: off
 # Below are opcode changes since Python 2.6

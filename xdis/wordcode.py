@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020 by Rocky Bernstein
+# (C) Copyright 2018, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -50,17 +50,18 @@ def unpack_opargs_wordcode(code, opc):
             yield (i, op, arg)
 
 
-def get_jump_targets(code, opc):
+def findlabels(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
     which are the targets of some sort of jump instruction.
     """
     offsets = []
     for offset, op, arg in unpack_opargs_wordcode(code, opc):
         if arg is not None:
+            arg2 = arg * 2 if opc.version_tuple >= (3, 10) else arg
             if op in opc.JREL_OPS:
-                jump_offset = offset + 2 + arg
+                jump_offset = offset + 2 + arg2
             elif op in opc.JABS_OPS:
-                jump_offset = arg
+                jump_offset = arg2
             else:
                 continue
             if jump_offset not in offsets:
@@ -97,6 +98,3 @@ def get_jump_target_maps(code, opc):
                 prev_list.append(offset)
                 offset2prev[jump_offset] = prev_list
     return offset2prev
-
-
-findlabels = get_jump_targets
