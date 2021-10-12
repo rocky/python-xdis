@@ -22,9 +22,8 @@ from xdis.bytecode import Bytecode
 pytest.mark.skipif(PYTHON_VERSION_TRIPLE < (3, 6),
                     reason="asssume Python 3.6 or greater wordsize instructions")
 def test_inst_size():
-    if (PYTHON_VERSION_TRIPLE[:2] == (3,6)):
-        variant = 'pypy' if IS_PYPY else None
-        opc = get_opcode_module(sys.version_info, variant)
+    if (PYTHON_VERSION_TRIPLE[:2] == (3,6)) and not IS_PYPY:
+        opc = get_opcode_module(sys.version_info)
         bytecode_obj = Bytecode(extended_arg_fn36, opc)
         instructions = list(bytecode_obj.get_instructions(extended_arg_fn36))
 
