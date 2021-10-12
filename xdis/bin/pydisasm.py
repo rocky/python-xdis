@@ -11,7 +11,7 @@ import click
 import os.path as osp
 
 from xdis.version import __version__
-from xdis import PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION_STR, PYTHON_VERSION_TRIPLE
 from xdis import disassemble_file
 
 program, ext = os.path.splitext(os.path.basename(__file__))
@@ -40,15 +40,15 @@ def main(format, files):
     the Python interpreter used to run this program. For example, you can disassemble Python 3.6.9
     bytecode from Python 2.7.15 and vice versa.
     """
-    if not (2.7 <= PYTHON_VERSION <= 3.9):
-        if 2.4 <= PYTHON_VERSION <= 2.6:
+    if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 11)):
+        if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 6):
             sys.stderr.write(
-                "This code works on 2.7..3.8. code that works for %s can be found in the python-2.4 branch\n"
-                % PYTHON_VERSION
+                "This code works on 2.7 to 3.10. code that works for %s can be found in the python-2.4 branch\n"
+                % PYTHON_VERSION_STR
             )
             sys.exit(1)
         sys.stderr.write(
-            "This works on Python version 2.7..3.9; have %s.\n" % PYTHON_VERSION
+            "This works on Python version 2.7 to 3.10; have %s.\n" % PYTHON_VERSION_STR
         )
         sys.exit(2)
 

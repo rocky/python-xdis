@@ -3,7 +3,7 @@ import pytest
 import re
 
 from xdis import disassemble_file
-from xdis import PYTHON3, PYTHON_VERSION
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON3:
     from io import StringIO
@@ -20,7 +20,7 @@ def get_srcdir():
     return os.path.realpath(filename)
 
 
-if PYTHON_VERSION >= 3.2:
+if PYTHON_VERSION_TRIPLE >= (3, 2):
     @pytest.mark.parametrize(
         ("test_tuple", "function_to_test"),
         [
@@ -63,7 +63,15 @@ if PYTHON_VERSION >= 3.2:
             )
             for line in got_lines
         ]
-        got = "\n".join(got_lines[5:])
+
+        # In Python before 3.10 lines decribing Python versions were
+        # two lines, e.g.:
+        #  Python 3.7.11 (default, Jul  3 2021, 19:46:46)
+        #    [GCC 9.3.0]
+        # In Python 3.10 they are a single line, e.g:
+        #    Python 3.10.0 (default, Oct  4 2021, 23:36:04) [GCC 9.3.0]
+        skip_lines = 4 if PYTHON_VERSION_TRIPLE >= (3, 10) else 5
+        got = "\n".join(got_lines[skip_lines:])
 
         if "XDIS_DONT_WRITE_DOT_GOT_FILES" not in os.environ:
             if got != expected:

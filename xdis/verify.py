@@ -72,7 +72,7 @@ def dump_compile(codeobject, filename, timestamp, magic):
 
 
 def compare_code(c1, c2):
-    assert c1.co_code == c2.co_code, ("code %s vs. %s" % (c1.co_code, c2.co_code))
+    assert c1.co_code == c2.co_code, "code %s vs. %s" % (c1.co_code, c2.co_code)
     assert c1.co_argcount == c2.co_argcount
     assert c1.co_consts == c1.co_consts
     # assert len(c1.co_consts) == len(c2.co_consts), "consts:\n%s\nvs.\n%s" % (

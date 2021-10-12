@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2020 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2021 by Rocky Bernstein
 """
 CPython 2.3 bytecode opcodes
 
@@ -23,10 +23,11 @@ from xdis.opcodes.base import (
 )
 
 version = 2.3
+version_tuple = (2, 3)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_2x, version)
+init_opdata(l, opcode_2x, version_tuple)
 
 update_pj2(globals(), l)
 

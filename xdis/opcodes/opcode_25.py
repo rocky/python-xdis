@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2021 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
 """
 CPython 2.5 bytecode opcodes
 
@@ -24,10 +24,11 @@ from xdis.opcodes.base import (
 )
 
 version = 2.5
+version_tuple = (2, 5)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_24, version)
+init_opdata(l, opcode_24, version_tuple)
 
 # fmt: off
 # Bytecodes added in 2.5 from 2.4

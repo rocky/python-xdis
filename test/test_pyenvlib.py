@@ -24,7 +24,6 @@ import os.path as osp
 
 import xdis.magics as magics
 from xdis.load import check_object_path
-from xdis import IS_PYPY
 
 # ----- configure this for your needs
 
@@ -175,6 +174,8 @@ def do_tests(
     for i, bc_file in enumerate(files):
         if verbose:
             print(os.path.join(src_dir, bc_file))
+        if src_dir.find("simple_source") >= 0:
+            continue
         if sys.version_info >= (3, 4, 0) and bc_file.endswith(".py"):
             check_bc_file = check_object_path(bc_file)
             if not osp.exists(check_bc_file):

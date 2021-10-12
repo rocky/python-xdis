@@ -46,6 +46,7 @@ from xdis.opcodes.base import (
 )
 
 version = 1.5
+version_tuple = (1, 5)
 python_implementation = "CPython"
 
 cmp_op = (
@@ -68,7 +69,7 @@ cmp_op = (
 HAVE_ARGUMENT = 90
 
 l = locals()
-l["python_version"] = version
+l["python_version"] = version_tuple
 l["cmp_op"] = cmp_op
 l["HAVE_ARGUMENT"] = HAVE_ARGUMENT
 

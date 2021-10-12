@@ -1,5 +1,5 @@
 """
-  Copyright (c) 2015-2017, 2020 by Rocky Bernstein
+  Copyright (c) 2015-2017, 2020-2021 by Rocky Bernstein
   Copyright (c) 2000 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
   This program is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@ from xdis.version_info import (
     PYTHON3,
     PYTHON_VERSION,
     PYTHON_VERSION_STR,
+    PYTHON_VERSION_TRIPLE,
 )
 
 from xdis.bytecode import (

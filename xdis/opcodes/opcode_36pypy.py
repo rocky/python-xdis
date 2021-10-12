@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2020 by Rocky Bernstein
+# (C) Copyright 2019-2021 by Rocky Bernstein
 """
 PYPY 3.6 opcodes
 
@@ -25,6 +25,7 @@ from xdis.opcodes.base import (
 )
 
 version = 3.6
+version_tuple = (3, 6)
 python_implementation = "PyPy"
 
 from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
@@ -34,7 +35,7 @@ from xdis.opcodes.opcode_36 import (
 )
 
 l = locals()
-init_opdata(l, opcode_36, version, is_pypy=True)
+init_opdata(l, opcode_36, version_tuple, is_pypy=True)
 
 ## FIXME: DRY common PYPY opcode additions
 

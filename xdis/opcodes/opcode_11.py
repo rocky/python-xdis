@@ -37,10 +37,11 @@ from xdis.opcodes.base import (
 )
 
 version = 1.1  # 1.2 is the same
+version_tuple = (1, 2)  # 1.2 is the same
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_13, version)
+init_opdata(l, opcode_13, version_tuple)
 
 update_pj2(globals(), l)
 

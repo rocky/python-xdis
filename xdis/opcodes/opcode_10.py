@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2020 by Rocky Bernstein
+# (C) Copyright 2019-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -38,10 +38,11 @@ from xdis.opcodes.base import (
 )
 
 version = 1.0
+version_tuple = (1, 0)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_11, version)
+init_opdata(l, opcode_11, version_tuple)
 
 # fmt: off
 # 1.0 - 1.1 bytecodes differences
