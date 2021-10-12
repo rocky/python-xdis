@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
 """
 CPython 3.3 bytecode opcodes
 
@@ -23,15 +23,19 @@ from xdis.opcodes.base import (
 import xdis.opcodes.opcode_3x as opcode_3x
 
 version = 3.3
+version_tuple = (3, 3)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_3x, version)
+init_opdata(l, opcode_3x, version_tuple)
 
 # Below are opcode changes since Python 3.2
 
-rm_op(l, "STOP_CODE", 0)
+# fmt: off
+rm_op(l,  "STOP_CODE",   0)
 def_op(l, "YIELD_FROM", 72, 1, 0)
+# fmt: on
+
 
 update_pj3(globals(), l)
 

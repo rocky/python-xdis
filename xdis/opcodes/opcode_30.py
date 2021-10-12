@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2020 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2021 by Rocky Bernstein
 """
 CPython 3.0 bytecode opcodes
 
@@ -22,14 +22,16 @@ from xdis.opcodes.base import (
 import xdis.opcodes.opcode_31 as opcode_31
 
 version = 3.0
+version_tuple = (3, 0)
 python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_31, version)
+init_opdata(l, opcode_31, version_tuple)
 
 # These are in Python 3.x but not in Python 3.0
 
+# fmt: off
 rm_op(l, 'JUMP_IF_FALSE_OR_POP', 111)
 rm_op(l, 'JUMP_IF_TRUE_OR_POP',  112)
 rm_op(l, 'POP_JUMP_IF_FALSE',    114)
@@ -45,12 +47,13 @@ rm_op(l, 'MAP_ADD',              147)
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
 
-def_op(l, 'SET_ADD',              17, 2, 0)  # Calls set.add(TOS1[-i], TOS).
+def_op(l, 'SET_ADD',              17,  2, 0)  # Calls set.add(TOS1[-i], TOS).
                                              # Used to implement set comprehensions.
-def_op(l, 'LIST_APPEND',          18, 2, 0)  # Calls list.append(TOS1, TOS).
+def_op(l, 'LIST_APPEND',          18,  2, 0)  # Calls list.append(TOS1, TOS).
                                              # Used to implement list comprehensions.
-jrel_op(l, 'JUMP_IF_FALSE',      111, 1, 1)
-jrel_op(l, 'JUMP_IF_TRUE',       112, 1, 1)
+jrel_op(l, 'JUMP_IF_FALSE',      111,  1, 1)
+jrel_op(l, 'JUMP_IF_TRUE',       112,  1, 1)
+# fmt: on
 
 # Yes, pj2 not pj3 - Python 3.0 is more like 2.7 here with its
 # JUMP_IF rather than POP_JUMP_IF.

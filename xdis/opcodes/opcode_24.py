@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
 """
 CPython 2.4 bytecode opcodes
 
@@ -20,22 +20,26 @@ from xdis.opcodes.base import (
     format_MAKE_FUNCTION_default_argc,
     format_RAISE_VARARGS_older,
     format_extended_arg,
-    update_pj2
+    update_pj2,
 )
 
 version = 2.4
+version_tuple = (2, 4)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_2x, version)
+init_opdata(l, opcode_2x, version_tuple)
 
+# fmt: off
 # Bytecodes added since 2.3
 #          OP NAME            OPCODE POP PUSH
-#--------------------------------------------
-def_op(l, 'NOP',                   9,  0,  0)
-def_op(l, 'LIST_APPEND',          18,  2,  0)  # Calls list.append(TOS[-i], TOS).
-                                               # Used to implement list comprehensions.
+ # Used to implement list comprehensions.
 def_op(l, 'YIELD_VALUE',          86,  1,  1)
+# --------------------------------------------
+def_op(l, "NOP", 9, 0, 0)
+def_op(l, "LIST_APPEND", 18, 2, 0)  # Calls list.append(TOS[-i], TOS).
+# Used to implement list comprehensions.
+def_op(l, "YIELD_VALUE", 86, 1, 1)
 
 # FIXME remove (fix uncompyle6)
 update_pj2(globals(), l)
@@ -59,3 +63,4 @@ opcode_extended_fmt = {
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,
 }
+# fmt: on

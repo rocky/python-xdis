@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
 """
 CPython 3.4 bytecode opcodes
 
@@ -23,17 +23,20 @@ from xdis.opcodes.base import (
 import xdis.opcodes.opcode_33 as opcode_33
 
 version = 3.4
+version_tuple = (3, 4)
 python_implementation = "CPython"
 
 l = locals()
 
-init_opdata(l, opcode_33, version)
+init_opdata(l, opcode_33, version_tuple)
 
+# fmt: off
 # These are removed since Python 3.3
-rm_op(l, "STORE_LOCALS", 69)
+rm_op(l, "STORE_LOCALS",       69)
 
 # These are new since Python 3.3
 free_op(l, "LOAD_CLASSDEREF", 148)
+# fmt: on
 
 update_pj3(globals(), l)
 

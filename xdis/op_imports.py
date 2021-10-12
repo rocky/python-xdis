@@ -44,6 +44,7 @@ from xdis.opcodes import opcode_36 as opcode_36
 from xdis.opcodes import opcode_37 as opcode_37
 from xdis.opcodes import opcode_38 as opcode_38
 from xdis.opcodes import opcode_39 as opcode_39
+from xdis.opcodes import opcode_310 as opcode_310
 
 from xdis.opcodes import opcode_26pypy as opcode_26pypy
 from xdis.opcodes import opcode_27pypy as opcode_27pypy
@@ -126,6 +127,9 @@ op_imports = {
     "3.9.0beta5": opcode_39,
     "3.9": opcode_39,
     3.9: opcode_39,
+    "3.10.0rc2": opcode_310,
+    "3.10": opcode_310,
+    3.10: opcode_310,
     "2.6pypy": opcode_26pypy,
     "2.7pypy": opcode_27pypy,
     "3.2pypy": opcode_32pypy,

@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2020 by Rocky Bernstein
+# (C) Copyright 2018-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -37,21 +37,24 @@ from xdis.opcodes.base import (
 )
 
 version = 1.4
+version_tuple = (1, 4)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_15, version)
+init_opdata(l, opcode_15, version_tuple)
 
+# fmt: off
 # 1.4 Bytecodes not in 1.5
-def_op(l, "UNARY_CALL", 14)
-def_op(l, "BINARY_CALL", 26)
-def_op(l, "RAISE_EXCEPTION", 81)
-def_op(l, "BUILD_FUNCTION", 86)
-varargs_op(l, "UNPACK_ARG", 94)  # Number of arguments expected
-varargs_op(l, "UNPACK_VARARG", 99)  # Minimal number of arguments
-name_op(l, "LOAD_LOCAL", 115)
+def_op(l, "UNARY_CALL",         14)
+def_op(l, "BINARY_CALL",        26)
+def_op(l, "RAISE_EXCEPTION",    81)
+def_op(l, "BUILD_FUNCTION",     86)
+varargs_op(l, "UNPACK_ARG",     94)  # Number of arguments expected
+varargs_op(l, "UNPACK_VARARG",  99)  # Minimal number of arguments
+name_op(l, "LOAD_LOCAL",       115)
 varargs_op(l, "SET_FUNC_ARGS", 117)  # Argcount
-varargs_op(l, "RESERVE_FAST", 123)  # Number of local variables
+varargs_op(l, "RESERVE_FAST",  123)  # Number of local variables
+# fmt: on
 
 update_pj2(globals(), l)
 
