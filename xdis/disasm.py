@@ -113,7 +113,7 @@ def show_module_header(
         )
     if PYTHON_VERSION_TRIPLE < (3, 0) and bytecode_version >= 3.0:
         real_out.write(
-            "\n## **Warning** bytecode strings will be converted to strings.\n"
+            "\n## **Warning** bytecode strings may be converted to strings.\n"
         )
         real_out.write("## To avoid loss, run this from Python 3.0 or greater\n\n")
 

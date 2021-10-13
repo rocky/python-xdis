@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -18,17 +18,25 @@ from xdis.version_info import PYTHON_VERSION
 from xdis.codetype.base import CodeBase
 from copy import deepcopy
 
+# A Python 2 class for bytes
+class Bytes(str):
+    def __init__(self, s):
+        self.s = s
+    def __repr__(self):
+        return "b%s" % repr(self.s)
+
+
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
 Code13FieldTypes = {
     "co_argcount": int,
     "co_nlocals": int,
     "co_flags": int,
     "co_code": (str, list, tuple),
-    "co_consts": (tuple, list),
+    "co_consts": (tuple, list, Bytes),
     "co_names": (tuple, list),
     "co_varnames": (tuple, list),
-    "co_filename": (str, unicode),
-    "co_name": (str, unicode),
+    "co_filename": (str, unicode, Bytes),
+    "co_name": (str, unicode, Bytes),
 }
 
 class Code13(CodeBase):

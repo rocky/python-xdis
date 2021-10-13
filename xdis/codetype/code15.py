@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from xdis.version_info import PYTHON3, PYTHON_VERSION
-from xdis.codetype.code13 import Code13, Code13FieldTypes
+from xdis.codetype.code13 import Bytes, Code13, Code13FieldTypes
 import inspect, types
 from copy import deepcopy
 
@@ -24,7 +24,7 @@ Code15FieldTypes = deepcopy(Code13FieldTypes)
 Code15FieldTypes.update({
     "co_stacksize": int,
     "co_firstlineno": int,
-    "co_lnotab": (str, dict),
+    "co_lnotab": (str, dict, Bytes),
 })
 # stacksize, co_firstlineno, co_lnotab are new in 1.5
 

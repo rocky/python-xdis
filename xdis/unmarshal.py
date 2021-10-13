@@ -30,7 +30,7 @@ import sys
 from struct import unpack
 
 from xdis.magics import magic_int2tuple
-from xdis.codetype import to_portable
+from xdis.codetype import to_portable, Bytes
 from xdis.version_info import PYTHON3, PYTHON_VERSION, PYTHON_VERSION_TRIPLE, IS_PYPY
 
 if PYTHON3:
@@ -105,7 +105,7 @@ UNMARSHAL_DISPATCH_TABLE = {
 }
 
 
-def compat_str(s):
+def compat_str(s, str_is_bytes):
     """
     This handles working with strings between Python2 and Python3.
     """
@@ -118,6 +118,8 @@ def compat_str(s):
             return s
 
         return s.decode()
+    elif str_is_bytes:
+        return Bytes(s)
     else:
         return str(s)
 
@@ -155,6 +157,7 @@ class _VersionIndependentUnmarshaller:
 
         self.bytes_for_s = bytes_for_s
         version = magic_int2tuple(self.magic_int)
+        self.version = version
         if version >= (3, 4):
             if self.magic_int in (3250, 3260, 3270):
                 self.marshal_version = 3
@@ -318,7 +321,7 @@ class _VersionIndependentUnmarshaller:
         strsize = unpack("<i", self.fp.read(4))[0]
         s = self.fp.read(strsize)
         if not bytes_for_s:
-            s = compat_str(s)
+            s = compat_str(s, self.version >= (3, 0))
         return self.r_ref(s, save_ref)
 
     # Python 3.4
@@ -330,7 +333,7 @@ class _VersionIndependentUnmarshaller:
         """
         # FIXME: check
         strsize = unpack("<i", self.fp.read(4))[0]
-        interned = compat_str(self.fp.read(strsize))
+        interned = compat_str(self.fp.read(strsize), False)
         self.internStrings.append(interned)
         return self.r_ref(interned, save_ref)
 
@@ -342,26 +345,26 @@ class _VersionIndependentUnmarshaller:
         """
         strsize = unpack("<i", self.fp.read(4))[0]
         s = self.fp.read(strsize)
-        s = compat_str(s)
+        s = compat_str(s, False)
         return self.r_ref(s, save_ref)
 
     # Since Python 3.4
     def t_short_ASCII(self, save_ref, bytes_for_s=False):
         strsize = unpack("B", self.fp.read(1))[0]
-        return self.r_ref(compat_str(self.fp.read(strsize)), save_ref)
+        return self.r_ref(compat_str(self.fp.read(strsize), False), save_ref)
 
     # Since Python 3.4
     def t_short_ASCII_interned(self, save_ref, bytes_for_s=False):
         # FIXME: check
         strsize = unpack("B", self.fp.read(1))[0]
-        interned = compat_str(self.fp.read(strsize))
+        interned = compat_str(self.fp.read(strsize), False)
         self.internStrings.append(interned)
         return self.r_ref(interned, save_ref)
 
     # Since Python 3.4
     def t_interned(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
-        interned = compat_str(self.fp.read(strsize))
+        interned = compat_str(self.fp.read(strsize), False)
         self.internStrings.append(interned)
         return self.r_ref(interned, save_ref)
 

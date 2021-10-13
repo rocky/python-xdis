@@ -20,7 +20,7 @@
 
 # Things that change more often go here.
 copyright = """
-Copyright (C) 2015-2020 Rocky Bernstein <rb@dustyfeet.com>.
+Copyright (C) 2015-2021 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
 classifiers = [
