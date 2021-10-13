@@ -96,7 +96,7 @@ UNMARSHAL_DISPATCH_TABLE = {
 }
 
 
-def compat_str(s: str) -> str:
+def compat_str(s) -> str:
     """
     This handles working with strings between Python2 and Python3.
     """
