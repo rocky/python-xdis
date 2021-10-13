@@ -31,25 +31,15 @@ from struct import unpack
 
 from xdis.magics import magic_int2tuple
 from xdis.codetype import to_portable, Bytes
-from xdis.version_info import PYTHON3, PYTHON_VERSION, PYTHON_VERSION_TRIPLE, IS_PYPY
-
-if PYTHON3:
-
-    def long(n):
-        return n
+from xdis.version_info import PYTHON_VERSION_TRIPLE, IS_PYPY
 
 
-else:
-    import unicodedata
+import unicodedata
 
-    # FIXME: we should write a bytes() class with a repr
-    # that prints the b'' prefix so that Python2 can
-    # print out Python3 code correctly
+if PYTHON_VERSION_TRIPLE < (2, 4):
+    from sets import Set as set
 
-    if PYTHON_VERSION < 2.4:
-        from sets import Set as set
-
-        frozenset = set
+    frozenset = set
 
 # Bit set on marshalType if we should
 # add obj to internObjects.
@@ -109,34 +99,22 @@ def compat_str(s, str_is_bytes):
     """
     This handles working with strings between Python2 and Python3.
     """
-    if PYTHON3:
-        try:
-            return s.decode("utf-8")
-        except UnicodeDecodeError:
-            # If not Unicode, return bytes
-            # and it will get converted to str when needed
-            return s
-
-        return s.decode()
-    elif str_is_bytes:
+    if str_is_bytes:
         return Bytes(s)
     else:
         return str(s)
 
 
 def compat_u2s(u):
-    if PYTHON_VERSION < 3.0:
-        # See also unaccent.py which can be found using google. I
-        # found it and this code via
-        # https://www.peterbe.com/plog/unicode-to-ascii where it is a
-        # dead link. That can potentially do better job in converting accents.
-        s = unicodedata.normalize("NFKD", u)
-        try:
-            return s.encode("ascii")
-        except UnicodeEncodeError:
-            return s
-    else:
-        return str(u)
+    # See also unaccent.py which can be found using google. I
+    # found it and this code via
+    # https://www.peterbe.com/plog/unicode-to-ascii where it is a
+    # dead link. That can potentially do better job in converting accents.
+    s = unicodedata.normalize("NFKD", u)
+    try:
+        return s.encode("ascii")
+    except UnicodeEncodeError:
+        return s
 
 
 class _VersionIndependentUnmarshaller:
@@ -371,18 +349,12 @@ class _VersionIndependentUnmarshaller:
     def t_unicode(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
         unicodestring = self.fp.read(strsize)
-        if PYTHON_VERSION_TRIPLE == (3, 2) and IS_PYPY:
-            # FIXME: this isn't quite right. See
-            # pypy3-2.4.0/lib-python/3/email/message.py
-            # '([^\ud800-\udbff]|\A)[\udc00-\udfff]([^\udc00-\udfff]|\Z)')
-            return self.r_ref(unicodestring.decode("utf-8", errors="ignore"), save_ref)
-        else:
-            try:
-                return self.r_ref(unicodestring.decode("utf-8"), save_ref)
-            except UnicodeDecodeError:
-                return self.r_ref(
-                    unicodestring.decode("utf-8", errors="ignore"), save_ref
-                )
+        try:
+            return self.r_ref(unicodestring.decode("utf-8"), save_ref)
+        except UnicodeDecodeError:
+            return self.r_ref(
+                unicodestring.decode("utf-8", errors="ignore"), save_ref
+            )
 
     # Since Python 3.4
     def t_small_tuple(self, save_ref, bytes_for_s=False):
@@ -497,9 +469,8 @@ class _VersionIndependentUnmarshaller:
         co_code = self.r_object(bytes_for_s=True)
 
         # FIXME: Check/verify that is true:
-        bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (version_tuple > (3, 0))
-        co_consts = self.r_object(bytes_for_s=bytes_for_s)
-        co_names = self.r_object(bytes_for_s=bytes_for_s)
+        co_consts = self.r_object(bytes_for_s=False)
+        co_names = self.r_object(bytes_for_s=False)
 
         if version_tuple >= (1, 3):
             co_varnames = self.r_object(bytes_for_s=False)
