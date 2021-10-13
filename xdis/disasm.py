@@ -111,7 +111,7 @@ def show_module_header(
                 "\n# ".join(sys.version.split("\n")),
             )
         )
-    if PYTHON_VERSION_TRIPLE < (3, 0) and bytecode_version >= 3.0:
+    if bytecode_version >= 3.0:
         real_out.write(
             "\n## **Warning** bytecode strings may be converted to strings.\n"
         )

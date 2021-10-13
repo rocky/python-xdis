@@ -102,34 +102,7 @@ class Code38(Code3):
             self.check()
 
     def to_native(self):
-        if not (PYTHON_VERSION >= 3.8):
-            raise TypeError(
-                "Python Interpreter needs to be in 3.8 or greater; is %s"
-                % PYTHON_VERSION
-            )
-
-        code = deepcopy(self)
-        code.freeze()
-        try:
-            code.check()
-        except AssertionError(e):
-            raise TypeError(e)
-
-        return types.CodeType(
-            code.co_argcount,
-            code.co_posonlyargcount,
-            code.co_kwonlyargcount,
-            code.co_nlocals,
-            code.co_stacksize,
-            code.co_flags,
-            code.co_code,
-            code.co_consts,
-            code.co_names,
-            code.co_varnames,
-            code.co_filename,
-            code.co_name,
-            code.co_firstlineno,
-            code.co_lnotab,
-            code.co_freevars,
-            code.co_cellvars,
+        raise TypeError(
+            "Python Interpreter needs to be in 3.8 or greater; is %s"
+            % ".".join([str(v) for v in PYTHON_VERSION_TRIPLE])
         )

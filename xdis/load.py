@@ -365,10 +365,7 @@ if __name__ == "__main__":
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:
-        if PYTHON_VERSION_TRIPLE < (3, 10):
-            print(datetime.datetime.fromtimestamp(timestamp))
-        else:
-            print(datetime.fromtimestamp(timestamp))
+        print(datetime.datetime.fromtimestamp(timestamp))
     if source_size is not None:
         print("source size mod 2**32: %d" % source_size)
     if sip_hash is not None:

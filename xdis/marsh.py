@@ -47,10 +47,12 @@ except ImportError:
 
 
 def Ord(c):
-    if PYTHON3:
-        return c
-    else:
-        return ord(c)
+    return ord(c)
+
+
+def Ord(c):
+    return ord(c)
+
 
 TYPE_NULL = "0"
 TYPE_NONE = "N"
@@ -252,7 +254,7 @@ class _Marshaller:
 
     def dump_unicode(self, x):
         self._write(TYPE_UNICODE)
-        if not PYTHON3 and self.python_version < "3.0":
+        if self.python_version < "3.0":
             s = x.encode("utf8")
         else:
             s = x
@@ -360,10 +362,7 @@ class _Marshaller:
     dispatch[Code3] = dump_code3
 
     try:
-        if PYTHON3:
-            dispatch[types.CodeType] = dump_code3
-        else:
-            dispatch[types.CodeType] = dump_code2
+        dispatch[types.CodeType] = dump_code2
     except NameError:
         pass
 
@@ -441,14 +440,14 @@ class _Unmarshaller:
         try:
             return self.dispatch[c](self)
         except KeyError:
-            raise ValueError("bad marshal code: %c (%d)" % (c, Ord(c)))
+            raise ValueError("bad marshal code: %c (%d)" % (c, ord(c)))
 
     def r_byte(self):
-        return Ord(self._read(1))
+        return ord(self._read(1))
 
     def r_short(self):
-        lo = Ord(self._read(1))
-        hi = Ord(self._read(1))
+        lo = ord(self._read(1))
+        hi = ord(self._read(1))
         x = lo | (hi << 8)
         if x & 0x8000:
             x = x - 0x10000
@@ -456,10 +455,10 @@ class _Unmarshaller:
 
     def r_long(self):
         s = self._read(4)
-        a = Ord(s[0])
-        b = Ord(s[1])
-        c = Ord(s[2])
-        d = Ord(s[3])
+        a = ord(s[0])
+        b = ord(s[1])
+        c = ord(s[2])
+        d = ord(s[3])
         x = a | (b << 8) | (c << 16) | (d << 24)
         if d & 0x80 and x > 0:
             x = -((1 << 32) - x)
@@ -468,14 +467,14 @@ class _Unmarshaller:
             return x
 
     def r_long64(self):
-        a = Ord(self._read(1))
-        b = Ord(self._read(1))
-        c = Ord(self._read(1))
-        d = Ord(self._read(1))
-        e = Ord(self._read(1))
-        f = Ord(self._read(1))
-        g = Ord(self._read(1))
-        h = Ord(self._read(1))
+        a = ord(self._read(1))
+        b = ord(self._read(1))
+        c = ord(self._read(1))
+        d = ord(self._read(1))
+        e = ord(self._read(1))
+        f = ord(self._read(1))
+        g = ord(self._read(1))
+        h = ord(self._read(1))
         x = a | (b << 8) | (c << 16) | (d << 24)
         x = x | (e << 32) | (f << 40) | (g << 48) | (h << 56)
         if h & 0x80 and x > 0:
@@ -632,77 +631,40 @@ class _Unmarshaller:
         firstlineno = self.r_long()
         lnotab = self.load()
         if is_python3:
-            if PYTHON3:
-                return types.CodeType(
-                    argcount,
-                    kwonlyargcount,
-                    nlocals,
-                    stacksize,
-                    flags,
-                    code,
-                    consts,
-                    names,
-                    varnames,
-                    filename,
-                    name,
-                    firstlineno,
-                    lnotab,
-                    freevars,
-                    cellvars,
-                )
-            else:
-                return Code3(
-                    argcount,
-                    kwonlyargcount,
-                    nlocals,
-                    stacksize,
-                    flags,
-                    code,
-                    consts,
-                    names,
-                    varnames,
-                    filename,
-                    name,
-                    firstlineno,
-                    lnotab,
-                    freevars,
-                    cellvars,
-                )
+            return Code3(
+                argcount,
+                kwonlyargcount,
+                nlocals,
+                stacksize,
+                flags,
+                code,
+                consts,
+                names,
+                varnames,
+                filename,
+                name,
+                firstlineno,
+                lnotab,
+                freevars,
+                cellvars,
+            )
         else:
-            if PYTHON3:
-                return Code2(
-                    argcount,
-                    nlocals,
-                    stacksize,
-                    flags,
-                    code,
-                    consts,
-                    names,
-                    varnames,
-                    filename,
-                    name,
-                    firstlineno,
-                    lnotab,
-                    freevars,
-                    cellvars,
-                )
-            else:
-                return types.CodeType(
-                    argcount,
-                    nlocals,
-                    stacksize,
-                    flags,
-                    code,
-                    consts,
-                    names,
-                    varnames,
-                    filename,
-                    name,
-                    firstlineno,
-                    lnotab,
-                    freevars,
-                    cellvars,
-                )
+            return types.CodeType(
+                argcount,
+                nlocals,
+                stacksize,
+                flags,
+                code,
+                consts,
+                names,
+                varnames,
+                filename,
+                name,
+                firstlineno,
+                lnotab,
+                freevars,
+                cellvars,
+            )
 
     dispatch[TYPE_CODE] = load_code
 
@@ -800,8 +762,6 @@ class _FastUnmarshaller:
         c = "?"
         try:
             c = self.bufstr[self.bufpos]
-            if PYTHON3:
-                c = chr(c)
             self.bufpos += 1
             return _load_dispatch[c](self)
         except KeyError:
@@ -890,8 +850,6 @@ class _FastUnmarshaller:
     def load_interned(self):
         n = _r_long(self)
         s = _read(self, n)
-        if PYTHON3:
-            s = s.decode("utf8")
         ret = intern(s)
         self._stringtable.append(ret)
         return ret
@@ -953,42 +911,22 @@ class _FastUnmarshaller:
         name = self.load()
         firstlineno = _r_long(self)
         lnotab = self.load()
-        if PYTHON3:
-            if isinstance(name, bytes):
-                name = name.decode()
-            return Code2(
-                argcount,
-                nlocals,
-                stacksize,
-                flags,
-                code,
-                consts,
-                names,
-                varnames,
-                filename.decode(),
-                name,
-                firstlineno,
-                lnotab,
-                freevars,
-                cellvars,
-            )
-        else:
-            return types.CodeType(
-                argcount,
-                nlocals,
-                stacksize,
-                flags,
-                code,
-                consts,
-                names,
-                varnames,
-                filename,
-                name,
-                firstlineno,
-                lnotab,
-                freevars,
-                cellvars,
-            )
+        return types.CodeType(
+            argcount,
+            nlocals,
+            stacksize,
+            flags,
+            code,
+            consts,
+            names,
+            varnames,
+            filename,
+            name,
+            firstlineno,
+            lnotab,
+            freevars,
+            cellvars,
+        )
 
     dispatch[TYPE_CODE] = load_code
 
@@ -1032,15 +970,12 @@ def dumps(x, version=version, python_version=None):
     if python_version:
         is_python3 = python_version >= 3.0
     else:
-        is_python3 = PYTHON3
+        is_python3 = False
 
     if is_python3:
         buf = []
         for b in buffer:
-            if isinstance(b, str) and PYTHON3:
-                s2b = bytes(ord(b[j]) for j in range(len(b)))
-                buf.append(s2b)
-            elif isinstance(b, bytearray):
+            if isinstance(b, bytearray):
                 buf.append(str(b))
             else:
                 buf.append(b)
@@ -1049,13 +984,7 @@ def dumps(x, version=version, python_version=None):
         # Python 2 or 3 handling Python 2.x
         buf = []
         for b in buffer:
-            if isinstance(b, str) and PYTHON3:
-                try:
-                    s2b = bytes(ord(b[j]) for j in range(len(b)))
-                except ValueError:
-                    s2b = b.encode("utf-8")
-                buf.append(s2b)
-            elif isinstance(b, bytearray):
+            if isinstance(b, bytearray):
                 buf.append(str(b))
             else:
                 buf.append(b)

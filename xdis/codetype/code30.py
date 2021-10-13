@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@ import types
 from copy import deepcopy
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
-from xdis.version_info import PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 # Below, in the Python 2.4 branch "bytes" is "str" since there may not be a "bytes" type.
 Code3FieldTypes = deepcopy(Code2FieldTypes)
@@ -118,42 +118,13 @@ class Code3(Code2):
             # into the encoded format
             self.encode_lineno_tab()
 
-        if isinstance(self.co_code, str) and PYTHON_VERSION >= 3.0:
-            self.co_code = self.co_code.encode()
-
         if isinstance(self.co_lnotab, str):
             self.co_lnotab = self.co_lnotab.encode()
 
         return self
 
     def to_native(self):
-        if not (3.0 <= PYTHON_VERSION <= 3.7):
-            raise TypeError(
-                "Python Interpreter needs to be in range 3.0..3.7; is %s"
-                % PYTHON_VERSION
+        raise TypeError(
+            "Python Interpreter needs to be in range 3.0..3.7; is %s"
+            % ".".join([str(v) for v in PYTHON_VERSION_TRIPLE])
             )
-
-        code = deepcopy(self)
-        code.freeze()
-        try:
-            code.check()
-        except AssertionError(e):
-            raise TypeError(e)
-
-        return types.CodeType(
-            code.co_argcount,
-            code.co_kwonlyargcount,
-            code.co_nlocals,
-            code.co_stacksize,
-            code.co_flags,
-            code.co_code,
-            code.co_consts,
-            code.co_names,
-            code.co_varnames,
-            code.co_filename,
-            code.co_name,
-            code.co_firstlineno,
-            code.co_lnotab,
-            code.co_freevars,
-            code.co_cellvars,
-        )
