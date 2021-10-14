@@ -1,6 +1,33 @@
 #!/usr/bin/env python
 """Setup script for the 'xdis' distribution."""
+import sys
 from xdis.version import __version__
+
+SYS_VERSION = sys.version_info[0:2]
+if not ((3, 1) <= SYS_VERSION <= (3, 2)):
+    mess = "Python Release 3.1 .. 3.2 are supported in this code branch."
+    if SYS_VERSION >= (3, 6):
+        mess += (
+            "\nFor your Python, version %s, use the master branch."
+            % sys.version[0:3]
+        )
+    elif SYS_VERSION > (3, 2):
+        mess += (
+            "\nFor your Python, version %s, use the python-3.3-3.5 branch."
+            % sys.version[0:3]
+        )
+    elif (2, 4) <= SYS_VERSION <= (2, 7):
+        mess += (
+            "\nFor your Python, version %s, use the python-2.4-2.7 branch."
+            % sys.version[0:3]
+        )
+    else:
+        mess += (
+            "\nThis package is not supported for Python version %s." % sys.version[0:3]
+        )
+
+    print(mess)
+    raise Exception(mess)
 
 from __pkginfo__ import (
     author,
