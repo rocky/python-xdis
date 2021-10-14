@@ -51,8 +51,8 @@ classifiers = [
 author             = "Rocky Bernstein, Hartmut Goebel and others"
 author_email       = "rb@dustyfeet.com"
 entry_points       = {
-    'console_scripts': [
-        'pydisasm=xdis.bin.pydisasm:main',
+    "console_scripts": [
+        "pydisasm=xdis.bin.pydisasm:main",
     ]}
 ftp_url            = None
 install_requires   = []
@@ -62,6 +62,7 @@ modname            = 'xdis'
 
 packages           = ["xdis"]
 py_modules         = None
+
 # setup_requires     = ['pytest-runner']
 scripts            = ['bin/pydisasm.py']
 short_desc         = 'Python cross-version byte-code disassembler and marshal routines'
