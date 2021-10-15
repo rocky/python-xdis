@@ -256,8 +256,14 @@ add_magic_from_int(
 )  # simplify CALL_FUNCTIONs & BUILD_MAP_UNPACK_WITH_CALL
 add_magic_from_int(3377, "3.6b1+3")  # set __class__ cell from type.__new__ #23722
 add_magic_from_int(3378, "3.6b2")  # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
-add_magic_from_int(3379, "3.6rc1")  # more thorough __class__ validation #23722
+
+# more thorough __class__ validation #23722
+add_magic_from_int(3379, "3.6rc1")
+
+# add LOAD_METHOD and CALL_METHOD opcodes #26110)
 add_magic_from_int(3390, "3.7.0alpha0")
+
+# update GET_AITER #31709
 add_magic_from_int(3391, "3.7.0alpha3")
 
 # Initial PEP 552 - Deterministic pycs #31650
@@ -304,8 +310,23 @@ add_magic_from_int(3422, "3.9.0alpha1")
 # add IS_OP, CONTAINS_OP and JUMP_IF_NOT_EXC_MATCH bytecodes #39156
 add_magic_from_int(3423, "3.9.0a0")
 
+# simplify bytecodes for *value unpacking
 add_magic_from_int(3424, "3.9.0a2")
+
+# simplify bytecodes for **value unpacking
 add_magic_from_int(3425, "3.9.0beta5")
+
+# Make 'annotations' future by default
+add_magic_from_int(3430, "3.10a1")
+
+# New line number table format -- PEP 626
+add_magic_from_int(3431, "3.10a1")
+
+# Function annotation for MAKE_FUNCTION is changed from dict to tuple bpo-42202
+add_magic_from_int(3432, "3.10a2")
+
+# RERAISE restores f_lasti if oparg != 0
+add_magic_from_int(3433, "3.10a2")
 add_magic_from_int(3439, "3.10.0rc2")
 
 # Weird ones
