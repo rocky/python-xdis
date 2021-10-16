@@ -35,7 +35,7 @@ setup(
     name=modname,
     packages=find_packages(),
     py_modules=py_modules,
-    python_require=python_requires,
+    python_requires=python_requires,
     # setup_requires     = setup_requires,
     tests_require=tests_require,
     url=web,
