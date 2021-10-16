@@ -22,4 +22,5 @@ for version in $PYVERSIONS; do
     if ! make check ; then
 	exit $?
     fi
+    echo === $version ===
 done
