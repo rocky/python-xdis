@@ -58,10 +58,16 @@ def main():
    %s FILE...
 Type -h for for full help.""" % program
 
-    if not ((2, 4) <= PYTHON_VERSION_TRIPLE <= (3, 8)):
-        sys.stderr.write("This works on Python version 2.4..3.8; have %s\n"
-                         % PYTHON_VERSION_STR)
-        sys.exit(1)
+    if not ((2, 4) <= PYTHON_VERSION_TRIPLE < (2, 8)):
+        mess = "This code works on 2.4 to 2.17."
+        if (3, 6) <= PYTHON_VERSION_TRIPLE <= (3, 11):
+            mess += " Code that works for %s can be found in the master.4 branch\n"
+        elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
+            mess += " Code that works for %s can be found in the python-3.1 branch\n"
+        elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
+            mess += " Code that works for %s can be found in the python-3.3 branch\n"
+        sys.stderr.write(mess % PYTHONVERSION_STR)
+        sys.exit(2)
 
     if len(sys.argv) == 1:
         sys.stderr.write("No file(s) given..\n")

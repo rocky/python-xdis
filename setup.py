@@ -11,14 +11,18 @@ if not ((2, 4) <= SYS_VERSION <= (2, 7)):
             "\nFor your Python, version %s, use the master branch."
             % sys.version[0:3]
         )
-    elif SYS_VERSION < (2, 4):
-        mess += (
-            "\nThis package is not supported for Python version %s." % sys.version[0:3]
-        )
-    else:
+    elif (3, 3) <= SYS_VERSION < (3, 6):
         mess += (
             "\nFor your Python, version %s, use the python-3.3-3.5 branch."
             % sys.version[0:3]
+        )
+    elif (3, 1) <= SYS_VERSION < (3, 3):
+        mess += (
+            "\nFor your Python, version %s, use the python-3.1 branch."
+        )
+    else:
+        mess += (
+            "\nThis package is not supported for Python version %s." % sys.version[0:3]
         )
 
     print(mess)

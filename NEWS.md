@@ -1,3 +1,19 @@
+6.0.0 2021-10-15
+=================
+
+Reworked for Python 3.10.
+
+We had been internally using floating point numbers for version testing.
+Clearl this doesn't work to distinguish 3.1 from 3.10.
+(This was a flaw known about for a while and we'd been avoiding).
+
+* Add 3.10 opcodes.
+* Add 3.9 and 3.10 testing.
+* Some tolerance for running from 3.11
+* Update magic numbers
+* Expanding testing to include pyston and PyPy 3.7
+* Improve distribution packaging, e.g. Python 3 wheels should no longer be attmpted on Python 2.x
+
 5.0.13 2021-09-24
 =================
 
