@@ -342,8 +342,8 @@ add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(1011, "2.7.1b3Jython")  # jython
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
-
 magics = __by_version(versions)
+magics["3.8.12pypy"] = magics["3.8.0rc1+"]
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
@@ -408,6 +408,7 @@ add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("3.7.9pypy 3.7.10pypy", "3.7pypy")
+add_canonic_versions("3.8pypy 3.8.12pypy", "3.8.12pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
@@ -569,7 +570,7 @@ def sysinfo2magic(version_info=sys.version_info):
     """
 
     # FIXME: DRY with sysinfo2float()
-    ver_str = version_tuple_to_str(version_info)
+    vers_str = version_tuple_to_str(version_info)
     if version_info[3] != "final":
         vers_str += "".join([str(v) for v in version_info[3:]])
 
@@ -599,7 +600,6 @@ def test():
     print("This Python interpreter has version", magic_current)
     print("Magic code: ", PYTHON_MAGIC_INT)
     print(type(magic_20), len(magic_20), repr(magic_20))
-    print(sysinfo2float())
     assert sysinfo2magic() == MAGIC
 
 

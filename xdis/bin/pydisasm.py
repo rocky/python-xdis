@@ -48,7 +48,7 @@ def main(format, files):
             mess += " Code that works for %s can be found in the python-3.1 branch\n"
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
             mess += " Code that works for %s can be found in the python-3.3 branch\n"
-        sys.stderr.write(mess % PYTHONVERSION_STR)
+        sys.stderr.write(mess % PYTHON_VERSION_STR)
         sys.exit(2)
 
     for path in files:
