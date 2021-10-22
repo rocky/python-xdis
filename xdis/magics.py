@@ -33,7 +33,7 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 """
 
 import re, struct, sys
-from xdis import IS_PYPY
+from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244)
 
@@ -529,7 +529,6 @@ def py_str2tuple(orig_version):
     )
     return
 
-
 def sysinfo2float(version_info=sys.version_info):
     """Convert a sys.versions_info-compatible list into a 'canonic'
     floating-point number which that can then be used to look up a
@@ -540,7 +539,7 @@ def sysinfo2float(version_info=sys.version_info):
     For handling Pypy, pyston, jython, etc. and interim versions of
     C Python, use sysinfo2magic.
     """
-    vers_str = ".".join([str(v) for v in version_info[0:3]])
+    ver_str = version_tuple_to_str(version_info)
     if version_info[3] != "final":
         vers_str += "." + "".join([str(i) for i in version_info[3:]])
 
@@ -570,7 +569,7 @@ def sysinfo2magic(version_info=sys.version_info):
     """
 
     # FIXME: DRY with sysinfo2float()
-    vers_str = ".".join([str(v) for v in version_info[0:3]])
+    ver_str = version_tuple_to_str(version_info)
     if version_info[3] != "final":
         vers_str += "".join([str(v) for v in version_info[3:]])
 
