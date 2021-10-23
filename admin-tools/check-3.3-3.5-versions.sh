@@ -11,7 +11,7 @@ cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-3.3-3.5-versions ; then
     exit $?
 fi
-if ! source ./setup-python-3.3.sh ; then
+if ! source ./setup-python-2.4.sh ; then
     exit $?
 fi
 cd ..

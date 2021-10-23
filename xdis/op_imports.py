@@ -17,7 +17,6 @@
 """Facilitates importing opmaps for the a given Python version"""
 import copy
 import sys
-from xdis import IS_PYPY
 from xdis.magics import canonic_python_version
 
 from xdis.opcodes import opcode_10 as opcode_10
@@ -53,6 +52,9 @@ from xdis.opcodes import opcode_33pypy as opcode_33pypy
 from xdis.opcodes import opcode_35pypy as opcode_35pypy
 from xdis.opcodes import opcode_36pypy as opcode_36pypy
 from xdis.opcodes import opcode_37pypy as opcode_37pypy
+from xdis.opcodes import opcode_38pypy as opcode_38pypy
+
+from xdis.version_info import IS_PYPY, version_tuple_to_str
 
 # FIXME
 op_imports = {
@@ -138,6 +140,8 @@ op_imports = {
     "3.6pypy": opcode_36pypy,
     "3.6.1pypy": opcode_36pypy,
     "3.7pypy": opcode_37pypy,
+    "3.8.0pypy": opcode_38pypy,
+    "3.8.12pypy": opcode_38pypy,
 }
 
 for k, v in canonic_python_version.items():
@@ -157,8 +161,8 @@ def get_opcode_module(version_info=None, variant=None):
         int_vers = int(version_info * 10)
         version_info = [int_vers // 10, int_vers % 10]
 
-    vers_str = ".".join([str(v) for v in version_info[0:3]])
-    if len(version_info) >= 3 and version_info[3] != "final":
+    vers_str = version_tuple_to_str(version_info)
+    if len(version_info) > 3 and version_info[3] != "final":
         vers_str += "".join([str(v) for v in version_info[3:]])
     if variant is None:
         try:
