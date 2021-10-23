@@ -35,7 +35,7 @@ PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 IS_PYPY = "__pypy__" in sys.builtin_module_names
 
-def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, end=3) -> str:
+def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, end=3):
     """
     Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6"
     """
