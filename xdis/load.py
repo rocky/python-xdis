@@ -28,6 +28,7 @@ from xdis.magics import (
     magic_int2tuple,
     magic2int,
     magicint2version,
+    py_str2tuple,
     versions,
 )
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
@@ -92,7 +93,7 @@ def check_object_path(path):
 
 def is_pypy(magic_int, filename):
     # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
-    if  magic_int in (3413,) and filename.endswith("pypy38.pyc"):
+    if magic_int in (3413,) and filename.endswith("pypy38.pyc"):
         return True
     return magic_int in ((62211 + 7, 3180 + 7) + IS_PYPY3)
 
@@ -334,7 +335,7 @@ def write_bytecode_file(
     magic_int (i.e. bytecode associated with some version of Python)
     """
     fp = open(bytecode_path, "wb")
-    version = magicint2tuple(magic_int)
+    version = py_str2tuple(magicint2version[magic_int])
     if version >= (3, 0):
         fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
         if version >= (3, 7):  # pep552 bytes
