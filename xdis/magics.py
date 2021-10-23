@@ -519,7 +519,6 @@ def py_str2tuple(orig_version):
     """
     version = re.sub(r"(pypy|dropbox)$", "", orig_version)
     if version in magics:
-        magic = magics[version]
         m = re.match(r"^(\d)\.(\d+)\.(\d+)", version)
         if m:
             return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
@@ -545,7 +544,7 @@ def sysinfo2float(version_info=sys.version_info):
     For handling Pypy, pyston, jython, etc. and interim versions of
     C Python, use sysinfo2magic.
     """
-    ver_str = version_tuple_to_str(version_info)
+    vers_str = version_tuple_to_str(version_info)
     if version_info[3] != "final":
         vers_str += "." + "".join([str(i) for i in version_info[3:]])
 
