@@ -89,13 +89,12 @@ by_version = {}
 magicint2version = {}
 versions = {}
 
-if sys.version_info >= (3, 4):
-    try:
-        from importlib.util import MAGIC_NUMBER as MAGIC
-    except ImportError:
-        import imp
+try:
+    from importlib.util import MAGIC_NUMBER as MAGIC
+except ImportError:
+    import imp
 
-        MAGIC = imp.get_magic()
+    MAGIC = imp.get_magic()
 
 PYTHON_MAGIC_INT = magic2int(MAGIC)
 
