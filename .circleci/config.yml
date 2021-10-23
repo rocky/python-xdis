@@ -1,4 +1,7 @@
 version: 2
+filters:
+  branches:
+    only: master
 jobs:
   workflows:
     branches:
