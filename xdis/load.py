@@ -25,10 +25,10 @@ from xdis.magics import (
     IS_PYPY3,
     PYTHON_MAGIC_INT,
     int2magic,
-    magic_int2float,
     magic_int2tuple,
     magic2int,
     magicint2version,
+    py_str2tuple,
     versions,
 )
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
@@ -92,7 +92,10 @@ def check_object_path(path):
         )
     return path
 
-def is_pypy(magic_int):
+def is_pypy(magic_int, filename):
+    # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
+    if magic_int in (3413,) and filename.endswith("pypy38.pyc"):
+        return True
     return magic_int in ((62211 + 7, 3180 + 7) + IS_PYPY3)
 
 
@@ -195,7 +198,6 @@ def load_module_from_file_object(
 
         try:
             # FIXME: use the internal routine below
-            float_version = magic_int2float(magic_int)
             tuple_version = magic_int2tuple(magic_int)
         except KeyError:
             if magic_int in (2657, 22138):
@@ -318,7 +320,7 @@ def load_module_from_file_object(
         timestamp,
         magic_int,
         co,
-        is_pypy(magic_int),
+        is_pypy(magic_int, filename),
         source_size,
         sip_hash,
     )
@@ -331,7 +333,7 @@ def write_bytecode_file(
     magic_int (i.e. bytecode associated with some version of Python)
     """
     fp = open(bytecode_path, "wb")
-    version = magicint2tuple(magic_int)
+    version = py_str2tuple(magicint2version[magic_int])
     if version >= (3, 0):
         fp.write(pack("<Hcc", magic_int, "\r", "\n"))
         if version >= (3, 7):  # pep552 bytes

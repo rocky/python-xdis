@@ -66,7 +66,7 @@ Type -h for for full help.""" % program
             mess += " Code that works for %s can be found in the python-3.1 branch\n"
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
             mess += " Code that works for %s can be found in the python-3.3 branch\n"
-        sys.stderr.write(mess % PYTHONVERSION_STR)
+        sys.stderr.write(mess % PYTHON_VERSION_STR)
         sys.exit(2)
 
     if len(sys.argv) == 1:
@@ -88,7 +88,7 @@ Type -h for for full help.""" % program
             print(__doc__)
             sys.exit(1)
         elif opt in ('-V', '--version'):
-            print("%s %s" % (program, VERSION))
+            print("%s %s" % (program, __version__))
             sys.exit(0)
         elif opt in ('-H', '--header'):
             header = True
