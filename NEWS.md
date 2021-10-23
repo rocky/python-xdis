@@ -3,7 +3,7 @@
 
 * Add PyPy 3.8 opcodes and disassembly
 * Accept Python 3.8.12
-* Fix some small lingering bugs introduced converting Pyton version number floats to tuples
+* Fix some small lingering bugs introduced converting Python version number floats to tuples
 
 6.0.0 2021-10-15
 =================
