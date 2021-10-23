@@ -583,10 +583,11 @@ def sysinfo2magic(version_info=sys.version_info):
         try:
             import platform
 
-            platform = platform.python_implementation()
-            if platform in ("Jython", "Pyston", "GraalVM"):
-                vers_str += platform
-                pass
+            if hasattr(platform, "python_implementation"):
+                platform = platform.python_implementation()
+                if platform in ("Jython", "Pyston", "GraalVM"):
+                    vers_str += platform
+                    pass
         except ImportError:
             # Python may be too old, e.g. < 2.6 or implementation may
             # just not have platform
