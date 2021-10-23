@@ -12,7 +12,6 @@ from __pkginfo__ import (
     classifiers,
     modname,
     py_modules,
-    py_modules,
     python_requires,
     short_desc,
     tests_require,

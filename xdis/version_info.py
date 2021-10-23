@@ -23,12 +23,20 @@ import sys
 
 PYTHON3 = sys.version_info >= (3, 0)
 
+# NOTE: PYTHON_VERSION is going away
 # We do this crazy way to support Python 2.6 which
 # doesn't support version_major, and has a bug in
 # floating point so we can't divide 26 by 10 and get
 # 2.6
 PYTHON_VERSION = sys.version_info[0] + (sys.version_info[1] / 10.0)
+
 PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
 PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 IS_PYPY = "__pypy__" in sys.builtin_module_names
+
+def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, end=3) -> str:
+    """
+    Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6"
+    """
+    return ".".join([str(v) for v in version_tuple[:end]])

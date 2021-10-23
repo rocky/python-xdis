@@ -1,5 +1,5 @@
 import unittest, sys
-from xdis import PYTHON_VERSION, IS_PYPY
+from xdis.version_info import PYTHON_VERSION, IS_PYPY, version_tuple_to_str
 import xdis.magics as magics
 
 class TestMagics(unittest.TestCase):
@@ -7,7 +7,7 @@ class TestMagics(unittest.TestCase):
     def test_basic(self):
         """Basic test of magic numbers"""
         if hasattr(sys, 'version_info'):
-            version = '.'.join([str(v) for v in sys.version_info[0:3]])
+            version = version_tuple_to_str()
             if IS_PYPY:
                 version += 'pypy'
             self.assertTrue(version in magics.magics.keys(),

@@ -50,7 +50,7 @@ def get_opcode(version_tuple, is_pypy, alternate_opmap=None):
         pypy_str = " for pypy"
     else:
         pypy_str = ""
-    raise TypeError("%s is not a Python version%s I know about" % (version, pypy_str))
+    raise TypeError("%s is not a Python version%s I know about" % (lookup, pypy_str))
 
 
 def show_module_header(
