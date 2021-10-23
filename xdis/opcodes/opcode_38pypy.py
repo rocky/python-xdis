@@ -31,7 +31,6 @@ python_implementation = "PyPy"
 from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
 import xdis.opcodes.opcode_38 as opcode_38
 from xdis.opcodes.opcode_37 import format_MAKE_FUNCTION_flags
-from xdis.opcodes.opcode_37pypy import BUILD_LIST_FROM_ARG, CALL_METHOD_KW, LOAD_REVDB_VAR, LOOKUP_METHOD, SETUP_EXCEPT
 
 l = locals()
 init_opdata(l, opcode_38, version_tuple, is_pypy=True)
