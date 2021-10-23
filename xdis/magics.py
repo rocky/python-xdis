@@ -339,6 +339,10 @@ add_magic_from_int(160, "3.6.1pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
 add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
 add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
+
+# NOTE: This is JVM bytecode not Python bytecode
+add_magic_from_int(21150, "3.8.5Graal")
+
 add_magic_from_int(1011, "2.7.1b3Jython")  # jython
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
@@ -403,6 +407,8 @@ add_canonic_versions("3.8a1", "3.8.0beta2")
 
 add_canonic_versions("2.7.10pypy 2.7.13pypy", "2.7pypy")
 add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
+add_canonic_versions("3.8.5Graal", "3.8.5Graal")
+
 add_canonic_versions("3.2.5pypy", "3.2pypy")
 add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
@@ -576,6 +582,18 @@ def sysinfo2magic(version_info=sys.version_info):
 
     if IS_PYPY:
         vers_str += "pypy"
+    else:
+        try:
+            import platform
+
+            platform = platform.python_implementation()
+            if platform in ("Jython", "Pyston", "GraalVM"):
+                vers_str += platform
+                pass
+        except ImportError:
+            # Python may be too old, e.g. < 2.6 or implementation may
+            # just not have platform
+            pass
 
     return magics[vers_str]
 
