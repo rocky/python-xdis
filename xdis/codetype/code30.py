@@ -22,9 +22,11 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 # Below, in the Python 2.4 branch "bytes" is "str" since there may not be a "bytes" type.
 Code3FieldTypes = deepcopy(Code2FieldTypes)
-Code3FieldTypes.update({
-    "co_kwonlyargcount": int,
-})
+Code3FieldTypes.update(
+    {
+        "co_kwonlyargcount": int,
+    }
+)
 
 
 class Code3(Code2):

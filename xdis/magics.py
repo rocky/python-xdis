@@ -445,17 +445,6 @@ def __show(text, magic):
     print(text, struct.unpack("BBBB", magic), struct.unpack("<HBB", magic))
 
 
-def magic_int2float(magic_int):
-    """Convert a Python magic int into a 'canonic' floating-point number,
-    e.g. 2.7, 3.7. runtime error is raised if "version" is not found.
-
-    Note that there can be several magic_int's that map to a single floating-
-    point number. For example 3320 (3.5.a0), 3340 (3.5b1), and 3351 (3.5.2)
-    all map to 3.5.
-    """
-    return py_str2float(magicint2version[magic_int])
-
-
 def magic_int2tuple(magic_int):
     """Convert a Python magic int into a 'canonic' tuple
     e.g. (2, 7), (3, 7). runtime error is raised if "version" is not found.
@@ -465,45 +454,6 @@ def magic_int2tuple(magic_int):
     all map to 3.5.
     """
     return py_str2tuple(magicint2version[magic_int])
-
-
-def py_str2float(orig_version):
-    """Convert a Python version into a two-digit 'canonic' floating-point number,
-    e.g. 2.5, 3.6.
-
-    A runtime error is raised if "version" is not found.
-
-    Note that there can be several strings that map to a single floating-
-    point number. For example 3.2a1, 3.2.0, 3.2.2, 3.2.6 among others all map to
-    3.2.
-    """
-    version = re.sub(r"(pypy|dropbox)$", "", orig_version)
-    if version in magics:
-        magic = magics[version]
-        for v, m in list(magics.items()):
-            if m == magic:
-                try:
-                    return float(canonic_python_version[v])
-                except:
-                    try:
-                        m = re.match(r"^(\d\.)(\d+)\.(\d+)", v)
-                        if m:
-                            return float(m.group(1) + m.group(2))
-                        else:
-                            # Match things like 3.5a0, 3.5b2, 3.6a1+1, 3.6rc1, 3.7.0beta3
-                            m = re.match(r"^(\d\.)(\d)(\d+)?[abr]", v)
-                            if m:
-                                return float(m.group(1) + m.group(2))
-                            pass
-                    except:
-                        pass
-                    pass
-                pass
-            pass
-    raise RuntimeError(
-        "Can't find a valid Python version for version %s" % orig_version
-    )
-    return
 
 
 def py_str2tuple(orig_version):
@@ -533,38 +483,6 @@ def py_str2tuple(orig_version):
     )
     return
 
-def sysinfo2float(version_info=sys.version_info):
-    """Convert a sys.versions_info-compatible list into a 'canonic'
-    floating-point number which that can then be used to look up a
-    magic number.  Note that this can only be used for released version
-    of C Python, not interim development versions, since we can't
-    represent that as a floating-point number.
-
-    For handling Pypy, pyston, jython, etc. and interim versions of
-    C Python, use sysinfo2magic.
-    """
-    vers_str = version_tuple_to_str(version_info)
-    if version_info[3] != "final":
-        vers_str += "." + "".join([str(i) for i in version_info[3:]])
-
-    if IS_PYPY:
-        vers_str += "pypy"
-    else:
-        try:
-            import platform
-
-            platform = platform.python_implementation()
-            if platform in ("Jython", "Pyston"):
-                vers_str += platform
-                pass
-        except ImportError:
-            # Python may be too old, e.g. < 2.6 or implementation may
-            # just not have platform
-            pass
-        except AttributeError:
-            pass
-    return py_str2float(vers_str)
-
 
 def sysinfo2magic(version_info=sys.version_info):
     """Convert a list sys.versions_info compatible list into a 'canonic'
@@ -572,7 +490,6 @@ def sysinfo2magic(version_info=sys.version_info):
     magic number.  Note that this can raise an exception.
     """
 
-    # FIXME: DRY with sysinfo2float()
     vers_str = version_tuple_to_str(version_info)
     if version_info[3] != "final":
         vers_str += "".join([str(v) for v in version_info[3:]])

@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2020 by Rocky Bernstein
+# (C) Copyright 2017-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,10 +14,11 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON_VERSION
-from xdis.codetype.code15 import Code15, Code15FieldTypes
 import types
 from copy import deepcopy
+
+from xdis.codetype.code15 import Code15, Code15FieldTypes
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
 Code2FieldTypes = deepcopy(Code15FieldTypes)
@@ -78,10 +79,10 @@ class Code2(Code15):
         return
 
     def to_native(self, opts={}):
-        if not (2.0 <= PYTHON_VERSION <= 2.7):
+        if not (2, 0) <= PYTHON_VERSION_TRIPLE < (2, 8):
             raise TypeError(
                 "Python Interpreter needs to be in range 2.0..2.7; is %s"
-                % PYTHON_VERSION
+                % version_tuple_to_str()
             )
 
         code = deepcopy(self)

@@ -14,7 +14,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON_VERSION
 from xdis.codetype.base import CodeBase
 from copy import deepcopy
 
@@ -24,7 +23,6 @@ class Bytes(str):
         self.s = s
     def __repr__(self):
         return "b%s" % repr(self.s)
-
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
 Code13FieldTypes = {
@@ -78,12 +76,19 @@ class Code13(CodeBase):
         for field, fieldtype in self.fieldtypes.items():
             val = getattr(self, field)
             if isinstance(fieldtype, tuple):
-                assert type(val) in fieldtype, "%s should be one of the types %s; is type %s" % (field, fieldtype, type(val))
+                assert (
+                    type(val) in fieldtype
+                ), "%s should be one of the types %s; is type %s" % (
+                    field,
+                    fieldtype,
+                    type(val),
+                )
             else:
-                assert isinstance(val, fieldtype), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
+                assert isinstance(
+                    val, fieldtype
+                ), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
                 pass
             pass
-
 
     # FIXME: use self.fieldtype
     def freeze(self):
@@ -102,6 +107,8 @@ class Code13(CodeBase):
         code = deepcopy(self)
         for field, value in kwargs.items():
             if not hasattr(self, field):
-                raise TypeError("Code object %s doesn't have field %s" % (type(self), self))
+                raise TypeError(
+                    "Code object %s doesn't have field %s" % (type(self), self)
+                )
             setattr(code, field, value)
         return code
