@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@ import types
 from copy import deepcopy
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
-from xdis.version_info import PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Below, in the Python 2.4 branch "bytes" is "str" since there may not be a "bytes" type.
 Code3FieldTypes = deepcopy(Code2FieldTypes)
@@ -118,7 +118,7 @@ class Code3(Code2):
             # into the encoded format
             self.encode_lineno_tab()
 
-        if isinstance(self.co_code, str) and PYTHON_VERSION >= 3.0:
+        if isinstance(self.co_code, str) and PYTHON_VERSION_TRIPLE >= (3, 0):
             self.co_code = self.co_code.encode()
 
         if isinstance(self.co_lnotab, str):
@@ -127,10 +127,10 @@ class Code3(Code2):
         return self
 
     def to_native(self):
-        if not (3.0 <= PYTHON_VERSION <= 3.7):
+        if not (3, 0) <= PYTHON_VERSION_TRIPLE < (3, 8):
             raise TypeError(
                 "Python Interpreter needs to be in range 3.0..3.7; is %s"
-                % PYTHON_VERSION
+                % version_tuple_to_str()
             )
 
         code = deepcopy(self)

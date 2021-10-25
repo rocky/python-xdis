@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,12 +14,12 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 from xdis.codetype.base import CodeBase
 from copy import deepcopy
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
-if PYTHON_VERSION <= 2.7:
+if PYTHON_VERSION_TRIPLE <= (2, 7):
     Code13FieldTypes = {
         "co_argcount": int,
         "co_nlocals": int,

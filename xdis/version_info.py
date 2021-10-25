@@ -30,13 +30,22 @@ PYTHON3 = sys.version_info >= (3, 0)
 # 2.6
 PYTHON_VERSION = sys.version_info[0] + (sys.version_info[1] / 10.0)
 
+
 PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
 PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 IS_PYPY = "__pypy__" in sys.builtin_module_names
 
-def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, end=3) -> str:
+def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, end=3, delimiter=".") -> str:
     """
-    Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6"
+    Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6".
+
+    version_tuple is a tuple similar to what is might be returned in
+    tuple(sys.version_info[:3]), however, the parts in their could anything that
+    has a str() method. By defaul, and often the length is 3 but in in practice
+    it could be other lengths
+
+    end is the length of version_tuple that you want to use.
+    delimiter is what string to put in the between components.
     """
-    return ".".join([str(v) for v in version_tuple[:end]])
+    return delimiter.join([str(v) for v in version_tuple[:end]])
