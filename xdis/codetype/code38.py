@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 from xdis.codetype.code30 import Code3, Code3FieldTypes
 import types
 from copy import deepcopy
@@ -102,10 +102,10 @@ class Code38(Code3):
             self.check()
 
     def to_native(self):
-        if not (PYTHON_VERSION >= 3.8):
+        if not (PYTHON_VERSION_TRIPLE >= (3, 8)):
             raise TypeError(
                 "Python Interpreter needs to be in 3.8 or greater; is %s"
-                % PYTHON_VERSION
+                % version_tuple_to_str()
             )
 
         code = deepcopy(self)

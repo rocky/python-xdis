@@ -131,7 +131,6 @@ op_imports = {
     3.9: opcode_39,
     "3.10.0rc2": opcode_310,
     "3.10": opcode_310,
-    3.10: opcode_310,
     "2.6pypy": opcode_26pypy,
     "2.7pypy": opcode_27pypy,
     "3.2pypy": opcode_32pypy,
@@ -150,7 +149,6 @@ for k, v in canonic_python_version.items():
 
 
 def get_opcode_module(version_info=None, variant=None):
-    # FIXME: DRY with magics.sysinfo2float()
     if version_info is None:
         version_info = sys.version_info
         if variant is None and IS_PYPY:
