@@ -23,10 +23,11 @@ def bug_loop(disassemble, tb=None):
     disassemble(tb)
 
 import sys
-from xdis import PYTHON_VERSION, findlinestarts
-from xdis.opcodes import opcode_27, opcode_36
-from xdis.load import load_module
+from xdis import findlinestarts
 from xdis.bytecode import offset2line
+from xdis.load import load_module
+from xdis.opcodes import opcode_27, opcode_36
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 import os.path as osp
 
@@ -98,7 +99,7 @@ def findlabels():
 
     # FIXME: Consider loading from a file like below to remove
     # dependence on running interpreter
-    if PYTHON_VERSION == 2.7:
+    if PYTHON_VERSION_TRIPLE[:2] == (2, 7):
         # 19:           0 SETUP_LOOP               23 (to 26)
         #               3 LOAD_GLOBAL               0 (range)
         #               6 LOAD_CONST                1 (1)

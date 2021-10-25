@@ -1,3 +1,10 @@
+6.1.0 2021-10-xx
+=================
+
+* Remove str2float, sysinfo2float and magic_int2float. With Python 3.10 this is no
+  longer tenable
+* Reduce PYTHON_VERSION usage in xdis.
+
 6.0.1 2021-10-22
 =================
 
