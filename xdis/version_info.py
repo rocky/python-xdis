@@ -42,8 +42,8 @@ def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, start=0, end=3, de
 
     version_tuple is a tuple similar to what is might be returned in
     tuple(sys.version_info[:3]), however, the parts in their could anything that
-    has a str() method. By defaul, and often the length is 3 but in in practice
-    it could be other lengths
+    has a str() method. By default, and often the length is 3 but in in practice
+    it could be other lengths.
 
     end is the length of version_tuple that you want to use.
     delimiter is what string to put in the between components.

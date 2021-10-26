@@ -30,7 +30,7 @@ Step 2: Run the test:
 import getopt, os, py_compile, sys, shutil, tempfile, time
 
 from xdis import disassemble_file
-from xdis.version_info import PYTHON_VERSION_TRIPLE
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 from fnmatch import fnmatch
 
 
@@ -153,7 +153,7 @@ def do_tests(src_dir, obj_patterns, target_dir, opts):
         if compiled_version and version_tuple_to_str() != compiled_version:
             sys.stderr.write(
                 "Not compiling: desired Python version is %s "
-                "but we are running %s\n" % version_tuple_to_str()
+                "but we are running %s\n" % (compiled_version, version_tuple_to_str())
             )
         else:
             for root, dirs, basenames in os.walk(src_dir):
