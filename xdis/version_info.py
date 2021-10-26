@@ -36,7 +36,7 @@ PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 IS_PYPY = "__pypy__" in sys.builtin_module_names
 
-def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, end=3, delimiter="."):
+def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, start=0, end=3, delimiter="."):
     """
     Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6".
 
@@ -48,4 +48,4 @@ def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, end=3, delimiter="
     end is the length of version_tuple that you want to use.
     delimiter is what string to put in the between components.
     """
-    return delimiter.join([str(v) for v in version_tuple[:end]])
+    return delimiter.join([str(v) for v in version_tuple[start:end]])
