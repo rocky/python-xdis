@@ -492,7 +492,7 @@ def sysinfo2magic(version_info=sys.version_info):
 
     vers_str = version_tuple_to_str(version_info)
     if version_info[3] != "final":
-        vers_str += "".join([str(v) for v in version_info[3:]])
+        vers_str += version_tuple_to_str(version_info, start=3)
 
     if IS_PYPY:
         vers_str += "pypy"
