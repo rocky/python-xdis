@@ -1,4 +1,4 @@
-from xdis import PYTHON_VERSION
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 import sys
 import xdis.std as dis
 try:
@@ -84,7 +84,7 @@ class DisTests(unittest.TestCase):
         self.assertEqual(dis.opmap["EXTENDED_ARG"], dis.EXTENDED_ARG)
         self.assertEqual(dis.opmap["STORE_NAME"], dis.HAVE_ARGUMENT)
 
-    if PYTHON_VERSION == 2.4:
+    if PYTHON_VERSION_TRIPLE[:2] == (2, 4):
         def test_dis(self):
             self.do_disassembly24(_f, dis_f)
 

@@ -1,7 +1,5 @@
 # Minimal tests for dis module
 
-from xdis import IS_PYPY, PYTHON_VERSION
-
 import sys
 
 import unittest

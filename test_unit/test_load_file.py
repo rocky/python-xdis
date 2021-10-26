@@ -1,7 +1,7 @@
 import unittest, os, sys
-from xdis import IS_PYPY, PYTHON_VERSION
 from xdis.load import load_file, check_object_path, load_module
 from xdis.codetype import CodeTypeUnionFields
+from xdis.version_info import IS_PYPY
 
 import os.path as osp
 

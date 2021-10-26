@@ -1,4 +1,5 @@
-from xdis import PYTHON_VERSION
+from __future__ import print_function
+from xdis.version import PYTHON_VERSION_TRIPLE
 
 from keyword import iskeyword as _iskeyword
 import sys as _sys
@@ -17,7 +18,7 @@ except ImportError:
                 return tuple([obj[item] for item in items])
             return g
 
-if PYTHON_VERSION < 2.4:
+if PYTHON_VERSION_TRIPLE < (2, 4):
     from sets import Set as set
     frozenset = set
 
@@ -120,7 +121,7 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
         template += '        %s = _property(_itemgetter(%d))\n' % (name, i)
     verbose = 1
     if verbose:
-        print template
+        print(template)
 
     # Execute the template string in a temporary namespace
     namespace = dict(_itemgetter=_itemgetter, __name__='namedtuple_%s' % typename,
@@ -128,7 +129,7 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
     try:
         exec template in namespace
     except SyntaxError, e:
-        if PYTHON_VERSION >= 2.4:
+        if PYTHON_VERSION_TRIPLE >= (2, 4):
             raise SyntaxError(e.message + ':\n' + template)
         else:
             raise

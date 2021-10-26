@@ -51,8 +51,9 @@ PYPY_TEST_VERSIONS = (
 import os, time, shutil, sys
 from fnmatch import fnmatch
 
-from xdis import disassemble_file, PYTHON3, PYTHON_VERSION
+from xdis import disassemble_file
 from xdis.verify import verify_file
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 LONG_PYTHON_VERSION = "%s.%s.%s" % (
     sys.version_info[0],
@@ -132,20 +133,7 @@ def do_tests(
 
     cwd = os.getcwd()
     os.chdir(src_dir)
-    if PYTHON3:
-        for root, dirname, names in os.walk(os.curdir):
-            files.extend(
-                [
-                    os.path.normpath(os.path.join(root, n))
-                    for n in names
-                    for pat in patterns
-                    if fnmatch(n, pat)
-                ]
-            )
-            pass
-        pass
-    else:
-        os.path.walk(os.curdir, visitor, files)
+    os.path.walk(os.curdir, visitor, files)
     files.sort()
 
     if start_with:
@@ -235,7 +223,7 @@ if __name__ == "__main__":
         pass
 
     if test_version == "simple":
-        if PYTHON_VERSION > 2.6:
+        if PYTHON_VERSION_TRIPLE > (2, 6):
             test_dirs.append((os.path.join(my_dir, "simple_2.7"), PY, "simple-source"))
             pass
         pass

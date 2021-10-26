@@ -16,8 +16,6 @@
 
 """Python disassembly functions specific to wordcode from Python 3.6+
 """
-from xdis import PYTHON3, PYTHON_VERSION
-from xdis.bytecode import op_has_argument
 from xdis.bytecode import op_has_argument
 
 
@@ -36,7 +34,7 @@ def unpack_opargs_wordcode(code, opc):
             if op_has_argument(op, opc):
                 arg = ord(code[i + 1]) | extended_arg
                 if op == opc.EXTENDED_ARG:
-                    extended_arg = (arg << 8)
+                    extended_arg = arg << 8
                 else:
                     extended_arg = 0
                     pass
@@ -49,7 +47,7 @@ def unpack_opargs_wordcode(code, opc):
             if op_has_argument(op, opc):
                 arg = code[i + 1] | extended_arg
                 if op == opc.EXTENDED_ARG:
-                    extended_arg = (arg << 8)
+                    extended_arg = arg << 8
                 else:
                     extended_arg = 0
                     pass

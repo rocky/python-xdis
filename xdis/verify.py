@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020 by Rocky Bernstein
+# (C) Copyright 2018, 2020-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,22 +16,15 @@
 
 import os, marshal, tempfile
 from xdis.magics import MAGIC, PYTHON_MAGIC_INT, int2magic
-from xdis.version_info import PYTHON3, PYTHON_VERSION, IS_PYPY
 from xdis.load import load_module
 
 
 def wr_long(f, x):
     """Internal; write a 32-bit int to a file in little-endian order."""
-    if PYTHON3:
-        f.write(bytes([x & 0xFF]))
-        f.write(bytes([(x >> 8) & 0xFF]))
-        f.write(bytes([(x >> 16) & 0xFF]))
-        f.write(bytes([(x >> 24) & 0xFF]))
-    else:
-        f.write(chr(x & 0xFF))
-        f.write(chr((x >> 8) & 0xFF))
-        f.write(chr((x >> 16) & 0xFF))
-        f.write(chr((x >> 24) & 0xFF))
+    f.write(chr(x & 0xFF))
+    f.write(chr((x >> 8) & 0xFF))
+    f.write(chr((x >> 16) & 0xFF))
+    f.write(chr((x >> 24) & 0xFF))
 
 
 def dump_compile(codeobject, filename, timestamp, magic):
@@ -41,7 +34,7 @@ def dump_compile(codeobject, filename, timestamp, magic):
     codeobject: code object
     filefile: bytecode file to write
     timestamp: timestamp to put in file
-    magic: Pyton bytecode magic
+    magic: Python bytecode magic
     """
     # Atomically write the pyc/pyo file.  Issue #13146.
     # id() is used to generate a pseudo-random filename.
@@ -49,10 +42,7 @@ def dump_compile(codeobject, filename, timestamp, magic):
     fc = None
     try:
         fc = open(path_tmp, "wb")
-        if PYTHON3:
-            fc.write(bytes([0, 0, 0, 0]))
-        else:
-            fc.write("\0\0\0\0")
+        fc.write("\0\0\0\0")
         wr_long(fc, timestamp)
         marshal.dump(codeobject, fc)
         fc.flush()
@@ -97,13 +87,7 @@ def compare_bytecode_files(bc_file1, bc_file2):
     bytes2 = f.read()
     f.close
 
-    if PYTHON_VERSION == 3.2 and IS_PYPY:
-        assert bytes1[4:] == bytes2[4:], "bytecode:\n%s\nvs\n%s" % (
-            bytes1[4:],
-            bytes2[4:],
-        )
-    else:
-        assert bytes1 == bytes2, "bytecode:\n%s\nvs\n%s" % (bytes1, bytes2)
+    assert bytes1 == bytes2, "bytecode:\n%s\nvs\n%s" % (bytes1, bytes2)
 
 
 def verify_file(real_source_filename, real_bytecode_filename):
@@ -125,15 +109,7 @@ def verify_file(real_source_filename, real_bytecode_filename):
     if not os.path.exists(real_source_filename):
         return
 
-    if PYTHON_VERSION < 3.0:
-        f = open(real_source_filename, "U")
-    elif PYTHON_VERSION == 3.0:
-        # Too hard to get working on 3.0
-        return
-    elif 3.1 <= PYTHON_VERSION <= 3.4:
-        f = open(real_source_filename, "rb")
-    else:
-        f = open(real_source_filename, newline=None, errors="backslashreplace")
+    f = open(real_source_filename, "U")
 
     codestring = f.read()
 

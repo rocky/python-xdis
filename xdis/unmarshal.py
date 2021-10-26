@@ -31,7 +31,7 @@ from struct import unpack
 
 from xdis.magics import magic_int2tuple
 from xdis.codetype import to_portable, Bytes
-from xdis.version_info import PYTHON_VERSION_TRIPLE, IS_PYPY
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
 import unicodedata

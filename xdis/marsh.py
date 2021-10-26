@@ -29,7 +29,7 @@ there). Details of the format may change between Python versions.
 
 import types, struct
 
-from xdis.version_info import PYTHON_VERSION, PYTHON3
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 from xdis.codetype import Code2, Code3
 
 try:
@@ -44,10 +44,6 @@ except ImportError:
 
     def builtinify(f):
         return f
-
-
-def Ord(c):
-    return ord(c)
 
 
 def Ord(c):
@@ -100,10 +96,13 @@ class _Marshaller:
         self.python_version = python_version
 
     def dump(self, x):
-        if isinstance(x, types.CodeType) and PYTHON_VERSION != self.python_version:
+        if (
+            isinstance(x, types.CodeType)
+            and PYTHON_VERSION_TRIPLE[:2] != self.python_version[:2]
+        ):
             raise RuntimeError(
                 "code type passed for version %s but we are running version %s"
-                % (PYTHON_VERSION, self.python_version)
+                % version_tuple_to_str()
             )
         try:
             self.dispatch[type(x)](self, x)
@@ -248,13 +247,13 @@ class _Marshaller:
         self.w_long(len(x))
         self._write(x)
 
-    if PYTHON_VERSION > 2.5:
+    if PYTHON_VERSION_TRIPLE >= (2, 6):
         dispatch[bytes] = dump_string
         dispatch[bytearray] = dump_string
 
     def dump_unicode(self, x):
         self._write(TYPE_UNICODE)
-        if self.python_version < "3.0":
+        if self.python_version < (3, 0):
             s = x.encode("utf8")
         else:
             s = x
@@ -612,7 +611,7 @@ class _Unmarshaller:
 
     def load_code(self):
         argcount = self.r_long()
-        if self.python_version and self.python_version >= "3.0":
+        if self.python_version and self.python_version >= (3, 0):
             is_python3 = True
             kwonlyargcount = self.r_long()
         else:
@@ -953,14 +952,17 @@ _load_dispatch = _FastUnmarshaller.dispatch
 
 version = 1
 
+
 def dump(x, f, version=version, python_version=None):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version)
     m.dump(x)
 
+
 def load(f, python_version=None):
     um = _Unmarshaller(f.read, python_version)
     return um.load()
+
 
 def dumps(x, version=version, python_version=None):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format

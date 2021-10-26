@@ -28,7 +28,6 @@ __docformat__ = "restructuredtext"
 from xdis.version_info import (
     IS_PYPY,
     PYTHON3,
-    PYTHON_VERSION,  # Note: this is going away
     PYTHON_VERSION_STR,
     PYTHON_VERSION_TRIPLE,
 )

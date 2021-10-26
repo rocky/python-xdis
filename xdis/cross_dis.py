@@ -18,8 +18,6 @@
 # However it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
-from xdis.version_info import PYTHON_VERSION_TRIPLE
-
 from xdis.util import (
     COMPILER_FLAG_NAMES,
     PYPY_COMPILER_FLAG_NAMES,
@@ -446,20 +444,6 @@ def check_stack_effect():
         if op_has_argument(opcode, opc):
             xdis_args.append(0)
             dis_args.append(0)
-        if (
-            PYTHON_VERSION_TRIPLE > (3, 7)
-            and opcode in opc.CONDITION_OPS
-            and opname
-            not in (
-                "JUMP_IF_FALSE_OR_POP",
-                "JUMP_IF_TRUE_OR_POP",
-                "POP_JUMP_IF_FALSE",
-                "POP_JUMP_IF_TRUE",
-                "SETUP_FINALLY",
-            )
-        ):
-            xdis_args.append(0)
-            dis_args.append(0)
 
         effect = xstack_effect(*xdis_args)
         check_effect = dis.stack_effect(*dis_args)
@@ -489,5 +473,3 @@ if __name__ == "__main__":
 
     opc = get_opcode_module()
     assert findlabels(code, opc) == findlabels_std(code)
-    if PYTHON_VERSION_TRIPLE >= (3, 4):
-        check_stack_effect()
