@@ -1,9 +1,12 @@
-6.1.0 2021-10-xx
+6.0.2 2021-10-29
 =================
 
 * Remove str2float, sysinfo2float and magic_int2float. With Python 3.10 this is no
   longer tenable
 * Reduce PYTHON_VERSION usage in xdis.
+* Allow optional delimeter and start length in `version_tuple_to_str()`
+* fix logic bug in setting MAGIC
+* Add a little Python 3.8.5 Graal (Java VM) knowledge
 
 6.0.1 2021-10-22
 =================
