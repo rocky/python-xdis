@@ -41,9 +41,9 @@ The programs here accept bytecodes from Python version 1.0 to 3.10 or
 so. The code requires Python 2.4 or later and has been tested on
 Python running lots of Python versions.
 
-When installing, except for the most recent versions of Python use
+When installing, except for the most recent versions of Python, use
 the Python egg or wheel that matches that version, e.g. ``xdis-6.0.2-py3.3.egg``, ``xdis-6.0.2-py33-none-any.whl``.
-Of course for version that pre-date wheel's like Python 2.6 you will have to use eggs.
+Of course for version sthat pre-date wheel's, like Python 2.6, you will have to use eggs.
 
 To install older versions for from source in git use the branch
 ``python-2.4-to-2.7`` for Python versions from 2.4 to 2.7,
