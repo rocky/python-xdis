@@ -161,7 +161,7 @@ class Instruction(_Instruction):
             argrepr = self.argrepr
             # The argrepr value when the instruction was created generally has all the information we require.
             # However fo "xasm" format, want additional explicit information linking operands to tables.
-            if asm_format == "xasm":
+            if asm_format == "asm":
                 if self.optype == "jabs":
                     fields.append("L" + str(self.arg))
                 elif self.optype == "jrel":
