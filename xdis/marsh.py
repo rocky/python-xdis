@@ -97,7 +97,7 @@ class _Marshaller:
         self.python_version = python_version
 
     def dump(self, x):
-        if isinstance(x, types.CodeType) and PYTHON_VERSION_TRIPLE != self.python_version:
+        if isinstance(x, types.CodeType) and PYTHON_VERSION_TRIPLE[:2] != self.python_version:
             raise RuntimeError(
                 "code type passed for version %s but we are running version %s"
                 % (version_tuple_to_str(), self.python_version)

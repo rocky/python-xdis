@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2020 by Rocky Bernstein
+#  Copyright (c) 2018-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -102,7 +102,7 @@ class Instruction(_Instruction):
         # Column: Source code line number
         if lineno_width:
             if self.starts_line is not None:
-                if asm_format == "xasm":
+                if asm_format == "asm":
                     lineno_fmt = "%%%dd:\n" % lineno_width
                     fields.append(lineno_fmt % self.starts_line)
                     fields.append(" " * (lineno_width))
@@ -115,14 +115,14 @@ class Instruction(_Instruction):
                 fields.append(" " * (lineno_width + 1))
 
         # Column: Current instruction indicator
-        if mark_as_current and asm_format != "xasm":
+        if mark_as_current and asm_format != "asm":
             fields.append("-->")
         else:
             fields.append("   ")
 
         # Column: Jump target marker
         if self.is_jump_target:
-            if asm_format != "xasm":
+            if asm_format != "asm":
                 fields.append(">>")
             else:
                 fields = ["L%d:\n" % self.offset] + fields
@@ -132,7 +132,7 @@ class Instruction(_Instruction):
             fields.append("  ")
 
         # Column: Instruction offset from start of code sequence
-        if asm_format != "xasm":
+        if asm_format != "asm":
             fields.append(repr(self.offset).rjust(4))
 
         # Column: Instruction bytes
@@ -160,7 +160,7 @@ class Instruction(_Instruction):
         if self.arg is not None:
             argrepr = self.argrepr
             # The argrepr value when the instruction was created generally has all the information we require.
-            # However fo "xasm" format, want additional explicit information linking operands to tables.
+            # However fo "asm" format, want additional explicit information linking operands to tables.
             if asm_format == "asm":
                 if self.optype == "jabs":
                     fields.append("L" + str(self.arg))
@@ -168,12 +168,15 @@ class Instruction(_Instruction):
                     argval = self.offset + self.arg + self.inst_size
                     fields.append("L" + str(argval))
                 elif self.optype in indexed_operand:
+                    fields.append(repr(self.arg))
                     fields.append("(%s)" % argrepr)
                     argrepr = None
                 elif self.optype == "const" and not re.search(r"\s", argrepr):
+                    fields.append(repr(self.arg))
                     fields.append("(%s)" % argrepr)
                     argrepr = None
                 elif self.optype == "const" and not re.search(r"\s", argrepr):
+                    fields.append(repr(self.arg))
                     fields.append("(%s)" % argrepr)
                     argrepr = None
                 else:
@@ -191,8 +194,9 @@ class Instruction(_Instruction):
                         argrepr = new_repr
                 pass
             if not argrepr:
-                fields.append(repr(self.arg))
-
+                if asm_format != "asm":
+                    fields.append(repr(self.arg))
+                pass
             else:
                 # Column: Opcode argument details
                 fields.append("(%s)" % argrepr)
