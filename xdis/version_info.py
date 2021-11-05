@@ -49,3 +49,6 @@ def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, start=0, end=3, de
     delimiter is what string to put in the between components.
     """
     return delimiter.join([str(v) for v in version_tuple[start:end]])
+
+def version_str_to_tuple(python_version, len=2):
+    return tuple([int(v) for v in python_version.split(".")[:len]])

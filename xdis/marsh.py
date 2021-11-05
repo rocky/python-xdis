@@ -29,8 +29,8 @@ there). Details of the format may change between Python versions.
 
 import types, struct
 
-from xdis.version_info import PYTHON_VERSION, PYTHON3
 from xdis.codetype import Code2, Code3
+from xdis.version_info import PYTHON_VERSION_TRIPLE, PYTHON3, version_tuple_to_str
 
 try:
     intern
@@ -97,10 +97,10 @@ class _Marshaller:
         self.python_version = python_version
 
     def dump(self, x):
-        if isinstance(x, types.CodeType) and PYTHON_VERSION != self.python_version:
+        if isinstance(x, types.CodeType) and PYTHON_VERSION_TRIPLE[:2] != self.python_version:
             raise RuntimeError(
                 "code type passed for version %s but we are running version %s"
-                % (PYTHON_VERSION, self.python_version)
+                % (version_tuple_to_str(), self.python_version)
             )
         try:
             self.dispatch[type(x)](self, x)
@@ -245,13 +245,13 @@ class _Marshaller:
         self.w_long(len(x))
         self._write(x)
 
-    if PYTHON_VERSION > 2.5:
+    if PYTHON_VERSION_TRIPLE > (2, 5):
         dispatch[bytes] = dump_string
         dispatch[bytearray] = dump_string
 
     def dump_unicode(self, x):
         self._write(TYPE_UNICODE)
-        if not PYTHON3 and self.python_version < "3.0":
+        if not PYTHON3 and self.python_version < (3, 0):
             s = x.encode("utf8")
         else:
             s = x
@@ -1035,12 +1035,12 @@ def dumps(x, version=version, python_version=None):
     m = _Marshaller(buffer.append, python_version=python_version)
     m.dump(x)
     if python_version:
-        is_python3 = python_version >= 3.0
+        is_python3 = python_version >= (3, 0)
     else:
         is_python3 = PYTHON3
 
     if is_python3:
-        if PYTHON_VERSION >= 3.0:
+        if PYTHON_VERSION_TRIPLE >= (3, 0):
             # Python 3.x handling  Python 3.x
             buf = []
             for b in buffer:
