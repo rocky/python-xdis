@@ -241,7 +241,7 @@ def get_instructions_bytes(
 
         opname = opc.opname[op]
         inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
-        fallthrough = op not in opc.nofollow
+        # fallthrough = op not in opc.nofollow
         yield Instruction(
             opname,
             op,
