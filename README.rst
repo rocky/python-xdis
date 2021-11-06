@@ -17,8 +17,8 @@ different versions?
 
 That's what this package is for. It can "marshal load" Python
 bytecodes from different versions of Python. The command-line routine
-*pydisasm* will show disassembly output using Python 3.8 disassembly
-conventions.
+*pydisasm* will show disassembly output using the most modern Python
+disassembly conventions.
 
 Also, if you need to modify and write bytecode, the routines here can
 be of help. There are routines to pack and unpack the read-only tuples
@@ -33,16 +33,23 @@ magic value.
 
 So If you want to write a cross-version assembler, or a
 bytecode-level optimizer this package may also be useful. In addition
-to the kinds of instruction categorization that `dis` offers, we have
+to the kinds of instruction categorization that `dis`` offers, we have
 additional categories for things that would be useful in such a
 bytecode optimizer.
 
-The programs here accept bytecodes from Python version 1.0 to 3.8 or
+The programs here accept bytecodes from Python version 1.0 to 3.10 or
 so. The code requires Python 2.4 or later and has been tested on
 Python running lots of Python versions.
 
-To install versions for Python before 2.6 install via eggs or
-use the python-2.4 branch of git in github.
+When installing, except for the most recent versions of Python, use
+the Python egg or wheel that matches that version, e.g. ``xdis-6.0.2-py3.3.egg``, ``xdis-6.0.2-py33-none-any.whl``.
+Of course for versions that pre-date wheel's, like Python 2.6, you will have to use eggs.
+
+To install older versions for from source in git use the branch
+``python-2.4-to-2.7`` for Python versions from 2.4 to 2.7,
+``python-3.1-to-3.2`` for Python versions from 3.1 to 3.2,
+``python-3.3-to-3.5`` for Python versions from 3.3 to 3.5. The master
+branch handles Python 3.6 and later.
 
 
 Installation
@@ -55,7 +62,7 @@ The standard Python routine:
     $ pip install -e .
     $ pip install -r requirements-dev.txt
 
-A GNU makefile is also provided so :code:`make install` (possibly as root or
+A GNU makefile is also provided so ``make install`` (possibly as root or
 sudo) will do the steps above.
 
 Testing
@@ -69,7 +76,7 @@ A GNU makefile has been added to smooth over setting running the right
 command, and running tests from fastest to slowest.
 
 If you have remake_ installed, you can see the list of all tasks
-including tests via :code:`remake --tasks`.
+including tests via ``remake --tasks``.
 
 
 Usage
@@ -101,12 +108,13 @@ For example:
 
 There may some small differences in output produced for formatted
 disassembly or how we show compiler flags. We expect you'll
-find the `xdis` output more informative though.
+find the ``xdis`` output more informative though.
 
 See Also
 --------
 
 * https://pypi.org/project/uncompyle6/ : Python Bytecode Deparsing
+* https://pypi.org/project/decompyle3/ : Python Bytecode Deparsing for Python 3.7 and 3.8
 * https://pypi.org/project/xasm/ : Python Bytecode Assembler
 * https://pypi.org/project/x-python/ : Python Bytecode Interpreter written in Python
 
