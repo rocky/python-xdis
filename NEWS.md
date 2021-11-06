@@ -1,3 +1,10 @@
+6.0.2 2021-11-05
+=================
+
+* xasm format fixes
+* more Python version tuple compare conversions
+* add `version_str_to_tuple()` to convert the other way. This is useful in xasm, for example.
+
 6.0.2 2021-10-29
 =================
 

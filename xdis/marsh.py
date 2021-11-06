@@ -29,8 +29,8 @@ there). Details of the format may change between Python versions.
 
 import types, struct
 
-from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 from xdis.codetype import Code2, Code3
+from xdis.version_info import PYTHON_VERSION_TRIPLE, PYTHON3, version_tuple_to_str
 
 try:
     intern
@@ -970,7 +970,7 @@ def dumps(x, version=version, python_version=None):
     m = _Marshaller(buffer.append, python_version=python_version)
     m.dump(x)
     if python_version:
-        is_python3 = python_version >= 3.0
+        is_python3 = python_version >= (3, 0)
     else:
         is_python3 = False
 

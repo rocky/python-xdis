@@ -149,8 +149,6 @@ def disco(
 
     assert iscode(co)
 
-    bytecode_version = ".".join((str(i) for i in version_tuple))
-
     show_module_header(
         version_tuple,
         co,
