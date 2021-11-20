@@ -20,8 +20,6 @@
   Probably a complete rewrite would be sensefull. hG/2000-12-27
 """
 
-import sys
-
 __docformat__ = "restructuredtext"
 
 # Export various things from the modules
@@ -155,5 +153,5 @@ from xdis.util import (
     co_flags_is_async,
 )
 
-# This ensures VERSION will appear in pydoc
+# This ensures __version__ will appear in pydoc
 from xdis.version import __version__
