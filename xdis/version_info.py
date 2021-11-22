@@ -50,5 +50,5 @@ def version_tuple_to_str(version_tuple=PYTHON_VERSION_TRIPLE, start=0, end=3, de
     """
     return delimiter.join([str(v) for v in version_tuple[start:end]])
 
-def version_str_to_tuple(python_version: str, len=2):
+def version_str_to_tuple(python_version, len=2):
     return tuple([int(v) for v in python_version.split(".")[:len]])
