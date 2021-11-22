@@ -93,7 +93,7 @@ def check_object_path(path):
 
 def is_pypy(magic_int, filename):
     # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
-    if magic_int in (3413,) and filename.endswith("pypy38.pyc"):
+    if magic_int in (3413, 3414) and filename.endswith("pypy38.pyc"):
         return True
     return magic_int in ((62211 + 7, 3180 + 7) + IS_PYPY3)
 

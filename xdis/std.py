@@ -139,9 +139,9 @@ class _StdApi:
         """
         return _show_code(x, self.opc.version_tuple, file, is_pypy=self.is_pypy)
 
-    def stack_effect(self, oparg=None, jump=None):
+    def stack_effect(self, opcode, oparg=None, jump=None):
         """Compute the stack effect of *opcode* with argument *oparg*."""
-        return _stack_effect(x, self.opc, oparg, jump)
+        return _stack_effect(opcode, self.opc, oparg, jump)
 
     def pretty_flags(self, flags):
         """Return pretty representation of code flags."""
