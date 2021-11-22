@@ -411,8 +411,8 @@ add_canonic_versions("3.2.5pypy", "3.2pypy")
 add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
-add_canonic_versions("3.7.9pypy 3.7.10pypy", "3.7pypy")
-add_canonic_versions("3.8pypy 3.8.12pypy", "3.8.12pypy")
+add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy", "3.7pypy")
+add_canonic_versions("3.8.0pypy 3.8pypy 3.8.12pypy", "3.8.12pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
@@ -429,7 +429,7 @@ add_canonic_versions(
     "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
 )
 add_canonic_versions(
-    "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.0b5+", "3.9.0beta5"
+    "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.0b5+", "3.9.0beta5"
 )
 
 add_canonic_versions("3.10 3.10.0", "3.10.0rc2")
