@@ -192,12 +192,12 @@ def format_CALL_METHOD_KW(argc, kwarg_count=None):
 
 
 opcode_arg_fmt = {
-    "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older,
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_METHOD": format_CALL_METHOD,
     "CALL_METHOD_KW": format_CALL_METHOD_KW,
+    "EXTENDED_ARG": format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 opcode_extended_fmt = {
