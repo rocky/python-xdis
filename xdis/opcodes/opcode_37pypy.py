@@ -34,6 +34,9 @@ from xdis.opcodes.opcode_37 import (
     format_MAKE_FUNCTION_flags,
 )
 
+oppush = {}
+oppop = {}
+
 l = locals()
 init_opdata(l, opcode_37, version_tuple, is_pypy=True)
 
@@ -71,20 +74,141 @@ if sys.version_info[:3] >= (3, 6, 1):
 # FIXME remove (fix uncompyle6)
 update_pj3(globals(), l)
 
+# fmt: on
+def extended_format_CALL_METHOD(opc, instructions):
+    """argc has the number of positional arguments.
+    TOS starts the positional arguments
+    values for each keyword argument.
+    After that is a slot to cache a method function
+    Below that is the method attribute to that is looked up to find
+    the method name."""
+    call_method_inst = instructions[0]
+    assert call_method_inst.opname == "CALL_METHOD"
+    method_pos = call_method_inst.arg + 1
+    assert len(instructions) >= method_pos + 1
+    s = ""
+    for i, inst in enumerate(instructions[1:]):
+        if i == method_pos:
+            break
+        if inst.is_jump_target:
+            i += 1
+            break
+        # Make sure we are in the same basic block
+        # and ... ?
+        opcode = inst.opcode
+        if inst.optype in ("nargs", "vargs"):
+            break
+        if inst.optype != "name":
+            method_pos += (oppop[opcode] - oppush[opcode]) + 1
+        if inst.opname in ("LOOKUP_METHOD"):
+            method_pos = i
+            break
+        pass
+
+    if i == method_pos:
+        if instructions[method_pos + 2].opname in ("LOAD_NAME", "LOAD_FAST"):
+            s += "%s.%s(), " % (
+                instructions[method_pos + 2].argrepr,
+                instructions[method_pos + 1].argrepr,
+            )
+            pass
+        pass
+    s += format_CALL_METHOD(call_method_inst.arg)
+    return s
+
+
+def extended_format_CALL_METHOD_KW(opc, instructions):
+    """argc has the number of positional plus keyword arguments.
+    TOS is a tuple of keyword argument names and below that are
+    values for each keyword argument.
+    Below that are positional arguments.
+    After that is a slot to cache a method function
+    Below that is the method attribute to that is looked up to find
+    the method name."""
+    call_method_inst = instructions[0]
+    assert call_method_inst.opname == "CALL_METHOD_KW"
+    method_pos = call_method_inst.arg + 2
+    assert len(instructions) >= method_pos + 1
+    kw_names = instructions[1]
+    assert isinstance(kw_names, tuple)
+    kw_name_str = "=..., ".join(kw_names.argval) + "=..."
+    s = ""
+    for i, inst in enumerate(instructions[2:]):
+        if i == method_pos:
+            break
+        if inst.is_jump_target:
+            i += 1
+            break
+        # Make sure we are in the same basic block
+        # and ... ?
+        opcode = inst.opcode
+        if inst.optype in ("nargs", "vargs"):
+            break
+        if inst.optype != "name":
+            method_pos += (oppop[opcode] - oppush[opcode]) + 1
+        if inst.opname in ("LOOKUP_METHOD"):
+            method_pos = i
+            break
+        pass
+
+    if i == method_pos:
+        if instructions[method_pos + 3].opname in ("LOAD_NAME", "LOAD_FAST"):
+            s += "%s.%s" % (
+                instructions[method_pos + 3].argrepr,
+                instructions[method_pos + 2].argrepr,
+            )
+            pass
+        if call_method_inst.arg > len(kw_names.argval):
+            s += "(..., %s), " % kw_name_str
+        else:
+            s += "(%s), " % kw_name_str
+        pass
+    s += format_CALL_METHOD_KW(call_method_inst.arg, len(kw_names.argval))
+    return s
+
+
+def format_CALL_METHOD(argc):
+    """argc has the number of positional arguments.
+    TOS starts the positional arguments
+    After that is a slot to cache a method function
+    Below that is the method attribute to that is looked up to find
+    the method name."""
+    return "%d positional" % (argc)
+
+
+def format_CALL_METHOD_KW(argc, kwarg_count=None):
+    """argc has the number of positional plus keyword arguments.
+    TOS is a tuple of keyword argument names and below that are
+    values for each keyword argument.
+    Below that are positional arguments.
+    After that is a slot to cache a method function
+    Below that is the method attribute to that is looked up to find
+    the method name."""
+    if isinstance(kwarg_count, int):
+        positional_argc = argc - kwarg_count
+        return "%d positional, %d keyword" % (positional_argc, kwarg_count)
+    else:
+        return "%d positional + keyword" % (argc)
+
+
 opcode_arg_fmt = {
-    "EXTENDED_ARG":  format_extended_arg,
+    "EXTENDED_ARG": format_extended_arg,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
-    'CALL_FUNCTION': format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_METHOD": format_CALL_METHOD,
+    "CALL_METHOD_KW": format_CALL_METHOD_KW,
 }
 
 opcode_extended_fmt = {
-    "LOAD_ATTR":     extended_format_ATTR,
+    "CALL_METHOD": extended_format_CALL_METHOD,
+    "CALL_METHOD_KW": extended_format_CALL_METHOD_KW,
+    "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "RETURN_VALUE":  extended_format_RETURN_VALUE,
-    "STORE_ATTR":    extended_format_ATTR,
+    "RETURN_VALUE": extended_format_RETURN_VALUE,
+    "STORE_ATTR": extended_format_ATTR,
 }
-# fmt: on
+
 
 finalize_opcodes(l)

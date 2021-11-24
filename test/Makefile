@@ -23,7 +23,7 @@ check: check-short
 	          --bytecode-3.6 --bytecode-3.7 --bytecode-3.8 \
 	          --bytecode-3.9 --bytecode-3.10 \
 	          --bytecode-2.7pypy --bytecode-3.2pypy \
-                  --bytecode-3.5pypy --bytecode-3.6pypy --bytecode-3.7pypy $(COMPILE)
+                  --bytecode-pypy35 --bytecode-pypy36 --bytecode-pypy37 $(COMPILE)
 check-short:
 	$(PYTHON) test_pyenvlib.py --verify --simple
 
@@ -47,7 +47,8 @@ check-bytecode-3:
 		  --bytecode-3.0 --bytecode-3.1 \
                   --bytecode-3.2 --bytecode-3.3 \
                   --bytecode-3.4 --bytecode-3.5 \
-	          --bytecode-3.6 --bytecode-3.7 --bytecode-3.8
+	          --bytecode-3.6 --bytecode-3.7 --bytecode-3.8 \
+                  --bytecode-pypy35 --bytecode-pypy36 --bytecode-pypy37
 
 check-bytecode-3.8:
 	$(PYTHON) test_pythonlib.py --bytecode-3.8
