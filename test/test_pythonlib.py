@@ -85,11 +85,11 @@ for vers in (1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6,
     test_options[key] =  (os.path.join(lib_prefix, pythonlib), PYOC, pythonlib, vers)
 
 for vers, vers_dot in ((35, 3.5), (36, 3.6), (37, 3.7), (38, 3.8)):
-    bytecode = "bytecode_pypy%s_run" % vers
+    bytecode = "bytecode_pypy%s" % vers
     key = "bytecode-pypy%s" % vers
-    test_options[key] = (os.path.join(lib_prefix, pythonlib), PYOC, bytecode, vers_dot)
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
     key = "bytecode-pypy%s" % vers_dot
-    test_options[key] = (os.path.join(lib_prefix, pythonlib), PYOC, bytecode, vers_dot)
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
 
 
 #-----
