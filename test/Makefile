@@ -23,9 +23,9 @@ check: check-short
 	          --bytecode-3.6 --bytecode-3.7 --bytecode-3.8 \
 	          --bytecode-3.9 --bytecode-3.10 \
 	          --bytecode-2.7pypy --bytecode-3.2pypy \
-                  --bytecode-3.5pypy --bytecode-3.6pypy --bytecode-3.7pypy $(COMPILE)
+                  --bytecode-pypy35 --bytecode-pypy36 --bytecode-pypy37 --bytecode-pypy38 $(COMPILE)
 check-short:
-	$(PYTHON) test_pyenvlib.py --verify --simple
+	$(PYTHON) test_pyenvlib.py --simple
 
 check-bytecode-1.5:
 	$(PYTHON) test_pythonlib.py --bytecode-1.5
@@ -47,18 +47,19 @@ check-bytecode-3:
 		  --bytecode-3.0 --bytecode-3.1 \
                   --bytecode-3.2 --bytecode-3.3 \
                   --bytecode-3.4 --bytecode-3.5 \
-	          --bytecode-3.6 --bytecode-3.7 --bytecode-3.8
+	          --bytecode-3.6 --bytecode-3.7 --bytecode-3.8 \
+                  --bytecode-pypy35 --bytecode-pypy36 --bytecode-pypy37
 
 check-bytecode-3.8:
 	$(PYTHON) test_pythonlib.py --bytecode-3.8
 
 #: Test of all pyenv Python library files
 check-full check-pyenv:
-	$(PYTHON) test_pyenvlib.py --verify
+	$(PYTHON) test_pyenvlib.py
 
 #: Run all tests
 check-ci:
-	$(PYTHON) test_pyenvlib.py --verify --simple --compile
+	$(PYTHON) test_pyenvlib.py --simple --compile
 
 clean: clean-py-dis clean-dis clean-unverified
 

@@ -198,7 +198,7 @@ if __name__ == "__main__":
     test_version = None
 
     if len(sys.argv) == 1:
-        sys.argv[1] == "--simple"
+        sys.argv.append("--simple")
 
     test_options_keys = list(test_options.keys())
     test_options_keys.sort()

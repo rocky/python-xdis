@@ -112,6 +112,14 @@ for vers in (
 
 # -----
 
+for vers, vers_dot in ((35, 3.5), (36, 3.6), (37, 3.7), (38, 3.8)):
+    bytecode = "bytecode_pypy%s" % vers
+    key = "bytecode-pypy%s" % vers
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
+    key = "bytecode-pypy%s" % vers_dot
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
+
+
 
 def help():
     print (
