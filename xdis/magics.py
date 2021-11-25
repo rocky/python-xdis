@@ -33,7 +33,7 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 """
 
 import re, struct, sys
-from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE, version_tuple_to_str
+from xdis.version_info import IS_PYPY, version_tuple_to_str
 
 IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244)
 
@@ -403,7 +403,7 @@ add_canonic_versions(
 add_canonic_versions("3.7b1", "3.7.0beta3")
 add_canonic_versions("3.8a1", "3.8.0beta2")
 
-add_canonic_versions("2.7.10pypy 2.7.13pypy", "2.7pypy")
+add_canonic_versions("2.7.10pypy 2.7.12pypy 2.7.13pypy", "2.7pypy")
 add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
 add_canonic_versions("3.8.5Graal", "3.8.5Graal")
 
