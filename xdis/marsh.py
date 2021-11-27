@@ -107,11 +107,11 @@ class _Marshaller:
         try:
             self.dispatch[type(x)](self, x)
         except KeyError:
-            if isinstance(x, Code2):
-                self.dispatch[Code2](self, x)
-                return
-            elif isinstance(x, Code3):
+            if isinstance(x, Code3):
                 self.dispatch[Code3](self, x)
+                return
+            elif isinstance(x, Code2):
+                self.dispatch[Code2](self, x)
                 return
             else:
                 for tp in type(x).mro():
