@@ -202,7 +202,7 @@ def get_instructions_bytes(
             elif op in opc.JREL_OPS:
                 argval = i + arg
                 if opc.python_version >= (3, 10):
-                    argval *= 2
+                    argval = i + (2 * arg)
                 argrepr = "to " + repr(argval)
                 optype = "jrel"
             elif op in opc.JABS_OPS:
