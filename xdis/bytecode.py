@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2020 by Rocky Bernstein
+#  Copyright (c) 2018-2021 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@ allow running on Python 2.
 """
 
 import sys, types
-from xdis.version_info import PYTHON3
 
 from xdis.cross_dis import (
     get_code_object,
@@ -31,11 +30,7 @@ from xdis.cross_dis import (
 from xdis.instruction import Instruction
 from xdis.util import code2num, num2code
 
-if PYTHON3:
-    from io import StringIO
-    from functools import reduce
-else:
-    from StringIO import StringIO
+from io import StringIO
 
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
@@ -467,13 +462,8 @@ def list2bytecode(l, opc, varnames, consts):
                 pass
             pass
         pass
-    if opc.python_version < 3.0:
-        return reduce(lambda a, b: a + chr(b), bc, "")
-    else:
-        if PYTHON3:
-            return bytes(bc)
-        else:
-            return bytes(bytearray(bc))
+
+    return bytes(bc)
 
 
 # if __name__ == '__main__':
