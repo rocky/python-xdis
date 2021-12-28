@@ -43,7 +43,10 @@ def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
 
 def get_jump_val(jump_arg, version):
-    return jump_arg * 2 if version[:2] >= (3, 10) else jump_arg
+    if version[:2] >= (3, 10):
+        return jump_arg * 2
+    else:
+        return jump_arg
 
 def offset2line(offset, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)
