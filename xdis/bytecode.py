@@ -20,8 +20,6 @@ allow running on Python 2.
 """
 
 import sys, types
-from xdis.version_info import PYTHON_VERSION_TRIPLE
-
 from xdis.namedtuple24 import namedtuple
 
 from xdis.cross_dis import (
@@ -40,8 +38,12 @@ _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
 def extended_arg_val(opc, val):
+    """Return the adjusted value of an extended argument operand.
+    """
     return val << opc.EXTENDED_ARG_SHIFT
 
+def get_jump_val(jump_arg, version):
+    return jump_arg * 2 if version[:2] >= (3, 10) else jump_arg
 
 def offset2line(offset, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)
@@ -207,15 +209,11 @@ def get_instructions_bytes(
                 argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
             elif op in opc.JREL_OPS:
-                argval = i + arg
-                if opc.python_version >= (3, 10):
-                    argval *= 2
+                argval = i + get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
                 optype = "jrel"
             elif op in opc.JABS_OPS:
-                argval = arg
-                if opc.python_version >= (3, 10):
-                    argval *= 2
+                argval = get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
                 optype = "jabs"
             elif op in opc.LOCAL_OPS:
@@ -271,10 +269,15 @@ def get_instructions_bytes(
 
 
 def next_offset(op, opc, offset):
+    """Returns the bytecode offset for the instruction that is assumed to
+    start at `offset` and has opcode `op`. opc contains information for the
+    bytecode version of that we should be using.
+    """
     return offset + instruction_size(op, opc)
 
 
 class Bytecode(object):
+
     """Bytecode operations involving a Python code object.
 
     Instantiate this with a function, method, string of code, or a code object
@@ -479,13 +482,8 @@ def list2bytecode(l, opc, varnames, consts):
                 pass
             pass
         pass
-    if opc.python_version < 3.0:
-        return reduce(lambda a, b: a + chr(b), bc, "")
-    else:
-        if PYTHON_VERSION_TRIPLE < (2, 5):
-            return reduce(lambda a, b: a + chr(b), bc, '')
-        else:
-            return bytes(bytearray(bc))
+
+    return reduce(lambda a, b: a + chr(b), bc, "")
 
 
 # if __name__ == '__main__':
