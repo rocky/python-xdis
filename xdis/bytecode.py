@@ -41,11 +41,15 @@ else:
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
-def extended_arg_val(opc, val):
+def extended_arg_val(opc, val: int) -> int:
+    """Return the adjusted value of an extended argument operand.
+    """
     return val << opc.EXTENDED_ARG_SHIFT
 
+def get_jump_val(jump_arg: int, version: tuple) -> int:
+    return jump_arg * 2 if version[:2] >= (3, 10) else jump_arg
 
-def offset2line(offset, linestarts):
+def offset2line(offset: int, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)
     where both offset and line number are in increasing order.
     Return the closes line number at or below the offset.
@@ -200,15 +204,11 @@ def get_instructions_bytes(
                 argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
             elif op in opc.JREL_OPS:
-                argval = i + arg
-                if opc.python_version >= (3, 10):
-                    argval = i + (2 * arg)
+                argval = i + get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
                 optype = "jrel"
             elif op in opc.JABS_OPS:
-                argval = arg
-                if opc.python_version >= (3, 10):
-                    argval *= 2
+                argval = get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
                 optype = "jabs"
             elif op in opc.LOCAL_OPS:
@@ -260,11 +260,16 @@ def get_instructions_bytes(
         extended_arg_count = extended_arg_count + 1 if op == opc.EXTENDED_ARG else 0
 
 
-def next_offset(op, opc, offset):
+def next_offset(op: int, opc, offset:int) -> int:
+    """Returns the bytecode offset for the instruction that is assumed to
+    start at `offset` and has opcode `op`. opc contains information for the
+    bytecode version of that we should be using.
+    """
     return offset + instruction_size(op, opc)
 
 
 class Bytecode(object):
+
     """Bytecode operations involving a Python code object.
 
     Instantiate this with a function, method, string of code, or a code object
