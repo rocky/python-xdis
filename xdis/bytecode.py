@@ -465,6 +465,7 @@ def list2bytecode(l, opc, varnames, consts):
 
     return bytes(bc)
 
+
 # if __name__ == '__main__':
 #     import xdis.opcodes.opcode_27  as opcode_27
 #     import xdis.opcodes.opcode_34  as opcode_34
