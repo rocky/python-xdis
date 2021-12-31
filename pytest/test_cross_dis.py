@@ -1,4 +1,3 @@
-import types
 from dis import findlabels as findlabels_std
 from xdis.cross_dis import findlabels
 from xdis.op_imports import get_opcode_module
