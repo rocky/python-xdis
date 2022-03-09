@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2021 by Rocky Bernstein
+#  Copyright (c) 2018-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -35,11 +35,6 @@ from io import StringIO
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
-
-def extended_arg_val(opc, val: int) -> int:
-    """Return the adjusted value of an extended argument operand.
-    """
-    return val << opc.EXTENDED_ARG_SHIFT
 
 def get_jump_val(jump_arg: int, version: tuple) -> int:
     return jump_arg * 2 if version[:2] >= (3, 10) else jump_arg
