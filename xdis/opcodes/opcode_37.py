@@ -89,6 +89,7 @@ init_opdata(l, opcode_36, version_tuple)
 # and STORE_ANNOTATION introduced in 3.6!
 rm_op(l, "STORE_ANNOTATION", 127)
 
+# fmt: off
 # These have a changed stack effect since 3.6
 #          OP NAME            OPCODE POP PUSH
 #---------------------------------------------------------------
@@ -100,8 +101,8 @@ jrel_op(l, "SETUP_WITH",         143,  0,  6)
 jrel_op(l, "SETUP_ASYNC_WITH",   154,  0,  5)
 
 # These are new since Python 3.7
-name_op(l, "LOAD_METHOD", 160, 0, 1)
-nargs_op(l, "CALL_METHOD", 161, -2, 1)
+name_op(l, "LOAD_METHOD",        160,  0,  1)
+nargs_op(l, "CALL_METHOD",       161, -2,  1)
 
 format_MAKE_FUNCTION_flags = opcode_36.format_MAKE_FUNCTION_flags
 format_value_flags = opcode_36.format_value_flags
