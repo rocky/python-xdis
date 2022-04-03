@@ -1,5 +1,5 @@
 """
-  Copyright (c) 2015-2017, 2020-2021 by Rocky Bernstein
+  Copyright (c) 2015-2017, 2020-2022 by Rocky Bernstein
   Copyright (c) 2000 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
   This program is free software; you can redistribute it and/or
@@ -23,17 +23,9 @@
 __docformat__ = "restructuredtext"
 
 # Export various things from the modules
-from xdis.version_info import (
-    IS_PYPY,
-    PYTHON3,
-    PYTHON_VERSION,  # Note: this is going away
-    PYTHON_VERSION_STR,
-    PYTHON_VERSION_TRIPLE,
-)
 
 from xdis.bytecode import (
     Bytecode,
-    extended_arg_val,
     get_instructions_bytes,
     list2bytecode,
     next_offset,
@@ -69,6 +61,22 @@ from xdis.cross_dis import (
     show_code,
 )
 
+from xdis.disasm import (
+    get_opcode,
+    show_module_header,
+    disco_loop,
+    disco_loop_asm_format,
+    disassemble_file,
+)
+
+from xdis.lineoffsets import (
+    LineOffsetInfo,
+    LineOffsets,
+    LineOffsetsCompact,
+    lineoffsets_in_file,
+    lineoffsets_in_module,
+)
+
 from xdis.load import (
     check_object_path,
     is_bytecode_extension,
@@ -80,20 +88,14 @@ from xdis.load import (
     write_bytecode_file,
 )
 
-from xdis.lineoffsets import (
-    LineOffsetInfo,
-    LineOffsets,
-    LineOffsetsCompact,
-    lineoffsets_in_file,
-    lineoffsets_in_module,
-)
+from xdis.op_imports import get_opcode_module
 
-from xdis.disasm import (
-    get_opcode,
-    show_module_header,
-    disco_loop,
-    disco_loop_asm_format,
-    disassemble_file,
+from xdis.magics import (
+    canonic_python_version,
+    int2magic,
+    magic2int,
+    PYTHON_MAGIC_INT,
+    sysinfo2magic,
 )
 
 from xdis.opcodes import (
@@ -115,16 +117,8 @@ from xdis.opcodes import (
     opcode_36,
     opcode_37,
     opcode_38,
-)
-
-from xdis.op_imports import get_opcode_module
-
-from xdis.magics import (
-    canonic_python_version,
-    int2magic,
-    magic2int,
-    PYTHON_MAGIC_INT,
-    sysinfo2magic,
+    opcode_39,
+    opcode_310,
 )
 
 from xdis.util import (
@@ -154,4 +148,127 @@ from xdis.util import (
 )
 
 # This ensures __version__ will appear in pydoc
-from xdis.version import __version__
+from xdis.version import __version__  # noqa
+
+from xdis.version_info import (
+    IS_PYPY,
+    PYTHON3,
+    PYTHON_VERSION,  # Note: this is going away
+    PYTHON_VERSION_STR,
+    PYTHON_VERSION_TRIPLE,
+)
+
+__all__ = [
+    # bytecode
+    "Bytecode",
+    "get_instructions_bytes",
+    "list2bytecode",
+    "next_offset",
+    "offset2line",
+    "op_has_argument",
+    # codetype
+    "Code13",
+    "Code15",
+    "Code2",
+    "Code3",
+    "Code38",
+    "code_has_star_star_arg",
+    "code_has_star_arg",
+    "codeType2Portable",
+    "iscode",
+    # cross_dis
+    "code_info",
+    "extended_arg_val",
+    "findlinestarts",
+    "findlabels",
+    "format_code_info",
+    "get_code_object",
+    "get_jump_target_maps",
+    "instruction_size",
+    "pretty_code_flags",
+    "op_size",
+    "show_code",
+    # disasm
+    "get_opcode",
+    "show_module_header",
+    "disco_loop",
+    "disco_loop_asm_format",
+    "disassemble_file",
+    # load
+    "check_object_path",
+    "is_bytecode_extension",
+    "is_pypy",
+    "is_python_source",
+    "load_file",
+    "load_module",
+    "load_module_from_file_object",
+    "write_bytecode_file",
+    # lineoffsets
+    "LineOffsetInfo",
+    "LineOffsets",
+    "LineOffsetsCompact",
+    "lineoffsets_in_file",
+    "lineoffsets_in_module",
+    # instruction
+    "Instruction",
+    # magic
+    "canonic_python_version",
+    "int2magic",
+    "magic2int",
+    "PYTHON_MAGIC_INT",
+    "sysinfo2magic",
+    # opcodes
+    "opcode_13",
+    "opcode_14",
+    "opcode_15",
+    "opcode_22",
+    "opcode_23",
+    "opcode_24",
+    "opcode_25",
+    "opcode_26",
+    "opcode_27",
+    "opcode_30",
+    "opcode_31",
+    "opcode_32",
+    "opcode_33",
+    "opcode_34",
+    "opcode_35",
+    "opcode_36",
+    "opcode_37",
+    "opcode_38",
+    "opcode_39",
+    "opcode_310",
+    # op_imports
+    "get_opcode_module",
+    # util
+    "COMPILER_FLAG_BIT",
+    "COMPILER_FLAG_NAMES",
+    "CO_ABSOLUTE_IMPORT",
+    "CO_ASYNC_GENERATOR",
+    "CO_COROUTINE",
+    "CO_FUTURE_BARRY_AS_DBFL",
+    "CO_FUTURE_DIVISION",
+    "CO_FUTURE_GENERATOR_STOP",
+    "CO_FUTURE_PRINT_FUNCTION",
+    "CO_FUTURE_UNICODE_LITERALS",
+    "CO_FUTURE_WITH_STATEMENT",
+    "CO_GENERATOR",
+    "CO_GENERATOR_ALLOWED",
+    "CO_ITERABLE_COROUTINE",
+    "CO_NESTED",
+    "CO_NEWLOCALS",
+    "CO_NOFREE",
+    "CO_OPTIMIZED",
+    "CO_VARARGS",
+    "CO_VARKEYWORDS",
+    "PYPY_COMPILER_FLAG_NAMES",
+    "code2num",
+    "co_flags_is_async",
+    # version_info
+    "IS_PYPY",
+    "PYTHON3",
+    "PYTHON_VERSION",  # Note: this is going away
+    "PYTHON_VERSION_STR",
+    "PYTHON_VERSION_TRIPLE",
+    "__version__",
+]
