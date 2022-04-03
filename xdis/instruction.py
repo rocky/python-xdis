@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2021 by Rocky Bernstein
+#  Copyright (c) 2018-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -27,6 +27,22 @@ _Instruction = namedtuple(
     "_Instruction",
     "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg",
 )
+#_Instruction.opname.__doc__ = "Human readable name for operation"
+#_Instruction.opcode.__doc__ = "Numeric code for operation"
+#_Instruction.arg.__doc__ = "Numeric argument to operation (if any), otherwise None"
+#_Instruction.argval.__doc__ = "Resolved arg value (if known), otherwise same as arg"
+#_Instruction.argrepr.__doc__ = "Human readable description of operation argument"
+#_Instruction.has_arg.__doc__ = "True if instruction has an operand, otherwise False"
+#_Instruction.offset.__doc__ = "Start index of operation within bytecode sequence"
+#_Instruction.starts_line.__doc__ = (
+#    "Line started by this opcode (if any), otherwise None"
+#)
+#_Instruction.is_jump_target.__doc__ = (
+#    "True if other code jumps to here, otherwise False"
+#)
+#_Instruction.has_extended_arg.__doc__ = (
+#    "True there were EXTENDED_ARG opcodes before this, otherwise False"
+#)
 
 _OPNAME_WIDTH = 20
 _OPARG_WIDTH = 6

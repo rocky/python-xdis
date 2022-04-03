@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2021 by Rocky Bernstein
+# (C) Copyright 2018-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -417,22 +417,22 @@ add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
     "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7 3.7.8 3.7.9 "
-    "3.7.10 3.7.11 3.7.12",
+    "3.7.10 3.7.11 3.7.12 3.7.13",
     "3.7.0",
 )
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 add_canonic_versions(
-    "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7 3.8.8 3.8.9 3.8.10 3.8.11 3.8.12",
+    "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7 3.8.8 3.8.9 3.8.10 3.8.11 3.8.12 3.8.13",
     "3.8.0rc1+",
 )
 add_canonic_versions(
     "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
 )
 add_canonic_versions(
-    "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.0b5+", "3.9.0beta5"
+    "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 3.9.10pypy 3.9.0b5+", "3.9.0beta5"
 )
 
-add_canonic_versions("3.10 3.10.0 3.10.1", "3.10.0rc2")
+add_canonic_versions("3.10 3.10.0 3.10.1 3.10.2 3.10.3", "3.10.0rc2")
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
