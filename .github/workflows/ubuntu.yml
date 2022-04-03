@@ -2,18 +2,18 @@ name: xdis (ubuntu)
 
 on:
   push:
-    branches: [ python-3.3-to-3.5 ]
+    branches: [ python-3.1-to-3.2 ]
   pull_request:
-    branches: [ python-3.3-to-3.5 ]
+    branches: [ python-3.1-to-3.2 ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5]
+        python-version: [3.2]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
