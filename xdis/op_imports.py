@@ -142,6 +142,7 @@ op_imports = {
     "3.7pypy": opcode_37pypy,
     "3.8.0pypy": opcode_38pypy,
     "3.8.12pypy": opcode_38pypy,
+    "3.8.13pypy": opcode_38pypy,
 }
 
 for k, v in canonic_python_version.items():
