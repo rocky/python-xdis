@@ -73,7 +73,7 @@ def findlinestarts(co, dup_lines=False):
         offset += 1
         if op == l["opmap"]["SET_LINENO"] and offset > 0:
             lineno = code[offset] + code[offset + 1] * 256
-            yield (offset - 1, lineno)
+            yield (offset + 2, lineno)
             pass
         if op >= l["HAVE_ARGUMENT"]:
             offset += 2
