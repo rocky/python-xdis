@@ -21,6 +21,7 @@ from xdis.magics import canonic_python_version
 
 from xdis.opcodes import opcode_10 as opcode_10
 from xdis.opcodes import opcode_11 as opcode_11
+from xdis.opcodes import opcode_12 as opcode_12
 from xdis.opcodes import opcode_13 as opcode_13
 from xdis.opcodes import opcode_14 as opcode_14
 from xdis.opcodes import opcode_15 as opcode_15
@@ -53,6 +54,7 @@ from xdis.opcodes import opcode_35pypy as opcode_35pypy
 from xdis.opcodes import opcode_36pypy as opcode_36pypy
 from xdis.opcodes import opcode_37pypy as opcode_37pypy
 from xdis.opcodes import opcode_38pypy as opcode_38pypy
+from xdis.opcodes import opcode_39pypy as opcode_39pypy
 
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
@@ -62,8 +64,8 @@ op_imports = {
     "1.0": opcode_10,
     1.1: opcode_11,
     "1.1": opcode_11,
-    1.2: opcode_11,
-    "1.2": opcode_11,
+    1.2: opcode_12,
+    "1.2": opcode_12,
     1.3: opcode_13,
     "1.3": opcode_13,
     1.4: opcode_14,
@@ -142,6 +144,8 @@ op_imports = {
     "3.7pypy": opcode_37pypy,
     "3.8.0pypy": opcode_38pypy,
     "3.8.12pypy": opcode_38pypy,
+    "3.8.13pypy": opcode_38pypy,
+    "3.9pypy": opcode_39pypy,
 }
 
 for k, v in canonic_python_version.items():

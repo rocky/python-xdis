@@ -391,7 +391,12 @@ class Bytecode(object):
         asm_format="classic",
     ):
         # Omit the line number column entirely if we have no line number info
-        show_lineno = linestarts is not None
+        show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
+
+        # Old Python's use "SET_LINENO" to set a line number
+        set_lineno_number = 0
+        last_was_set_lineno = False
+
         # TODO?: Adjust width upwards if max(linestarts.values()) >= 1000?
         if show_lineno:
             lineno_width = 3
@@ -408,6 +413,28 @@ class Bytecode(object):
             linestarts,
             line_offset=line_offset,
         ):
+
+            # Python 1.x into early 2.0 uses SET_LINENO
+            if last_was_set_lineno:
+                instr = Instruction(
+                    instr.opname,
+                    instr.opcode,
+                    instr.optype,
+                    instr.inst_size,
+                    instr.arg,
+                    instr.argval,
+                    instr.argrepr,
+                    instr.has_arg,
+                    instr.offset,
+                    set_lineno_number,   # this is the only field that changes
+                    instr.is_jump_target,
+                    instr.has_extended_arg
+                )
+            last_was_set_lineno = False
+            if instr.opname == "SET_LINENO":
+                set_lineno_number = instr.argval
+                last_was_set_lineno = True
+
             instructions.append(instr)
             new_source_line = (
                 show_lineno and instr.starts_line is not None and instr.offset > 0
@@ -421,6 +448,14 @@ class Bytecode(object):
                 )
                 + "\n"
             )
+
+            # Python bytecode before 1.4 has a RESERVE_FAST instruction that
+            # store STORE_FAST and LOAD_FAST instructions in a different area
+            # currently we can't track names in this area, but instead use
+            # locals and hope the two are the same.
+            if instr.opname == "RESERVE_FAST":
+                file.write("# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST are "
+                           "inaccurate here in Python before 1.5\n")
             pass
         return
 

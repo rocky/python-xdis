@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2021 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ from xdis.cross_dis import (
     get_jump_target_maps,
 )
 from xdis import wordcode
-from xdis.version_info import IS_PYPY, PYTHON_VERSION, PYTHON_VERSION_TRIPLE
+from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
 cmp_op = (
     "<",

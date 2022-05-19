@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021 by Rocky Bernstein
+# (C) Copyright 2019-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@ from xdis.opcodes.base import (
     extended_format_RETURN_VALUE,
     format_RAISE_VARARGS_older,
     init_opdata,
+    name_op,
     rm_op,
     finalize_opcodes,
     format_extended_arg,
@@ -46,8 +47,10 @@ init_opdata(l, opcode_11, version_tuple)
 
 # fmt: off
 # 1.0 - 1.1 bytecodes differences
-rm_op(l, "LOAD_GLOBALS", 84)
-rm_op(l, "EXEC_STMT", 85)
+rm_op(l,  "LOAD_GLOBALS", 84)
+rm_op(l,  "LOAD_FAST",         124)
+name_op(l, "LOAD_FAST",        124, 0, 1)  # Local variable number
+
 # fmt: on
 
 update_pj2(globals(), l)
