@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021 by Rocky Bernstein
+# (C) Copyright 2019-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-CPython 1.1 and 1.2 bytecode opcodes
+CPython 1.1 bytecode opcodes
 
 This is used in bytecode disassembly. This is similar to the
 opcodes in Python's dis.py library.
@@ -23,7 +23,7 @@ opcodes in Python's dis.py library.
 # This is used from outside this module
 from xdis.cross_dis import findlabels
 
-import xdis.opcodes.opcode_13 as opcode_13
+import xdis.opcodes.opcode_12 as opcode_12
 from xdis.opcodes.base import (
     extended_format_CALL_FUNCTION,
     extended_format_RAISE_VARARGS_older,
@@ -37,11 +37,11 @@ from xdis.opcodes.base import (
 )
 
 version = 1.1  # 1.2 is the same
-version_tuple = (1, 2)  # 1.2 is the same
+version_tuple = (1, 1)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_13, version_tuple)
+init_opdata(l, opcode_12, version_tuple)
 
 update_pj2(globals(), l)
 
@@ -58,4 +58,5 @@ opcode_extended_fmt = {
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 
-findlinestarts = opcode_13.findlinestarts
+# These are used outside of this module
+findlinestarts = opcode_12.findlinestarts

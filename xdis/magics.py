@@ -19,7 +19,7 @@ Everything you ever wanted to know about Python versions and their
 magic numbers. And a little bit more...
 
 by_magic: in this dictionary, the key is a magic byte string like
-# b'\x03\xf3\r\n' and its value is a canonic version string, like
+# b'\x03\xf3\r\n' and its value is a set of canonic version strings, like
 # '2.7'
 
 by_version: in this dictionary, the key is a canonic version string like '2.7,
@@ -411,8 +411,8 @@ add_canonic_versions("3.2.5pypy", "3.2pypy")
 add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
-add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy", "3.7pypy")
-add_canonic_versions("3.8.0pypy 3.8pypy 3.8.12pypy", "3.8.12pypy")
+add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.7pypy")
+add_canonic_versions("3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy", "3.8.12pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
@@ -422,17 +422,19 @@ add_canonic_versions(
 )
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 add_canonic_versions(
-    "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7 3.8.8 3.8.9 3.8.10 3.8.11 3.8.12 3.8.13",
+    "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7 3.8.8 3.8.9 "
+    "3.8.10 3.8.11 3.8.12 3.8.13",
     "3.8.0rc1+",
 )
 add_canonic_versions(
     "3.9 3.9.0 3.9.0a1+ 3.9.0a2+ 3.9.0alpha1 3.9.0alpha2", "3.9.0alpha1"
 )
 add_canonic_versions(
-    "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 3.9.10pypy 3.9.0b5+", "3.9.0beta5"
+    "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 3.9.12 3.9.13 "
+    "3.9.10pypy 3.9.11pypy 3.9.12pypy 3.9.0b5+", "3.9.0beta5"
 )
 
-add_canonic_versions("3.10 3.10.0 3.10.1 3.10.2 3.10.3", "3.10.0rc2")
+add_canonic_versions("3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4", "3.10.0rc2")
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
@@ -517,7 +519,7 @@ def test():
     magic_current = by_magic[MAGIC]
     print(type(magic_20), len(magic_20), repr(magic_20))
     print()
-    print("This Python interpreter has version", magic_current)
+    print("This Python interpreter has versions:", magic_current)
     print("Magic code: ", PYTHON_MAGIC_INT)
     print(type(magic_20), len(magic_20), repr(magic_20))
     assert sysinfo2magic() == MAGIC
