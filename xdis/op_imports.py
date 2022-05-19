@@ -54,6 +54,7 @@ from xdis.opcodes import opcode_35pypy as opcode_35pypy
 from xdis.opcodes import opcode_36pypy as opcode_36pypy
 from xdis.opcodes import opcode_37pypy as opcode_37pypy
 from xdis.opcodes import opcode_38pypy as opcode_38pypy
+from xdis.opcodes import opcode_39pypy as opcode_39pypy
 
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
@@ -144,6 +145,7 @@ op_imports = {
     "3.8.0pypy": opcode_38pypy,
     "3.8.12pypy": opcode_38pypy,
     "3.8.13pypy": opcode_38pypy,
+    "3.9pypy": opcode_39pypy,
 }
 
 for k, v in canonic_python_version.items():
