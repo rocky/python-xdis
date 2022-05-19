@@ -1,4 +1,16 @@
-6.0.2 2021-11-05
+6.0.4 2022-05-19 HF+LB-1
+========================
+
+* Detect 3.7.[7-13], 3.9.[8-13], 3.10.[1-4], PyPy 2.7.12, 3.[8-9]pypy
+* Correct line-number detection on Python 1.0-1.4
+* Handle SET_LINENO in older pythons
+* Warn about wrong names in after RESERVE_FAST in older Pythons
+* Some PyPy x-3.9.7 tolerance
+* Add Pypy 3.8 support
+* Better PyPy 3.6 formatting
+* Correct relative jump target calculation in 3.10
+
+6.0.3 2021-11-05
 =================
 
 * xasm format fixes

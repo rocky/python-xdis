@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2021 by Rocky Bernstein
+# (C) Copyright 2019-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-CPython 1.4 bytecode opcodes
+CPython 1.2 bytecode opcodes
 
 This is used in bytecode disassembly. This is similar to the
 opcodes in Python's dis.py library.
@@ -23,63 +23,52 @@ opcodes in Python's dis.py library.
 # This is used from outside this module
 from xdis.cross_dis import findlabels
 
-import xdis.opcodes.opcode_15 as opcode_15
+import xdis.opcodes.opcode_13 as opcode_13
 from xdis.opcodes.base import (
-    def_op,
+    extended_format_CALL_FUNCTION,
+    extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
+    format_RAISE_VARARGS_older,
+    init_opdata,
     finalize_opcodes,
     format_extended_arg,
-    init_opdata,
     name_op,
     rm_op,
-    varargs_op,
+    store_op,
     # Although these aren't used here, they are exported
     update_pj2,
 )
 
-version = 1.4
-version_tuple = (1, 4)
+version = 1.2
+version_tuple = (1, 2)
 python_implementation = "CPython"
 
 l = locals()
-init_opdata(l, opcode_15, version_tuple)
+init_opdata(l, opcode_13, version_tuple)
 
 # fmt: off
-# 1.4 Bytecodes not in 1.5
+# 1.0 - 1.1 bytecodes differences
+rm_op(l,  "LOAD_FAST",         124)
+rm_op(l,  "STORE_FAST",        125)
+name_op(l, "LOAD_FAST",        124, 0, 1)  # Local variable number
+store_op(l, "STORE_FAST",      125, 1, 0, is_type="name")  # Local variable number
 
-def_op(l, "UNARY_CALL",         14)
-def_op(l, "BINARY_CALL",        26)
-def_op(l, "RAISE_EXCEPTION",    81)
-def_op(l, "BUILD_FUNCTION",     86)
-varargs_op(l, "UNPACK_ARG",     94)  # Number of arguments expected
-varargs_op(l, "UNPACK_VARARG",  99)  # Minimal number of arguments
-name_op(l, "LOAD_LOCAL",       115)
-varargs_op(l, "SET_FUNC_ARGS", 117)  # Argcount
-varargs_op(l, "RESERVE_FAST",  123)  # Number of local variables
 # fmt: on
 
 update_pj2(globals(), l)
 
-opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
+opcode_arg_fmt = {
+    "EXTENDED_ARG": format_extended_arg,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
+}
 
 finalize_opcodes(l)
 
-def findlinestarts(co, dup_lines=False):
-    code = co.co_code
-    n = len(code)
-    offset = 0
-    while offset < n:
-        op = code[offset]
-        offset += 1
-        if op == l["opmap"]["SET_LINENO"] and offset > 0:
-            lineno = code[offset] + code[offset + 1] * 256
-            yield (offset + 2, lineno)
-            pass
-        if op >= l["HAVE_ARGUMENT"]:
-            offset += 2
-            pass
-        pass
-
 opcode_extended_fmt = {
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
+
+# These are used outside of this module
+findlinestarts = opcode_13.findlinestarts
