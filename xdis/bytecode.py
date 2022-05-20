@@ -32,12 +32,12 @@ from xdis.util import code2num, num2code
 
 from io import StringIO
 
-
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
 def get_jump_val(jump_arg: int, version: tuple) -> int:
     return jump_arg * 2 if version[:2] >= (3, 10) else jump_arg
+
 
 def offset2line(offset: int, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)
@@ -71,7 +71,7 @@ def _get_const_info(const_index, const_list):
 
     Returns the dereferenced constant and its repr if the constant
     list is defined.
-    Otherwise returns the constant index and its repr().
+    Otherwise, returns the constant index and its repr().
     """
     argval = const_index
     if const_list is not None:
@@ -92,7 +92,7 @@ def _get_name_info(name_index, name_list):
 
     Returns the dereferenced name as both value and repr if the name
     list is defined.
-    Otherwise returns the name index and its repr().
+    Otherwise, returns the name index and its repr().
     """
     argval = name_index
     if (
@@ -151,13 +151,7 @@ def get_instructions_bytes(
             if starts_line is not None:
                 starts_line += line_offset
         if i in labels:
-            #  come_from = label_maps[i]
-            if False:  # come_from[0] > i:
-                is_jump_target = "loop"
-                # print("XXX %s at %d" % (opc.opname[op], i))
-                # from trepan.api import debug; debug()
-            else:
-                is_jump_target = True
+            is_jump_target = True
         else:
             is_jump_target = False
 
@@ -250,7 +244,7 @@ def get_instructions_bytes(
         extended_arg_count = extended_arg_count + 1 if op == opc.EXTENDED_ARG else 0
 
 
-def next_offset(op: int, opc, offset:int) -> int:
+def next_offset(op: int, opc, offset: int) -> int:
     """Returns the bytecode offset for the instruction that is assumed to
     start at `offset` and has opcode `op`. opc contains information for the
     bytecode version of that we should be using.
@@ -259,7 +253,6 @@ def next_offset(op: int, opc, offset:int) -> int:
 
 
 class Bytecode(object):
-
     """Bytecode operations involving a Python code object.
 
     Instantiate this with a function, method, string of code, or a code object
@@ -402,7 +395,7 @@ class Bytecode(object):
                     instr.argrepr,
                     instr.has_arg,
                     instr.offset,
-                    set_lineno_number,   # this is the only field that changes
+                    set_lineno_number,  # this is the only field that changes
                     instr.is_jump_target,
                     instr.has_extended_arg
                 )
@@ -494,7 +487,6 @@ def list2bytecode(l, opc, varnames, consts):
         pass
 
     return bytes(bc)
-
 
 # if __name__ == '__main__':
 #     import xdis.opcodes.opcode_27  as opcode_27
