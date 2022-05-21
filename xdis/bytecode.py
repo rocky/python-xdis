@@ -40,7 +40,7 @@ def get_jump_val(jump_arg: int, version: tuple) -> int:
 
 
 def offset2line(offset: int, linestarts):
-    """linestarts is expected to be a *list) of (offset, line number)
+    """linestarts is expected to be a *list of (offset, line number)
     where both offset and line number are in increasing order.
     Return the closes line number at or below the offset.
     If offset is less than the first line number given in linestarts,
@@ -177,7 +177,7 @@ def get_instructions_bytes(
                 extended_arg = arg * 65536 if op == opc.EXTENDED_ARG else 0
 
             #  Set argval to the dereferenced value of the argument when
-            #  availabe, and argrepr to the string representation of argval.
+            #  available, and argrepr to the string representation of argval.
             #    disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
             argval = arg
@@ -258,7 +258,7 @@ class Bytecode(object):
     Instantiate this with a function, method, string of code, or a code object
     (as returned by compile()).
 
-    Iterating over this yields the bytecode operations as Instruction instances.
+    Iterating over these yields the bytecode operations as Instruction instances.
     """
 
     def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines=True):
@@ -432,7 +432,7 @@ class Bytecode(object):
         """Iterator for the opcodes in methods, functions or code
 
         Generates a series of Instruction named tuples giving the details of
-        each operations in the supplied code.
+        each operation in the supplied code.
 
         If *first_line* is not None, it indicates the line number that should
         be reported for the first source line in the disassembled code.
