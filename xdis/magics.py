@@ -434,7 +434,7 @@ add_canonic_versions(
     "3.9.10pypy 3.9.11pypy 3.9.12pypy 3.9.0b5+", "3.9.0beta5"
 )
 
-add_canonic_versions("3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4", "3.10.0rc2")
+add_canonic_versions("3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5", "3.10.0rc2")
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
