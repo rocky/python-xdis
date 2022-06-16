@@ -32,7 +32,6 @@ from xdis.util import code2num, num2code
 
 from io import StringIO
 
-
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
@@ -76,7 +75,7 @@ def _get_const_info(const_index, const_list):
 
     Returns the dereferenced constant and its repr if the constant
     list is defined.
-    Otherwise returns the constant index and its repr().
+    Otherwise, returns the constant index and its repr().
     """
     argval = const_index
     if const_list is not None:
@@ -97,7 +96,7 @@ def _get_name_info(name_index, name_list):
 
     Returns the dereferenced name as both value and repr if the name
     list is defined.
-    Otherwise returns the name index and its repr().
+    Otherwise, returns the name index and its repr().
     """
     argval = name_index
     if (
@@ -156,13 +155,7 @@ def get_instructions_bytes(
             if starts_line is not None:
                 starts_line += line_offset
         if i in labels:
-            #  come_from = label_maps[i]
-            if False:  # come_from[0] > i:
-                is_jump_target = "loop"
-                # print("XXX %s at %d" % (opc.opname[op], i))
-                # from trepan.api import debug; debug()
-            else:
-                is_jump_target = True
+            is_jump_target = True
         else:
             is_jump_target = False
 
@@ -188,7 +181,7 @@ def get_instructions_bytes(
                 extended_arg = arg * 65536 if op == opc.EXTENDED_ARG else 0
 
             #  Set argval to the dereferenced value of the argument when
-            #  availabe, and argrepr to the string representation of argval.
+            #  available, and argrepr to the string representation of argval.
             #    disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
             argval = arg
@@ -264,13 +257,12 @@ def next_offset(op, opc, offset):
 
 
 class Bytecode(object):
-
     """Bytecode operations involving a Python code object.
 
     Instantiate this with a function, method, string of code, or a code object
     (as returned by compile()).
 
-    Iterating over this yields the bytecode operations as Instruction instances.
+    Iterating over these yields the bytecode operations as Instruction instances.
     """
 
     def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines=True):
@@ -407,7 +399,7 @@ class Bytecode(object):
                     instr.argrepr,
                     instr.has_arg,
                     instr.offset,
-                    set_lineno_number,   # this is the only field that changes
+                    set_lineno_number,  # this is the only field that changes
                     instr.is_jump_target,
                     instr.has_extended_arg
                 )
@@ -444,7 +436,7 @@ class Bytecode(object):
         """Iterator for the opcodes in methods, functions or code
 
         Generates a series of Instruction named tuples giving the details of
-        each operations in the supplied code.
+        each operation in the supplied code.
 
         If *first_line* is not None, it indicates the line number that should
         be reported for the first source line in the disassembled code.
@@ -499,7 +491,6 @@ def list2bytecode(l, opc, varnames, consts):
         pass
 
     return bytes(bc)
-
 
 # if __name__ == '__main__':
 #     import xdis.opcodes.opcode_27  as opcode_27

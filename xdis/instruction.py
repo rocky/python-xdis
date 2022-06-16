@@ -190,7 +190,7 @@ class Instruction(_Instruction):
                         argrepr = new_repr
                 pass
             if not argrepr:
-                if asm_format != "asm":
+                if asm_format != "asm" or self.opname == "MAKE_FUNCTION":
                     fields.append(repr(self.arg))
                 pass
             else:
