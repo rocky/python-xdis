@@ -76,7 +76,7 @@ def test_find_linestarts():
     if sys.version_info[0:2] >= (3, 9):
         assert len(got_no_dups) <= len(got_with_dups)
     else:
-        assert len(got_no_dups) < len(got_with_dups)
+        assert len(got_no_dups) <= len(got_with_dups)
 
 
 # FIXME: a feature of doing code this way is that
