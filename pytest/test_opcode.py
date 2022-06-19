@@ -6,7 +6,13 @@ import dis
 def test_opcode():
     opc = get_opcode(PYTHON_VERSION_TRIPLE, IS_PYPY)
     opmap = dict([(k.replace("+", "_"), v) for (k, v) in dis.opmap.items()])
-    weird_pypy = (IS_PYPY and PYTHON_VERSION_TRIPLE[:2] in ((2, 7), (3, 6), (3, 7), (3, 8), (3, 9)))
+    weird_pypy = IS_PYPY and PYTHON_VERSION_TRIPLE[:2] in (
+        (2, 7),
+        (3, 6),
+        (3, 7),
+        (3, 8),
+        (3, 9),
+    )
 
     if not weird_pypy:
         print("Extra in dis:", set(opmap.items()) - set(opc.opmap.items()))
@@ -16,7 +22,6 @@ def test_opcode():
             assert item in opc.opmap.items(), item
 
         assert all(item in opc.opmap.items() for item in opmap.items())
-
 
     fields_str = "hascompare hasconst hasfree hasjabs hasjrel haslocal"
     # PyPy 2.7.13 changes opcodes mid-version. It is too complicated

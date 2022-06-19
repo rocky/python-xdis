@@ -46,7 +46,7 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "MAKE_FUNCTION": opcode_33.format_MAKE_FUNCTION_default_pos_arg,
     "EXTENDED_ARG": format_extended_arg,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 opcode_extended_fmt = {

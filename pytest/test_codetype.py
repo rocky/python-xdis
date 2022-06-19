@@ -1,7 +1,10 @@
 import types
 import xdis.codetype
+
+
 def five():
     return 5
+
 
 def test_codeType2Portable():
     if hasattr(five, "__code__"):

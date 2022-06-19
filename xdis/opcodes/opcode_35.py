@@ -85,12 +85,14 @@ jrel_op(l, "SETUP_ASYNC_WITH",          154,  0,  6)
 
 update_pj3(globals(), l)
 
+
 def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
     """The lowest byte of oparg is the count of mappings, the relative
     position of the corresponding callable f is encoded in the second byte
     of oparg."""
     rel_func_pos, count = divmod(oparg, 256)
-    return ("%d mappings, function at %d" % (count, count + rel_func_pos))
+    return "%d mappings, function at %d" % (count, count + rel_func_pos)
+
 
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
@@ -99,7 +101,7 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_default_pos_arg,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 opcode_extended_fmt = {

@@ -5,4 +5,4 @@ _marshal.py adpoted from pypy (MIT License)
 Some small modifications and adaption to xdis by Rocky Bernstein
 """
 
-__docformat__ = 'restructuredtext'
+__docformat__ = "restructuredtext"

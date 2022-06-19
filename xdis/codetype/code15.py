@@ -19,12 +19,15 @@ from copy import deepcopy
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
 Code15FieldTypes = deepcopy(Code13FieldTypes)
-Code15FieldTypes.update({
-    "co_stacksize": int,
-    "co_firstlineno": int,
-    "co_lnotab": (str, bytes, dict),
-})
+Code15FieldTypes.update(
+    {
+        "co_stacksize": int,
+        "co_firstlineno": int,
+        "co_lnotab": (str, bytes, dict),
+    }
+)
 # stacksize, co_firstlineno, co_lnotab are new in 1.5
+
 
 class Code15(Code13):
     """Class for a Python 1.5 code object used for Python interpreters other than 1.5.
@@ -48,7 +51,7 @@ class Code15(Code13):
         co_filename,
         co_name,
         co_firstlineno,
-        co_lnotab
+        co_lnotab,
     ):
         super(Code15, self).__init__(
             co_argcount,
@@ -76,10 +79,13 @@ class Code15(Code13):
         offset, offset_diff = 0, 0
         uncompressed_lnotab = {offset: line_number}
         if not hasattr(self.co_lnotab, "__len__"):
-            raise TypeError("line number table should have a type with a length; is %s" % type(self.co_lnotab))
+            raise TypeError(
+                "line number table should have a type with a length; is %s"
+                % type(self.co_lnotab)
+            )
         for i in range(0, len(self.co_lnotab), 2):
             offset_diff = self.co_lnotab[i]
-            line_number_diff = self.co_lnotab[i+1]
+            line_number_diff = self.co_lnotab[i + 1]
             if not isinstance(offset_diff, int):
                 offset_diff = ord(offset_diff)
                 line_number_diff = ord(line_number_diff)

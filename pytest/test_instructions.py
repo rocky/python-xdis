@@ -5,10 +5,76 @@ from xdis import IS_PYPY
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 import pytest
 
+
 def extended_arg_fn36():
     if __file__:
-        return 0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0+0
+        return (
+            0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+            + 0
+        )
     return 3
+
 
 #  Bytecode that has a single conditional jump forward and an unconditional jump backwards
 def loop():
@@ -17,22 +83,27 @@ def loop():
         x = True
     return x
 
+
 from xdis.bytecode import Bytecode
 
-pytest.mark.skipif(PYTHON_VERSION_TRIPLE < (3, 6),
-                    reason="asssume Python 3.6 or greater wordsize instructions")
+pytest.mark.skipif(
+    PYTHON_VERSION_TRIPLE < (3, 6),
+    reason="asssume Python 3.6 or greater wordsize instructions",
+)
+
+
 def test_inst_size():
-    if (PYTHON_VERSION_TRIPLE[:2] == (3,6)) and not IS_PYPY:
+    if (PYTHON_VERSION_TRIPLE[:2] == (3, 6)) and not IS_PYPY:
         opc = get_opcode_module(sys.version_info)
         bytecode_obj = Bytecode(extended_arg_fn36, opc)
         instructions = list(bytecode_obj.get_instructions(extended_arg_fn36))
 
         inst1 = instructions[1]
-        assert inst1.opname == 'EXTENDED_ARG'
+        assert inst1.opname == "EXTENDED_ARG"
         assert inst1.argval == 0
 
         inst2 = instructions[2]
-        assert inst2.opname == 'POP_JUMP_IF_FALSE'
+        assert inst2.opname == "POP_JUMP_IF_FALSE"
         assert inst2.has_extended_arg == True
         assert inst2.inst_size == 4
 
@@ -41,11 +112,15 @@ def test_inst_size():
     else:
         assert True
 
-pytest.mark.skipif(PYTHON_VERSION_TRIPLE < (2, 7),
-                    reason="asssume Python 2.7 or greater")
+
+pytest.mark.skipif(
+    PYTHON_VERSION_TRIPLE < (2, 7), reason="asssume Python 2.7 or greater"
+)
+
+
 def test_inst_jumps():
-    if (sys.version_info >= (2,7)):
-        variant = 'pypy' if IS_PYPY else None
+    if sys.version_info >= (2, 7):
+        variant = "pypy" if IS_PYPY else None
         opc = get_opcode_module(sys.version_info, variant)
         bytecode_obj = Bytecode(extended_arg_fn36, opc)
         instructions = list(bytecode_obj.get_instructions(loop))
@@ -67,5 +142,6 @@ def test_inst_jumps():
         if PYTHON_VERSION_TRIPLE < (3, 10):
             assert seen_ja
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_inst_jumps()

@@ -84,12 +84,19 @@ class Code13(CodeBase):
         for field, fieldtype in self.fieldtypes.items():
             val = getattr(self, field)
             if isinstance(fieldtype, tuple):
-                assert type(val) in fieldtype, "%s should be one of the types %s; is type %s" % (field, fieldtype, type(val))
+                assert (
+                    type(val) in fieldtype
+                ), "%s should be one of the types %s; is type %s" % (
+                    field,
+                    fieldtype,
+                    type(val),
+                )
             else:
-                assert isinstance(val, fieldtype), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
+                assert isinstance(
+                    val, fieldtype
+                ), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
                 pass
             pass
-
 
     # FIXME: use self.fieldtype
     def freeze(self):
@@ -108,6 +115,8 @@ class Code13(CodeBase):
         code = deepcopy(self)
         for field, value in kwargs.items():
             if not hasattr(self, field):
-                raise TypeError("Code object %s doesn't have field %s" % (type(self), self))
+                raise TypeError(
+                    "Code object %s doesn't have field %s" % (type(self), self)
+                )
             setattr(code, field, value)
         return code

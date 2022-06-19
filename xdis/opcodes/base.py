@@ -261,7 +261,7 @@ def update_sets(l):
     l["JUMP_UNCONDITONAL"] = frozenset(
         [l["opmap"]["JUMP_ABSOLUTE"], l["opmap"]["JUMP_FORWARD"]]
     )
-    if PYTHON_VERSION_TRIPLE < (3,8,0) and l["python_version"] < (3, 8):
+    if PYTHON_VERSION_TRIPLE < (3, 8, 0) and l["python_version"] < (3, 8):
         l["LOOP_OPS"] = frozenset([l["opmap"]["SETUP_LOOP"]])
     else:
         l["LOOP_OPS"] = frozenset()

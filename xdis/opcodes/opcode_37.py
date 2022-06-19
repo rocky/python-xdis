@@ -20,7 +20,7 @@ This is a like Python 3.7's opcode.py with some classification
 of stack usage.
 """
 
-from xdis.opcodes.base import(
+from xdis.opcodes.base import (
     def_op,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
@@ -30,8 +30,8 @@ from xdis.opcodes.base import(
     nargs_op,
     resolved_attrs,
     rm_op,
-    update_pj3
-    )
+    update_pj3,
+)
 
 from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION, extended_format_ATTR
 import xdis.opcodes.opcode_36 as opcode_36

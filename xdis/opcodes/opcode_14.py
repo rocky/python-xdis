@@ -64,6 +64,7 @@ opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 finalize_opcodes(l)
 
+
 def findlinestarts(co, dup_lines=False):
     code = co.co_code
     n = len(code)
@@ -79,6 +80,7 @@ def findlinestarts(co, dup_lines=False):
             offset += 2
             pass
         pass
+
 
 opcode_extended_fmt = {
     "RETURN_VALUE": extended_format_RETURN_VALUE,

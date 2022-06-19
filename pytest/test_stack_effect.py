@@ -6,23 +6,36 @@ from xdis import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
 import xdis
 
+
 def get_srcdir():
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
     return osp.realpath(filename)
 
 
 srcdir = get_srcdir()
-opcode_stack_effect = [-100]*256
+opcode_stack_effect = [-100] * 256
+
 
 def test_stack_effect_fixed():
     """Check stack effect of opcodes that don't vary in the stack effect.
     This we get from tables that are derived the Python Interpreter C source.
     Thanks to the Maynard project for this idea.
     """
-    versions = ((2, 5), (2, 6), (2, 7),
-                (3, 0), (3, 1), (3, 2), (3, 3),
-                (3, 4), (3, 5),
-                (3, 6), (3, 7), (3, 8), (3, 9))
+    versions = (
+        (2, 5),
+        (2, 6),
+        (2, 7),
+        (3, 0),
+        (3, 1),
+        (3, 2),
+        (3, 3),
+        (3, 4),
+        (3, 5),
+        (3, 6),
+        (3, 7),
+        (3, 8),
+        (3, 9),
+    )
     for version in versions:
         v_str = "%s%s" % (version[0], version[1])
         opc = get_opcode(version, False)
@@ -47,7 +60,10 @@ def test_stack_effect_fixed():
 
             pass
 
-        for opname, opcode, in opc.opmap.items():
+        for (
+            opname,
+            opcode,
+        ) in opc.opmap.items():
             if op_has_argument(opcode, opc):
                 continue
             # These are are not in the C code although they are documented as opcodes
@@ -68,6 +84,7 @@ def test_stack_effect_fixed():
         pass
     return
 
+
 def test_stack_effect_vs_dis():
 
     if xdis.PYTHON_VERSION < 3.4 or xdis.IS_PYPY:
@@ -80,19 +97,27 @@ def test_stack_effect_vs_dis():
         try:
             check_effect = dis.stack_effect(*dis_args)
         except:
-            from trepan.api import debug; debug()
-        assert effect != -100, (
-            "%d (%s) needs adjusting; should be: should have effect %d"
-            % (opcode, opname, check_effect)
+            from trepan.api import debug
+
+            debug()
+        assert (
+            effect != -100
+        ), "%d (%s) needs adjusting; should be: should have effect %d" % (
+            opcode,
+            opname,
+            check_effect,
         )
         if has_arg:
             op_val = "with operand %d" % dis_args[1]
         else:
             op_val = ""
 
-        assert check_effect == effect, (
-            "%d (%s) %s not okay; effect %d vs %d"
-            % (opcode, opname, op_val, effect, check_effect)
+        assert check_effect == effect, "%d (%s) %s not okay; effect %d vs %d" % (
+            opcode,
+            opname,
+            op_val,
+            effect,
+            check_effect,
         )
         print("%d (%s) is good: effect %d" % (opcode, opname, effect))
 
@@ -101,7 +126,10 @@ def test_stack_effect_vs_dis():
     else:
         variant = ""
     opc = get_opcode_module(None, variant)
-    for opname, opcode, in opc.opmap.items():
+    for (
+        opname,
+        opcode,
+    ) in opc.opmap.items():
         if opname in ("EXTENDED_ARG", "NOP"):
             continue
         xdis_args = [opcode, opc]
@@ -119,17 +147,20 @@ def test_stack_effect_vs_dis():
         if (
             xdis.PYTHON_VERSION > 3.7
             and opcode in opc.CONDITION_OPS
-            and opname not in ("JUMP_IF_FALSE_OR_POP",
-                               "JUMP_IF_TRUE_OR_POP",
-                               "POP_JUMP_IF_FALSE",
-                               "POP_JUMP_IF_TRUE",
-                               "SETUP_FINALLY",)
+            and opname
+            not in (
+                "JUMP_IF_FALSE_OR_POP",
+                "JUMP_IF_TRUE_OR_POP",
+                "POP_JUMP_IF_FALSE",
+                "POP_JUMP_IF_TRUE",
+                "SETUP_FINALLY",
+            )
         ):
             xdis_args.append(0)
             dis_args.append(0)
 
         if has_arg:
-            for i in range(0,3):
+            for i in range(0, 3):
                 dis_args[1] = xdis_args[2] = i
                 test_one(xdis_args, dis_args, has_arg)
                 pass

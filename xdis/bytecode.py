@@ -397,7 +397,7 @@ class Bytecode(object):
                     instr.offset,
                     set_lineno_number,  # this is the only field that changes
                     instr.is_jump_target,
-                    instr.has_extended_arg
+                    instr.has_extended_arg,
                 )
             last_was_set_lineno = False
             if instr.opname == "SET_LINENO":
@@ -423,8 +423,10 @@ class Bytecode(object):
             # currently we can't track names in this area, but instead use
             # locals and hope the two are the same.
             if instr.opname == "RESERVE_FAST":
-                file.write("# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST are "
-                           "inaccurate here in Python before 1.5\n")
+                file.write(
+                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST are "
+                    "inaccurate here in Python before 1.5\n"
+                )
             pass
         return
 
@@ -487,6 +489,7 @@ def list2bytecode(l, opc, varnames, consts):
         pass
 
     return bytes(bc)
+
 
 # if __name__ == '__main__':
 #     import xdis.opcodes.opcode_27  as opcode_27
