@@ -17,6 +17,7 @@
 """Facilitates importing opmaps for the a given Python version"""
 import copy
 import sys
+from typing import Tuple
 from xdis.magics import canonic_python_version
 
 from xdis.opcodes import opcode_10 as opcode_10
@@ -153,6 +154,39 @@ for k, v in canonic_python_version.items():
         op_imports[k] = op_imports[v]
 
 
+def get_target_version(vers_str: str):
+    '''
+    get version by vers_str,if no match,will use similarest one to avoid crash
+    '''
+    if vers_str in canonic_python_version:
+        return canonic_python_version[vers_str]
+
+    def get_version_tuple(v: str) -> Tuple:
+        return v.split('.')
+
+    def get_distance(v1: Tuple, v2: Tuple) -> int:
+        r = 0
+        length_v2 = len(v2)
+        for i in len(v1):
+            value1 = int(v1[i])
+            if i >= length_v2:
+                distance = 0xff
+            else:
+                value2 = int(v2[i])
+                distance = abs(value1 - value2)
+            r = (r << 8) + distance
+        return r
+    min_distance = 0xffffffff
+    min_version: str = None
+    current_version = get_version_tuple(vers_str)
+    for i in canonic_python_version:
+        dis = get_distance(get_version_tuple(i), current_version)
+        if dis < min_distance:
+            min_distance = dis
+            min_version = i
+    return canonic_python_version[min_version]
+
+
 def get_opcode_module(version_info=None, variant=None):
     if version_info is None:
         version_info = sys.version_info
@@ -181,8 +215,8 @@ def get_opcode_module(version_info=None, variant=None):
             pass
     else:
         vers_str += variant
-
-    return op_imports[canonic_python_version[vers_str]]
+    v = get_target_version(vers_str)
+    return op_imports[v]
 
 
 def remap_opcodes(op_obj, alternate_opmap):
