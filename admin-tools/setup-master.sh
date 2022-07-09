@@ -1,5 +1,5 @@
 #!/bin/bash
-PYTHON_VERSION=3.6.14
+PYTHON_VERSION=3.6.15
 pyenv local $PYTHON_VERSION
 
 if [[ $0 == $${BASH_SOURCE[0]} ]] ; then
