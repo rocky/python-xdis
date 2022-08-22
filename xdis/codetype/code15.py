@@ -111,15 +111,18 @@ class Code15(Code13):
         for offset, line_number in self.co_lnotab:
             offset_diff = offset - prev_offset
             line_diff = line_number - prev_line_number
+            if line_diff < 0:
+                # Not sure how to deal with this
+                continue
             prev_offset = offset
             prev_line_number = line_number
             while offset_diff >= 256:
-                co_lnotab.append(chr(255))
-                co_lnotab.append(chr(0))
+                co_lnotab += chr(255)
+                co_lnotab += chr(0)
                 offset_diff -= 255
             while line_diff >= 256:
-                co_lnotab.append(chr(0))
-                co_lnotab.append(chr(255))
+                co_lnotab += chr(0)
+                co_lnotab += chr(255)
                 line_diff -= 255
             co_lnotab += chr(offset_diff)
             co_lnotab += chr(line_diff)
