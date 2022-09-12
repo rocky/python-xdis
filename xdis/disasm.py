@@ -21,19 +21,22 @@ CPython version-independent disassembly routines
 # imports so this can run on older Pythons. This is
 # intended to be a more cross-version Python program
 
-import datetime, os, re, sys, types
+import datetime
+import os
+import re
+import sys
+import types
 from collections import deque
 
 import xdis
-
 from xdis.bytecode import Bytecode
 from xdis.codetype import iscode, codeType2Portable
+from xdis.cross_dis import format_code_info
 from xdis.load import check_object_path, load_module
 from xdis.magics import PYTHON_MAGIC_INT
-from xdis.cross_dis import format_code_info
+from xdis.op_imports import op_imports, remap_opcodes
 from xdis.version import __version__
 from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
-from xdis.op_imports import op_imports, remap_opcodes
 
 
 def get_opcode(version_tuple, is_pypy, alternate_opmap=None):
@@ -96,7 +99,7 @@ def show_module_header(
                 "\n# ".join(sys.version.split("\n")),
             )
         )
-    if PYTHON_VERSION_TRIPLE < (3, 0) and bytecode_version >= 3.0:
+    if PYTHON_VERSION_TRIPLE < (3, 0) and bytecode_version >= "3.0":
         real_out.write(
             "\n## **Warning** bytecode strings will be converted to strings.\n"
         )
@@ -124,8 +127,6 @@ def disco(
     source_size=None,
     sip_hash=None,
     asm_format="classic",
-    show_bytes=False,
-    dup_lines=False,
     alternate_opmap=None,
 ):
     """
@@ -174,7 +175,7 @@ def disco_loop(
     is in the order of first encountered which is not amenable for
     the format used by a disassembler where code objects should
     be defined before using them in other functions.
-    However this is not recursive and will overall lead to less
+    However, this is not recursive and will overall lead to less
     memory consumption at run time.
     """
 
@@ -201,7 +202,7 @@ def code_uniquify(basename, co_code):
 def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns):
     """Produces disassembly in a format more conducive to
     automatic assembly by producing inner modules before they are
-    used by outer ones. Since this is recusive, we'll
+    used by outer ones. Since this is recursive, we'll
     use more stack space at runtime.
     """
 
@@ -268,7 +269,6 @@ def disassemble_file(
     outstream=sys.stdout,
     asm_format="classic",
     header=False,
-    show_bytes=False,
     alternate_opmap=None,
 ):
     """
@@ -292,7 +292,7 @@ def disassemble_file(
             source_size,
             sip_hash,
         ) = load_module(pyc_filename)
-    except:
+    except Exception:
 
         # Hack alert: we're using pyc_filename set as a proxy for whether the filename exists.
         # check_object_path() will succeed if the file exists.
@@ -320,6 +320,7 @@ def disassemble_file(
             magic_int,
             source_size,
             sip_hash,
+            header=header,
             show_filename=True,
         )
     else:
@@ -333,7 +334,6 @@ def disassemble_file(
             source_size=source_size,
             sip_hash=sip_hash,
             asm_format=asm_format,
-            show_bytes=show_bytes,
             alternate_opmap=alternate_opmap,
         )
     # print co.co_filename

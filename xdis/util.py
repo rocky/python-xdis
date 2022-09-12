@@ -11,12 +11,12 @@ def code2num(code, i):
 
 
 def num2code(num):
-    return (num & 0xFF, num >> 8)
+    return num & 0xFF, num >> 8
 
 
-# The inspect module interrogates this dictionary to build its
+# The `inspect` module interrogates this dictionary to build its
 # list of CO_* constants. It is also used by pretty_flags to
-# turn the co_flags field into a human readable list.
+# turn the co_flags field into a human-readable list.
 COMPILER_FLAG_NAMES = {
     0x00000001: "OPTIMIZED",
     0x00000002: "NEWLOCALS",
@@ -50,7 +50,7 @@ PYPY_COMPILER_FLAG_NAMES = {
     0x10000000: "PYPY_ACCEPT_NULL_BYTES",
 }
 
-# Invert above dictionary so we can look up a bit value
+# Invert above dictionary, so we can look up a bit value
 # from the compile flag name
 COMPILER_FLAG_BIT = dict([v, k] for (k, v) in COMPILER_FLAG_NAMES.items())
 
@@ -88,7 +88,7 @@ def is_negative_zero(n):
 
 
 def better_repr(v):
-    """Work around Python's unorthogonal and unhelpful repr() for primitive float
+    """Work around Python's not orthogonal and unhelpful repr() for primitive float
     and complex."""
     if isinstance(v, float):
         # float values 'nan' and 'inf' are not directly
@@ -106,7 +106,7 @@ def better_repr(v):
         imag = better_repr(v.imag)
         # FIXME: we could probably use repr() in most cases
         # sort out when that's possible.
-        # The below is however round-tripable, and Python's repr() isn't.
+        # The below round trips, and Python's repr() isn't.
         return "complex(%s, %s)" % (real, imag)
     elif isinstance(v, tuple):
         if len(v) == 1:

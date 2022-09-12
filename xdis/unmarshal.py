@@ -64,7 +64,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     "0": "C_NULL",
     "N": "None",
     "S": "stopIteration",
-    ".": "Elipsis",
+    ".": "Ellipsis",
     "F": "False",
     "T": "True",
     "i": "int32",
@@ -86,7 +86,6 @@ UNMARSHAL_DISPATCH_TABLE = {
     "[": "list",
     "<": "frozenset",
     ">": "set",
-    "i": "int32",
     "{": "dict",
     "R": "python2_string_reference",
     "c": "code",
@@ -104,11 +103,9 @@ def compat_str(s: str) -> str:
         try:
             return s.decode("utf-8")
         except UnicodeDecodeError:
-            # If not Unicode, return bytes
-            # and it will get converted to str when needed
+            # If not Unicode, return bytes,
+            # and it will get converted to str when needed.
             return s
-
-        return s.decode()
     else:
         return str(s)
 
@@ -151,9 +148,9 @@ class _VersionIndependentUnmarshaller:
                 self.marshal_version = 3
             else:
                 self.marshal_version = 4
-        elif version < (3, 4) and version >= (2, 5):
+        elif (3, 4) > version >= (2, 5):
             self.marshal_version = 2
-        elif version < (2, 5) and version >= (2, 4):
+        elif (2, 5) > version >= (2, 4):
             self.marshal_version = 1
         else:
             self.marshal_version = 0
@@ -167,7 +164,7 @@ class _VersionIndependentUnmarshaller:
         same magic for the running Python interpreter, we can simply use the
         Python-supplied marshal.load().
 
-        However we need to use this when versions are different since the internal
+        However, we need to use this when versions are different since the internal
         code structures are different. Sigh.
         """
 
@@ -213,22 +210,22 @@ class _VersionIndependentUnmarshaller:
             # Since 3.4, "flag" is the marshal.c name
             save_ref = True
             byte1 = byte1 & (FLAG_REF - 1)
-        marshalType = chr(byte1)
+        marshal_type = chr(byte1)
 
         # print(marshalType) # debug
-        if marshalType in UNMARSHAL_DISPATCH_TABLE:
-            func_suffix = UNMARSHAL_DISPATCH_TABLE[marshalType]
+        if marshal_type in UNMARSHAL_DISPATCH_TABLE:
+            func_suffix = UNMARSHAL_DISPATCH_TABLE[marshal_type]
             unmarshal_func = getattr(self, "t_" + func_suffix)
             return unmarshal_func(save_ref, bytes_for_s)
         else:
             try:
                 sys.stderr.write(
                     "Unknown type %i (hex %x) %c\n"
-                    % (ord(marshalType), hex(ord(marshalType)), marshalType)
+                    % (ord(marshal_type), hex(ord(marshal_type)), marshal_type)
                 )
             except TypeError:
                 sys.stderr.write(
-                    "Unknown type %i %c\n" % (ord(marshalType), marshalType)
+                    "Unknown type %i %c\n" % (ord(marshal_type), marshal_type)
                 )
 
         return
@@ -244,7 +241,7 @@ class _VersionIndependentUnmarshaller:
     def t_stopIteration(self, save_ref, bytes_for_s=False):
         return StopIteration
 
-    def t_Elipsis(self, save_ref, bytes_for_s=False):
+    def t_Ellipsis(self, save_ref, bytes_for_s=False):
         return Ellipsis
 
     def t_False(self, save_ref, bytes_for_s=False):
