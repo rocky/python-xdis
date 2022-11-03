@@ -119,7 +119,7 @@ pytest.mark.skipif(
 
 
 def test_inst_jumps():
-    if sys.version_info >= (2, 7):
+    if sys.version_info >= (3, 1):
         variant = "pypy" if IS_PYPY else None
         opc = get_opcode_module(sys.version_info, variant)
         bytecode_obj = Bytecode(extended_arg_fn36, opc)
