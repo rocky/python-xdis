@@ -13,7 +13,7 @@ LINT    = flake8
 #EXTRA_DIST=ipython/ipy_trepan.py trepan
 PHONY=all check clean dist-older dist-newer unittest check-long dist distclean lint flake8 test rmChangeLog clean_pyc
 
-TEST_TYPES=check-long check-short check-2.7 check-3.4
+TEST_TYPES=check-full check-short check-2.7 check-3.4
 
 #: Default target - same as "check"
 all: check

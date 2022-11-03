@@ -15,7 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 # Here we are more closely modeling Python's Lib/dis.py organization.
-# However it appears that Python names and code has copied a bit heavily from
+# However, it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
 from xdis.util import (
@@ -72,11 +72,11 @@ def findlinestarts(code, dup_lines=False):
         for byte_incr, line_incr in zip(byte_increments, line_increments):
             if byte_incr:
                 if lineno != lastlineno or dup_lines and 0 < byte_incr < 255:
-                    yield (offset, lineno)
+                    yield offset, lineno
                     lastlineno = lineno
                     pass
                 if offset >= bytecode_len:
-                    # The rest of the lnotab byte offsets are past the end of
+                    # The rest of the ``lnotab byte offsets are past the end of
                     # the bytecode, so the lines were optimized away.
                     return
                 offset += byte_incr
@@ -86,7 +86,7 @@ def findlinestarts(code, dup_lines=False):
                 line_incr -= 0x100
             lineno += line_incr
         if lineno != lastlineno or (dup_lines and 0 < byte_incr < 255):
-            yield (offset, lineno)
+            yield offset, lineno
 
 
 def code_info(x, version_tuple, is_pypy=False):

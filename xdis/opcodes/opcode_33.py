@@ -41,15 +41,24 @@ update_pj3(globals(), l)
 
 finalize_opcodes(l)
 
+
 def format_MAKE_FUNCTION_default_pos_arg(argc):
-    name_default, pos_args, = divmod(argc, 256)
-    return ("%d positional, %d name and default" %
-            (pos_args, name_default))
+    (
+        name_default,
+        pos_args,
+    ) = divmod(argc, 256)
+    return "%d positional, %d name and default" % (pos_args, name_default)
+
 
 def extended_format_ATTR(opc, instructions):
-    if instructions[1].opname in ("LOAD_CONST", "LOAD_GLOBAL",
-                                  "LOAD_ATTR", "LOAD_NAME"):
+    if instructions[1].opname in (
+        "LOAD_CONST",
+        "LOAD_GLOBAL",
+        "LOAD_ATTR",
+        "LOAD_NAME",
+    ):
         return "%s.%s " % (instructions[1].argrepr, instructions[0].argrepr)
+
 
 def extended_format_MAKE_FUNCTION(opc, instructions):
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS

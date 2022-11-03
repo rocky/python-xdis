@@ -40,10 +40,11 @@ Code38FieldNames = """
 """
 
 Code38FieldTypes = deepcopy(Code3FieldTypes)
-Code38FieldTypes.update({
-    "co_posonlyargcount": int,
-})
-
+Code38FieldTypes.update(
+    {
+        "co_posonlyargcount": int,
+    }
+)
 
 
 class Code38(Code3):

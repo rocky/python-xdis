@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2021 by Rocky Bernstein
+# (C) Copyright 2018-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -764,9 +764,11 @@ class _FastUnmarshaller:
             self.bufpos += 1
             return _load_dispatch[c](self)
         except KeyError:
-            raise ValueError("bad marshal code: %c (%d)" % (c, Ord(c)))
+            exception = ValueError("bad marshal code at position %d: %c"
+                             % (self.bufpos - 1,c))
         except IndexError:
-            raise EOFError
+            exception = EOFError
+        raise exception
 
     def load_null(self):
         return _NULL
@@ -964,7 +966,8 @@ def load(f, python_version=None):
     return um.load()
 
 
-def dumps(x, version=version, python_version=None):
+@builtinify
+def dumps(x, version=version, python_version=PYTHON_VERSION_TRIPLE):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version)

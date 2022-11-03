@@ -20,12 +20,9 @@ Python opcode.py structures
 """
 
 from copy import deepcopy
-from xdis.cross_dis import (
-    findlinestarts,
-    findlabels,
-    get_jump_target_maps,
-)
+
 from xdis import wordcode
+from xdis.cross_dis import findlabels, findlinestarts, get_jump_target_maps
 from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
 cmp_op = (
@@ -151,18 +148,16 @@ def rm_op(l, name, op):
     # opname is an array, so we need to keep the position in there.
     l["opname"][op] = "<%s>" % op
 
-    if op in l["hasconst"]:
-        l["hasconst"].remove(op)
     if op in l["hascompare"]:
         l["hascompare"].remove(op)
     if op in l["hascondition"]:
         l["hascondition"].remove(op)
+    if op in l["hasconst"]:
+        l["hasconst"].remove(op)
     if op in l["hasfree"]:
         l["hasfree"].remove(op)
     if op in l["hasjabs"]:
         l["hasjabs"].remove(op)
-    if op in l["hasname"]:
-        l["hasname"].remove(op)
     if op in l["hasjrel"]:
         l["hasjrel"].remove(op)
     if op in l["haslocal"]:
@@ -171,6 +166,8 @@ def rm_op(l, name, op):
         l["hasname"].remove(op)
     if op in l["hasnargs"]:
         l["hasnargs"].remove(op)
+    if op in l["hasstore"]:
+        l["hasstore"].remove(op)
     if op in l["hasvargs"]:
         l["hasvargs"].remove(op)
     if op in l["nofollow"]:
@@ -261,7 +258,7 @@ def update_sets(l):
     l["JUMP_UNCONDITONAL"] = frozenset(
         [l["opmap"]["JUMP_ABSOLUTE"], l["opmap"]["JUMP_FORWARD"]]
     )
-    if PYTHON_VERSION_TRIPLE < (3,8,0) and l["python_version"] < (3, 8):
+    if PYTHON_VERSION_TRIPLE < (3, 8, 0) and l["python_version"] < (3, 8):
         l["LOOP_OPS"] = frozenset([l["opmap"]["SETUP_LOOP"]])
     else:
         l["LOOP_OPS"] = frozenset()
