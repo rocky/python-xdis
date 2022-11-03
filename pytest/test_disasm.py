@@ -21,6 +21,7 @@ def get_srcdir():
 
 
 if PYTHON_VERSION_TRIPLE >= (3, 2):
+
     @pytest.mark.parametrize(
         ("test_tuple", "function_to_test"),
         [
@@ -43,7 +44,10 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
                 ("../test/bytecode_3.6/03_big_dict.pyc", "testdata/big_dict-3.6.right"),
                 disassemble_file,
             ),
-            (("../test/bytecode_2.7/01_hexstring.pyc", hextring_file), disassemble_file),
+            (
+                ("../test/bytecode_2.7/01_hexstring.pyc", hextring_file),
+                disassemble_file,
+            ),
         ],
     )
     def test_funcoutput(capfd, test_tuple, function_to_test):
@@ -79,7 +83,12 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
                     out.write(got)
         assert got == expected
 
+
 if __name__ == "__main__":
     import sys
-    test_funcoutput(sys.stdout, ("../test/bytecode_3.0/04_raise.pyc", "testdata/raise-3.0.right"),
-                    disassemble_file)
+
+    test_funcoutput(
+        sys.stdout,
+        ("../test/bytecode_3.0/04_raise.pyc", "testdata/raise-3.0.right"),
+        disassemble_file,
+    )

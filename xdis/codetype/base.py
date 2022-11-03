@@ -16,6 +16,7 @@
 
 import inspect
 
+
 def iscode(obj):
     """A replacement for inspect.iscode() which we can't used because we may be
     using a different version of Python than the version of Python used
@@ -34,6 +35,7 @@ def code_has_star_star_arg(code):
     """Return True iff
     The code object has a variable keyword parameter (**kwargs-like)."""
     return (code.co_flags & 8) != 0
+
 
 class CodeBase(object):
 

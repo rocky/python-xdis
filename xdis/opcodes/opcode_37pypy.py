@@ -1,4 +1,4 @@
-# (C) Copyright 2021 by Rocky Bernstein
+# (C) Copyright 2021-2022 by Rocky Bernstein
 """
 PYPY 3.7 opcodes
 
@@ -23,6 +23,8 @@ from xdis.opcodes.base import (
     varargs_op,
     update_pj3,
 )
+
+import xdis.opcodes.opcode_36 as opcode_36
 
 version = 3.7
 version_tuple = (3, 7)
@@ -193,6 +195,8 @@ def format_CALL_METHOD_KW(argc, kwarg_count=None):
 
 opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_KW": opcode_36.format_CALL_FUNCTION_KW,
+    "CALL_FUNCTION_EX": opcode_36.format_CALL_FUNCTION_EX,
     "CALL_METHOD": format_CALL_METHOD,
     "CALL_METHOD_KW": format_CALL_METHOD_KW,
     "EXTENDED_ARG": format_extended_arg,
@@ -201,6 +205,7 @@ opcode_arg_fmt = {
 }
 
 opcode_extended_fmt = {
+    "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "CALL_METHOD_KW": extended_format_CALL_METHOD_KW,
     "LOAD_ATTR": extended_format_ATTR,

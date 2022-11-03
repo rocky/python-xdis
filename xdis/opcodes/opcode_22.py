@@ -33,9 +33,7 @@ update_pj2(globals(), l)
 
 finalize_opcodes(l)
 
-opcode_arg_fmt = {
-    "EXTENDED_ARG": format_extended_arg
-}
+opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,

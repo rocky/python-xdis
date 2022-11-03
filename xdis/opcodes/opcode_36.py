@@ -20,7 +20,7 @@ This is a like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
-from xdis.opcodes.base import(
+from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
@@ -34,8 +34,8 @@ from xdis.opcodes.base import(
     rm_op,
     store_op,
     varargs_op,
-    update_pj3
-    )
+    update_pj3,
+)
 
 from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
 import xdis.opcodes.opcode_35 as opcode_35
@@ -120,10 +120,11 @@ varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
+
 def format_MAKE_FUNCTION_flags(flags):
     if flags == 0:
         return "Neither defaults, keyword-only args, annotations, nor closures"
-    pattr = ''
+    pattr = ""
     for flag in MAKE_FUNCTION_FLAGS:
         bit = flags & 1
         if bit:
@@ -136,22 +137,25 @@ def format_MAKE_FUNCTION_flags(flags):
         flags >>= 1
     return pattr
 
+
 def format_value_flags(flags):
     if (flags & 0x03) == 0x00:
-        return ''
+        return ""
     elif (flags & 0x03) == 0x01:
-        return '!s'
+        return "!s"
     elif (flags & 0x03) == 0x02:
-        return '!r'
+        return "!r"
     elif (flags & 0x03) == 0x03:
-        return '!a'
+        return "!a"
     elif (flags & 0x04) == 0x04:
         # pop fmt_spec from the stack and use it, else use an
         # empty fmt_spec.
-        return ''
+        return ""
+
 
 def format_extended_arg36(arg):
     return str(arg * (1 << 8))
+
 
 def format_CALL_FUNCTION(argc):
     """argc indicates the number of positional arguments"""
@@ -159,7 +163,8 @@ def format_CALL_FUNCTION(argc):
         plural = ""
     else:
         plural = "s"
-    return ("%d positional argument%s" % (argc, plural))
+    return "%d positional argument%s" % (argc, plural)
+
 
 def format_CALL_FUNCTION_EX(flags):
     str = ""
@@ -169,15 +174,18 @@ def format_CALL_FUNCTION_EX(flags):
         str = "positional arguments only"
     return str
 
+
 def format_CALL_FUNCTION_KW(argc):
     return "%d total positional and keyword args" % argc
+
 
 # The meaning of argc changes from 3.5 where this was introduced.
 def format_BUILD_MAP_UNPACK_WITH_CALL(count):
     """The lowest byte of oparg is the count of mappings, the relative
     position of the corresponding callable f is encoded in the second byte
     of oparg."""
-    return ("%d mappings" % count)
+    return "%d mappings" % count
+
 
 opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
@@ -187,7 +195,7 @@ opcode_arg_fmt = {
     "EXTENDED_ARG": format_extended_arg36,
     "FORMAT_VALUE": format_value_flags,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 
@@ -197,6 +205,7 @@ finalize_opcodes(l)
 
 # extended formatting routine  should be done after updating globals and finalizing opcodes
 # since they make use of the information there.
+
 
 def extended_format_CALL_METHOD(opc, instructions):
     """Inst should be a "LOAD_METHOD" instruction. Looks in `instructions`
@@ -223,6 +232,7 @@ def extended_format_CALL_METHOD(opc, instructions):
         pass
     s += format_CALL_FUNCTION(call_method_inst.arg)
     return s
+
 
 def extended_format_CALL_FUNCTION(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
@@ -257,14 +267,19 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         i += 1
 
     if i == function_pos:
-        if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
-                                                 "LOAD_ATTR", "LOAD_NAME"):
+        if instructions[function_pos].opname in (
+            "LOAD_CONST",
+            "LOAD_GLOBAL",
+            "LOAD_ATTR",
+            "LOAD_NAME",
+        ):
             s = resolved_attrs(instructions[function_pos:])
             s += ": "
             pass
         pass
     s += format_CALL_FUNCTION(call_function_inst.arg)
     return s
+
 
 def extended_format_CALL_FUNCTION_KW(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
@@ -300,8 +315,12 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
             pass
 
         if i == function_pos:
-            if instructions[function_pos].opname in ("LOAD_CONST", "LOAD_GLOBAL",
-                                                     "LOAD_ATTR", "LOAD_NAME"):
+            if instructions[function_pos].opname in (
+                "LOAD_CONST",
+                "LOAD_GLOBAL",
+                "LOAD_ATTR",
+                "LOAD_NAME",
+            ):
                 if instructions[function_pos].opname == "LOAD_ATTR":
                     s += "."
                 s += "%s() " % instructions[function_pos].argrepr
@@ -309,6 +328,7 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
             pass
         s += format_CALL_FUNCTION(call_function_inst.arg)
         return s
+
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,

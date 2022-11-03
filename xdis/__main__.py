@@ -21,6 +21,7 @@
 """
 import sys
 from xdis.disasm import disassemble_file
+
 if __name__ == "__main__" and len(sys.argv) > 1:
     for path in sys.argv[1:]:
         disassemble_file(path, sys.stdout)
