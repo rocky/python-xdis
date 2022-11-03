@@ -60,8 +60,8 @@ jrel_op(l, 'JUMP_IF_TRUE',       112,  1, 1)
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
-    'MAKE_FUNCTION': format_MAKE_FUNCTION_default_argc,
-    'EXTENDED_ARG': format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
+    "EXTENDED_ARG": format_extended_arg,
 }
 
 opcode_extended_fmt = {

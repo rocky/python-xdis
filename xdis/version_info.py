@@ -1,5 +1,5 @@
 """
-  Copyright (c) 2020-2021 by Rocky Bernstein
+  Copyright (c) 2020-2022 by Rocky Bernstein
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -14,9 +14,6 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-  NB. This is not a masterpiece of software, but became more like a hack.
-  Probably a complete rewrite would be sensefull. hG/2000-12-27
 """
 
 import sys
