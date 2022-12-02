@@ -20,7 +20,6 @@ allow running on Python 2.
 """
 
 import re
-
 from collections import namedtuple
 
 _Instruction = namedtuple(
@@ -158,11 +157,10 @@ class Instruction(_Instruction):
             # The argrepr value when the instruction was created generally has all the information we require.
             # However fo "asm" format, want additional explicit information linking operands to tables.
             if asm_format == "asm":
-                if self.optype == "jabs":
-                    fields.append("L" + str(self.arg))
-                elif self.optype == "jrel":
-                    argval = self.offset + self.arg + self.inst_size
-                    fields.append("L" + str(argval))
+                if self.optype in ("jabs", "jrel"):
+                    assert self.argrepr.startswith("to ")
+                    jump_target = self.argrepr[len("to "):]
+                    fields.append("L" + jump_target)
                 elif self.optype in indexed_operand:
                     fields.append(repr(self.arg))
                     fields.append("(%s)" % argrepr)
