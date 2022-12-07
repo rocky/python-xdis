@@ -58,7 +58,7 @@ class Instruction(_Instruction):
       inst_size - number of bytes the instruction occupies
       arg - numeric argument to operation (if any), otherwise None
       argval - resolved arg value (if known), otherwise same as arg
-      argrepr - human readable description of operation argument
+      argrepr - human-readable description of operation argument
       has_arg - True if opcode takes an argument. In that case,
                 ``argval`` and ``argepr`` will have that value. False
                 if this opcode doesn't take an argument. When False,

@@ -1,6 +1,7 @@
 # Much of this is borrowed from Python's Lib/dis.py
 
 from math import copysign
+from typing import Dict
 
 
 def code2num(code, i):
@@ -52,11 +53,13 @@ PYPY_COMPILER_FLAG_NAMES = {
 
 # Invert above dictionary, so we can look up a bit value
 # from the compile flag name
-COMPILER_FLAG_BIT = dict([v, k] for (k, v) in COMPILER_FLAG_NAMES.items())
+COMPILER_FLAG_BIT: Dict[str, int] = dict(
+    (v, k) for (k, v) in COMPILER_FLAG_NAMES.items()
+)
 
 # Allow us to access by just name, prefixed with CO. e.g
 # CO_OPTIMIZED, CO_NOFREE
-globals().update(dict(["CO_" + k, v] for (k, v) in COMPILER_FLAG_BIT.items()))
+globals().update(dict(("CO_" + k, v) for (k, v) in COMPILER_FLAG_BIT.items()))
 
 
 def co_flags_is_async(co_flags):
