@@ -35,7 +35,6 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 import re
 import struct
 import sys
-from typing import Dict
 
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
@@ -90,8 +89,8 @@ def __by_version(magics) -> dict:
 # Documentation for the below variables is above.
 by_magic = {}
 by_version = {}
-magicint2version: Dict[int, str] = {}
-versions: Dict[bytes, str] = {}
+magicint2version = {}
+versions = {}
 
 try:
     from importlib.util import MAGIC_NUMBER as MAGIC

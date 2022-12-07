@@ -1,7 +1,6 @@
 # Much of this is borrowed from Python's Lib/dis.py
 
 from math import copysign
-from typing import Dict
 
 
 def code2num(code, i):
@@ -53,7 +52,7 @@ PYPY_COMPILER_FLAG_NAMES = {
 
 # Invert above dictionary, so we can look up a bit value
 # from the compile flag name
-COMPILER_FLAG_BIT: Dict[str, int] = dict(
+COMPILER_FLAG_BIT = dict(
     (v, k) for (k, v) in COMPILER_FLAG_NAMES.items()
 )
 
