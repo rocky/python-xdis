@@ -20,7 +20,6 @@ allow running on Python 2.
 """
 
 import re
-
 from collections import namedtuple
 
 _Instruction = namedtuple(
@@ -52,29 +51,29 @@ class Instruction(_Instruction):
     """Details for a bytecode operation
 
     Defined fields:
-      opname - human readable name for operation
+      opname - human-readable name for operation
       opcode - numeric code for operation
       optype - opcode classification. One of
          compare, const, free, jabs, jrel, local, name, nargs
       inst_size - number of bytes the instruction occupies
       arg - numeric argument to operation (if any), otherwise None
       argval - resolved arg value (if known), otherwise same as arg
-      argrepr - human readable description of operation argument
-      has_arg - True opcode takes an argument. In that case,
-                argval and argepr will have that value. False
-                if this opcode doesn't take an argument. In that case,
-                don't look at argval or argrepr.
-      offset - start index of operation within bytecode sequence
-      starts_line - line started by this opcode (if any), otherwise None
+      argrepr - human-readable description of operation argument
+      has_arg - True if opcode takes an argument. In that case,
+                ``argval`` and ``argepr`` will have that value. False
+                if this opcode doesn't take an argument. When False,
+                don't look at ``argval`` or ``argrepr``.
+      offset - Start index of operation within bytecode sequence.
+      starts_line - Line started by this opcode (if any), otherwise None
       is_jump_target - True if other code jumps to here,
                        'loop' if this is a loop beginning, which
                        in Python can be determined jump to an earlier offset.
-                       Otherwise False
+                       Otherwise, False.
       has_extended_arg - True if the instruction was built from EXTENDED_ARG
-                         opcodes
+                         opcodes.
       fallthrough - True if the instruction can (not must) fall through to the next
                     instruction. Note conditionals are in this category, but
-                    returns, raise, and unconditional jumps are not
+                    returns, raise, and unconditional jumps are not.
     """
 
     # FIXME: remove has_arg from initialization but keep it as a field.
@@ -93,7 +92,7 @@ class Instruction(_Instruction):
         *mark_as_current* inserts a '-->' marker arrow as part of the line
         """
         fields = []
-        indexed_operand = set(["name", "local", "compare", "free"])
+        indexed_operand = frozenset(["name", "local", "compare", "free"])
 
         # Column: Source code line number
         if lineno_width:
@@ -101,7 +100,7 @@ class Instruction(_Instruction):
                 if asm_format == "asm":
                     lineno_fmt = "%%%dd:\n" % lineno_width
                     fields.append(lineno_fmt % self.starts_line)
-                    fields.append(" " * (lineno_width))
+                    fields.append(" " * lineno_width)
                     if self.is_jump_target:
                         fields.append(" " * (lineno_width - 1))
                 else:
@@ -155,14 +154,13 @@ class Instruction(_Instruction):
         # Column: Opcode argument
         if self.arg is not None:
             argrepr = self.argrepr
-            # The argrepr value when the instruction was created generally has all the information we require.
-            # However fo "asm" format, want additional explicit information linking operands to tables.
+            # The ``argrepr`` value when the instruction was created generally has all the information we require.
+            # However, for "asm" format, want additional explicit information linking operands to tables.
             if asm_format == "asm":
-                if self.optype == "jabs":
-                    fields.append("L" + str(self.arg))
-                elif self.optype == "jrel":
-                    argval = self.offset + self.arg + self.inst_size
-                    fields.append("L" + str(argval))
+                if self.optype in ("jabs", "jrel"):
+                    assert self.argrepr.startswith("to ")
+                    jump_target = self.argrepr[len("to ") :]
+                    fields.append("L" + jump_target)
                 elif self.optype in indexed_operand:
                     fields.append(repr(self.arg))
                     fields.append("(%s)" % argrepr)
