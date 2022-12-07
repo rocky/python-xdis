@@ -64,7 +64,7 @@ def int2magic(magic_int):
         return struct.pack("<Hcc", magic_int, "\r", "\n")
 
 
-def magic2int(magic: bytes) -> int:
+def magic2int(magic):
     """Given a magic byte string, e.g. b'\x03\xf3\r\n', compute the
     corresponding magic integer, e.g. 62211, using the conversion
     method that does this.
@@ -76,10 +76,10 @@ def magic2int(magic: bytes) -> int:
     return struct.unpack("<Hcc", magic)[0]
 
 
-def __by_version(magics) -> dict:
+def __by_version(magics):
     for m, v in list(magics.items()):
         if m not in by_magic:
-            by_magic[m] = {v}
+            by_magic[m] = set([v])
         else:
             by_magic[m].add(v)
         by_version[v] = m
@@ -492,7 +492,7 @@ def py_str2tuple(orig_version):
     return
 
 
-def sysinfo2magic(version_info=sys.version_info) -> bytes:
+def sysinfo2magic(version_info=sys.version_info):
     """Convert a list sys.versions_info compatible list into a 'canonic'
     floating-point number which that can then be used to look up a
     magic number.  Note that this can raise an exception.
