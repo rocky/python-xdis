@@ -26,13 +26,16 @@ by_version: in this dictionary, the key is a canonic version string like '2.7,
 and its value is a magic byte string like b'\x03\xf3\r\n' canonic
 name, like '2.7'
 
-magicint2version:  in this dictionary, the key is an magic integer, e.g. 62211,
+magicint2version:  in this dictionary, the key is a magic integer, e.g. 62211,
 and the value is its canonic versions string, e.g. '2.7'
 
 PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 """
 
-import re, struct, sys
+import re
+import struct
+import sys
+
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
 IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244)
@@ -48,7 +51,7 @@ def int2magic(magic_int):
      b'\x03\xf3\r\n' using the conversion method that does this.
 
     See also dictionary magic2nt2version which has precomputed these values
-    for knonwn magic_int's.
+    for known magic_int's.
     """
 
     if magic_int in (39170, 39171):
@@ -61,7 +64,7 @@ def int2magic(magic_int):
         return struct.pack("<Hcc", magic_int, "\r", "\n")
 
 
-def magic2int(magic):
+def magic2int(magic: bytes) -> int:
     """Given a magic byte string, e.g. b'\x03\xf3\r\n', compute the
     corresponding magic integer, e.g. 62211, using the conversion
     method that does this.
@@ -73,10 +76,10 @@ def magic2int(magic):
     return struct.unpack("<Hcc", magic)[0]
 
 
-def __by_version(magics):
+def __by_version(magics) -> dict:
     for m, v in list(magics.items()):
         if m not in by_magic:
-            by_magic[m] = set([v])
+            by_magic[m] = {v}
         else:
             by_magic[m].add(v)
         by_version[v] = m
@@ -115,11 +118,11 @@ PYTHON_MAGIC_INT = magic2int(MAGIC)
 # 10.
 #
 # Starting with the adoption of PEP 3147 in Python 3.2, every bump in magic
-# number also includes a new "magic tag", i.e. a human readable string used
+# number also includes a new "magic tag", i.e. a human-readable string used
 # to represent the magic number in __pycache__ directories.  When you change
 # the magic number, you must also set a new unique magic tag.  Generally this
 # can be named after the Python major version of the magic number bump, but
-# it can really be anything, as long as it's different than anything else
+# it can really be anything, as long as it's different from anything else
 # that's come before.  The tags are included in the following table, starting
 # with Python 3.2a0.
 
@@ -358,7 +361,7 @@ def add_canonic_versions(versions, canonic):
         magics[v] = magics[canonic]
         try:
             magics[float(v)] = magics[canonic]
-        except:
+        except Exception:
             pass
         pass
 
@@ -435,7 +438,9 @@ add_canonic_versions(
     "3.9.0beta5",
 )
 
-add_canonic_versions("3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8", "3.10.0rc2")
+add_canonic_versions(
+    "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8", "3.10.0rc2"
+)
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
@@ -487,7 +492,7 @@ def py_str2tuple(orig_version):
     return
 
 
-def sysinfo2magic(version_info=sys.version_info):
+def sysinfo2magic(version_info=sys.version_info) -> bytes:
     """Convert a list sys.versions_info compatible list into a 'canonic'
     floating-point number which that can then be used to look up a
     magic number.  Note that this can raise an exception.
@@ -504,9 +509,9 @@ def sysinfo2magic(version_info=sys.version_info):
             import platform
 
             if hasattr(platform, "python_implementation"):
-                platform = platform.python_implementation()
-                if platform in ("Jython", "Pyston", "GraalVM"):
-                    vers_str += platform
+                platform_str = platform.python_implementation()
+                if platform_str in ("Jython", "Pyston", "GraalVM"):
+                    vers_str += platform_str
                     pass
         except ImportError:
             # Python may be too old, e.g. < 2.6 or implementation may

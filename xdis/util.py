@@ -58,6 +58,7 @@ for (v, k) in COMPILER_FLAG_NAMES.items():
 
 # Allow us to access by just name, prefixed with CO. e.g
 # CO_OPTIMIZED, CO_NOFREE
+globals().update(dict(("CO_" + k, v) for (k, v) in COMPILER_FLAG_BIT.items()))
 
 for v, k in COMPILER_FLAG_BIT.items():
     globals().update(dict({'CO_'+v: k}))
