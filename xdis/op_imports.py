@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019, 2021 by Rocky Bernstein
+# (C) Copyright 2018-2019, 2021-2022 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -143,6 +143,7 @@ op_imports = {
     "3.6.1pypy": opcode_36pypy,
     "3.7pypy": opcode_37pypy,
     "3.8.0pypy": opcode_38pypy,
+    "3.8pypy": opcode_38pypy,
     "3.8.12pypy": opcode_38pypy,
     "3.8.13pypy": opcode_38pypy,
     "3.9pypy": opcode_39pypy,
