@@ -1,3 +1,15 @@
+6.0.5 2022-12-22
+=================
+
+* Detect versions pypy3.8.15, pypy-3.9.15
+* Dectect Python 3.{7,8,9}.14 3.10.{5,6,7}
+* correct 3.10+ pydisasm -F xasm label
+* Revise marshal error handling (Issue #97)
+* Improve PyPy 3.7 `CALL_FUNCTION` arg interpretation
+* Fix 1.5-2.x bugs in line number encoding
+* Fix showing `MAKE_FUNCTION` operand
+* Miscellaneous lint, black, and isort changes
+
 6.0.4 2022-05-19 HF+LB-1
 ========================
 
