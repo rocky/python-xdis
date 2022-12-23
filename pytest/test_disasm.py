@@ -1,7 +1,7 @@
 import os
-import pytest
 import re
 
+import pytest
 from xdis import disassemble_file
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
 
@@ -22,6 +22,9 @@ def get_srcdir():
 
 if PYTHON_VERSION_TRIPLE >= (3, 2):
 
+    @pytest.mark.skipif(
+        os.name == "nt", reason="Windows differences in output need going over"
+)
     @pytest.mark.parametrize(
         ("test_tuple", "function_to_test"),
         [

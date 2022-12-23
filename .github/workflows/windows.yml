@@ -26,4 +26,5 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Test xdis
       run: |
-        make check
+        # Until workflows CI problems are fixed
+        make check-pytest
