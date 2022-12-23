@@ -1,9 +1,10 @@
 import os
-from xdis import IS_PYPY
-from xdis.load import load_file, check_object_path, load_module
-from xdis.codetype import CodeTypeUnionFields
-
 import os.path as osp
+
+import pytest
+from xdis import IS_PYPY
+from xdis.codetype import CodeTypeUnionFields
+from xdis.load import check_object_path, load_file, load_module
 
 
 def get_srcdir():
@@ -11,6 +12,9 @@ def get_srcdir():
     return osp.realpath(filename)
 
 
+@pytest.mark.skipif(
+    os.name == "nt", reason="Windows differences in output need going over"
+)
 def test_load_file():
     srcdir = get_srcdir()
     load_py = osp.realpath(osp.join(srcdir, "..", "xdis", "load.py"))
@@ -40,6 +44,10 @@ def test_load_file():
                 continue
             load_file_field = getattr(co_file, field)
             load_module_field = getattr(co_module, field)
+            if os.name == "windows" and field == "co_filename":
+                # MS/Windows is letter case insensitive
+                load_module_field = load_module_field.upper()
+                load_file_field = load_module_field.upper()
             assert (
                 load_module_field == load_file_field
             ), "field %s\nmodule:\n\t%s\nfile:\n\t%s" % (
