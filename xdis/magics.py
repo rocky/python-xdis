@@ -38,7 +38,7 @@ import sys
 
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
-IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244)
+IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244, 256, 336)
 
 
 def add_magic_from_int(magic_int, version):
@@ -340,6 +340,8 @@ add_magic_from_int(160, "3.6.1pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
 add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
 add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
+add_magic_from_int(256, "3.8pypy")  # PyPy 3.8.15
+add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15
 
 # NOTE: This is JVM bytecode not Python bytecode
 add_magic_from_int(21150, "3.8.5Graal")
@@ -349,6 +351,7 @@ add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
 magics = __by_version(versions)
 magics["3.8.12pypy"] = magics["3.8.0rc1+"]
+magics["3.9.15pypy"] = magics["3.9.0alpha1"]
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
@@ -415,18 +418,18 @@ add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.7pypy")
-add_canonic_versions("3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy", "3.8.12pypy")
+add_canonic_versions("3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy", "3.8.12pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
     "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7 3.7.8 3.7.9 "
-    "3.7.10 3.7.11 3.7.12 3.7.13 3.7.14 3.7.15",
+    "3.7.10 3.7.11 3.7.12 3.7.13 3.7.14 3.7.15 3.7.16",
     "3.7.0",
 )
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 add_canonic_versions(
     "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7 3.8.8 3.8.9 "
-    "3.8.10 3.8.11 3.8.12 3.8.13 3.8.14 3.8.15",
+    "3.8.10 3.8.11 3.8.12 3.8.13 3.8.14 3.8.15 3.8.16",
     "3.8.0rc1+",
 )
 add_canonic_versions(
@@ -434,12 +437,12 @@ add_canonic_versions(
 )
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 3.9.12 3.9.13 3.9.14 "
-    "3.9.14 3.9.15 3.9.10pypy 3.9.11pypy 3.9.12pypy 3.9.0b5+",
+    "3.9.14 3.9.15 3.9.16 3.9.10pypy 3.9.11pypy 3.9.12pypy 3.9.15pypy 3.9.0b5+",
     "3.9.0beta5",
 )
 
 add_canonic_versions(
-    "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8", "3.10.0rc2"
+    "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8 3.10.9", "3.10.0rc2"
 )
 
 # The canonic version for a canonic version is itself
