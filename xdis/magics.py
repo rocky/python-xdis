@@ -39,7 +39,7 @@ from typing import Dict
 
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
-IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244, 256)
+IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244, 256, 336)
 
 
 def add_magic_from_int(magic_int, version):
@@ -342,6 +342,7 @@ add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
 add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(256, "3.8pypy")  # PyPy 3.8.15
+add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15
 
 # NOTE: This is JVM bytecode not Python bytecode
 add_magic_from_int(21150, "3.8.5Graal")
@@ -351,6 +352,7 @@ add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
 magics = __by_version(versions)
 magics["3.8.12pypy"] = magics["3.8.0rc1+"]
+magics["3.9.15pypy"] = magics["3.9.0alpha1"]
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
@@ -436,7 +438,7 @@ add_canonic_versions(
 )
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 3.9.12 3.9.13 3.9.14 "
-    "3.9.14 3.9.15 3.9.16 3.9.10pypy 3.9.11pypy 3.9.12pypy 3.9.0b5+",
+    "3.9.14 3.9.15 3.9.16 3.9.10pypy 3.9.11pypy 3.9.12pypy 3.9.15pypy 3.9.0b5+",
     "3.9.0beta5",
 )
 

@@ -6,12 +6,26 @@
 
 GIT2CL ?= git2cl
 PYTHON ?= python
-PYTHON3 ?= python3
 RM      ?= rm
 LINT    = flake8
 
 #EXTRA_DIST=ipython/ipy_trepan.py trepan
-PHONY=all check clean dist-older dist-newer unittest check-long dist distclean lint flake8 test rmChangeLog clean_pyc
+PHONY= \
+    all \
+    check \
+    check-long \
+    check-pytest \
+    clean \
+    clean_pyc \
+    dist \
+    dist-newer \
+    dist-older \
+    distclean \
+    flake8 \
+    lint \
+    rmChangeLog \
+    test \
+    unittest
 
 TEST_TYPES=check-full check-short check-2.7 check-3.4
 
@@ -35,9 +49,9 @@ check-full: check
 check-short: unittest pytest
 	$(MAKE) -C test check-short
 
-#: Run unittests tests
-unittest:
-	py.test pytest
+#: Run pytest tests
+check-pytest unittest:
+	$(PYTHON) -m pytest pytest
 
 #: Clean up temporary files and .pyc files
 clean: clean_pyc
