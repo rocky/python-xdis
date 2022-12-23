@@ -1,7 +1,6 @@
 import os
 import os.path as osp
 
-import pytest
 from xdis import IS_PYPY
 from xdis.codetype import CodeTypeUnionFields
 from xdis.load import check_object_path, load_file, load_module
@@ -12,9 +11,6 @@ def get_srcdir():
     return osp.realpath(filename)
 
 
-@pytest.mark.skipif(
-    os.name == "nt", reason="Windows differences in output need going over"
-)
 def test_load_file():
     srcdir = get_srcdir()
     load_py = osp.realpath(osp.join(srcdir, "..", "xdis", "load.py"))
