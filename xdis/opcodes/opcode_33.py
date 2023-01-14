@@ -42,14 +42,6 @@ update_pj3(globals(), l)
 finalize_opcodes(l)
 
 
-def format_MAKE_FUNCTION_default_pos_arg(argc):
-    (
-        name_default,
-        pos_args,
-    ) = divmod(argc, 256)
-    return "%d positional, %d name and default" % (pos_args, name_default)
-
-
 def extended_format_ATTR(opc, instructions):
     if instructions[1].opname in (
         "LOAD_CONST",
@@ -71,11 +63,48 @@ def extended_format_MAKE_FUNCTION(opc, instructions):
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
     s = ""
     name_inst = instructions[1]
+    annotate_adjust = 0
+    if name_inst.opname == "EXTENDED_ARG":
+        annotate_adjust = -1
+        name_inst = instructions[2]
     if name_inst.opname in ("LOAD_CONST",):
         s += "%s: " % name_inst.argrepr
         pass
-    s += format_MAKE_FUNCTION_default_pos_arg(inst.arg)
+    pos_args, name_pair_args, annotate_args = parse_fn_counts(
+        inst.argval
+        )
+    # For some reason that I don't understand, annotate_args is off by one
+    # when there is an EXTENDED_ARG instruction from what is documented in
+    # https://docs.python.org/3.4/library/dis.html#opcode-MAKE_CLOSURE
+    annotate_args += annotate_adjust
+    s += "%d positional, %d keyword only, %d annotated" % (
+        pos_args,
+        name_pair_args,
+        annotate_args,
+    )
     return s
+
+
+def format_MAKE_FUNCTION_default_pos_arg(argc):
+    annotate_adjust = 0
+    if argc >= 0x1000:
+        annotate_adjust = 1
+    pos_args, name_pair_args, annotate_args = parse_fn_counts(argc)
+
+    # For some reason that I don't understand, annotate_args is off by one
+    # when there is an EXENDED_ARG instruction from what is documented in
+    # https://docs.python.org/3.4/library/dis.html#opcode-MAKE_CLOSURE
+    annotate_args -= annotate_adjust
+    s = "%d positional, %d keyword only, %d annotated" % (
+        pos_args,
+        name_pair_args,
+        annotate_args
+    )
+    return s
+
+
+def parse_fn_counts(argc):
+    return ((argc & 0xFF), (argc >> 8) & 0xFF, (argc >> 16) & 0x7FFF)
 
 
 opcode_arg_fmt = {
@@ -88,6 +117,7 @@ opcode_arg_fmt = {
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,

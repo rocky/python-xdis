@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2022 by Rocky Bernstein
+# (C) Copyright 2018-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -409,7 +409,7 @@ add_canonic_versions(
 add_canonic_versions("3.7b1", "3.7.0beta3")
 add_canonic_versions("3.8a1", "3.8.0beta2")
 
-add_canonic_versions("2.7.10pypy 2.7.12pypy 2.7.13pypy", "2.7pypy")
+add_canonic_versions("2.7.10pypy 2.7.12pypy 2.7.13pypy 2.7.18pypy", "2.7pypy")
 add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
 add_canonic_versions("3.8.5Graal", "3.8.5Graal")
 
@@ -418,7 +418,7 @@ add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.7pypy")
-add_canonic_versions("3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy", "3.8.12pypy")
+add_canonic_versions("3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy 3.8.16pypy", "3.8.12pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
@@ -437,7 +437,7 @@ add_canonic_versions(
 )
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 3.9.12 3.9.13 3.9.14 "
-    "3.9.14 3.9.15 3.9.16 3.9.10pypy 3.9.11pypy 3.9.12pypy 3.9.15pypy 3.9.0b5+",
+    "3.9.14 3.9.15 3.9.16 3.9.10pypy 3.9.11pypy 3.9.12pypy 3.9.15pypy 3.9.16pypy 3.9.0b5+",
     "3.9.0beta5",
 )
 
