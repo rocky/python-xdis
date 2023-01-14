@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021, 2023 by Rocky Bernstein
 """
 CPython 3.3 bytecode opcodes
 
@@ -63,20 +63,12 @@ def extended_format_MAKE_FUNCTION(opc, instructions):
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
     s = ""
     name_inst = instructions[1]
-    annotate_adjust = 0
-    if name_inst.opname == "EXTENDED_ARG":
-        annotate_adjust = -1
-        name_inst = instructions[2]
     if name_inst.opname in ("LOAD_CONST",):
         s += "%s: " % name_inst.argrepr
         pass
     pos_args, name_pair_args, annotate_args = parse_fn_counts(
         inst.argval
         )
-    # For some reason that I don't understand, annotate_args is off by one
-    # when there is an EXTENDED_ARG instruction from what is documented in
-    # https://docs.python.org/3.4/library/dis.html#opcode-MAKE_CLOSURE
-    annotate_args += annotate_adjust
     s += "%d positional, %d keyword only, %d annotated" % (
         pos_args,
         name_pair_args,
@@ -86,15 +78,8 @@ def extended_format_MAKE_FUNCTION(opc, instructions):
 
 
 def format_MAKE_FUNCTION_default_pos_arg(argc):
-    annotate_adjust = 0
-    if argc >= 0x1000:
-        annotate_adjust = 1
     pos_args, name_pair_args, annotate_args = parse_fn_counts(argc)
 
-    # For some reason that I don't understand, annotate_args is off by one
-    # when there is an EXENDED_ARG instruction from what is documented in
-    # https://docs.python.org/3.4/library/dis.html#opcode-MAKE_CLOSURE
-    annotate_args -= annotate_adjust
     s = "%d positional, %d keyword only, %d annotated" % (
         pos_args,
         name_pair_args,
@@ -104,12 +89,19 @@ def format_MAKE_FUNCTION_default_pos_arg(argc):
 
 
 def parse_fn_counts(argc):
-    return ((argc & 0xFF), (argc >> 8) & 0xFF, (argc >> 16) & 0x7FFF)
+    annotate_count = (argc >> 16) & 0x7FFF
+    # For some reason that I don't understand, annotate_args is off by one
+    # when there is an EXENDED_ARG instruction from what is documented in
+    # https://docs.python.org/3.4/library/dis.html#opcode-MAKE_CLOSURE
+    if annotate_count > 1:
+        annotate_count -= 1
+    return ((argc & 0xFF), (argc >> 8) & 0xFF, annotate_count)
 
 
 opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION_default_pos_arg,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_default_pos_arg,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
