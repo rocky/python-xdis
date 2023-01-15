@@ -69,15 +69,11 @@ def extended_format_MAKE_FUNCTION(opc, instructions):
     pos_args, name_pair_args, annotate_args = parse_fn_counts(
         inst.argval
         )
-    s += "%d positional, %d keyword only, %d annotated" % (
-        pos_args,
-        name_pair_args,
-        annotate_args,
-    )
+    s += format_MAKE_FUNCTION(inst.argval)
     return s
 
 
-def format_MAKE_FUNCTION_default_pos_arg(argc):
+def format_MAKE_FUNCTION(argc):
     pos_args, name_pair_args, annotate_args = parse_fn_counts(argc)
 
     s = "%d positional, %d keyword only, %d annotated" % (
@@ -101,8 +97,8 @@ def parse_fn_counts(argc):
 opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION_default_pos_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_pos_arg,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 

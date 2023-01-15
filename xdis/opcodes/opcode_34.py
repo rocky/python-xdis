@@ -44,8 +44,8 @@ opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "MAKE_CLOSURE": opcode_33.format_MAKE_FUNCTION_default_pos_arg,
-    "MAKE_FUNCTION": opcode_33.format_MAKE_FUNCTION_default_pos_arg,
+    "MAKE_CLOSURE": opcode_33.format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": opcode_33.format_MAKE_FUNCTION,
     "EXTENDED_ARG": format_extended_arg,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }

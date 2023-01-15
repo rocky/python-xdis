@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2019-2021 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2019-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 
-from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION, extended_format_ATTR
+from xdis.opcodes.opcode_33 import extended_format_ATTR
 import xdis.opcodes.opcode_36 as opcode_36
 
 version = 3.7
@@ -104,7 +104,7 @@ jrel_op(l, "SETUP_ASYNC_WITH",   154,  0,  5)
 name_op(l, "LOAD_METHOD",        160,  0,  1)
 nargs_op(l, "CALL_METHOD",       161, -2,  1)
 
-format_MAKE_FUNCTION_flags = opcode_36.format_MAKE_FUNCTION_flags
+format_MAKE_FUNCTION = opcode_36.format_MAKE_FUNCTION
 format_value_flags = opcode_36.format_value_flags
 
 def extended_format_RAISE_VARARGS(opc, instructions):
@@ -134,7 +134,8 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": opcode_36.format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": opcode_36.format_CALL_FUNCTION_EX,
     "CALL_METHOD": opcode_36.format_CALL_FUNCTION,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
+    "MAKE_CLOSURE": opcode_36.format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": opcode_36.format_MAKE_FUNCTION,
     "FORMAT_VALUE": format_value_flags,
     "EXTENDED_ARG": opcode_36.format_extended_arg36,
     "RAISE_VARARGS": format_RAISE_VARARGS
@@ -144,7 +145,8 @@ opcode_extended_fmt = {
     "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
     "CALL_METHOD": opcode_36.extended_format_CALL_METHOD,
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "MAKE_CLOSURE": opcode_36.extended_format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": opcode_36.extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,

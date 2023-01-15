@@ -40,7 +40,7 @@ from xdis.opcodes.base import (
 import xdis.opcodes.opcode_34 as opcode_34
 from xdis.opcodes.opcode_33 import (
     extended_format_MAKE_FUNCTION,
-    format_MAKE_FUNCTION_default_pos_arg,
+    format_MAKE_FUNCTION,
 )
 
 version = 3.5
@@ -100,8 +100,8 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION_default_pos_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_pos_arg,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 

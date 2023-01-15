@@ -1,4 +1,4 @@
-# (C) Copyright 2021 by Rocky Bernstein
+# (C) Copyright 2021, 2023 by Rocky Bernstein
 """
 PYPY 3.8 opcodes
 
@@ -35,9 +35,8 @@ version = 3.8
 version_tuple = (3, 8)
 python_implementation = "PyPy"
 
-from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
 import xdis.opcodes.opcode_38 as opcode_38
-from xdis.opcodes.opcode_37 import format_MAKE_FUNCTION_flags
+from xdis.opcodes.opcode_36 import extended_format_MAKE_FUNCTION, format_MAKE_FUNCTION
 
 l = locals()
 init_opdata(l, opcode_38, version_tuple, is_pypy=True)
@@ -67,7 +66,8 @@ opcode_arg_fmt = {
     "CALL_METHOD": format_CALL_METHOD,
     "CALL_METHOD_KW": format_CALL_METHOD_KW,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
@@ -75,6 +75,7 @@ opcode_extended_fmt = {
     "CALL_METHOD": extended_format_CALL_METHOD,
     "CALL_METHOD_KW": extended_format_CALL_METHOD_KW,
     "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,

@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021 by Rocky Bernstein
+# (C) Copyright 2019-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@ from xdis.opcodes.opcode_36 import (
     format_BUILD_MAP_UNPACK_WITH_CALL,
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
-    format_MAKE_FUNCTION_flags,
+    format_MAKE_FUNCTION,
     format_extended_arg36,
 )
 
@@ -77,7 +77,8 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW":           format_CALL_FUNCTION_KW,
     "EXTENDED_ARG":               format_extended_arg36,
     "FORMAT_VALUE":               format_value_flags,
-    "MAKE_FUNCTION":              format_MAKE_FUNCTION_flags,
+    "MAKE_CLOSURE":               format_MAKE_FUNCTION,
+    "MAKE_FUNCTION":              format_MAKE_FUNCTION,
     "RAISE_VARARGS":              opcode_37.format_RAISE_VARARGS,
 }
 
@@ -85,6 +86,7 @@ opcode_extended_fmt = {
     "CALL_FUNCTION":              extended_format_CALL_FUNCTION,
     "CALL_METHOD":                extended_format_CALL_METHOD,
     "LOAD_ATTR":                  extended_format_ATTR,
+    "MAKE_CLOSURE":               extended_format_MAKE_FUNCTION,
     "MAKE_FUNCTION":              extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS":              opcode_37.extended_format_RAISE_VARARGS,
     "RETURN_VALUE":               extended_format_RETURN_VALUE,
