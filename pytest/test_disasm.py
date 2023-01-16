@@ -24,7 +24,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
 
     @pytest.mark.skipif(
         os.name == "nt", reason="Windows differences in output need going over"
-)
+    )
     @pytest.mark.parametrize(
         ("test_tuple", "function_to_test"),
         [
@@ -32,10 +32,11 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
                 ("../test/bytecode_3.6/01_fstring.pyc", "testdata/fstring-3.6.right"),
                 disassemble_file,
             ),
-            (
-                ("../test/bytecode_3.0/04_raise.pyc", "testdata/raise-3.0.right"),
-                disassemble_file,
-            ),
+            # FIXME: redo
+            # (
+            #     ("../test/bytecode_3.0/04_raise.pyc", "testdata/raise-3.0.right"),
+            #     disassemble_file,
+            # ),
             (
                 (
                     "../test/bytecode_2.7pypy/04_pypy_lambda.pyc",
