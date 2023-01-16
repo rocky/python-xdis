@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2022 by Rocky Bernstein
+#  Copyright (c) 2018-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,7 +14,8 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Python bytecode and instruction classes
+"""
+Python bytecode and instruction classes
 Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
@@ -269,13 +270,13 @@ class Bytecode(object):
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
         self._cell_names = ()
-        if opc.version > 1.5:
+        if opc.version_tuple >= (1, 5):
             if first_line is None:
                 self.first_line = co.co_firstlineno
             else:
                 self.first_line = first_line
                 self._line_offset = first_line - co.co_firstlineno
-            if opc.version > 2.0:
+            if opc.version_tuple > (2, 0):
                 self._cell_names = co.co_cellvars + co.co_freevars
                 pass
             pass
@@ -321,7 +322,7 @@ class Bytecode(object):
         else:
             offset = -1
         output = StringIO()
-        if self.opc.version > 2.0:
+        if self.opc.version_tuple > (2, 0):
             cells = self._cell_names
             linestarts = self._linestarts
         else:

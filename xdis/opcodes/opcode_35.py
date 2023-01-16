@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2020-2021 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@ This is a like Python 3.5's opcode.py with some classification
 of stack usage.
 """
 
+import xdis.opcodes.opcode_34 as opcode_34
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
@@ -28,20 +29,15 @@ from xdis.opcodes.base import (
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_RAISE_VARARGS_older,
     format_extended_arg,
+    format_RAISE_VARARGS_older,
     init_opdata,
     jrel_op,
     rm_op,
     update_pj3,
     varargs_op,
 )
-
-import xdis.opcodes.opcode_34 as opcode_34
-from xdis.opcodes.opcode_33 import (
-    extended_format_MAKE_FUNCTION,
-    format_MAKE_FUNCTION_default_pos_arg,
-)
+from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION, format_MAKE_FUNCTION
 
 version = 3.5
 version_tuple = (3, 5)
@@ -100,13 +96,15 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_pos_arg,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR": extended_format_ATTR,
+    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,

@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019 by Rocky Bernstein
+# (C) Copyright 2017, 2019, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -22,16 +22,16 @@ This is similar to the opcode portion in Python 2.1's dis.py library.
 import xdis.opcodes.opcode_22 as opcode_22
 from xdis.opcodes.base import (
     extended_format_ATTR,
-    extended_format_MAKE_FUNCTION_older,
+    extended_format_MAKE_FUNCTION_10_32,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
+    format_MAKE_FUNCTION_10_32,
     format_extended_arg,
     init_opdata,
     rm_op,
     update_pj2,
 )
 
-version = 2.1
 version_tuple = (2, 1)
 python_implementation = "CPython"
 
@@ -53,9 +53,13 @@ finalize_opcodes(l)
 
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
+opcode_arg_fmt = {
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+}
+
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,
 }

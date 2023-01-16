@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019, 2021 by Rocky Bernstein
+# (C) Copyright 2017, 2019, 2021, 2023 by Rocky Bernstein
 """
 CPython 2.2 bytecode opcodes
 
@@ -9,15 +9,15 @@ import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
-    extended_format_MAKE_FUNCTION_older,
+    extended_format_MAKE_FUNCTION_10_32,
     extended_format_RETURN_VALUE,
-    init_opdata,
     finalize_opcodes,
+    format_MAKE_FUNCTION_10_32,
     format_extended_arg,
+    init_opdata,
     update_pj2,
 )
 
-version = 2.2
 version_tuple = (2, 2)
 python_implementation = "CPython"
 
@@ -35,9 +35,13 @@ finalize_opcodes(l)
 
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
+opcode_arg_fmt = {
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+}
+
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,
 }

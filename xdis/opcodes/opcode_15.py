@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2021 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -22,30 +22,29 @@ opcodes in Python's dis.py library.
 
 # These are used from outside this module
 from xdis.cross_dis import findlabels, findlinestarts
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     compare_op,
     const_op,
     def_op,
     extended_format_ATTR,
     extended_format_CALL_FUNCTION,
-    extended_format_MAKE_FUNCTION_older,
+    extended_format_MAKE_FUNCTION_10_32,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_RAISE_VARARGS_older,
+    format_MAKE_FUNCTION_10_32,
     format_extended_arg,
+    format_RAISE_VARARGS_older,
     jabs_op,
     jrel_op,
     local_op,
     name_op,
     nargs_op,
     store_op,
-    # Although these aren't used here, they are exported
-    varargs_op,
     update_pj2,
+    varargs_op,
 )
 
-version = 1.5
 version_tuple = (1, 5)
 python_implementation = "CPython"
 
@@ -228,6 +227,7 @@ update_pj2(globals(), l)
 
 opcode_arg_fmt = {
     "EXTENDED_ARG":  format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
@@ -236,7 +236,7 @@ finalize_opcodes(l)
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR":     extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_older,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":  extended_format_RETURN_VALUE,
     "STORE_ATTR":    extended_format_ATTR,
