@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020-2021 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021, 2023 by Rocky Bernstein
 """
 CPython 3.1 bytecode opcodes
 
@@ -6,12 +6,14 @@ This is a like Python 3.1's opcode.py with some classification
 of stack usage.
 """
 
+import xdis.opcodes.opcode_32 as opcode_32
 from xdis.opcodes.base import (
     def_op,
+    format_MAKE_FUNCTION_10_32,
     extended_format_ATTR,
     extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_10_32,
     finalize_opcodes,
-    format_MAKE_FUNCTION_default_argc,
     format_extended_arg,
     init_opdata,
     name_op,
@@ -19,7 +21,6 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 
-import xdis.opcodes.opcode_32 as opcode_32
 
 l = locals()
 
@@ -47,13 +48,16 @@ def_op(l, "EXTENDED_ARG", 143)
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_default_argc,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
     "EXTENDED_ARG": format_extended_arg,
 }
 
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
     "STORE_ATTR": extended_format_ATTR,
 }
 finalize_opcodes(l)

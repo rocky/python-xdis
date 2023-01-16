@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2022 by Rocky Bernstein
+# (C) Copyright 2019-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -20,24 +20,24 @@ This is used in bytecode disassembly. This is similar to the
 opcodes in Python's dis.py library.
 """
 
+import xdis.opcodes.opcode_12 as opcode_12
+
 # This is used from outside this module
 from xdis.cross_dis import findlabels
-
-import xdis.opcodes.opcode_12 as opcode_12
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     extended_format_CALL_FUNCTION,
+    extended_format_MAKE_FUNCTION_10_32,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
+    finalize_opcodes,
+    format_MAKE_FUNCTION_10_32,
+    format_extended_arg,
     format_RAISE_VARARGS_older,
     init_opdata,
-    finalize_opcodes,
-    format_extended_arg,
-    # Although these aren't used here, they are exported
     update_pj2,
 )
 
-version = 1.1  # 1.2 is the same
-version_tuple = (1, 1)
+version_tuple = (1, 1)  # 1.2 is the same
 python_implementation = "CPython"
 
 l = locals()
@@ -47,6 +47,7 @@ update_pj2(globals(), l)
 
 opcode_arg_fmt = {
     "EXTENDED_ARG": format_extended_arg,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
@@ -54,6 +55,7 @@ finalize_opcodes(l)
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }

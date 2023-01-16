@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2022 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -349,9 +349,12 @@ def extended_format_ATTR(opc, instructions):
         return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
 
 
-def extended_format_MAKE_FUNCTION_older(opc, instructions):
-    """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
+def extended_format_MAKE_FUNCTION_10_32(opc, instructions) -> str:
+    """
+    instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
+
+    This code works for Python versions up to and including 3.2
     """
     # From opcode description: argc indicates the total number of positional and keyword arguments.
     # Sometimes the function name is in the stack arg positions back.
@@ -363,7 +366,7 @@ def extended_format_MAKE_FUNCTION_older(opc, instructions):
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         s += "%s: " % code_inst.argval.co_name
         pass
-    s += format_MAKE_FUNCTION_default_argc(inst.arg)
+    s += format_MAKE_FUNCTION_10_32(inst.arg)
     return s
 
 
@@ -408,20 +411,13 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     return "%d positional, %d named" % (pos_args, name_default)
 
 
-# After Python 3.2
-def format_MAKE_FUNCTION_arg(argc):
-    name_and_annotate, pos_args = divmod(argc, 256)
-    annotate_args, name_default = divmod(name_and_annotate, 256)
-    return "%d positional, %d name and default, %d annotations" % (
-        pos_args,
-        name_default,
-        annotate_args,
-    )
+def format_MAKE_FUNCTION_10_32(argc: int) -> str:
+    """
+    ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
 
-
-# Up to and including Python 3.2
-def format_MAKE_FUNCTION_default_argc(argc):
-    return "%d default parameters" % argc
+    This code works for Python versions up to and including 3.2.
+    """
+    return f"{argc} default parameters"
 
 
 # Up until 3.7

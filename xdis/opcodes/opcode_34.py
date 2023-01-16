@@ -6,21 +6,20 @@ This is a like Python 3.4's opcode.py with some classification
 of stack usage.
 """
 
+import xdis.opcodes.opcode_33 as opcode_33
 from xdis.opcodes.base import (
     extended_format_ATTR,
     extended_format_CALL_FUNCTION,
     extended_format_RAISE_VARARGS_older,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_RAISE_VARARGS_older,
     format_extended_arg,
+    format_RAISE_VARARGS_older,
     free_op,
     init_opdata,
     rm_op,
     update_pj3,
 )
-
-import xdis.opcodes.opcode_33 as opcode_33
 
 version = 3.4
 version_tuple = (3, 4)
@@ -44,8 +43,8 @@ opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "MAKE_CLOSURE": opcode_33.format_MAKE_FUNCTION_default_pos_arg,
-    "MAKE_FUNCTION": opcode_33.format_MAKE_FUNCTION_default_pos_arg,
+    "MAKE_CLOSURE": opcode_33.format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": opcode_33.format_MAKE_FUNCTION,
     "EXTENDED_ARG": format_extended_arg,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }

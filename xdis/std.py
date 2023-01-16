@@ -1,5 +1,5 @@
 # (C) Copyright 2018 by Daniel Bradburn
-# (C) Copyright 2018, 2020 by Rocky Bernstein
+# (C) Copyright 2018, 2020, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -76,7 +76,6 @@ class _StdApi:
         self.xcode = xcode
 
         self.opc = opc = get_opcode_module(python_version, variant)
-        self.python_version = opc.version
         self.python_version_tuple = opc.version_tuple
         self.is_pypy = variant == PYPY
         self.hasconst = opc.hasconst
