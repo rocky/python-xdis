@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2021 by Rocky Bernstein
+# (C) Copyright 2018-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -20,24 +20,23 @@ This is used in bytecode disassembly. This is similar to the
 opcodes in Python's dis.py library.
 """
 
+import xdis.opcodes.opcode_15 as opcode_15
+
 # This is used from outside this module
 from xdis.cross_dis import findlabels
-
-import xdis.opcodes.opcode_15 as opcode_15
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     def_op,
     extended_format_RETURN_VALUE,
+    extended_format_MAKE_FUNCTION_10_32,
     finalize_opcodes,
+    format_MAKE_FUNCTION_10_32,
     format_extended_arg,
     init_opdata,
     name_op,
-    rm_op,
-    varargs_op,
-    # Although these aren't used here, they are exported
     update_pj2,
+    varargs_op,
 )
 
-version = 1.4
 version_tuple = (1, 4)
 python_implementation = "CPython"
 
@@ -82,6 +81,11 @@ def findlinestarts(co, dup_lines=False):
         pass
 
 
+opcode_arg_fmt = {
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+}
+
 opcode_extended_fmt = {
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }

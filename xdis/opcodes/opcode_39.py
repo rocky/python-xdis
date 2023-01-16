@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021 by Rocky Bernstein
+# (C) Copyright 2019-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@ CPython 3.9 bytecode opcodes
 This is a like Python 3.9's opcode.py
 """
 
+import xdis.opcodes.opcode_38 as opcode_38
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
@@ -29,7 +30,6 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-
 from xdis.opcodes.opcode_36 import (
     extended_format_CALL_FUNCTION,
     extended_format_CALL_METHOD,
@@ -38,11 +38,9 @@ from xdis.opcodes.opcode_36 import (
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
     format_extended_arg36,
+    format_MAKE_FUNCTION,
 )
-
-from xdis.opcodes.opcode_36 import format_MAKE_FUNCTION_flags
 from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_VARARGS
-import xdis.opcodes.opcode_38 as opcode_38
 
 version = 3.9
 version_tuple = (3, 9)
@@ -109,7 +107,7 @@ opcode_arg_fmt = {
     "EXTENDED_ARG":     format_extended_arg36,
     "FORMAT_VALUE":     format_value_flags,
     "IS_OP":            format_extended_is_op,
-    "MAKE_FUNCTION":    format_MAKE_FUNCTION_flags,
+    "MAKE_FUNCTION":    format_MAKE_FUNCTION,
     "RAISE_VARARGS":    format_RAISE_VARARGS,
 }
 

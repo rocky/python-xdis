@@ -14,8 +14,8 @@ from xdis.opcodes.base import (
     jrel_op,
     name_op,
     nargs_op,
-    varargs_op,
     update_pj3,
+    varargs_op,
 )
 
 version = 3.3

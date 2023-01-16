@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2022 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -52,7 +52,7 @@ nofollow
 """.split()
 
 
-def init_opdata(l, from_mod, version_tuple=None, is_pypy=False):
+def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     """Sets up a number of the structures found in Python's
     opcode.py. Python opcode.py routines assign attributes to modules.
     In order to do this in a modular way here, the local dictionary
@@ -60,85 +60,85 @@ def init_opdata(l, from_mod, version_tuple=None, is_pypy=False):
     """
 
     if version_tuple:
-        l["python_version"] = version_tuple
-    l["is_pypy"] = is_pypy
-    l["cmp_op"] = cmp_op
-    l["HAVE_ARGUMENT"] = HAVE_ARGUMENT
-    l["findlinestarts"] = findlinestarts
+        loc["python_version"] = version_tuple
+    loc["is_pypy"] = is_pypy
+    loc["cmp_op"] = cmp_op
+    loc["HAVE_ARGUMENT"] = HAVE_ARGUMENT
+    loc["findlinestarts"] = findlinestarts
     if version_tuple <= (3, 5):
-        l["findlabels"] = findlabels
-        l["get_jump_targets"] = findlabels
-        l["get_jump_target_maps"] = get_jump_target_maps
+        loc["findlabels"] = findlabels
+        loc["get_jump_targets"] = findlabels
+        loc["get_jump_target_maps"] = get_jump_target_maps
     else:
-        l["findlabels"] = wordcode.findlabels
-        l["get_jump_targets"] = wordcode.findlabels
-        l["get_jump_target_maps"] = wordcode.get_jump_target_maps
+        loc["findlabels"] = wordcode.findlabels
+        loc["get_jump_targets"] = wordcode.findlabels
+        loc["get_jump_target_maps"] = wordcode.get_jump_target_maps
 
-    l["opmap"] = deepcopy(from_mod.opmap)
-    l["opname"] = deepcopy(from_mod.opname)
+    loc["opmap"] = deepcopy(from_mod.opmap)
+    loc["opname"] = deepcopy(from_mod.opname)
 
     for field in fields2copy:
-        l[field] = list(getattr(from_mod, field))
+        loc[field] = list(getattr(from_mod, field))
 
 
-def compare_op(l, name, op, pop=2, push=1):
-    def_op(l, name, op, pop, push)
-    l["hascompare"].append(op)
+def compare_op(loc, name, op, pop=2, push=1):
+    def_op(loc, name, op, pop, push)
+    loc["hascompare"].append(op)
 
 
-def conditional_op(l, name, op):
-    l["hascompare"].append(op)
+def conditional_op(loc, name, op):
+    loc["hascompare"].append(op)
 
 
-def const_op(l, name, op, pop=0, push=1):
-    def_op(l, name, op, pop, push)
-    l["hasconst"].append(op)
+def const_op(loc, name, op, pop=0, push=1):
+    def_op(loc, name, op, pop, push)
+    loc["hasconst"].append(op)
 
 
-def def_op(l, op_name, opcode, pop=-2, push=-2, fallthrough=True):
-    l["opname"][opcode] = op_name
-    l["opmap"][op_name] = opcode
-    l["oppush"][opcode] = push
-    l["oppop"][opcode] = pop
+def def_op(loc, op_name, opcode, pop=-2, push=-2, fallthrough=True):
+    loc["opname"][opcode] = op_name
+    loc["opmap"][op_name] = opcode
+    loc["oppush"][opcode] = push
+    loc["oppop"][opcode] = pop
     if not fallthrough:
-        l["nofollow"].append(opcode)
+        loc["nofollow"].append(opcode)
 
 
-def free_op(l, name, op, pop=0, push=1):
-    def_op(l, name, op, pop, push)
-    l["hasfree"].append(op)
+def free_op(loc, name, op, pop=0, push=1):
+    def_op(loc, name, op, pop, push)
+    loc["hasfree"].append(op)
 
 
-def jabs_op(l, name, op, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(l, name, op, pop, push, fallthrough=fallthrough)
-    l["hasjabs"].append(op)
+def jabs_op(loc, name, op, pop=0, push=0, conditional=False, fallthrough=True):
+    def_op(loc, name, op, pop, push, fallthrough=fallthrough)
+    loc["hasjabs"].append(op)
     if conditional:
-        l["hascondition"].append(op)
+        loc["hascondition"].append(op)
 
 
-def jrel_op(l, name, op, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(l, name, op, pop, push)
-    l["hasjrel"].append(op)
+def jrel_op(loc, name, op, pop=0, push=0, conditional=False, fallthrough=True):
+    def_op(loc, name, op, pop, push)
+    loc["hasjrel"].append(op)
     if conditional:
-        l["hascondition"].append(op)
+        loc["hascondition"].append(op)
 
 
-def local_op(l, name, op, pop=0, push=1):
-    def_op(l, name, op, pop, push)
-    l["haslocal"].append(op)
+def local_op(loc, name, op, pop=0, push=1):
+    def_op(loc, name, op, pop, push)
+    loc["haslocal"].append(op)
 
 
-def name_op(l, op_name, op_code, pop=-2, push=-2):
-    def_op(l, op_name, op_code, pop, push)
-    l["hasname"].append(op_code)
+def name_op(loc, op_name, op_code, pop=-2, push=-2):
+    def_op(loc, op_name, op_code, pop, push)
+    loc["hasname"].append(op_code)
 
 
-def nargs_op(l, name, op, pop=-2, push=-2, fallthrough=True):
-    def_op(l, name, op, pop, push, fallthrough=fallthrough)
-    l["hasnargs"].append(op)
+def nargs_op(loc, name, op, pop=-2, push=-2, fallthrough=True):
+    def_op(loc, name, op, pop, push, fallthrough=fallthrough)
+    loc["hasnargs"].append(op)
 
 
-def rm_op(l, name, op):
+def rm_op(loc, name, op):
     """Remove an opcode. This is used when basing a new Python release off
     of another one, and there is an opcode that is in the old release
     that was removed in the new release.
@@ -146,84 +146,84 @@ def rm_op(l, name, op):
     """
 
     # opname is an array, so we need to keep the position in there.
-    l["opname"][op] = "<%s>" % op
+    loc["opname"][op] = "<%s>" % op
 
-    if op in l["hascompare"]:
-        l["hascompare"].remove(op)
-    if op in l["hascondition"]:
-        l["hascondition"].remove(op)
-    if op in l["hasconst"]:
-        l["hasconst"].remove(op)
-    if op in l["hasfree"]:
-        l["hasfree"].remove(op)
-    if op in l["hasjabs"]:
-        l["hasjabs"].remove(op)
-    if op in l["hasjrel"]:
-        l["hasjrel"].remove(op)
-    if op in l["haslocal"]:
-        l["haslocal"].remove(op)
-    if op in l["hasname"]:
-        l["hasname"].remove(op)
-    if op in l["hasnargs"]:
-        l["hasnargs"].remove(op)
-    if op in l["hasstore"]:
-        l["hasstore"].remove(op)
-    if op in l["hasvargs"]:
-        l["hasvargs"].remove(op)
-    if op in l["nofollow"]:
-        l["nofollow"].remove(op)
+    if op in loc["hascompare"]:
+        loc["hascompare"].remove(op)
+    if op in loc["hascondition"]:
+        loc["hascondition"].remove(op)
+    if op in loc["hasconst"]:
+        loc["hasconst"].remove(op)
+    if op in loc["hasfree"]:
+        loc["hasfree"].remove(op)
+    if op in loc["hasjabs"]:
+        loc["hasjabs"].remove(op)
+    if op in loc["hasjrel"]:
+        loc["hasjrel"].remove(op)
+    if op in loc["haslocal"]:
+        loc["haslocal"].remove(op)
+    if op in loc["hasname"]:
+        loc["hasname"].remove(op)
+    if op in loc["hasnargs"]:
+        loc["hasnargs"].remove(op)
+    if op in loc["hasstore"]:
+        loc["hasstore"].remove(op)
+    if op in loc["hasvargs"]:
+        loc["hasvargs"].remove(op)
+    if op in loc["nofollow"]:
+        loc["nofollow"].remove(op)
 
-    assert l["opmap"][name] == op
-    del l["opmap"][name]
+    assert loc["opmap"][name] == op
+    del loc["opmap"][name]
 
 
-def store_op(l, name, op, pop=0, push=1, is_type="def"):
+def store_op(loc, name, op, pop=0, push=1, is_type="def"):
     if is_type == "name":
-        name_op(l, name, op, pop, push)
+        name_op(loc, name, op, pop, push)
     elif is_type == "local":
-        local_op(l, name, op, pop, push)
+        local_op(loc, name, op, pop, push)
     elif is_type == "free":
-        free_op(l, name, op, pop, push)
+        free_op(loc, name, op, pop, push)
     else:
         assert is_type == "def"
-        def_op(l, name, op, pop, push)
-    l["hasstore"].append(op)
+        def_op(loc, name, op, pop, push)
+    loc["hasstore"].append(op)
 
 
 # This is not in Python. The operand indicates how
 # items on the pop from the stack. BUILD_TUPLE_UNPACK
 # is line this.
-def varargs_op(l, op_name, op_code, pop=-1, push=1):
-    def_op(l, op_name, op_code, pop, push)
-    l["hasvargs"].append(op_code)
+def varargs_op(loc, op_name, op_code, pop=-1, push=1):
+    def_op(loc, op_name, op_code, pop, push)
+    loc["hasvargs"].append(op_code)
 
 
 # Some of the convoluted code below reflects some of the
 # many Python idiocies over the years.
 
 
-def finalize_opcodes(l):
+def finalize_opcodes(loc):
 
     # Not sure why, but opcode.py address has opcode.EXTENDED_ARG
     # as well as opmap['EXTENDED_ARG']
-    l["EXTENDED_ARG"] = l["opmap"]["EXTENDED_ARG"]
+    loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]
 
     # In Python 3.6+ this is 8, but we expect
     # those opcodes to set that
-    if "EXTENDED_ARG_SHIFT" not in l:
-        l["EXTENDED_ARG_SHIFT"] = 16
+    if "EXTENDED_ARG_SHIFT" not in loc:
+        loc["EXTENDED_ARG_SHIFT"] = 16
 
-    l["ARG_MAX_VALUE"] = (1 << l["EXTENDED_ARG_SHIFT"]) - 1
-    l["EXTENDED_ARG"] = l["opmap"]["EXTENDED_ARG"]
+    loc["ARG_MAX_VALUE"] = (1 << loc["EXTENDED_ARG_SHIFT"]) - 1
+    loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]
 
-    l["opmap"] = fix_opcode_names(l["opmap"])
+    loc["opmap"] = fix_opcode_names(loc["opmap"])
 
     # Now add in the attributes into the module
-    for op in l["opmap"]:
-        l[op] = l["opmap"][op]
-    l["JUMP_OPs"] = frozenset(l["hasjrel"] + l["hasjabs"])
-    l["NOFOLLOW"] = frozenset(l["nofollow"])
-    opcode_check(l)
+    for op in loc["opmap"]:
+        loc[op] = loc["opmap"][op]
+    loc["JUMP_OPs"] = frozenset(loc["hasjrel"] + loc["hasjabs"])
+    loc["NOFOLLOW"] = frozenset(loc["nofollow"])
+    opcode_check(loc)
     return
 
 
@@ -236,41 +236,41 @@ def fix_opcode_names(opmap):
     return dict([(k.replace("+", "_"), v) for (k, v) in opmap.items()])
 
 
-def update_pj3(g, l):
-    g.update({"PJIF": l["opmap"]["POP_JUMP_IF_FALSE"]})
-    g.update({"PJIT": l["opmap"]["POP_JUMP_IF_TRUE"]})
-    update_sets(l)
+def update_pj3(g, loc):
+    g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
+    g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
+    update_sets(loc)
 
 
-def update_pj2(g, l):
-    g.update({"PJIF": l["opmap"]["JUMP_IF_FALSE"]})
-    g.update({"PJIT": l["opmap"]["JUMP_IF_TRUE"]})
-    update_sets(l)
+def update_pj2(g, loc):
+    g.update({"PJIF": loc["opmap"]["JUMP_IF_FALSE"]})
+    g.update({"PJIT": loc["opmap"]["JUMP_IF_TRUE"]})
+    update_sets(loc)
 
 
-def update_sets(l):
-    l["COMPARE_OPS"] = frozenset(l["hascompare"])
-    l["CONDITION_OPS"] = frozenset(l["hascondition"])
-    l["CONST_OPS"] = frozenset(l["hasconst"])
-    l["FREE_OPS"] = frozenset(l["hasfree"])
-    l["JREL_OPS"] = frozenset(l["hasjrel"])
-    l["JABS_OPS"] = frozenset(l["hasjabs"])
-    l["JUMP_UNCONDITONAL"] = frozenset(
-        [l["opmap"]["JUMP_ABSOLUTE"], l["opmap"]["JUMP_FORWARD"]]
+def update_sets(loc):
+    loc["COMPARE_OPS"] = frozenset(loc["hascompare"])
+    loc["CONDITION_OPS"] = frozenset(loc["hascondition"])
+    loc["CONST_OPS"] = frozenset(loc["hasconst"])
+    loc["FREE_OPS"] = frozenset(loc["hasfree"])
+    loc["JREL_OPS"] = frozenset(loc["hasjrel"])
+    loc["JABS_OPS"] = frozenset(loc["hasjabs"])
+    loc["JUMP_UNCONDITONAL"] = frozenset(
+        [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
     )
-    if PYTHON_VERSION_TRIPLE < (3, 8, 0) and l["python_version"] < (3, 8):
-        l["LOOP_OPS"] = frozenset([l["opmap"]["SETUP_LOOP"]])
+    if PYTHON_VERSION_TRIPLE < (3, 8, 0) and loc["python_version"] < (3, 8):
+        loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
-        l["LOOP_OPS"] = frozenset()
+        loc["LOOP_OPS"] = frozenset()
 
-    l["LOCAL_OPS"] = frozenset(l["haslocal"])
-    l["JUMP_OPS"] = (
-        l["JABS_OPS"] | l["JREL_OPS"] | l["LOOP_OPS"] | l["JUMP_UNCONDITONAL"]
+    loc["LOCAL_OPS"] = frozenset(loc["haslocal"])
+    loc["JUMP_OPS"] = (
+        loc["JABS_OPS"] | loc["JREL_OPS"] | loc["LOOP_OPS"] | loc["JUMP_UNCONDITONAL"]
     )
-    l["NAME_OPS"] = frozenset(l["hasname"])
-    l["NARGS_OPS"] = frozenset(l["hasnargs"])
-    l["VARGS_OPS"] = frozenset(l["hasvargs"])
-    l["STORE_OPS"] = frozenset(l["hasstore"])
+    loc["NAME_OPS"] = frozenset(loc["hasname"])
+    loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
+    loc["VARGS_OPS"] = frozenset(loc["hasvargs"])
+    loc["STORE_OPS"] = frozenset(loc["hasstore"])
 
 
 def extended_format_CALL_FUNCTION(opc, instructions):
@@ -349,9 +349,12 @@ def extended_format_ATTR(opc, instructions):
         return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
 
 
-def extended_format_MAKE_FUNCTION_older(opc, instructions):
-    """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
+def extended_format_MAKE_FUNCTION_10_32(opc, instructions) -> str:
+    """
+    instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
+
+    This code works for Python versions up to and including 3.2
     """
     # From opcode description: argc indicates the total number of positional and keyword arguments.
     # Sometimes the function name is in the stack arg positions back.
@@ -363,7 +366,7 @@ def extended_format_MAKE_FUNCTION_older(opc, instructions):
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         s += "%s: " % code_inst.argval.co_name
         pass
-    s += format_MAKE_FUNCTION_default_argc(inst.arg)
+    s += format_MAKE_FUNCTION_10_32(inst.arg)
     return s
 
 
@@ -408,20 +411,13 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     return "%d positional, %d named" % (pos_args, name_default)
 
 
-# After Python 3.2
-def format_MAKE_FUNCTION_arg(argc):
-    name_and_annotate, pos_args = divmod(argc, 256)
-    annotate_args, name_default = divmod(name_and_annotate, 256)
-    return "%d positional, %d name and default, %d annotations" % (
-        pos_args,
-        name_default,
-        annotate_args,
-    )
+def format_MAKE_FUNCTION_10_32(argc: int) -> str:
+    """
+    ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
 
-
-# Up to and including Python 3.2
-def format_MAKE_FUNCTION_default_argc(argc):
-    return "%d default parameters" % argc
+    This code works for Python versions up to and including 3.2.
+    """
+    return "%s default parameters" % argc
 
 
 # Up until 3.7
@@ -437,23 +433,25 @@ def format_RAISE_VARARGS_older(argc):
         return "exception, parameter, traceback"
 
 
-def opcode_check(l):
+def opcode_check(loc):
     """When the version of Python we are running happens
     to have the same opcode set as the opcode we are
     importing, we perform checks to make sure our opcode
     set matches exactly.
     """
-    if PYTHON_VERSION_TRIPLE[:2] == l["python_version"][:2] and IS_PYPY == l["is_pypy"]:
+    if (PYTHON_VERSION_TRIPLE[:2] == loc["python_version"][:2]) and IS_PYPY == loc[
+        "is_pypy"
+    ]:
         try:
             import dis
 
             opmap = fix_opcode_names(dis.opmap)
-            # print(set(opmap.items()) - set(l['opmap'].items()))
-            # print(set(l['opmap'].items()) - set(opmap.items()))
+            # print(set(opmap.items()) - set(loc['opmap'].items()))
+            # print(set(loc['opmap'].items()) - set(opmap.items()))
 
-            assert all(item in opmap.items() for item in l["opmap"].items())
-            assert all(item in l["opmap"].items() for item in opmap.items())
-        except:
+            assert all(item in opmap.items() for item in loc["opmap"].items())
+            assert all(item in loc["opmap"].items() for item in opmap.items())
+        except Exception:
             pass
 
 

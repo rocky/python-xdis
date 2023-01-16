@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2019-2021 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2019-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@ This is a like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
+import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
@@ -33,12 +34,9 @@ from xdis.opcodes.base import (
     resolved_attrs,
     rm_op,
     store_op,
-    varargs_op,
     update_pj3,
+    varargs_op,
 )
-
-from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION
-import xdis.opcodes.opcode_35 as opcode_35
 
 oppush = {}
 oppop = {}
@@ -121,7 +119,20 @@ varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
-def format_MAKE_FUNCTION_flags(flags):
+def extended_format_MAKE_FUNCTION(opc, instructions) -> str:
+    assert len(instructions) >= 2
+    inst = instructions[0]
+    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
+    s = ""
+    name_inst = instructions[1]
+    if name_inst.opname in ("LOAD_CONST",):
+        s += "%s: " % name_inst.argrepr
+        pass
+    s += format_MAKE_FUNCTION(inst.argval)
+    return s
+
+
+def format_MAKE_FUNCTION(flags) -> str:
     if flags == 0:
         return "Neither defaults, keyword-only args, annotations, nor closures"
     pattr = ""
@@ -194,7 +205,7 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "EXTENDED_ARG": format_extended_arg36,
     "FORMAT_VALUE": format_value_flags,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_flags,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
