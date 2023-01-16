@@ -6,8 +6,6 @@ This is a like Python 3.3's opcode.py with some classification
 of stack usage.
 """
 
-from typing import Tuple
-
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.base import (
     def_op,
@@ -27,20 +25,20 @@ version = 3.3
 version_tuple = (3, 3)
 python_implementation = "CPython"
 
-l = locals()
-init_opdata(l, opcode_3x, version_tuple)
+loc = locals()
+init_opdata(loc, opcode_3x, version_tuple)
 
 # Below are opcode changes since Python 3.2
 
 # fmt: off
-rm_op(l,  "STOP_CODE",   0)
-def_op(l, "YIELD_FROM", 72, 1, 0)
+rm_op(loc,  "STOP_CODE",   0)
+def_op(loc, "YIELD_FROM", 72, 1, 0)
 # fmt: on
 
 
-update_pj3(globals(), l)
+update_pj3(globals(), loc)
 
-finalize_opcodes(l)
+finalize_opcodes(loc)
 
 
 def extended_format_ATTR(opc, instructions):
@@ -72,7 +70,7 @@ def extended_format_MAKE_FUNCTION(opc, instructions):
     return s
 
 
-def format_MAKE_FUNCTION(argc: int) -> str:
+def format_MAKE_FUNCTION(argc):
     pos_args, name_pair_args, annotate_args = parse_fn_counts_33_35(argc)
 
     s = "%d positional, %d keyword only, %d annotated" % (
@@ -83,7 +81,7 @@ def format_MAKE_FUNCTION(argc: int) -> str:
     return s
 
 
-def parse_fn_counts_33_35(argc: int) -> Tuple[int, int, int]:
+def parse_fn_counts_33_35(argc):
     """
     In Python 3.3 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
     arguments counts of positional, default + named, and annotation
