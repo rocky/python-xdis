@@ -2,8 +2,9 @@ import unittest
 import dis
 import sys
 import os.path as osp
-from xdis.op_imports import get_opcode_module
 from xdis import get_opcode
+from xdis.op_imports import get_opcode_module
+from xdis.version_info import version_tuple_to_str
 from xdis.cross_dis import op_has_argument, xstack_effect
 import xdis
 
@@ -62,8 +63,8 @@ class OpcodeTests(unittest.TestCase):
                 effect = xstack_effect(opcode, opc)
                 check_effect = opcode_stack_effect[opcode]
                 self.assertEqual(check_effect, effect, (
-                    "in version %s %d (%s) not okay; effect xstack_effect is %d; C source has %d"
-                    % (opc.version, opcode, opname, effect, check_effect))
+                    "in version %s %s (%s) not okay; effect xstack_effect is %d; C source has %d"
+                    % (version_tuple_to_str(opc.version_tuple), opcode, opname, effect, check_effect))
                 )
                 # print("version %s: %d (%s) is good: effect %d" % (version, opcode, opname, effect))
                 pass

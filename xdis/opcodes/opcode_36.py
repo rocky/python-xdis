@@ -119,7 +119,7 @@ varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
-def extended_format_MAKE_FUNCTION(opc, instructions) -> str:
+def extended_format_MAKE_FUNCTION(opc, instructions):
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
@@ -132,7 +132,7 @@ def extended_format_MAKE_FUNCTION(opc, instructions) -> str:
     return s
 
 
-def format_MAKE_FUNCTION(flags) -> str:
+def format_MAKE_FUNCTION(flags):
     if flags == 0:
         return "Neither defaults, keyword-only args, annotations, nor closures"
     pattr = ""

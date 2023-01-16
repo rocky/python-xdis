@@ -349,7 +349,7 @@ def extended_format_ATTR(opc, instructions):
         return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
 
 
-def extended_format_MAKE_FUNCTION_10_32(opc, instructions) -> str:
+def extended_format_MAKE_FUNCTION_10_32(opc, instructions):
     """
     instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
@@ -411,7 +411,7 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     return "%d positional, %d named" % (pos_args, name_default)
 
 
-def format_MAKE_FUNCTION_10_32(argc: int) -> str:
+def format_MAKE_FUNCTION_10_32(argc):
     """
     ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
 
