@@ -30,10 +30,11 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.opcode_33 import extended_format_ATTR, extended_format_MAKE_FUNCTION
+from xdis.opcodes.opcode_33 import extended_format_ATTR
 from xdis.opcodes.opcode_36 import (
     extended_format_CALL_FUNCTION,
     extended_format_CALL_METHOD,
+    extended_format_MAKE_FUNCTION,
     format_BUILD_MAP_UNPACK_WITH_CALL,
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
@@ -41,7 +42,6 @@ from xdis.opcodes.opcode_36 import (
     format_MAKE_FUNCTION,
 )
 
-version = 3.8
 version_tuple = (3, 8)
 python_implementation = "CPython"
 
