@@ -6,25 +6,24 @@ This is a like Python 3.7's opcode.py with some classification
 of stack usage.
 """
 
+import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
-    format_CALL_FUNCTION_pos_name_encoded,
     def_op,
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_RAISE_VARARGS_older,
+    format_CALL_FUNCTION_pos_name_encoded,
     format_extended_arg,
+    format_RAISE_VARARGS_older,
     init_opdata,
     name_op,
     nargs_op,
     rm_op,
     store_op,
-    varargs_op,
     update_pj3,
+    varargs_op,
 )
-
-import xdis.opcodes.opcode_36 as opcode_36
 
 version = 3.7
 version_tuple = (3, 7)

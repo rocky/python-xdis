@@ -7,21 +7,21 @@ of stack usage.
 """
 
 from xdis.opcodes.base import (
-    format_CALL_FUNCTION_pos_name_encoded,
     def_op,
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_RAISE_VARARGS_older,
+    format_CALL_FUNCTION_pos_name_encoded,
     format_extended_arg,
+    format_RAISE_VARARGS_older,
     init_opdata,
     jrel_op,
     name_op,
     nargs_op,
     rm_op,
-    varargs_op,
     update_pj3,
+    varargs_op,
 )
 
 version = 3.6

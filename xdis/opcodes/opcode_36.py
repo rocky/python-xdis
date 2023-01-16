@@ -20,6 +20,7 @@ This is a like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
+import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
@@ -33,11 +34,9 @@ from xdis.opcodes.base import (
     resolved_attrs,
     rm_op,
     store_op,
-    varargs_op,
     update_pj3,
+    varargs_op,
 )
-
-import xdis.opcodes.opcode_35 as opcode_35
 
 oppush = {}
 oppop = {}
@@ -206,7 +205,6 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "EXTENDED_ARG": format_extended_arg36,
     "FORMAT_VALUE": format_value_flags,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION,
     "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
@@ -348,7 +346,6 @@ opcode_extended_fmt = {
     "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,

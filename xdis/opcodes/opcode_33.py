@@ -6,6 +6,9 @@ This is a like Python 3.3's opcode.py with some classification
 of stack usage.
 """
 
+from typing import Tuple
+
+import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.base import (
     def_op,
     extended_format_CALL_FUNCTION,
@@ -13,14 +16,12 @@ from xdis.opcodes.base import (
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_RAISE_VARARGS_older,
     format_extended_arg,
+    format_RAISE_VARARGS_older,
     init_opdata,
     rm_op,
     update_pj3,
 )
-
-import xdis.opcodes.opcode_3x as opcode_3x
 
 version = 3.3
 version_tuple = (3, 3)
@@ -66,25 +67,33 @@ def extended_format_MAKE_FUNCTION(opc, instructions):
     if name_inst.opname in ("LOAD_CONST",):
         s += "%s: " % name_inst.argrepr
         pass
-    pos_args, name_pair_args, annotate_args = parse_fn_counts(
-        inst.argval
-        )
+    pos_args, name_pair_args, annotate_args = parse_fn_counts_33_35(inst.argval)
     s += format_MAKE_FUNCTION(inst.argval)
     return s
 
 
-def format_MAKE_FUNCTION(argc):
-    pos_args, name_pair_args, annotate_args = parse_fn_counts(argc)
+def format_MAKE_FUNCTION(argc: int) -> str:
+    pos_args, name_pair_args, annotate_args = parse_fn_counts_33_35(argc)
 
     s = "%d positional, %d keyword only, %d annotated" % (
         pos_args,
         name_pair_args,
-        annotate_args
+        annotate_args,
     )
     return s
 
 
-def parse_fn_counts(argc):
+def parse_fn_counts_33_35(argc: int) -> Tuple[int, int, int]:
+    """
+    In Python 3.3 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
+    arguments counts of positional, default + named, and annotation
+    arguments a particular kind of encoding where each of
+    the entry a a packe byted value of the lower 24 bits
+    of ``argc``.  The high bits of argc may have come from
+    an EXTENDED_ARG instruction. Here, we unpack the values
+    from the ``argc`` int and return a triple of the
+    positional args, named_args, and annotation args.
+    """
     annotate_count = (argc >> 16) & 0x7FFF
     # For some reason that I don't understand, annotate_args is off by one
     # when there is an EXENDED_ARG instruction from what is documented in

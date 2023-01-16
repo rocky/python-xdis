@@ -20,6 +20,7 @@ This is a like Python 3.7's opcode.py with some classification
 of stack usage.
 """
 
+import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
     def_op,
     extended_format_RETURN_VALUE,
@@ -32,9 +33,7 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-
 from xdis.opcodes.opcode_33 import extended_format_ATTR
-import xdis.opcodes.opcode_36 as opcode_36
 
 version = 3.7
 version_tuple = (3, 7)
@@ -134,7 +133,6 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": opcode_36.format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_EX": opcode_36.format_CALL_FUNCTION_EX,
     "CALL_METHOD": opcode_36.format_CALL_FUNCTION,
-    "MAKE_CLOSURE": opcode_36.format_MAKE_FUNCTION,
     "MAKE_FUNCTION": opcode_36.format_MAKE_FUNCTION,
     "FORMAT_VALUE": format_value_flags,
     "EXTENDED_ARG": opcode_36.format_extended_arg36,
@@ -145,7 +143,6 @@ opcode_extended_fmt = {
     "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
     "CALL_METHOD": opcode_36.extended_format_CALL_METHOD,
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": opcode_36.extended_format_MAKE_FUNCTION,
     "MAKE_FUNCTION": opcode_36.extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     "RETURN_VALUE": extended_format_RETURN_VALUE,

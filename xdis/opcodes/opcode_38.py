@@ -19,27 +19,26 @@ CPython 3.8 bytecode opcodes
 This is a like Python 3.8's opcode.py
 """
 
+import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.base import (
+    def_op,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
-    nargs_op,
-    def_op,
     jrel_op,
+    nargs_op,
     rm_op,
     update_pj3,
 )
-
 from xdis.opcodes.opcode_33 import extended_format_ATTR, extended_format_MAKE_FUNCTION
-import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.opcode_36 import (
     extended_format_CALL_FUNCTION,
     extended_format_CALL_METHOD,
     format_BUILD_MAP_UNPACK_WITH_CALL,
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
-    format_MAKE_FUNCTION,
     format_extended_arg36,
+    format_MAKE_FUNCTION,
 )
 
 version = 3.8
@@ -77,7 +76,6 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW":           format_CALL_FUNCTION_KW,
     "EXTENDED_ARG":               format_extended_arg36,
     "FORMAT_VALUE":               format_value_flags,
-    "MAKE_CLOSURE":               format_MAKE_FUNCTION,
     "MAKE_FUNCTION":              format_MAKE_FUNCTION,
     "RAISE_VARARGS":              opcode_37.format_RAISE_VARARGS,
 }
@@ -86,7 +84,6 @@ opcode_extended_fmt = {
     "CALL_FUNCTION":              extended_format_CALL_FUNCTION,
     "CALL_METHOD":                extended_format_CALL_METHOD,
     "LOAD_ATTR":                  extended_format_ATTR,
-    "MAKE_CLOSURE":               extended_format_MAKE_FUNCTION,
     "MAKE_FUNCTION":              extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS":              opcode_37.extended_format_RAISE_VARARGS,
     "RETURN_VALUE":               extended_format_RETURN_VALUE,
