@@ -129,6 +129,8 @@ PYTHON_MAGIC_INT = magic2int(MAGIC)
 
 # The below is taken from from Python/import.c, and more recently
 # Lib/importlib/_bootstrap.py and other sources
+# And more recently:
+# https://github.com/google/pytype/blob/main/pytype/pyc/magic.py
 
 #                  magic,  canonic version number
 add_magic_from_int(39170, "1.0")
@@ -329,7 +331,57 @@ add_magic_from_int(3432, "3.10a2")
 
 # RERAISE restores f_lasti if oparg != 0
 add_magic_from_int(3433, "3.10a2")
+add_magic_from_int(3434, "3.10a6")
+add_magic_from_int(3435, "3.10a7")
+add_magic_from_int(3438, "3.10b1")
 add_magic_from_int(3439, "3.10.0rc2")
+
+add_magic_from_int(3450, "3.11a1a")
+add_magic_from_int(3451, "3.11a1b")
+add_magic_from_int(3452, "3.11a1c")
+add_magic_from_int(3453, "3.11a1d")
+add_magic_from_int(3454, "3.11a1e")
+add_magic_from_int(3455, "3.11a1f")
+add_magic_from_int(3457, "3.11a1g")
+add_magic_from_int(3458, "3.11a1h")
+add_magic_from_int(3459, "3.11a1i")
+add_magic_from_int(3460, "3.11a1j")
+add_magic_from_int(3461, "3.11a1k")
+add_magic_from_int(3462, "3.11a2")
+add_magic_from_int(3463, "3.11a3a")
+add_magic_from_int(3464, "3.11a3b")
+add_magic_from_int(3465, "3.11a4a")
+add_magic_from_int(3466, "3.11a4b")
+add_magic_from_int(3466, "3.11a4c")
+add_magic_from_int(3467, "3.11a4d")
+add_magic_from_int(3468, "3.11a4e")
+add_magic_from_int(3469, "3.11a4f")
+add_magic_from_int(3470, "3.11a4g")
+add_magic_from_int(3471, "3.11a4h")
+add_magic_from_int(3472, "3.11a4i")
+add_magic_from_int(3473, "3.11a4j")
+add_magic_from_int(3474, "3.11a4k")
+add_magic_from_int(3475, "3.11a5a")
+add_magic_from_int(3476, "3.11a5b")
+add_magic_from_int(3477, "3.11a5c")
+add_magic_from_int(3478, "3.11a5d")
+add_magic_from_int(3479, "3.11a5e")
+add_magic_from_int(3480, "3.11a5e")
+add_magic_from_int(3481, "3.11a5f")
+add_magic_from_int(3482, "3.11a5g")
+add_magic_from_int(3483, "3.11a5h")
+add_magic_from_int(3484, "3.11a5i")
+add_magic_from_int(3485, "3.11a5j")
+add_magic_from_int(3486, "3.11a6a")
+add_magic_from_int(3487, "3.11a6b")
+add_magic_from_int(3488, "3.11a6c")
+add_magic_from_int(3489, "3.11a6d")
+add_magic_from_int(3490, "3.11a6d")
+add_magic_from_int(3491, "3.11a7a")
+add_magic_from_int(3492, "3.11a7b")
+add_magic_from_int(3493, "3.11a7c")
+add_magic_from_int(3494, "3.11a7d")
+add_magic_from_int(3495, "3.11a7e")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
@@ -419,7 +471,9 @@ add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.7pypy")
-add_canonic_versions("3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy 3.8.16pypy", "3.8.12pypy")
+add_canonic_versions(
+    "3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy 3.8.16pypy", "3.8.12pypy"
+)
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
@@ -443,7 +497,8 @@ add_canonic_versions(
 )
 
 add_canonic_versions(
-    "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8 3.10.9", "3.10.0rc2"
+    "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8 3.10.9",
+    "3.10.0rc2",
 )
 
 # The canonic version for a canonic version is itself
