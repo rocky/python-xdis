@@ -23,8 +23,6 @@ similar to the opcodes in Python's opcode.py library.
 If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
-from typing import Tuple
-
 from xdis.opcodes.base import (
     compare_op,
     const_op,
@@ -269,7 +267,7 @@ def format_MAKE_FUNCTION_30_35(argc: int) -> str:
     return s
 
 
-def parse_fn_counts_30_35(argc: int) -> Tuple[int, int, int]:
+def parse_fn_counts_30_35(argc: int) -> tuple:
     """
     In Python 3.3 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
     arguments counts of positional, default + named, and annotation
