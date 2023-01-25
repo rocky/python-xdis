@@ -21,8 +21,8 @@ repos:
       language_version: python
       stages: [commit]
       additional_dependencies: ["click"]
--   repo: https://github.com/pycqa/flake8
-    rev: 3.9.2
-    hooks:
-      - id: flake8
-        stages: [commit]
+# -   repo: https://github.com/pycqa/flake8
+#     rev: 3.9.2
+#     hooks:
+#       - id: flake8
+#         stages: [commit]

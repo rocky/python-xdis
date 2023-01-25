@@ -37,9 +37,11 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.opcode_33 import extended_format_MAKE_FUNCTION, format_MAKE_FUNCTION
+from xdis.opcodes.opcode_3x import (
+    extended_format_MAKE_FUNCTION_30_35,
+    format_MAKE_FUNCTION_30_35,
+)
 
-version = 3.5
 version_tuple = (3, 5)
 python_implementation = "CPython"
 
@@ -96,16 +98,16 @@ opcode_arg_fmt = {
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,

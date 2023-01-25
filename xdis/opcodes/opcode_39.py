@@ -42,46 +42,45 @@ from xdis.opcodes.opcode_36 import (
 )
 from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_VARARGS
 
-version = 3.9
 version_tuple = (3, 9)
 python_implementation = "CPython"
 
-l = locals()
+loc = locals()
 
-init_opdata(l, opcode_38, version_tuple)
+init_opdata(loc, opcode_38, version_tuple)
 
 # fmt: off
 # These are removed since 3.8...
-rm_op(l, "BEGIN_FINALLY",       53)
-rm_op(l, "WITH_CLEANUP_START",  81)
-rm_op(l, "WITH_CLEANUP_FINISH", 82)
-rm_op(l, "END_FINALLY",         88)
-rm_op(l, "BUILD_LIST_UNPACK",  149)
-rm_op(l, "BUILD_MAP_UNPACK",   150)
-rm_op(l, "BUILD_MAP_UNPACK_WITH_CALL", 151)
-rm_op(l, "BUILD_TUPLE_UNPACK", 152)
-rm_op(l, "BUILD_SET_UNPACK",   153)
-rm_op(l, "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
-rm_op(l, "CALL_FINALLY",       162)
-rm_op(l, "POP_FINALLY",        163)
+rm_op(loc, "BEGIN_FINALLY",       53)
+rm_op(loc, "WITH_CLEANUP_START",  81)
+rm_op(loc, "WITH_CLEANUP_FINISH", 82)
+rm_op(loc, "END_FINALLY",         88)
+rm_op(loc, "BUILD_LIST_UNPACK",  149)
+rm_op(loc, "BUILD_MAP_UNPACK",   150)
+rm_op(loc, "BUILD_MAP_UNPACK_WITH_CALL", 151)
+rm_op(loc, "BUILD_TUPLE_UNPACK", 152)
+rm_op(loc, "BUILD_SET_UNPACK",   153)
+rm_op(loc, "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
+rm_op(loc, "CALL_FINALLY",       162)
+rm_op(loc, "POP_FINALLY",        163)
 
 
 # These are new since Python 3.9
 
 #          OP NAME               OPCODE  POP PUSH
 #------------------------------------------------
-def_op(l, 'RERAISE',                 48,   3, 0)
-def_op(l, 'WITH_EXCEPT_START',       49,   0, 1)
-def_op(l, 'LOAD_ASSERTION_ERROR',    74,   0, 1)
-def_op(l, 'LIST_TO_TUPLE',           82,   1, 1)
+def_op(loc, 'RERAISE',                 48,   3, 0)
+def_op(loc, 'WITH_EXCEPT_START',       49,   0, 1)
+def_op(loc, 'LOAD_ASSERTION_ERROR',    74,   0, 1)
+def_op(loc, 'LIST_TO_TUPLE',           82,   1, 1)
 
-def_op(l, 'IS_OP',                  117,   2, 1)
-jabs_op(l, 'JUMP_IF_NOT_EXC_MATCH', 121,   2, 0)
-def_op(l, 'CONTAINS_OP',            118,   2, 1)
-def_op(l, 'LIST_EXTEND',            162,   2, 1)
-def_op(l, 'SET_UPDATE',             163,   2, 1)
-def_op(l, 'DICT_MERGE',             164,   2, 1)
-def_op(l, 'DICT_UPDATE',            165,   2, 1)
+def_op(loc, 'IS_OP',                  117,   2, 1)
+jabs_op(loc, 'JUMP_IF_NOT_EXC_MATCH', 121,   2, 0)
+def_op(loc, 'CONTAINS_OP',            118,   2, 1)
+def_op(loc, 'LIST_EXTEND',            162,   2, 1)
+def_op(loc, 'SET_UPDATE',             163,   2, 1)
+def_op(loc, 'DICT_MERGE',             164,   2, 1)
+def_op(loc, 'DICT_UPDATE',            165,   2, 1)
 
 format_value_flags = opcode_38.format_value_flags
 
@@ -117,6 +116,6 @@ opcode_extended_fmt = {
 }
 # fmt: on
 
-update_pj3(globals(), l)
+update_pj3(globals(), loc)
 
-finalize_opcodes(l)
+finalize_opcodes(loc)

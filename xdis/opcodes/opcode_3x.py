@@ -23,6 +23,8 @@ similar to the opcodes in Python's opcode.py library.
 If this file changes the other opcode files may have to a adjusted accordingly.
 """
 
+from typing import Tuple
+
 from xdis.opcodes.base import (
     compare_op,
     const_op,
@@ -235,3 +237,53 @@ def_op(l, 'EXTENDED_ARG',          144,  0,   0)
 EXTENDED_ARG = 144
 
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
+
+
+def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
+    """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
+    should have the function or closure name.
+    """
+    # From opcode description: argc indicates the total number of positional and keyword arguments.
+    # Sometimes the function name is in the stack arg positions back.
+    assert len(instructions) >= 2
+    inst = instructions[0]
+    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
+    s = ""
+    name_inst = instructions[1]
+    if name_inst.opname in ("LOAD_CONST",):
+        s += "%s: " % name_inst.argrepr
+        pass
+    pos_args, name_pair_args, annotate_args = parse_fn_counts_30_35(inst.argval)
+    s += format_MAKE_FUNCTION_30_35(inst.argval)
+    return s
+
+
+def format_MAKE_FUNCTION_30_35(argc: int) -> str:
+    pos_args, name_pair_args, annotate_args = parse_fn_counts_30_35(argc)
+
+    s = "%d positional, %d keyword only, %d annotated" % (
+        pos_args,
+        name_pair_args,
+        annotate_args,
+    )
+    return s
+
+
+def parse_fn_counts_30_35(argc: int) -> Tuple[int, int, int]:
+    """
+    In Python 3.3 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
+    arguments counts of positional, default + named, and annotation
+    arguments a particular kind of encoding where each of
+    the entry a a packe byted value of the lower 24 bits
+    of ``argc``.  The high bits of argc may have come from
+    an EXTENDED_ARG instruction. Here, we unpack the values
+    from the ``argc`` int and return a triple of the
+    positional args, named_args, and annotation args.
+    """
+    annotate_count = (argc >> 16) & 0x7FFF
+    # For some reason that I don't understand, annotate_args is off by one
+    # when there is an EXENDED_ARG instruction from what is documented in
+    # https://docs.python.org/3.4/library/dis.html#opcode-MAKE_CLOSURE
+    if annotate_count > 1:
+        annotate_count -= 1
+    return ((argc & 0xFF), (argc >> 8) & 0xFF, annotate_count)

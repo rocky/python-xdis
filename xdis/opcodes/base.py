@@ -349,12 +349,14 @@ def extended_format_ATTR(opc, instructions):
         return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
 
 
-def extended_format_MAKE_FUNCTION_10_32(opc, instructions) -> str:
+def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
     """
     instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
 
-    This code works for Python versions up to and including 3.2
+    This code works for Python versions up to and including 2.7.
+    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
+    shows that the change was really made in Python 3.0 or so.
     """
     # From opcode description: argc indicates the total number of positional and keyword arguments.
     # Sometimes the function name is in the stack arg positions back.
@@ -366,7 +368,7 @@ def extended_format_MAKE_FUNCTION_10_32(opc, instructions) -> str:
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         s += "%s: " % code_inst.argval.co_name
         pass
-    s += format_MAKE_FUNCTION_10_32(inst.arg)
+    s += format_MAKE_FUNCTION_10_27(inst.arg)
     return s
 
 
@@ -411,11 +413,13 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     return "%d positional, %d named" % (pos_args, name_default)
 
 
-def format_MAKE_FUNCTION_10_32(argc: int) -> str:
+def format_MAKE_FUNCTION_10_27(argc: int) -> str:
     """
     ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
 
-    This code works for Python versions up to and including 3.2.
+    This code works for Python versions up to and including 2.7.
+    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
+    shows that the change was really made in Python 3.0 or so.
     """
     return "%s default parameters" % argc
 

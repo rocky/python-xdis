@@ -11,8 +11,6 @@ from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
     extended_format_CALL_FUNCTION,
-    extended_format_MAKE_FUNCTION_10_32,
-    format_MAKE_FUNCTION_10_32,
     finalize_opcodes,
     format_extended_arg,
     init_opdata,
@@ -20,8 +18,11 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj2,
 )
+from xdis.opcodes.opcode_3x import (
+    extended_format_MAKE_FUNCTION_30_35,
+    format_MAKE_FUNCTION_30_35,
+)
 
-version = 3.0
 version_tuple = (3, 0)
 python_implementation = "CPython"
 
@@ -60,16 +61,16 @@ jrel_op(l, 'JUMP_IF_TRUE',       112,  1, 1)
 update_pj2(globals(), l)
 
 opcode_arg_fmt = {
-    "MAKE_CLOSURE": format_MAKE_FUNCTION_10_32,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
     "EXTENDED_ARG": format_extended_arg,
 }
 
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_10_32,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
+    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_30_35,
     "STORE_ATTR": extended_format_ATTR,
 }
 finalize_opcodes(l)

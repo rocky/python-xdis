@@ -50,17 +50,17 @@ version = 3.6
 version_tuple = (3, 6)
 python_implementation = "CPython"
 
-l = locals()
+loc = locals()
 
-init_opdata(l, opcode_35, version_tuple)
+init_opdata(loc, opcode_35, version_tuple)
 
 # fmt: off
 # These are removed since Python 3.6
-rm_op(l, 'MAKE_CLOSURE',         134)
-rm_op(l, 'CALL_FUNCTION_VAR',    140)
-rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
+rm_op(loc, 'MAKE_CLOSURE',         134)
+rm_op(loc, 'CALL_FUNCTION_VAR',    140)
+rm_op(loc, 'CALL_FUNCTION_VAR_KW', 142)
 
-### Opcodes that have changed drastically ####
+# -- Opcodes that have changed drastically --#
 
 
 # BUILD_MAP_UNPACK_WITH_CALL oparg
@@ -105,15 +105,15 @@ rm_op(l, 'CALL_FUNCTION_VAR_KW', 142)
 # fmt: off
 # These are new since Python 3.6
 #          OP NAME                OPCODE POP PUSH
-#---------------------------------------------------
-store_op(l,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS index in name list;
-jrel_op(l,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__; pushed results on stack
-def_op(l,      'FORMAT_VALUE',     155,  1,  1)
-varargs_op(l,  'BUILD_CONST_KEY_MAP', 156, -2, 1) # TOS is count of kwargs
-nargs_op(l,    'CALL_FUNCTION_EX', 142, -2,  1)
-def_op(l,      'SETUP_ANNOTATIONS', 85,  1,  1)
-varargs_op(l,  'BUILD_STRING',     157, -2,  2)
-varargs_op(l,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
+# -----------------------------------------------
+store_op(loc,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS index in name list;
+jrel_op(loc,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__; pushed results on stack
+def_op(loc,      'FORMAT_VALUE',     155,  1,  1)
+varargs_op(loc,  'BUILD_CONST_KEY_MAP', 156, -2, 1) # TOS is count of kwargs
+nargs_op(loc,    'CALL_FUNCTION_EX', 142, -2,  1)
+def_op(loc,      'SETUP_ANNOTATIONS', 85,  1,  1)
+varargs_op(loc,  'BUILD_STRING',     157, -2,  2)
+varargs_op(loc,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 # fmt: on
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
@@ -210,9 +210,9 @@ opcode_arg_fmt = {
 }
 
 
-update_pj3(globals(), l)
+update_pj3(globals(), loc)
 
-finalize_opcodes(l)
+finalize_opcodes(loc)
 
 # extended formatting routine  should be done after updating globals and finalizing opcodes
 # since they make use of the information there.

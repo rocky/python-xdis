@@ -21,7 +21,6 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 
-version = 3.3
 version_tuple = (3, 3)
 python_implementation = "CPython"
 
@@ -104,16 +103,16 @@ def parse_fn_counts_33_35(argc):
 opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION,
+    "MAKE_CLOSURE": opcode_3x.format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": opcode_3x.format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+    "MAKE_CLOSURE": opcode_3x.extended_format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": opcode_3x.extended_format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,
