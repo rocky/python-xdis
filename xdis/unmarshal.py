@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2023 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -30,15 +30,14 @@ import io
 import sys
 from struct import unpack
 
-from xdis.magics import magic_int2tuple
 from xdis.codetype import to_portable
-from xdis.version_info import PYTHON3, PYTHON_VERSION, PYTHON_VERSION_TRIPLE, IS_PYPY
+from xdis.magics import magic_int2tuple
+from xdis.version_info import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON3:
 
     def long(n):
         return n
-
 
 else:
     import unicodedata
@@ -111,7 +110,7 @@ def compat_str(s: str) -> str:
 
 
 def compat_u2s(u):
-    if PYTHON_VERSION < 3.0:
+    if PYTHON_VERSION_TRIPLE < (3, 0):
         # See also unaccent.py which can be found using google. I
         # found it and this code via
         # https://www.peterbe.com/plog/unicode-to-ascii where it is a

@@ -1,25 +1,23 @@
 #!/usr/bin/env python
 """Setup script for the 'xdis' distribution."""
-from xdis.version import __version__
+from setuptools import find_packages, setup
 
 from __pkginfo__ import (
     author,
     author_email,
+    classifiers,
     entry_points,
     install_requires,
     license,
     long_description,
-    classifiers,
     modname,
-    py_modules,
     python_requires,
     short_desc,
     tests_require,
     web,
     zip_safe,
 )
-
-from setuptools import setup, find_packages
+from xdis.version import __version__
 
 setup(
     author=author,
@@ -33,7 +31,6 @@ setup(
     long_description_content_type="text/x-rst",
     name=modname,
     packages=find_packages(),
-    py_modules=py_modules,
     python_requires=python_requires,
     # setup_requires     = setup_requires,
     tests_require=tests_require,

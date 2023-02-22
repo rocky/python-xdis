@@ -1,5 +1,5 @@
 """
-  Copyright (c) 2020-2022 by Rocky Bernstein
+  Copyright (c) 2020-2023 by Rocky Bernstein
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -19,14 +19,6 @@
 import sys
 
 PYTHON3 = sys.version_info >= (3, 0)
-
-# NOTE: PYTHON_VERSION is going away
-# We do this crazy way to support Python 2.6 which
-# doesn't support version_major, and has a bug in
-# floating point so we can't divide 26 by 10 and get
-# 2.6
-PYTHON_VERSION = sys.version_info[0] + (sys.version_info[1] / 10.0)
-
 
 PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
 PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
