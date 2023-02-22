@@ -10,10 +10,8 @@ import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.base import (
     extended_format_ATTR,
     extended_format_CALL_FUNCTION,
-    extended_format_MAKE_FUNCTION_10_32,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
-    format_MAKE_FUNCTION_10_32,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_extended_arg,
@@ -21,10 +19,13 @@ from xdis.opcodes.base import (
     init_opdata,
     update_pj3,
 )
+from xdis.opcodes.opcode_3x import (
+    extended_format_MAKE_FUNCTION_30_35,
+    format_MAKE_FUNCTION_30_35,
+)
 
 # FIXME: can we DRY this even more?
 
-version = 3.2
 version_tuple = (3, 2)
 python_implementation = "CPython"
 
@@ -41,16 +42,16 @@ update_pj3(globals(), l)
 opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION_10_32,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_10_32,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
+    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,
