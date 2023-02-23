@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -18,14 +18,13 @@
 # However, it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
-from xdis.version_info import PYTHON_VERSION_TRIPLE
-
 from xdis.util import (
     COMPILER_FLAG_NAMES,
     PYPY_COMPILER_FLAG_NAMES,
     better_repr,
     code2num,
 )
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
 def _try_compile(source, name):
@@ -133,7 +132,6 @@ def findlabels_310(code, opc):
     labels = []
     for offset, op, arg in unpack_opargs_bytecode_310(code, opc):
         if arg is not None:
-            jump_offset = -1
             if op in opc.JREL_OPS:
                 label = offset + 2 + arg * 2
             elif op in opc.JABS_OPS:
@@ -416,6 +414,7 @@ def xstack_effect(opcode, opc, oparg=None, jump=None):
 
 def check_stack_effect():
     import dis
+
     from xdis import IS_PYPY
     from xdis.op_imports import get_opcode_module
 
