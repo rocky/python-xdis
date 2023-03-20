@@ -46,7 +46,6 @@ oppop = {}
 # Note: this changes in Python 3.6
 EXTENDED_ARG_SHIFT = 8
 
-version = 3.6
 version_tuple = (3, 6)
 python_implementation = "CPython"
 

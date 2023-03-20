@@ -41,7 +41,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
 version_tuple = (1, 3)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 init_opdata(l, opcode_14, version_tuple)
 
 # 1.3 - 1.4 bytecodes differences

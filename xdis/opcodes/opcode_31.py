@@ -23,9 +23,8 @@ from xdis.opcodes.opcode_3x import (
     format_MAKE_FUNCTION_30_35,
 )
 
-l = locals()
+loc = l = locals()
 
-version = 3.1
 version_tuple = (3, 1)
 python_implementation = "CPython"
 

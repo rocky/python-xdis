@@ -40,7 +40,7 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 
-l = locals()
+loc = l = locals()
 
 # FIXME: DRY with opcode2x.py
 
