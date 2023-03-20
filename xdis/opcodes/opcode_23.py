@@ -25,7 +25,7 @@ from xdis.opcodes.base import (
 version_tuple = (2, 3)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 init_opdata(l, opcode_2x, version_tuple)
 
 update_pj2(globals(), l)

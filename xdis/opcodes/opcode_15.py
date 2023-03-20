@@ -67,7 +67,7 @@ cmp_op = (
 # as opcode.py likes to call it.
 HAVE_ARGUMENT = 90
 
-l = locals()
+loc = l = locals()
 l["python_version"] = version_tuple
 l["cmp_op"] = cmp_op
 l["HAVE_ARGUMENT"] = HAVE_ARGUMENT

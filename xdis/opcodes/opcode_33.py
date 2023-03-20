@@ -24,7 +24,7 @@ from xdis.opcodes.base import (
 version_tuple = (3, 3)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 init_opdata(l, opcode_3x, version_tuple)
 
 # Below are opcode changes since Python 3.2

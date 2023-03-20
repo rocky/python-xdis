@@ -45,7 +45,7 @@ from xdis.opcodes.opcode_3x import (
 version_tuple = (3, 5)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 
 init_opdata(l, opcode_34, version_tuple)
 
