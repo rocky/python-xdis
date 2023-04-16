@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2022 by Rocky Bernstein
+# (C) Copyright 2018-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -27,10 +27,11 @@ there). Details of the format may change between Python versions.
 # NOTE: This module is used in the Python3 interpreter, but also by
 # the "sandboxed" process.  It must work for Python2 as well.
 
-import types, struct
+import struct
+import types
 
 from xdis.codetype import Code2, Code3
-from xdis.version_info import PYTHON_VERSION_TRIPLE, PYTHON3, version_tuple_to_str
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 try:
     intern
@@ -807,8 +808,9 @@ class _FastUnmarshaller:
             self.bufpos += 1
             return _load_dispatch[c](self)
         except KeyError:
-            exception = ValueError("bad marshal code at position %d: %c"
-                             % (self.bufpos - 1,c))
+            exception = ValueError(
+                "bad marshal code at position %d: %c" % (self.bufpos - 1, c)
+            )
         except IndexError:
             exception = EOFError
         raise exception
