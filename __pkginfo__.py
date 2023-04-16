@@ -74,7 +74,7 @@ mailing_list = "python-debugger@googlegroups.com"
 modname = "xdis"
 packages = ["xdis"]
 py_modules = None
-python_requires='>=3.3,<3.6'
+python_requires = ">=3.3,<3.6"
 # setup_requires     = ['pytest-runner']
 scripts = ["bin/pydisasm.py"]
 short_desc = "Python cross-version byte-code disassembler and marshal routines"
@@ -83,6 +83,7 @@ web = "https://github.com/rocky/python-xdis/"
 
 # tracebacks in zip files are funky and not debuggable
 zip_safe = True
+
 
 def get_srcdir():
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))

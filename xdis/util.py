@@ -52,9 +52,7 @@ PYPY_COMPILER_FLAG_NAMES = {
 
 # Invert above dictionary, so we can look up a bit value
 # from the compile flag name
-COMPILER_FLAG_BIT = dict(
-    (v, k) for (k, v) in COMPILER_FLAG_NAMES.items()
-)
+COMPILER_FLAG_BIT = dict((v, k) for (k, v) in COMPILER_FLAG_NAMES.items())
 
 # Allow us to access by just name, prefixed with CO. e.g
 # CO_OPTIMIZED, CO_NOFREE
