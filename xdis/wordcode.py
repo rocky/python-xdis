@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020-2021 by Rocky Bernstein
+# (C) Copyright 2018, 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -67,7 +67,7 @@ def findlabels(code, opc):
     return offsets
 
 
-def get_jump_target_maps(code, opc):
+def get_jump_target_maps(code, opc) -> dict:
     """Returns a dictionary where the key is an offset and the values are
     a list of instruction offsets which can get run before that
     instruction. This includes jump instructions as well as non-jump

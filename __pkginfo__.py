@@ -1,5 +1,7 @@
 """xdis packaging information"""
 
+import os.path as osp
+
 # To the extent possible we make this file look more like a
 # configuration file rather than code like setup.py. I find putting
 # configuration stuff in the middle of a function call in setup.py,
@@ -81,9 +83,6 @@ web = "https://github.com/rocky/python-xdis/"
 
 # tracebacks in zip files are funky and not debuggable
 zip_safe = True
-
-import os.path as osp
-
 
 def get_srcdir():
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))

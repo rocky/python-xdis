@@ -26,11 +26,10 @@ from xdis.opcodes.opcode_3x import (
 
 # FIXME: can we DRY this even more?
 
-version = 3.2
 version_tuple = (3, 2)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 
 init_opdata(l, opcode_3x, version_tuple)
 

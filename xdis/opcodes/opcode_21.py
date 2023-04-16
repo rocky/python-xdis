@@ -35,7 +35,7 @@ from xdis.opcodes.base import (
 version_tuple = (2, 1)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 init_opdata(l, opcode_22, version_tuple)
 
 # 2.1 bytecodes changes from 2.2

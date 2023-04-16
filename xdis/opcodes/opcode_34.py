@@ -28,7 +28,7 @@ from xdis.opcodes.opcode_3x import (
 version_tuple = (3, 4)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 
 init_opdata(l, opcode_33, version_tuple)
 
