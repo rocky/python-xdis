@@ -1,22 +1,27 @@
 # Minimal tests for dis module
 from __future__ import print_function
 
-from xdis import PYTHON3, IS_PYPY
+import sys
+import unittest
 
 import six
-import sys
+
+import xdis.std as dis
+from xdis import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON3:
     from io import StringIO
 else:
     from test.test_support import run_unittest
+
     from StringIO import StringIO
 
-import unittest
-import xdis.std as dis
-
+# Turn off black formatting so we
+# can use custom line numbering
+# that we make use of in testing
+# fmt: off
 def bug708901():
-    for res in range(1,
+    for _ in range(1,
                      10):
         pass
 
@@ -24,8 +29,10 @@ def bug1333982(x=[]):
     assert 0, ([s for s in x] +
               1)
     pass
+# fmt: on
 
-if sys.version_info[0:2] == (2, 7):
+if PYTHON_VERSION_TRIPLE[0:2] == (2, 7):
+
     def _f(a):
         print(a)
         return 1
@@ -39,8 +46,10 @@ if sys.version_info[0:2] == (2, 7):
 %3d:          10 LOAD_CONST                1 (1)
               13 RETURN_VALUE
 
-"""%(_f.func_code.co_firstlineno + 1,
-         _f.func_code.co_firstlineno + 2)
+""" % (
+        _f.func_code.co_firstlineno + 1,
+        _f.func_code.co_firstlineno + 2,
+    )
 
     dis_bug708901 = """\
 %3d:           0 SETUP_LOOP               23 (to 26)
@@ -51,17 +60,18 @@ if sys.version_info[0:2] == (2, 7):
               12 CALL_FUNCTION             2 (2 positional, 0 named)
               15 GET_ITER
          >>   16 FOR_ITER                  6 (to 25)
-              19 STORE_FAST                0 (res)
+              19 STORE_FAST                0 (_)
 
 %3d:          22 JUMP_ABSOLUTE            16 (to 16)
          >>   25 POP_BLOCK
          >>   26 LOAD_CONST                0 (None)
               29 RETURN_VALUE
 
-"""%(bug708901.func_code.co_firstlineno + 1,
-     bug708901.func_code.co_firstlineno + 2,
-     bug708901.func_code.co_firstlineno + 3)
-
+""" % (
+        bug708901.func_code.co_firstlineno + 1,
+        bug708901.func_code.co_firstlineno + 2,
+        bug708901.func_code.co_firstlineno + 3,
+    )
 
     dis_bug708901pypy = """\
 %3d:           0 SETUP_LOOP               23 (to 26)
@@ -72,17 +82,18 @@ if sys.version_info[0:2] == (2, 7):
               12 CALL_FUNCTION             2 (2 positional, 0 named)
               15 GET_ITER
          >>   16 FOR_ITER                  6 (to 25)
-              19 STORE_FAST                0 (res)
+              19 STORE_FAST                0 (_)
 
 %3d:          22 JUMP_ABSOLUTE            16 (to 16)
          >>   25 POP_BLOCK
          >>   26 LOAD_CONST                0 (None)
               29 RETURN_VALUE
 
-"""%(bug708901.func_code.co_firstlineno + 1,
-     bug708901.func_code.co_firstlineno + 2,
-     bug708901.func_code.co_firstlineno + 3)
-
+""" % (
+        bug708901.func_code.co_firstlineno + 1,
+        bug708901.func_code.co_firstlineno + 2,
+        bug708901.func_code.co_firstlineno + 3,
+    )
 
     dis_bug1333982 = """\
 %3d:          0 LOAD_CONST                1 (0)
@@ -105,9 +116,11 @@ if sys.version_info[0:2] == (2, 7):
 %3d:    >>   41 LOAD_CONST                0 (None)
              44 RETURN_VALUE
 
-"""%(bug1333982.func_code.co_firstlineno + 1,
-     bug1333982.func_code.co_firstlineno + 2,
-     bug1333982.func_code.co_firstlineno + 3)
+""" % (
+        bug1333982.func_code.co_firstlineno + 1,
+        bug1333982.func_code.co_firstlineno + 2,
+        bug1333982.func_code.co_firstlineno + 3,
+    )
 
     _BIG_LINENO_FORMAT = """\
 %3d:           0 LOAD_GLOBAL               0 (spam)
@@ -126,15 +139,16 @@ if sys.version_info[0:2] == (2, 7):
             sys.stdout = save_stdout
             got = s.getvalue()
             # Trim trailing blanks (if any).
-            lines = got.split('\n')
+            lines = got.split("\n")
             # lines = [line.rstrip() for line in lines]
             expected = expected.split("\n")
             import difflib
+
             if expected != lines:
                 self.fail(
-                    "events did not match expectation:\n" +
-                    "\n".join(difflib.ndiff(expected,
-                                            lines)))
+                    "events did not match expectation:\n"
+                    + "\n".join(difflib.ndiff(expected, lines))
+                )
 
         def test_opmap(self):
             self.assertEqual(dis.opmap["STOP_CODE"], 0)
@@ -166,16 +180,15 @@ if sys.version_info[0:2] == (2, 7):
             if False:
                 self.do_disassembly_test(bug1333982, dis_bug1333982)
             else:
-                self.skipTest('need asserts, run without -O')
+                self.skipTest("need asserts, run without -O")
 
         def test_big_linenos(self):
             def func(count):
                 namespace = {}
-                func = "def foo():\n " + "".join(["\n "] * count + ["spam\n"]
-                )
-                exec_fn = six.__dict__['exec_']
+                func = "def foo():\n " + "".join(["\n "] * count + ["spam\n"])
+                exec_fn = six.__dict__["exec_"]
                 exec_fn(func, namespace)
-                return namespace['foo']
+                return namespace["foo"]
 
             # Test all small ranges
             for i in range(1, 300):
@@ -187,8 +200,14 @@ if sys.version_info[0:2] == (2, 7):
                 expected = _BIG_LINENO_FORMAT % (i + 2)
                 self.do_disassembly_test(func(i), expected)
 
-    def test_main():
-        run_unittest(DisTests)
+
+if PYTHON_VERSION_TRIPLE >= (3, 0):
+    # Write a test for showing Python 2.x Long types in Python 3
+    pass
+
+
+def test_main():
+    run_unittest(DisTests)
 
 
 if __name__ == "__main__":
