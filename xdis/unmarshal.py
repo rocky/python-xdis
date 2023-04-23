@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2023 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -30,15 +30,15 @@ import io
 import sys
 from struct import unpack
 
-from xdis.magics import magic_int2tuple
 from xdis.codetype import to_portable
-from xdis.version_info import PYTHON3, PYTHON_VERSION, PYTHON_VERSION_TRIPLE, IS_PYPY
+from xdis.cross_types import LongTypeForPython3
+from xdis.magics import magic_int2tuple
+from xdis.version_info import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON3:
 
     def long(n):
-        return n
-
+        return LongTypeForPython3(n)
 
 else:
     import unicodedata
@@ -111,7 +111,7 @@ def compat_str(s):
 
 
 def compat_u2s(u):
-    if PYTHON_VERSION < 3.0:
+    if PYTHON_VERSION_TRIPLE < (3, 0):
         # See also unaccent.py which can be found using google. I
         # found it and this code via
         # https://www.peterbe.com/plog/unicode-to-ascii where it is a
@@ -212,7 +212,8 @@ class _VersionIndependentUnmarshaller:
             byte1 = byte1 & (FLAG_REF - 1)
         marshal_type = chr(byte1)
 
-        # print(marshalType) # debug
+        # print(marshal_type)  # debug
+
         if marshal_type in UNMARSHAL_DISPATCH_TABLE:
             func_suffix = UNMARSHAL_DISPATCH_TABLE[marshal_type]
             unmarshal_func = getattr(self, "t_" + func_suffix)
@@ -261,9 +262,13 @@ class _VersionIndependentUnmarshaller:
         d = long(0)
         for j in range(0, size):
             md = int(unpack("<h", self.fp.read(2))[0])
+            # This operation and turn "d" from a long back
+            # into an int.
             d += md << j * 15
+            d = long(d)
         if n < 0:
             d = long(d * -1)
+
         return self.r_ref(d, save_ref)
 
     # Python 3.4 removed this.

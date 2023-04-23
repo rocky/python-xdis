@@ -52,9 +52,7 @@ PYPY_COMPILER_FLAG_NAMES = {
 
 # Invert above dictionary, so we can look up a bit value
 # from the compile flag name
-COMPILER_FLAG_BIT = dict(
-    (v, k) for (k, v) in COMPILER_FLAG_NAMES.items()
-)
+COMPILER_FLAG_BIT = dict((v, k) for (k, v) in COMPILER_FLAG_NAMES.items())
 
 # Allow us to access by just name, prefixed with CO. e.g
 # CO_OPTIMIZED, CO_NOFREE
@@ -72,9 +70,11 @@ def co_flags_is_async(co_flags):
     )
 
 
-def code_has_star_arg(code):
-    """Return True iff
-    the code object has a variable positional parameter (*args-like)"""
+def code_has_star_arg(code) -> bool:
+    """
+    Return True iff the code object has a variable positional parameter
+    (*args-like)
+    """
     return (code.co_flags & 4) != 0
 
 
@@ -84,12 +84,12 @@ def code_has_star_star_arg(code):
     return (code.co_flags & 8) != 0
 
 
-def is_negative_zero(n):
+def is_negative_zero(n) -> bool:
     """Returns true if n is -0.0"""
     return n == 0.0 and copysign(1, n) == -1
 
 
-def better_repr(v):
+def better_repr(v) -> str:
     """Work around Python's not orthogonal and unhelpful repr() for primitive float
     and complex."""
     if isinstance(v, float):

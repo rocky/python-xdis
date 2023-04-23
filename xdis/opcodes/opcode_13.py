@@ -26,12 +26,13 @@ import xdis.opcodes.opcode_14 as opcode_14
 from xdis.cross_dis import findlabels
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     def_op,
+    extended_format_MAKE_FUNCTION_10_27,
     extended_format_RAISE_VARARGS_older,
     extended_format_MAKE_FUNCTION_10_32,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_extended_arg,
-    format_MAKE_FUNCTION_10_32,
+    format_MAKE_FUNCTION_10_27,
     format_RAISE_VARARGS_older,
     init_opdata,
     rm_op,
@@ -41,7 +42,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
 version_tuple = (1, 3)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 init_opdata(l, opcode_14, version_tuple)
 
 # 1.3 - 1.4 bytecodes differences
@@ -52,7 +53,7 @@ update_pj2(globals(), l)
 
 opcode_arg_fmt = {
     "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
@@ -60,7 +61,7 @@ finalize_opcodes(l)
 
 opcode_extended_fmt = {
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }
 
