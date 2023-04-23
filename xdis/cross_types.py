@@ -33,4 +33,4 @@ class LongTypeForPython3(int):
         Replacement __str__ and str() for Python3.
         This ensures we get the "L" suffix on long types.
         """
-        return f"""{self.value}L"""
+        return "%sL" % self.value
