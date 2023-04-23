@@ -34,3 +34,26 @@ class LongTypeForPython3(int):
         This ensures we get the "L" suffix on long types.
         """
         return f"""{self.value}L"""
+
+
+class UnicodeForPython3(str):
+    """
+    Define a Python3 unicode type which exists in
+    Python 2 but does not exist in Python 3.
+    """
+
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        """
+        Replacement __str__ and str() for Python3.
+        This ensures we get the "u" suffix on unicode types.
+        """
+        try:
+            value = self.value.decode("utf-8")
+            # Do we need to handle utf-16 and utf-32?
+        except UnicodeDecodeError:
+            return f"""u'{str(self.value)[1:]}'"""
+        else:
+            return f"""u'{str(value)}'"""

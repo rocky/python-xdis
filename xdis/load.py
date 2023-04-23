@@ -13,25 +13,29 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import marshal, py_compile, sys, tempfile, types
-from struct import unpack, pack
-from datetime import datetime
+import marshal
 import os.path as osp
+import py_compile
+import sys
+import tempfile
+import types
+from datetime import datetime
+from struct import pack, unpack
 
 import xdis.marsh
 import xdis.unmarshal
-from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
+from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 from xdis.magics import (
     IS_PYPY3,
     PYTHON_MAGIC_INT,
     int2magic,
-    magic_int2tuple,
     magic2int,
+    magic_int2tuple,
     magicint2version,
     py_str2tuple,
     versions,
 )
-from xdis.dropbox.decrypt25 import fix_dropbox_pyc
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
 
 
 def is_python_source(path):
@@ -305,7 +309,7 @@ def load_module_from_file_object(
                 pass
             else:
                 co = None
-        except:
+        except Exception:
             kind, msg = sys.exc_info()[0:2]
             import traceback
 
