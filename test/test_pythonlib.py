@@ -27,8 +27,6 @@ Step 2: Run the test:
   test_pythonlib.py --mylib --verify # decompile verify 'mylib'
 """
 
-from __future__ import print_function
-
 import getopt
 import os
 import py_compile
@@ -204,7 +202,7 @@ def do_tests(src_dir, obj_patterns, target_dir, opts):
     output = open(os.devnull, "w")
     # output = sys.stdout
     print (time.ctime())
-    print "Source directory: ", src_dir
+    print ("Source directory: ", src_dir)
     cwd = os.getcwd()
     os.chdir(src_dir)
     try:

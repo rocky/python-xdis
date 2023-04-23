@@ -3,6 +3,10 @@
 import sys
 
 import unittest
+import xdis.std as dis
+
+from xdis import PYTHON_VERSION_TRIPLE
+
 try:
     from test.support import run_unittest
 except ImportError:
@@ -184,15 +188,6 @@ if PYTHON_VERSION_TRIPLE[0:2] == (2, 7):
         #         exec_fn = six.__dict__['exec_']
         #         exec_fn(func, namespace)
         #         return namespace['foo']
-=======
-        def test_big_linenos(self):
-            def func(count):
-                namespace = {}
-                func = "def foo():\n " + "".join(["\n "] * count + ["spam\n"])
-                exec_fn = six.__dict__["exec_"]
-                exec_fn(func, namespace)
-                return namespace["foo"]
->>>>>>> python-3.0-to-3.2
 
         #     # Test all small ranges
         #     for i in range(1, 300):

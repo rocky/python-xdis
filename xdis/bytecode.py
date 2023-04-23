@@ -20,14 +20,7 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
-<<<<<<< HEAD
 import sys, types
-from xdis.namedtuple24 import namedtuple
-=======
-import sys
-import types
-from io import StringIO
->>>>>>> python-3.0-to-3.2
 
 from xdis.cross_dis import (
     format_code_info,
@@ -38,11 +31,8 @@ from xdis.cross_dis import (
 from xdis.instruction import Instruction
 from xdis.util import code2num, num2code
 
-<<<<<<< HEAD
 from StringIO import StringIO
 
-=======
->>>>>>> python-3.0-to-3.2
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 

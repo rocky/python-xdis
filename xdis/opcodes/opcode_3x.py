@@ -267,7 +267,7 @@ def format_MAKE_FUNCTION_30_35(argc):
     return s
 
 
-def parse_fn_counts_30_35(arg):
+def parse_fn_counts_30_35(argc):
     """
     In Python 3.0 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
     arguments counts of positional, default + named, and annotation

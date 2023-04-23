@@ -1,8 +1,5 @@
 # Much of this is borrowed from Python's Lib/dis.py
 
-import types
-
-
 def code2num(code, i):
     if isinstance(code, str):
         return ord(code[i])
@@ -74,7 +71,7 @@ def co_flags_is_async(co_flags):
     )
 
 
-def code_has_star_arg(code) -> bool:
+def code_has_star_arg(code):
     """
     Return True iff the code object has a variable positional parameter
     (*args-like)
@@ -88,13 +85,13 @@ def code_has_star_star_arg(code):
     return (code.co_flags & 8) != 0
 
 
-def is_negative_zero(n) -> bool:
+def is_negative_zero(n):
     """Returns true if n is -0.0"""
     # FIXME for > 2.6
     return n == 0.0 # and copysign(1, n) == -1
 
 
-def better_repr(v) -> str:
+def better_repr(v):
     """Work around Python's not orthogonal and unhelpful repr() for primitive float
     and complex."""
     if isinstance(v, float):

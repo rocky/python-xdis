@@ -79,7 +79,7 @@ def findlabels(code, opc):
     return offsets
 
 
-def get_jump_target_maps(code, opc) -> dict:
+def get_jump_target_maps(code, opc):
     """Returns a dictionary where the key is an offset and the values are
     a list of instruction offsets which can get run before that
     instruction. This includes jump instructions as well as non-jump
