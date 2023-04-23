@@ -19,8 +19,10 @@ Step 2: Run the test:
 	  test_pyenvlib --mylib --verify # disassemble verify 'mylib'
 """
 
-import py_compile, re, tempfile
 import os.path as osp
+import py_compile
+import re
+import tempfile
 
 import xdis.magics as magics
 from xdis.load import check_object_path
@@ -48,14 +50,17 @@ PYPY_TEST_VERSIONS = (
 # -----
 
 
-import os, time, shutil, sys
+import os
+import shutil
+import sys
+import time
 from fnmatch import fnmatch
 
 from xdis import disassemble_file
 from xdis.verify import verify_file
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
-LONG_PYTHON_VERSION = "%s.%s.%s" % (
+LONG_PYTHON_VERSION = (
     sys.version_info[0],
     sys.version_info[1],
     sys.version_info[2],

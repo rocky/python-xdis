@@ -20,12 +20,15 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
+from xdis.opcodes.opcode_3x import (
+    extended_format_MAKE_FUNCTION_30_35,
+    format_MAKE_FUNCTION_30_35,
+)
 
-version = 3.4
 version_tuple = (3, 4)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 
 init_opdata(l, opcode_33, version_tuple)
 
@@ -43,8 +46,8 @@ opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "MAKE_CLOSURE": opcode_33.format_MAKE_FUNCTION,
-    "MAKE_FUNCTION": opcode_33.format_MAKE_FUNCTION,
+    "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
     "EXTENDED_ARG": format_extended_arg,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
@@ -52,8 +55,8 @@ opcode_arg_fmt = {
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": opcode_33.extended_format_MAKE_FUNCTION,
-    "MAKE_FUNCTION": opcode_33.extended_format_MAKE_FUNCTION,
+    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_30_35,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "STORE_ATTR": extended_format_ATTR,
 }

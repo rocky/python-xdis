@@ -9,11 +9,11 @@ import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
-    extended_format_MAKE_FUNCTION_10_32,
+    extended_format_MAKE_FUNCTION_10_27,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_MAKE_FUNCTION_10_32,
     format_extended_arg,
+    format_MAKE_FUNCTION_10_27,
     init_opdata,
     update_pj2,
 )
@@ -21,7 +21,7 @@ from xdis.opcodes.base import (
 version_tuple = (2, 2)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 init_opdata(l, opcode_2x, version_tuple)
 
 # 2.2 Bytecodes not in 2.3
@@ -36,12 +36,12 @@ finalize_opcodes(l)
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
 }
 
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,
 }

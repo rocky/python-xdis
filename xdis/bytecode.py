@@ -20,20 +20,29 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
+<<<<<<< HEAD
 import sys, types
 from xdis.namedtuple24 import namedtuple
+=======
+import sys
+import types
+from io import StringIO
+>>>>>>> python-3.0-to-3.2
 
 from xdis.cross_dis import (
-    get_code_object,
     format_code_info,
+    get_code_object,
     instruction_size,
     op_has_argument,
 )
 from xdis.instruction import Instruction
 from xdis.util import code2num, num2code
 
+<<<<<<< HEAD
 from StringIO import StringIO
 
+=======
+>>>>>>> python-3.0-to-3.2
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
@@ -75,7 +84,7 @@ def offset2line(offset, linestarts):
     return linestarts[high][1]
 
 
-def _get_const_info(const_index, const_list):
+def get_const_info(const_index, const_list):
     """Helper to get optional details about const references
 
     Returns the dereferenced constant and its repr if the constant
@@ -96,7 +105,11 @@ def _get_const_info(const_index, const_list):
     return argval, repr(argval)
 
 
-def _get_name_info(name_index, name_list):
+# For compatiablity
+_get_const_info = get_const_info
+
+
+def get_name_info(name_index, name_list):
     """Helper to get optional details about named references
 
     Returns the dereferenced name as both value and repr if the name
@@ -115,6 +128,10 @@ def _get_name_info(name_index, name_list):
     else:
         argrepr = repr(argval)
     return argval, argrepr
+
+
+# For compatiablity
+_get_name_info = get_name_info
 
 
 def get_instructions_bytes(

@@ -27,12 +27,19 @@ Step 2: Run the test:
   test_pythonlib.py --mylib --verify # decompile verify 'mylib'
 """
 
-import getopt, os, py_compile, sys, shutil, tempfile, time
+from __future__ import print_function
+
+import getopt
+import os
+import py_compile
+import shutil
+import sys
+import tempfile
+import time
+from fnmatch import fnmatch
 
 from xdis import disassemble_file
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
-from fnmatch import fnmatch
-
 
 def get_srcdir():
     filename = os.path.normcase(os.path.dirname(__file__))
@@ -158,10 +165,10 @@ def do_tests(src_dir, obj_patterns, target_dir, opts):
 
     if opts["do_compile"]:
         compiled_version = opts["compiled_version"]
-        if compiled_version and version_tuple_to_str() != compiled_version:
+        if compiled_version and PYTHON_VERSION_TRIPLE[:2] != compiled_version:
             sys.stderr.write(
                 "Not compiling: desired Python version is %s "
-                "but we are running %s\n" % (compiled_version, version_tuple_to_str())
+                "but we are running %s\n" % (compiled_version, version_tuple_to_str)
             )
         else:
             for root, dirs, basenames in os.walk(src_dir):

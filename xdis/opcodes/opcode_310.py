@@ -41,11 +41,10 @@ from xdis.opcodes.opcode_36 import (
 )
 from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_VARARGS
 
-version = 3.10
 version_tuple = (3, 10)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 
 init_opdata(l, opcode_39, version_tuple)
 

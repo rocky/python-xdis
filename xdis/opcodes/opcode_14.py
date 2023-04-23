@@ -26,11 +26,11 @@ import xdis.opcodes.opcode_15 as opcode_15
 from xdis.cross_dis import findlabels
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     def_op,
+    extended_format_MAKE_FUNCTION_10_27,
     extended_format_RETURN_VALUE,
-    extended_format_MAKE_FUNCTION_10_32,
     finalize_opcodes,
-    format_MAKE_FUNCTION_10_32,
     format_extended_arg,
+    format_MAKE_FUNCTION_10_27,
     init_opdata,
     name_op,
     update_pj2,
@@ -40,7 +40,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
 version_tuple = (1, 4)
 python_implementation = "CPython"
 
-l = locals()
+loc = l = locals()
 init_opdata(l, opcode_15, version_tuple)
 
 # fmt: off
@@ -82,10 +82,10 @@ def findlinestarts(co, dup_lines=False):
 
 
 opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
 }
 
 opcode_extended_fmt = {
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
 }

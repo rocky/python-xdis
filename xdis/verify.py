@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020-2021 by Rocky Bernstein
+# (C) Copyright 2018, 2020, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,9 +14,12 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import os, marshal, tempfile
-from xdis.magics import MAGIC, PYTHON_MAGIC_INT, int2magic
+import marshal
+import os
+import tempfile
+
 from xdis.load import load_module
+from xdis.magics import MAGIC, PYTHON_MAGIC_INT, int2magic
 
 
 def wr_long(f, x):

@@ -11,13 +11,13 @@ from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
     extended_format_CALL_FUNCTION,
-    extended_format_MAKE_FUNCTION_10_32,
+    extended_format_MAKE_FUNCTION_10_27,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
     format_extended_arg,
-    format_MAKE_FUNCTION_10_32,
+    format_MAKE_FUNCTION_10_27,
     format_RAISE_VARARGS_older,
     init_opdata,
     jrel_op,
@@ -30,7 +30,7 @@ version = 2.7
 version_tuple = (2, 7)
 python_implementation = "PyPy"
 
-l = locals()
+loc = l = locals()
 
 init_opdata(l, opcode_27, version_tuple, is_pypy=True)
 
@@ -62,7 +62,7 @@ if sys.version_info[:3] >= (2, 7, 13) and sys.version_info[4] >= 42:
 update_pj3(globals(), l)
 
 opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
     "EXTENDED_ARG": format_extended_arg,
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
@@ -73,7 +73,7 @@ finalize_opcodes(l)
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,

@@ -38,7 +38,7 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 
-l = locals()
+loc = l = locals()
 
 # FIXME: DRY with opcode2x.py
 
@@ -269,7 +269,7 @@ def format_MAKE_FUNCTION_30_35(argc):
 
 def parse_fn_counts_30_35(arg):
     """
-    In Python 3.3 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
+    In Python 3.0 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
     arguments counts of positional, default + named, and annotation
     arguments a particular kind of encoding where each of
     the entry a a packe byted value of the lower 24 bits

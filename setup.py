@@ -31,11 +31,11 @@ if not ((2, 4) <= SYS_VERSION <= (2, 7)):
 from __pkginfo__ import (
     author,
     author_email,
+    classifiers,
     entry_points,
     install_requires,
     license,
     long_description,
-    classifiers,
     modname,
     py_modules,
     short_desc,
@@ -43,6 +43,7 @@ from __pkginfo__ import (
     web,
     zip_safe,
 )
+from xdis.version import __version__
 
 from setuptools import setup, find_packages
 

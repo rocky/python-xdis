@@ -28,12 +28,12 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     def_op,
     extended_format_ATTR,
     extended_format_CALL_FUNCTION,
-    extended_format_MAKE_FUNCTION_10_32,
+    extended_format_MAKE_FUNCTION_10_27,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_MAKE_FUNCTION_10_32,
     format_extended_arg,
+    format_MAKE_FUNCTION_10_27,
     format_RAISE_VARARGS_older,
     jabs_op,
     jrel_op,
@@ -67,7 +67,7 @@ cmp_op = (
 # as opcode.py likes to call it.
 HAVE_ARGUMENT = 90
 
-l = locals()
+loc = l = locals()
 l["python_version"] = version_tuple
 l["cmp_op"] = cmp_op
 l["HAVE_ARGUMENT"] = HAVE_ARGUMENT
@@ -227,7 +227,7 @@ update_pj2(globals(), l)
 
 opcode_arg_fmt = {
     "EXTENDED_ARG":  format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
@@ -236,7 +236,7 @@ finalize_opcodes(l)
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "LOAD_ATTR":     extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_32,
+    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":  extended_format_RETURN_VALUE,
     "STORE_ATTR":    extended_format_ATTR,
