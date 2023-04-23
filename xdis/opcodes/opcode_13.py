@@ -28,7 +28,6 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     def_op,
     extended_format_MAKE_FUNCTION_10_27,
     extended_format_RAISE_VARARGS_older,
-    extended_format_MAKE_FUNCTION_10_32,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_extended_arg,

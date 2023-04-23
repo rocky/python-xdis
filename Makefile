@@ -51,7 +51,7 @@ check-short: unittest pytest
 
 #: Run pytest tests
 check-pytest unittest:
-	pytest pytest
+	$(PYTHON) -m pytest pytest
 
 #: Clean up temporary files and .pyc files
 clean: clean_pyc

@@ -46,6 +46,8 @@ from __pkginfo__ import (
 )
 from xdis.version import __version__
 
+from setuptools import setup, find_packages
+
 setup(
     author=author,
     author_email=author_email,

@@ -30,11 +30,7 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-<<<<<<< HEAD
-from xdis.opcodes.opcode_33 import extended_format_ATTR, extended_format_MAKE_FUNCTION
-=======
 from xdis.opcodes.opcode_33 import extended_format_ATTR
->>>>>>> python-3.3-to-3.5
 from xdis.opcodes.opcode_36 import (
     extended_format_CALL_FUNCTION,
     extended_format_CALL_METHOD,

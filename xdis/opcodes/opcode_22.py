@@ -12,7 +12,6 @@ from xdis.opcodes.base import (
     extended_format_MAKE_FUNCTION_10_27,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_MAKE_FUNCTION_10_32,
     format_extended_arg,
     format_MAKE_FUNCTION_10_27,
     init_opdata,
