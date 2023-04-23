@@ -31,13 +31,14 @@ import sys
 from struct import unpack
 
 from xdis.codetype import to_portable
+from xdis.cross_types import LongTypeForPython3
 from xdis.magics import magic_int2tuple
 from xdis.version_info import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON3:
 
     def long(n):
-        return n
+        return LongTypeForPython3(n)
 
 else:
     import unicodedata
@@ -211,7 +212,8 @@ class _VersionIndependentUnmarshaller:
             byte1 = byte1 & (FLAG_REF - 1)
         marshal_type = chr(byte1)
 
-        # print(marshalType) # debug
+        # print(marshal_type)  # debug
+
         if marshal_type in UNMARSHAL_DISPATCH_TABLE:
             func_suffix = UNMARSHAL_DISPATCH_TABLE[marshal_type]
             unmarshal_func = getattr(self, "t_" + func_suffix)
@@ -260,9 +262,13 @@ class _VersionIndependentUnmarshaller:
         d = long(0)
         for j in range(0, size):
             md = int(unpack("<h", self.fp.read(2))[0])
+            # This operation and turn "d" from a long back
+            # into an int.
             d += md << j * 15
+            d = long(d)
         if n < 0:
             d = long(d * -1)
+
         return self.r_ref(d, save_ref)
 
     # Python 3.4 removed this.
