@@ -18,6 +18,8 @@
 # 3.3            | pip     | 10.0.1       |
 # 3.4            | pip     | 19.1.1       |
 
+import os.path as osp
+
 # Things that change more often go here.
 copyright = """
 Copyright (C) 2015-2020 Rocky Bernstein <rb@dustyfeet.com>.
@@ -80,8 +82,6 @@ web = "https://github.com/rocky/python-xdis/"
 
 # tracebacks in zip files are funky and not debuggable
 zip_safe = True
-
-import os.path as osp
 
 
 def get_srcdir():
