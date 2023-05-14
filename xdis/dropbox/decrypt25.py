@@ -6,8 +6,6 @@
 # Dropbox Python bytecode decryption tool for Dropbox versions of 1.1x
 # (and possibly earlier) which uses Python bytecode 2.5.
 
-import types
-
 import struct
 import types
 
@@ -329,6 +327,7 @@ if __name__ == "__main__":
 # the opcode substitution table
 if 0:
     import marshal
+    import os
 
     def fill(c, d):
         if len(c.co_code) != len(d.co_code):

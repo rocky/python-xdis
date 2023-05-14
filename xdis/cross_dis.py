@@ -376,7 +376,7 @@ def get_jump_target_maps(code, opc):
 
 # In CPython, this is C code. We redo this in Python using the
 # information in opc.
-def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
+def xstack_effect(opcode, opc, oparg = 0, jump=None):
     """Compute the stack effect of opcode with argument oparg, using
     oppush and oppop tables in opc.
 

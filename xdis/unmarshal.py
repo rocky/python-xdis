@@ -280,13 +280,16 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(float(unpack("<d", self.fp.read(8))[0]), save_ref)
 
     def t_complex(self, save_ref, bytes_for_s=False):
-        def unpack_pre_24() -> float:
+        def unpack_pre_24():
             return float(self.fp.read(unpack("B", self.fp.read(1))[0]))
 
-        def unpack_newer() -> float:
+        def unpack_newer():
             return float(self.fp.read(unpack("<i", self.fp.read(4))[0]))
 
-        get_float = unpack_pre_24 if self.magic_int <= 62061 else unpack_newer
+        if self.magic_int <= 62061:
+            get_float = unpack_pre_24
+        else:
+            get_float = unpack_newer
 
         real = get_float()
         imag = get_float()

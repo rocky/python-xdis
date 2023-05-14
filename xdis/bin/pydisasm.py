@@ -1,18 +1,15 @@
 #!/usr/bin/env python
 # Mode: -*- python -*-
-# Copyright (c) 2015-2021 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2021, 2023 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
 #
 #
-from __future__ import print_function
-
+import getopt
 import os
 import os.path as osp
 import sys
-
-import click
 
 from xdis import disassemble_file
 from xdis.version import __version__
