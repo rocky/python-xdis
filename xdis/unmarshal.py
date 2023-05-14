@@ -51,8 +51,9 @@ FLAG_REF = 0x80
 FLAG_REF = 0x80
 
 
-# The keys in following dictionary are an unmashal codes, like "s", "c", "<", etc.
-# the values of the dictionary are names of routines to call that do the data unmarshaling.
+# The keys in following dictionary are an unmashal codes, like "s",
+# "c", "<", etc.  the values of the dictionary are names of routines
+# to call that do the data unmarshaling.
 #
 # Note: we could eliminate the parameters, if this were all inside a
 # class.  This might be good from an efficiency standpoint, and bad
@@ -279,10 +280,14 @@ class _VersionIndependentUnmarshaller:
         return self.r_ref(float(unpack("<d", self.fp.read(8))[0]), save_ref)
 
     def t_complex(self, save_ref, bytes_for_s=False):
-        if self.magic_int <= 62061:
-            get_float = lambda: float(self.fp.read(unpack("B", self.fp.read(1))[0]))
-        else:
-            get_float = lambda: float(self.fp.read(unpack("<i", self.fp.read(4))[0]))
+        def unpack_pre_24() -> float:
+            return float(self.fp.read(unpack("B", self.fp.read(1))[0]))
+
+        def unpack_newer() -> float:
+            return float(self.fp.read(unpack("<i", self.fp.read(4))[0]))
+
+        get_float = unpack_pre_24 if self.magic_int <= 62061 else unpack_newer
+
         real = get_float()
         imag = get_float()
         return self.r_ref(complex(real, imag), save_ref)

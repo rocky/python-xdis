@@ -6,12 +6,17 @@
 # and change that into something that's not portable. Thank you, Python!
 #
 #
-import sys, os, getopt
-import os.path as osp
+from __future__ import print_function
 
+import os
+import os.path as osp
+import sys
+
+import click
+
+from xdis import disassemble_file
 from xdis.version import __version__
 from xdis.version_info import PYTHON_VERSION_STR, PYTHON_VERSION_TRIPLE
-from xdis import disassemble_file
 
 FORMATS=("xasm", "bytes", "classic", "extended", "extended-bytes", "header")
 

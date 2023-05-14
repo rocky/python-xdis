@@ -37,15 +37,16 @@ _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
 
 def extended_arg_val(opc, val):
-    """Return the adjusted value of an extended argument operand.
-    """
+    """Return the adjusted value of an extended argument operand."""
     return val << opc.EXTENDED_ARG_SHIFT
+
 
 def get_jump_val(jump_arg, version):
     if version[:2] >= (3, 10):
         return jump_arg * 2
     else:
         return jump_arg
+
 
 def offset2line(offset, linestarts):
     """linestarts is expected to be a *list) of (offset, line number)
@@ -413,7 +414,6 @@ class Bytecode(object):
             linestarts,
             line_offset=line_offset,
         ):
-
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
                 instr = Instruction(

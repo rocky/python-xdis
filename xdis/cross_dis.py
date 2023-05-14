@@ -70,6 +70,7 @@ def findlinestarts(code, dup_lines=False):
         lastlineno = None
         lineno = code.co_firstlineno
         offset = 0
+        byte_incr = 0
         for byte_incr, line_incr in zip(byte_increments, line_increments):
             if byte_incr:
                 if lineno != lastlineno or dup_lines and 0 < byte_incr < 255:
@@ -375,7 +376,7 @@ def get_jump_target_maps(code, opc):
 
 # In CPython, this is C code. We redo this in Python using the
 # information in opc.
-def xstack_effect(opcode, opc, oparg=None, jump=None):
+def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
     """Compute the stack effect of opcode with argument oparg, using
     oppush and oppop tables in opc.
 

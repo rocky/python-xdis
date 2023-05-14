@@ -203,7 +203,6 @@ def varargs_op(loc, op_name, op_code, pop=-1, push=1):
 
 
 def finalize_opcodes(loc):
-
     # Not sure why, but opcode.py address has opcode.EXTENDED_ARG
     # as well as opmap['EXTENDED_ARG']
     loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]

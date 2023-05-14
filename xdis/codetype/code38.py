@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,6 +17,9 @@
 from xdis.version_info import version_tuple_to_str
 from xdis.codetype.code30 import Code3, Code3FieldTypes
 from copy import deepcopy
+
+from xdis.codetype.code30 import Code3, Code3FieldTypes
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order. It is important to match this
 # with the 3.8 order.

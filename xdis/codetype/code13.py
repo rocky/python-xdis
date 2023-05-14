@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,7 +24,8 @@ class Bytes(str):
     def __repr__(self):
         return "b%s" % repr(self.s)
 
-# If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
+# Ifw there is a list of types, then any will work, but the 1st one is
+# the corect one for types.CodeType
 Code13FieldTypes = {
     "co_argcount": int,
     "co_nlocals": int,
@@ -38,12 +39,15 @@ Code13FieldTypes = {
 }
 
 class Code13(CodeBase):
-    """Class for a Python 1.0 .. 1.4 code object used for Python interpreters other than 1.0 .. 1.4
+    """Class for a Python 1.0 .. 1.4 code object used for Python
+    interpreters other than 1.0 .. 1.4
 
     For convenience in generating code objects, fields like
-    `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise the line number table `co_lnotab`
-    can be stored as a simple list of offset, line_number tuples.
+    `co_consts`, co_names which are (immutable) tuples in the
+    end-result can be stored instead as (mutable) lists. Likewise the
+    line number table `co_lnotab` can be stored as a simple list of
+    offset, line_number tuples.
+
     """
 
     def __init__(
@@ -68,7 +72,7 @@ class Code13(CodeBase):
         self.co_filename = co_filename
         self.co_name = co_name
         self.fieldtypes = Code13FieldTypes
-        if type(self) == Code13:
+        if type(self) is Code13:
             self.check()
         return
 

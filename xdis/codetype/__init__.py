@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,14 +17,13 @@
 __docformat__ = "restructuredtext"
 
 from xdis.namedtuple24 import namedtuple
+
 from xdis.codetype.base import *
 from xdis.codetype.code13 import *
 from xdis.codetype.code15 import *
 from xdis.codetype.code20 import *
 from xdis.codetype.code30 import *
 from xdis.codetype.code38 import *
-
-import types
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
