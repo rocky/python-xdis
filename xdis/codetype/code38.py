@@ -14,10 +14,11 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
-from xdis.codetype.code30 import Code3, Code3FieldTypes
 import types
 from copy import deepcopy
+
+from xdis.codetype.code30 import Code3, Code3FieldTypes
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order. It is important to match this
 # with the 3.8 order.

@@ -429,7 +429,6 @@ class _StringBuffer:
 
 
 class _Unmarshaller:
-
     dispatch = {}
 
     def __init__(self, readfunc, python_version=None):
@@ -789,7 +788,6 @@ _load_dispatch = {}
 
 
 class _FastUnmarshaller:
-
     dispatch = {}
 
     def __init__(self, buffer, python_version=None):

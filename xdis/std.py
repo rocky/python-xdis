@@ -51,16 +51,15 @@ import sys
 # xdis
 from xdis import IS_PYPY
 from xdis.bytecode import Bytecode as _Bytecode
-from xdis.instruction import _Instruction
-from xdis.disasm import disco as _disco
-from xdis.op_imports import get_opcode_module
 from xdis.cross_dis import (
     code_info as _code_info,
     pretty_flags as _pretty_flags,
     show_code as _show_code,
     xstack_effect as _stack_effect,
 )
-
+from xdis.disasm import disco as _disco
+from xdis.instruction import _Instruction
+from xdis.op_imports import get_opcode_module
 
 PYPY = "pypy"
 VARIANT = PYPY if IS_PYPY else None
@@ -68,7 +67,6 @@ VARIANT = PYPY if IS_PYPY else None
 
 class _StdApi:
     def __init__(self, python_version=sys.version_info, variant=VARIANT):
-
         if python_version >= (3, 6):
             import xdis.wordcode as xcode
         else:
@@ -138,7 +136,7 @@ class _StdApi:
         """
         return _show_code(x, self.opc.version_tuple, file, is_pypy=self.is_pypy)
 
-    def stack_effect(self, opcode, oparg=None, jump=None):
+    def stack_effect(self, opcode, oparg: int = 0, jump=None):
         """Compute the stack effect of *opcode* with argument *oparg*."""
         return _stack_effect(opcode, self.opc, oparg, jump)
 

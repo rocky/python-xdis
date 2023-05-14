@@ -20,6 +20,7 @@
   Probably a complete rewrite would be sensefull. hG/2000-12-27
 """
 import sys
+
 from xdis.disasm import disassemble_file
 
 if __name__ == "__main__" and len(sys.argv) > 1:

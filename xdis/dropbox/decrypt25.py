@@ -8,15 +8,15 @@
 
 from __future__ import print_function
 
-import types
 import struct
+import types
 
-from xdis.version_info import PYTHON3
 import xdis.marsh as xmarshal
 
 # FIXME to use codeType2Portable
 # from xdis.codetype import codeType2Portable
 from xdis.codetype import Code2Compat
+from xdis.version_info import PYTHON3
 
 
 def rng(a, b):
@@ -318,7 +318,8 @@ def fix_dir(path):
 
 
 if __name__ == "__main__":
-    import os, sys
+    import os
+    import sys
 
     if sys.argv != 2:
         print("Usage: %s python-file" % os.path.basename(sys.argv[0]))
