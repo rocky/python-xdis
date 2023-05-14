@@ -72,6 +72,7 @@ if sys.version_info[:3] >= (3, 6, 1):
 # FIXME remove (fix uncompyle6)
 update_pj3(globals(), l)
 
+
 # fmt: on
 def extended_format_CALL_METHOD(opc, instructions):
     """argc has the number of positional arguments.

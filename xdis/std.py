@@ -67,7 +67,6 @@ VARIANT = PYPY if IS_PYPY else None
 
 class _StdApi:
     def __init__(self, python_version=sys.version_info, variant=VARIANT):
-
         if python_version >= (3, 6):
             import xdis.wordcode as xcode
         else:

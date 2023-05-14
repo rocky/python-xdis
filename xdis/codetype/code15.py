@@ -14,8 +14,9 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.codetype.code13 import Code13, Code13FieldTypes
 from copy import deepcopy
+
+from xdis.codetype.code13 import Code13, Code13FieldTypes
 
 # If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
 Code15FieldTypes = deepcopy(Code13FieldTypes)

@@ -42,6 +42,7 @@ class LongTypeForPython3(int):
         """
         return "%sL" % self.value
 
+
 class UnicodeForPython3(str):
     """
     Define a Python3 unicode type which exists in
@@ -61,10 +62,10 @@ class UnicodeForPython3(str):
             utf8_value = self.value.decode("utf-8")
             # Do we need to handle utf-16 and utf-32?
         except UnicodeDecodeError:
-            return f"""u'{str(self.value)[1:]}'"""
+            return "u'%s'" % str(self.value)[1:]
 
         if is_ascii(utf8_value):
-            return f"""u'{utf8_value}'"""
+            return "u'%s'" % utf8_value
 
         # Turn the unicode character into its Unicode code point,
         # but strip of the leading "0x".
@@ -72,4 +73,4 @@ class UnicodeForPython3(str):
         unicode_codepoint = "".join(
             (c if is_ascii(c) else hex(ord(c)) for c in stripped_utf8)
         )
-        return rf"""u'\u{unicode_codepoint}'"""
+        return r"u'\u%s'" % unicode_codepoint

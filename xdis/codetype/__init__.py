@@ -16,15 +16,15 @@
 
 __docformat__ = "restructuredtext"
 
+import types
 from collections import namedtuple
+
 from xdis.codetype.base import *
 from xdis.codetype.code13 import *
 from xdis.codetype.code15 import *
 from xdis.codetype.code20 import *
 from xdis.codetype.code30 import *
 from xdis.codetype.code38 import *
-
-import types
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 

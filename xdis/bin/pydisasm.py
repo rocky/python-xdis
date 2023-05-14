@@ -6,13 +6,16 @@
 #
 #
 from __future__ import print_function
-import sys, os
-import click
-import os.path as osp
 
+import os
+import os.path as osp
+import sys
+
+import click
+
+from xdis import disassemble_file
 from xdis.version import __version__
 from xdis.version_info import PYTHON_VERSION_STR, PYTHON_VERSION_TRIPLE
-from xdis import disassemble_file
 
 program, ext = os.path.splitext(os.path.basename(__file__))
 

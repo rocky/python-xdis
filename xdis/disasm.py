@@ -30,7 +30,7 @@ from collections import deque
 
 import xdis
 from xdis.bytecode import Bytecode
-from xdis.codetype import iscode, codeType2Portable
+from xdis.codetype import codeType2Portable, iscode
 from xdis.cross_dis import format_code_info
 from xdis.load import check_object_path, load_module
 from xdis.magics import PYTHON_MAGIC_INT
@@ -68,7 +68,6 @@ def show_module_header(
     header=True,
     show_filename=True,
 ):
-
     bytecode_version = ".".join((str(i) for i in version_tuple))
     real_out = out or sys.stdout
     if is_pypy:
@@ -293,12 +292,12 @@ def disassemble_file(
             sip_hash,
         ) = load_module(pyc_filename)
     except Exception:
-
         # Hack alert: we're using pyc_filename set as a proxy for whether the filename exists.
         # check_object_path() will succeed if the file exists.
         if pyc_filename is None:
             raise
         import os
+
         stat = os.stat(filename)
         source = open(filename, "r").read()
         co = compile(source, filename, "exec")

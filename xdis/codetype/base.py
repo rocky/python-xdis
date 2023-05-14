@@ -38,7 +38,6 @@ def code_has_star_star_arg(code):
 
 
 class CodeBase(object):
-
     # Mimic Python 3 code access functions
     def __len__(self):
         return len(self.co_code)
