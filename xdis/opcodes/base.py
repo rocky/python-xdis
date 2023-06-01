@@ -173,6 +173,8 @@ def rm_op(loc, name, op):
     if op in loc["nofollow"]:
         loc["nofollow"].remove(op)
 
+    if loc["opmap"][name] != op:
+        print(name, loc["opmap"][name], op)
     assert loc["opmap"][name] == op
     del loc["opmap"][name]
 
@@ -237,9 +239,10 @@ def fix_opcode_names(opmap):
 
 
 def update_pj3(g, loc):
-    g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
-    g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
-    update_sets(loc)
+    if loc["version_tuple"] < (3, 11):
+        g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
+        g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
+        update_sets(loc)
 
 
 def update_pj2(g, loc):
