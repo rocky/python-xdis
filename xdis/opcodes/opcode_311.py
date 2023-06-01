@@ -102,6 +102,7 @@ rm_op(l,  "MATCH_KEYS",              33)
 #          OP NAME                         OPCODE  POP PUSH
 #---------------------------------------------------------
 # replaced binary and inplace ops
+def_op(l, "CACHE",                            0,   0, 0)
 def_op(l, "BINARY_OP",                      122,   2, 1)
 # call ops
 def_op(l, "CALL",                           171,   1, 0)

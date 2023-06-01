@@ -242,7 +242,7 @@ def update_pj3(g, loc):
     if loc["version_tuple"] < (3, 11):
         g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
         g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
-        update_sets(loc)
+    update_sets(loc)
 
 
 def update_pj2(g, loc):
@@ -258,9 +258,12 @@ def update_sets(loc):
     loc["FREE_OPS"] = frozenset(loc["hasfree"])
     loc["JREL_OPS"] = frozenset(loc["hasjrel"])
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
-    loc["JUMP_UNCONDITONAL"] = frozenset(
-        [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
-    )
+    if loc["python_version"] < (3, 11):
+        loc["JUMP_UNCONDITONAL"] = frozenset(
+            [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
+        )
+    else:
+        loc["JUMP_UNCONDITONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
     if PYTHON_VERSION_TRIPLE < (3, 8, 0) and loc["python_version"] < (3, 8):
         loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
