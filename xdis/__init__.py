@@ -110,6 +110,7 @@ from xdis.opcodes import (
     opcode_38,
     opcode_39,
     opcode_310,
+    opcode_311,
 )
 from xdis.util import (
     CO_ABSOLUTE_IMPORT,
@@ -226,6 +227,7 @@ __all__ = [
     "opcode_38",
     "opcode_39",
     "opcode_310",
+    "opcode_311",
     # op_imports
     "get_opcode_module",
     # util

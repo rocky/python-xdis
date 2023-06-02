@@ -542,7 +542,7 @@ def py_str2tuple(orig_version):
             return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
         else:
             # Match things like 3.5a0, 3.5b2, 3.6a1+1, 3.6rc1, 3.7.0beta3
-            m = re.match(r"^(\d)\.(\d)(\d+)?[abr]?", version)
+            m = re.match(r"^(\d)\.(\d(\d+)?)[abr]?", version)
             if m:
                 return (int(m.group(1)), int(m.group(2)))
             pass

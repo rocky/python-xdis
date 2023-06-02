@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019, 2021-2022 by Rocky Bernstein
+# (C) Copyright 2018-2019, 2021-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,45 +17,46 @@
 """Facilitates importing opmaps for the a given Python version"""
 import copy
 import sys
+
 from xdis.magics import canonic_python_version
-
-from xdis.opcodes import opcode_10 as opcode_10
-from xdis.opcodes import opcode_11 as opcode_11
-from xdis.opcodes import opcode_12 as opcode_12
-from xdis.opcodes import opcode_13 as opcode_13
-from xdis.opcodes import opcode_14 as opcode_14
-from xdis.opcodes import opcode_15 as opcode_15
-from xdis.opcodes import opcode_16 as opcode_16
-from xdis.opcodes import opcode_20 as opcode_20
-from xdis.opcodes import opcode_21 as opcode_21
-from xdis.opcodes import opcode_22 as opcode_22
-from xdis.opcodes import opcode_23 as opcode_23
-from xdis.opcodes import opcode_24 as opcode_24
-from xdis.opcodes import opcode_25 as opcode_25
-from xdis.opcodes import opcode_26 as opcode_26
-from xdis.opcodes import opcode_27 as opcode_27
-from xdis.opcodes import opcode_30 as opcode_30
-from xdis.opcodes import opcode_31 as opcode_31
-from xdis.opcodes import opcode_32 as opcode_32
-from xdis.opcodes import opcode_33 as opcode_33
-from xdis.opcodes import opcode_34 as opcode_34
-from xdis.opcodes import opcode_35 as opcode_35
-from xdis.opcodes import opcode_36 as opcode_36
-from xdis.opcodes import opcode_37 as opcode_37
-from xdis.opcodes import opcode_38 as opcode_38
-from xdis.opcodes import opcode_39 as opcode_39
-from xdis.opcodes import opcode_310 as opcode_310
-
-from xdis.opcodes import opcode_26pypy as opcode_26pypy
-from xdis.opcodes import opcode_27pypy as opcode_27pypy
-from xdis.opcodes import opcode_32pypy as opcode_32pypy
-from xdis.opcodes import opcode_33pypy as opcode_33pypy
-from xdis.opcodes import opcode_35pypy as opcode_35pypy
-from xdis.opcodes import opcode_36pypy as opcode_36pypy
-from xdis.opcodes import opcode_37pypy as opcode_37pypy
-from xdis.opcodes import opcode_38pypy as opcode_38pypy
-from xdis.opcodes import opcode_39pypy as opcode_39pypy
-
+from xdis.opcodes import (
+    opcode_10 as opcode_10,
+    opcode_11 as opcode_11,
+    opcode_12 as opcode_12,
+    opcode_13 as opcode_13,
+    opcode_14 as opcode_14,
+    opcode_15 as opcode_15,
+    opcode_16 as opcode_16,
+    opcode_20 as opcode_20,
+    opcode_21 as opcode_21,
+    opcode_22 as opcode_22,
+    opcode_23 as opcode_23,
+    opcode_24 as opcode_24,
+    opcode_25 as opcode_25,
+    opcode_26 as opcode_26,
+    opcode_26pypy as opcode_26pypy,
+    opcode_27 as opcode_27,
+    opcode_27pypy as opcode_27pypy,
+    opcode_30 as opcode_30,
+    opcode_31 as opcode_31,
+    opcode_32 as opcode_32,
+    opcode_32pypy as opcode_32pypy,
+    opcode_33 as opcode_33,
+    opcode_33pypy as opcode_33pypy,
+    opcode_34 as opcode_34,
+    opcode_35 as opcode_35,
+    opcode_35pypy as opcode_35pypy,
+    opcode_36 as opcode_36,
+    opcode_36pypy as opcode_36pypy,
+    opcode_37 as opcode_37,
+    opcode_37pypy as opcode_37pypy,
+    opcode_38 as opcode_38,
+    opcode_38pypy as opcode_38pypy,
+    opcode_39 as opcode_39,
+    opcode_39pypy as opcode_39pypy,
+    opcode_310 as opcode_310,
+    opcode_311 as opcode_311,
+)
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
 # FIXME
@@ -112,7 +113,6 @@ op_imports = {
     "3.5.4": opcode_35,
     3.5: opcode_35,
     "3.6rc1": opcode_36,
-    "3.6rc1": opcode_36,
     3.6: opcode_36,
     "3.7.0beta3": opcode_37,
     "3.7.0.beta3": opcode_37,
@@ -133,6 +133,7 @@ op_imports = {
     3.9: opcode_39,
     "3.10.0rc2": opcode_310,
     "3.10": opcode_310,
+    "3.11": opcode_311,
     "2.6pypy": opcode_26pypy,
     "2.7pypy": opcode_27pypy,
     "2.7.12pypy": opcode_27pypy,
