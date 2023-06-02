@@ -23,6 +23,7 @@ allow running on Python 2.
 import sys
 import types
 from io import StringIO
+from typing import Iterable
 
 from xdis.cross_dis import (
     format_code_info,
@@ -31,7 +32,11 @@ from xdis.cross_dis import (
     op_has_argument,
 )
 from xdis.instruction import Instruction
+from xdis.op_imports import get_opcode_module
 from xdis.util import code2num, num2code
+from xdis.version_info import IS_PYPY
+
+VARIANT = "pypy" if IS_PYPY else None
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
@@ -308,11 +313,13 @@ class Bytecode(object):
         return "{}({!r})".format(self.__class__.__name__, self._original_object)
 
     @classmethod
-    def from_traceback(cls, tb):
+    def from_traceback(cls, tb, opc=None):
         """Construct a Bytecode from the given traceback"""
+        if opc is None:
+            opc = get_opcode_module(sys.version_info, VARIANT)
         while tb.tb_next:
             tb = tb.tb_next
-        return cls(tb.tb_frame.f_code, current_offset=tb.tb_lasti)
+        return cls(tb.tb_frame.f_code, opc, current_offset=tb.tb_lasti)
 
     def info(self):
         """Return formatted information about the code object."""
@@ -356,7 +363,7 @@ class Bytecode(object):
                 raise RuntimeError("no last traceback to disassemble")
             while tb.tb_next:
                 tb = tb.tb_next
-        self.disassemble(tb.tb_frame.f_code, tb.tb_lasti)
+        self.disassemble_bytes(tb.tb_frame.f_code, tb.tb_lasti)
 
     def disassemble_bytes(
         self,
@@ -391,7 +398,6 @@ class Bytecode(object):
             linestarts,
             line_offset=line_offset,
         ):
-
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
                 instr = Instruction(
@@ -420,6 +426,15 @@ class Bytecode(object):
             if new_source_line:
                 file.write("\n")
             is_current_instr = instr.offset == lasti
+
+            # Python 3.11 introduces "CACHE" and the convention seems to be
+            # to not print these normally.
+            if instr.opname == "CACHE" and asm_format not in (
+                "extended_bytes",
+                "bytes",
+            ):
+                continue
+
             file.write(
                 instr.disassemble(
                     self.opc, lineno_width, is_current_instr, asm_format, instructions
@@ -433,8 +448,8 @@ class Bytecode(object):
             # locals and hope the two are the same.
             if instr.opname == "RESERVE_FAST":
                 file.write(
-                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST are "
-                    "inaccurate here in Python before 1.5\n"
+                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST "
+                    "are inaccurate here in Python before 1.5\n"
                 )
             pass
         return
@@ -469,12 +484,12 @@ class Bytecode(object):
         )
 
 
-def list2bytecode(l, opc, varnames, consts):
+def list2bytecode(inst_list: Iterable, opc, varnames, consts):
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """
     bc = []
-    for i, opcodes in enumerate(l):
+    for i, opcodes in enumerate(inst_list):
         opname = opcodes[0]
         operands = opcodes[1:]
         if opname not in opc.opname:
