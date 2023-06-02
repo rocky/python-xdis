@@ -319,7 +319,9 @@ class Bytecode(object):
             opc = get_opcode_module(sys.version_info, VARIANT)
         while tb.tb_next:
             tb = tb.tb_next
-        return cls(tb.tb_frame.f_code, opc, current_offset=tb.tb_lasti)
+        return cls(
+            tb.tb_frame.f_code, opc=opc, first_line=None, current_offset=tb.tb_lasti
+        )
 
     def info(self):
         """Return formatted information about the code object."""
