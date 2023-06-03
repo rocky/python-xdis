@@ -133,6 +133,7 @@ op_imports = {
     3.9: opcode_39,
     "3.10.0rc2": opcode_310,
     "3.10": opcode_310,
+    "3.11": opcode_311,
     "3.11.0": opcode_311,
     "3.11.1": opcode_311,
     "3.11.2": opcode_311,

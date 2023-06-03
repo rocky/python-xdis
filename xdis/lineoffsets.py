@@ -8,12 +8,12 @@ This is useful for example in debuggers that want to set breakpoints only
 at valid locations.
 """
 
-from xdis.load import check_object_path, load_module
-from xdis.codetype import iscode
-from xdis.bytecode import get_instructions_bytes
-from xdis.op_imports import get_opcode_module
-
 from collections import namedtuple
+
+from xdis.bytecode import get_instructions_bytes
+from xdis.codetype import iscode
+from xdis.load import check_object_path, load_module
+from xdis.op_imports import get_opcode_module
 
 # Information about a single line in a particular piece of code
 #  Note that a code can have several lines with the same value but
@@ -68,7 +68,7 @@ class LineOffsetInfo(object):
                     self.lines.append(last_line_info)
                     pass
                 last_line_info = LineOffsets(instr.starts_line, [offset], code)
-            else:
+            elif last_line_info is not None:
                 last_line_info.offsets.append(offset)
                 pass
             pass
