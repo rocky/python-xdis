@@ -477,13 +477,13 @@ add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
     "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7 3.7.8 3.7.9 "
-    "3.7.10 3.7.11 3.7.12 3.7.13 3.7.14 3.7.15 3.7.16",
+    "3.7.10 3.7.11 3.7.12 3.7.13 3.7.14 3.7.15 3.7.16 3.7.17",
     "3.7.0",
 )
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 add_canonic_versions(
     "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7 3.8.8 "
-    "3.8.9 3.8.10 3.8.11 3.8.12 3.8.13 3.8.14 3.8.15 3.8.16",
+    "3.8.9 3.8.10 3.8.11 3.8.12 3.8.13 3.8.14 3.8.15 3.8.16 3.8.17",
     "3.8.0rc1+",
 )
 add_canonic_versions(
@@ -492,14 +492,19 @@ add_canonic_versions(
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 "
     "3.9.12 3.9.13 3.9.14 3.9.14 3.9.15 3.9.16 3.9.10pypy 3.9.11pypy 3.9.12pypy "
-    "3.9.15pypy 3.9.16pypy 3.9.0b5+",
+    "3.9.15pypy 3.9.16pypy 3.9.0b5+ 3.9.17",
     "3.9.0beta5",
 )
 
 add_canonic_versions(
     "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8 3.10.9 "
-    "3.10.10 3.10.11",
+    "3.10.10 3.10.11 3.10.12",
     "3.10.0rc2",
+)
+
+add_canonic_versions(
+    "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4",
+    "3.11a7e",
 )
 
 # The canonic version for a canonic version is itself
@@ -541,7 +546,7 @@ def py_str2tuple(orig_version):
             return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
         else:
             # Match things like 3.5a0, 3.5b2, 3.6a1+1, 3.6rc1, 3.7.0beta3
-            m = re.match(r"^(\d)\.(\d)(\d+)?[abr]?", version)
+            m = re.match(r"^(\d)\.(\d(\d+)?)[abr]?", version)
             if m:
                 return (int(m.group(1)), int(m.group(2)))
             pass
