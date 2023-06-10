@@ -138,7 +138,7 @@ class _StdApi:
         """
         return _show_code(x, self.opc.version_tuple, file, is_pypy=self.is_pypy)
 
-    def stack_effect(self, opcode, oparg: int = 0, jump=None):
+    def stack_effect(self, opcode, oparg=0, jump=None):
         """Compute the stack effect of *opcode* with argument *oparg*."""
         return _stack_effect(opcode, self.opc, oparg, jump)
 
