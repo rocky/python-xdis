@@ -224,10 +224,12 @@ def get_instructions_bytes(
             elif op in opc.NARGS_OPS:
                 opname = opc.opname[op]
                 optype = "nargs"
-                if opname == "CALL_FUNCTION":
-                    argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
-                elif opname == "CALL_FUNCTION_EX":
-                    argrepr = format_CALL_FUNCTION_EX(code2num(bytecode, i - 1))
+                if python_36 and opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX"):
+                    if opname == "CALL_FUNCTION":
+                        argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
+                    else:
+                        assert opname == "CALL_FUNCTION_EX"
+                        argrepr = format_CALL_FUNCTION_EX(code2num(bytecode, i - 1))
                 else:
                     if not (
                         python_36
