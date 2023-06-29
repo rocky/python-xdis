@@ -33,6 +33,7 @@ from xdis.cross_dis import (
 )
 from xdis.instruction import Instruction
 from xdis.op_imports import get_opcode_module
+from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
 from xdis.version_info import IS_PYPY
 
@@ -194,6 +195,7 @@ def get_instructions_bytes(
             #  available, and argrepr to the string representation of argval.
             #    disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
+
             argval = arg
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
@@ -220,15 +222,21 @@ def get_instructions_bytes(
                 argval, argrepr = _get_name_info(arg, cells)
                 optype = "free"
             elif op in opc.NARGS_OPS:
+                opname = opc.opname[op]
                 optype = "nargs"
-                if not (
-                    python_36
-                    or opc.opname[op] in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
-                ):
-                    argrepr = "%d positional, %d named" % (
-                        code2num(bytecode, i - 2),
-                        code2num(bytecode, i - 1),
-                    )
+                if opname == "CALL_FUNCTION":
+                    argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
+                elif opname == "CALL_FUNCTION_EX":
+                    argrepr = format_CALL_FUNCTION_EX(code2num(bytecode, i - 1))
+                else:
+                    if not (
+                        python_36
+                        or opname in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
+                    ):
+                        argrepr = "%d positional, %d named" % (
+                            code2num(bytecode, i - 2),
+                            code2num(bytecode, i - 1),
+                        )
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
                 optype = "vargs"
