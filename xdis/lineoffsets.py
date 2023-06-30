@@ -68,7 +68,7 @@ class LineOffsetInfo(object):
                     self.lines.append(last_line_info)
                     pass
                 last_line_info = LineOffsets(instr.starts_line, [offset], code)
-            else:
+            elif last_line_info is not None:
                 last_line_info.offsets.append(offset)
                 pass
             pass

@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019, 2021-2022 by Rocky Bernstein
+# (C) Copyright 2018-2019, 2021-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -55,6 +55,7 @@ from xdis.opcodes import (
     opcode_39 as opcode_39,
     opcode_39pypy as opcode_39pypy,
     opcode_310 as opcode_310,
+    opcode_311 as opcode_311,
 )
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
@@ -112,7 +113,6 @@ op_imports = {
     "3.5.4": opcode_35,
     3.5: opcode_35,
     "3.6rc1": opcode_36,
-    "3.6rc1": opcode_36,
     3.6: opcode_36,
     "3.7.0beta3": opcode_37,
     "3.7.0.beta3": opcode_37,
@@ -133,6 +133,12 @@ op_imports = {
     3.9: opcode_39,
     "3.10.0rc2": opcode_310,
     "3.10": opcode_310,
+    "3.11": opcode_311,
+    "3.11.0": opcode_311,
+    "3.11.1": opcode_311,
+    "3.11.2": opcode_311,
+    "3.11.3": opcode_311,
+    "3.11a7e": opcode_311,
     "2.6pypy": opcode_26pypy,
     "2.7pypy": opcode_27pypy,
     "2.7.12pypy": opcode_27pypy,
@@ -169,6 +175,11 @@ def get_opcode_module(version_info=None, variant=None):
     vers_str = version_tuple_to_str(version_info)
     if len(version_info) > 3 and version_info[3] != "final":
         vers_str += version_tuple_to_str(version_info, start=3)
+
+
+    if vers_str not in canonic_python_version:
+        vers_str = version_tuple_to_str(version_info[:2])
+
     if variant is None:
         try:
             import platform

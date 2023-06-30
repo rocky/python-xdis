@@ -31,7 +31,12 @@ from xdis.cross_dis import (
     op_has_argument,
 )
 from xdis.instruction import Instruction
+from xdis.op_imports import get_opcode_module
+from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
+from xdis.version_info import IS_PYPY
+
+VARIANT = "pypy" if IS_PYPY else None
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
@@ -194,6 +199,7 @@ def get_instructions_bytes(
             #  available, and argrepr to the string representation of argval.
             #    disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
+
             argval = arg
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
@@ -220,15 +226,23 @@ def get_instructions_bytes(
                 argval, argrepr = _get_name_info(arg, cells)
                 optype = "free"
             elif op in opc.NARGS_OPS:
+                opname = opc.opname[op]
                 optype = "nargs"
-                if not (
-                    python_36
-                    or opc.opname[op] in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
-                ):
-                    argrepr = "%d positional, %d named" % (
-                        code2num(bytecode, i - 2),
-                        code2num(bytecode, i - 1),
-                    )
+                if python_36 and opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX"):
+                    if opname == "CALL_FUNCTION":
+                        argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
+                    else:
+                        assert opname == "CALL_FUNCTION_EX"
+                        argrepr = format_CALL_FUNCTION_EX(code2num(bytecode, i - 1))
+                else:
+                    if not (
+                        python_36
+                        or opname in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
+                    ):
+                        argrepr = "%d positional, %d named" % (
+                            code2num(bytecode, i - 2),
+                            code2num(bytecode, i - 1),
+                        )
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
                 optype = "vargs"
@@ -313,11 +327,15 @@ class Bytecode(object):
         return "{}({!r})".format(self.__class__.__name__, self._original_object)
 
     @classmethod
-    def from_traceback(cls, tb):
+    def from_traceback(cls, tb, opc=None):
         """Construct a Bytecode from the given traceback"""
+        if opc is None:
+            opc = get_opcode_module(sys.version_info, VARIANT)
         while tb.tb_next:
             tb = tb.tb_next
-        return cls(tb.tb_frame.f_code, current_offset=tb.tb_lasti)
+        return cls(
+            tb.tb_frame.f_code, opc=opc, first_line=None, current_offset=tb.tb_lasti
+        )
 
     def info(self):
         """Return formatted information about the code object."""
@@ -361,7 +379,7 @@ class Bytecode(object):
                 raise RuntimeError("no last traceback to disassemble")
             while tb.tb_next:
                 tb = tb.tb_next
-        self.disassemble(tb.tb_frame.f_code, tb.tb_lasti)
+        self.disassemble_bytes(tb.tb_frame.f_code, tb.tb_lasti)
 
     def disassemble_bytes(
         self,
@@ -424,6 +442,15 @@ class Bytecode(object):
             if new_source_line:
                 file.write("\n")
             is_current_instr = instr.offset == lasti
+
+            # Python 3.11 introduces "CACHE" and the convention seems to be
+            # to not print these normally.
+            if instr.opname == "CACHE" and asm_format not in (
+                "extended_bytes",
+                "bytes",
+            ):
+                continue
+
             file.write(
                 instr.disassemble(
                     self.opc, lineno_width, is_current_instr, asm_format, instructions
@@ -437,8 +464,8 @@ class Bytecode(object):
             # locals and hope the two are the same.
             if instr.opname == "RESERVE_FAST":
                 file.write(
-                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST are "
-                    "inaccurate here in Python before 1.5\n"
+                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST "
+                    "are inaccurate here in Python before 1.5\n"
                 )
             pass
         return
@@ -473,12 +500,12 @@ class Bytecode(object):
         )
 
 
-def list2bytecode(l, opc, varnames, consts):
+def list2bytecode(inst_list, opc, varnames, consts):
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """
     bc = []
-    for i, opcodes in enumerate(l):
+    for i, opcodes in enumerate(inst_list):
         opname = opcodes[0]
         operands = opcodes[1:]
         if opname not in opc.opname:

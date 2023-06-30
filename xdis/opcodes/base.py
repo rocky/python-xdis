@@ -173,6 +173,8 @@ def rm_op(loc, name, op):
     if op in loc["nofollow"]:
         loc["nofollow"].remove(op)
 
+    if loc["opmap"][name] != op:
+        print(name, loc["opmap"][name], op)
     assert loc["opmap"][name] == op
     del loc["opmap"][name]
 
@@ -236,8 +238,9 @@ def fix_opcode_names(opmap):
 
 
 def update_pj3(g, loc):
-    g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
-    g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
+    if loc["version_tuple"] < (3, 11):
+        g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
+        g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
     update_sets(loc)
 
 
@@ -254,9 +257,12 @@ def update_sets(loc):
     loc["FREE_OPS"] = frozenset(loc["hasfree"])
     loc["JREL_OPS"] = frozenset(loc["hasjrel"])
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
-    loc["JUMP_UNCONDITONAL"] = frozenset(
-        [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
-    )
+    if loc["python_version"] < (3, 11):
+        loc["JUMP_UNCONDITONAL"] = frozenset(
+            [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
+        )
+    else:
+        loc["JUMP_UNCONDITONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
     if PYTHON_VERSION_TRIPLE < (3, 8, 0) and loc["python_version"] < (3, 8):
         loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
