@@ -23,7 +23,6 @@ allow running on Python 2.
 import sys
 import types
 from io import StringIO
-from typing import Iterable
 
 from xdis.cross_dis import (
     format_code_info,
@@ -501,7 +500,7 @@ class Bytecode(object):
         )
 
 
-def list2bytecode(inst_list: Iterable, opc, varnames, consts):
+def list2bytecode(inst_list, opc, varnames, consts):
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """
