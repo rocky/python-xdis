@@ -175,6 +175,11 @@ def get_opcode_module(version_info=None, variant=None):
     vers_str = version_tuple_to_str(version_info)
     if len(version_info) > 3 and version_info[3] != "final":
         vers_str += version_tuple_to_str(version_info, start=3)
+
+
+    if vers_str not in canonic_python_version:
+        vers_str = version_tuple_to_str(version_info[:2])
+
     if variant is None:
         try:
             import platform
