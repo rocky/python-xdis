@@ -19,6 +19,7 @@ limited by, and somewhat compatible with the corresponding
 Python opcode.py structures
 """
 
+import sys
 from copy import deepcopy
 
 from xdis import wordcode
@@ -59,6 +60,8 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     for the module is passed.
     """
 
+    if version_tuple is None:
+        version_tuple = sys.version_info[:2]
     if version_tuple:
         loc["python_version"] = version_tuple
     loc["is_pypy"] = is_pypy
@@ -205,7 +208,6 @@ def varargs_op(loc, op_name, op_code, pop=-1, push=1):
 
 
 def finalize_opcodes(loc):
-
     # Not sure why, but opcode.py address has opcode.EXTENDED_ARG
     # as well as opmap['EXTENDED_ARG']
     loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]
@@ -285,17 +287,29 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     return None.
 
     """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
+    # From opcode description: argc indicates the total number of positional
+    # and keyword arguments.  Sometimes the function name is in the stack arg
+    # positions back.
     call_function_inst = instructions[0]
-    assert call_function_inst.opname == "CALL_FUNCTION"
+    call_opname = call_function_inst.opname
+    assert call_opname in (
+        "CALL_FUNCTION",
+        "CALL_FUNCTION_KW",
+        "CALL_FUNCTION_VAR",
+        "CALL_FUNCTION_VAR_KW",
+    )
     argc = call_function_inst.arg
     (
         name_default,
         pos_args,
     ) = divmod(argc, 256)
     function_pos = pos_args + name_default * 2 + 1
+    if call_opname in ("CALL_FUNCTION_VAR", "CALL_FUNCTION_KW"):
+        function_pos += 1
+    elif call_opname == "CALL_FUNCTION_VAR_KW":
+        function_pos += 2
     assert len(instructions) >= function_pos + 1
+    i = -1
     for i, inst in enumerate(instructions[1:]):
         if i + 1 == function_pos:
             i += 1
@@ -310,20 +324,25 @@ def extended_format_CALL_FUNCTION(opc, instructions):
             break
         if inst.opname == "LOAD_ATTR" or inst.optype != "name":
             function_pos += (opc.oppop[opcode] - opc.oppush[opcode]) + 1
-        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
+        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW", "CALL_FUNCTION_VAR"):
             break
         pass
 
     s = ""
     if i == function_pos:
-        if instructions[function_pos].opname in (
+        opname = instructions[function_pos].opname
+        if opname in (
             "LOAD_CONST",
             "LOAD_GLOBAL",
             "LOAD_ATTR",
             "LOAD_NAME",
         ):
-            s = resolved_attrs(instructions[function_pos:])
-            s += ": "
+            if not (
+                opname == "LOAD_CONST"
+                and isinstance(instructions[function_pos].argval, (int, str))
+            ):
+                s = resolved_attrs(instructions[function_pos:])
+                s += ": "
             pass
         pass
     s += format_CALL_FUNCTION_pos_name_encoded(call_function_inst.arg)
@@ -364,8 +383,9 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
     Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
     shows that the change was really made in Python 3.0 or so.
     """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
+    # From opcode description: argc indicates the total number of positional
+    # and keyword arguments.  Sometimes the function name is in the stack arg
+    # positions back.
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")

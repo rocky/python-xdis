@@ -69,6 +69,9 @@ opcode_arg_fmt = {
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_VAR_KW": extended_format_CALL_FUNCTION,
     "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_30_35,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_30_35,
     "STORE_ATTR": extended_format_ATTR,

@@ -55,6 +55,8 @@ finalize_opcodes(l)
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_VAR_KW": extended_format_CALL_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE": extended_format_RETURN_VALUE,

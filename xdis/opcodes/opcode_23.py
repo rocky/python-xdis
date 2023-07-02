@@ -41,6 +41,9 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_VAR_KW": extended_format_CALL_FUNCTION,
     "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,

@@ -26,6 +26,7 @@ import xdis.opcodes.opcode_15 as opcode_15
 from xdis.cross_dis import findlabels, findlinestarts  # noqa
 from xdis.opcodes.base import (
     extended_format_ATTR,
+    extended_format_CALL_FUNCTION,
     extended_format_MAKE_FUNCTION_10_27,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
@@ -41,6 +42,11 @@ version_tuple = (1, 6)
 python_implementation = "CPython"
 
 loc = l = locals()
+
+# These are just to silence the import above
+l["findlindstarts"] = findlinestarts
+l["findlabels"] = findlabels
+
 init_opdata(l, opcode_15, version_tuple)
 
 # fmt: off
@@ -63,6 +69,10 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "LOAD_ATTR":     extended_format_ATTR,
+    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
+    "CALL_FUNCTION_VAR_KW": extended_format_CALL_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
     "RETURN_VALUE":  extended_format_RETURN_VALUE,
     "STORE_ATTR":    extended_format_ATTR,
