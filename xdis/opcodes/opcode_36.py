@@ -253,10 +253,21 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     # From opcode description: argc indicates the total number of positional and keyword arguments.
     # Sometimes the function name is in the stack arg positions back.
     call_function_inst = instructions[0]
-    assert call_function_inst.opname == "CALL_FUNCTION"
+    call_opname = call_function_inst.opname
+    if call_opname == "CALL_FUNCTION_EX":
+        from trepan.api import debug
+
+        debug()
+    assert call_opname in (
+        "CALL_FUNCTION",
+        "CALL_FUNCTION_VAR",
+    )
     function_pos = call_function_inst.arg + 1
+    if call_opname == "CALL_FUNCTION_VAR":
+        function_pos += 1
     assert len(instructions) >= function_pos
     s = ""
+    i = -1
     for i, inst in enumerate(instructions[1:]):
         if i == function_pos:
             break
@@ -270,11 +281,9 @@ def extended_format_CALL_FUNCTION(opc, instructions):
             break
         if inst.optype != "name":
             function_pos += (oppop[opcode] - oppush[opcode]) + 1
-        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
+        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX", "CALL_FUNCTION_VAR"):
             break
         pass
-    else:
-        i += 1
 
     if i == function_pos:
         if instructions[function_pos].opname in (
@@ -287,7 +296,12 @@ def extended_format_CALL_FUNCTION(opc, instructions):
             s += ": "
             pass
         pass
-    s += format_CALL_FUNCTION(call_function_inst.arg)
+    format_call_fn = (
+        format_CALL_FUNCTION_EX
+        if call_opname == "CALL_FUNCTION_EX"
+        else format_CALL_FUNCTION
+    )
+    s += format_call_fn(call_function_inst.arg)
     return s
 
 
@@ -307,6 +321,7 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
     if load_const.opname == "LOAD_CONST" and isinstance(load_const.argval, tuple):
         function_pos += len(load_const.argval) + 1
         s = ""
+        i = -1
         for i, inst in enumerate(instructions[2:]):
             if i == function_pos:
                 break
@@ -343,6 +358,7 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
+    "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
