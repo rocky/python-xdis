@@ -20,10 +20,12 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
+import inspect
 import sys
 import types
 from io import StringIO
-from typing import Iterable
+from linecache import getline
+from typing import Iterable, Optional, Union
 
 from xdis.cross_dis import (
     format_code_info,
@@ -337,9 +339,10 @@ class Bytecode(object):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version_tuple)
 
-    def dis(self, asm_format="classic"):
+    def dis(self, asm_format="classic", show_source=False):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
+        filename = co.co_filename
         if self.current_offset is not None:
             offset = self.current_offset
         else:
@@ -352,6 +355,11 @@ class Bytecode(object):
             cells = None
             linestarts = None
 
+        first_line_number = co.co_firstlineno if hasattr(co, "co_firstlineno") else None
+
+        if inspect.iscode(co):
+            filename = inspect.getfile(co)
+
         self.disassemble_bytes(
             co.co_code,
             varnames=co.co_varnames,
@@ -363,6 +371,9 @@ class Bytecode(object):
             file=output,
             lasti=offset,
             asm_format=asm_format,
+            filename=filename,
+            show_source=show_source,
+            first_line_number=first_line_number,
         )
         return output.getvalue()
 
@@ -379,7 +390,7 @@ class Bytecode(object):
 
     def disassemble_bytes(
         self,
-        code,
+        bytecode: Union[bytes, str],
         lasti=-1,
         varnames=None,
         names=None,
@@ -389,9 +400,30 @@ class Bytecode(object):
         file=sys.stdout,
         line_offset=0,
         asm_format="classic",
+        filename: Optional[str] = None,
+        show_source=True,
+        first_line_number: Optional[int] = None,
     ):
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
+        show_source = show_source and show_lineno and first_line_number and filename
+
+        def show_source_text(line_number: Optional[int]):
+            """
+            Show the Python source text if all conditions are right:
+              * source text was requested - this implies other checks
+                seen above
+              * the source is available via linecache.getline()
+            """
+            # There is some redundancy in the condition below
+            # to make type checking happy. In reality
+            # only the show_source is tested at runtime.
+            if show_source and filename and line_number:
+                source_text = getline(filename, line_number)
+                if source_text:
+                    file.write(" " * 13 + "# " + source_text.lstrip())
+
+        show_source_text(first_line_number)
 
         # Old Python's use "SET_LINENO" to set a line number
         set_lineno_number = 0
@@ -401,7 +433,7 @@ class Bytecode(object):
         lineno_width = 3 if show_lineno else 0
         instructions = []
         for instr in get_instructions_bytes(
-            code,
+            bytecode,
             self.opc,
             varnames,
             names,
@@ -437,6 +469,8 @@ class Bytecode(object):
             )
             if new_source_line:
                 file.write("\n")
+                show_source_text(instr.starts_line)
+
             is_current_instr = instr.offset == lasti
 
             # Python 3.11 introduces "CACHE" and the convention seems to be

@@ -6,13 +6,16 @@
 #
 #
 from __future__ import print_function
-import sys, os
-import click
-import os.path as osp
 
+import os
+import os.path as osp
+import sys
+
+import click
+
+from xdis import disassemble_file
 from xdis.version import __version__
 from xdis.version_info import PYTHON_VERSION_STR, PYTHON_VERSION_TRIPLE
-from xdis import disassemble_file
 
 program, ext = os.path.splitext(os.path.basename(__file__))
 
@@ -33,9 +36,13 @@ else:
         **case_sensitive
     ),
 )
+@click.option(
+    "--show-source/--no-show-source",
+    help="Intersperse Python source text from linecache if available.",
+)
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format, files):
+def main(format, show_source: bool, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -69,7 +76,7 @@ def main(format, files):
             )
             continue
 
-        disassemble_file(path, sys.stdout, format)
+        disassemble_file(path, sys.stdout, format, show_source=show_source)
     return
 
 
