@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2018, 2020-2021 2023 by Rocky Bernstein
+# Copyright (c) 2016-2018, 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ from collections import deque
 import xdis
 from xdis.bytecode import Bytecode
 from xdis.codetype import codeType2Portable, iscode
-from xdis.cross_dis import format_code_info
+from xdis.cross_dis import format_code_info, format_exception_table
 from xdis.load import check_object_path, load_module
 from xdis.magics import PYTHON_MAGIC_INT
 from xdis.op_imports import op_imports, remap_opcodes
@@ -200,6 +200,11 @@ def disco_loop(
         real_out.write(
             bytecode.dis(asm_format=asm_format, show_source=show_source) + "\n"
         )
+
+        if version_tuple >= (3, 11):
+            if bytecode.exception_entries not in (None, []):
+                exception_table = format_exception_table(bytecode, version_tuple)
+                real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):

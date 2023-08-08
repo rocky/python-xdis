@@ -286,6 +286,20 @@ def format_code_info(co, version_tuple, name=None, is_pypy=False):
     return "\n".join(lines)
 
 
+def format_exception_table(bytecode, version_tuple) -> str:
+    if version_tuple < (3, 11) or not hasattr(bytecode, "exception_entries"):
+        return ""
+    lines = []
+    lines.append("ExceptionTable:")
+    for entry in bytecode.exception_entries:
+        lasti = " lasti" if entry.lasti else ""
+        end = entry.end - 2
+        lines.append(
+            f"  {entry.start} to {end} -> {entry.target} [{entry.depth}]{lasti}"
+        )
+    return "\n".join(lines)
+
+
 def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
 

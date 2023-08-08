@@ -20,6 +20,7 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
+import collections
 import inspect
 import sys
 import types
@@ -125,6 +126,38 @@ def get_name_info(name_index, name_list):
 _get_name_info = get_name_info
 
 
+_ExceptionTableEntry = collections.namedtuple(
+    "_ExceptionTableEntry", "start end target depth lasti"
+)
+
+
+def _parse_varint(iterator):
+    b = next(iterator)
+    val = b & 63
+    while b & 64:
+        val <<= 6
+        b = next(iterator)
+        val |= b & 63
+    return val
+
+
+def parse_exception_table(exception_table: bytes):
+    iterator = iter(exception_table)
+    entries = []
+    try:
+        while True:
+            start = _parse_varint(iterator) * 2
+            length = _parse_varint(iterator) * 2
+            end = start + length
+            target = _parse_varint(iterator) * 2
+            dl = _parse_varint(iterator)
+            depth = dl >> 1
+            lasti = bool(dl & 1)
+            entries.append(_ExceptionTableEntry(start, end, target, depth, lasti))
+    except StopIteration:
+        return entries
+
+
 def get_instructions_bytes(
     bytecode,
     opc,
@@ -134,6 +167,7 @@ def get_instructions_bytes(
     cells=None,
     linestarts=None,
     line_offset=0,
+    exception_entries=None,
 ):
     """Iterate over the instructions in a bytecode string.
 
@@ -144,6 +178,12 @@ def get_instructions_bytes(
 
     """
     labels = opc.findlabels(bytecode, opc)
+
+    if exception_entries is not None:
+        for start, end, target, _, _ in exception_entries:
+            for i in range(start, end):
+                labels.append(target)
+
     # label_maps = get_jump_target_maps(bytecode, opc)
     extended_arg = 0
 
@@ -203,7 +243,12 @@ def get_instructions_bytes(
                 argval, argrepr = _get_const_info(arg, constants)
                 optype = "const"
             elif op in opc.NAME_OPS:
-                argval, argrepr = _get_name_info(arg, names)
+                if opc.version_tuple >= (3, 11) and opc.opname[op] == "LOAD_GLOBAL":
+                    argval, argrepr = _get_name_info(arg >> 1, names)
+                    if arg & 1:
+                        argrepr = "NULL + " + argrepr
+                else:
+                    argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
             elif op in opc.JREL_OPS:
                 argval = i + get_jump_val(arg, opc.python_version)
@@ -308,6 +353,11 @@ class Bytecode(object):
         self.opnames = opc.opname
         self.current_offset = current_offset
 
+        if opc.version_tuple >= (3, 11) and hasattr(co, "co_exceptiontable"):
+            self.exception_entries = parse_exception_table(co.co_exceptiontable)
+        else:
+            self.exception_entries = None
+
     def __iter__(self):
         co = self.codeobj
         return get_instructions_bytes(
@@ -319,6 +369,7 @@ class Bytecode(object):
             self._cell_names,
             self._linestarts,
             line_offset=self._line_offset,
+            exception_entries=self.exception_entries,
         )
 
     def __repr__(self):
@@ -374,6 +425,7 @@ class Bytecode(object):
             filename=filename,
             show_source=show_source,
             first_line_number=first_line_number,
+            exception_entries=self.exception_entries,
         )
         return output.getvalue()
 
@@ -403,6 +455,7 @@ class Bytecode(object):
         filename: Optional[str] = None,
         show_source=True,
         first_line_number: Optional[int] = None,
+        exception_entries=None,
     ):
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
@@ -441,6 +494,7 @@ class Bytecode(object):
             cells,
             linestarts,
             line_offset=line_offset,
+            exception_entries=exception_entries,
         ):
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
