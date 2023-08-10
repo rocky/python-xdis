@@ -144,8 +144,8 @@ jrel_op(l, "MAKE_CELL",                     135,   0, 0)
 jrel_op(l, "CHECK_EG_MATCH",                 37,   0, 0)
 jrel_op(l, "PREP_RERAISE_STAR",              88,   1, 0)
 jrel_op(l, "PUSH_EXC_INFO",                  35,   0, 1)
-# resume
-jrel_op(l, "RESUME",                        151,   0, 0)
+# resume, acts like a nop
+def_op(l, "RESUME",                        151,   0, 0)
 
 # fmt: on
 def format_extended_is_op(arg):
