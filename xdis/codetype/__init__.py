@@ -198,12 +198,10 @@ def to_portable(
     co_varnames=None,
     co_filename=None,
     co_name=None,
-    co_qualname="",
     co_firstlineno=-1,
     co_lnotab="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
-    co_exceptiontable=b'',
-    co_freevars=(None,),  # 2.0+
-    co_cellvars=(None,),  # 2.0+
+    co_freevars=(None, ),  # 2.0+
+    co_cellvars=(None, ),  # 2.0+
     version_triple=PYTHON_VERSION_TRIPLE,
 ):
     code = CodeTypeUnion(
@@ -219,10 +217,8 @@ def to_portable(
         co_varnames,
         co_filename,
         co_name,
-        co_qualname,
         co_firstlineno,
         co_lnotab,
-        co_exceptiontable,
         co_freevars,
         co_cellvars,
     )
