@@ -163,6 +163,14 @@ def_op(l, "GET_AWAITABLE",                  131,   0, 0)
 rm_op(l, "LOAD_CLOSURE",                    135)
 def_op(l, "LOAD_CLOSURE",                   136,   0, 1)
 
+## Update tables 
+loc["hasconst"].append(172)  # KW_NAMES
+loc["hasfree"].extend((135, 136, 137, 138, 139))
+loc["hasjabs"] = []
+
+# removed jrel ops 35, 37, 143, 88, 154
+loc["hasjrel"] = [93, 110, 111, 112, 114, 115, 123, 128, 129, 134, 140, 173, 174, 175, 176]
+
 # fmt: on
 def format_extended_is_op(arg):
     return "is" if arg == 0 else "is not"
@@ -170,6 +178,7 @@ def format_extended_is_op(arg):
 
 def format_extended_contains_op(arg):
     return "in" if arg == 0 else "not in"
+
 
 
 opcode_arg_fmt = {
