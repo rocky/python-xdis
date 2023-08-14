@@ -48,7 +48,6 @@ rm_op(l,  "BINARY_TRUE_DIVIDE",      27)
 rm_op(l,  "BINARY_MODULO",           22)
 rm_op(l,  "BINARY_ADD",              23)
 rm_op(l,  "BINARY_SUBTRACT",         24)
-rm_op(l,  "BINARY_SUBSCR",           25)
 rm_op(l,  "BINARY_LSHIFT",           62)
 rm_op(l,  "BINARY_RSHIFT",           63)
 rm_op(l,  "BINARY_AND",              64)
@@ -98,6 +97,7 @@ rm_op(l,  "YIELD_FROM",              72)
 rm_op(l,  "MATCH_CLASS",            152)
 rm_op(l,  "MATCH_KEYS",              33)
 
+
 # These are added since 3.10...
 #          OP NAME                         OPCODE  POP PUSH
 #---------------------------------------------------------
@@ -126,16 +126,16 @@ jrel_op(l, "POP_JUMP_FORWARD_IF_TRUE",      115,   1, 0)
 jrel_op(l, "POP_JUMP_FORWARD_IF_NOT_NONE",  128,   1, 0)
 jrel_op(l, "POP_JUMP_FORWARD_IF_NONE",      129,   1, 0)
 # setup with
-def_op(l,  "BEFORE_WITH",                    53,  0, 1)
+def_op(l,  "BEFORE_WITH",                     53,  0, 1)
 # match
-def_op(l,  "MATCH_CLASS",                   152,  2, 1)
-def_op(l,  "MATCH_KEYS",                     33,  0, 1)
+def_op(l,  "MATCH_CLASS",                    152,  2, 1)
+def_op(l,  "MATCH_KEYS",                      33,  0, 1)
 # generators and co-routines
-def_op(l,  "ASYNC_GEN_WRAP",                 87,  0, 0)
-def_op(l,  "RETURN_GENERATOR",               75,  0, 0)
-def_op(l,  "SEND",                          123,  0, 0)
+def_op(l,  "ASYNC_GEN_WRAP",                  87,  0, 0)
+def_op(l,  "RETURN_GENERATOR",                75,  0, 0)
+def_op(l,  "SEND",                           123,  0, 0)
 # copy free vars for closures
-def_op(l,  "COPY_FREE_VARS",                149,  0, 0)
+def_op(l,  "COPY_FREE_VARS",                 149,  0, 0)
 # new jump
 jrel_op(l, "JUMP_BACKWARD_NO_INTERRUPT",    134,   0, 0)
 # new create cells op
@@ -145,7 +145,23 @@ jrel_op(l, "CHECK_EG_MATCH",                 37,   0, 0)
 jrel_op(l, "PREP_RERAISE_STAR",              88,   1, 0)
 jrel_op(l, "PUSH_EXC_INFO",                  35,   0, 1)
 # resume, acts like a nop
-def_op(l, "RESUME",                        151,   0, 0)
+def_op(l, "RESUME",                         151,   0, 0)
+
+## Redefined OPS
+rm_op(l, "STORE_DEREF",                     137)
+def_op(l, "STORE_DEREF",                    138,   1, 0)
+
+rm_op(l, "LOAD_DEREF",                      136)
+def_op(l, "LOAD_DEREF",                     137,   0, 1)
+
+rm_op(l, "DELETE_DEREF",                    138)
+def_op(l, "DELETE_DEREF",                   139,   0, 0)
+
+rm_op(l, "GET_AWAITABLE",                    73)
+def_op(l, "GET_AWAITABLE",                  131,   0, 0)
+
+rm_op(l, "LOAD_CLOSURE",                    135)
+def_op(l, "LOAD_CLOSURE",                   136,   0, 1)
 
 # fmt: on
 def format_extended_is_op(arg):
