@@ -182,7 +182,6 @@ def format_extended_contains_op(arg):
 
 
 opcode_arg_fmt = {
-    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "CONTAINS_OP": format_extended_contains_op,
