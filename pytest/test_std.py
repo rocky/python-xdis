@@ -50,7 +50,7 @@ EXPECTED_CODE_INFO = (
 #    0: a"""
 ).format(
     flags="0x00000000 (0x0)"
-    if (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
+    if PYTHON_VERSION_TRIPLE >= (3,11) or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
     else "0x00000040 (NOFREE)"
 )
 
