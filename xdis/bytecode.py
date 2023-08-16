@@ -251,7 +251,11 @@ def get_instructions_bytes(
                     argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
             elif op in opc.JREL_OPS:
-                argval = i + get_jump_val(arg, opc.python_version)
+                if opc.version_tuple >= (3,11) and 'JUMP_BACKWARD' in opc.opname[op]:
+                    argval = i + -get_jump_val(arg, opc.python_version)
+                else:
+                    argval = i + get_jump_val(arg, opc.python_version)
+
                 argrepr = "to " + repr(argval)
                 optype = "jrel"
             elif op in opc.JABS_OPS:
