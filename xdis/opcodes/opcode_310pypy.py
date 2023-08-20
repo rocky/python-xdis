@@ -1,8 +1,8 @@
 # (C) Copyright 2022-2023 by Rocky Bernstein
 """
-PYPY 3.9 opcodes
+PYPY 3.10 opcodes
 
-This is a like Python 3.9's opcode.py with some classification
+This is a like Python 3.10's opcode.py with some classification
 of stack usage.
 """
 
@@ -30,14 +30,14 @@ from xdis.opcodes.opcode_37pypy import (
     format_CALL_METHOD_KW,
 )
 
-version_tuple = (3, 9)
+version_tuple = (3, 10)
 python_implementation = "PyPy"
 
-import xdis.opcodes.opcode_39 as opcode_39
+import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.opcode_36 import extended_format_MAKE_FUNCTION, format_MAKE_FUNCTION
 
 l = locals()
-init_opdata(l, opcode_39, version_tuple, is_pypy=True)
+init_opdata(l, opcode_310, version_tuple, is_pypy=True)
 
 
 # fmt: off
