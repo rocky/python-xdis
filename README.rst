@@ -69,10 +69,9 @@ Disassembler Example
 
 The cross-version disassembler that is packaged here, can produce
 assembly listing that are superior to those typically found in
-Python's dis module. Here is an example:
+Python's dis module. Here is an example::
 
 
-```
 pydisasm --show-source -F extended-bytes bytecode_3.10/pydisasm-example.pyc
 # pydisasm version 6.1.0.dev0
 # Python bytecode 3.10.0 (3439)
@@ -150,21 +149,19 @@ pydisasm --show-source -F extended-bytes bytecode_3.10/pydisasm-example.pyc
              # print("Is small power of two")
   9:     >>   62 |64 01| LOAD_CONST           (None)
               64 |53 00| RETURN_VALUE         (return None)
-```
+
 
 Note in the above that some operand interpretation is done on items that are in the stack.
-For example in :
+For example in ::
 
-```
               14 |6a 02| LOAD_ATTR            (sys.version)
-```
+
 from the instruction see clean that ``sys.version`` is the resolved attribute that is loaded.
 
-Similarly in:
+Similarly in::
 
-```
               46 |76 00| CONTAINS_OP          (power_of_two in (2, 4))
-```
+
 
 we see that we can resolve the two arguments of the ``in`` operation.
 
