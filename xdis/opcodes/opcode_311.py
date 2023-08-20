@@ -8,10 +8,6 @@ import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
-    extended_format_BINARY_ADD,
-    extended_format_BINARY_MODULO,
-    extended_format_BINARY_SUBSCR,
-    extended_format_BINARY_SUBTRACT,
     extended_format_COMPARE_OP,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
@@ -107,7 +103,7 @@ rm_op(l,  "MATCH_KEYS",              33)
 #---------------------------------------------------------
 # replaced binary and inplace ops
 def_op(l, "CACHE",                            0,   0, 0)
-def_op(l, "BINARY_OP",                      122,   2, 1)
+binary_op(l, "BINARY_OP",                   122)
 # call ops
 def_op(l, "CALL",                           171,   1, 0)
 def_op(l, "KW_NAMES",                       172,   0, 0)
@@ -196,10 +192,6 @@ opcode_arg_fmt = {
 }
 
 opcode_extended_fmt = {
-    "BINARY_SUBSCR": extended_format_BINARY_SUBSCR,
-    "BINARY_SUBTRACT": extended_format_BINARY_SUBTRACT,
-    "BINARY_ADD": extended_format_BINARY_ADD,
-    "BINARY_MODULO": extended_format_BINARY_MODULO,
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "COMPARE_OP": extended_format_COMPARE_OP,

@@ -313,7 +313,10 @@ def update_sets(loc):
 def extended_format_binary_op(
     opc, instructions, fmt_str: str, reverse_args=False
 ) -> Optional[str]:
-    stack_arg1 = instructions[1]
+    i = 1
+    while instructions[i].opname == "CACHE":
+        i += 1
+    stack_arg1 = instructions[i]
     arg1 = None
     if stack_arg1.formatted is not None:
         arg1 = stack_arg1.formatted
@@ -323,17 +326,17 @@ def extended_format_binary_op(
     ):
         if arg1 is None:
             arg1 = instructions[1].argrepr
-        i = 2
-        while instructions[i].opname == "CACHE":
-            i += 1
+        j = i + 1
+        while instructions[j].opname == "CACHE":
+            j += 1
         if (
-            instructions[i].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
-            and instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
+            instructions[j].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
+            and instructions[i].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
         ):
             if reverse_args:
-                args = (arg1, instructions[i].argrepr)
+                args = (arg1, instructions[j].argrepr)
             else:
-                args = (instructions[i].argrepr, arg1)
+                args = (instructions[j].argrepr, arg1)
             return fmt_str % args
         else:
             return fmt_str % ("...", arg1)
@@ -349,7 +352,7 @@ def extended_format_unary_op(opc, instructions, fmt_str: str) -> Optional[str]:
 
 
 def extended_format_ATTR(opc, instructions):
-    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS:
+    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
         return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
 
 
