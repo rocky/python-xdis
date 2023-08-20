@@ -23,6 +23,11 @@ import xdis.opcodes.opcode_38 as opcode_38
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
+    extended_format_BINARY_ADD,
+    extended_format_BINARY_MODULO,
+    extended_format_BINARY_SUBSCR,
+    extended_format_BINARY_SUBTRACT,
+    extended_format_COMPARE_OP,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
@@ -106,13 +111,18 @@ opcode_arg_fmt = {
 }
 
 opcode_extended_fmt = {
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "CALL_METHOD":   extended_format_CALL_METHOD,
-    "LOAD_ATTR":     extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS,
-    "RETURN_VALUE":  extended_format_RETURN_VALUE,
-    "STORE_ATTR":    extended_format_ATTR,
+    "BINARY_SUBSCR":   extended_format_BINARY_SUBSCR,
+    "BINARY_SUBTRACT": extended_format_BINARY_SUBTRACT,
+    "BINARY_ADD":      extended_format_BINARY_ADD,
+    "BINARY_MODULO":   extended_format_BINARY_MODULO,
+    "CALL_FUNCTION":   extended_format_CALL_FUNCTION,
+    "CALL_METHOD":     extended_format_CALL_METHOD,
+    "COMPARE_OP":      extended_format_COMPARE_OP,
+    "LOAD_ATTR":       extended_format_ATTR,
+    "MAKE_FUNCTION":   extended_format_MAKE_FUNCTION,
+    "RAISE_VARARGS":   extended_format_RAISE_VARARGS,
+    "RETURN_VALUE":    extended_format_RETURN_VALUE,
+    "STORE_ATTR":      extended_format_ATTR,
 }
 # fmt: on
 

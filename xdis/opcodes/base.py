@@ -21,6 +21,7 @@ Python opcode.py structures
 
 import sys
 from copy import deepcopy
+from typing import Optional
 
 from xdis import wordcode
 from xdis.cross_dis import findlabels, findlinestarts, get_jump_target_maps
@@ -46,10 +47,11 @@ cmp_op = (
 HAVE_ARGUMENT = 90
 
 fields2copy = """
+binaryop
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
-nofollow
+nofollow unaryop
 """.split()
 
 
@@ -84,21 +86,34 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc[field] = list(getattr(from_mod, field))
 
 
-def compare_op(loc, name, op, pop=2, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hascompare"].append(op)
+def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+    loc["binaryop"].append(opcode)
+    def_op(loc, name, opcode, pop, push)
 
 
-def conditional_op(loc, name, op):
-    loc["hascompare"].append(op)
+def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hascompare"].append(opcode)
+    loc["binaryop"].append(opcode)
 
 
-def const_op(loc, name, op, pop=0, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hasconst"].append(op)
+def conditional_op(loc: dict, name: str, opcode: int):
+    loc["hascompare"].append(opcode)
 
 
-def def_op(loc, op_name, opcode, pop=-2, push=-2, fallthrough=True):
+def const_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasconst"].append(opcode)
+
+
+def def_op(
+    loc: dict,
+    op_name: str,
+    opcode: int,
+    pop: int = -2,
+    push: int = -2,
+    fallthrough: bool = True,
+):
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
     loc["oppush"][opcode] = push
@@ -107,23 +122,31 @@ def def_op(loc, op_name, opcode, pop=-2, push=-2, fallthrough=True):
         loc["nofollow"].append(opcode)
 
 
-def free_op(loc, name, op, pop=0, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hasfree"].append(op)
+def free_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasfree"].append(opcode)
 
 
-def jabs_op(loc, name, op, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(loc, name, op, pop, push, fallthrough=fallthrough)
-    loc["hasjabs"].append(op)
+def jabs_op(
+    loc: dict,
+    name: str,
+    opcode: int,
+    pop: int = 0,
+    push: int = 0,
+    conditional: bool = False,
+    fallthrough: bool = True,
+):
+    def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
+    loc["hasjabs"].append(opcode)
     if conditional:
-        loc["hascondition"].append(op)
+        loc["hascondition"].append(opcode)
 
 
-def jrel_op(loc, name, op, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(loc, name, op, pop, push)
-    loc["hasjrel"].append(op)
+def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=True):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasjrel"].append(opcode)
     if conditional:
-        loc["hascondition"].append(op)
+        loc["hascondition"].append(opcode)
 
 
 def local_op(loc, name, op, pop=0, push=1):
@@ -193,6 +216,11 @@ def store_op(loc, name, op, pop=0, push=1, is_type="def"):
         assert is_type == "def"
         def_op(loc, name, op, pop, push)
     loc["hasstore"].append(op)
+
+
+def unary_op(loc, name: str, op, pop=1, push=1):
+    loc["unaryop"].append(op)
+    def_op(loc, name, op, pop, push)
 
 
 # This is not in Python. The operand indicates how
@@ -279,6 +307,72 @@ def update_sets(loc):
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
     loc["VARGS_OPS"] = frozenset(loc["hasvargs"])
     loc["STORE_OPS"] = frozenset(loc["hasstore"])
+    loc["STORE_OPS"] = frozenset(loc["hasstore"])
+
+
+def extended_format_binary_op(
+    opc, instructions, fmt_str: str, reverse_args=False
+) -> Optional[str]:
+    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
+        i = 2
+        while instructions[i].opname == "CACHE":
+            i += 1
+        if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
+            if reverse_args:
+                args = (instructions[1].argrepr, instructions[i].argrepr)
+            else:
+                args = (instructions[i].argrepr, instructions[1].argrepr)
+            return fmt_str % args
+    return None
+
+
+def extended_format_ATTR(opc, instructions):
+    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS:
+        return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
+
+
+def extended_format_BINARY_ADD(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s + %s")
+
+
+def extended_format_BINARY_FLOOR_DIVIDE(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s // %s")
+
+
+def extended_format_BINARY_MODULO(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s %% %s")
+
+
+def extended_format_BINARY_MULTIPLY(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s * %s")
+
+
+def extended_format_BINARY_POWER(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s ** %s")
+
+
+def extended_format_BINARY_SUBSCR(opc, instructions):
+    return extended_format_binary_op(
+        opc,
+        instructions,
+        "%s[%s]",
+    )
+
+
+def extended_format_BINARY_SUBTRACT(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s - %s")
+
+
+def extended_format_BINARY_TRUE_DIVIDE(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s / %s")
+
+
+def extended_format_COMPARE_OP(opc, instructions):
+    return extended_format_binary_op(
+        opc,
+        instructions,
+        f"%s {instructions[0].argval} %s",
+    )
 
 
 def extended_format_CALL_FUNCTION(opc, instructions):
@@ -349,29 +443,20 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     return s
 
 
-def resolved_attrs(instructions):
-    resolved = []
-    for inst in instructions:
-        name = inst.argrepr
-        if name:
-            if name[0] == "'" and name[-1] == "'":
-                name = name[1:-1]
-        else:
-            name = ""
-        resolved.append(name)
-        if inst.opname != "LOAD_ATTR":
-            break
-    return ".".join(reversed(resolved))
+def extended_format_INPLACE_ADD(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s += %s")
 
 
-def extended_format_ATTR(opc, instructions):
-    if instructions[1].opname in (
-        "LOAD_CONST",
-        "LOAD_GLOBAL",
-        "LOAD_ATTR",
-        "LOAD_NAME",
-    ):
-        return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
+def extended_format_INPLACE_FLOOR_DIVIDE(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s //= %s")
+
+
+def extended_format_INPLACE_TRUE_DIVIDE(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s /= %s")
+
+
+def extended_format_INPLACE_SUBTRACT(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s -= %s")
 
 
 def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
@@ -402,12 +487,7 @@ def extended_format_RAISE_VARARGS_older(opc, instructions):
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     assert len(instructions) >= 1
-    if instructions[1].opname in (
-        "LOAD_CONST",
-        "LOAD_GLOBAL",
-        "LOAD_ATTR",
-        "LOAD_NAME",
-    ):
+    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS:
         return resolved_attrs(instructions[1:])
     return format_RAISE_VARARGS_older(raise_inst.argval)
 
@@ -416,12 +496,7 @@ def extended_format_RETURN_VALUE(opc, instructions):
     return_inst = instructions[0]
     assert return_inst.opname == "RETURN_VALUE"
     assert len(instructions) >= 1
-    if instructions[1].opname in (
-        "LOAD_CONST",
-        "LOAD_GLOBAL",
-        "LOAD_ATTR",
-        "LOAD_NAME",
-    ):
+    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS:
         return resolved_attrs(instructions[1:])
     return None
 
@@ -483,6 +558,23 @@ def opcode_check(loc):
             assert all(item in loc["opmap"].items() for item in opmap.items())
         except Exception:
             pass
+
+
+def resolved_attrs(instructions: list) -> str:
+    """ """
+    # we can probably speed up using the "formatted" field.
+    resolved = []
+    for inst in instructions:
+        name = inst.argrepr
+        if name:
+            if name[0] == "'" and name[-1] == "'":
+                name = name[1:-1]
+        else:
+            name = ""
+        resolved.append(name)
+        if inst.opname != "LOAD_ATTR":
+            break
+    return ".".join(reversed(resolved))
 
 
 def dump_opcodes(opmap):

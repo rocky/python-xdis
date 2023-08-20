@@ -23,6 +23,7 @@ If this file changes the other opcode files may have to be adjusted accordingly.
 """
 
 from xdis.opcodes.base import (
+    binary_op,
     compare_op,
     const_op,
     def_op,
@@ -33,12 +34,16 @@ from xdis.opcodes.base import (
     name_op,
     nargs_op,
     store_op,
+    unary_op,
     varargs_op,
 )
 
 l = locals()
 
 # FIXME: DRY this with opcode_3x.
+
+# opcodes that perform a binary operator of the top two stack entries
+binaryop = []
 
 hascompare = []
 hascondition = []  # conditional operator; has jump offset
@@ -66,6 +71,9 @@ oppush = [0] * 256
 # 9 means handle special. Note his forces oppush[i] - oppop[i] negative
 oppop = [0] * 256
 
+# opcodes that perform a unary operation of the top stack entry
+unaryop = []
+
 for op in range(256):
     opname[op] = "<%r>" % (op,)
 del op
@@ -87,25 +95,25 @@ def_op(l, "ROT_THREE",               3,  3,  3)
 def_op(l, "DUP_TOP",                 4,  0,  1)
 def_op(l, "ROT_FOUR",                5,  4,  4)
 
-def_op(l, "UNARY_POSITIVE",         10,  1,  1)
-def_op(l, "UNARY_NEGATIVE",         11,  1,  1)
-def_op(l, "UNARY_NOT",              12,  1,  1)
-def_op(l, "UNARY_CONVERT",          13,  1,  1)
+unary_op(l, "UNARY_POSITIVE",       10,  1,  1)
+unary_op(l, "UNARY_NEGATIVE",       11,  1,  1)
+unary_op(l, "UNARY_NOT",            12,  1,  1)
+unary_op(l, "UNARY_CONVERT",        13,  1,  1)
 
 def_op(l, "UNARY_INVERT",           15,  1,  1)
 
 def_op(l, "BINARY_POWER",           19,  2,  1)
 
-def_op(l, "BINARY_MULTIPLY",        20,  2,  1)
-def_op(l, "BINARY_DIVIDE",          21,  2,  1)
-def_op(l, "BINARY_MODULO",          22,  2,  1)
-def_op(l, "BINARY_ADD",             23,  2,  1)
-def_op(l, "BINARY_SUBTRACT",        24,  2,  1)
-def_op(l, "BINARY_SUBSCR",          25,  2,  1)
-def_op(l, "BINARY_FLOOR_DIVIDE",    26,  2,  1)
-def_op(l, "BINARY_TRUE_DIVIDE",     27,  2,  1)
-def_op(l, "INPLACE_FLOOR_DIVIDE",   28,  2,  1)
-def_op(l, "INPLACE_TRUE_DIVIDE",    29,  2,  1)
+binary_op(l, "BINARY_MULTIPLY",     20,  2,  1)
+binary_op(l, "BINARY_DIVIDE",       21,  2,  1)
+binary_op(l, "BINARY_MODULO",       22,  2,  1)
+binary_op(l, "BINARY_ADD",          23,  2,  1)
+binary_op(l, "BINARY_SUBTRACT",     24,  2,  1)
+binary_op(l, "BINARY_SUBSCR",          25,  2,  1)
+binary_op(l, "BINARY_FLOOR_DIVIDE",    26,  2,  1)
+binary_op(l, "BINARY_TRUE_DIVIDE",     27,  2,  1)
+binary_op(l, "INPLACE_FLOOR_DIVIDE",   28,  2,  1)
+binary_op(l, "INPLACE_TRUE_DIVIDE",    29,  2,  1)
 
 def_op(l, "SLICE+0",                30,  2,  2)
 def_op(l, "SLICE+1",                31,  2,  2)

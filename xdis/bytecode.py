@@ -310,6 +310,7 @@ def get_instructions_bytes(
             starts_line,
             is_jump_target,
             extended_arg_count != 0,
+            formatted=None,
         )
         # fallthrough)
         extended_arg_count = extended_arg_count + 1 if op == opc.EXTENDED_ARG else 0
@@ -511,6 +512,7 @@ class Bytecode(object):
                     set_lineno_number,  # this is the only field that changes
                     instr.is_jump_target,
                     instr.has_extended_arg,
+                    None,
                 )
             last_was_set_lineno = False
             if instr.opname == "SET_LINENO":

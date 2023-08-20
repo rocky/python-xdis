@@ -26,6 +26,7 @@ If this file changes the other opcode files may have to a adjusted accordingly.
 from typing import Tuple
 
 from xdis.opcodes.base import (
+    binary_op,
     compare_op,
     const_op,
     def_op,
@@ -37,12 +38,16 @@ from xdis.opcodes.base import (
     name_op,
     nargs_op,
     store_op,
+    unary_op,
     varargs_op,
 )
 
 loc = l = locals()
 
 # FIXME: DRY with opcode2x.py
+
+# opcodes that perform a binary operator of the top two stack entries
+binaryop = []
 
 hascompare = []
 hascondition = []  # conditional operator; has jump offset
@@ -68,6 +73,9 @@ oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
 oppop = [0] * 256
+
+# opcodes that perform a unary operation of the top stack entry
+unaryop = []
 
 for op in range(256):
     opname[op] = "<%r>" % (op,)
@@ -95,23 +103,23 @@ def_op(l, 'DUP_TOP',               4,  0,  1)
 def_op(l, 'DUP_TOP_TWO',           5,  0,  2)
 
 def_op(l, 'NOP',                   9,  0,  0)
-def_op(l, 'UNARY_POSITIVE',       10,  1,  1)
-def_op(l, 'UNARY_NEGATIVE',       11,  1,  1)
-def_op(l, 'UNARY_NOT',            12,  1,  1)
+unary_op(l, 'UNARY_POSITIVE',     10,  1,  1)
+unary_op(l, 'UNARY_NEGATIVE',     11,  1,  1)
+unary_op(l, 'UNARY_NOT',          12,  1,  1)
 
-def_op(l, 'UNARY_INVERT',         15,  1,  1)
+unary_op(l, 'UNARY_INVERT',       15,  1,  1)
 
-def_op(l, 'BINARY_POWER',         19,  2,  1)
-def_op(l, 'BINARY_MULTIPLY',      20,  2,  1)
+binary_op(l, 'BINARY_POWER',         19,  2,  1)
+binary_op(l, 'BINARY_MULTIPLY',      20,  2,  1)
 
-def_op(l, 'BINARY_MODULO',        22,  2,  1)
-def_op(l, 'BINARY_ADD',           23,  2,  1)
-def_op(l, 'BINARY_SUBTRACT',      24,  2,  1)
-def_op(l, 'BINARY_SUBSCR',        25,  2,  1)
-def_op(l, 'BINARY_FLOOR_DIVIDE',  26,  2,  1)
-def_op(l, 'BINARY_TRUE_DIVIDE',   27,  2,  1)
-def_op(l, 'INPLACE_FLOOR_DIVIDE', 28,  2,  1)
-def_op(l, 'INPLACE_TRUE_DIVIDE',  29,  2,  1)
+binary_op(l, 'BINARY_MODULO',        22,  2,  1)
+binary_op(l, 'BINARY_ADD',           23,  2,  1)
+binary_op(l, 'BINARY_SUBTRACT',      24,  2,  1)
+binary_op(l, 'BINARY_SUBSCR',        25,  2,  1)
+binary_op(l, 'BINARY_FLOOR_DIVIDE',  26,  2,  1)
+binary_op(l, 'BINARY_TRUE_DIVIDE',   27,  2,  1)
+binary_op(l, 'INPLACE_FLOOR_DIVIDE', 28,  2,  1)
+binary_op(l, 'INPLACE_TRUE_DIVIDE',  29,  2,  1)
 
 # Gone from Python 3 are Python2's
 # SLICE+0 .. SLICE+3
@@ -243,8 +251,9 @@ def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
     """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
+    # From opcode description: argc indicates the total number of
+    # positional and keyword arguments.  Sometimes the function name
+    # is in the stack arg positions back.
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")

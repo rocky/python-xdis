@@ -23,6 +23,7 @@ opcodes in Python's dis.py library.
 # These are used from outside this module
 from xdis.cross_dis import findlabels, findlinestarts
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported
+    binary_op,
     compare_op,
     const_op,
     def_op,
@@ -78,6 +79,9 @@ l["findlabels"] = findlabels
 
 # FIXME: can we DRY this even more?
 
+# opcodes that perform a binary operator of the top two stack entries
+binaryop = []
+
 hascompare = []
 hascondition = []  # conditional operator; has jump offset
 hasconst = []
@@ -103,6 +107,10 @@ opmap = {}
 opname = [""] * 256
 for op in range(256):
     opname[op] = "<%r>" % (op,)
+
+# opcodes that perform a unary operation of the top stack entry
+unaryop = []
+
 del op
 
 # Instruction opcodes for compiled code

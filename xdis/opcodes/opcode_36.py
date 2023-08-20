@@ -24,6 +24,17 @@ import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
+    extended_format_BINARY_ADD,
+    extended_format_BINARY_FLOOR_DIVIDE,
+    extended_format_BINARY_MODULO,
+    extended_format_BINARY_SUBSCR,
+    extended_format_BINARY_SUBTRACT,
+    extended_format_BINARY_TRUE_DIVIDE,
+    extended_format_COMPARE_OP,
+    extended_format_INPLACE_ADD,
+    extended_format_INPLACE_FLOOR_DIVIDE,
+    extended_format_INPLACE_SUBTRACT,
+    extended_format_INPLACE_TRUE_DIVIDE,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
@@ -213,13 +224,14 @@ update_pj3(globals(), loc)
 
 finalize_opcodes(loc)
 
-# extended formatting routine  should be done after updating globals and finalizing opcodes
+# Extended formatting routines
+# This should be called after updating globals and finalizing opcodes
 # since they make use of the information there.
 
 
-def extended_format_CALL_METHOD(opc, instructions):
+def extended_format_CALL_METHOD(opc, instructions) -> str:
     """Inst should be a "LOAD_METHOD" instruction. Looks in `instructions`
-    to see if we can find a method name.  If not we'll return None.
+    to see if we can find a method name.  If not we'll return "".
 
     """
     # From opcode description: Loads a method named co_names[namei] from the TOS object.
@@ -254,10 +266,6 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     # Sometimes the function name is in the stack arg positions back.
     call_function_inst = instructions[0]
     call_opname = call_function_inst.opname
-    if call_opname == "CALL_FUNCTION_EX":
-        from trepan.api import debug
-
-        debug()
     assert call_opname in (
         "CALL_FUNCTION",
         "CALL_FUNCTION_VAR",
@@ -286,12 +294,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         pass
 
     if i == function_pos:
-        if instructions[function_pos].opname in (
-            "LOAD_CONST",
-            "LOAD_GLOBAL",
-            "LOAD_ATTR",
-            "LOAD_NAME",
-        ):
+        if instructions[function_pos].opcode in opc.NAME_OPS | opc.CONST_OPS:
             s = resolved_attrs(instructions[function_pos:])
             s += ": "
             pass
@@ -340,12 +343,7 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
             pass
 
         if i == function_pos:
-            if instructions[function_pos].opname in (
-                "LOAD_CONST",
-                "LOAD_GLOBAL",
-                "LOAD_ATTR",
-                "LOAD_NAME",
-            ):
+            if instructions[function_pos].opname in opc.NAME_OPS | opc.CONST_OPS:
                 if instructions[function_pos].opname == "LOAD_ATTR":
                     s += "."
                 s += "%s() " % instructions[function_pos].argrepr
@@ -356,10 +354,21 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
 
 
 opcode_extended_fmt = {
+    "BINARY_FLOOR_DIVIDE": extended_format_BINARY_FLOOR_DIVIDE,
+    "BINARY_SUBSCR": extended_format_BINARY_SUBSCR,
+    "BINARY_SUBTRACT": extended_format_BINARY_SUBTRACT,
+    "BINARY_TRUE_DIVIDE": extended_format_BINARY_TRUE_DIVIDE,
+    "BINARY_ADD": extended_format_BINARY_ADD,
+    "BINARY_MODULO": extended_format_BINARY_MODULO,
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
     "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
     "CALL_METHOD": extended_format_CALL_METHOD,
+    "COMPARE_OP": extended_format_COMPARE_OP,
+    "INPLACE_ADD": extended_format_INPLACE_ADD,
+    "INPLACE_FLOOR_DIVIDE": extended_format_INPLACE_FLOOR_DIVIDE,
+    "INPLACE_SUBTRACT": extended_format_INPLACE_SUBTRACT,
+    "INPLACE_TRUE_DIVIDE": extended_format_INPLACE_TRUE_DIVIDE,
     "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
