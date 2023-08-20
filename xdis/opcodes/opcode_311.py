@@ -6,6 +6,7 @@ This is a like Python 3.11's opcode.py
 
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
+    binary_op,
     def_op,
     extended_format_ATTR,
     extended_format_COMPARE_OP,
