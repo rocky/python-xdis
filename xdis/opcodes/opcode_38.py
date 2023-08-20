@@ -23,7 +23,9 @@ import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.base import (
     def_op,
     extended_format_BINARY_ADD,
+    extended_format_BINARY_AND,
     extended_format_BINARY_FLOOR_DIVIDE,
+    extended_format_BINARY_LSHIFT,
     extended_format_BINARY_MODULO,
     extended_format_BINARY_SUBSCR,
     extended_format_BINARY_SUBTRACT,
@@ -31,6 +33,7 @@ from xdis.opcodes.base import (
     extended_format_COMPARE_OP,
     extended_format_INPLACE_ADD,
     extended_format_INPLACE_FLOOR_DIVIDE,
+    extended_format_INPLACE_RSHIFT,
     extended_format_INPLACE_SUBTRACT,
     extended_format_INPLACE_TRUE_DIVIDE,
     extended_format_RETURN_VALUE,
@@ -93,7 +96,9 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "BINARY_ADD":                 extended_format_BINARY_ADD,
+    "BINARY_AND":                 extended_format_BINARY_AND,
     "BINARY_FLOOR_DIVIDE":        extended_format_BINARY_FLOOR_DIVIDE,
+    "BINARY_LSHIFT":              extended_format_BINARY_LSHIFT,
     "BINARY_MODULO":              extended_format_BINARY_MODULO,
     "BINARY_SUBSCR":              extended_format_BINARY_SUBSCR,
     "BINARY_SUBTRACT":            extended_format_BINARY_SUBTRACT,
@@ -103,6 +108,7 @@ opcode_extended_fmt = {
     "COMPARE_OP":                 extended_format_COMPARE_OP,
     "INPLACE_ADD":                extended_format_INPLACE_ADD,
     "INPLACE_FLOOR_DIVIDE":       extended_format_INPLACE_FLOOR_DIVIDE,
+    "INPLACE_RSHIFT":             extended_format_INPLACE_RSHIFT,
     "INPLACE_SUBTRACT":           extended_format_INPLACE_SUBTRACT,
     "INPLACE_TRUE_DIVIDE":        extended_format_INPLACE_TRUE_DIVIDE,
     "LOAD_ATTR":                  extended_format_ATTR,

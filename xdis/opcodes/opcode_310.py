@@ -24,6 +24,7 @@ from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
     extended_format_BINARY_ADD,
+    extended_format_BINARY_AND,
     extended_format_BINARY_FLOOR_DIVIDE,
     extended_format_BINARY_MODULO,
     extended_format_BINARY_SUBSCR,
@@ -100,6 +101,7 @@ opcode_arg_fmt = {
 
 opcode_extended_fmt = {
     "BINARY_ADD": extended_format_BINARY_ADD,
+    "BINARY_AND": extended_format_BINARY_AND,
     "BINARY_FLOOR_DIVIDE": extended_format_BINARY_FLOOR_DIVIDE,
     "BINARY_MODULO": extended_format_BINARY_MODULO,
     "BINARY_SUBSCR": extended_format_BINARY_SUBSCR,
