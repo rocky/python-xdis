@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2022 by Rocky Bernstein
+#  Copyright (c) 2018-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,7 +24,8 @@ from collections import namedtuple
 
 _Instruction = namedtuple(
     "_Instruction",
-    "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg",
+    "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line "
+    "is_jump_target has_extended_arg formatted",
 )
 _Instruction.opname.__doc__ = "Human readable name for operation"
 _Instruction.opcode.__doc__ = "Numeric code for operation"
@@ -43,8 +44,12 @@ _Instruction.has_extended_arg.__doc__ = (
     "True there were EXTENDED_ARG opcodes before this, otherwise False"
 )
 
+# Note this has to be the last field. Code to set this assumes this.
+_Instruction.formatted.__doc__ = (
+    "If not None, a somewhat hacky formatted representation of the instruction"
+)
+
 _OPNAME_WIDTH = 20
-_OPARG_WIDTH = 6
 
 
 class Instruction(_Instruction):
@@ -74,6 +79,9 @@ class Instruction(_Instruction):
       fallthrough - True if the instruction can (not must) fall through to the next
                     instruction. Note conditionals are in this category, but
                     returns, raise, and unconditional jumps are not.
+      formatted - if not None, a hacky formatted representation of the
+                  instruction by scanning previous instructions and
+                  using information there and in their formatted fields
     """
 
     # FIXME: remove has_arg from initialization but keep it as a field.
@@ -185,6 +193,12 @@ class Instruction(_Instruction):
                         opc, list(reversed(instructions))
                     )
                     if new_repr:
+                        # Add formatted info to formatted field of instruction.
+                        # This the last field in instruction.
+                        new_instruction = list(instructions[-1])
+                        new_instruction[-1] = new_repr
+                        del instructions[-1]
+                        instructions.append(Instruction(*new_instruction))
                         argrepr = new_repr
                 pass
             if not argrepr:
@@ -206,6 +220,10 @@ class Instruction(_Instruction):
                     opc, list(reversed(instructions))
                 )
                 if new_repr:
+                    new_instruction = list(instructions[-1])
+                    new_instruction[-1] = new_repr
+                    del instructions[-1]
+                    instructions.append(Instruction(*new_instruction))
                     fields.append("(%s)" % new_repr)
             pass
 

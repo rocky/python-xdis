@@ -6,8 +6,10 @@ This is a like Python 3.11's opcode.py
 
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
+    binary_op,
     def_op,
     extended_format_ATTR,
+    extended_format_COMPARE_OP,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
@@ -19,7 +21,6 @@ from xdis.opcodes.opcode_36 import (
     extended_format_CALL_FUNCTION,
     extended_format_CALL_METHOD,
     extended_format_MAKE_FUNCTION,
-    format_BUILD_MAP_UNPACK_WITH_CALL,
     format_CALL_FUNCTION_EX,
     format_CALL_FUNCTION_KW,
     format_extended_arg36,
@@ -103,7 +104,7 @@ rm_op(l,  "MATCH_KEYS",              33)
 #---------------------------------------------------------
 # replaced binary and inplace ops
 def_op(l, "CACHE",                            0,   0, 0)
-def_op(l, "BINARY_OP",                      122,   2, 1)
+binary_op(l, "BINARY_OP",                   122)
 # call ops
 def_op(l, "CALL",                           171,   1, 0)
 def_op(l, "KW_NAMES",                       172,   0, 0)
@@ -163,7 +164,7 @@ def_op(l, "GET_AWAITABLE",                  131,   0, 0)
 rm_op(l, "LOAD_CLOSURE",                    135)
 def_op(l, "LOAD_CLOSURE",                   136,   0, 1)
 
-## Update tables 
+## Update tables
 loc["hasconst"].append(172)  # KW_NAMES
 loc["hasfree"].extend((135, 136, 137, 138, 139))
 loc["hasjabs"] = []
@@ -180,7 +181,6 @@ def format_extended_contains_op(arg):
     return "in" if arg == 0 else "not in"
 
 
-
 opcode_arg_fmt = {
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
@@ -195,6 +195,7 @@ opcode_arg_fmt = {
 opcode_extended_fmt = {
     "CALL_FUNCTION": extended_format_CALL_FUNCTION,
     "CALL_METHOD": extended_format_CALL_METHOD,
+    "COMPARE_OP": extended_format_COMPARE_OP,
     "LOAD_ATTR": extended_format_ATTR,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
     "RAISE_VARARGS": extended_format_RAISE_VARARGS,
