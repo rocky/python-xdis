@@ -9,6 +9,17 @@ of stack usage.
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
+    extended_format_BINARY_ADD,
+    extended_format_BINARY_AND,
+    extended_format_BINARY_FLOOR_DIVIDE,
+    extended_format_BINARY_MODULO,
+    extended_format_BINARY_SUBSCR,
+    extended_format_BINARY_SUBTRACT,
+    extended_format_COMPARE_OP,
+    extended_format_INPLACE_ADD,
+    extended_format_INPLACE_FLOOR_DIVIDE,
+    extended_format_INPLACE_SUBTRACT,
+    extended_format_INPLACE_TRUE_DIVIDE,
     extended_format_RAISE_VARARGS_older,
     extended_format_RETURN_VALUE,
     finalize_opcodes,
@@ -30,11 +41,11 @@ from xdis.opcodes.opcode_37pypy import (
     format_CALL_METHOD_KW,
 )
 
-version_tuple = (3, 10)
-python_implementation = "PyPy"
-
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.opcode_36 import extended_format_MAKE_FUNCTION, format_MAKE_FUNCTION
+
+version_tuple = (3, 10)
+python_implementation = "PyPy"
 
 l = locals()
 init_opdata(l, opcode_310, version_tuple, is_pypy=True)
@@ -69,8 +80,19 @@ opcode_arg_fmt = {
 }
 
 opcode_extended_fmt = {
+    "BINARY_ADD": extended_format_BINARY_ADD,
+    "BINARY_AND": extended_format_BINARY_AND,
+    "BINARY_FLOOR_DIVIDE": extended_format_BINARY_FLOOR_DIVIDE,
+    "BINARY_MODULO": extended_format_BINARY_MODULO,
+    "BINARY_SUBSCR": extended_format_BINARY_SUBSCR,
+    "BINARY_SUBTRACT": extended_format_BINARY_SUBTRACT,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "CALL_METHOD_KW": extended_format_CALL_METHOD_KW,
+    "COMPARE_OP": extended_format_COMPARE_OP,
+    "INPLACE_ADD": extended_format_INPLACE_ADD,
+    "INPLACE_FLOOR_DIVIDE": extended_format_INPLACE_FLOOR_DIVIDE,
+    "INPLACE_SUBTRACT": extended_format_INPLACE_SUBTRACT,
+    "INPLACE_TRUE_DIVIDE": extended_format_INPLACE_TRUE_DIVIDE,
     "LOAD_ATTR": extended_format_ATTR,
     "MAKE_CLOSURE": extended_format_MAKE_FUNCTION,
     "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,

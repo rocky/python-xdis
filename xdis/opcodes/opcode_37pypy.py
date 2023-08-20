@@ -103,7 +103,7 @@ def extended_format_CALL_METHOD(opc, instructions):
             break
         pass
 
-    if i == method_pos:
+    if i == method_pos and len(instructions) > method_pos + 2:
         if instructions[method_pos + 2].opname in ("LOAD_NAME", "LOAD_FAST"):
             s += "%s.%s(), " % (
                 instructions[method_pos + 2].argrepr,
