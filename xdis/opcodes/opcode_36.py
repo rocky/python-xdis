@@ -16,7 +16,7 @@
 """
 CPython 3.6 bytecode opcodes
 
-This is a like Python 3.6's opcode.py with some classification
+This is like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
@@ -24,25 +24,7 @@ import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
     extended_format_ATTR,
-    extended_format_BINARY_ADD,
-    extended_format_BINARY_AND,
-    extended_format_BINARY_FLOOR_DIVIDE,
-    extended_format_BINARY_LSHIFT,
-    extended_format_BINARY_MODULO,
-    extended_format_BINARY_OR,
-    extended_format_BINARY_SUBSCR,
-    extended_format_BINARY_SUBTRACT,
-    extended_format_BINARY_TRUE_DIVIDE,
-    extended_format_COMPARE_OP,
-    extended_format_INPLACE_ADD,
-    extended_format_INPLACE_FLOOR_DIVIDE,
-    extended_format_INPLACE_RSHIFT,
-    extended_format_INPLACE_SUBTRACT,
-    extended_format_INPLACE_TRUE_DIVIDE,
     extended_format_RAISE_VARARGS_older,
-    extended_format_RETURN_VALUE,
-    extended_format_UNARY_NEGATIVE,
-    extended_format_UNARY_NOT,
     finalize_opcodes,
     format_RAISE_VARARGS_older,
     init_opdata,
@@ -54,6 +36,7 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
 oppush = {}
 oppop = {}
@@ -214,7 +197,7 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(count):
     return "%d mappings" % count
 
 
-opcode_arg_fmt = {
+opcode_arg_fmt36 = opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION": format_CALL_FUNCTION,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
@@ -320,8 +303,9 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
     return None.
 
     """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
+    # From opcode description: argc indicates the total number of
+    # positional and keyword arguments.  Sometimes the function name
+    # is in the stack arg positions back.
     call_function_inst = instructions[0]
     assert call_function_inst.opname == "CALL_FUNCTION_KW"
     function_pos = call_function_inst.arg
@@ -359,31 +343,30 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
         return s
 
 
-opcode_extended_fmt = {
-    "BINARY_AND": extended_format_BINARY_AND,
-    "BINARY_FLOOR_DIVIDE": extended_format_BINARY_FLOOR_DIVIDE,
-    "BINARY_SUBSCR": extended_format_BINARY_SUBSCR,
-    "BINARY_SUBTRACT": extended_format_BINARY_SUBTRACT,
-    "BINARY_TRUE_DIVIDE": extended_format_BINARY_TRUE_DIVIDE,
-    "BINARY_ADD": extended_format_BINARY_ADD,
-    "BINARY_LSHIFT": extended_format_BINARY_LSHIFT,
-    "BINARY_MODULO": extended_format_BINARY_MODULO,
-    "BINARY_OR": extended_format_BINARY_OR,
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
-    "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
-    "CALL_METHOD": extended_format_CALL_METHOD,
-    "COMPARE_OP": extended_format_COMPARE_OP,
-    "INPLACE_ADD": extended_format_INPLACE_ADD,
-    "INPLACE_FLOOR_DIVIDE": extended_format_INPLACE_FLOOR_DIVIDE,
-    "INPLACE_RSHIFT": extended_format_INPLACE_RSHIFT,
-    "INPLACE_SUBTRACT": extended_format_INPLACE_SUBTRACT,
-    "INPLACE_TRUE_DIVIDE": extended_format_INPLACE_TRUE_DIVIDE,
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
-    "UNARY_NEGATIVE": extended_format_UNARY_NEGATIVE,
-    "UNARY_NOT": extended_format_UNARY_NOT,
+opcode_arg_fmt = opcode_arg_fmt36 = {
+    **opcode_arg_fmt35,
+    **{
+        "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
+        "CALL_FUNCTION": format_CALL_FUNCTION,
+        "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
+        "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
+        "CALL_METHOD": format_CALL_FUNCTION,
+        "MAKE_FUNCTION": format_MAKE_FUNCTION,
+        "FORMAT_VALUE": format_value_flags,
+        "EXTENDED_ARG": format_extended_arg36,
+        "RAISE_VARARGS": format_RAISE_VARARGS_older,
+    },
+}
+
+opcode_extended_fmt36 = opcode_extended_fmt = {
+    **opcode_extended_fmt35,
+    **{
+        "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+        "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
+        "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
+        "CALL_METHOD": extended_format_CALL_METHOD,
+        "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+        "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+        "STORE_ATTR": extended_format_ATTR,
+    },
 }

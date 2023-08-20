@@ -16,27 +16,12 @@
 """
 CPython 3.8 bytecode opcodes
 
-This is a like Python 3.8's opcode.py
+This is like Python 3.8's opcode.py
 """
 
 import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.base import (
     def_op,
-    extended_format_BINARY_ADD,
-    extended_format_BINARY_AND,
-    extended_format_BINARY_FLOOR_DIVIDE,
-    extended_format_BINARY_LSHIFT,
-    extended_format_BINARY_MODULO,
-    extended_format_BINARY_SUBSCR,
-    extended_format_BINARY_SUBTRACT,
-    extended_format_BINARY_TRUE_DIVIDE,
-    extended_format_COMPARE_OP,
-    extended_format_INPLACE_ADD,
-    extended_format_INPLACE_FLOOR_DIVIDE,
-    extended_format_INPLACE_RSHIFT,
-    extended_format_INPLACE_SUBTRACT,
-    extended_format_INPLACE_TRUE_DIVIDE,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
     jrel_op,
@@ -44,17 +29,7 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.opcode_33 import extended_format_ATTR
-from xdis.opcodes.opcode_36 import (
-    extended_format_CALL_FUNCTION,
-    extended_format_CALL_METHOD,
-    extended_format_MAKE_FUNCTION,
-    format_BUILD_MAP_UNPACK_WITH_CALL,
-    format_CALL_FUNCTION_EX,
-    format_CALL_FUNCTION_KW,
-    format_extended_arg36,
-    format_MAKE_FUNCTION,
-)
+from xdis.opcodes.opcode_37 import opcode_arg_fmt37, opcode_extended_fmt37
 
 version_tuple = (3, 8)
 python_implementation = "CPython"
@@ -81,43 +56,10 @@ def_op(l, "END_FINALLY",       88,     6, 0)  # POP is 6, when not 1
 jrel_op(l, "CALL_FINALLY",    162,     0, 1)
 nargs_op(l, "POP_FINALLY",    163,     6, 0)  # PUSH/POP vary
 
-
-format_value_flags = opcode_37.format_value_flags
-
-opcode_arg_fmt = {
-    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
-    "CALL_FUNCTION_EX":           format_CALL_FUNCTION_EX,
-    "CALL_FUNCTION_KW":           format_CALL_FUNCTION_KW,
-    "EXTENDED_ARG":               format_extended_arg36,
-    "FORMAT_VALUE":               format_value_flags,
-    "MAKE_FUNCTION":              format_MAKE_FUNCTION,
-    "RAISE_VARARGS":              opcode_37.format_RAISE_VARARGS,
-}
-
-opcode_extended_fmt = {
-    "BINARY_ADD":                 extended_format_BINARY_ADD,
-    "BINARY_AND":                 extended_format_BINARY_AND,
-    "BINARY_FLOOR_DIVIDE":        extended_format_BINARY_FLOOR_DIVIDE,
-    "BINARY_LSHIFT":              extended_format_BINARY_LSHIFT,
-    "BINARY_MODULO":              extended_format_BINARY_MODULO,
-    "BINARY_SUBSCR":              extended_format_BINARY_SUBSCR,
-    "BINARY_SUBTRACT":            extended_format_BINARY_SUBTRACT,
-    "BINARY_TRUE_DIVIDE":         extended_format_BINARY_TRUE_DIVIDE,
-    "CALL_FUNCTION":              extended_format_CALL_FUNCTION,
-    "CALL_METHOD":                extended_format_CALL_METHOD,
-    "COMPARE_OP":                 extended_format_COMPARE_OP,
-    "INPLACE_ADD":                extended_format_INPLACE_ADD,
-    "INPLACE_FLOOR_DIVIDE":       extended_format_INPLACE_FLOOR_DIVIDE,
-    "INPLACE_RSHIFT":             extended_format_INPLACE_RSHIFT,
-    "INPLACE_SUBTRACT":           extended_format_INPLACE_SUBTRACT,
-    "INPLACE_TRUE_DIVIDE":        extended_format_INPLACE_TRUE_DIVIDE,
-    "LOAD_ATTR":                  extended_format_ATTR,
-    "MAKE_FUNCTION":              extended_format_MAKE_FUNCTION,
-    "RAISE_VARARGS":              opcode_37.extended_format_RAISE_VARARGS,
-    "RETURN_VALUE":               extended_format_RETURN_VALUE,
-    "STORE_ATTR":                 extended_format_ATTR,
-}
 # fmt: on
-update_pj3(globals(), l)
 
+opcode_arg_fmt = opcode_arg_fmt38 = opcode_arg_fmt37.copy()
+opcode_extended_fmt = opcode_extended_fmt38 = opcode_extended_fmt37.copy()
+
+update_pj3(globals(), loc)
 finalize_opcodes(l)

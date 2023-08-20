@@ -33,6 +33,7 @@ from xdis.opcodes.base import (
     local_op,
     name_op,
     nargs_op,
+    opcode_extended_fmt_base,
     store_op,
     unary_op,
     varargs_op,
@@ -236,3 +237,5 @@ def_op(l, "EXTENDED_ARG", 143)
 # fmt: on
 
 EXTENDED_ARG = 143
+
+opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()

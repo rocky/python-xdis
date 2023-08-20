@@ -37,6 +37,7 @@ from xdis.opcodes.base import (
     local_op,
     name_op,
     nargs_op,
+    opcode_extended_fmt_base,
     store_op,
     unary_op,
     varargs_op,
@@ -296,3 +297,6 @@ def parse_fn_counts_30_35(argc: int) -> Tuple[int, int, int]:
     if annotate_count > 1:
         annotate_count -= 1
     return ((argc & 0xFF), (argc >> 8) & 0xFF, annotate_count)
+
+
+opcode_extended_fmt_base3x = opcode_extended_fmt_base.copy()

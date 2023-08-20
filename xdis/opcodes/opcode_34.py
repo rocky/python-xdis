@@ -8,57 +8,42 @@ of stack usage.
 
 import xdis.opcodes.opcode_33 as opcode_33
 from xdis.opcodes.base import (
-    extended_format_ATTR,
-    extended_format_CALL_FUNCTION,
-    extended_format_RAISE_VARARGS_older,
     finalize_opcodes,
-    format_CALL_FUNCTION_pos_name_encoded,
-    format_extended_arg,
     format_RAISE_VARARGS_older,
     free_op,
     init_opdata,
+    opcode_arg_fmt_base,
+    opcode_extended_fmt_base,
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.opcode_3x import (
-    extended_format_MAKE_FUNCTION_30_35,
-    format_MAKE_FUNCTION_30_35,
-)
+from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_30_35
 
 version_tuple = (3, 4)
 python_implementation = "CPython"
 
-loc = l = locals()
+loc = locals()
 
-init_opdata(l, opcode_33, version_tuple)
+init_opdata(loc, opcode_33, version_tuple)
 
 # fmt: off
 # These are removed since Python 3.3
-rm_op(l, "STORE_LOCALS",       69)
+rm_op(loc, "STORE_LOCALS",       69)
 
 # These are new since Python 3.3
-free_op(l, "LOAD_CLASSDEREF", 148)
+free_op(loc, "LOAD_CLASSDEREF", 148)
 # fmt: on
 
-update_pj3(globals(), l)
-
-opcode_arg_fmt = {
-    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
-    "EXTENDED_ARG": format_extended_arg,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older,
+opcode_arg_fmt = opcode_arg_fmt34 = {
+    **opcode_arg_fmt_base,
+    **{
+        "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
+        "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
+        "RAISE_VARARGS": format_RAISE_VARARGS_older,
+    },
 }
 
-opcode_extended_fmt = {
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_30_35,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_30_35,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "STORE_ATTR": extended_format_ATTR,
-}
+opcode_extended_fmt = opcode_extended_fmt34 = opcode_extended_fmt_base
 
-finalize_opcodes(l)
+update_pj3(globals(), loc)
+finalize_opcodes(loc)

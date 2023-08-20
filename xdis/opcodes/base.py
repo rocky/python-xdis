@@ -361,7 +361,7 @@ def extended_format_BINARY_ADD(opc, instructions):
 
 
 def extended_format_BINARY_AND(opc, instructions):
-    return extended_format_binary_op(opc, instructions, "%s and %s")
+    return extended_format_binary_op(opc, instructions, "%s & %s")
 
 
 def extended_format_BINARY_FLOOR_DIVIDE(opc, instructions):
@@ -381,11 +381,15 @@ def extended_format_BINARY_MULTIPLY(opc, instructions):
 
 
 def extended_format_BINARY_OR(opc, instructions):
-    return extended_format_binary_op(opc, instructions, "%s or %s")
+    return extended_format_binary_op(opc, instructions, "%s | %s")
 
 
 def extended_format_BINARY_POWER(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s ** %s")
+
+
+def extended_format_BINARY_RSHIFT(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s >> %s")
 
 
 def extended_format_BINARY_SUBSCR(opc, instructions):
@@ -402,6 +406,10 @@ def extended_format_BINARY_SUBTRACT(opc, instructions):
 
 def extended_format_BINARY_TRUE_DIVIDE(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s / %s")
+
+
+def extended_format_BINARY_XOR(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s ^ %s")
 
 
 def extended_format_COMPARE_OP(opc, instructions):
@@ -484,8 +492,32 @@ def extended_format_INPLACE_ADD(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s += %s")
 
 
+def extended_format_INPLACE_AND(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s &= %s")
+
+
 def extended_format_INPLACE_FLOOR_DIVIDE(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s //= %s")
+
+
+def extended_format_INPLACE_LSHIFT(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s <<= %s")
+
+
+def extended_format_INPLACE_MODULO(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s %= %s")
+
+
+def extended_format_INPLACE_MULTIPLY(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s *= %s")
+
+
+def extended_format_INPLACE_OR(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s |= %s")
+
+
+def extended_format_INPLACE_POWER(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s **= %s")
 
 
 def extended_format_INPLACE_TRUE_DIVIDE(opc, instructions):
@@ -498,6 +530,10 @@ def extended_format_INPLACE_RSHIFT(opc, instructions):
 
 def extended_format_INPLACE_SUBTRACT(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s -= %s")
+
+
+def extended_format_INPLACE_XOR(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s ^= %s")
 
 
 def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
@@ -628,3 +664,50 @@ def dump_opcodes(opmap):
         op2name[opmap[k]] = k
     for i in sorted(op2name.keys()):
         print("%-3s %s" % (str(i), op2name[i]))
+
+
+# fmt: off
+opcode_arg_fmt_base = opcode_arg_fmt34 = {
+    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "EXTENDED_ARG": format_extended_arg,
+    "RAISE_VARARGS": format_RAISE_VARARGS_older,
+}
+
+opcode_extended_fmt_base = {
+    "BINARY_ADD":            extended_format_BINARY_ADD,
+    "BINARY_AND":            extended_format_BINARY_AND,
+    "BINARY_FLOOR_DIVIDE":   extended_format_BINARY_FLOOR_DIVIDE,
+    "BINARY_MODULO":         extended_format_BINARY_MODULO,
+    "BINARY_MULTIPLY":       extended_format_BINARY_MULTIPLY,
+    "BINARY_RSHIFT":         extended_format_BINARY_RSHIFT,
+    "BINARY_SUBSCR":         extended_format_BINARY_SUBSCR,
+    "BINARY_SUBTRACT":       extended_format_BINARY_SUBTRACT,
+    "BINARY_TRUE_DIVIDE":    extended_format_BINARY_TRUE_DIVIDE,
+    "BINARY_LSHIFT":         extended_format_BINARY_LSHIFT,
+    "BINARY_OR":             extended_format_BINARY_OR,
+    "BINARY_POWER":          extended_format_BINARY_POWER,
+    "BINARY_XOR":            extended_format_BINARY_XOR,
+    "COMPARE_OP":            extended_format_COMPARE_OP,
+    "INPLACE_ADD":           extended_format_INPLACE_ADD,
+    "INPLACE_AND":           extended_format_INPLACE_AND,
+    "INPLACE_FLOOR_DIVIDE":  extended_format_INPLACE_FLOOR_DIVIDE,
+    "INPLACE_LSHIFT":        extended_format_INPLACE_LSHIFT,
+    "INPLACE_MODULO":        extended_format_INPLACE_MODULO,
+    "INPLACE_MULTIPLY":      extended_format_INPLACE_MULTIPLY,
+    "INPLACE_OR":            extended_format_INPLACE_OR,
+    "INPLACE_POWER":         extended_format_INPLACE_POWER,
+    "INPLACE_RSHIFT":        extended_format_INPLACE_RSHIFT,
+    "INPLACE_SUBTRACT":      extended_format_INPLACE_SUBTRACT,
+    "INPLACE_TRUE_DIVIDE":   extended_format_INPLACE_TRUE_DIVIDE,
+    "INPLACE_XOR":           extended_format_INPLACE_XOR,
+    "LOAD_ATTR":             extended_format_ATTR,
+    "RETURN_VALUE":          extended_format_RETURN_VALUE,
+    "STORE_ATTR":            extended_format_ATTR,
+    "UNARY_NEGATIVE":        extended_format_UNARY_NEGATIVE,
+    "UNARY_NOT":             extended_format_UNARY_NOT,
+}
+
+
+# fmt: on

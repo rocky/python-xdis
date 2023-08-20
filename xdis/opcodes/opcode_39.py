@@ -16,45 +16,20 @@
 """
 CPython 3.9 bytecode opcodes
 
-This is a like Python 3.9's opcode.py
+This is like Python 3.9's opcode.py
 """
 
 import xdis.opcodes.opcode_38 as opcode_38
 from xdis.opcodes.base import (
+    binary_op,
     def_op,
-    extended_format_ATTR,
-    extended_format_BINARY_ADD,
-    extended_format_BINARY_AND,
-    extended_format_BINARY_FLOOR_DIVIDE,
-    extended_format_BINARY_LSHIFT,
-    extended_format_BINARY_MODULO,
-    extended_format_BINARY_SUBSCR,
-    extended_format_BINARY_SUBTRACT,
-    extended_format_BINARY_TRUE_DIVIDE,
-    extended_format_COMPARE_OP,
-    extended_format_INPLACE_ADD,
-    extended_format_INPLACE_FLOOR_DIVIDE,
-    extended_format_INPLACE_RSHIFT,
-    extended_format_INPLACE_SUBTRACT,
-    extended_format_INPLACE_TRUE_DIVIDE,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
     jabs_op,
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.opcode_36 import (
-    extended_format_CALL_FUNCTION,
-    extended_format_CALL_METHOD,
-    extended_format_MAKE_FUNCTION,
-    format_BUILD_MAP_UNPACK_WITH_CALL,
-    format_CALL_FUNCTION_EX,
-    format_CALL_FUNCTION_KW,
-    format_extended_arg36,
-    format_MAKE_FUNCTION,
-)
-from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_VARARGS
+from xdis.opcodes.opcode_38 import opcode_arg_fmt38, opcode_extended_fmt38
 
 version_tuple = (3, 9)
 python_implementation = "CPython"
@@ -88,15 +63,15 @@ def_op(loc, 'WITH_EXCEPT_START',       49,   0, 1)
 def_op(loc, 'LOAD_ASSERTION_ERROR',    74,   0, 1)
 def_op(loc, 'LIST_TO_TUPLE',           82,   1, 1)
 
-def_op(loc, 'IS_OP',                  117,   2, 1)
+binary_op(loc, 'IS_OP',               117)
 jabs_op(loc, 'JUMP_IF_NOT_EXC_MATCH', 121,   2, 0)
-def_op(loc, 'CONTAINS_OP',            118,   2, 1)
+binary_op(loc, 'CONTAINS_OP',         118,   2, 1)
 def_op(loc, 'LIST_EXTEND',            162,   2, 1)
 def_op(loc, 'SET_UPDATE',             163,   2, 1)
 def_op(loc, 'DICT_MERGE',             164,   2, 1)
 def_op(loc, 'DICT_UPDATE',            165,   2, 1)
 
-format_value_flags = opcode_38.format_value_flags
+# fmt: on
 
 
 def format_extended_is_op(arg):
@@ -107,43 +82,15 @@ def format_extended_contains_op(arg):
     return "in" if arg == 0 else "not in"
 
 
-opcode_arg_fmt = {
-    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
-    "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
-    "CONTAINS_OP":      format_extended_contains_op,
-    "EXTENDED_ARG":     format_extended_arg36,
-    "FORMAT_VALUE":     format_value_flags,
-    "IS_OP":            format_extended_is_op,
-    "MAKE_FUNCTION":    format_MAKE_FUNCTION,
-    "RAISE_VARARGS":    format_RAISE_VARARGS,
+opcode_arg_fmt = opcode_arg_fmt39 = {
+    **opcode_arg_fmt38,
+    **{
+        "CONTAINS_OP": format_extended_contains_op,
+        "IS_OP": format_extended_is_op,
+    },
 }
 
-opcode_extended_fmt = {
-    "BINARY_ADD":            extended_format_BINARY_ADD,
-    "BINARY_AND":            extended_format_BINARY_AND,
-    "BINARY_FLOOR_DIVIDE":   extended_format_BINARY_FLOOR_DIVIDE,
-    "BINARY_MODULO":         extended_format_BINARY_MODULO,
-    "BINARY_SUBSCR":         extended_format_BINARY_SUBSCR,
-    "BINARY_SUBTRACT":       extended_format_BINARY_SUBTRACT,
-    "BINARY_TRUE_DIVIDE":    extended_format_BINARY_TRUE_DIVIDE,
-    "BINARY_LSHIFT":         extended_format_BINARY_LSHIFT,
-    "CALL_FUNCTION":         extended_format_CALL_FUNCTION,
-    "CALL_METHOD":           extended_format_CALL_METHOD,
-    "COMPARE_OP":            extended_format_COMPARE_OP,
-    "INPLACE_ADD":           extended_format_INPLACE_ADD,
-    "INPLACE_FLOOR_DIVIDE":  extended_format_INPLACE_FLOOR_DIVIDE,
-    "INPLACE_RSHIFT":        extended_format_INPLACE_RSHIFT,
-    "INPLACE_SUBTRACT":      extended_format_INPLACE_SUBTRACT,
-    "INPLACE_TRUE_DIVIDE":   extended_format_INPLACE_TRUE_DIVIDE,
-    "LOAD_ATTR":             extended_format_ATTR,
-    "MAKE_FUNCTION":         extended_format_MAKE_FUNCTION,
-    "RAISE_VARARGS":         extended_format_RAISE_VARARGS,
-    "RETURN_VALUE":          extended_format_RETURN_VALUE,
-    "STORE_ATTR":            extended_format_ATTR,
-}
-# fmt: on
+opcode_extended_fmt = opcode_extended_fmt39 = opcode_extended_fmt38.copy()
 
 update_pj3(globals(), loc)
-
 finalize_opcodes(loc)
