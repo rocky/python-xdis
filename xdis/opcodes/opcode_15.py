@@ -42,6 +42,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     name_op,
     nargs_op,
     store_op,
+    unary_op,
     update_pj2,
     varargs_op,
 )
@@ -123,21 +124,21 @@ def_op(l, "ROT_TWO", 2)
 def_op(l, "ROT_THREE", 3)
 def_op(l, "DUP_TOP", 4)
 
-def_op(l, "UNARY_POSITIVE",  10, 1, 1)
-def_op(l, "UNARY_NEGATIVE",  11, 1, 1)
-def_op(l, "UNARY_NOT",       12, 1, 1)
-def_op(l, "UNARY_CONVERT",   13, 1, 1)
+def_op(l, "UNARY_POSITIVE",      10)
+unary_op(l, "UNARY_NEGATIVE",    11)
+unary_op(l, "UNARY_NOT",         12)
+unary_op(l, "UNARY_CONVERT",     13)
 
-def_op(l, "UNARY_INVERT",    15, 1, 1)
+unary_op(l, "UNARY_INVERT",      15)
 
-def_op(l, "BINARY_POWER",    19, 1, 1)
+binary_op(l, "BINARY_POWER",     19)
 
-def_op(l, "BINARY_MULTIPLY", 20, 2, 1)
-def_op(l, "BINARY_DIVIDE",   21, 2, 1)
-def_op(l, "BINARY_MODULO",   22, 2, 1)
-def_op(l, "BINARY_ADD",      23, 2, 1)
-def_op(l, "BINARY_SUBTRACT", 24, 2, 1)
-def_op(l, "BINARY_SUBSCR",    25, 2, 1)
+binary_op(l, "BINARY_MULTIPLY",  20)
+binary_op(l, "BINARY_DIVIDE",    21)
+binary_op(l, "BINARY_MODULO",    22)
+binary_op(l, "BINARY_ADD",       23)
+binary_op(l, "BINARY_SUBTRACT",  24)
+binary_op(l, "BINARY_SUBSCR",    25)
 
 def_op(l, "SLICE+0", 30, 1, 1)
 def_op(l, "SLICE+1", 31, 2, 1)
@@ -157,11 +158,11 @@ def_op(l,     "DELETE_SLICE+3", 53, 3, 0)
 store_op(l,   "STORE_SUBSCR",   60, 3, 0)  # Implements TOS1[TOS] = TOS2.
 def_op(l,     "DELETE_SUBSCR",  61, 2, 0)  # Implements del TOS1[TOS].
 
-def_op(l,     "BINARY_LSHIFT",  62, 2, 1)
-def_op(l,     "BINARY_RSHIFT",  63, 2, 1)
-def_op(l,     "BINARY_AND",     64, 2, 1)
-def_op(l,     "BINARY_XOR",     65, 2, 1)
-def_op(l,     "BINARY_OR",      66, 2, 1)
+binary_op(l,  "BINARY_LSHIFT",  62)
+binary_op(l,  "BINARY_RSHIFT",  63)
+binary_op(l,  "BINARY_AND",     64)
+binary_op(l,  "BINARY_XOR",     65)
+def_op(l,     "BINARY_OR",      66)
 
 def_op(l,     "PRINT_EXPR",     70, 1, 0)
 def_op(l,     "PRINT_ITEM",     71, 1, 0)

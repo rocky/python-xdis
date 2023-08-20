@@ -91,57 +91,57 @@ del op
 # then pop the operand amount plus the negative of the POP amount.
 
 # fmt: off
-#          OP NAME            OPCODE POP PUSH
-#--------------------------------------------
-def_op(l, 'STOP_CODE',             0,  0,  0, fallthrough=False)
-def_op(l, 'POP_TOP',               1,  1,  0)
-def_op(l, 'ROT_TWO',               2,  2,  2)
-def_op(l, 'ROT_THREE',             3,  3,  3)
-def_op(l, 'DUP_TOP',               4,  0,  1)
+#          OP NAME               OPCODE POP PUSH
+#-----------------------------------------------
+def_op(l, 'STOP_CODE',                0,  0,  0, fallthrough=False)
+def_op(l, 'POP_TOP',                  1,  1,  0)
+def_op(l, 'ROT_TWO',                  2,  2,  2)
+def_op(l, 'ROT_THREE',                3,  3,  3)
+def_op(l, 'DUP_TOP',                  4,  0,  1)
 
 # Python 3.2+
-def_op(l, 'DUP_TOP_TWO',           5,  0,  2)
+def_op(l, 'DUP_TOP_TWO',              5,  0,  2)
 
-def_op(l, 'NOP',                   9,  0,  0)
-unary_op(l, 'UNARY_POSITIVE',     10,  1,  1)
-unary_op(l, 'UNARY_NEGATIVE',     11,  1,  1)
-unary_op(l, 'UNARY_NOT',          12,  1,  1)
+def_op(l, 'NOP',                      9,  0,  0)
+unary_op(l, 'UNARY_POSITIVE',        10)
+unary_op(l, 'UNARY_NEGATIVE',        11)
+unary_op(l, 'UNARY_NOT',             12)
 
-unary_op(l, 'UNARY_INVERT',       15,  1,  1)
+unary_op(l, 'UNARY_INVERT',          15)
 
-binary_op(l, 'BINARY_POWER',         19,  2,  1)
-binary_op(l, 'BINARY_MULTIPLY',      20,  2,  1)
+binary_op(l, 'BINARY_POWER',         19)
+binary_op(l, 'BINARY_MULTIPLY',      20)
 
-binary_op(l, 'BINARY_MODULO',        22,  2,  1)
-binary_op(l, 'BINARY_ADD',           23,  2,  1)
-binary_op(l, 'BINARY_SUBTRACT',      24,  2,  1)
-binary_op(l, 'BINARY_SUBSCR',        25,  2,  1)
-binary_op(l, 'BINARY_FLOOR_DIVIDE',  26,  2,  1)
-binary_op(l, 'BINARY_TRUE_DIVIDE',   27,  2,  1)
-binary_op(l, 'INPLACE_FLOOR_DIVIDE', 28,  2,  1)
-binary_op(l, 'INPLACE_TRUE_DIVIDE',  29,  2,  1)
+binary_op(l, 'BINARY_MODULO',        22)
+binary_op(l, 'BINARY_ADD',           23)
+binary_op(l, 'BINARY_SUBTRACT',      24)
+binary_op(l, 'BINARY_SUBSCR',        25)
+binary_op(l, 'BINARY_FLOOR_DIVIDE',  26)
+binary_op(l, 'BINARY_TRUE_DIVIDE',   27)
+binary_op(l, 'INPLACE_FLOOR_DIVIDE', 28)
+binary_op(l, 'INPLACE_TRUE_DIVIDE',  29)
 
 # Gone from Python 3 are Python2's
 # SLICE+0 .. SLICE+3
 # STORE_SLICE+0 .. STORE_SLICE+3
 # DELETE_SLICE+0 .. DELETE_SLICE+3
 
-store_op(l, 'STORE_MAP',            54,  3,  1)
+store_op(l, 'STORE_MAP',          54,  3,  1)
 def_op(l, 'INPLACE_ADD',          55,  2,  1)
 def_op(l, 'INPLACE_SUBTRACT',     56,  2,  1)
 def_op(l, 'INPLACE_MULTIPLY',     57,  2,  1)
 
 def_op(l, 'INPLACE_MODULO',       59,  2,  1)
-store_op(l, 'STORE_SUBSCR',         60,  3,  0) # Implements TOS1[TOS] = TOS2.
+store_op(l, 'STORE_SUBSCR',       60,  3,  0) # Implements TOS1[TOS] = TOS2.
 def_op(l, 'DELETE_SUBSCR',        61,  2,  0) # Implements del TOS1[TOS].
-def_op(l, 'BINARY_LSHIFT',        62,  2,  1)
-def_op(l, 'BINARY_RSHIFT',        63,  2,  1)
-def_op(l, 'BINARY_AND',           64,  2,  1)
-def_op(l, 'BINARY_XOR',           65,  2,  1)
-def_op(l, 'BINARY_OR',            66,  2,  1)
-def_op(l, 'INPLACE_POWER',        67,  2,  1)
+binary_op(l, 'BINARY_LSHIFT',     62)
+binary_op(l, 'BINARY_RSHIFT',     63)
+binary_op(l, 'BINARY_AND',        64)
+binary_op(l, 'BINARY_XOR',        65)
+binary_op(l, 'BINARY_OR',         66)
+binary_op(l, 'INPLACE_POWER',     67)
 def_op(l, 'GET_ITER',             68,  1,  1)
-store_op(l, 'STORE_LOCALS',         69,  1,  0)
+store_op(l, 'STORE_LOCALS',       69,  1,  0)
 
 def_op(l, 'PRINT_EXPR',           70,  1,  0)
 def_op(l, 'LOAD_BUILD_CLASS',     71,  0,  1)
@@ -152,11 +152,11 @@ def_op(l, 'LOAD_BUILD_CLASS',     71,  0,  1)
 #  def_op(l, 'PRINT_ITEM_TO', 73)
 #  def_op(l, 'PRINT_NEWLINE_TO', 74)
 
-def_op(l, 'INPLACE_LSHIFT',       75,  2,  1)
-def_op(l, 'INPLACE_RSHIFT',       76,  2,  1)
-def_op(l, 'INPLACE_AND',          77,  2,  1)
-def_op(l, 'INPLACE_XOR',          78,  2,  1)
-def_op(l, 'INPLACE_OR',           79,  2,  1)
+binary_op(l, 'INPLACE_LSHIFT',       75)
+binary_op(l, 'INPLACE_RSHIFT',       76)
+binary_op(l, 'INPLACE_AND',          77)
+binary_op(l, 'INPLACE_XOR',          78)
+binary_op(l, 'INPLACE_OR',           79)
 def_op(l, 'BREAK_LOOP',           80,  0,  0, fallthrough=False)
 def_op(l, 'WITH_CLEANUP',         81,  1,  0) # Cleans up the stack when a with statement
                                               # block exits.  Handle stack special

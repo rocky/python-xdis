@@ -95,25 +95,25 @@ def_op(l, "ROT_THREE",               3,  3,  3)
 def_op(l, "DUP_TOP",                 4,  0,  1)
 def_op(l, "ROT_FOUR",                5,  4,  4)
 
-unary_op(l, "UNARY_POSITIVE",       10,  1,  1)
-unary_op(l, "UNARY_NEGATIVE",       11,  1,  1)
-unary_op(l, "UNARY_NOT",            12,  1,  1)
-unary_op(l, "UNARY_CONVERT",        13,  1,  1)
+unary_op(l, "UNARY_POSITIVE",          10)
+unary_op(l, "UNARY_NEGATIVE",          11)
+unary_op(l, "UNARY_NOT",               12)
+unary_op(l, "UNARY_CONVERT",           13)
 
-def_op(l, "UNARY_INVERT",           15,  1,  1)
+unary_op(l, "UNARY_INVERT",            15)
 
-def_op(l, "BINARY_POWER",           19,  2,  1)
+binary_op(l, "BINARY_POWER",           19)
 
-binary_op(l, "BINARY_MULTIPLY",     20,  2,  1)
-binary_op(l, "BINARY_DIVIDE",       21,  2,  1)
-binary_op(l, "BINARY_MODULO",       22,  2,  1)
-binary_op(l, "BINARY_ADD",          23,  2,  1)
-binary_op(l, "BINARY_SUBTRACT",     24,  2,  1)
-binary_op(l, "BINARY_SUBSCR",          25,  2,  1)
-binary_op(l, "BINARY_FLOOR_DIVIDE",    26,  2,  1)
-binary_op(l, "BINARY_TRUE_DIVIDE",     27,  2,  1)
-binary_op(l, "INPLACE_FLOOR_DIVIDE",   28,  2,  1)
-binary_op(l, "INPLACE_TRUE_DIVIDE",    29,  2,  1)
+binary_op(l, "BINARY_MULTIPLY",        20)
+binary_op(l, "BINARY_DIVIDE",          21)
+binary_op(l, "BINARY_MODULO",          22)
+binary_op(l, "BINARY_ADD",             23)
+binary_op(l, "BINARY_SUBTRACT",        24)
+binary_op(l, "BINARY_SUBSCR",          25)
+binary_op(l, "BINARY_FLOOR_DIVIDE",    26)
+binary_op(l, "BINARY_TRUE_DIVIDE",     27)
+binary_op(l, "INPLACE_FLOOR_DIVIDE",   28)
+binary_op(l, "INPLACE_TRUE_DIVIDE",    29)
 
 def_op(l, "SLICE+0",                30,  2,  2)
 def_op(l, "SLICE+1",                31,  2,  2)
@@ -132,20 +132,21 @@ def_op(l, "DELETE_SLICE+1",         51,  2,  0)
 def_op(l, "DELETE_SLICE+2",         52,  2,  0)
 def_op(l, "DELETE_SLICE+3",         53,  3,  0)
 
-def_op(l, "INPLACE_ADD",            55,  2,  1)
-def_op(l, "INPLACE_SUBTRACT",       56,  2,  1)
-def_op(l, "INPLACE_MULTIPLY",       57,  2,  1)
-def_op(l, "INPLACE_DIVIDE",         58,  2,  1)
-def_op(l, "INPLACE_MODULO",         59,  2,  1)
+binary_op(l, "INPLACE_ADD",         55)
+binary_op(l, "INPLACE_SUBTRACT",    56)
+binary_op(l, "INPLACE_MULTIPLY",    57)
+binary_op(l, "INPLACE_DIVIDE",      58)
+binary_op(l, "INPLACE_MODULO",      59)
 store_op(l, "STORE_SUBSCR",         60,  3,  0) # Implements TOS1[TOS] = TOS2.
 def_op(l, "DELETE_SUBSCR",          61,  2,  0) # Implements del TOS1[TOS].
 
-def_op(l, "BINARY_LSHIFT",          62,  2,  1)
-def_op(l, "BINARY_RSHIFT",          63,  2,  1)
-def_op(l, "BINARY_AND",             64,  2,  1)
-def_op(l, "BINARY_XOR",             65,  2,  1)
-def_op(l, "BINARY_OR",              66,  2,  1)
-def_op(l, "INPLACE_POWER",          67,  2,  1)
+binary_op(l, "BINARY_LSHIFT",       62)
+binary_op(l, "BINARY_RSHIFT",       63)
+binary_op(l, "BINARY_AND",          64)
+binary_op(l, "BINARY_XOR",          65)
+binary_op(l, "BINARY_OR",           66)
+binary_op(l, "INPLACE_POWER",       67)
+
 def_op(l, "GET_ITER",               68,  1,  1)
 
 def_op(l, "PRINT_EXPR",             70,  1,  0)
@@ -188,7 +189,8 @@ const_op(l, "LOAD_CONST",           100,  0,  1)  # Operand is in const list
 name_op(l, "LOAD_NAME",             101,  0,  1)  # Operand is in name list
 varargs_op(l, "BUILD_TUPLE",        102, -1,  1)  # TOS is number of tuple items
 varargs_op(l, "BUILD_LIST",         103, -1,  1)  # TOS is number of list items
-varargs_op(l, "BUILD_MAP",          104,  0,  1)  # TOS is number of kwarg items. Always zero for now
+varargs_op(l, "BUILD_MAP",          104,  0,  1)  # TOS is number of kwarg items.
+                                                  # Always zero for now
 name_op(l, "LOAD_ATTR",             105,  1,  1)  # Operand is in name list
 compare_op(l, "COMPARE_OP",         106,  2,  1)  # Comparison operator
 

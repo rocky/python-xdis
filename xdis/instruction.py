@@ -220,6 +220,10 @@ class Instruction(_Instruction):
                     opc, list(reversed(instructions))
                 )
                 if new_repr:
+                    new_instruction = list(instructions[-1])
+                    new_instruction[-1] = new_repr
+                    del instructions[-1]
+                    instructions.append(Instruction(*new_instruction))
                     fields.append("(%s)" % new_repr)
             pass
 

@@ -313,17 +313,39 @@ def update_sets(loc):
 def extended_format_binary_op(
     opc, instructions, fmt_str: str, reverse_args=False
 ) -> Optional[str]:
-    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
+    stack_arg1 = instructions[1]
+    arg1 = None
+    if stack_arg1.formatted is not None:
+        arg1 = stack_arg1.formatted
+    if (
+        arg1 is not None
+        or stack_arg1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
+    ):
+        if arg1 is None:
+            arg1 = instructions[1].argrepr
         i = 2
         while instructions[i].opname == "CACHE":
             i += 1
-        if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
+        if (
+            instructions[i].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
+            and instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
+        ):
             if reverse_args:
-                args = (instructions[1].argrepr, instructions[i].argrepr)
+                args = (arg1, instructions[i].argrepr)
             else:
-                args = (instructions[i].argrepr, instructions[1].argrepr)
+                args = (instructions[i].argrepr, arg1)
             return fmt_str % args
+        else:
+            return fmt_str % ("...", arg1)
     return None
+
+
+def extended_format_unary_op(opc, instructions, fmt_str: str) -> Optional[str]:
+    stack_arg = instructions[1]
+    if stack_arg.formatted is not None:
+        return fmt_str % stack_arg.formatted
+    if stack_arg.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
+        return fmt_str % stack_arg.argrepr
 
 
 def extended_format_ATTR(opc, instructions):
@@ -335,8 +357,16 @@ def extended_format_BINARY_ADD(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s + %s")
 
 
+def extended_format_BINARY_AND(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s and %s")
+
+
 def extended_format_BINARY_FLOOR_DIVIDE(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s // %s")
+
+
+def extended_format_BINARY_LSHIFT(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s << %s")
 
 
 def extended_format_BINARY_MODULO(opc, instructions):
@@ -345,6 +375,10 @@ def extended_format_BINARY_MODULO(opc, instructions):
 
 def extended_format_BINARY_MULTIPLY(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s * %s")
+
+
+def extended_format_BINARY_OR(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s or %s")
 
 
 def extended_format_BINARY_POWER(opc, instructions):
@@ -455,6 +489,10 @@ def extended_format_INPLACE_TRUE_DIVIDE(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s /= %s")
 
 
+def extended_format_INPLACE_RSHIFT(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s >>= %s")
+
+
 def extended_format_INPLACE_SUBTRACT(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s -= %s")
 
@@ -492,13 +530,16 @@ def extended_format_RAISE_VARARGS_older(opc, instructions):
     return format_RAISE_VARARGS_older(raise_inst.argval)
 
 
-def extended_format_RETURN_VALUE(opc, instructions):
-    return_inst = instructions[0]
-    assert return_inst.opname == "RETURN_VALUE"
-    assert len(instructions) >= 1
-    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS:
-        return resolved_attrs(instructions[1:])
-    return None
+def extended_format_RETURN_VALUE(opc, instructions: list):
+    return extended_format_unary_op(opc, instructions, "return %s")
+
+
+def extended_format_UNARY_NEGATIVE(opc, instructions):
+    return extended_format_unary_op(opc, instructions, "-(%s)")
+
+
+def extended_format_UNARY_NOT(opc, instructions):
+    return extended_format_unary_op(opc, instructions, "not (%s)")
 
 
 def format_extended_arg(arg):
