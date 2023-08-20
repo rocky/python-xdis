@@ -28,16 +28,16 @@ reduce the tedium in writing a bytecode file.
 
 This package also has an extensive knowledge of Python bytecode magic
 numbers, including Pypy and others, and how to translate from
-`sys.sys_info` major, minor, and release numbers to the corresponding
+``sys.sys_info`` major, minor, and release numbers to the corresponding
 magic value.
 
-So If you want to write a cross-version assembler, or a
+So if you want to write a cross-version assembler, or a
 bytecode-level optimizer this package may also be useful. In addition
-to the kinds of instruction categorization that `dis`` offers, we have
+to the kinds of instruction categorization that ``dis``` offers, we have
 additional categories for things that would be useful in such a
-bytecode optimizer.
+bytecode assembler, optimizer, or decompiler.
 
-The programs here accept bytecodes from Python version 1.0 to 3.10 or
+The programs here accept bytecodes from Python version 1.0 to 3.11 or
 so. The code requires Python 2.4 or later and has been tested on
 Python running lots of Python versions.
 
@@ -51,7 +51,6 @@ To install older versions for from source in git use the branch
 ``python-3.3-to-3.5`` for Python versions from 3.3 to 3.5. The master
 branch handles Python 3.6 and later.
 
-
 Installation
 ------------
 
@@ -64,6 +63,112 @@ The standard Python routine:
 
 A GNU makefile is also provided so ``make install`` (possibly as root or
 sudo) will do the steps above.
+
+Disassembler Example
+--------------------
+
+The cross-version disassembler that is packaged here, can produce
+assembly listing that are superior to those typically found in
+Python's dis module. Here is an example:
+
+
+```
+pydisasm --show-source -F extended-bytes bytecode_3.10/pydisasm-example.pyc
+# pydisasm version 6.1.0.dev0
+# Python bytecode 3.10.0 (3439)
+# Disassembled from Python 3.9.17 (main, Jun 21 2023, 08:24:02)
+# [GCC 12.2.0]
+# Timestamp in code: 1692566016 (2023-08-20 17:13:36)
+# Source code size mod 2**32: 264 bytes
+# Method Name:       <module>
+# Filename:          simple_source/pydisasm-example.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        3
+# Flags:             0x00000040 (NOFREE)
+# First Line:        1
+# Constants:
+#    0: 0
+#    1: None
+#    2: 1
+#    3: (2, 4)
+#    4: 'Is small power of two'
+# Names:
+#    0: sys
+#    1: print
+#    2: version
+#    3: version_info
+#    4: major
+#    5: power_of_two
+             # """An example to show off Python's extended disassembly.
+  1:           0 |09 00| NOP
+
+             # """An example to show off Python's extended disassembly.
+  1:           2 |64 00| LOAD_CONST           (0)
+               4 |64 01| LOAD_CONST           (None)
+               6 |6c 00| IMPORT_NAME          (sys)
+               8 |5a 00| STORE_NAME           (sys)
+
+             # import sys
+  4:          10 |65 01| LOAD_NAME            (print)
+              12 |65 00| LOAD_NAME            (sys)
+              14 |6a 02| LOAD_ATTR            (sys.version)
+              16 |83 01| CALL_FUNCTION        (sys: 1 positional argument)
+              18 |01 00| POP_TOP
+
+             # print(sys.version)
+  5:          20 |65 00| LOAD_NAME            (sys)
+              22 |6a 03| LOAD_ATTR            (sys.version_info)
+              24 |64 00| LOAD_CONST           (0)
+              26 |19 00| BINARY_SUBSCR        (version_info[0])
+              28 |5a 04| STORE_NAME           (major)
+
+             # major = sys.version_info[0]
+  6:          30 |65 04| LOAD_NAME            (major)
+              32 |65 04| LOAD_NAME            (major)
+              34 |64 02| LOAD_CONST           (1)
+              36 |18 00| BINARY_SUBTRACT      (major - 1)
+              38 |40 00| BINARY_AND           (... & major - 1)
+              40 |5a 05| STORE_NAME           (power_of_two)
+
+             # power_of_two = major & (major -1)
+  7:          42 |65 05| LOAD_NAME            (power_of_two)
+              44 |64 03| LOAD_CONST           ((2, 4))
+              46 |76 00| CONTAINS_OP          (power_of_two in (2, 4))
+              48 |72 1f| POP_JUMP_IF_FALSE    (to 62)
+
+             # if power_of_two in (2, 4):
+  8:          50 |65 01| LOAD_NAME            (print)
+              52 |64 04| LOAD_CONST           ('Is small power of two')
+              54 |83 01| CALL_FUNCTION        (print: 1 positional argument)
+              56 |01 00| POP_TOP
+              58 |64 01| LOAD_CONST           (None)
+              60 |53 00| RETURN_VALUE         (return None)
+
+             # print("Is small power of two")
+  9:     >>   62 |64 01| LOAD_CONST           (None)
+              64 |53 00| RETURN_VALUE         (return None)
+```
+
+Note in the above that some operand interpretation is done on items that are in the stack.
+For example in :
+
+```
+              14 |6a 02| LOAD_ATTR            (sys.version)
+```
+from the instruction see clean that ``sys.version`` is the resolved attribute that is loaded.
+
+Similarly in:
+
+```
+              46 |76 00| CONTAINS_OP          (power_of_two in (2, 4))
+```
+
+we see that we can resolve the two arguments of the ``in`` operation.
+
+
 
 Testing
 -------

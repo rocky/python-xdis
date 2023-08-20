@@ -420,6 +420,14 @@ def extended_format_COMPARE_OP(opc, instructions):
     )
 
 
+def extended_format_CONTAINS_OP(opc, instructions):
+    return extended_format_binary_op(
+        opc,
+        instructions,
+        f"%s {format_contains_op(instructions[0].arg)} %s",
+    )
+
+
 def extended_format_CALL_FUNCTION(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
@@ -594,6 +602,14 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     return "%d positional, %d named" % (pos_args, name_default)
 
 
+def format_contains_op(arg: int) -> str:
+    return "in" if arg == 0 else "not in"
+
+
+def format_CONTAINS_OP(arg: int) -> str:
+    return format_contains_op(arg)
+
+
 def format_MAKE_FUNCTION_10_27(argc: int) -> str:
     """
     ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
@@ -671,6 +687,7 @@ opcode_arg_fmt_base = opcode_arg_fmt34 = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
+    "CONTAINS_OP": format_CONTAINS_OP,
     "EXTENDED_ARG": format_extended_arg,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
@@ -690,6 +707,7 @@ opcode_extended_fmt_base = {
     "BINARY_POWER":          extended_format_BINARY_POWER,
     "BINARY_XOR":            extended_format_BINARY_XOR,
     "COMPARE_OP":            extended_format_COMPARE_OP,
+    "CONTAINS_OP":           extended_format_CONTAINS_OP,
     "INPLACE_ADD":           extended_format_INPLACE_ADD,
     "INPLACE_AND":           extended_format_INPLACE_AND,
     "INPLACE_FLOOR_DIVIDE":  extended_format_INPLACE_FLOOR_DIVIDE,

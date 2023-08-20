@@ -85,7 +85,6 @@ def format_extended_contains_op(arg):
 opcode_arg_fmt = opcode_arg_fmt39 = {
     **opcode_arg_fmt38,
     **{
-        "CONTAINS_OP": format_extended_contains_op,
         "IS_OP": format_extended_is_op,
     },
 }
