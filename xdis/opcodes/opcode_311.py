@@ -4,10 +4,13 @@ CPython 3.11 bytecode opcodes
 This is like Python 3.11's opcode.py
 """
 
+from typing import Optional
+
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
     binary_op,
     def_op,
+    extended_format_binary_op,
     finalize_opcodes,
     init_opdata,
     jrel_op,
@@ -18,6 +21,37 @@ from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 
 version_tuple = (3, 11)
 python_implementation = "CPython"
+
+
+_nb_ops = [
+    ("NB_ADD", "+"),
+    ("NB_AND", "&"),
+    ("NB_FLOOR_DIVIDE", "//"),
+    ("NB_LSHIFT", "<<"),
+    ("NB_MATRIX_MULTIPLY", "@"),
+    ("NB_MULTIPLY", "*"),
+    ("NB_REMAINDER", "%"),
+    ("NB_OR", "|"),
+    ("NB_POWER", "**"),
+    ("NB_RSHIFT", ">>"),
+    ("NB_SUBTRACT", "-"),
+    ("NB_TRUE_DIVIDE", "/"),
+    ("NB_XOR", "^"),
+    ("NB_INPLACE_ADD", "+="),
+    ("NB_INPLACE_AND", "&="),
+    ("NB_INPLACE_FLOOR_DIVIDE", "//="),
+    ("NB_INPLACE_LSHIFT", "<<="),
+    ("NB_INPLACE_MATRIX_MULTIPLY", "@="),
+    ("NB_INPLACE_MULTIPLY", "*="),
+    ("NB_INPLACE_REMAINDER", "%="),
+    ("NB_INPLACE_OR", "|="),
+    ("NB_INPLACE_POWER", "**="),
+    ("NB_INPLACE_RSHIFT", ">>="),
+    ("NB_INPLACE_SUBTRACT", "-="),
+    ("NB_INPLACE_TRUE_DIVIDE", "/="),
+    ("NB_INPLACE_XOR", "^="),
+]
+
 
 loc = locals()
 
@@ -163,14 +197,35 @@ loc["hasjrel"] = [
     176]
 # fmt: on
 
+
+def extended_format_BINARY_OP(opc, instructions) -> Optional[str]:
+    opname = _nb_ops[instructions[0].argval][1]
+    return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
+
+
+def format_BINARY_OP(arg) -> str:
+    return _nb_ops[arg][1]
+
+
 opcode_arg_fmt311 = opcode_arg_fmt310.copy()
 del opcode_arg_fmt311["CALL_FUNCTION"]
 del opcode_arg_fmt311["CALL_FUNCTION_KW"]
 del opcode_arg_fmt311["CALL_METHOD"]
 
-opcode_arg_fmt = opcode_arg_fmt311
+opcode_arg_fmt = opcode_arg_fmt311 = {
+    **opcode_arg_fmt310,
+    **{
+        "BINARY_OP": format_BINARY_OP,
+    },
+}
 
-opcode_extended_fmt311 = opcode_extended_fmt310.copy()
+opcode_extended_fmt311 = {
+    **opcode_extended_fmt310,
+    **{
+        "BINARY_OP": extended_format_BINARY_OP,
+    },
+}
+
 del opcode_extended_fmt311["BINARY_ADD"]
 del opcode_extended_fmt311["BINARY_AND"]
 del opcode_extended_fmt311["BINARY_FLOOR_DIVIDE"]

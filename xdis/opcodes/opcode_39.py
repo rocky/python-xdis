@@ -23,6 +23,7 @@ import xdis.opcodes.opcode_38 as opcode_38
 from xdis.opcodes.base import (
     binary_op,
     def_op,
+    extended_format_binary_op,
     finalize_opcodes,
     init_opdata,
     jabs_op,
@@ -74,22 +75,45 @@ def_op(loc, 'DICT_UPDATE',            165,   2, 1)
 # fmt: on
 
 
-def format_extended_is_op(arg):
-    return "is" if arg == 0 else "is not"
+def extended_format_CONTAINS_OP(opc, instructions) -> str:
+    return extended_format_binary_op(
+        opc,
+        instructions,
+        f"%s {format_CONTAINS_OP(instructions[0].arg)} %s",
+    )
 
 
-def format_extended_contains_op(arg):
+def extended_format_IS_OP(opc, instructions) -> str:
+    return extended_format_binary_op(
+        opc,
+        instructions,
+        f"%s {format_CONTAINS_OP(instructions[0].arg)} %s",
+    )
+
+
+def format_CONTAINS_OP(arg):
     return "in" if arg == 0 else "not in"
+
+
+def format_IS_OP(arg):
+    return "is" if arg == 0 else "is not"
 
 
 opcode_arg_fmt = opcode_arg_fmt39 = {
     **opcode_arg_fmt38,
     **{
-        "IS_OP": format_extended_is_op,
+        "CONTAINS_OP": format_CONTAINS_OP,
+        "IS_OP": format_IS_OP,
     },
 }
 
-opcode_extended_fmt = opcode_extended_fmt39 = opcode_extended_fmt38.copy()
+opcode_extended_fmt = opcode_extended_fmt39 = {
+    **opcode_extended_fmt38.copy(),
+    **{
+        "CONTAINS_OP": extended_format_CONTAINS_OP,
+        "IS_OP": extended_format_IS_OP,
+    },
+}
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

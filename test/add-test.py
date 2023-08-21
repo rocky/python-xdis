@@ -34,4 +34,4 @@ for path in py_source:
     else:
         py_compile.compile(path, bytecode)
 
-    os.system("../bin/pydisasm -F extended %s" % bytecode)
+    os.system("../bin/pydisasm --show-source -F extended %s" % bytecode)

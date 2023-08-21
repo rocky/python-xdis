@@ -544,6 +544,14 @@ def extended_format_INPLACE_XOR(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s ^= %s")
 
 
+def extended_format_IS_OP(opc, instructions):
+    return extended_format_binary_op(
+        opc,
+        instructions,
+        f"%s {format_IS_OP(instructions[0].arg)} %s",
+    )
+
+
 def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
     """
     instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
@@ -602,12 +610,8 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     return "%d positional, %d named" % (pos_args, name_default)
 
 
-def format_contains_op(arg: int) -> str:
-    return "in" if arg == 0 else "not in"
-
-
-def format_CONTAINS_OP(arg: int) -> str:
-    return format_contains_op(arg)
+def format_IS_OP(arg: int) -> str:
+    return "is" if arg == 0 else "is not"
 
 
 def format_MAKE_FUNCTION_10_27(argc: int) -> str:
@@ -687,11 +691,11 @@ opcode_arg_fmt_base = opcode_arg_fmt34 = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "CONTAINS_OP": format_CONTAINS_OP,
     "EXTENDED_ARG": format_extended_arg,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
+# The below are roughly Python 3.3 based. Python 3.11 removes some of these.
 opcode_extended_fmt_base = {
     "BINARY_ADD":            extended_format_BINARY_ADD,
     "BINARY_AND":            extended_format_BINARY_AND,
@@ -720,6 +724,7 @@ opcode_extended_fmt_base = {
     "INPLACE_SUBTRACT":      extended_format_INPLACE_SUBTRACT,
     "INPLACE_TRUE_DIVIDE":   extended_format_INPLACE_TRUE_DIVIDE,
     "INPLACE_XOR":           extended_format_INPLACE_XOR,
+    "IS_OP":                 extended_format_IS_OP,
     "LOAD_ATTR":             extended_format_ATTR,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,
