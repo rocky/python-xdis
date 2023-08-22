@@ -16,7 +16,8 @@
 """
 CPython 3.8 bytecode opcodes
 
-This is like Python 3.8's opcode.py
+This is like Python 3.8's opcode.py with some classification
+of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_37 as opcode_37

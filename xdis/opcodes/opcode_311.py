@@ -1,7 +1,8 @@
 """
 CPython 3.11 bytecode opcodes
 
-This is like Python 3.11's opcode.py
+This is like Python 3.11's opcode.py  with some classification
+of stack usage and information for formatting instructions.
 """
 
 from typing import Optional

@@ -105,8 +105,10 @@ rm_op(loc, 'CALL_FUNCTION_VAR_KW', 142)
 # These are new since Python 3.6
 #          OP NAME                OPCODE POP PUSH
 # -----------------------------------------------
-store_op(loc,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS index in name list;
-jrel_op(loc,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__; pushed results on stack
+store_op(loc,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS index in
+                                                                   # name list;
+jrel_op(loc,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__;
+                                                   # pushed results on stack
 def_op(loc,      'FORMAT_VALUE',     155,  1,  1)
 varargs_op(loc,  'BUILD_CONST_KEY_MAP', 156, -2, 1) # TOS is count of kwargs
 nargs_op(loc,    'CALL_FUNCTION_EX', 142, -2,  1)

@@ -34,6 +34,7 @@ from xdis.cross_dis import (
     instruction_size,
     op_has_argument,
 )
+from xdis.cross_types import UnicodeForPython3
 from xdis.instruction import Instruction
 from xdis.op_imports import get_opcode_module
 from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
@@ -412,6 +413,9 @@ class Bytecode(object):
         if inspect.iscode(co):
             filename = inspect.getfile(co)
 
+        if isinstance(filename, UnicodeForPython3):
+            filename = str(filename)
+
         self.disassemble_bytes(
             co.co_code,
             varnames=co.co_varnames,
@@ -457,7 +461,7 @@ class Bytecode(object):
         show_source=True,
         first_line_number: Optional[int] = None,
         exception_entries=None,
-    ):
+    ) -> list:
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
         show_source = show_source and show_lineno and first_line_number and filename
@@ -554,7 +558,7 @@ class Bytecode(object):
                     "are inaccurate here in Python before 1.5\n"
                 )
             pass
-        return
+        return instructions
 
     def get_instructions(self, x, first_line=None):
         """Iterator for the opcodes in methods, functions or code

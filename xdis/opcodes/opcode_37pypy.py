@@ -2,19 +2,19 @@
 """
 PYPY 3.7 opcodes
 
-This is a like Python 3.7's opcode.py with some classification
-of stack usage.
+This is a like PyPy 3.7's opcode.py with some classification
+of stack usage and information for formatting instructions.
 """
 
+import sys
+
 import xdis.opcodes.opcode_36 as opcode_36
+import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.base import (
     def_op,
-    extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_CALL_FUNCTION_pos_name_encoded,
-    format_extended_arg,
     format_RAISE_VARARGS_older,
     init_opdata,
     name_op,
@@ -24,53 +24,47 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+from xdis.opcodes.opcode_37 import opcode_arg_fmt37, opcode_extended_fmt37
 
 version = 3.7
 version_tuple = (3, 7)
 python_implementation = "PyPy"
 
-import xdis.opcodes.opcode_37 as opcode_37
-from xdis.opcodes.opcode_36 import extended_format_MAKE_FUNCTION, format_MAKE_FUNCTION
-
 oppush = {}
 oppop = {}
 
-l = locals()
-init_opdata(l, opcode_37, version_tuple, is_pypy=True)
+loc = locals()
+init_opdata(loc, opcode_37, version_tuple, is_pypy=True)
 
 
 # FIXME: DRY common PYPY opcode additions
 
 # fmt: off
-rm_op(l, "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
-rm_op(l, "LOAD_METHOD",                  160)
+rm_op(loc, "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
+rm_op(loc, "LOAD_METHOD",                  160)
 
-nargs_op(l, "CALL_FUNCTION_KW",          141, 9, 1)  # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_EX",          142, -2, 1)
+nargs_op(loc, "CALL_FUNCTION_KW",          141, 9, 1)  # #args + (#kwargs << 8)
+nargs_op(loc, "CALL_FUNCTION_EX",          142, -2, 1)
 
 # The following were removed from 3.7 but still in Pypy 3.7
 
-store_op(l,   'STORE_ANNOTATION',        127, 1, 0, is_type="name")
+store_op(loc,   'STORE_ANNOTATION',        127, 1, 0, is_type="name")
 
 # PyPy only
 # ----------
 
-name_op(l, "LOOKUP_METHOD",              201, 1, 2)
-l["hasvargs"].append(202)
-nargs_op(l, "CALL_METHOD_KW",            204, -1, 1)
+name_op(loc, "LOOKUP_METHOD",              201, 1, 2)
+loc["hasvargs"].append(202)
+nargs_op(loc, "CALL_METHOD_KW",            204, -1, 1)
 
 
 # Used only in single-mode compilation list-comprehension generators
-varargs_op(l, "BUILD_LIST_FROM_ARG",     203)
+varargs_op(loc, "BUILD_LIST_FROM_ARG",     203)
 
 # PyPy 3.6.1 (and 2.7.13) start to introduce LOAD_REVDB_VAR
-import sys
 
 if sys.version_info[:3] >= (3, 6, 1):
-    def_op(l, "LOAD_REVDB_VAR",          205)
-
-# FIXME remove (fix uncompyle6)
-update_pj3(globals(), l)
+    def_op(loc, "LOAD_REVDB_VAR",          205)
 
 # fmt: on
 def extended_format_CALL_METHOD(opc, instructions):
@@ -85,6 +79,7 @@ def extended_format_CALL_METHOD(opc, instructions):
     method_pos = call_method_inst.arg + 1
     assert len(instructions) >= method_pos + 1
     s = ""
+    i = -1
     for i, inst in enumerate(instructions[1:]):
         if i == method_pos:
             break
@@ -131,6 +126,7 @@ def extended_format_CALL_METHOD_KW(opc, instructions):
     assert isinstance(kw_names, tuple)
     kw_name_str = "=..., ".join(kw_names.argval) + "=..."
     s = ""
+    i = -1
     for i, inst in enumerate(instructions[2:]):
         if i == method_pos:
             break
@@ -189,29 +185,26 @@ def format_CALL_METHOD_KW(argc, kwarg_count=None):
         return "%d positional + keyword" % (argc)
 
 
-opcode_arg_fmt = {
-    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_KW": opcode_36.format_CALL_FUNCTION_KW,
-    "CALL_FUNCTION_EX": opcode_36.format_CALL_FUNCTION_EX,
-    "CALL_METHOD": format_CALL_METHOD,
-    "CALL_METHOD_KW": format_CALL_METHOD_KW,
-    "EXTENDED_ARG": format_extended_arg,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older,
+opcode_arg_fmt = opcode_arg_fmt37pypy = {
+    **opcode_arg_fmt37,
+    **{
+        "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
+        "CALL_METHOD": format_CALL_METHOD,
+        "CALL_METHOD_KW": format_CALL_METHOD_KW,
+        "RAISE_VARARGS": format_RAISE_VARARGS_older,
+    },
 }
 
-opcode_extended_fmt = {
-    "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
-    "CALL_METHOD": extended_format_CALL_METHOD,
-    "CALL_METHOD_KW": extended_format_CALL_METHOD_KW,
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
+opcode_extended_fmt = opcode_extended_fmt37pypy = {
+    **opcode_extended_fmt37,
+    **{
+        "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
+        "CALL_METHOD": extended_format_CALL_METHOD,
+        "CALL_METHOD_KW": extended_format_CALL_METHOD_KW,
+        "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+    },
 }
 
 
-finalize_opcodes(l)
+update_pj3(globals(), loc)
+finalize_opcodes(loc)

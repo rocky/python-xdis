@@ -17,7 +17,7 @@
 CPython 3.7 bytecode opcodes
 
 This is like Python 3.7's opcode.py with some classification
-of stack usage.
+of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_36 as opcode_36
@@ -132,7 +132,9 @@ opcode_arg_fmt = opcode_arg_fmt37 = {
 
 opcode_extended_fmt = opcode_extended_fmt37 = {
     **opcode_extended_fmt36,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS,
+    **{
+     "RAISE_VARARGS": extended_format_RAISE_VARARGS,
+    }
 }
 
 update_pj3(globals(), loc)
