@@ -23,45 +23,41 @@ opcodes in Python's dis.py library.
 import xdis.opcodes.opcode_15 as opcode_15
 
 # This is used from outside this module
-from xdis.cross_dis import findlabels
+from xdis.cross_dis import findlabels  # noqa
+
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     def_op,
-    extended_format_MAKE_FUNCTION_10_27,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
     format_extended_arg,
-    format_MAKE_FUNCTION_10_27,
     init_opdata,
     name_op,
     update_pj2,
     varargs_op,
 )
 
+from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+
 version_tuple = (1, 4)
 python_implementation = "CPython"
 
-loc = l = locals()
-init_opdata(l, opcode_15, version_tuple)
+loc = locals()
+init_opdata(loc, opcode_15, version_tuple)
 
 # fmt: off
 # 1.4 Bytecodes not in 1.5
 
-def_op(l, "UNARY_CALL",         14)
-def_op(l, "BINARY_CALL",        26)
-def_op(l, "RAISE_EXCEPTION",    81)
-def_op(l, "BUILD_FUNCTION",     86)
-varargs_op(l, "UNPACK_ARG",     94)  # Number of arguments expected
-varargs_op(l, "UNPACK_VARARG",  99)  # Minimal number of arguments
-name_op(l, "LOAD_LOCAL",       115)
-varargs_op(l, "SET_FUNC_ARGS", 117)  # Argcount
-varargs_op(l, "RESERVE_FAST",  123)  # Number of local variables
+def_op(loc, "UNARY_CALL",         14)
+def_op(loc, "BINARY_CALL",        26)
+def_op(loc, "RAISE_EXCEPTION",    81)
+def_op(loc, "BUILD_FUNCTION",     86)
+varargs_op(loc, "UNPACK_ARG",     94)  # Number of arguments expected
+varargs_op(loc, "UNPACK_VARARG",  99)  # Minimal number of arguments
+name_op(loc, "LOAD_LOCAL",       115)
+varargs_op(loc, "SET_FUNC_ARGS", 117)  # Argcount
+varargs_op(loc, "RESERVE_FAST",  123)  # Number of local variables
 # fmt: on
 
-update_pj2(globals(), l)
-
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
-
-finalize_opcodes(l)
 
 
 def findlinestarts(co, dup_lines=False):
@@ -71,21 +67,18 @@ def findlinestarts(co, dup_lines=False):
     while offset < n:
         op = code[offset]
         offset += 1
-        if op == l["opmap"]["SET_LINENO"] and offset > 0:
+        if op == loc["opmap"]["SET_LINENO"] and offset > 0:
             lineno = code[offset] + code[offset + 1] * 256
             yield (offset + 2, lineno)
             pass
-        if op >= l["HAVE_ARGUMENT"]:
+        if op >= loc["HAVE_ARGUMENT"]:
             offset += 2
             pass
         pass
 
 
-opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
-}
+opcode_arg_fmt = update_arg_fmt_base2x.copy()
+opcode_extended_fmt = opcode_extended_fmt_base2x.copy()
 
-opcode_extended_fmt = {
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-}
+update_pj2(globals(), loc)
+finalize_opcodes(loc)

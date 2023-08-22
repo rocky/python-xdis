@@ -24,16 +24,7 @@ import xdis.opcodes.opcode_26 as opcode_26
 from xdis.opcodes.base import (
     compare_op,
     def_op,
-    extended_format_ATTR,
-    extended_format_CALL_FUNCTION,
-    extended_format_MAKE_FUNCTION_10_27,
-    extended_format_RAISE_VARARGS_older,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_CALL_FUNCTION_pos_name_encoded,
-    format_extended_arg,
-    format_MAKE_FUNCTION_10_27,
-    format_RAISE_VARARGS_older,
     init_opdata,
     jabs_op,
     jrel_op,
@@ -42,6 +33,8 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+
+from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
 
 version_tuple = (2, 7)
 python_implementation = "CPython"
@@ -92,28 +85,8 @@ def_op(l, "MAP_ADD",               147, 3, 1)  # Calls dict.setitem(TOS1[-i], TO
 # Used to implement dict comprehensions.
 # fmt: on
 
+opcode_arg_fmt = opcode_arg_fmt27 = update_arg_fmt_base2x.copy()
+opcode_extended_fmt = opcode_extended_fmt27 = opcode_extended_fmt_base2x.copy()
+
 update_pj3(globals(), l)
-
-opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
-    "EXTENDED_ARG": format_extended_arg,
-    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_VAR": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older,
-}
-
 finalize_opcodes(l)
-
-opcode_extended_fmt = {
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION,
-    "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
-    "CALL_FUNCTION_VAR_KW": extended_format_CALL_FUNCTION,
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
-}

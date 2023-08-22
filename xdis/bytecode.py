@@ -199,7 +199,11 @@ def get_instructions_bytes(
     i = 0
     extended_arg_count = 0
     extended_arg = 0
-    extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
+    if hasattr(opc, "EXTENDED_ARG"):
+        extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
+    else:
+        extended_arg_size = 0
+
     while i < n:
         op = code2num(bytecode, i)
 

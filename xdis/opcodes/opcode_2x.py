@@ -33,13 +33,14 @@ from xdis.opcodes.base import (
     local_op,
     name_op,
     nargs_op,
-    opcode_extended_fmt_base,
     store_op,
     unary_op,
     varargs_op,
 )
 
-l = locals()
+from xdis.opcodes.base import opcode_arg_fmt_base, opcode_extended_fmt_base
+
+loc = locals()
 
 # FIXME: DRY this with opcode_3x.
 
@@ -89,153 +90,196 @@ del op
 # fmt: off
 #          OP NAME              OPCODE POP PUSH
 #-----------------------------------------------
-def_op(l, "STOP_CODE",               0,  0,  0, fallthrough=False)
-def_op(l, "POP_TOP",                 1,  1,  0)
-def_op(l, "ROT_TWO",                 2,  2,  2)
-def_op(l, "ROT_THREE",               3,  3,  3)
-def_op(l, "DUP_TOP",                 4,  0,  1)
-def_op(l, "ROT_FOUR",                5,  4,  4)
+def_op(loc, "STOP_CODE",               0,  0,  0, fallthrough=False)
+def_op(loc, "POP_TOP",                 1,  1,  0)
+def_op(loc, "ROT_TWO",                 2,  2,  2)
+def_op(loc, "ROT_THREE",               3,  3,  3)
+def_op(loc, "DUP_TOP",                 4,  0,  1)
+def_op(loc, "ROT_FOUR",                5,  4,  4)
 
-unary_op(l, "UNARY_POSITIVE",          10)
-unary_op(l, "UNARY_NEGATIVE",          11)
-unary_op(l, "UNARY_NOT",               12)
-unary_op(l, "UNARY_CONVERT",           13)
+unary_op(loc, "UNARY_POSITIVE",          10)
+unary_op(loc, "UNARY_NEGATIVE",          11)
+unary_op(loc, "UNARY_NOT",               12)
+unary_op(loc, "UNARY_CONVERT",           13)
 
-unary_op(l, "UNARY_INVERT",            15)
+unary_op(loc, "UNARY_INVERT",            15)
 
-binary_op(l, "BINARY_POWER",           19)
+binary_op(loc, "BINARY_POWER",           19)
 
-binary_op(l, "BINARY_MULTIPLY",        20)
-binary_op(l, "BINARY_DIVIDE",          21)
-binary_op(l, "BINARY_MODULO",          22)
-binary_op(l, "BINARY_ADD",             23)
-binary_op(l, "BINARY_SUBTRACT",        24)
-binary_op(l, "BINARY_SUBSCR",          25)
-binary_op(l, "BINARY_FLOOR_DIVIDE",    26)
-binary_op(l, "BINARY_TRUE_DIVIDE",     27)
-binary_op(l, "INPLACE_FLOOR_DIVIDE",   28)
-binary_op(l, "INPLACE_TRUE_DIVIDE",    29)
+binary_op(loc, "BINARY_MULTIPLY",        20)
+binary_op(loc, "BINARY_DIVIDE",          21)
+binary_op(loc, "BINARY_MODULO",          22)
+binary_op(loc, "BINARY_ADD",             23)
+binary_op(loc, "BINARY_SUBTRACT",        24)
+binary_op(loc, "BINARY_SUBSCR",          25)
+binary_op(loc, "BINARY_FLOOR_DIVIDE",    26)
+binary_op(loc, "BINARY_TRUE_DIVIDE",     27)
+binary_op(loc, "INPLACE_FLOOR_DIVIDE",   28)
+binary_op(loc, "INPLACE_TRUE_DIVIDE",    29)
 
-def_op(l, "SLICE+0",                30,  2,  2)
-def_op(l, "SLICE+1",                31,  2,  2)
-def_op(l, "SLICE+2",                32,  2,  2)
-def_op(l, "SLICE+3",                33,  3,  2)
+def_op(loc, "SLICE+0",                30,  2,  2)
+def_op(loc, "SLICE+1",                31,  2,  2)
+def_op(loc, "SLICE+2",                32,  2,  2)
+def_op(loc, "SLICE+3",                33,  3,  2)
 
 #          OP NAME              OPCODE POP PUSH
 #-----------------------------------------------
-store_op(l, "STORE_SLICE+0",        40,  2,  0)
-store_op(l, "STORE_SLICE+1",        41,  3,  0)
-store_op(l, "STORE_SLICE+2",        42,  3,  0)
-store_op(l, "STORE_SLICE+3",        43,  4,  0)
+store_op(loc, "STORE_SLICE+0",        40,  2,  0)
+store_op(loc, "STORE_SLICE+1",        41,  3,  0)
+store_op(loc, "STORE_SLICE+2",        42,  3,  0)
+store_op(loc, "STORE_SLICE+3",        43,  4,  0)
 
-def_op(l, "DELETE_SLICE+0",         50,  1,  0)
-def_op(l, "DELETE_SLICE+1",         51,  2,  0)
-def_op(l, "DELETE_SLICE+2",         52,  2,  0)
-def_op(l, "DELETE_SLICE+3",         53,  3,  0)
+def_op(loc, "DELETE_SLICE+0",         50,  1,  0)
+def_op(loc, "DELETE_SLICE+1",         51,  2,  0)
+def_op(loc, "DELETE_SLICE+2",         52,  2,  0)
+def_op(loc, "DELETE_SLICE+3",         53,  3,  0)
 
-binary_op(l, "INPLACE_ADD",         55)
-binary_op(l, "INPLACE_SUBTRACT",    56)
-binary_op(l, "INPLACE_MULTIPLY",    57)
-binary_op(l, "INPLACE_DIVIDE",      58)
-binary_op(l, "INPLACE_MODULO",      59)
-store_op(l, "STORE_SUBSCR",         60,  3,  0) # Implements TOS1[TOS] = TOS2.
-def_op(l, "DELETE_SUBSCR",          61,  2,  0) # Implements del TOS1[TOS].
+binary_op(loc, "INPLACE_ADD",         55)
+binary_op(loc, "INPLACE_SUBTRACT",    56)
+binary_op(loc, "INPLACE_MULTIPLY",    57)
+binary_op(loc, "INPLACE_DIVIDE",      58)
+binary_op(loc, "INPLACE_MODULO",      59)
+store_op(loc, "STORE_SUBSCR",         60,  3,  0) # Implements TOS1[TOS] = TOS2.
+def_op(loc, "DELETE_SUBSCR",          61,  2,  0) # Implements del TOS1[TOS].
 
-binary_op(l, "BINARY_LSHIFT",       62)
-binary_op(l, "BINARY_RSHIFT",       63)
-binary_op(l, "BINARY_AND",          64)
-binary_op(l, "BINARY_XOR",          65)
-binary_op(l, "BINARY_OR",           66)
-binary_op(l, "INPLACE_POWER",       67)
+binary_op(loc, "BINARY_LSHIFT",       62)
+binary_op(loc, "BINARY_RSHIFT",       63)
+binary_op(loc, "BINARY_AND",          64)
+binary_op(loc, "BINARY_XOR",          65)
+binary_op(loc, "BINARY_OR",           66)
+binary_op(loc, "INPLACE_POWER",       67)
 
-def_op(l, "GET_ITER",               68,  1,  1)
+def_op(loc, "GET_ITER",               68,  1,  1)
 
-def_op(l, "PRINT_EXPR",             70,  1,  0)
-def_op(l, "PRINT_ITEM",             71,  1,  0)
-def_op(l, "PRINT_NEWLINE",          72,  0,  0)
-def_op(l, "PRINT_ITEM_TO",          73,  2,  0)
-def_op(l, "PRINT_NEWLINE_TO",       74,  1,  0)
-def_op(l, "INPLACE_LSHIFT",         75,  2,  1)
-def_op(l, "INPLACE_RSHIFT",         76,  2,  1)
-def_op(l, "INPLACE_AND",            77,  2,  1)
-def_op(l, "INPLACE_XOR",            78,  2,  1)
-def_op(l, "INPLACE_OR",             79,  2,  1)
-def_op(l, "BREAK_LOOP",             80,  0,  0, fallthrough=False)
+def_op(loc, "PRINT_EXPR",             70,  1,  0)
+def_op(loc, "PRINT_ITEM",             71,  1,  0)
+def_op(loc, "PRINT_NEWLINE",          72,  0,  0)
+def_op(loc, "PRINT_ITEM_TO",          73,  2,  0)
+def_op(loc, "PRINT_NEWLINE_TO",       74,  1,  0)
+def_op(loc, "INPLACE_LSHIFT",         75,  2,  1)
+def_op(loc, "INPLACE_RSHIFT",         76,  2,  1)
+def_op(loc, "INPLACE_AND",            77,  2,  1)
+def_op(loc, "INPLACE_XOR",            78,  2,  1)
+def_op(loc, "INPLACE_OR",             79,  2,  1)
+def_op(loc, "BREAK_LOOP",             80,  0,  0, fallthrough=False)
 
-def_op(l, "LOAD_LOCALS",            82,  0,  1)
-def_op(l, "RETURN_VALUE",           83,  1,  0, fallthrough=False)
-def_op(l, "IMPORT_STAR",            84,  1,  0)
-def_op(l, "EXEC_STMT",              85,  3,  0)
-def_op(l, "YIELD_VALUE",            86,  1,  1)
+def_op(loc, "LOAD_LOCALS",            82,  0,  1)
+def_op(loc, "RETURN_VALUE",           83,  1,  0, fallthrough=False)
+def_op(loc, "IMPORT_STAR",            84,  1,  0)
+def_op(loc, "EXEC_STMT",              85,  3,  0)
+def_op(loc, "YIELD_VALUE",            86,  1,  1)
 
-def_op(l, "POP_BLOCK",              87,  0,  0)
-def_op(l, "END_FINALLY",            88,  1,  0)
-def_op(l, "BUILD_CLASS",            89,  2,  0)
+def_op(loc, "POP_BLOCK",              87,  0,  0)
+def_op(loc, "END_FINALLY",            88,  1,  0)
+def_op(loc, "BUILD_CLASS",            89,  2,  0)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 #          OP NAME              OPCODE POP PUSH
 #-----------------------------------------------
-store_op(l, "STORE_NAME",            90,  1,  0, is_type="name")  # Operand is in name list
-name_op(l, "DELETE_NAME",            91,  0,  0)  # ""
-varargs_op(l, "UNPACK_SEQUENCE",     92, -1,  1)  # TOS is number of tuple items
-jrel_op(l, "FOR_ITER",               93,  0,  1)  # TOS is read
+store_op(loc, "STORE_NAME",            90,  1,  0, is_type="name")  # Operand is in name list
+name_op(loc, "DELETE_NAME",            91,  0,  0)  # ""
+varargs_op(loc, "UNPACK_SEQUENCE",     92, -1,  1)  # TOS is number of tuple items
+jrel_op(loc, "FOR_ITER",               93,  0,  1)  # TOS is read
 
-store_op(l, "STORE_ATTR",            95,  2,  0, is_type="name")  # Operand is in name list
-name_op(l, "DELETE_ATTR",            96,  1,  0)  # ""
-store_op(l, "STORE_GLOBAL",          97,  1,  0, is_type="name")  # ""
-name_op(l, "DELETE_GLOBAL",          98,  0,  0)  # ""
-nargs_op(l, "DUP_TOPX",              99, -1,  2)  # number of items to duplicate
-const_op(l, "LOAD_CONST",           100,  0,  1)  # Operand is in const list
-name_op(l, "LOAD_NAME",             101,  0,  1)  # Operand is in name list
-varargs_op(l, "BUILD_TUPLE",        102, -1,  1)  # TOS is number of tuple items
-varargs_op(l, "BUILD_LIST",         103, -1,  1)  # TOS is number of list items
-varargs_op(l, "BUILD_MAP",          104,  0,  1)  # TOS is number of kwarg items.
+store_op(loc, "STORE_ATTR",            95,  2,  0, is_type="name")  # Operand is in name list
+name_op(loc, "DELETE_ATTR",            96,  1,  0)  # ""
+store_op(loc, "STORE_GLOBAL",          97,  1,  0, is_type="name")  # ""
+name_op(loc, "DELETE_GLOBAL",          98,  0,  0)  # ""
+nargs_op(loc, "DUP_TOPX",              99, -1,  2)  # number of items to duplicate
+const_op(loc, "LOAD_CONST",           100,  0,  1)  # Operand is in const list
+name_op(loc, "LOAD_NAME",             101,  0,  1)  # Operand is in name list
+varargs_op(loc, "BUILD_TUPLE",        102, -1,  1)  # TOS is number of tuple items
+varargs_op(loc, "BUILD_LIST",         103, -1,  1)  # TOS is number of list items
+varargs_op(loc, "BUILD_MAP",          104,  0,  1)  # TOS is number of kwarg items.
                                                   # Always zero for now
-name_op(l, "LOAD_ATTR",             105,  1,  1)  # Operand is in name list
-compare_op(l, "COMPARE_OP",         106,  2,  1)  # Comparison operator
+name_op(loc, "LOAD_ATTR",             105,  1,  1)  # Operand is in name list
+compare_op(loc, "COMPARE_OP",         106,  2,  1)  # Comparison operator
 
-name_op(l, "IMPORT_NAME",           107,  0,  1)  # For < 2.6;  Imports namei; module pushed
-name_op(l, "IMPORT_FROM",           108,  0,  1)  # Operand is in name list
+name_op(loc, "IMPORT_NAME",           107,  0,  1)  # For < 2.6;  Imports namei; module pushed
+name_op(loc, "IMPORT_FROM",           108,  0,  1)  # Operand is in name list
 
-jrel_op(l, "JUMP_FORWARD",          110,  0,  0, fallthrough=False)
+jrel_op(loc, "JUMP_FORWARD",          110,  0,  0, fallthrough=False)
                                                 # Number of bytes to skip
-jrel_op(l, "JUMP_IF_FALSE",         111,  1,  1, True)  # ""
+jrel_op(loc, "JUMP_IF_FALSE",         111,  1,  1, True)  # ""
 
-jrel_op(l, "JUMP_IF_TRUE",          112,  1,  1, True)  # ""
-jabs_op(l, "JUMP_ABSOLUTE",         113,  0,  0, fallthrough=False)
+jrel_op(loc, "JUMP_IF_TRUE",          112,  1,  1, True)  # ""
+jabs_op(loc, "JUMP_ABSOLUTE",         113,  0,  0, fallthrough=False)
                                                 # Target byte offset from beginning of code
 
-name_op(l, "LOAD_GLOBAL",           116,  0,  1)  # Operand is in name list
+name_op(loc, "LOAD_GLOBAL",           116,  0,  1)  # Operand is in name list
 
-jabs_op(l, "CONTINUE_LOOP",         119,  0,  0, fallthrough=False)  # Target address
-jrel_op(l, "SETUP_LOOP",            120,  0,  0, conditional=True)  # Distance to target address
-jrel_op(l, "SETUP_EXCEPT",          121,  0,  3, conditional=True)  # ""
-jrel_op(l, "SETUP_FINALLY",         122,  0,  3, conditional=True)  # ""
+jabs_op(loc, "CONTINUE_LOOP",         119,  0,  0, fallthrough=False)  # Target address
+jrel_op(loc, "SETUP_LOOP",            120,  0,  0, conditional=True)  # Distance to target address
+jrel_op(loc, "SETUP_EXCEPT",          121,  0,  3, conditional=True)  # ""
+jrel_op(loc, "SETUP_FINALLY",         122,  0,  3, conditional=True)  # ""
 
-local_op(l, "LOAD_FAST",            124,  0,  1)  # Local variable number
-store_op(l, "STORE_FAST",           125,  1,  0, is_type="local")  # Local variable number
-local_op(l, "DELETE_FAST",          126,  0,  0) # Local variable number is in operand
+local_op(loc, "LOAD_FAST",            124,  0,  1)  # Local variable number
+store_op(loc, "STORE_FAST",           125,  1,  0, is_type="local")  # Local variable number
+local_op(loc, "DELETE_FAST",          126,  0,  0) # Local variable number is in operand
 
-nargs_op(l, "RAISE_VARARGS",        130, -1,  2, fallthrough=False)
+nargs_op(loc, "RAISE_VARARGS",        130, -1,  2, fallthrough=False)
                                                 # Number of raise arguments (1, 2, or 3)
-nargs_op(l, "CALL_FUNCTION",        131, -1,  2)  # TOS is #args + (#kwargs << 8)
+nargs_op(loc, "CALL_FUNCTION",        131, -1,  2)  # TOS is #args + (#kwargs << 8)
 
-nargs_op(l, "MAKE_FUNCTION",        132, -1,  2)  # TOS is number of args with default values
-varargs_op(l, "BUILD_SLICE",        133,  2,  1)  # TOS is number of items
+nargs_op(loc, "MAKE_FUNCTION",        132, -1,  2)  # TOS is number of args with
+                                                    # default values
+varargs_op(loc, "BUILD_SLICE",        133,  2,  1)  # TOS is number of items
 
-def_op(l, "MAKE_CLOSURE",           134, -3,  1)
-free_op(l, "LOAD_CLOSURE",          135,  0,  1)
-free_op(l, "LOAD_DEREF",            136,  0,  1)
-store_op(l, "STORE_DEREF",          137,  1,  0, is_type="free")
+def_op(loc, "MAKE_CLOSURE",           134, -3,  1)
+free_op(loc, "LOAD_CLOSURE",          135,  0,  1)
+free_op(loc, "LOAD_DEREF",            136,  0,  1)
+store_op(loc, "STORE_DEREF",          137,  1,  0, is_type="free")
 
-nargs_op(l, "CALL_FUNCTION_VAR",    140, -2,  1)   # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_KW",     141, -2,  1)   # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -3, 1)  # #args + (#kwargs << 8)
+nargs_op(loc, "CALL_FUNCTION_VAR",    140, -2,  1) # #args + (#kwargs << 8)
+nargs_op(loc, "CALL_FUNCTION_KW",     141, -2,  1) # #args + (#kwargs << 8)
+nargs_op(loc, "CALL_FUNCTION_VAR_KW", 142, -3,  1) # #args + (#kwargs << 8)
 
-def_op(l, "EXTENDED_ARG", 143)
+def_op(loc, "EXTENDED_ARG", 143)
 # fmt: on
 
 EXTENDED_ARG = 143
+
+def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
+    """
+    instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
+    should have the function or closure name.
+
+    This code works for Python versions up to and including 2.7.
+    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
+    shows that the change was really made in Python 3.0 or so.
+    """
+    # From opcode description: argc indicates the total number of positional
+    # and keyword arguments.  Sometimes the function name is in the stack arg
+    # positions back.
+    assert len(instructions) >= 2
+    inst = instructions[0]
+    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
+    s = ""
+    code_inst = instructions[1]
+    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
+        s += "%s: " % code_inst.argval.co_name
+        pass
+    s += format_MAKE_FUNCTION_10_27(inst.arg)
+    return s
+
+
+def format_MAKE_FUNCTION_10_27(argc: int) -> str:
+    """
+    ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
+
+    This code works for Python versions up to and including 2.7.
+    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
+    shows that the change was really made in Python 3.0 or so.
+    """
+    return f"{argc} default parameters"
+
+
+update_arg_fmt_base2x = {
+    **opcode_arg_fmt_base,
+    **{
+       "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
+       }
+    }
 
 opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()
