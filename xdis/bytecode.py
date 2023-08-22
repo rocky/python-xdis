@@ -236,7 +236,11 @@ def get_instructions_bytes(
                     + extended_arg
                 )
                 i += 2
-                extended_arg = arg * 65536 if op == opc.EXTENDED_ARG else 0
+                extended_arg = (
+                    arg * 65536
+                    if hasattr(op, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                    else 0
+                )
 
             #  Set argval to the dereferenced value of the argument when
             #  available, and argrepr to the string representation of argval.
@@ -318,7 +322,11 @@ def get_instructions_bytes(
             formatted=None,
         )
         # fallthrough)
-        extended_arg_count = extended_arg_count + 1 if op == opc.EXTENDED_ARG else 0
+        extended_arg_count = (
+            extended_arg_count + 1
+            if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+            else 0
+        )
 
 
 def next_offset(op: int, opc, offset: int) -> int:

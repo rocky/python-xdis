@@ -31,8 +31,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     rm_op,
     update_pj2,
 )
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.opcode_11 import opcode_arg_fmt11, opcode_extended_fmt11
 
 version_tuple = (1, 0)
 python_implementation = "CPython"
@@ -48,11 +47,10 @@ name_op(loc, "LOAD_FAST",        124, 0, 1)  # Local variable number
 
 # fmt: on
 
-update_pj2(globals(), loc)
-
 findlinestarts = opcode_11.findlinestarts
 
-opcode_arg_fmt = update_arg_fmt_base2x.copy()
-opcode_extended_fmt = opcode_extended_fmt12 = opcode_extended_fmt_base2x.copy()
+opcode_arg_fmt = opcode_arg_fmt11.copy()
+opcode_extended_fmt = opcode_extended_fmt11.copy()
 
+update_pj2(globals(), loc)
 finalize_opcodes(loc)

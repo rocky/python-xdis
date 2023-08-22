@@ -26,12 +26,10 @@ import xdis.opcodes.opcode_12 as opcode_12
 from xdis.cross_dis import findlabels
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     finalize_opcodes,
-    format_extended_arg,
     init_opdata,
     update_pj2,
 )
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.opcode_12 import opcode_arg_fmt12, opcode_extended_fmt12
 
 version_tuple = (1, 1)  # 1.2 is the same
 python_implementation = "CPython"
@@ -42,8 +40,8 @@ init_opdata(loc, opcode_12, version_tuple)
 # These are used outside of this module
 findlinestarts = opcode_12.findlinestarts
 
-opcode_arg_fmt = update_arg_fmt_base2x.copy()
-opcode_extended_fmt = opcode_extended_fmt_base2x.copy()
+opcode_arg_fmt = opcode_arg_fmt11 = opcode_arg_fmt12.copy()
+opcode_extended_fmt = opcode_extended_fmt11 = opcode_extended_fmt12.copy()
 
-finalize_opcodes(loc)
 update_pj2(globals(), loc)
+finalize_opcodes(loc)

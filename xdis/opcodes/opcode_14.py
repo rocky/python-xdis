@@ -24,7 +24,6 @@ import xdis.opcodes.opcode_15 as opcode_15
 
 # This is used from outside this module
 from xdis.cross_dis import findlabels  # noqa
-
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     def_op,
     finalize_opcodes,
@@ -34,8 +33,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     update_pj2,
     varargs_op,
 )
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (1, 4)
 python_implementation = "CPython"
@@ -56,8 +54,6 @@ name_op(loc, "LOAD_LOCAL",       115)
 varargs_op(loc, "SET_FUNC_ARGS", 117)  # Argcount
 varargs_op(loc, "RESERVE_FAST",  123)  # Number of local variables
 # fmt: on
-
-opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 
 def findlinestarts(co, dup_lines=False):
