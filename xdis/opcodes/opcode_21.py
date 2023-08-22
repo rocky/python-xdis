@@ -21,45 +21,31 @@ This is similar to the opcode portion in Python 2.1's dis.py library.
 
 import xdis.opcodes.opcode_22 as opcode_22
 from xdis.opcodes.base import (
-    extended_format_ATTR,
-    extended_format_MAKE_FUNCTION_10_27,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_extended_arg,
-    format_MAKE_FUNCTION_10_27,
     init_opdata,
     rm_op,
     update_pj2,
 )
 
+from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+
 version_tuple = (2, 1)
 python_implementation = "CPython"
 
-loc = l = locals()
-init_opdata(l, opcode_22, version_tuple)
+loc = locals()
+init_opdata(loc, opcode_22, version_tuple)
 
 # 2.1 bytecodes changes from 2.2
-rm_op(l, "BINARY_FLOOR_DIVIDE", 26)
-rm_op(l, "BINARY_TRUE_DIVIDE", 27)
-rm_op(l, "INPLACE_FLOOR_DIVIDE", 28)
-rm_op(l, "INPLACE_TRUE_DIVIDE", 29)
-rm_op(l, "GET_ITER", 68)
-rm_op(l, "YIELD_VALUE", 86)
-rm_op(l, "FOR_ITER", 93)
+rm_op(loc, "BINARY_FLOOR_DIVIDE", 26)
+rm_op(loc, "BINARY_TRUE_DIVIDE", 27)
+rm_op(loc, "INPLACE_FLOOR_DIVIDE", 28)
+rm_op(loc, "INPLACE_TRUE_DIVIDE", 29)
+rm_op(loc, "GET_ITER", 68)
+rm_op(loc, "YIELD_VALUE", 86)
+rm_op(loc, "FOR_ITER", 93)
 
-update_pj2(globals(), l)
+opcode_arg_fmt = update_arg_fmt_base2x.copy()
+opcode_extended_fmt = opcode_extended_fmt12 = opcode_extended_fmt_base2x.copy()
 
-finalize_opcodes(l)
-
-opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
-
-opcode_arg_fmt = {
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
-}
-
-opcode_extended_fmt = {
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
-}
+update_pj2(globals(), loc)
+finalize_opcodes(loc)

@@ -17,6 +17,7 @@
 CPython 3.5 bytecode opcodes
 
 This is like Python 3.5's opcode.py with some classification
+of stack usage and information for formatting instructions.
 of stack usage.
 """
 

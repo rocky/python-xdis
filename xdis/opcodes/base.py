@@ -337,6 +337,7 @@ def extended_format_binary_op(
                 args = (arg1, instructions[j].argrepr)
             else:
                 args = (instructions[j].argrepr, arg1)
+
             return fmt_str % args
         else:
             return fmt_str % ("...", arg1)
@@ -513,7 +514,7 @@ def extended_format_INPLACE_LSHIFT(opc, instructions):
 
 
 def extended_format_INPLACE_MODULO(opc, instructions):
-    return extended_format_binary_op(opc, instructions, "%s %= %s")
+    return extended_format_binary_op(opc, instructions, "%s %%= %s")
 
 
 def extended_format_INPLACE_MULTIPLY(opc, instructions):
@@ -552,30 +553,6 @@ def extended_format_IS_OP(opc, instructions):
     )
 
 
-def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
-    """
-    instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
-    should have the function or closure name.
-
-    This code works for Python versions up to and including 2.7.
-    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
-    shows that the change was really made in Python 3.0 or so.
-    """
-    # From opcode description: argc indicates the total number of positional
-    # and keyword arguments.  Sometimes the function name is in the stack arg
-    # positions back.
-    assert len(instructions) >= 2
-    inst = instructions[0]
-    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
-    s = ""
-    code_inst = instructions[1]
-    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += "%s: " % code_inst.argval.co_name
-        pass
-    s += format_MAKE_FUNCTION_10_27(inst.arg)
-    return s
-
-
 def extended_format_RAISE_VARARGS_older(opc, instructions):
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
@@ -612,17 +589,6 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
 
 def format_IS_OP(arg: int) -> str:
     return "is" if arg == 0 else "is not"
-
-
-def format_MAKE_FUNCTION_10_27(argc: int) -> str:
-    """
-    ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
-
-    This code works for Python versions up to and including 2.7.
-    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
-    shows that the change was really made in Python 3.0 or so.
-    """
-    return f"{argc} default parameters"
 
 
 # Up until 3.7

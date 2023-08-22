@@ -134,7 +134,7 @@ def findlabels_310(code, opc):
     for offset, op, arg in unpack_opargs_bytecode_310(code, opc):
         if arg is not None:
             if op in opc.JREL_OPS:
-                if opc.version_tuple >= (3,11) and 'JUMP_BACKWARD' in opc.opname[op]:
+                if opc.version_tuple >= (3, 11) and "JUMP_BACKWARD" in opc.opname[op]:
                     arg = -arg
                 label = offset + 2 + arg * 2
             elif op in opc.JABS_OPS:
@@ -339,7 +339,11 @@ def unpack_opargs_bytecode(code, opc):
         offset += 1
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
-            extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
+            extended_arg = (
+                extended_arg_val(opc, arg)
+                if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                else 0
+            )
             offset += 2
         else:
             arg = None
