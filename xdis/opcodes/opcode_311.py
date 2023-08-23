@@ -12,6 +12,7 @@ from xdis.opcodes.base import (
     finalize_opcodes,
     init_opdata,
     jrel_op,
+    nargs_op,
     rm_op,
     update_pj3,
 )
@@ -105,7 +106,7 @@ rm_op(l,  "MATCH_KEYS",              33)
 def_op(l, "CACHE",                            0,   0, 0)
 def_op(l, "BINARY_OP",                      122,   2, 1)
 # call ops
-def_op(l, "CALL",                           171,   1, 0)
+nargs_op(l, "CALL",                           171,   1, 0)
 def_op(l, "KW_NAMES",                       172,   0, 0)
 def_op(l, "PRECALL",                        166,   0, 0)
 def_op(l, "PUSH_NULL",                        2,   0, 1)
