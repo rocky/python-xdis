@@ -211,7 +211,7 @@ class Instruction(_Instruction):
                         new_instruction[-1] = start_offset
                         del instructions[-1]
                         instructions.append(Instruction(*new_instruction))
-                        argrepr = (new_repr,)
+                        argrepr = new_repr
                         start_offset = start_offset
                 pass
             if not argrepr:
@@ -220,7 +220,14 @@ class Instruction(_Instruction):
                 pass
             else:
                 # Column: Opcode argument details
-                fields.append("(%s)" % argrepr)
+                argval = instructions[-1].argval
+                if instructions[-1].formatted is None or (
+                    argval and argval == instructions[-1].formatted
+                ):
+                    fields.append(f"({argrepr})")
+                else:
+                    prefix = "" if argval is None else f"({argval}) | "
+                    fields.append(f"{prefix}{instructions[-1].formatted}")
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
@@ -238,7 +245,9 @@ class Instruction(_Instruction):
                     new_instruction[-1] = start_offset
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
-                    fields.append("(%s)" % new_repr)
+                    argval = instructions[-1].argval
+                    prefix = "" if argval is None else f"({argval}) | "
+                    fields.append(f"{prefix}{new_repr}")
             pass
 
         return " ".join(fields).rstrip()
