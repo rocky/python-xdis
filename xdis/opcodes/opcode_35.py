@@ -24,7 +24,6 @@ of stack usage.
 import xdis.opcodes.opcode_34 as opcode_34
 from xdis.opcodes.base import (
     def_op,
-    extended_format_binary_op,
     finalize_opcodes,
     init_opdata,
     jrel_op,
@@ -32,6 +31,7 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+from xdis.opcodes.format import extended_format_binary_op
 from xdis.opcodes.opcode_34 import opcode_arg_fmt34, opcode_extended_fmt34
 
 version_tuple = (3, 5)

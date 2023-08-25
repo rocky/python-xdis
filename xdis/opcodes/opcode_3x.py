@@ -30,18 +30,17 @@ from xdis.opcodes.base import (
     compare_op,
     const_op,
     def_op,
-    format_extended_arg,
     free_op,
     jabs_op,
     jrel_op,
     local_op,
     name_op,
     nargs_op,
-    opcode_extended_fmt_base,
     store_op,
     unary_op,
     varargs_op,
 )
+from xdis.opcodes.format import format_extended_arg, opcode_extended_fmt_base
 
 loc = l = locals()
 

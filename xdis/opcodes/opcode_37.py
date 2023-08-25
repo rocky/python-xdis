@@ -28,10 +28,10 @@ from xdis.opcodes.base import (
     jrel_op,
     name_op,
     nargs_op,
-    resolved_attrs,
     rm_op,
     update_pj3,
 )
+from xdis.opcodes.format import resolved_attrs
 from xdis.opcodes.opcode_36 import opcode_arg_fmt36, opcode_extended_fmt36
 
 version_tuple = (3, 7)
