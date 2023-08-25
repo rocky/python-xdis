@@ -266,13 +266,27 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         function_pos += 1
     assert len(instructions) >= function_pos
     s = ""
-    i = -1
-    for i, inst in enumerate(instructions[1:]):
+    i = 0
+    while i < len(instructions) - 1:
+        i += 1
+        inst = instructions[i]
         if i == function_pos:
             break
         if inst.is_jump_target:
             i += 1
             break
+        start_offset = inst.start_offset
+        if start_offset is not None:
+            j = i
+            while j < len(instructions) - 1:
+                j += 1
+                inst2 = instructions[j]
+                if inst2.start_offset == start_offset:
+                    function_pos += 1
+                    inst = inst2
+                    i = j
+                    break
+
         # Make sure we are in the same basic block
         # and ... ?
         opcode = inst.opcode
@@ -286,7 +300,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
 
     if i == function_pos:
         if instructions[function_pos].opcode in opc.NAME_OPS | opc.CONST_OPS:
-            s = resolved_attrs(instructions[function_pos:])
+            s, _ = resolved_attrs(instructions[function_pos:])
             s += ": "
             pass
         pass

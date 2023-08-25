@@ -306,6 +306,8 @@ def get_instructions_bytes(
         opname = opc.opname[op]
         inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
         # fallthrough = op not in opc.nofollow
+        start_offset = offset if opc.oppop[op] == 0 else None
+
         yield Instruction(
             opname,
             op,
@@ -320,6 +322,7 @@ def get_instructions_bytes(
             is_jump_target,
             extended_arg_count != 0,
             formatted=None,
+            start_offset=start_offset,
         )
         # fallthrough)
         extended_arg_count = (
@@ -516,19 +519,20 @@ class Bytecode(object):
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
                 instr = Instruction(
-                    instr.opname,
-                    instr.opcode,
-                    instr.optype,
-                    instr.inst_size,
-                    instr.arg,
-                    instr.argval,
-                    instr.argrepr,
-                    instr.has_arg,
-                    instr.offset,
-                    set_lineno_number,  # this is the only field that changes
-                    instr.is_jump_target,
-                    instr.has_extended_arg,
-                    None,
+                    opname=instr.opname,
+                    opcode=instr.opcode,
+                    optype=instr.optype,
+                    inst_size=instr.inst_size,
+                    arg=instr.arg,
+                    argval=instr.argval,
+                    argrepr=instr.argrepr,
+                    has_arg=instr.has_arg,
+                    offset=instr.offset,
+                    starts_line=set_lineno_number,  # this is the only field that changes
+                    is_jump_target=instr.is_jump_target,
+                    has_extended_arg=instr.has_extended_arg,
+                    formatted=None,
+                    start_offset=None,
                 )
             last_was_set_lineno = False
             if instr.opname == "SET_LINENO":
