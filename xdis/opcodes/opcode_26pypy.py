@@ -22,8 +22,6 @@ of stack usage.
 
 import xdis.opcodes.opcode_26 as opcode_26
 from xdis.opcodes.base import (
-    extended_format_ATTR,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
     jrel_op,
@@ -32,38 +30,37 @@ from xdis.opcodes.base import (
     update_pj2,
     varargs_op,
 )
+from xdis.opcodes.format import extended_format_ATTR, extended_format_RETURN_VALUE
 
-version = 2.6
 version_tuple = (2, 6)
 python_implementation = "PyPy"
 
-l = locals()
-init_opdata(l, opcode_26, version_tuple, is_pypy=True)
+loc = locals()
+init_opdata(loc, opcode_26, version_tuple, is_pypy=True)
 
 # FIXME: DRY common PYPY opcode additions
 
 # fmt: off
 # PyPy only
 # ----------
-name_op(l,   'LOOKUP_METHOD',   201,  1, 2)
-nargs_op(l,  'CALL_METHOD',     202, -1, 1)
+name_op(loc,   'LOOKUP_METHOD',   201,  1, 2)
+nargs_op(loc,  'CALL_METHOD',     202, -1, 1)
 # fmt: on
 
-l["hasnargs"].append(202)
+loc["hasnargs"].append(202)
 
 # Used only in single-mode compilation list-comprehension generators
-varargs_op(l, "BUILD_LIST_FROM_ARG", 203)
+varargs_op(loc, "BUILD_LIST_FROM_ARG", 203)
 
 # Used only in assert statements
-jrel_op(l, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
-
-# FIXME remove (fix uncompyle6)
-update_pj2(globals(), l)
-
-finalize_opcodes(l)
+jrel_op(loc, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,
 }
+
+# FIXME remove (fix uncompyle6)
+update_pj2(globals(), loc)
+finalize_opcodes(loc)

@@ -24,13 +24,13 @@ import xdis.opcodes.opcode_38 as opcode_38
 from xdis.opcodes.base import (
     binary_op,
     def_op,
-    extended_format_binary_op,
     finalize_opcodes,
     init_opdata,
     jabs_op,
     rm_op,
     update_pj3,
 )
+from xdis.opcodes.format import extended_format_binary_op
 from xdis.opcodes.opcode_38 import opcode_arg_fmt38, opcode_extended_fmt38
 
 version_tuple = (3, 9)

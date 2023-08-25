@@ -11,13 +11,13 @@ import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
     binary_op,
     def_op,
-    extended_format_binary_op,
     finalize_opcodes,
     init_opdata,
     jrel_op,
     rm_op,
     update_pj3,
 )
+from xdis.opcodes.format import extended_format_binary_op
 from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 
 version_tuple = (3, 11)

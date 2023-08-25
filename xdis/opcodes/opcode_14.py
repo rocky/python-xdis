@@ -27,12 +27,12 @@ from xdis.cross_dis import findlabels  # noqa
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported
     def_op,
     finalize_opcodes,
-    format_extended_arg,
     init_opdata,
     name_op,
     update_pj2,
     varargs_op,
 )
+from xdis.opcodes.format import format_extended_arg
 from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (1, 4)

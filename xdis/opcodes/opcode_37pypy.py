@@ -12,10 +12,7 @@ import xdis.opcodes.opcode_36 as opcode_36
 import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.base import (
     def_op,
-    extended_format_RAISE_VARARGS_older,
     finalize_opcodes,
-    format_CALL_FUNCTION_pos_name_encoded,
-    format_RAISE_VARARGS_older,
     init_opdata,
     name_op,
     nargs_op,
@@ -24,9 +21,13 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+from xdis.opcodes.format import (
+    extended_format_RAISE_VARARGS_older,
+    format_CALL_FUNCTION_pos_name_encoded,
+    format_RAISE_VARARGS_older,
+)
 from xdis.opcodes.opcode_37 import opcode_arg_fmt37, opcode_extended_fmt37
 
-version = 3.7
 version_tuple = (3, 7)
 python_implementation = "PyPy"
 

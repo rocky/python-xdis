@@ -23,18 +23,20 @@ of stack usage.
 import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
-    extended_format_ATTR,
-    extended_format_RAISE_VARARGS_older,
     finalize_opcodes,
-    format_RAISE_VARARGS_older,
     init_opdata,
     jrel_op,
     nargs_op,
-    resolved_attrs,
     rm_op,
     store_op,
     update_pj3,
     varargs_op,
+)
+from xdis.opcodes.format import (
+    extended_format_ATTR,
+    extended_format_RAISE_VARARGS_older,
+    format_RAISE_VARARGS_older,
+    resolved_attrs,
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 

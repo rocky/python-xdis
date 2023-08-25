@@ -37,8 +37,7 @@ from xdis.opcodes.base import (
     unary_op,
     varargs_op,
 )
-
-from xdis.opcodes.base import opcode_arg_fmt_base, opcode_extended_fmt_base
+from xdis.opcodes.format import opcode_arg_fmt_base, opcode_extended_fmt_base
 
 loc = locals()
 
@@ -240,6 +239,7 @@ def_op(loc, "EXTENDED_ARG", 143)
 
 EXTENDED_ARG = 143
 
+
 def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
     """
     instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
@@ -278,8 +278,8 @@ def format_MAKE_FUNCTION_10_27(argc: int) -> str:
 update_arg_fmt_base2x = {
     **opcode_arg_fmt_base,
     **{
-       "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
-       }
-    }
+        "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
+    },
+}
 
 opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()
