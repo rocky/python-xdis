@@ -114,6 +114,37 @@ def extended_format_infix_binary_op(
     return "", None
 
 
+def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int]]:
+    inst = instructions[0]
+    prev_inst = instructions[1]
+    start_offset = prev_inst.offset
+    if prev_inst.opname == "IMPORT_NAME":
+        return f"{inst.argval} = import({inst.argval})", start_offset
+    elif prev_inst.opname == "IMPORT_FROM":
+        return f"{inst.argval} = import({prev_inst.argval})", start_offset
+    elif (
+        prev_inst.opname in ("LOAD_CONST", "LOAD_NAME", "LOAD_ATTR")
+        or prev_inst.opcode in opc.binaryop
+        or prev_inst in opc.unaryop
+    ):
+        if (
+            prev_inst.opcode in opc.binaryop or prev_inst in opc.unaryop
+        ) and prev_inst.formatted is None:
+            return "", start_offset
+
+        argval = prev_inst.argval
+        if prev_inst.opname == "LOAD_CONST":
+            argval = safe_repr(argval)
+        argval = prev_inst.formatted if prev_inst.formatted is not None else argval
+        start_offset = prev_inst.start_offset
+        if prev_inst.opname.startswith("INPLACE_"):
+            # Inplace operators show their own assign
+            return argval, start_offset
+        return f"{inst.argval} = {argval}", start_offset
+
+    return "", start_offset
+
+
 def extended_format_unary_op(
     opc, instructions, fmt_str: str
 ) -> Tuple[str, Optional[int]]:
@@ -265,53 +296,53 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]
 
 
 def extended_format_INPLACE_ADD(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s += %s")
+    return extended_format_infix_binary_op(opc, instructions, " += ")
 
 
 def extended_format_INPLACE_AND(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s &= %s")
+    return extended_format_infix_binary_op(opc, instructions, " &= ")
 
 
 def extended_format_INPLACE_FLOOR_DIVIDE(
     opc, instructions
 ) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s //= %s")
+    return extended_format_infix_binary_op(opc, instructions, " //= ")
 
 
 def extended_format_INPLACE_LSHIFT(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s <<= %s")
+    return extended_format_infix_binary_op(opc, instructions, " <<= ")
 
 
 def extended_format_INPLACE_MODULO(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s %%= %s")
+    return extended_format_infix_binary_op(opc, instructions, " %%= ")
 
 
 def extended_format_INPLACE_MULTIPLY(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s *= %s")
+    return extended_format_infix_binary_op(opc, instructions, " *= ")
 
 
 def extended_format_INPLACE_OR(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s |= %s")
+    return extended_format_infix_binary_op(opc, instructions, " |= ")
 
 
 def extended_format_INPLACE_POWER(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s **= %s")
+    return extended_format_infix_binary_op(opc, instructions, " **= ")
 
 
 def extended_format_INPLACE_TRUE_DIVIDE(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s /= %s")
+    return extended_format_infix_binary_op(opc, instructions, " /= ")
 
 
 def extended_format_INPLACE_RSHIFT(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s >>= %s")
+    return extended_format_infix_binary_op(opc, instructions, " >>= ")
 
 
 def extended_format_INPLACE_SUBTRACT(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s -= %s")
+    return extended_format_infix_binary_op(opc, instructions, " -= ")
 
 
 def extended_format_INPLACE_XOR(opc, instructions) -> Tuple[str, Optional[int]]:
-    return extended_format_infix_binary_op(opc, instructions, "%s ^= %s")
+    return extended_format_infix_binary_op(opc, instructions, " ^= ")
 
 
 def extended_format_IS_OP(opc, instructions) -> Tuple[str, Optional[int]]:
@@ -334,14 +365,6 @@ def extended_format_RAISE_VARARGS_older(opc, instructions):
 
 def extended_format_RETURN_VALUE(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "return %s")
-
-
-# def extended_format_STORE_FAST(opc, instructions: list) -> Tuple[str, Optional[int]]:
-#     return extended_format_infix_binary_op(opc, instructions, " = ")
-
-
-# def extended_format_STORE_NAME(opc, instructions: list) -> Tuple[str, Optional[int]]:
-#     return extended_format_infix_binary_op(opc, instructions, " = ")
 
 
 def extended_format_UNARY_NEGATIVE(opc, instructions) -> Tuple[str, Optional[int]]:
@@ -401,6 +424,16 @@ def resolved_attrs(instructions: list) -> Tuple[str, int]:
     return ".".join(reversed(resolved)), start_offset
 
 
+def safe_repr(obj, max_len: int = 20) -> str:
+    try:
+        result = repr(obj)
+    except Exception:
+        result = object.__repr__(obj)
+    if len(result) > max_len:
+        return result[:max_len] + "..."
+    return result
+
+
 # fmt: off
 opcode_arg_fmt_base = opcode_arg_fmt34 = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
@@ -442,8 +475,8 @@ opcode_extended_fmt_base = {
     "LOAD_ATTR":             extended_format_ATTR,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,
-#    "STORE_FAST":            extended_format_STORE_FAST,
-#    "STORE_NAME":            extended_format_STORE_NAME,
+    "STORE_FAST":            extended_format_store_op,
+    "STORE_NAME":            extended_format_store_op,
     "UNARY_NEGATIVE":        extended_format_UNARY_NEGATIVE,
     "UNARY_NOT":             extended_format_UNARY_NOT,
 }

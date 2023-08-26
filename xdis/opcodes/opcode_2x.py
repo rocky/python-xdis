@@ -174,7 +174,7 @@ def_op(loc, "BUILD_CLASS",            89,  2,  0)
 
 HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
-#          OP NAME              OPCODE POP PUSH
+#             OP NAME              OPCODE POP PUSH
 #-----------------------------------------------
 store_op(loc, "STORE_NAME",            90,  1,  0, is_type="name")  # Operand is in name list
 name_op(loc, "DELETE_NAME",            91,  0,  0)  # ""
