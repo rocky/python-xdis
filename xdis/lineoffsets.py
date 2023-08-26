@@ -11,7 +11,7 @@ at valid locations.
 from collections import namedtuple
 
 from xdis.bytecode import get_instructions_bytes
-from xdis.codetype import iscode
+from xdis.codetype.base import iscode
 from xdis.load import check_object_path, load_module
 from xdis.op_imports import get_opcode_module
 

@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -19,14 +19,13 @@ __docformat__ = "restructuredtext"
 import types
 from collections import namedtuple
 
-from xdis.codetype.base import *
-from xdis.codetype.code13 import *
-from xdis.codetype.code15 import *
-from xdis.codetype.code20 import *
-from xdis.codetype.code30 import *
-from xdis.codetype.code38 import *
-from xdis.codetype.code311 import *
-
+from xdis.codetype.base import CodeBase
+from xdis.codetype.code13 import Code13
+from xdis.codetype.code15 import Code15
+from xdis.codetype.code20 import Code2
+from xdis.codetype.code30 import Code3
+from xdis.codetype.code38 import Code38, Code38FieldNames
+from xdis.codetype.code311 import Code311
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
@@ -174,7 +173,6 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
             return Code13
         else:
             return Code15
-    raise RuntimeError("Implementation bug: can't handle version %s" % version)
 
 
 # In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
@@ -201,8 +199,8 @@ def to_portable(
     co_name=None,
     co_firstlineno=-1,
     co_lnotab="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
-    co_freevars=(None, ),  # 2.0+
-    co_cellvars=(None, ),  # 2.0+
+    co_freevars=(None,),  # 2.0+
+    co_cellvars=(None,),  # 2.0+
     version_triple=PYTHON_VERSION_TRIPLE,
 ):
     code = CodeTypeUnion(
