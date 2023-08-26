@@ -222,11 +222,12 @@ class Instruction(_Instruction):
                 # Column: Opcode argument details
                 argval = instructions[-1].argval
                 if instructions[-1].formatted is None or (
-                    argval and argval == instructions[-1].formatted
+                    self.argrepr is not None
+                    and self.argrepr == instructions[-1].formatted
                 ):
-                    fields.append(f"({argrepr})")
+                    fields.append(f"({self.argrepr})")
                 else:
-                    prefix = "" if argval is None else f"({argval}) | "
+                    prefix = "" if self.argrepr is None else f"({self.argrepr}) | "
                     fields.append(f"{prefix}{instructions[-1].formatted}")
                 pass
             pass

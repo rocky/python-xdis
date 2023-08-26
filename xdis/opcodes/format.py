@@ -353,14 +353,24 @@ def extended_format_IS_OP(opc, instructions) -> Tuple[str, Optional[int]]:
     )
 
 
-def extended_format_RAISE_VARARGS_older(opc, instructions):
+def extended_format_RAISE_VARARGS_older(opc, instructions) -> Tuple[Optional[str], int]:
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
-    assert len(instructions) >= 1
-    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS:
-        s, _ = resolved_attrs(instructions[1:])
-        return resolved_attrs(instructions[1:])
-    return format_RAISE_VARARGS_older(raise_inst.argval)
+    argc = raise_inst.argval
+    start_offset = raise_inst.start_offset
+    if argc == 0:
+        return "reraise", start_offset
+    elif argc == 1:
+        exception_name_inst = instructions[1]
+        start_offset = exception_name_inst.start_offset
+        exception_name = (
+            exception_name_inst.formatted
+            if exception_name_inst.formatted
+            else exception_name_inst.argrepr
+        )
+        if exception_name is not None:
+            return f"raise {exception_name}()", start_offset
+    return format_RAISE_VARARGS_older(raise_inst.argval), start_offset
 
 
 def extended_format_RETURN_VALUE(opc, instructions: list) -> Tuple[str, Optional[int]]:
@@ -473,6 +483,7 @@ opcode_extended_fmt_base = {
     "INPLACE_XOR":           extended_format_INPLACE_XOR,
     "IS_OP":                 extended_format_IS_OP,
     "LOAD_ATTR":             extended_format_ATTR,
+    "RAISE_VARARGS":         extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,
     "STORE_FAST":            extended_format_store_op,
