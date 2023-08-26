@@ -19,6 +19,7 @@ limited by, and somewhat compatible with the corresponding
 Python opcode.py structures
 """
 
+import sys
 from copy import deepcopy
 
 from xdis import wordcode
@@ -45,10 +46,11 @@ cmp_op = (
 HAVE_ARGUMENT = 90
 
 fields2copy = """
+binaryop
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
-nofollow
+nofollow unaryop
 """.split()
 
 
@@ -59,6 +61,8 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     for the module is passed.
     """
 
+    if version_tuple is None:
+        version_tuple = sys.version_info[:2]
     if version_tuple:
         loc["python_version"] = version_tuple
     loc["is_pypy"] = is_pypy
@@ -81,21 +85,34 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc[field] = list(getattr(from_mod, field))
 
 
-def compare_op(loc, name, op, pop=2, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hascompare"].append(op)
+def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+    loc["binaryop"].append(opcode)
+    def_op(loc, name, opcode, pop, push)
 
 
-def conditional_op(loc, name, op):
-    loc["hascompare"].append(op)
+def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hascompare"].append(opcode)
+    loc["binaryop"].append(opcode)
 
 
-def const_op(loc, name, op, pop=0, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hasconst"].append(op)
+def conditional_op(loc: dict, name: str, opcode: int):
+    loc["hascompare"].append(opcode)
 
 
-def def_op(loc, op_name, opcode, pop=-2, push=-2, fallthrough=True):
+def const_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasconst"].append(opcode)
+
+
+def def_op(
+    loc: dict,
+    op_name: str,
+    opcode: int,
+    pop: int = -2,
+    push: int = -2,
+    fallthrough: bool = True,
+):
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
     loc["oppush"][opcode] = push
@@ -104,23 +121,31 @@ def def_op(loc, op_name, opcode, pop=-2, push=-2, fallthrough=True):
         loc["nofollow"].append(opcode)
 
 
-def free_op(loc, name, op, pop=0, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hasfree"].append(op)
+def free_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasfree"].append(opcode)
 
 
-def jabs_op(loc, name, op, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(loc, name, op, pop, push, fallthrough=fallthrough)
-    loc["hasjabs"].append(op)
+def jabs_op(
+    loc: dict,
+    name: str,
+    opcode: int,
+    pop: int = 0,
+    push: int = 0,
+    conditional: bool = False,
+    fallthrough: bool = True,
+):
+    def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
+    loc["hasjabs"].append(opcode)
     if conditional:
-        loc["hascondition"].append(op)
+        loc["hascondition"].append(opcode)
 
 
-def jrel_op(loc, name, op, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(loc, name, op, pop, push)
-    loc["hasjrel"].append(op)
+def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=True):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasjrel"].append(opcode)
     if conditional:
-        loc["hascondition"].append(op)
+        loc["hascondition"].append(opcode)
 
 
 def local_op(loc, name, op, pop=0, push=1):
@@ -136,6 +161,28 @@ def name_op(loc, op_name, op_code, pop=-2, push=-2):
 def nargs_op(loc, name, op, pop=-2, push=-2, fallthrough=True):
     def_op(loc, name, op, pop, push, fallthrough=fallthrough)
     loc["hasnargs"].append(op)
+
+
+def opcode_check(loc):
+    """When the version of Python we are running happens
+    to have the same opcode set as the opcode we are
+    importing, we perform checks to make sure our opcode
+    set matches exactly.
+    """
+    if (PYTHON_VERSION_TRIPLE[:2] == loc["python_version"][:2]) and IS_PYPY == loc[
+        "is_pypy"
+    ]:
+        try:
+            import dis
+
+            opmap = fix_opcode_names(dis.opmap)
+            # print(set(opmap.items()) - set(loc['opmap'].items()))
+            # print(set(loc['opmap'].items()) - set(opmap.items()))
+
+            assert all(item in opmap.items() for item in loc["opmap"].items())
+            assert all(item in loc["opmap"].items() for item in opmap.items())
+        except Exception:
+            pass
 
 
 def rm_op(loc, name, op):
@@ -190,6 +237,11 @@ def store_op(loc, name, op, pop=0, push=1, is_type="def"):
         assert is_type == "def"
         def_op(loc, name, op, pop, push)
     loc["hasstore"].append(op)
+
+
+def unary_op(loc, name: str, op, pop=1, push=1):
+    loc["unaryop"].append(op)
+    def_op(loc, name, op, pop, push)
 
 
 # This is not in Python. The operand indicates how
@@ -284,8 +336,9 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     return None.
 
     """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
+    # From opcode description: argc indicates the total number of
+    # positional and keyword arguments.  Sometimes the function name
+    # is in the stack arg positions back.
     call_function_inst = instructions[0]
     assert call_function_inst.opname == "CALL_FUNCTION"
     argc = call_function_inst.arg
@@ -295,6 +348,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     ) = divmod(argc, 256)
     function_pos = pos_args + name_default * 2 + 1
     assert len(instructions) >= function_pos + 1
+    i = 0
     for i, inst in enumerate(instructions[1:]):
         if i + 1 == function_pos:
             i += 1
@@ -440,28 +494,6 @@ def format_RAISE_VARARGS_older(argc):
         return "exception, parameter"
     elif argc == 3:
         return "exception, parameter, traceback"
-
-
-def opcode_check(loc):
-    """When the version of Python we are running happens
-    to have the same opcode set as the opcode we are
-    importing, we perform checks to make sure our opcode
-    set matches exactly.
-    """
-    if (PYTHON_VERSION_TRIPLE[:2] == loc["python_version"][:2]) and IS_PYPY == loc[
-        "is_pypy"
-    ]:
-        try:
-            import dis
-
-            opmap = fix_opcode_names(dis.opmap)
-            # print(set(opmap.items()) - set(loc['opmap'].items()))
-            # print(set(loc['opmap'].items()) - set(opmap.items()))
-
-            assert all(item in opmap.items() for item in loc["opmap"].items())
-            assert all(item in loc["opmap"].items() for item in opmap.items())
-        except Exception:
-            pass
 
 
 def dump_opcodes(opmap):

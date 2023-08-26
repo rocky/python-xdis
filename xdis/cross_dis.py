@@ -134,6 +134,8 @@ def findlabels_310(code, opc):
     for offset, op, arg in unpack_opargs_bytecode_310(code, opc):
         if arg is not None:
             if op in opc.JREL_OPS:
+                if opc.version_tuple >= (3, 11) and "JUMP_BACKWARD" in opc.opname[op]:
+                    arg = -arg
                 label = offset + 2 + arg * 2
             elif op in opc.JABS_OPS:
                 label = arg * 2
@@ -286,6 +288,20 @@ def format_code_info(co, version_tuple, name=None, is_pypy=False):
     return "\n".join(lines)
 
 
+def format_exception_table(bytecode, version_tuple) -> str:
+    if version_tuple < (3, 11) or not hasattr(bytecode, "exception_entries"):
+        return ""
+    lines = []
+    lines.append("ExceptionTable:")
+    for entry in bytecode.exception_entries:
+        lasti = " lasti" if entry.lasti else ""
+        end = entry.end - 2
+        lines.append(
+            "  %s to %s -> %s [%s]%s" % (entry.start, end, entry.target, entry.depth, lasti)
+        )
+    return "\n".join(lines)
+
+
 def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
 
@@ -323,7 +339,11 @@ def unpack_opargs_bytecode(code, opc):
         offset += 1
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
-            extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
+            extended_arg = (
+                extended_arg_val(opc, arg)
+                if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                else 0
+            )
             offset += 2
         else:
             arg = None

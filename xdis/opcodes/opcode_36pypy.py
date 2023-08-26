@@ -3,18 +3,15 @@
 PYPY 3.6 opcodes
 
 This is a like Python 3.6's opcode.py with some classification
-of stack usage.
+of stack usage and information for formatting instructions.
 """
 
+import sys
+
+import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
     def_op,
-    extended_format_ATTR,
-    extended_format_RAISE_VARARGS_older,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_CALL_FUNCTION_pos_name_encoded,
-    format_extended_arg,
-    format_RAISE_VARARGS_older,
     init_opdata,
     jrel_op,
     name_op,
@@ -23,13 +20,18 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+from xdis.opcodes.format import (
+    extended_format_ATTR,
+    extended_format_RAISE_VARARGS_older,
+    extended_format_RETURN_VALUE,
+    format_CALL_FUNCTION_pos_name_encoded,
+    format_extended_arg,
+    format_RAISE_VARARGS_older,
+)
+from xdis.opcodes.opcode_36 import extended_format_MAKE_FUNCTION, format_MAKE_FUNCTION
 
-version = 3.6
 version_tuple = (3, 6)
 python_implementation = "PyPy"
-
-import xdis.opcodes.opcode_36 as opcode_36
-from xdis.opcodes.opcode_36 import extended_format_MAKE_FUNCTION, format_MAKE_FUNCTION
 
 l = locals()
 init_opdata(l, opcode_36, version_tuple, is_pypy=True)
@@ -62,7 +64,6 @@ varargs_op(l, "BUILD_LIST_FROM_ARG", 203)
 jrel_op(l, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 
 # PyPy 3.6.1 (and 2.7.13) start to introduce LOAD_REVDB_VAR
-import sys
 
 if sys.version_info[:3] >= (3, 6, 1):
     def_op(l, "LOAD_REVDB_VAR", 205)

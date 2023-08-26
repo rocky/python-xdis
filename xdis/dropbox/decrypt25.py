@@ -15,7 +15,7 @@ import xdis.marsh as xmarshal
 
 # FIXME to use codeType2Portable
 # from xdis.codetype import codeType2Portable
-from xdis.codetype import Code2Compat
+from xdis.codetype.code20 import Code2Compat
 from xdis.version_info import PYTHON3
 
 

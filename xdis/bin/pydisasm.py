@@ -36,9 +36,13 @@ else:
         **case_sensitive
     ),
 )
+@click.option(
+    "--show-source/--no-show-source",
+    help="Intersperse Python source text from linecache if available.",
+)
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format, files):
+def main(format, show_source: bool, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -72,7 +76,7 @@ def main(format, files):
             )
             continue
 
-        disassemble_file(path, sys.stdout, format)
+        disassemble_file(path, sys.stdout, format, show_source=show_source)
     return
 
 

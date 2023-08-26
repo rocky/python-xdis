@@ -1,12 +1,12 @@
-# (C) Copyright 2021, 2023 by Rocky Bernstein
+# (C) Copyright 2022-2023 by Rocky Bernstein
 """
-PYPY 3.8 opcodes
+PYPY 3.10 opcodes
 
-This is a like PyPy 3.8's opcode.py  with some classification
-of stack usage and information for formatting instructions..
+This is a like PyPy 3.10's opcode.py  with some classification
+of stack usage and information for formatting instructions.
 """
 
-import xdis.opcodes.opcode_38 as opcode_38
+import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
     def_op,
     finalize_opcodes,
@@ -18,18 +18,17 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.opcode_37pypy import opcode_arg_fmt37pypy, opcode_extended_fmt37pypy
+from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 
-version_tuple = (3, 8)
+version_tuple = (3, 10)
 python_implementation = "PyPy"
 
 loc = locals()
-init_opdata(loc, opcode_38, version_tuple, is_pypy=True)
+init_opdata(loc, opcode_310, version_tuple, is_pypy=True)
 
 
 # fmt: off
 rm_op(loc, "ROT_FOUR",    6)
-rm_op(loc, "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 rm_op(loc, "LOAD_METHOD", 160)
 
 # PyPy only
@@ -47,8 +46,8 @@ def_op(loc, "LOAD_REVDB_VAR",              205)
 
 # fmt: on
 
-opcode_arg_fmt = opcode_arg_fmt38pypy = opcode_arg_fmt37pypy.copy()
-opcode_extended_fmt = opcode_extended_fmt38pypy = opcode_extended_fmt37pypy.copy()
+opcode_arg_fmt = opcode_arg_fmt310pypy = opcode_arg_fmt310.copy()
+opcode_extended_fmt = opcode_extended_fmt310pypy = opcode_extended_fmt310.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

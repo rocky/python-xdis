@@ -38,7 +38,7 @@ import sys
 
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
-IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244, 256, 336)
+IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384)
 
 
 def add_magic_from_int(magic_int, version):
@@ -393,7 +393,8 @@ add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
 add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(256, "3.8pypy")  # PyPy 3.8.15
-add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15
+add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15, PyPy 3.9.17
+add_magic_from_int(384, "3.10pypy")  # PyPy 3.10.12
 
 # NOTE: This is JVM bytecode not Python bytecode
 add_magic_from_int(21150, "3.8.5Graal")
@@ -472,6 +473,12 @@ add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.7pypy")
 add_canonic_versions(
     "3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy 3.8.16pypy", "3.8.12pypy"
+)
+add_canonic_versions(
+    "3.9.17pypy", "3.9pypy"
+)
+add_canonic_versions(
+    "3.10.12pypy 3.10pypy", "3.10pypy"
 )
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")

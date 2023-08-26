@@ -16,72 +16,71 @@
 """
 CPython 3.5 bytecode opcodes
 
-This is a like Python 3.5's opcode.py with some classification
+This is like Python 3.5's opcode.py with some classification
+of stack usage and information for formatting instructions.
 of stack usage.
 """
 
 import xdis.opcodes.opcode_34 as opcode_34
 from xdis.opcodes.base import (
     def_op,
-    extended_format_ATTR,
-    extended_format_CALL_FUNCTION,
-    extended_format_RAISE_VARARGS_older,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_CALL_FUNCTION_pos_name_encoded,
-    format_extended_arg,
-    format_RAISE_VARARGS_older,
     init_opdata,
     jrel_op,
     rm_op,
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.opcode_3x import (
-    extended_format_MAKE_FUNCTION_30_35,
-    format_MAKE_FUNCTION_30_35,
-)
+from xdis.opcodes.format import extended_format_binary_op
+from xdis.opcodes.opcode_34 import opcode_arg_fmt34, opcode_extended_fmt34
 
 version_tuple = (3, 5)
 python_implementation = "CPython"
 
-loc = l = locals()
 
-init_opdata(l, opcode_34, version_tuple)
+loc = locals()
+
+init_opdata(loc, opcode_34, version_tuple)
 
 # fmt: off
 # These are removed since Python 3.5.
 # Removals happen before adds since
 # some opcodes are reused
-rm_op(l, "STORE_MAP",                    54)
-rm_op(l, "WITH_CLEANUP",                 81)
+rm_op(loc, "STORE_MAP",                    54)
+rm_op(loc, "WITH_CLEANUP",                 81)
 
 # Stack effects are change from 3.4
-varargs_op(l, "BUILD_MAP",              105, -1, -1)  # arg is count of kwarg items
+varargs_op(loc, "BUILD_MAP",              105, -1, -1)  # arg is count of kwarg items
 
 # These are new since Python 3.5
 #          OP NAME                   OPCODE POP PUSH
 #---------------------------------------------------
-def_op(l, "BINARY_MATRIX_MULTIPLY",      16,  2,  1)
-def_op(l, "INPLACE_MATRIX_MULTIPLY",     17,  2,  1)
-def_op(l, "GET_AITER",                   50,  1,  1)
-def_op(l, "GET_ANEXT",                   51,  0,  1)
-def_op(l, "BEFORE_ASYNC_WITH",           52,  0,  1)
-def_op(l, "GET_YIELD_FROM_ITER",         69,  1,  1)
-def_op(l, "GET_AWAITABLE",               73,  0,  0)
-def_op(l, "WITH_CLEANUP_START",          81,  0,  1)
-def_op(l, "WITH_CLEANUP_FINISH",         82,  1,  0)
+def_op(loc, "BINARY_MATRIX_MULTIPLY",      16,  2,  1)
+def_op(loc, "INPLACE_MATRIX_MULTIPLY",     17,  2,  1)
+def_op(loc, "GET_AITER",                   50,  1,  1)
+def_op(loc, "GET_ANEXT",                   51,  0,  1)
+def_op(loc, "BEFORE_ASYNC_WITH",           52,  0,  1)
+def_op(loc, "GET_YIELD_FROM_ITER",         69,  1,  1)
+def_op(loc, "GET_AWAITABLE",               73,  0,  0)
+def_op(loc, "WITH_CLEANUP_START",          81,  0,  1)
+def_op(loc, "WITH_CLEANUP_FINISH",         82,  1,  0)
 
-varargs_op(l, "BUILD_LIST_UNPACK",          149, -1,  1)
-varargs_op(l, "BUILD_MAP_UNPACK",           150, -1,  1)
-varargs_op(l, "BUILD_MAP_UNPACK_WITH_CALL", 151, -1,  1)
-varargs_op(l, "BUILD_TUPLE_UNPACK",         152, -1,  1)
-varargs_op(l, "BUILD_SET_UNPACK",           153, -1,  1)
+varargs_op(loc, "BUILD_LIST_UNPACK",          149, -1,  1)
+varargs_op(loc, "BUILD_MAP_UNPACK",           150, -1,  1)
+varargs_op(loc, "BUILD_MAP_UNPACK_WITH_CALL", 151, -1,  1)
+varargs_op(loc, "BUILD_TUPLE_UNPACK",         152, -1,  1)
+varargs_op(loc, "BUILD_SET_UNPACK",           153, -1,  1)
 
-jrel_op(l, "SETUP_ASYNC_WITH",          154,  0,  6)
+jrel_op(loc, "SETUP_ASYNC_WITH",          154,  0,  6)
 # fmt: on
 
-update_pj3(globals(), l)
+
+def extended_format_BINARY_MATRIX_MULTIPLY(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s @ %s")
+
+
+def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions):
+    return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 
 def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
@@ -92,25 +91,22 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
     return "%d mappings, function at %d" % (count, count + rel_func_pos)
 
 
-opcode_arg_fmt = {
-    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
-    "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "EXTENDED_ARG": format_extended_arg,
-    "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older,
-}
+opcode_arg_fmt35 = opcode_arg_fmt34.copy()
+opcode_arg_fmt35.update(
+    {
+        "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
+    }
+)
+opcode_arg_fmt = opcode_arg_fmt35
 
-opcode_extended_fmt = {
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_30_35,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_30_35,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
-}
+opcode_extended_fmt35 = opcode_extended_fmt34.copy()
+opcode_extended_fmt35.update(
+    {
+        "BINARY_MATRIX_MULTIPLY": extended_format_BINARY_MATRIX_MULTIPLY,
+        "INPLACE_MATRIX_MULTIPLY": extended_format_INPLACE_MATRIX_MULTIPLY,
+    }
+)
+opcode_extended_fmt = opcode_extended_fmt35
 
-finalize_opcodes(l)
+update_pj3(globals(), loc)
+finalize_opcodes(loc)
