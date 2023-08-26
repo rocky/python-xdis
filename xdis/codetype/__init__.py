@@ -25,6 +25,8 @@ from xdis.codetype.code15 import *
 from xdis.codetype.code20 import *
 from xdis.codetype.code30 import *
 from xdis.codetype.code38 import *
+from xdis.codetype.code311 import *
+
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
@@ -57,7 +59,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 code.co_freevars,
                 code.co_cellvars,
             )
-        else:
+        elif version_tuple < (3, 11):
             return Code38(
                 code.co_argcount,
                 code.co_posonlyargcount,  # Not in < 3.8
@@ -73,6 +75,27 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 code.co_name,
                 code.co_firstlineno,
                 code.co_lnotab,
+                code.co_freevars,
+                code.co_cellvars,
+            )
+        else:  # version tuple >= 3, 11
+            return Code311(
+                code.co_argcount,
+                code.co_posonlyargcount,  # Not in < 3.8
+                code.co_kwonlyargcount,
+                code.co_nlocals,
+                code.co_stacksize,
+                code.co_flags,
+                code.co_code,
+                code.co_consts,
+                code.co_names,
+                code.co_varnames,
+                code.co_filename,
+                code.co_name,
+                code.co_qualname,
+                code.co_firstlineno,
+                code.co_lnotab,
+                code.co_exceptiontable,
                 code.co_freevars,
                 code.co_cellvars,
             )
@@ -136,9 +159,12 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
         if version_tuple < (3, 8):
             # 3.0 .. 3.7
             return Code3
-        else:
-            # 3.8 ..
+        elif version_tuple < (3, 11):
+            # 3.8 ... 3.10
             return Code38
+        else:
+            # 3.11 ...
+            return Code311
     elif version_tuple > (2, 0):
         # 2.0 .. 2.7
         return Code2
@@ -175,8 +201,8 @@ def to_portable(
     co_name=None,
     co_firstlineno=-1,
     co_lnotab="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
-    co_freevars=(None,),  # 2.0+
-    co_cellvars=(None,),  # 2.0+
+    co_freevars=(None, ),  # 2.0+
+    co_cellvars=(None, ),  # 2.0+
     version_triple=PYTHON_VERSION_TRIPLE,
 ):
     code = CodeTypeUnion(

@@ -21,48 +21,32 @@ This is similar to (but better than) the opcode portion in Python 2.0's dis.py l
 
 import xdis.opcodes.opcode_21 as opcode_21
 from xdis.opcodes.base import (
-    extended_format_ATTR,
-    extended_format_MAKE_FUNCTION_10_27,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_CALL_FUNCTION_pos_name_encoded,
-    format_extended_arg,
-    format_MAKE_FUNCTION_10_27,
     init_opdata,
     rm_op,
     update_pj2,
 )
 
+from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+
 version_tuple = (2, 0)
 python_implementation = "CPython"
 
-loc = l = locals()
-init_opdata(l, opcode_21, version_tuple)
+loc = locals()
+init_opdata(loc, opcode_21, version_tuple)
 
 # fmt: off
 # 2.1 Bytecodes not in 2.0
-rm_op(l, "CONTINUE_LOOP", 119)
-rm_op(l, "MAKE_CLOSURE",  134)
-rm_op(l, "LOAD_CLOSURE",  135)
-rm_op(l, "LOAD_DEREF",    136)
-rm_op(l, "STORE_DEREF",   137)
+rm_op(loc, "CONTINUE_LOOP", 119)
+rm_op(loc, "MAKE_CLOSURE",  134)
+rm_op(loc, "LOAD_CLOSURE",  135)
+rm_op(loc, "LOAD_DEREF",    136)
+rm_op(loc, "STORE_DEREF",   137)
 
-update_pj2(globals(), l)
+opcode_arg_fmt = update_arg_fmt_base2x.copy()
+opcode_extended_fmt = opcode_extended_fmt12 = opcode_extended_fmt_base2x.copy()
 
-finalize_opcodes(l)
+update_pj2(globals(), loc)
+finalize_opcodes(loc)
 
-opcode_arg_fmt = {
-    "CALL_FUNCTION":        format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_KW":     format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "EXTENDED_ARG":         format_extended_arg,
-    "MAKE_FUNCTION":        format_MAKE_FUNCTION_10_27,
-}
-
-opcode_extended_fmt = {
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION":        extended_format_MAKE_FUNCTION_10_27,
-    "RETURN_VALUE":         extended_format_RETURN_VALUE,
-    "STORE_ATTR":           extended_format_ATTR,
-}
 # fmt: on

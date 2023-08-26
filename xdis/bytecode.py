@@ -20,9 +20,12 @@ Extracted from Python 3 dis module but generalized to
 allow running on Python 2.
 """
 
+import collections
+import inspect
 import sys
 import types
 from io import StringIO
+from linecache import getline
 
 from xdis.cross_dis import (
     format_code_info,
@@ -30,6 +33,7 @@ from xdis.cross_dis import (
     instruction_size,
     op_has_argument,
 )
+from xdis.cross_types import UnicodeForPython3
 from xdis.instruction import Instruction
 from xdis.op_imports import get_opcode_module
 from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
@@ -127,6 +131,38 @@ def get_name_info(name_index, name_list):
 _get_name_info = get_name_info
 
 
+_ExceptionTableEntry = collections.namedtuple(
+    "_ExceptionTableEntry", "start end target depth lasti"
+)
+
+
+def _parse_varint(iterator):
+    b = next(iterator)
+    val = b & 63
+    while b & 64:
+        val <<= 6
+        b = next(iterator)
+        val |= b & 63
+    return val
+
+
+def parse_exception_table(exception_table: bytes):
+    iterator = iter(exception_table)
+    entries = []
+    try:
+        while True:
+            start = _parse_varint(iterator) * 2
+            length = _parse_varint(iterator) * 2
+            end = start + length
+            target = _parse_varint(iterator) * 2
+            dl = _parse_varint(iterator)
+            depth = dl >> 1
+            lasti = bool(dl & 1)
+            entries.append(_ExceptionTableEntry(start, end, target, depth, lasti))
+    except StopIteration:
+        return entries
+
+
 def get_instructions_bytes(
     bytecode,
     opc,
@@ -136,6 +172,7 @@ def get_instructions_bytes(
     cells=None,
     linestarts=None,
     line_offset=0,
+    exception_entries=None,
 ):
     """Iterate over the instructions in a bytecode string.
 
@@ -146,6 +183,12 @@ def get_instructions_bytes(
 
     """
     labels = opc.findlabels(bytecode, opc)
+
+    if exception_entries is not None:
+        for start, end, target, _, _ in exception_entries:
+            for i in range(start, end):
+                labels.append(target)
+
     # label_maps = get_jump_target_maps(bytecode, opc)
     extended_arg = 0
 
@@ -160,7 +203,11 @@ def get_instructions_bytes(
     i = 0
     extended_arg_count = 0
     extended_arg = 0
-    extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
+    if hasattr(opc, "EXTENDED_ARG"):
+        extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
+    else:
+        extended_arg_size = 0
+
     while i < n:
         op = code2num(bytecode, i)
 
@@ -193,7 +240,11 @@ def get_instructions_bytes(
                     + extended_arg
                 )
                 i += 2
-                extended_arg = arg * 65536 if op == opc.EXTENDED_ARG else 0
+                extended_arg = (
+                    arg * 65536
+                    if hasattr(op, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                    else 0
+                )
 
             #  Set argval to the dereferenced value of the argument when
             #  available, and argrepr to the string representation of argval.
@@ -205,7 +256,12 @@ def get_instructions_bytes(
                 argval, argrepr = _get_const_info(arg, constants)
                 optype = "const"
             elif op in opc.NAME_OPS:
-                argval, argrepr = _get_name_info(arg, names)
+                if opc.version_tuple >= (3, 11) and opc.opname[op] == "LOAD_GLOBAL":
+                    argval, argrepr = _get_name_info(arg >> 1, names)
+                    if arg & 1:
+                        argrepr = "NULL + " + argrepr
+                else:
+                    argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
             elif op in opc.JREL_OPS:
                 argval = i + get_jump_val(arg, opc.python_version)
@@ -254,6 +310,8 @@ def get_instructions_bytes(
         opname = opc.opname[op]
         inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
         # fallthrough = op not in opc.nofollow
+        start_offset = offset if opc.oppop[op] == 0 else None
+
         yield Instruction(
             opname,
             op,
@@ -267,9 +325,15 @@ def get_instructions_bytes(
             starts_line,
             is_jump_target,
             extended_arg_count != 0,
+            formatted=None,
+            start_offset=start_offset,
         )
         # fallthrough)
-        extended_arg_count = extended_arg_count + 1 if op == opc.EXTENDED_ARG else 0
+        extended_arg_count = (
+            extended_arg_count + 1
+            if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+            else 0
+        )
 
 
 def next_offset(op, opc, offset):
@@ -310,6 +374,11 @@ class Bytecode(object):
         self.opnames = opc.opname
         self.current_offset = current_offset
 
+        if opc.version_tuple >= (3, 11) and hasattr(co, "co_exceptiontable"):
+            self.exception_entries = parse_exception_table(co.co_exceptiontable)
+        else:
+            self.exception_entries = None
+
     def __iter__(self):
         co = self.codeobj
         return get_instructions_bytes(
@@ -321,6 +390,7 @@ class Bytecode(object):
             self._cell_names,
             self._linestarts,
             line_offset=self._line_offset,
+            exception_entries=self.exception_entries,
         )
 
     def __repr__(self):
@@ -341,9 +411,10 @@ class Bytecode(object):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version_tuple)
 
-    def dis(self, asm_format="classic"):
+    def dis(self, asm_format="classic", show_source=False):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
+        filename = co.co_filename
         if self.current_offset is not None:
             offset = self.current_offset
         else:
@@ -356,6 +427,14 @@ class Bytecode(object):
             cells = None
             linestarts = None
 
+        first_line_number = co.co_firstlineno if hasattr(co, "co_firstlineno") else None
+
+        if inspect.iscode(co):
+            filename = inspect.getfile(co)
+
+        if isinstance(filename, UnicodeForPython3):
+            filename = str(filename)
+
         self.disassemble_bytes(
             co.co_code,
             varnames=co.co_varnames,
@@ -367,6 +446,10 @@ class Bytecode(object):
             file=output,
             lasti=offset,
             asm_format=asm_format,
+            filename=filename,
+            show_source=show_source,
+            first_line_number=first_line_number,
+            exception_entries=self.exception_entries,
         )
         return output.getvalue()
 
@@ -383,7 +466,7 @@ class Bytecode(object):
 
     def disassemble_bytes(
         self,
-        code,
+        bytecode: Union[bytes, str],
         lasti=-1,
         varnames=None,
         names=None,
@@ -393,9 +476,31 @@ class Bytecode(object):
         file=sys.stdout,
         line_offset=0,
         asm_format="classic",
-    ):
+        filename: Optional[str] = None,
+        show_source=True,
+        first_line_number: Optional[int] = None,
+        exception_entries=None,
+    ) -> list:
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
+        show_source = show_source and show_lineno and first_line_number and filename
+
+        def show_source_text(line_number: Optional[int]):
+            """
+            Show the Python source text if all conditions are right:
+              * source text was requested - this implies other checks
+                seen above
+              * the source is available via linecache.getline()
+            """
+            # There is some redundancy in the condition below
+            # to make type checking happy. In reality
+            # only the show_source is tested at runtime.
+            if show_source and filename and line_number:
+                source_text = getline(filename, line_number)
+                if source_text:
+                    file.write(" " * 13 + "# " + source_text.lstrip())
+
+        show_source_text(first_line_number)
 
         # Old Python's use "SET_LINENO" to set a line number
         set_lineno_number = 0
@@ -405,7 +510,7 @@ class Bytecode(object):
         lineno_width = 3 if show_lineno else 0
         instructions = []
         for instr in get_instructions_bytes(
-            code,
+            bytecode,
             self.opc,
             varnames,
             names,
@@ -413,22 +518,25 @@ class Bytecode(object):
             cells,
             linestarts,
             line_offset=line_offset,
+            exception_entries=exception_entries,
         ):
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
                 instr = Instruction(
-                    instr.opname,
-                    instr.opcode,
-                    instr.optype,
-                    instr.inst_size,
-                    instr.arg,
-                    instr.argval,
-                    instr.argrepr,
-                    instr.has_arg,
-                    instr.offset,
-                    set_lineno_number,  # this is the only field that changes
-                    instr.is_jump_target,
-                    instr.has_extended_arg,
+                    opname=instr.opname,
+                    opcode=instr.opcode,
+                    optype=instr.optype,
+                    inst_size=instr.inst_size,
+                    arg=instr.arg,
+                    argval=instr.argval,
+                    argrepr=instr.argrepr,
+                    has_arg=instr.has_arg,
+                    offset=instr.offset,
+                    starts_line=set_lineno_number,  # this is the only field that changes
+                    is_jump_target=instr.is_jump_target,
+                    has_extended_arg=instr.has_extended_arg,
+                    formatted=None,
+                    start_offset=None,
                 )
             last_was_set_lineno = False
             if instr.opname == "SET_LINENO":
@@ -441,6 +549,8 @@ class Bytecode(object):
             )
             if new_source_line:
                 file.write("\n")
+                show_source_text(instr.starts_line)
+
             is_current_instr = instr.offset == lasti
 
             # Python 3.11 introduces "CACHE" and the convention seems to be
@@ -468,7 +578,7 @@ class Bytecode(object):
                     "are inaccurate here in Python before 1.5\n"
                 )
             pass
-        return
+        return instructions
 
     def get_instructions(self, x, first_line=None):
         """Iterator for the opcodes in methods, functions or code

@@ -16,27 +16,29 @@
 """
 CPython 3.6 bytecode opcodes
 
-This is a like Python 3.6's opcode.py with some classification
+This is like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
 import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
-    extended_format_ATTR,
-    extended_format_RAISE_VARARGS_older,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_RAISE_VARARGS_older,
     init_opdata,
     jrel_op,
     nargs_op,
-    resolved_attrs,
     rm_op,
     store_op,
     update_pj3,
     varargs_op,
 )
+from xdis.opcodes.format import (
+    extended_format_ATTR,
+    extended_format_RAISE_VARARGS_older,
+    format_RAISE_VARARGS_older,
+    resolved_attrs,
+)
+from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
 oppush = {}
 oppop = {}
@@ -105,8 +107,10 @@ rm_op(loc, 'CALL_FUNCTION_VAR_KW', 142)
 # These are new since Python 3.6
 #          OP NAME                OPCODE POP PUSH
 # -----------------------------------------------
-store_op(loc,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS index in name list;
-jrel_op(loc,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__; pushed results on stack
+store_op(loc,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS index in
+                                                                   # name list;
+jrel_op(loc,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__;
+                                                   # pushed results on stack
 def_op(loc,      'FORMAT_VALUE',     155,  1,  1)
 varargs_op(loc,  'BUILD_CONST_KEY_MAP', 156, -2, 1) # TOS is count of kwargs
 nargs_op(loc,    'CALL_FUNCTION_EX', 142, -2,  1)
@@ -197,7 +201,7 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(count):
     return "%d mappings" % count
 
 
-opcode_arg_fmt = {
+opcode_arg_fmt36 = opcode_arg_fmt = {
     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     "CALL_FUNCTION": format_CALL_FUNCTION,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
@@ -213,13 +217,14 @@ update_pj3(globals(), loc)
 
 finalize_opcodes(loc)
 
-# extended formatting routine  should be done after updating globals and finalizing opcodes
+# Extended formatting routines
+# This should be called after updating globals and finalizing opcodes
 # since they make use of the information there.
 
 
-def extended_format_CALL_METHOD(opc, instructions):
+def extended_format_CALL_METHOD(opc, instructions) -> str:
     """Inst should be a "LOAD_METHOD" instruction. Looks in `instructions`
-    to see if we can find a method name.  If not we'll return None.
+    to see if we can find a method name.  If not we'll return "".
 
     """
     # From opcode description: Loads a method named co_names[namei] from the TOS object.
@@ -253,16 +258,37 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     # From opcode description: argc indicates the total number of positional and keyword arguments.
     # Sometimes the function name is in the stack arg positions back.
     call_function_inst = instructions[0]
-    assert call_function_inst.opname == "CALL_FUNCTION"
+    call_opname = call_function_inst.opname
+    assert call_opname in (
+        "CALL_FUNCTION",
+        "CALL_FUNCTION_VAR",
+    )
     function_pos = call_function_inst.arg + 1
+    if call_opname == "CALL_FUNCTION_VAR":
+        function_pos += 1
     assert len(instructions) >= function_pos
     s = ""
-    for i, inst in enumerate(instructions[1:]):
+    i = 0
+    while i < len(instructions) - 1:
+        i += 1
+        inst = instructions[i]
         if i == function_pos:
             break
         if inst.is_jump_target:
             i += 1
             break
+        start_offset = inst.start_offset
+        if start_offset is not None:
+            j = i
+            while j < len(instructions) - 1:
+                j += 1
+                inst2 = instructions[j]
+                if inst2.start_offset == start_offset:
+                    function_pos += 1
+                    inst = inst2
+                    i = j
+                    break
+
         # Make sure we are in the same basic block
         # and ... ?
         opcode = inst.opcode
@@ -270,24 +296,22 @@ def extended_format_CALL_FUNCTION(opc, instructions):
             break
         if inst.optype != "name":
             function_pos += (oppop[opcode] - oppush[opcode]) + 1
-        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
+        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX", "CALL_FUNCTION_VAR"):
             break
         pass
-    else:
-        i += 1
 
     if i == function_pos:
-        if instructions[function_pos].opname in (
-            "LOAD_CONST",
-            "LOAD_GLOBAL",
-            "LOAD_ATTR",
-            "LOAD_NAME",
-        ):
-            s = resolved_attrs(instructions[function_pos:])
+        if instructions[function_pos].opcode in opc.NAME_OPS | opc.CONST_OPS:
+            s, _ = resolved_attrs(instructions[function_pos:])
             s += ": "
             pass
         pass
-    s += format_CALL_FUNCTION(call_function_inst.arg)
+    format_call_fn = (
+        format_CALL_FUNCTION_EX
+        if call_opname == "CALL_FUNCTION_EX"
+        else format_CALL_FUNCTION
+    )
+    s += format_call_fn(call_function_inst.arg)
     return s
 
 
@@ -297,8 +321,9 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
     return None.
 
     """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
+    # From opcode description: argc indicates the total number of
+    # positional and keyword arguments.  Sometimes the function name
+    # is in the stack arg positions back.
     call_function_inst = instructions[0]
     assert call_function_inst.opname == "CALL_FUNCTION_KW"
     function_pos = call_function_inst.arg
@@ -307,6 +332,7 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
     if load_const.opname == "LOAD_CONST" and isinstance(load_const.argval, tuple):
         function_pos += len(load_const.argval) + 1
         s = ""
+        i = -1
         for i, inst in enumerate(instructions[2:]):
             if i == function_pos:
                 break
@@ -325,12 +351,7 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
             pass
 
         if i == function_pos:
-            if instructions[function_pos].opname in (
-                "LOAD_CONST",
-                "LOAD_GLOBAL",
-                "LOAD_ATTR",
-                "LOAD_NAME",
-            ):
+            if instructions[function_pos].opname in opc.NAME_OPS | opc.CONST_OPS:
                 if instructions[function_pos].opname == "LOAD_ATTR":
                     s += "."
                 s += "%s() " % instructions[function_pos].argrepr
@@ -340,13 +361,30 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
         return s
 
 
-opcode_extended_fmt = {
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
-    "CALL_METHOD": extended_format_CALL_METHOD,
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
+opcode_arg_fmt = opcode_arg_fmt36 = {
+    **opcode_arg_fmt35,
+    **{
+        "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
+        "CALL_FUNCTION": format_CALL_FUNCTION,
+        "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
+        "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
+        "CALL_METHOD": format_CALL_FUNCTION,
+        "MAKE_FUNCTION": format_MAKE_FUNCTION,
+        "FORMAT_VALUE": format_value_flags,
+        "EXTENDED_ARG": format_extended_arg36,
+        "RAISE_VARARGS": format_RAISE_VARARGS_older,
+    },
+}
+
+opcode_extended_fmt36 = opcode_extended_fmt = {
+    **opcode_extended_fmt35,
+    **{
+        "CALL_FUNCTION": extended_format_CALL_FUNCTION,
+        "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
+        "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
+        "CALL_METHOD": extended_format_CALL_METHOD,
+        "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+        "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
+        "STORE_ATTR": extended_format_ATTR,
+    },
 }
