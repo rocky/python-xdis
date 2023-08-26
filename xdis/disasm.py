@@ -30,7 +30,8 @@ from collections import deque
 
 import xdis
 from xdis.bytecode import Bytecode
-from xdis.codetype import codeType2Portable, iscode
+from xdis.codetype import codeType2Portable
+from xdis.codetype.base import iscode
 from xdis.cross_dis import format_code_info, format_exception_table
 from xdis.load import check_object_path, load_module
 from xdis.magics import PYTHON_MAGIC_INT

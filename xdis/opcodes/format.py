@@ -107,7 +107,7 @@ def extended_format_infix_binary_op(
             if arg2 == "":
                 arg2 = "..."
             else:
-                arg2 = f"({arg2}"
+                arg2 = f"({arg2})"
             return f"{arg2}{op_str}{arg1}", start_offset
         else:
             return f"...{op_str}{arg1}", None

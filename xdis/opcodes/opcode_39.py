@@ -88,7 +88,7 @@ def extended_format_IS_OP(opc, instructions) -> str:
     return extended_format_binary_op(
         opc,
         instructions,
-        f"%s {format_CONTAINS_OP(instructions[0].arg)} %s",
+        f"%s {format_IS_OP(instructions[0].arg)} %s",
     )
 
 
