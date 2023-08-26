@@ -27,6 +27,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     compare_op,
     const_op,
     def_op,
+    finalize_opcodes,
     jabs_op,
     jrel_op,
     local_op,
@@ -234,3 +235,6 @@ update_pj2(globals(), loc)
 
 opcode_arg_fmt = update_arg_fmt_base2x.copy()
 opcode_extended_fmt = opcode_extended_fmt_base2x.copy()
+
+update_pj2(globals(), loc)
+finalize_opcodes(loc)
