@@ -125,17 +125,19 @@ def format_RAISE_VARARGS(argc):
     elif argc == 2:
         return "exception instance with __cause__"
 
-opcode_arg_fmt = opcode_arg_fmt37 = {
-    **opcode_arg_fmt36,
-    **{"RAISE_VARARGS": format_RAISE_VARARGS}
-}
+opcode_arg_fmt37 = opcode_arg_fmt36.copy()
+opcode_arg_fmt37.update(
+    {"RAISE_VARARGS": format_RAISE_VARARGS}
+)
+opcode_arg_fmt = opcode_arg_fmt37
 
-opcode_extended_fmt = opcode_extended_fmt37 = {
-    **opcode_extended_fmt36,
-    **{
+opcode_extended_fmt37 = opcode_extended_fmt36.copy()
+opcode_extended_fmt37.update(
+    {
      "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     }
-}
+)
+opcode_extended_fmt = opcode_extended_fmt37
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

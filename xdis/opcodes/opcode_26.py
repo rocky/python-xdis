@@ -47,7 +47,7 @@ init_opdata(loc, opcode_25, version_tuple)
 store_op(loc, "STORE_MAP",          54,  3,  1)
 rm_op(loc,    "IMPORT_NAME",       107)
 name_op(loc,  "IMPORT_NAME",       107,  2,  1)  # Imports namei; TOS and TOS1 provide
-                                                 # fromlist and level. Module pushed.
+# fromlist and level. Module pushed.
 # fmt: on
 
 opcode_arg_fmt = update_arg_fmt_base2x.copy()

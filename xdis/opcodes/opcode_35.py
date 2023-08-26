@@ -91,20 +91,22 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
     return "%d mappings, function at %d" % (count, count + rel_func_pos)
 
 
-opcode_arg_fmt = opcode_arg_fmt35 = {
-    **opcode_arg_fmt34,
-    **{
+opcode_arg_fmt35 = opcode_arg_fmt34.copy()
+opcode_arg_fmt35.update(
+    {
         "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
-    },
-}
+    }
+)
+opcode_arg_fmt = opcode_arg_fmt35
 
-opcode_extended_fmt = opcode_extended_fmt35 = {
-    **opcode_extended_fmt34,
-    **{
+opcode_extended_fmt35 = opcode_extended_fmt34.copy()
+opcode_extended_fmt35.update(
+    {
         "BINARY_MATRIX_MULTIPLY": extended_format_BINARY_MATRIX_MULTIPLY,
         "INPLACE_MATRIX_MULTIPLY": extended_format_INPLACE_MATRIX_MULTIPLY,
-    },
-}
+    }
+)
+opcode_extended_fmt = opcode_extended_fmt35
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

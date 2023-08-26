@@ -45,18 +45,17 @@ _Instruction = namedtuple(
 # _Instruction.has_extended_arg.__doc__ = (
 #     "True there were EXTENDED_ARG opcodes before this, otherwise False"
 # )
->>>>>>> master
-
-_Instruction.formatted.__doc__ = (
-    "If not None, a somewhat hacky formatted representation of the instruction"
-)
+#
+# _Instruction.formatted.__doc__ = (
+#    "If not None, a somewhat hacky formatted representation of the instruction"
+# )
 # Python expressions can be straight-line, operator like-basic block code that take
 # items off a stack and push a value onto the stack. In this case, in a linear scan
 # we can basically build up an expression tree.
-# Note this has to be the last field. Code to set this assumes this.
-_Instruction.start_offset.__doc__ = (
-    "If not None, the offset of the first instruction feeding into the operation"
-)
+# # Note this has to be the last field. Code to set this assumes this.
+# _Instruction.start_offset.__doc__ = (
+#     "If not None, the offset of the first instruction feeding into the operation"
+# )
 
 _OPNAME_WIDTH = 20
 
@@ -171,8 +170,10 @@ class Instruction(_Instruction):
         # Column: Opcode argument
         if self.arg is not None:
             argrepr = self.argrepr
-            # The ``argrepr`` value when the instruction was created generally has all the information we require.
-            # However, for "asm" format, want additional explicit information linking operands to tables.
+            # The ``argrepr`` value when the instruction was created
+            # generally has all the information we require.  However,
+            # for "asm" format, want additional explicit information
+            # linking operands to tables.
             if asm_format == "asm":
                 if self.optype in ("jabs", "jrel"):
                     assert self.argrepr.startswith("to ")
@@ -225,10 +226,10 @@ class Instruction(_Instruction):
                 if instructions[-1].formatted is None or (
                     argval and argval == instructions[-1].formatted
                 ):
-                    fields.append(f"({argrepr})")
+                    fields.append("(%s)" % argrepr)
                 else:
-                    prefix = "" if argval is None else f"({argval}) | "
-                    fields.append(f"{prefix}{instructions[-1].formatted}")
+                    prefix = "" if argval is None else "(%s) | " % argval
+                    fields.append("%s%s" % (prefix, instructions[-1].formatted))
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
@@ -247,8 +248,8 @@ class Instruction(_Instruction):
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
                     argval = instructions[-1].argval
-                    prefix = "" if argval is None else f"({argval}) | "
-                    fields.append(f"{prefix}{new_repr}")
+                    prefix = "" if argval is None else "(%s) | " % argval
+                    fields.append("%s%s" % (prefix, new_repr))
             pass
 
         return " ".join(fields).rstrip()

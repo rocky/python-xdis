@@ -272,14 +272,13 @@ def format_MAKE_FUNCTION_10_27(argc: int) -> str:
     Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
     shows that the change was really made in Python 3.0 or so.
     """
-    return f"{argc} default parameters"
+    return "%s default parameters" % argc
 
 
-update_arg_fmt_base2x = {
-    **opcode_arg_fmt_base,
-    **{
+update_arg_fmt_base2x = opcode_arg_fmt_base.copy()
+update_arg_fmt_base2x.update(
+    {
         "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
-    },
-}
-
+    }
+)
 opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()

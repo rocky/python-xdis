@@ -187,25 +187,27 @@ def format_CALL_METHOD_KW(argc, kwarg_count=None):
         return "%d positional + keyword" % (argc)
 
 
-opcode_arg_fmt = opcode_arg_fmt37pypy = {
-    **opcode_arg_fmt37,
-    **{
+opcode_arg_fmt37pypy = opcode_arg_fmt37.copy()
+opcode_arg_fmt37pypy.update(
+    {
         "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
         "CALL_METHOD": format_CALL_METHOD,
         "CALL_METHOD_KW": format_CALL_METHOD_KW,
         "RAISE_VARARGS": format_RAISE_VARARGS_older,
-    },
-}
+    }
+)
+opcode_arg_fmt = opcode_arg_fmt37pypy
 
-opcode_extended_fmt = opcode_extended_fmt37pypy = {
-    **opcode_extended_fmt37,
-    **{
+opcode_extended_fmt37pypy = opcode_extended_fmt37.copy()
+opcode_extended_fmt37pypy.update(
+    {
         "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
         "CALL_METHOD": extended_format_CALL_METHOD,
         "CALL_METHOD_KW": extended_format_CALL_METHOD_KW,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     },
-}
+)
+opcode_extended_fmt = opcode_extended_fmt37pypy
 
 
 update_pj3(globals(), loc)

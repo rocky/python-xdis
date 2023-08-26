@@ -336,8 +336,9 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     return None.
 
     """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
+    # From opcode description: argc indicates the total number of
+    # positional and keyword arguments.  Sometimes the function name
+    # is in the stack arg positions back.
     call_function_inst = instructions[0]
     assert call_function_inst.opname == "CALL_FUNCTION"
     argc = call_function_inst.arg
@@ -347,6 +348,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     ) = divmod(argc, 256)
     function_pos = pos_args + name_default * 2 + 1
     assert len(instructions) >= function_pos + 1
+    i = 0
     for i, inst in enumerate(instructions[1:]):
         if i + 1 == function_pos:
             i += 1
@@ -492,31 +494,6 @@ def format_RAISE_VARARGS_older(argc):
         return "exception, parameter"
     elif argc == 3:
         return "exception, parameter, traceback"
-
-
-def opcode_check(loc):
-    """When the version of Python we are running happens
-    to have the same opcode set as the opcode we are
-    importing, we perform checks to make sure our opcode
-    set matches exactly.
-    """
-    if (PYTHON_VERSION_TRIPLE[:2] == loc["python_version"][:2]) and IS_PYPY == loc[
-        "is_pypy"
-    ]:
-        try:
-            import dis
-
-            opmap = fix_opcode_names(dis.opmap)
-            # print(set(opmap.items()) - set(loc['opmap'].items()))
-            # print(set(loc['opmap'].items()) - set(opmap.items()))
-
-            assert all(item in opmap.items() for item in loc["opmap"].items())
-            assert all(item in loc["opmap"].items() for item in opmap.items())
-        except Exception:
-            pass
-=======
-    loc["STORE_OPS"] = frozenset(loc["hasstore"])
->>>>>>> master
 
 
 def dump_opcodes(opmap):

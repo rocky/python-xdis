@@ -361,9 +361,9 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
         return s
 
 
-opcode_arg_fmt = opcode_arg_fmt36 = {
-    **opcode_arg_fmt35,
-    **{
+opcode_arg_fmt36 = opcode_arg_fmt35.copy()
+opcode_arg_fmt36.update(
+    {
         "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
         "CALL_FUNCTION": format_CALL_FUNCTION,
         "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
@@ -373,12 +373,14 @@ opcode_arg_fmt = opcode_arg_fmt36 = {
         "FORMAT_VALUE": format_value_flags,
         "EXTENDED_ARG": format_extended_arg36,
         "RAISE_VARARGS": format_RAISE_VARARGS_older,
-    },
-}
+    }
+)
 
-opcode_extended_fmt36 = opcode_extended_fmt = {
-    **opcode_extended_fmt35,
-    **{
+opcode_arg_fmt = opcode_arg_fmt36
+
+opcode_extended_fmt = opcode_extended_fmt35.copy()
+opcode_extended_fmt.update(
+    {
         "CALL_FUNCTION": extended_format_CALL_FUNCTION,
         "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
         "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
@@ -386,5 +388,6 @@ opcode_extended_fmt36 = opcode_extended_fmt = {
         "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
         "STORE_ATTR": extended_format_ATTR,
-    },
-}
+    }
+)
+opcode_extended_fmt36 = opcode_extended_fmt

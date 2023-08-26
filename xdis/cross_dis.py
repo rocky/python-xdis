@@ -297,7 +297,7 @@ def format_exception_table(bytecode, version_tuple) -> str:
         lasti = " lasti" if entry.lasti else ""
         end = entry.end - 2
         lines.append(
-            f"  {entry.start} to {end} -> {entry.target} [{entry.depth}]{lasti}"
+            "  %s to %s -> %s [%s]%s" % (entry.start, end, entry.target, entry.depth, lasti)
         )
     return "\n".join(lines)
 

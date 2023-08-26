@@ -5,8 +5,6 @@ This is like Python 3.11's opcode.py  with some classification
 of stack usage and information for formatting instructions.
 """
 
-from typing import Optional
-
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
     binary_op,
@@ -199,9 +197,9 @@ loc["hasjrel"] = [
 # fmt: on
 
 
-def extended_format_BINARY_OP(opc, instructions) -> Optional[str]:
+def extended_format_BINARY_OP(opc, instructions):
     opname = _nb_ops[instructions[0].argval][1]
-    return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
+    return extended_format_binary_op(opc, instructions, "%%s %s %%s" % opname)
 
 
 def format_BINARY_OP(arg) -> str:
@@ -213,19 +211,20 @@ del opcode_arg_fmt311["CALL_FUNCTION"]
 del opcode_arg_fmt311["CALL_FUNCTION_KW"]
 del opcode_arg_fmt311["CALL_METHOD"]
 
-opcode_arg_fmt = opcode_arg_fmt311 = {
-    **opcode_arg_fmt310,
-    **{
+opcode_arg_fmt311 = opcode_arg_fmt310.copy()
+opcode_arg_fmt311 = opcode_arg_fmt311.update(
+    {
         "BINARY_OP": format_BINARY_OP,
-    },
-}
+    }
+)
+opcode_arg_fmt = opcode_arg_fmt311
 
-opcode_extended_fmt311 = {
-    **opcode_extended_fmt310,
-    **{
+opcode_extended_fmt311 = opcode_extended_fmt310.copy()
+opcode_extended_fmt311.update(
+    {
         "BINARY_OP": extended_format_BINARY_OP,
-    },
-}
+    }
+)
 
 del opcode_extended_fmt311["BINARY_ADD"]
 del opcode_extended_fmt311["BINARY_AND"]

@@ -78,17 +78,13 @@ def_op(loc, 'DICT_UPDATE',            165,   2, 1)
 
 def extended_format_CONTAINS_OP(opc, instructions) -> str:
     return extended_format_binary_op(
-        opc,
-        instructions,
-        f"%s {format_CONTAINS_OP(instructions[0].arg)} %s",
+        opc, instructions, "%%s %s %%s" % format_CONTAINS_OP(instructions[0].arg)
     )
 
 
 def extended_format_IS_OP(opc, instructions) -> str:
     return extended_format_binary_op(
-        opc,
-        instructions,
-        f"%s {format_CONTAINS_OP(instructions[0].arg)} %s",
+        opc, instructions, "%%s %s %%s" % format_IS_OP(instructions[0].arg)
     )
 
 
@@ -100,21 +96,23 @@ def format_IS_OP(arg):
     return "is" if arg == 0 else "is not"
 
 
-opcode_arg_fmt = opcode_arg_fmt39 = {
-    **opcode_arg_fmt38,
-    **{
+opcode_arg_fmt39 = opcode_arg_fmt38.copy()
+opcode_arg_fmt39.update(
+    {
         "CONTAINS_OP": format_CONTAINS_OP,
         "IS_OP": format_IS_OP,
     },
-}
+)
+opcode_arg_fmt = opcode_arg_fmt39
 
-opcode_extended_fmt = opcode_extended_fmt39 = {
-    **opcode_extended_fmt38.copy(),
-    **{
+opcode_extended_fmt39 = opcode_extended_fmt38.copy()
+opcode_extended_fmt39.update(
+    {
         "CONTAINS_OP": extended_format_CONTAINS_OP,
         "IS_OP": extended_format_IS_OP,
-    },
-}
+    }
+)
+opcode_arg_fmt = opcode_arg_fmt39
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
