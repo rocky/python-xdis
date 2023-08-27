@@ -121,7 +121,7 @@ varargs_op(loc,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
-def extended_format_MAKE_FUNCTION(opc, instructions) -> str:
+def extended_format_MAKE_FUNCTION_36(opc, instructions) -> str:
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
@@ -366,7 +366,7 @@ opcode_extended_fmt36 = opcode_extended_fmt = {
         "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
         # "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
         "CALL_METHOD": extended_format_CALL_METHOD,
-        "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
+        "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_36,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
         "STORE_ATTR": extended_format_ATTR,
     },
