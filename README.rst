@@ -75,7 +75,7 @@ The cross-version disassembler that is packaged here, can produce
 assembly listing that are superior to those typically found in
 Python's dis module. Here is an example::
 
-    pydisasm --show-source -F bytes bytecode_3.8/pydisasm-example.pyc
+    pydisasm --show-source -F extended bytecode_3.8/pydisasm-example.pyc
     byte-compiling simple_source/pydisasm-example.py to bytecode_3.8/pydisasm-example.py.pyc
     /src/external-vcs/github/rocky/python-xdis/test
     # pydisasm version 6.1.0.dev0
