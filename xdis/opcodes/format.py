@@ -377,6 +377,10 @@ def extended_format_RETURN_VALUE(opc, instructions: list) -> Tuple[str, Optional
     return extended_format_unary_op(opc, instructions, "return %s")
 
 
+def extended_format_UNARY_INVERT(opc, instructions) -> Tuple[str, Optional[int]]:
+    return extended_format_unary_op(opc, instructions, "~(%s)")
+
+
 def extended_format_UNARY_NEGATIVE(opc, instructions) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "-(%s)")
 
@@ -488,6 +492,7 @@ opcode_extended_fmt_base = {
     "STORE_ATTR":            extended_format_ATTR,
     "STORE_FAST":            extended_format_store_op,
     "STORE_NAME":            extended_format_store_op,
+    "UNARY_INVERT":          extended_format_UNARY_INVERT,
     "UNARY_NEGATIVE":        extended_format_UNARY_NEGATIVE,
     "UNARY_NOT":             extended_format_UNARY_NOT,
 }
