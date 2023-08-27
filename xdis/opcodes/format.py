@@ -16,10 +16,7 @@ def extended_format_binary_op(
     arg1 = None
     if stack_arg1.formatted is not None:
         arg1 = stack_arg1.formatted
-    if (
-        arg1 is not None
-        or stack_arg1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
-    ):
+    if arg1 is not None or stack_arg1.opcode in opc.operator_set:
         if arg1 is None:
             arg1 = instructions[1].argrepr
         arg1_start_offset = instructions[1].start_offset
@@ -32,8 +29,8 @@ def extended_format_binary_op(
         while instructions[j].opname == "CACHE":
             j += 1
         if (
-            instructions[j].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
-            and instructions[i].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
+            instructions[j].opcode in opc.operator_set
+            and instructions[i].opcode in opc.operator_set
         ):
             arg2 = (
                 instructions[j].formatted
@@ -69,10 +66,7 @@ def extended_format_infix_binary_op(
     arg1 = None
     if stack_arg1.formatted is not None:
         arg1 = stack_arg1.formatted
-    if (
-        arg1 is not None
-        or stack_arg1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
-    ):
+    if arg1 is not None or stack_arg1.opcode in opc.operator_set:
         if arg1 is None:
             arg1 = instructions[1].argrepr
         else:
@@ -87,8 +81,8 @@ def extended_format_infix_binary_op(
         while instructions[j].opname == "CACHE":
             j += 1
         if (
-            instructions[j].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
-            and instructions[i].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS
+            instructions[j].opcode in opc.operator_set
+            and instructions[i].opcode in opc.operator_set
         ):
             arg2 = (
                 instructions[j].formatted
@@ -149,10 +143,11 @@ def extended_format_unary_op(
     opc, instructions, fmt_str: str
 ) -> Tuple[str, Optional[int]]:
     stack_arg = instructions[1]
+    start_offset = instructions[1].start_offset
     if stack_arg.formatted is not None:
-        return fmt_str % stack_arg.formatted, instructions[1].start_offset
-    if stack_arg.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
-        return fmt_str % stack_arg.argrepr, None
+        return fmt_str % stack_arg.formatted, start_offset
+    if stack_arg.opcode in opc.operator_set:
+        return fmt_str % stack_arg.argrepr, start_offset
     return "", None
 
 
@@ -353,6 +348,30 @@ def extended_format_IS_OP(opc, instructions) -> Tuple[str, Optional[int]]:
     )
 
 
+def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
+    """
+    instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
+    should have the function or closure name.
+
+    This code works for Python versions up to and including 2.7.
+    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
+    shows that the change was really made in Python 3.0 or so.
+    """
+    # From opcode description: argc indicates the total number of positional
+    # and keyword arguments.  Sometimes the function name is in the stack arg
+    # positions back.
+    assert len(instructions) >= 2
+    inst = instructions[0]
+    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
+    s = ""
+    code_inst = instructions[1]
+    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
+        s += "%s: " % code_inst.argval.co_name
+        pass
+    s += format_MAKE_FUNCTION_10_27(inst.arg)
+    return s
+
+
 def extended_format_RAISE_VARARGS_older(opc, instructions) -> Tuple[Optional[str], int]:
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
@@ -404,6 +423,17 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
 
 def format_IS_OP(arg: int) -> str:
     return "is" if arg == 0 else "is not"
+
+
+def format_MAKE_FUNCTION_10_27(argc: int) -> str:
+    """
+    ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
+
+    This code works for Python versions up to and including 2.7.
+    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
+    shows that the change was really made in Python 3.0 or so.
+    """
+    return f"{argc} default parameters"
 
 
 # Up until 3.7

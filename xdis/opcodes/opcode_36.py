@@ -254,9 +254,8 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     return None.
 
     """
-    # From opcode description: argc indicates the total number of
-    # positional and keyword arguments.  Sometimes the function name
-    # is in the stack arg positions back.
+    # From opcode description: arg_count indicates the total number of
+    # positional and keyword arguments.
     call_inst = instructions[0]
     arg_count = call_inst.argval
     arglist = []
@@ -280,7 +279,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
             while j < len(instructions) - 1:
                 j += 1
                 inst2 = instructions[j]
-                if inst2.start_offset == start_offset:
+                if inst2.offset == start_offset:
                     inst = inst2
                     i = j
                     break
@@ -291,7 +290,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         return "", None
 
     fn_inst = instructions[i + 1]
-    if fn_inst.opcode in opc.NAME_OPS | opc.CONST_OPS:
+    if fn_inst.opcode in opc.operator_set:
         start_offset = fn_inst.offset
         fn_name = fn_inst.formatted if fn_inst.formatted else fn_inst.argrepr
         s = f'{fn_name}({", ".join(reversed(arglist))})'

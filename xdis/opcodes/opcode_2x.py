@@ -28,6 +28,7 @@ from xdis.opcodes.base import (
     const_op,
     def_op,
     free_op,
+    init_opdata,
     jabs_op,
     jrel_op,
     local_op,
@@ -37,47 +38,14 @@ from xdis.opcodes.base import (
     unary_op,
     varargs_op,
 )
-from xdis.opcodes.format import opcode_arg_fmt_base, opcode_extended_fmt_base
+from xdis.opcodes.format import (
+    format_MAKE_FUNCTION_10_27,
+    opcode_arg_fmt_base,
+    opcode_extended_fmt_base,
+)
 
 loc = locals()
-
-# FIXME: DRY this with opcode_3x.
-
-# opcodes that perform a binary operator of the top two stack entries
-binaryop = []
-
-hascompare = []
-hascondition = []  # conditional operator; has jump offset
-hasconst = []
-hasfree = []
-hasjabs = []
-hasjrel = []
-haslocal = []
-hasname = []
-hasnargs = []  # For function-like calls
-hasstore = []  # Some sort of store operation
-hasvargs = []  # Similar but for operators BUILD_xxx
-nofollow = []  # Instruction doesn't fall to the next opcode
-
-# opmap[opcode_name] => opcode_number
-opmap = {}
-
-# opcode[i] => opcode name
-opname = [""] * 256
-
-# oppush[op] => number of stack entries pushed
-oppush = [0] * 256
-
-# oppop[op] => number of stack entries popped
-# 9 means handle special. Note his forces oppush[i] - oppop[i] negative
-oppop = [0] * 256
-
-# opcodes that perform a unary operation of the top stack entry
-unaryop = []
-
-for op in range(256):
-    opname[op] = "<%r>" % (op,)
-del op
+init_opdata(loc, None, None)
 
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
@@ -176,12 +144,14 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 
 #             OP NAME              OPCODE POP PUSH
 #-----------------------------------------------
-store_op(loc, "STORE_NAME",            90,  1,  0, is_type="name")  # Operand is in name list
+store_op(loc, "STORE_NAME",            90,  1,  0, is_type="name")
+                                                    # Operand is in name list
 name_op(loc, "DELETE_NAME",            91,  0,  0)  # ""
 varargs_op(loc, "UNPACK_SEQUENCE",     92, -1,  1)  # TOS is number of tuple items
 jrel_op(loc, "FOR_ITER",               93,  0,  1)  # TOS is read
 
-store_op(loc, "STORE_ATTR",            95,  2,  0, is_type="name")  # Operand is in name list
+store_op(loc, "STORE_ATTR",            95,  2,  0, is_type="name")
+                                                    # Operand is in name list
 name_op(loc, "DELETE_ATTR",            96,  1,  0)  # ""
 store_op(loc, "STORE_GLOBAL",          97,  1,  0, is_type="name")  # ""
 name_op(loc, "DELETE_GLOBAL",          98,  0,  0)  # ""
@@ -195,7 +165,8 @@ varargs_op(loc, "BUILD_MAP",          104,  0,  1)  # TOS is number of kwarg ite
 name_op(loc, "LOAD_ATTR",             105,  1,  1)  # Operand is in name list
 compare_op(loc, "COMPARE_OP",         106,  2,  1)  # Comparison operator
 
-name_op(loc, "IMPORT_NAME",           107,  0,  1)  # For < 2.6;  Imports namei; module pushed
+name_op(loc, "IMPORT_NAME",           107,  0,  1)  # For < 2.6;  Imports namei; module
+                                                    # pushed
 name_op(loc, "IMPORT_FROM",           108,  0,  1)  # Operand is in name list
 
 jrel_op(loc, "JUMP_FORWARD",          110,  0,  0, fallthrough=False)
@@ -204,17 +175,20 @@ jrel_op(loc, "JUMP_IF_FALSE",         111,  1,  1, True)  # ""
 
 jrel_op(loc, "JUMP_IF_TRUE",          112,  1,  1, True)  # ""
 jabs_op(loc, "JUMP_ABSOLUTE",         113,  0,  0, fallthrough=False)
-                                                # Target byte offset from beginning of code
+                                                # Target byte offset from beginning of
+                                                 #code
 
 name_op(loc, "LOAD_GLOBAL",           116,  0,  1)  # Operand is in name list
 
 jabs_op(loc, "CONTINUE_LOOP",         119,  0,  0, fallthrough=False)  # Target address
-jrel_op(loc, "SETUP_LOOP",            120,  0,  0, conditional=True)  # Distance to target address
+jrel_op(loc, "SETUP_LOOP",            120,  0,  0, conditional=True)  # Distance to
+                                                                      # target address
 jrel_op(loc, "SETUP_EXCEPT",          121,  0,  3, conditional=True)  # ""
 jrel_op(loc, "SETUP_FINALLY",         122,  0,  3, conditional=True)  # ""
 
 local_op(loc, "LOAD_FAST",            124,  0,  1)  # Local variable number
-store_op(loc, "STORE_FAST",           125,  1,  0, is_type="local")  # Local variable number
+store_op(loc, "STORE_FAST",           125,  1,  0, is_type="local")  # Local variable
+                                                                     # number
 local_op(loc, "DELETE_FAST",          126,  0,  0) # Local variable number is in operand
 
 nargs_op(loc, "RAISE_VARARGS",        130, -1,  2, fallthrough=False)
@@ -238,41 +212,6 @@ def_op(loc, "EXTENDED_ARG", 143)
 # fmt: on
 
 EXTENDED_ARG = 143
-
-
-def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
-    """
-    instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
-    should have the function or closure name.
-
-    This code works for Python versions up to and including 2.7.
-    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
-    shows that the change was really made in Python 3.0 or so.
-    """
-    # From opcode description: argc indicates the total number of positional
-    # and keyword arguments.  Sometimes the function name is in the stack arg
-    # positions back.
-    assert len(instructions) >= 2
-    inst = instructions[0]
-    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
-    s = ""
-    code_inst = instructions[1]
-    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += "%s: " % code_inst.argval.co_name
-        pass
-    s += format_MAKE_FUNCTION_10_27(inst.arg)
-    return s
-
-
-def format_MAKE_FUNCTION_10_27(argc: int) -> str:
-    """
-    ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
-
-    This code works for Python versions up to and including 2.7.
-    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
-    shows that the change was really made in Python 3.0 or so.
-    """
-    return f"{argc} default parameters"
 
 
 update_arg_fmt_base2x = {
