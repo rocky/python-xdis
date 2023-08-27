@@ -229,8 +229,8 @@ def extended_format_COMPARE_OP(opc, instructions) -> Tuple[str, Optional[int]]:
 
 
 def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]]:
-    """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
-    `instructions` to see if we can find a method name.  If not we'll
+    """CALL_FUNCTION pre 3.6.
+    Look in `instructions` to see if we can find a method name.  If not we'll
     return None.
     """
     # From opcode description: argc indicates the total number of positional

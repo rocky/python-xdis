@@ -36,7 +36,6 @@ from xdis.opcodes.format import (
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
     format_RAISE_VARARGS_older,
-    resolved_attrs,
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
@@ -255,25 +254,23 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     return None.
 
     """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
-    call_function_inst = instructions[0]
-    call_opname = call_function_inst.opname
-    assert call_opname in (
-        "CALL_FUNCTION",
-        "CALL_FUNCTION_VAR",
-    )
-    function_pos = call_function_inst.arg + 1
-    if call_opname == "CALL_FUNCTION_VAR":
-        function_pos += 1
-    assert len(instructions) >= function_pos
+    # From opcode description: argc indicates the total number of
+    # positional and keyword arguments.  Sometimes the function name
+    # is in the stack arg positions back.
+    call_inst = instructions[0]
+    arg_count = call_inst.argval
+    arglist = []
     s = ""
     i = 0
-    while i < len(instructions) - 1:
+    while arg_count > 0:
         i += 1
         inst = instructions[i]
-        if i == function_pos:
-            break
+        arg_count -= 1
+        arg = inst.formatted if inst.formatted else inst.argrepr
+        if arg is not None:
+            arglist.append(arg)
+        else:
+            arglist.append("???")
         if inst.is_jump_target:
             i += 1
             break
@@ -284,35 +281,22 @@ def extended_format_CALL_FUNCTION(opc, instructions):
                 j += 1
                 inst2 = instructions[j]
                 if inst2.start_offset == start_offset:
-                    function_pos += 1
                     inst = inst2
                     i = j
                     break
 
-        # Make sure we are in the same basic block
-        # and ... ?
-        opcode = inst.opcode
-        if inst.optype in ("nargs", "vargs"):
-            break
-        if inst.optype != "name":
-            function_pos += (oppop[opcode] - oppush[opcode]) + 1
-        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX", "CALL_FUNCTION_VAR"):
-            break
         pass
 
-    if i == function_pos:
-        if instructions[function_pos].opcode in opc.NAME_OPS | opc.CONST_OPS:
-            s, _ = resolved_attrs(instructions[function_pos:])
-            s += ": "
-            pass
-        pass
-    format_call_fn = (
-        format_CALL_FUNCTION_EX
-        if call_opname == "CALL_FUNCTION_EX"
-        else format_CALL_FUNCTION
-    )
-    s += format_call_fn(call_function_inst.arg)
-    return s
+    if arg_count != 0:
+        return "", None
+
+    fn_inst = instructions[i + 1]
+    if fn_inst.opcode in opc.NAME_OPS | opc.CONST_OPS:
+        start_offset = fn_inst.offset
+        fn_name = fn_inst.formatted if fn_inst.formatted else fn_inst.argrepr
+        s = f'{fn_name}({", ".join(reversed(arglist))})'
+        return s, start_offset
+    return "", None
 
 
 def extended_format_CALL_FUNCTION_KW(opc, instructions):
@@ -381,7 +365,7 @@ opcode_extended_fmt36 = opcode_extended_fmt = {
     **{
         "CALL_FUNCTION": extended_format_CALL_FUNCTION,
         "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
-        "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
+        # "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
         "CALL_METHOD": extended_format_CALL_METHOD,
         "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
