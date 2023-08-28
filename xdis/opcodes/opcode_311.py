@@ -97,7 +97,12 @@ rm_op(l,  "YIELD_FROM",              72)
 # match, these two ops had stack effects changed
 rm_op(l,  "MATCH_CLASS",            152)
 rm_op(l,  "MATCH_KEYS",              33)
-
+# ops redefined later
+rm_op(l, "STORE_DEREF",                     137)
+rm_op(l, "LOAD_DEREF",                      136)
+rm_op(l, "DELETE_DEREF",                    138)
+rm_op(l, "GET_AWAITABLE",                    73)
+rm_op(l, "LOAD_CLOSURE",                    135)
 
 # These are added since 3.10...
 #          OP NAME                         OPCODE  POP PUSH
@@ -149,19 +154,10 @@ jrel_op(l, "PUSH_EXC_INFO",                  35,   0, 1)
 def_op(l, "RESUME",                         151,   0, 0)
 
 ## Redefined OPS
-rm_op(l, "STORE_DEREF",                     137)
 def_op(l, "STORE_DEREF",                    138,   1, 0)
-
-rm_op(l, "LOAD_DEREF",                      136)
 def_op(l, "LOAD_DEREF",                     137,   0, 1)
-
-rm_op(l, "DELETE_DEREF",                    138)
 def_op(l, "DELETE_DEREF",                   139,   0, 0)
-
-rm_op(l, "GET_AWAITABLE",                    73)
 def_op(l, "GET_AWAITABLE",                  131,   0, 0)
-
-rm_op(l, "LOAD_CLOSURE",                    135)
 def_op(l, "LOAD_CLOSURE",                   136,   0, 1)
 
 ## Update tables 
