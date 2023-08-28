@@ -348,7 +348,8 @@ def extended_format_IS_OP(opc, instructions) -> Tuple[str, Optional[int]]:
     )
 
 
-def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
+# Can combine with extended_format_MAKE_FUNCTION_36?
+def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> Tuple[str, int]:
     """
     instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
@@ -364,12 +365,13 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
     s = ""
-    code_inst = instructions[1]
+    name_inst = instructions[1]
+    code_inst = instructions[2]
+    start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += "%s: " % code_inst.argval.co_name
-        pass
-    s += format_MAKE_FUNCTION_10_27(inst.arg)
-    return s
+        s += f"{name_inst.argval} = {code_inst.argrepr}"
+        return s, start_offset
+    return s, start_offset
 
 
 def extended_format_RAISE_VARARGS_older(opc, instructions) -> Tuple[Optional[str], int]:

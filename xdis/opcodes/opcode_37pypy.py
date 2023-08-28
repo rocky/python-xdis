@@ -199,7 +199,7 @@ opcode_arg_fmt = opcode_arg_fmt37pypy = {
 opcode_extended_fmt = opcode_extended_fmt37pypy = {
     **opcode_extended_fmt37,
     **{
-        "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION,
+        "CALL_FUNCTION": opcode_36.extended_format_CALL_FUNCTION36,
         "CALL_METHOD": extended_format_CALL_METHOD,
         "CALL_METHOD_KW": extended_format_CALL_METHOD_KW,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
