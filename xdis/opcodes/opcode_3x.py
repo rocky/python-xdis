@@ -41,7 +41,11 @@ from xdis.opcodes.base import (
     unary_op,
     varargs_op,
 )
-from xdis.opcodes.format import format_extended_arg, opcode_extended_fmt_base
+from xdis.opcodes.format import (
+    format_extended_arg,
+    opcode_extended_fmt_base,
+    short_code_repr,
+)
 
 loc = locals()
 init_opdata(loc, None, None)
@@ -180,6 +184,7 @@ local_op(loc, 'DELETE_FAST',         126,  0,  0)  # Local variable number
 
 nargs_op(loc, 'RAISE_VARARGS',       130, -1,  1, fallthrough=False)
                                                  # Number of raise arguments (1, 2, or 3)
+
 nargs_op(loc, 'CALL_FUNCTION',       131, -1,  1)  # #args + (#kwargs << 8)
 
 nargs_op(loc, 'MAKE_FUNCTION',       132, -2,  1) # TOS is number of args if < 3.6
@@ -224,9 +229,10 @@ def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
     s = ""
     name_inst = instructions[1]
+    start_offset = name_inst.offset
     if name_inst.opname in ("LOAD_CONST",):
-        s += "%s: " % name_inst.argrepr
-        pass
+        s += f"make_function({short_code_repr(name_inst.argval)}"
+        return s, start_offset
     pos_args, name_pair_args, annotate_args = parse_fn_counts_30_35(inst.argval)
     s += format_MAKE_FUNCTION_30_35(inst.argval)
     return s
