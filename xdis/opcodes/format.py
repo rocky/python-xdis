@@ -14,8 +14,8 @@ def extended_format_binary_op(
         i += 1
     stack_arg1 = instructions[i]
     arg1 = None
-    if stack_arg1.formatted is not None:
-        arg1 = stack_arg1.formatted
+    if stack_arg1.tos_str is not None:
+        arg1 = stack_arg1.tos_str
     if arg1 is not None or stack_arg1.opcode in opc.operator_set:
         if arg1 is None:
             arg1 = instructions[1].argrepr
@@ -33,8 +33,8 @@ def extended_format_binary_op(
             and instructions[i].opcode in opc.operator_set
         ):
             arg2 = (
-                instructions[j].formatted
-                if instructions[j].formatted is not None
+                instructions[j].tos_str
+                if instructions[j].tos_str is not None
                 else instructions[j].argrepr
             )
             start_offset = instructions[j].start_offset
@@ -42,8 +42,8 @@ def extended_format_binary_op(
         elif instructions[j].start_offset is not None:
             start_offset = instructions[j].start_offset
             arg2 = (
-                instructions[j].formatted
-                if instructions[j].formatted is not None
+                instructions[j].tos_str
+                if instructions[j].tos_str is not None
                 else instructions[j].argrepr
             )
             if arg2 == "":
@@ -64,8 +64,8 @@ def extended_format_infix_binary_op(
         i += 1
     stack_arg1 = instructions[i]
     arg1 = None
-    if stack_arg1.formatted is not None:
-        arg1 = stack_arg1.formatted
+    if stack_arg1.tos_str is not None:
+        arg1 = stack_arg1.tos_str
     if arg1 is not None or stack_arg1.opcode in opc.operator_set:
         if arg1 is None:
             arg1 = instructions[1].argrepr
@@ -85,8 +85,8 @@ def extended_format_infix_binary_op(
             and instructions[i].opcode in opc.operator_set
         ):
             arg2 = (
-                instructions[j].formatted
-                if instructions[j].formatted is not None
+                instructions[j].tos_str
+                if instructions[j].tos_str is not None
                 else instructions[j].argrepr
             )
             start_offset = instructions[j].start_offset
@@ -94,8 +94,8 @@ def extended_format_infix_binary_op(
         elif instructions[j].start_offset is not None:
             start_offset = instructions[j].start_offset
             arg2 = (
-                instructions[j].formatted
-                if instructions[j].formatted is not None
+                instructions[j].tos_str
+                if instructions[j].tos_str is not None
                 else instructions[j].argrepr
             )
             if arg2 == "":
@@ -113,23 +113,17 @@ def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int
     prev_inst = instructions[1]
     start_offset = prev_inst.offset
     if prev_inst.opname == "IMPORT_NAME":
-        return f"{inst.argval} = import({inst.argval})", start_offset
+        return f"{inst.argval} = import_module({inst.argval})", start_offset
     elif prev_inst.opname == "IMPORT_FROM":
-        return f"{inst.argval} = import({prev_inst.argval})", start_offset
-    elif (
-        prev_inst.opname in ("LOAD_CONST", "LOAD_NAME", "LOAD_ATTR")
-        or prev_inst.opcode in opc.binaryop
-        or prev_inst in opc.unaryop
-    ):
-        if (
-            prev_inst.opcode in opc.binaryop or prev_inst in opc.unaryop
-        ) and prev_inst.formatted is None:
+        return f"{inst.argval} = import_module({prev_inst.argval})", start_offset
+    elif prev_inst.opcode in opc.operator_set:
+        if prev_inst.tos_str is None:
             return "", start_offset
 
         argval = prev_inst.argval
         if prev_inst.opname == "LOAD_CONST":
             argval = safe_repr(argval)
-        argval = prev_inst.formatted if prev_inst.formatted is not None else argval
+        argval = prev_inst.tos_str if prev_inst.tos_str is not None else argval
         start_offset = prev_inst.start_offset
         if prev_inst.opname.startswith("INPLACE_"):
             # Inplace operators show their own assign
@@ -144,8 +138,8 @@ def extended_format_unary_op(
 ) -> Tuple[str, Optional[int]]:
     stack_arg = instructions[1]
     start_offset = instructions[1].start_offset
-    if stack_arg.formatted is not None:
-        return fmt_str % stack_arg.formatted, start_offset
+    if stack_arg.tos_str is not None:
+        return fmt_str % stack_arg.tos_str, start_offset
     if stack_arg.opcode in opc.operator_set:
         return fmt_str % stack_arg.argrepr, start_offset
     return "", None
@@ -290,6 +284,12 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]
     return s, start_offset
 
 
+def extended_format_IMPORT_NAME(opc, instructions) -> Tuple[str, Optional[int]]:
+    inst = instructions[0]
+    start_offset = inst.start_offset
+    return f"import_module({inst.argval})", start_offset
+
+
 def extended_format_INPLACE_ADD(opc, instructions) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " += ")
 
@@ -369,7 +369,7 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> Tuple[str, int]:
     code_inst = instructions[2]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += f"{name_inst.argval} = {code_inst.argrepr}"
+        s += f"make_function({short_code_repr(name_inst.argval)}"
         return s, start_offset
     return s, start_offset
 
@@ -385,8 +385,8 @@ def extended_format_RAISE_VARARGS_older(opc, instructions) -> Tuple[Optional[str
         exception_name_inst = instructions[1]
         start_offset = exception_name_inst.start_offset
         exception_name = (
-            exception_name_inst.formatted
-            if exception_name_inst.formatted
+            exception_name_inst.tos_str
+            if exception_name_inst.tos_str
             else exception_name_inst.argrepr
         )
         if exception_name is not None:
@@ -453,7 +453,7 @@ def format_RAISE_VARARGS_older(argc):
 
 def resolved_attrs(instructions: list) -> Tuple[str, int]:
     """ """
-    # we can probably speed up using the "formatted" field.
+    # we can probably speed up using the "tos_str" field.
     resolved = []
     start_offset = 0
     for inst in instructions:
@@ -471,6 +471,9 @@ def resolved_attrs(instructions: list) -> Tuple[str, int]:
 
 
 def safe_repr(obj, max_len: int = 20) -> str:
+    """
+    String repr with length at most ``max_len``
+    """
     try:
         result = repr(obj)
     except Exception:
@@ -478,6 +481,13 @@ def safe_repr(obj, max_len: int = 20) -> str:
     if len(result) > max_len:
         return result[:max_len] + "..."
     return result
+
+
+def short_code_repr(code) -> str:
+    """
+    A shortened string representation of a code object
+    """
+    return f"<code object {code.co_name}>"
 
 
 # fmt: off
@@ -505,6 +515,7 @@ opcode_extended_fmt_base = {
     "BINARY_POWER":          extended_format_BINARY_POWER,
     "BINARY_XOR":            extended_format_BINARY_XOR,
     "COMPARE_OP":            extended_format_COMPARE_OP,
+    "IMPORT_NAME":           extended_format_IMPORT_NAME,
     "INPLACE_ADD":           extended_format_INPLACE_ADD,
     "INPLACE_AND":           extended_format_INPLACE_AND,
     "INPLACE_FLOOR_DIVIDE":  extended_format_INPLACE_FLOOR_DIVIDE,

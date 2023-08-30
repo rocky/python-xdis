@@ -38,6 +38,7 @@ from xdis.opcodes.format import (
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
     format_RAISE_VARARGS_older,
+    short_code_repr,
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
@@ -133,7 +134,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions) -> Tuple[str, int]:
     code_inst = instructions[2]
     start_offset = code_inst.offset
     if name_inst.opname in ("LOAD_CONST",):
-        s += f"{name_inst.argval} = {code_inst.argrepr}"
+        s += f"make_function({name_inst.argval}, {short_code_repr(code_inst.argval)})"
         return s, start_offset
     return s, start_offset
 
@@ -270,7 +271,7 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
             i += 1
             inst = instructions[i]
             arg_count -= 1
-            arg = inst.formatted if inst.formatted else inst.argrepr
+            arg = inst.tos_str if inst.tos_str else inst.argrepr
             if arg is not None:
                 arglist.append(arg)
             else:
@@ -307,7 +308,7 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
         if instructions[1].opname == "MAKE_FUNCTION":
             arglist[0] = instructions[2].argval
 
-        fn_name = fn_inst.formatted if fn_inst.formatted else fn_inst.argrepr
+        fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
         s = f'{fn_name}({", ".join(reversed(arglist))})'
         return s, start_offset
     return "", None

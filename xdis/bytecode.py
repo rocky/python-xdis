@@ -321,7 +321,7 @@ def get_instructions_bytes(
             starts_line,
             is_jump_target,
             extended_arg_count != 0,
-            formatted=None,
+            tos_str=None,
             start_offset=start_offset,
         )
         # fallthrough)
@@ -531,7 +531,7 @@ class Bytecode(object):
                     starts_line=set_lineno_number,  # this is the only field that changes
                     is_jump_target=instr.is_jump_target,
                     has_extended_arg=instr.has_extended_arg,
-                    formatted=None,
+                    tos_str=None,
                     start_offset=None,
                 )
             last_was_set_lineno = False

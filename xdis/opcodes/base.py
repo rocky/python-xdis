@@ -292,8 +292,10 @@ def rm_op(loc, name, op):
 def store_op(loc, name, op, pop=0, push=1, is_type="def"):
     if is_type == "name":
         name_op(loc, name, op, pop, push)
+        loc["nullaryop"].remove(op)
     elif is_type == "local":
         local_op(loc, name, op, pop, push)
+        loc["nullaryop"].remove(op)
     elif is_type == "free":
         free_op(loc, name, op, pop, push)
     else:
@@ -339,7 +341,12 @@ def finalize_opcodes(loc):
         loc[op] = loc["opmap"][op]
     loc["JUMP_OPs"] = frozenset(loc["hasjrel"] + loc["hasjabs"])
     loc["NOFOLLOW"] = frozenset(loc["nofollow"])
-    loc["operator_set"] = loc["nullaryop"] | loc["unaryop"] | loc["binaryop"]
+    loc["operator_set"] = frozenset(
+        loc["nullaryop"]
+        | loc["unaryop"]
+        | loc["binaryop"]
+        | set([op for op in loc["hasnargs"] if op not in loc["nofollow"]])
+    )
     opcode_check(loc)
     return
 
