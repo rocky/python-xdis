@@ -298,6 +298,7 @@ def get_instructions_bytes(
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
                 optype = "vargs"
+                # argrepr = argval
             if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
         elif python_36:

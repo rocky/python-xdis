@@ -117,12 +117,19 @@ def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int
     elif prev_inst.opname == "IMPORT_FROM":
         return f"{inst.argval} = import_module({prev_inst.argval})", start_offset
     elif prev_inst.opcode in opc.operator_set:
-        if prev_inst.tos_str is None:
-            return "", start_offset
-
-        argval = prev_inst.argval
         if prev_inst.opname == "LOAD_CONST":
-            argval = safe_repr(argval)
+            argval = safe_repr(prev_inst.argval)
+        elif (
+            prev_inst.opcode in opc.VARGS_OPS | opc.NARGS_OPS
+            and prev_inst.tos_str is None
+        ):
+            # In variable arguments lists and function-like calls
+            # argval is a count. So we need a TOS representation
+            # to do something here.
+            return "", start_offset
+        else:
+            argval = prev_inst.argval
+
         argval = prev_inst.tos_str if prev_inst.tos_str is not None else argval
         start_offset = prev_inst.start_offset
         if prev_inst.opname.startswith("INPLACE_"):
@@ -207,6 +214,34 @@ def extended_format_BINARY_TRUE_DIVIDE(opc, instructions) -> Tuple[str, Optional
 
 def extended_format_BINARY_XOR(opc, instructions) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " ^ ")
+
+
+def extended_format_BUILD_LIST(opc, instructions) -> Tuple[str, Optional[int]]:
+    if instructions[0].argval == 0:
+        # Degnerate case
+        return "[]", instructions[0].start_offset
+    return "", None
+
+
+def extended_format_BUILD_MAP(opc, instructions) -> Tuple[str, Optional[int]]:
+    if instructions[0].argval == 0:
+        # Degnerate case
+        return "{}", instructions[0].start_offset
+    return "", None
+
+
+def extended_format_BUILD_SET(opc, instructions) -> Tuple[str, Optional[int]]:
+    if instructions[0].argval == 0:
+        # Degnerate case
+        return "set()", instructions[0].start_offset
+    return "", None
+
+
+def extended_format_BUILD_TUPLE(opc, instructions) -> Tuple[str, Optional[int]]:
+    if instructions[0].argval == 0:
+        # Degnerate case
+        return "()", instructions[0].start_offset
+    return "", None
 
 
 def extended_format_COMPARE_OP(opc, instructions) -> Tuple[str, Optional[int]]:
@@ -514,6 +549,10 @@ opcode_extended_fmt_base = {
     "BINARY_OR":             extended_format_BINARY_OR,
     "BINARY_POWER":          extended_format_BINARY_POWER,
     "BINARY_XOR":            extended_format_BINARY_XOR,
+    "BUILD_LIST":            extended_format_BUILD_LIST,
+    "BUILD_MAP":             extended_format_BUILD_MAP,
+    "BUILD_SET":             extended_format_BUILD_SET,
+    "BUILD_TUPLE":           extended_format_BUILD_TUPLE,
     "COMPARE_OP":            extended_format_COMPARE_OP,
     "IMPORT_NAME":           extended_format_IMPORT_NAME,
     "INPLACE_ADD":           extended_format_INPLACE_ADD,
@@ -530,6 +569,7 @@ opcode_extended_fmt_base = {
     "INPLACE_XOR":           extended_format_INPLACE_XOR,
     "IS_OP":                 extended_format_IS_OP,
     "LOAD_ATTR":             extended_format_ATTR,
+    # "LOAD_DEREF":            extended_format_ATTR, # not quite right
     "RAISE_VARARGS":         extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,
