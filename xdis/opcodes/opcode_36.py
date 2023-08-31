@@ -38,6 +38,7 @@ from xdis.opcodes.format import (
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
     format_RAISE_VARARGS_older,
+    get_arglist,
     short_code_repr,
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
@@ -262,42 +263,11 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
     # From opcode description: arg_count indicates the total number of
     # positional and keyword arguments.
 
-    def get_arglist(arg_count: int):
-        arglist = []
-        i = 0
-        start_offset = None
-        inst = None
-        while arg_count > 0:
-            i += 1
-            inst = instructions[i]
-            arg_count -= 1
-            arg = inst.tos_str if inst.tos_str else inst.argrepr
-            if arg is not None:
-                arglist.append(arg)
-            else:
-                arglist.append("???")
-            if inst.is_jump_target:
-                i += 1
-                break
-            start_offset = inst.start_offset
-            if start_offset is not None:
-                j = i
-                while j < len(instructions) - 1:
-                    j += 1
-                    inst2 = instructions[j]
-                    if inst2.offset == start_offset:
-                        inst = inst2
-                        i = j
-                        break
-
-            pass
-        return arglist, arg_count, start_offset, i
-
     call_inst = instructions[0]
     arg_count = call_inst.argval
     s = ""
 
-    arglist, arg_count, start_offset, i = get_arglist(arg_count)
+    arglist, arg_count, start_offset, i = get_arglist(instructions, arg_count)
 
     if arg_count != 0:
         return "", None

@@ -238,9 +238,13 @@ def extended_format_BUILD_SET(opc, instructions) -> Tuple[str, Optional[int]]:
 
 
 def extended_format_BUILD_TUPLE(opc, instructions) -> Tuple[str, Optional[int]]:
-    if instructions[0].argval == 0:
+    arg_count = instructions[0].argval
+    if arg_count == 0:
         # Degnerate case
         return "()", instructions[0].start_offset
+    arglist, arg_count, start_offset, i = get_arglist(instructions, arg_count)
+    if arg_count == 0:
+        return f'({", ".join(reversed(arglist))})', start_offset
     return "", None
 
 
@@ -484,6 +488,42 @@ def format_RAISE_VARARGS_older(argc):
         return "exception, parameter"
     elif argc == 3:
         return "exception, parameter, traceback"
+
+
+def get_arglist(
+    instructions: list, arg_count: int
+) -> Tuple[list, int, Optional[int], int]:
+    arglist = []
+    i = 0
+    start_offset = None
+    inst = None
+    while arg_count > 0:
+        i += 1
+        inst = instructions[i]
+        arg_count -= 1
+        arg = inst.tos_str if inst.tos_str else inst.argrepr
+        if arg is not None:
+            arglist.append(arg)
+        elif not arg:
+            return arglist, arg_count, None, i
+        else:
+            arglist.append("???")
+        if inst.is_jump_target:
+            i += 1
+            break
+        start_offset = inst.start_offset
+        if start_offset is not None:
+            j = i
+            while j < len(instructions) - 1:
+                j += 1
+                inst2 = instructions[j]
+                if inst2.offset == start_offset:
+                    inst = inst2
+                    i = j
+                    break
+
+        pass
+    return arglist, arg_count, start_offset, i
 
 
 def resolved_attrs(instructions: list) -> Tuple[str, int]:
