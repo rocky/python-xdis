@@ -85,12 +85,6 @@ hasname hasnargs hasstore hasvargs oppop oppush
 nofollow nullaryop unaryop
 """.split()
 
-loc = locals()
-
-for op in range(256):
-    opname[op] = "<%r>" % (op,)
-del op
-
 
 def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     """Sets up a number of the structures found in Python's
