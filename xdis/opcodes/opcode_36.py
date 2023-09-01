@@ -267,11 +267,12 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
     arg_count = call_inst.argval
     s = ""
 
-    arglist, arg_count, start_offset, i = get_arglist(instructions, arg_count)
+    arglist, arg_count, i = get_arglist(instructions, arg_count)
 
     if arg_count != 0:
         return "", None
 
+    assert i is not None
     fn_inst = instructions[i + 1]
     if fn_inst.opcode in opc.operator_set:
         start_offset = fn_inst.offset
@@ -348,7 +349,6 @@ opcode_arg_fmt = opcode_arg_fmt36 = {
 opcode_extended_fmt36 = opcode_extended_fmt = {
     **opcode_extended_fmt35,
     **{
-        "CALL_FUNCTION": extended_format_CALL_FUNCTION36,
         "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
         # "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
         "CALL_METHOD": extended_format_CALL_METHOD,

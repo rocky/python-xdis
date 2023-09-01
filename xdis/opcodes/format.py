@@ -242,9 +242,9 @@ def extended_format_BUILD_TUPLE(opc, instructions) -> Tuple[str, Optional[int]]:
     if arg_count == 0:
         # Degnerate case
         return "()", instructions[0].start_offset
-    arglist, arg_count, start_offset, i = get_arglist(instructions, arg_count)
+    arglist, arg_count, i = get_arglist(instructions, arg_count)
     if arg_count == 0:
-        return f'({", ".join(reversed(arglist))})', start_offset
+        return f'({", ".join(reversed(arglist))})', instructions[i].start_offset
     return "", None
 
 
@@ -256,71 +256,37 @@ def extended_format_COMPARE_OP(opc, instructions) -> Tuple[str, Optional[int]]:
     )
 
 
-def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]]:
-    """CALL_FUNCTION pre 3.6.
-    Look in `instructions` to see if we can find a method name.  If not we'll
+def extended_format_CALL_FUNCTION(opc, instructions):
+    """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
+    `instructions` to see if we can find a method name.  If not we'll
     return None.
-    """
-    # From opcode description: argc indicates the total number of positional
-    # and keyword arguments.  Sometimes the function name is in the stack arg
-    # positions back.
-    call_function_inst = instructions[0]
-    call_opname = call_function_inst.opname
-    assert call_opname in (
-        "CALL_FUNCTION",
-        "CALL_FUNCTION_KW",
-        "CALL_FUNCTION_VAR",
-        "CALL_FUNCTION_VAR_KW",
-    )
-    argc = call_function_inst.arg
-    (
-        name_default,
-        pos_args,
-    ) = divmod(argc, 256)
-    function_pos = pos_args + name_default * 2 + 1
-    if call_opname in ("CALL_FUNCTION_VAR", "CALL_FUNCTION_KW"):
-        function_pos += 1
-    elif call_opname == "CALL_FUNCTION_VAR_KW":
-        function_pos += 2
-    assert len(instructions) >= function_pos + 1
-    i = -1
-    for i, inst in enumerate(instructions[1:]):
-        if i + 1 == function_pos:
-            i += 1
-            break
-        if inst.is_jump_target:
-            i += 1
-            break
-        # Make sure we are in the same basic block
-        # and ... ?
-        opcode = inst.opcode
-        if inst.optype in ("nargs", "vargs"):
-            break
-        if inst.opname == "LOAD_ATTR" or inst.optype != "name":
-            function_pos += (opc.oppop[opcode] - opc.oppush[opcode]) + 1
-        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW", "CALL_FUNCTION_VAR"):
-            break
-        pass
 
+    """
+    # From opcode description: arg_count indicates the total number of
+    # positional and keyword arguments.
+
+    call_inst = instructions[0]
+    arg_count = call_inst.argval
     s = ""
-    start_offset = None
-    if i == function_pos:
-        opname = instructions[function_pos].opname
-        if opname in (
-            "LOAD_CONST",
-            "LOAD_GLOBAL",
-            "LOAD_ATTR",
-            "LOAD_NAME",
-        ):
-            if not (
-                opname == "LOAD_CONST"
-                and isinstance(instructions[function_pos].argval, (int, str))
-            ):
-                s, start_offset = resolved_attrs(instructions[function_pos:])
-                s += ": "
-            start_offset = call_function_inst.offset
-    s += format_CALL_FUNCTION_pos_name_encoded(call_function_inst.arg)
-    return s, start_offset
+
+    arglist, arg_count, i = get_arglist(instructions, arg_count)
+
+    if arg_count != 0:
+        return "", None
+
+    assert i is not None
+    fn_inst = instructions[i + 1]
+    if fn_inst.opcode in opc.operator_set:
+        start_offset = fn_inst.offset
+        if instructions[1].opname == "MAKE_FUNCTION":
+            arglist[0] = instructions[2].argval
+
+        fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+        if opc.version_tuple >= (3, 6):
+            arglist.reverse()
+        s = f'{fn_name}({", ".join(arglist)})'
+        return s, start_offset
+    return "", None
 
 
 def extended_format_IMPORT_NAME(opc, instructions) -> Tuple[str, Optional[int]]:
@@ -490,12 +456,17 @@ def format_RAISE_VARARGS_older(argc):
         return "exception, parameter, traceback"
 
 
-def get_arglist(
-    instructions: list, arg_count: int
-) -> Tuple[list, int, Optional[int], int]:
+def get_arglist(instructions: list, arg_count: int) -> Tuple[list, int, Optional[int]]:
+    """
+    For a variable-length instruction like BUILD_TUPLE, or
+    a varlabie-name argument list, like CALL_FUNCTION
+    accumulate and find the beginning of the list and return:
+    * argument list
+    * the instruction index of the first instruction
+
+    """
     arglist = []
     i = 0
-    start_offset = None
     inst = None
     while arg_count > 0:
         i += 1
@@ -505,7 +476,7 @@ def get_arglist(
         if arg is not None:
             arglist.append(arg)
         elif not arg:
-            return arglist, arg_count, None, i
+            return arglist, arg_count, i
         else:
             arglist.append("???")
         if inst.is_jump_target:
@@ -519,11 +490,14 @@ def get_arglist(
                 inst2 = instructions[j]
                 if inst2.offset == start_offset:
                     inst = inst2
-                    i = j
-                    break
+                    if inst2.start_offset is None or inst2.start_offset == start_offset:
+                        i = j
+                        break
+                    else:
+                        start_offset = inst2.start_offset
 
         pass
-    return arglist, arg_count, start_offset, i
+    return arglist, arg_count, i
 
 
 def resolved_attrs(instructions: list) -> Tuple[str, int]:
@@ -593,6 +567,7 @@ opcode_extended_fmt_base = {
     "BUILD_MAP":             extended_format_BUILD_MAP,
     "BUILD_SET":             extended_format_BUILD_SET,
     "BUILD_TUPLE":           extended_format_BUILD_TUPLE,
+    "CALL_FUNCTION":         extended_format_CALL_FUNCTION,
     "COMPARE_OP":            extended_format_COMPARE_OP,
     "IMPORT_NAME":           extended_format_IMPORT_NAME,
     "INPLACE_ADD":           extended_format_INPLACE_ADD,
