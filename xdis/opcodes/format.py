@@ -130,7 +130,7 @@ def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int
         else:
             argval = prev_inst.argval
 
-        argval = prev_inst.tos_str if prev_inst.tos_str is not None else argval
+        argval = get_instruction_arg(prev_inst, argval)
         start_offset = prev_inst.start_offset
         if prev_inst.opname.startswith("INPLACE_"):
             # Inplace operators show their own assign
@@ -237,12 +237,26 @@ def extended_format_BUILD_SET(opc, instructions) -> Tuple[str, Optional[int]]:
     return "", None
 
 
+def extended_format_BUILD_SLICE(opc, instructions) -> Tuple[str, Optional[int]]:
+    argc = instructions[0].argval
+    assert argc in (2, 3)
+    arglist, arg_count, i = get_arglist(instructions, 1, argc)
+    if arg_count == 0:
+        arglist = ["" if arg == "None" else arg for arg in arglist]
+        return ":".join(reversed(arglist)), instructions[i].start_offset
+
+    if instructions[0].argval == 0:
+        # Degnerate case
+        return "set()", instructions[0].start_offset
+    return "", None
+
+
 def extended_format_BUILD_TUPLE(opc, instructions) -> Tuple[str, Optional[int]]:
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Degnerate case
         return "()", instructions[0].start_offset
-    arglist, arg_count, i = get_arglist(instructions, arg_count)
+    arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
     if arg_count == 0:
         return f'({", ".join(reversed(arglist))})', instructions[i].start_offset
     return "", None
@@ -269,7 +283,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     arg_count = call_inst.argval
     s = ""
 
-    arglist, arg_count, i = get_arglist(instructions, arg_count)
+    arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
 
     if arg_count != 0:
         return "", None
@@ -456,7 +470,9 @@ def format_RAISE_VARARGS_older(argc):
         return "exception, parameter, traceback"
 
 
-def get_arglist(instructions: list, arg_count: int) -> Tuple[list, int, Optional[int]]:
+def get_arglist(
+    instructions: list, i: int, arg_count: int
+) -> Tuple[list, int, Optional[int]]:
     """
     For a variable-length instruction like BUILD_TUPLE, or
     a varlabie-name argument list, like CALL_FUNCTION
@@ -500,6 +516,11 @@ def get_arglist(instructions: list, arg_count: int) -> Tuple[list, int, Optional
     return arglist, arg_count, i
 
 
+def get_instruction_arg(inst, argval=None) -> str:
+    argval = inst.argrepr if argval is None else argval
+    return inst.tos_str if inst.tos_str is not None else argval
+
+
 def resolved_attrs(instructions: list) -> Tuple[str, int]:
     """ """
     # we can probably speed up using the "tos_str" field.
@@ -536,7 +557,10 @@ def short_code_repr(code) -> str:
     """
     A shortened string representation of a code object
     """
-    return f"<code object {code.co_name}>"
+    if hasattr(code, "co_name"):
+        return f"<code object {code.co_name}>"
+    else:
+        return f"<code object {code}>"
 
 
 # fmt: off
@@ -566,6 +590,7 @@ opcode_extended_fmt_base = {
     "BUILD_LIST":            extended_format_BUILD_LIST,
     "BUILD_MAP":             extended_format_BUILD_MAP,
     "BUILD_SET":             extended_format_BUILD_SET,
+    "BUILD_SLICE":           extended_format_BUILD_SLICE,
     "BUILD_TUPLE":           extended_format_BUILD_TUPLE,
     "CALL_FUNCTION":         extended_format_CALL_FUNCTION,
     "COMPARE_OP":            extended_format_COMPARE_OP,
