@@ -5,47 +5,46 @@ from typing import Optional, Tuple
 
 
 def extended_format_binary_op(
-    opc, instructions, fmt_str: str
+    opc, instructions: list, fmt_str: str
 ) -> Tuple[str, Optional[int]]:
-    """ """
-    i = 1
-    # 3.11+ has CACHE instructions
-    while instructions[i].opname == "CACHE":
-        i += 1
-    stack_arg1 = instructions[i]
+    """
+    General routine for formatting binary operations.
+    A binary operations pops a two arguments off of the evaluation stack and
+    pushes a single value back on the evaluation stack. Also, the instruction
+    must not raise an exception and must control must flow to the next instruction.
+
+    instructions is a list of instructions
+    fmt_str is a format string that indicates the two arguments.
+
+    the return constins the string that should be added to tos_str and
+    the position in instructions of the first instruction where that contributes
+    to the binary operation, that is the logical beginning instruction.
+    """
+    i = skip_cache(instructions, 1)
+    stack_inst1 = instructions[i]
     arg1 = None
-    if stack_arg1.tos_str is not None:
-        arg1 = stack_arg1.tos_str
-    if arg1 is not None or stack_arg1.opcode in opc.operator_set:
+    if stack_inst1.tos_str is not None:
+        arg1 = stack_inst1.tos_str
+    if arg1 is not None or stack_inst1.opcode in opc.operator_set:
         if arg1 is None:
-            arg1 = instructions[1].argrepr
-        arg1_start_offset = instructions[1].start_offset
+            arg1 = stack_inst1.argrepr
+        arg1_start_offset = stack_inst1.start_offset
         if arg1_start_offset is not None:
             for i in range(1, len(instructions)):
                 if instructions[i].offset == arg1_start_offset:
                     break
-        j = i + 1
-        # 3.11+ has CACHE instructions
-        while instructions[j].opname == "CACHE":
-            j += 1
+        j = skip_cache(instructions, i + 1)
+        stack_inst2 = instructions[j]
         if (
-            instructions[j].opcode in opc.operator_set
-            and instructions[i].opcode in opc.operator_set
+            stack_inst1.opcode in opc.operator_set
+            and stack_inst2.opcode in opc.operator_set
         ):
-            arg2 = (
-                instructions[j].tos_str
-                if instructions[j].tos_str is not None
-                else instructions[j].argrepr
-            )
-            start_offset = instructions[j].start_offset
+            arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
+            start_offset = stack_inst2.start_offset
             return fmt_str % (arg2, arg1), start_offset
-        elif instructions[j].start_offset is not None:
-            start_offset = instructions[j].start_offset
-            arg2 = (
-                instructions[j].tos_str
-                if instructions[j].tos_str is not None
-                else instructions[j].argrepr
-            )
+        elif stack_inst2.start_offset is not None:
+            start_offset = stack_inst2.start_offset
+            arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
             if arg2 == "":
                 arg2 = "..."
             return fmt_str % (arg2, arg1), start_offset
@@ -138,6 +137,73 @@ def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int
         return f"{inst.argval} = {argval}", start_offset
 
     return "", start_offset
+
+
+def extended_format_ternary_op(
+    opc, instructions, fmt_str: str
+) -> Tuple[str, Optional[int]]:
+    """
+    General routine for formatting ternary operations.
+    A ternary operations pops a three arguments off of the evaluation stack and
+    pushes a single value back on the evaluation stack. Also, the instruction
+    must not raise an exception and must control must flow to the next instruction.
+
+    instructions is a list of instructions
+    fmt_str is a format string that indicates the two arguments.
+
+    the return constins the string that should be added to tos_str and
+    the position in instructions of the first instruction where that contributes
+    to the binary operation, that is the logical beginning instruction.
+    """
+    i = skip_cache(instructions, 1)
+    stack_inst1 = instructions[i]
+    arg1 = None
+    if stack_inst1.tos_str is not None:
+        arg1 = stack_inst1.tos_str
+    if arg1 is not None or stack_inst1.opcode in opc.operator_set:
+        if arg1 is None:
+            arg1 = stack_inst1.argrepr
+        arg1_start_offset = stack_inst1.start_offset
+        if arg1_start_offset is not None:
+            for i in range(1, len(instructions)):
+                if instructions[i].offset == arg1_start_offset:
+                    break
+        j = skip_cache(instructions, i + 1)
+        stack_inst2 = instructions[j]
+        if (
+            stack_inst1.opcode in opc.operator_set
+            and stack_inst2.opcode in opc.operator_set
+        ):
+            arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
+            k = skip_cache(instructions, j + 1)
+            stack_inst3 = instructions[k]
+            if stack_inst3.opcode in opc.operator_set:
+                start_offset = stack_inst3.start_offset
+                arg3 = get_instruction_arg(stack_inst3, stack_inst3.argrepr)
+                return fmt_str % (arg2, arg1, arg3), start_offset
+            else:
+                start_offset = stack_inst2.start_offset
+                arg3 = "..."
+                return fmt_str % (arg2, arg1, arg3), start_offset
+
+        elif stack_inst2.start_offset is not None:
+            start_offset = stack_inst2.start_offset
+            arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
+            if arg2 == "":
+                arg2 = "..."
+            arg3 = "..."
+            return fmt_str % (arg2, arg1, arg3), start_offset
+        else:
+            return fmt_str % ("...", "...", "..."), None
+    return "", None
+
+
+def extended_format_STORE_SUBSCR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+    return extended_format_ternary_op(
+        opc,
+        instructions,
+        "%s[%s] = %s",
+    )
 
 
 def extended_format_unary_op(
@@ -563,6 +629,19 @@ def short_code_repr(code) -> str:
         return f"<code object {code}>"
 
 
+def skip_cache(instructions: list, i: int) -> int:
+    """Python 3.11+ has CACHE instructions.
+    Skip over those starting at index i and return
+    the index of the first instruction that is not CACHE
+    or return the length of the list if we can't find
+    such an instruction.
+    """
+    n = len(instructions)
+    while instructions[i].opname == "CACHE" and i < n:
+        i += 1
+    return i
+
+
 # fmt: off
 opcode_arg_fmt_base = opcode_arg_fmt34 = {
     "CALL_FUNCTION": format_CALL_FUNCTION_pos_name_encoded,
@@ -615,6 +694,7 @@ opcode_extended_fmt_base = {
     "STORE_ATTR":            extended_format_ATTR,
     "STORE_FAST":            extended_format_store_op,
     "STORE_NAME":            extended_format_store_op,
+    "STORE_SUBSCR":          extended_format_STORE_SUBSCR,
     "UNARY_INVERT":          extended_format_UNARY_INVERT,
     "UNARY_NEGATIVE":        extended_format_UNARY_NEGATIVE,
     "UNARY_NOT":             extended_format_UNARY_NOT,
