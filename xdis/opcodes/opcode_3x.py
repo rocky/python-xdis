@@ -113,7 +113,7 @@ def_op(loc, 'GET_ITER',             68,  1,  1)
 store_op(loc, 'STORE_LOCALS',       69,  1,  0)
 
 def_op(loc, 'PRINT_EXPR',           70,  1,  0)
-def_op(loc, 'LOAD_BUILD_CLASS',     71,  0,  1)
+unary_op(loc, 'LOAD_BUILD_CLASS',   71,  0,  1)
 
 # Python3 drops/changes:
 #  def_op(loc, 'PRINT_ITEM', 71)

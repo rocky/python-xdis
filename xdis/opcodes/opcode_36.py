@@ -110,16 +110,17 @@ rm_op(loc, 'CALL_FUNCTION_VAR_KW', 142)
 # These are new since Python 3.6
 #          OP NAME                OPCODE POP PUSH
 # -----------------------------------------------
-store_op(loc,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS index in
+def_op(loc,      "LOAD_BUILD_CLASS",  71,  0,  1)
+store_op(loc,    "STORE_ANNOTATION", 127,  1,  0, is_type="name") # Stores TOS index in
                                                                    # name list;
-jrel_op(loc,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__;
+jrel_op(loc,     "SETUP_ASYNC_WITH", 154,  2,  8)  # pops __aenter__ and __aexit__;
                                                    # pushed results on stack
-def_op(loc,      'FORMAT_VALUE',     155,  1,  1)
-varargs_op(loc,  'BUILD_CONST_KEY_MAP', 156, -2, 1) # TOS is count of kwargs
-nargs_op(loc,    'CALL_FUNCTION_EX', 142, -2,  1)
-def_op(loc,      'SETUP_ANNOTATIONS', 85,  1,  1)
-varargs_op(loc,  'BUILD_STRING',     157, -2,  2)
-varargs_op(loc,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
+def_op(loc,      "FORMAT_VALUE",     155,  1,  1)
+varargs_op(loc,  "BUILD_CONST_KEY_MAP", 156, -2, 1) # TOS is count of kwargs
+nargs_op(loc,    "CALL_FUNCTION_EX", 142, -2,  1)
+def_op(loc,      "SETUP_ANNOTATIONS", 85,  1,  1)
+varargs_op(loc,  "BUILD_STRING",     157, -2,  2)
+varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 # fmt: on
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
@@ -134,7 +135,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions) -> Tuple[str, int]:
     name_inst = instructions[1]
     code_inst = instructions[2]
     start_offset = code_inst.offset
-    if name_inst.opname in ("LOAD_CONST",):
+    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         s += f"make_function({name_inst.argval}, {short_code_repr(code_inst.argval)})"
         return s, start_offset
     return s, start_offset
