@@ -355,16 +355,24 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         return "", None
 
     assert i is not None
+    if i >= len(instructions) - 1:
+        return "", None
+
     fn_inst = instructions[i + 1]
     if fn_inst.opcode in opc.operator_set:
         start_offset = fn_inst.offset
-        if instructions[1].opname == "MAKE_FUNCTION":
+        if instructions[1].opname == "MAKE_FUNCTION" and opc.version_tuple >= (3, 3):
             arglist[0] = instructions[2].argval
 
         fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
         if opc.version_tuple >= (3, 6):
             arglist.reverse()
-        s = f'{fn_name}({", ".join(arglist)})'
+        try:
+            s = f'{fn_name}({", ".join(arglist)})'
+        except:
+            from trepan.api import debug
+
+            debug()
         return s, start_offset
     return "", None
 
@@ -559,7 +567,8 @@ def get_arglist(
     arglist = []
     i = 0
     inst = None
-    while arg_count > 0:
+    n = len(instructions) - 1
+    while arg_count > 0 and i < n:
         i += 1
         inst = instructions[i]
         arg_count -= 1
