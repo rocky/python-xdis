@@ -223,7 +223,7 @@ class _VersionIndependentUnmarshaller:
             try:
                 sys.stderr.write(
                     "Unknown type %i (hex %x) %c\n"
-                    % (ord(marshal_type), hex(ord(marshal_type)), marshal_type)
+                    % (ord(marshal_type), ord(marshal_type), marshal_type)
                 )
             except TypeError:
                 sys.stderr.write(

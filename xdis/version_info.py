@@ -32,16 +32,16 @@ def version_tuple_to_str(
     """
     Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6".
 
-    version_tuple is a tuple similar to what is might be returned in
+    ``version_tuple`` is a tuple similar to what is might be returned in
     tuple(sys.version_info[:3]), however, the parts in their could anything that
-    has a str() method. By defaul, and often the length is 3 but in in practice
-    it could be other lengths
+    has a str() method. By default, and often the length is 3 but in practice
+    it could be other lengths.
 
-    end is the length of version_tuple that you want to use.
+    ``end`` is the length of version_tuple that you want to use.
     delimiter is what string to put in the between components.
     """
     return delimiter.join([str(v) for v in version_tuple[start:end]])
 
 
-def version_str_to_tuple(python_version: str, len=2) -> tuple:
-    return tuple([int(v) for v in python_version.split(".")[:len]])
+def version_str_to_tuple(python_version: str, length=2) -> tuple:
+    return tuple([int(v) for v in python_version.split(".")[:length]])
