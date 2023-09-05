@@ -367,12 +367,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
         if opc.version_tuple >= (3, 6):
             arglist.reverse()
-        try:
-            s = f'{fn_name}({", ".join(arglist)})'
-        except:
-            from trepan.api import debug
-
-            debug()
+        s = f'{fn_name}({", ".join(arglist)})'
         return s, start_offset
     return "", None
 
