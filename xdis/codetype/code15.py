@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,10 +14,12 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.codetype.code13 import Code13, Code13FieldTypes
 from copy import deepcopy
 
-# If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
+from xdis.codetype.code13 import Code13, Code13FieldTypes
+
+# If there is a list of types, then any will work, but the 1st one is
+# the correct one for types.CodeType
 Code15FieldTypes = deepcopy(Code13FieldTypes)
 Code15FieldTypes.update(
     {

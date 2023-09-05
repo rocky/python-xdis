@@ -98,7 +98,7 @@ def get_const_info(const_index, const_list):
     return argval, repr(argval)
 
 
-# For compatiablity
+# For compatibility
 _get_const_info = get_const_info
 
 
@@ -123,7 +123,7 @@ def get_name_info(name_index, name_list):
     return argval, argrepr
 
 
-# For compatiablity
+# For compatibility
 _get_name_info = get_name_info
 
 

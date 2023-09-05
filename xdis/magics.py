@@ -111,7 +111,7 @@ PYTHON_MAGIC_INT = magic2int(MAGIC)
 # Apple MPW compiler swaps their values, botching string constants.
 #
 # The magic numbers must be spaced apart at least 2 values, as the
-# -U interpeter flag will cause MAGIC+1 being used. They have been
+# -U interpreter flag will cause MAGIC+1 being used. They have been
 # odd numbers for some time now.
 #
 # There were a variety of old schemes for setting the magic number.

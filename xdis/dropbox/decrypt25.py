@@ -44,7 +44,7 @@ def MX(z, y, sum, key, p, e):
 
 def tea_decipher(v, key):
     """
-    Tiny Decryption Algorithm decription (TEA)
+    Tiny Decryption Algorithm description (TEA)
     See https://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm
     """
     DELTA = 0x9E3779B9

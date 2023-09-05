@@ -284,21 +284,21 @@ def extended_format_BINARY_XOR(opc, instructions) -> Tuple[str, Optional[int]]:
 
 def extended_format_BUILD_LIST(opc, instructions) -> Tuple[str, Optional[int]]:
     if instructions[0].argval == 0:
-        # Degnerate case
+        # Degenerate case
         return "[]", instructions[0].start_offset
     return "", None
 
 
 def extended_format_BUILD_MAP(opc, instructions) -> Tuple[str, Optional[int]]:
     if instructions[0].argval == 0:
-        # Degnerate case
+        # Degenerate case
         return "{}", instructions[0].start_offset
     return "", None
 
 
 def extended_format_BUILD_SET(opc, instructions) -> Tuple[str, Optional[int]]:
     if instructions[0].argval == 0:
-        # Degnerate case
+        # Degenerate case
         return "set()", instructions[0].start_offset
     return "", None
 
@@ -312,7 +312,7 @@ def extended_format_BUILD_SLICE(opc, instructions) -> Tuple[str, Optional[int]]:
         return ":".join(reversed(arglist)), instructions[i].start_offset
 
     if instructions[0].argval == 0:
-        # Degnerate case
+        # Degenerate case
         return "set()", instructions[0].start_offset
     return "", None
 
@@ -320,7 +320,7 @@ def extended_format_BUILD_SLICE(opc, instructions) -> Tuple[str, Optional[int]]:
 def extended_format_BUILD_TUPLE(opc, instructions) -> Tuple[str, Optional[int]]:
     arg_count = instructions[0].argval
     if arg_count == 0:
-        # Degnerate case
+        # Degenerate case
         return "()", instructions[0].start_offset
     arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
     if arg_count == 0:
