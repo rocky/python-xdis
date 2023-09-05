@@ -34,10 +34,10 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.format import (
+from xdis.opcodes.format.basic import format_RAISE_VARARGS_older
+from xdis.opcodes.format.extended import (
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
-    format_RAISE_VARARGS_older,
     get_arglist,
     short_code_repr,
 )

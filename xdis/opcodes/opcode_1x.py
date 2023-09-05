@@ -37,11 +37,8 @@ from xdis.opcodes.base import (
     update_pj2,
     varargs_op,
 )
-from xdis.opcodes.format import (
-    format_MAKE_FUNCTION_10_27,
-    opcode_arg_fmt_base,
-    opcode_extended_fmt_base,
-)
+from xdis.opcodes.format.basic import format_MAKE_FUNCTION_10_27, opcode_arg_fmt_base
+from xdis.opcodes.format.extended import opcode_extended_fmt_base
 
 loc = locals()
 init_opdata(loc, None, None)

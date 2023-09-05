@@ -30,7 +30,10 @@ from xdis.opcodes.base import (
     update_pj2,
     varargs_op,
 )
-from xdis.opcodes.format import extended_format_ATTR, extended_format_RETURN_VALUE
+from xdis.opcodes.format.extended import (
+    extended_format_ATTR,
+    extended_format_RETURN_VALUE,
+)
 
 version_tuple = (2, 6)
 python_implementation = "PyPy"

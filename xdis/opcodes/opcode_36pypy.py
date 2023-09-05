@@ -20,13 +20,15 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.format import (
-    extended_format_ATTR,
-    extended_format_RAISE_VARARGS_older,
-    extended_format_RETURN_VALUE,
+from xdis.opcodes.format.basic import (
     format_CALL_FUNCTION_pos_name_encoded,
     format_extended_arg,
     format_RAISE_VARARGS_older,
+)
+from xdis.opcodes.format.extended import (
+    extended_format_ATTR,
+    extended_format_RAISE_VARARGS_older,
+    extended_format_RETURN_VALUE,
 )
 from xdis.opcodes.opcode_36 import (
     extended_format_MAKE_FUNCTION_36,

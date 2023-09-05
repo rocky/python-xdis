@@ -41,11 +41,8 @@ from xdis.opcodes.base import (
     unary_op,
     varargs_op,
 )
-from xdis.opcodes.format import (
-    format_extended_arg,
-    opcode_extended_fmt_base,
-    short_code_repr,
-)
+from xdis.opcodes.format.basic import format_extended_arg
+from xdis.opcodes.format.extended import opcode_extended_fmt_base, short_code_repr
 
 loc = locals()
 init_opdata(loc, None, None)
