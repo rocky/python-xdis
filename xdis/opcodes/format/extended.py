@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2023 by Rocky Bernstein
+# (C) Copyright 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,6 +17,8 @@
 Routines for formatting opcodes.
 """
 from typing import Optional, Tuple
+
+from xdis.opcodes.format.basic import format_IS_OP, format_RAISE_VARARGS_older
 
 
 def extended_format_binary_op(
@@ -233,7 +235,7 @@ def extended_format_unary_op(
     return "", None
 
 
-def extended_format_ATTR(opc, instructions) -> Optional[Tuple[str, int]]:
+def extended_format_ATTR(opc, instructions: list) -> Optional[Tuple[str, int]]:
     if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
         return (
             "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr),
@@ -241,43 +243,47 @@ def extended_format_ATTR(opc, instructions) -> Optional[Tuple[str, int]]:
         )
 
 
-def extended_format_BINARY_ADD(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_ADD(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " + ")
 
 
-def extended_format_BINARY_AND(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_AND(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " & ")
 
 
-def extended_format_BINARY_FLOOR_DIVIDE(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_FLOOR_DIVIDE(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " // ")
 
 
-def extended_format_BINARY_LSHIFT(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_LSHIFT(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " << ")
 
 
-def extended_format_BINARY_MODULO(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_MODULO(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " %% ")
 
 
-def extended_format_BINARY_MULTIPLY(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_MULTIPLY(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " * ")
 
 
-def extended_format_BINARY_OR(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_OR(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " | ")
 
 
-def extended_format_BINARY_POWER(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_POWER(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " ** ")
 
 
-def extended_format_BINARY_RSHIFT(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_RSHIFT(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " >> ")
 
 
-def extended_format_BINARY_SUBSCR(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_SUBSCR(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_binary_op(
         opc,
         instructions,
@@ -285,40 +291,44 @@ def extended_format_BINARY_SUBSCR(opc, instructions) -> Tuple[str, Optional[int]
     )
 
 
-def extended_format_BINARY_SUBTRACT(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_SUBTRACT(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " - ")
 
 
-def extended_format_BINARY_TRUE_DIVIDE(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_TRUE_DIVIDE(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " / ")
 
 
-def extended_format_BINARY_XOR(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_XOR(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " ^ ")
 
 
-def extended_format_BUILD_LIST(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_LIST(opc, instructions: list) -> Tuple[str, Optional[int]]:
     if instructions[0].argval == 0:
         # Degenerate case
         return "[]", instructions[0].start_offset
     return "", None
 
 
-def extended_format_BUILD_MAP(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_MAP(opc, instructions: list) -> Tuple[str, Optional[int]]:
     if instructions[0].argval == 0:
         # Degenerate case
         return "{}", instructions[0].start_offset
     return "", None
 
 
-def extended_format_BUILD_SET(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_SET(opc, instructions: list) -> Tuple[str, Optional[int]]:
     if instructions[0].argval == 0:
         # Degenerate case
         return "set()", instructions[0].start_offset
     return "", None
 
 
-def extended_format_BUILD_SLICE(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_SLICE(opc, instructions: list) -> Tuple[str, Optional[int]]:
     argc = instructions[0].argval
     assert argc in (2, 3)
     arglist, arg_count, i = get_arglist(instructions, 1, argc)
@@ -332,7 +342,7 @@ def extended_format_BUILD_SLICE(opc, instructions) -> Tuple[str, Optional[int]]:
     return "", None
 
 
-def extended_format_BUILD_TUPLE(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_TUPLE(opc, instructions: list) -> Tuple[str, Optional[int]]:
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Degenerate case
@@ -343,7 +353,7 @@ def extended_format_BUILD_TUPLE(opc, instructions) -> Tuple[str, Optional[int]]:
     return "", None
 
 
-def extended_format_COMPARE_OP(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_COMPARE_OP(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(
         opc,
         instructions,
@@ -387,17 +397,17 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     return "", None
 
 
-def extended_format_IMPORT_NAME(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_IMPORT_NAME(opc, instructions: list) -> Tuple[str, Optional[int]]:
     inst = instructions[0]
     start_offset = inst.start_offset
     return f"import_module({inst.argval})", start_offset
 
 
-def extended_format_INPLACE_ADD(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_ADD(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " += ")
 
 
-def extended_format_INPLACE_AND(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_AND(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " &= ")
 
 
@@ -407,43 +417,55 @@ def extended_format_INPLACE_FLOOR_DIVIDE(
     return extended_format_infix_binary_op(opc, instructions, " //= ")
 
 
-def extended_format_INPLACE_LSHIFT(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_LSHIFT(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " <<= ")
 
 
-def extended_format_INPLACE_MODULO(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_MODULO(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " %%= ")
 
 
-def extended_format_INPLACE_MULTIPLY(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_MULTIPLY(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " *= ")
 
 
-def extended_format_INPLACE_OR(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_OR(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " |= ")
 
 
-def extended_format_INPLACE_POWER(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_POWER(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " **= ")
 
 
-def extended_format_INPLACE_TRUE_DIVIDE(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_TRUE_DIVIDE(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " /= ")
 
 
-def extended_format_INPLACE_RSHIFT(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_RSHIFT(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " >>= ")
 
 
-def extended_format_INPLACE_SUBTRACT(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_SUBTRACT(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " -= ")
 
 
-def extended_format_INPLACE_XOR(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_XOR(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " ^= ")
 
 
-def extended_format_IS_OP(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_IS_OP(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(
         opc,
         instructions,
@@ -451,11 +473,13 @@ def extended_format_IS_OP(opc, instructions) -> Tuple[str, Optional[int]]:
     )
 
 
-def extended_format_LOAD_BUILD_CLASS(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_LOAD_BUILD_CLASS(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return "class", instructions[0].start_offset
 
 
-def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> Tuple[str, int]:
+def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list) -> Tuple[str, int]:
     """
     instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
@@ -486,7 +510,9 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> Tuple[str, int]:
     return s, start_offset
 
 
-def extended_format_RAISE_VARARGS_older(opc, instructions) -> Tuple[Optional[str], int]:
+def extended_format_RAISE_VARARGS_older(
+    opc, instructions: list
+) -> Tuple[Optional[str], int]:
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval
@@ -510,15 +536,17 @@ def extended_format_RETURN_VALUE(opc, instructions: list) -> Tuple[str, Optional
     return extended_format_unary_op(opc, instructions, "return %s")
 
 
-def extended_format_UNARY_INVERT(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_UNARY_INVERT(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "~(%s)")
 
 
-def extended_format_UNARY_NEGATIVE(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_UNARY_NEGATIVE(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "-(%s)")
 
 
-def extended_format_UNARY_NOT(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_UNARY_NOT(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "not (%s)")
 
 
