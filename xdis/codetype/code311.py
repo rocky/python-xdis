@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,10 +14,11 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
-from xdis.codetype.code38 import Code38, Code38FieldTypes
 import types
 from copy import deepcopy
+
+from xdis.codetype.code38 import Code38, Code38FieldTypes
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order. It is important to match this
 # with the 3.11 order.
@@ -43,12 +44,7 @@ Code311FieldNames = """
 """
 
 Code311FieldTypes = deepcopy(Code38FieldTypes)
-Code311FieldTypes.update(
-    {
-        "co_qualname": str,
-        "co_exception_table": bytes
-    }
-)
+Code311FieldTypes.update({"co_qualname": str, "co_exception_table": bytes})
 
 
 class Code311(Code38):
@@ -95,11 +91,13 @@ class Code311(Code38):
             co_code,
             co_consts,
             co_names,
+            co_qualname,
             co_varnames,
             co_filename,
             co_name,
             co_firstlineno,
             co_lnotab,
+            co_exceptiontable,
             co_freevars,
             co_cellvars,
         )

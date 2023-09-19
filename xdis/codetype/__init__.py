@@ -25,8 +25,8 @@ from xdis.codetype.code13 import Code13
 from xdis.codetype.code15 import Code15
 from xdis.codetype.code20 import Code2
 from xdis.codetype.code30 import Code3
-from xdis.codetype.code38 import Code38, Code38FieldNames
-from xdis.codetype.code311 import Code311
+from xdis.codetype.code38 import Code38
+from xdis.codetype.code311 import Code311, Code311FieldNames
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
@@ -179,7 +179,7 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
 # In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
 # an incomplete code type, which might be converted to another code type
 # later.
-CodeTypeUnionFields = Code38FieldNames.split()
+CodeTypeUnionFields = Code311FieldNames.split()
 CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 
 
@@ -187,14 +187,15 @@ CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 # default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
     co_argcount,
-    co_posonlyargcount: Optional[int] =-1,  # 3.8+
-    co_kwonlyargcount: Optional[int] =-1,  # 3.0+
+    co_posonlyargcount: Optional[int] = -1,  # 3.8+
+    co_kwonlyargcount: Optional[int] = -1,  # 3.0+
     co_nlocals=None,
-    co_stacksize: Optional[int] =-1,  # 1.5+
+    co_stacksize: Optional[int] = -1,  # 1.5+
     co_flags=None,
     co_code=None,  # 3.0+ this type changes from <str> to <bytes>
     co_consts=None,
     co_names=None,
+    co_qualname=None,
     co_varnames=None,
     co_filename=None,
     co_name=None,
@@ -214,9 +215,11 @@ def to_portable(
         co_code,
         co_consts,
         co_names,
+        co_qualname,
         co_varnames,
         co_filename,
         co_name,
+        co_qualname,
         co_firstlineno,
         co_lnotab,
         co_freevars,

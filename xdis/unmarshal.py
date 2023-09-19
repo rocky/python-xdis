@@ -459,7 +459,10 @@ class _VersionIndependentUnmarshaller:
         else:
             kwonlyargcount = 0
 
-        if version_tuple >= (2, 3):
+        if version_tuple >= (3, 11):
+            # 3.11 doesn't removes co_nlocals differently
+            co_nlocals = 0
+        elif version_tuple >= (2, 3):
             co_nlocals = unpack("<i", self.fp.read(4))[0]
         elif version_tuple >= (1, 3):
             co_nlocals = unpack("<h", self.fp.read(2))[0]
@@ -485,9 +488,19 @@ class _VersionIndependentUnmarshaller:
         # FIXME: Check/verify that is true:
         bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (version_tuple > (3, 0))
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
+
+        if version_tuple >= (3, 11):
+            co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+        else:
+            co_qualname = None
+
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        if version_tuple >= (1, 3):
+        if version_tuple >= (3, 11):
+            co_localplusnames = self.r_object(bytes_for_s=False)
+            co_localpluskinds = self.r_object(bytes_for_s=False)
+            co_varnames = []
+        elif version_tuple >= (1, 3):
             co_varnames = self.r_object(bytes_for_s=False)
         else:
             co_varnames = []
@@ -527,6 +540,7 @@ class _VersionIndependentUnmarshaller:
             co_varnames,
             co_filename,
             co_name,
+            co_qualname,
             co_firstlineno,
             co_lnotab,
             co_freevars,
