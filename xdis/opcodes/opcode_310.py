@@ -99,6 +99,28 @@ opcode_extended_fmt = {
 }
 # fmt: on
 
+# lnotab format changed in 3.10
+# from https://github.com/python/cpython/blob/main/Objects/lnotab_notes.txt#L67
+def findlinestarts(code, dup_lines=False):
+    sdeltas = list(code.co_lnotab[0::2])
+    ldeltas = [x if x < 0x80 else x - 0x100 for x in code.co_lnotab[1::2]]
+    line = code.co_firstlineno
+    end = 0
+    yield 0, line
+    for sdelta, ldelta in zip(sdeltas, ldeltas):
+        if ldelta == 0:
+            end += sdelta
+            continue
+        start = end
+        end = start + sdelta
+        if ldelta == -128:
+            continue
+        line += ldelta
+        if end == start:
+            continue
+        yield start, line
+
+
 update_pj3(globals(), l)
 
 finalize_opcodes(l)
