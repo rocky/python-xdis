@@ -59,9 +59,14 @@ finalize_opcodes(loc)
 
 # fmt: on
 
-# lnotab format changed in 3.10
+# lnotab format changed in 3.10.
+# Using pre 3.10 code, some line numbers will come out negative.
 # from https://github.com/python/cpython/blob/main/Objects/lnotab_notes.txt#L67
 def findlinestarts(code, dup_lines=False):
+    """Find the offsets in a byte code which are start of lines in the source.
+
+    Generate pairs (offset, lineno) as described in Python/compile.c.
+    """
     sdeltas = list(code.co_lnotab[0::2])
     ldeltas = [x if x < 0x80 else x - 0x100 for x in code.co_lnotab[1::2]]
     line = code.co_firstlineno
