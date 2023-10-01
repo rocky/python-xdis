@@ -202,7 +202,7 @@ class _VersionIndependentUnmarshaller:
         """
         byte1 = ord(self.fp.read(1))
 
-        # FLAG_REF indiates whether we "intern" or
+        # FLAG_REF indicates whether we "intern" or
         # save a reference to the object.
         # byte1 without that reference is the
         # marshal type code, an ASCII character.
@@ -223,7 +223,7 @@ class _VersionIndependentUnmarshaller:
             try:
                 sys.stderr.write(
                     "Unknown type %i (hex %x) %c\n"
-                    % (ord(marshal_type), hex(ord(marshal_type)), marshal_type)
+                    % (ord(marshal_type), ord(marshal_type), marshal_type)
                 )
             except TypeError:
                 sys.stderr.write(
@@ -511,7 +511,7 @@ class _VersionIndependentUnmarshaller:
         else:
             # < 1.5 there is no lnotab, so no firstlineno.
             # SET_LINENO is used instead.
-            co_firstlineno = -1  # Bogus sentinal value
+            co_firstlineno = -1  # Bogus sentinel value
             co_lnotab = ""
 
         code = to_portable(

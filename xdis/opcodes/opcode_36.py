@@ -20,6 +20,8 @@ This is like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
+from typing import Tuple
+
 import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
@@ -111,18 +113,18 @@ store_op(loc,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS i
                                                                    # name list;
 jrel_op(loc,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__;
                                                    # pushed results on stack
-def_op(loc,      'FORMAT_VALUE',     155,  1,  1)
-varargs_op(loc,  'BUILD_CONST_KEY_MAP', 156, -2, 1) # TOS is count of kwargs
-nargs_op(loc,    'CALL_FUNCTION_EX', 142, -2,  1)
-def_op(loc,      'SETUP_ANNOTATIONS', 85,  1,  1)
-varargs_op(loc,  'BUILD_STRING',     157, -2,  2)
-varargs_op(loc,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
+def_op(loc,      "FORMAT_VALUE",     155,  1,  1)
+varargs_op(loc,  "BUILD_CONST_KEY_MAP", 156, -2, 1) # TOS is count of kwargs
+nargs_op(loc,    "CALL_FUNCTION_EX", 142, -2,  1)
+def_op(loc,      "SETUP_ANNOTATIONS", 85,  1,  1)
+varargs_op(loc,  "BUILD_STRING",     157, -2,  2)
+varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 # fmt: on
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
-def extended_format_MAKE_FUNCTION(opc, instructions) -> str:
+def extended_format_MAKE_FUNCTION(opc, instructions):
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")

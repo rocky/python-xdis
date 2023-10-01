@@ -31,7 +31,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     rm_op,
     update_pj2,
 )
-from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
+from xdis.opcodes.opcode_1x import opcode_extended_fmt_base1x, update_arg_fmt_base1x
 
 version_tuple = (1, 3)
 python_implementation = "CPython"
@@ -43,12 +43,12 @@ init_opdata(loc, opcode_14, version_tuple)
 rm_op(loc, "BINARY_POWER", 19)
 def_op(loc, "LOAD_GLOBALS", 84)
 
-opcode_arg_fmt = opcode_arg_fmt13 = update_arg_fmt_base2x.copy()
+opcode_arg_fmt = opcode_arg_fmt13 = update_arg_fmt_base1x.copy()
 del opcode_arg_fmt["EXTENDED_ARG"]
 
 opcode_extended_fmt = (
     opcode_extended_fmt13
-) = opcode_extended_fmt13 = opcode_extended_fmt_base2x.copy()
+) = opcode_extended_fmt13 = opcode_extended_fmt_base1x.copy()
 
 findlinestarts = opcode_14.findlinestarts
 

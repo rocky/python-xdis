@@ -18,6 +18,7 @@ __docformat__ = "restructuredtext"
 
 import types
 from collections import namedtuple
+from typing import Optional
 
 from xdis.codetype.base import CodeBase
 from xdis.codetype.code13 import Code13
@@ -186,10 +187,10 @@ CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 # default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
     co_argcount,
-    co_posonlyargcount=-1,  # 3.8+
-    co_kwonlyargcount=-1,  # 3.0+
+    co_posonlyargcount: Optional[int] =-1,  # 3.8+
+    co_kwonlyargcount: Optional[int] =-1,  # 3.0+
     co_nlocals=None,
-    co_stacksize=-1,  # 1.5+
+    co_stacksize: Optional[int] =-1,  # 1.5+
     co_flags=None,
     co_code=None,  # 3.0+ this type changes from <str> to <bytes>
     co_consts=None,

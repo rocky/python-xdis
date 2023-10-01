@@ -2,7 +2,7 @@
 """
 CPython 3.2 bytecode opcodes
 
-This is a like Python 3.2's opcode.py  with some classification
+This is a like Python 3.2's opcode.py with some classification
 of stack usage and information for formatting instructions.
 of stack usage.
 """
@@ -20,7 +20,7 @@ loc = locals()
 
 init_opdata(loc, opcode_3x, version_tuple)
 
-# There are no opcodes to add or change.
+# opcode_3x is based on 3.2 so there are no opcodes to add or change.
 # If there were, they'd be listed below.
 
 opcode_arg_fmt = opcode_arg_fmt32 = opcode_arg_fmt33

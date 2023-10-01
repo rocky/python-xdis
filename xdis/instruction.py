@@ -25,7 +25,7 @@ from collections import namedtuple
 _Instruction = namedtuple(
     "_Instruction",
     "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line "
-    "is_jump_target has_extended_arg formatted start_offset",
+    "is_jump_target has_extended_arg tos_str start_offset",
 )
 # _Instruction.opname.__doc__ = "Human readable name for operation"
 # _Instruction.opcode.__doc__ = "Numeric code for operation"
@@ -49,6 +49,10 @@ _Instruction = namedtuple(
 # _Instruction.formatted.__doc__ = (
 #    "If not None, a somewhat hacky formatted representation of the instruction"
 # )
+# _Instruction.tos_str.__doc__ = (
+#    "If not None, a string representation of the top of the stack (TOS)"
+# )
+
 # Python expressions can be straight-line, operator like-basic block code that take
 # items off a stack and push a value onto the stack. In this case, in a linear scan
 # we can basically build up an expression tree.
@@ -87,9 +91,9 @@ class Instruction(_Instruction):
       fallthrough - True if the instruction can (not must) fall through to the next
                     instruction. Note conditionals are in this category, but
                     returns, raise, and unconditional jumps are not.
-      formatted - if not None, a hacky formatted representation of the
-                  instruction by scanning previous instructions and
-                  using information there and in their formatted fields
+      tos_str - if not None, a string representation of the top of the stack (TOS).
+                This is obtained by scanning previous instructions and
+                using information there and in their tos_str fields
     """
 
     # FIXME: remove has_arg from initialization but keep it as a field.
@@ -206,7 +210,7 @@ class Instruction(_Instruction):
                     if isinstance(new_repr, tuple) and len(new_repr) == 2:
                         new_repr, start_offset = new_repr
                     if new_repr:
-                        # Add formatted info to formatted field of instruction.
+                        # Add tos_str info to tos_str field of instruction.
                         # This the last field in instruction.
                         new_instruction = list(instructions[-1])
                         new_instruction[-2] = new_repr
@@ -223,12 +227,15 @@ class Instruction(_Instruction):
             else:
                 # Column: Opcode argument details
                 argval = instructions[-1].argval
-                if instructions[-1].formatted is None or (
-                    argval and argval == instructions[-1].formatted
+                if instructions[-1].tos_str is None or (
+                    self.argrepr is not None
+                    and self.argrepr == instructions[-1].tos_str
                 ):
                     fields.append("(%s)" % argrepr)
                 else:
-                    prefix = "" if argval is None else "(%s) | " % argval
+                    prefix = "" if self.argrepr is None else "(%s) | " % argval
+                    if self.opcode in opc.operator_set:
+                        prefix += "TOS = "
                     fields.append("%s%s" % (prefix, instructions[-1].formatted))
                 pass
             pass
@@ -249,7 +256,10 @@ class Instruction(_Instruction):
                     instructions.append(Instruction(*new_instruction))
                     argval = instructions[-1].argval
                     prefix = "" if argval is None else "(%s) | " % argval
+                    if self.opcode in opc.operator_set:
+                        prefix += "TOS = "
                     fields.append("%s%s" % (prefix, new_repr))
+
             pass
 
         return " ".join(fields).rstrip()

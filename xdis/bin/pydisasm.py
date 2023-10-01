@@ -38,6 +38,7 @@ else:
 )
 @click.option(
     "--show-source/--no-show-source",
+    "-S",
     help="Intersperse Python source text from linecache if available.",
 )
 @click.version_option(version=__version__)
