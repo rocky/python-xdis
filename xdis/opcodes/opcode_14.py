@@ -32,8 +32,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     update_pj2,
     varargs_op,
 )
-from xdis.opcodes.format import format_extended_arg
-from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
+from xdis.opcodes.opcode_1x import opcode_extended_fmt_base1x, update_arg_fmt_base1x
 
 version_tuple = (1, 4)
 python_implementation = "CPython"
@@ -73,8 +72,8 @@ def findlinestarts(co, dup_lines=False):
         pass
 
 
-opcode_arg_fmt = update_arg_fmt_base2x.copy()
-opcode_extended_fmt = opcode_extended_fmt_base2x.copy()
+opcode_arg_fmt = update_arg_fmt_base1x.copy()
+opcode_extended_fmt = opcode_extended_fmt_base1x.copy()
 
 update_pj2(globals(), loc)
 finalize_opcodes(loc)

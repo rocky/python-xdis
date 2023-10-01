@@ -44,7 +44,7 @@ def dump_compile(codeobject, filename, timestamp, magic):
     codeobject: code object
     filefile: bytecode file to write
     timestamp: timestamp to put in file
-    magic: Pyton bytecode magic
+    magic: Python bytecode magic
     """
     # Atomically write the pyc/pyo file.  Issue #13146.
     # id() is used to generate a pseudo-random filename.

@@ -130,7 +130,7 @@ def disco(
     show_source=False,
 ):
     """
-    diassembles and deparses a given code block 'co'
+    disassembles and deparses a given code block 'co'
     """
 
     assert iscode(co)

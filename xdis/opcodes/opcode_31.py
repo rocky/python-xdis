@@ -39,8 +39,8 @@ def_op(loc, "DUP_TOPX",      99, -1, 2)  # number of items to duplicate
 def_op(loc, "EXTENDED_ARG", 143)
 # fmt: on
 
-opcode_arg_fmt = opcode_arg_fmt31 = opcode_arg_fmt33
-opcode_extended_fmt = opcode_extended_fmt31 = opcode_extended_fmt33
+opcode_arg_fmt = opcode_arg_fmt31 = opcode_arg_fmt33.copy()
+opcode_extended_fmt = opcode_extended_fmt31 = opcode_extended_fmt33.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

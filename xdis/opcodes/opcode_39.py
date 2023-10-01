@@ -30,7 +30,7 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.format import extended_format_binary_op
+from xdis.opcodes.format.extended import extended_format_binary_op
 from xdis.opcodes.opcode_38 import opcode_arg_fmt38, opcode_extended_fmt38
 
 version_tuple = (3, 9)

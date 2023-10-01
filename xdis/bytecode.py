@@ -102,7 +102,7 @@ def get_const_info(const_index, const_list):
     return argval, repr(argval)
 
 
-# For compatiablity
+# For compatibility
 _get_const_info = get_const_info
 
 
@@ -127,7 +127,7 @@ def get_name_info(name_index, name_list):
     return argval, argrepr
 
 
-# For compatiablity
+# For compatibility
 _get_name_info = get_name_info
 
 
@@ -302,6 +302,7 @@ def get_instructions_bytes(
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
                 optype = "vargs"
+                # argrepr = argval
             if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
         elif python_36:
@@ -325,7 +326,7 @@ def get_instructions_bytes(
             starts_line,
             is_jump_target,
             extended_arg_count != 0,
-            formatted=None,
+            tos_str=None,
             start_offset=start_offset,
         )
         # fallthrough)
@@ -535,7 +536,7 @@ class Bytecode(object):
                     starts_line=set_lineno_number,  # this is the only field that changes
                     is_jump_target=instr.is_jump_target,
                     has_extended_arg=instr.has_extended_arg,
-                    formatted=None,
+                    tos_str=None,
                     start_offset=None,
                 )
             last_was_set_lineno = False

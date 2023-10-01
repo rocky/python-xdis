@@ -19,7 +19,6 @@ limited by, and somewhat compatible with the corresponding
 Python opcode.py structures
 """
 
-import sys
 from copy import deepcopy
 
 from xdis import wordcode
@@ -41,7 +40,40 @@ cmp_op = (
     "BAD",
 )
 
+# opcodes that perform a binary operator of the top two stack entries
+binaryop = set([])
+
+hascompare = []
+hascondition = []  # conditional operator; has jump offset
+hasconst = []
+hasfree = []
+hasjabs = []
+hasjrel = []
+haslocal = []
+hasname = []
+hasnargs = []  # For function-like calls
+hasstore = []  # Some sort of store operation
+hasvargs = []  # Similar but for operators BUILD_xxx
+nofollow = []  # Instruction doesn't fall to the next opcode
+
+nullaryop = set([])  # Instruction do not consume a stack entry
+
+# opmap[opcode_name] => opcode_number
+opmap = {}
+
+# opcode[i] => opcode name
+opname = [""] * 256
+
+# oppush[op] => number of stack entries pushed
+oppush = [0] * 256
+
+# oppop[op] => number of stack entries popped
+oppop = [0] * 256
+
+# opcodes that perform a unary operation of the top stack entry
+unaryop = set()
 # Opcodes greater than 90 take an instruction operand or "argument"
+
 # as opcode.py likes to call it.
 HAVE_ARGUMENT = 90
 
@@ -50,7 +82,7 @@ binaryop
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
-nofollow unaryop
+nofollow nullaryop unaryop
 """.split()
 
 
@@ -61,15 +93,13 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     for the module is passed.
     """
 
-    if version_tuple is None:
-        version_tuple = sys.version_info[:2]
-    if version_tuple:
+    if version_tuple is not None:
         loc["python_version"] = version_tuple
     loc["is_pypy"] = is_pypy
     loc["cmp_op"] = cmp_op
     loc["HAVE_ARGUMENT"] = HAVE_ARGUMENT
     loc["findlinestarts"] = findlinestarts
-    if version_tuple <= (3, 5):
+    if version_tuple is None or version_tuple <= (3, 5):
         loc["findlabels"] = findlabels
         loc["get_jump_targets"] = findlabels
         loc["get_jump_target_maps"] = get_jump_target_maps
@@ -78,22 +108,46 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["get_jump_targets"] = wordcode.findlabels
         loc["get_jump_target_maps"] = wordcode.get_jump_target_maps
 
-    loc["opmap"] = deepcopy(from_mod.opmap)
-    loc["opname"] = deepcopy(from_mod.opname)
-
-    for field in fields2copy:
-        loc[field] = list(getattr(from_mod, field))
+    if from_mod is not None:
+        loc["opmap"] = deepcopy(from_mod.opmap)
+        loc["opname"] = deepcopy(from_mod.opname)
+        for field in fields2copy:
+            loc[field] = getattr(from_mod, field).copy()
+        pass
+    else:
+        # FIXME: DRY with above
+        loc["binaryop"] = set([])
+        loc["hascompare"] = []
+        loc["hascondition"] = []
+        loc["hasconst"] = []
+        loc["hasfree"] = []
+        loc["hasjabs"] = []
+        loc["hasjrel"] = []
+        loc["haslocal"] = []
+        loc["hasname"] = []
+        loc["hasnargs"] = []
+        loc["hasstore"] = []
+        loc["hasvargs"] = []
+        loc["nofollow"] = []
+        loc["nullaryop"] = set([])
+        loc["opmap"] = {}
+        loc["opname"] = [""] * 256
+        for op in range(256):
+            loc["opname"][op] = "<%r>" % (op,)
+        loc["oppop"] = [0] * 256
+        loc["oppush"] = [0] * 256
+        loc["unaryop"] = set([])
 
 
 def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
-    loc["binaryop"].append(opcode)
+    loc["binaryop"].add(opcode)
     def_op(loc, name, opcode, pop, push)
 
 
 def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
     def_op(loc, name, opcode, pop, push)
     loc["hascompare"].append(opcode)
-    loc["binaryop"].append(opcode)
+    loc["binaryop"].add(opcode)
 
 
 def conditional_op(loc: dict, name: str, opcode: int):
@@ -103,6 +157,7 @@ def conditional_op(loc: dict, name: str, opcode: int):
 def const_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
     def_op(loc, name, opcode, pop, push)
     loc["hasconst"].append(opcode)
+    loc["nullaryop"].add(opcode)
 
 
 def def_op(
@@ -148,14 +203,16 @@ def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=Tru
         loc["hascondition"].append(opcode)
 
 
-def local_op(loc, name, op, pop=0, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["haslocal"].append(op)
+def local_op(loc, name, opcode: int, pop=0, push=1):
+    def_op(loc, name, opcode, pop, push)
+    loc["haslocal"].append(opcode)
+    loc["nullaryop"].add(opcode)
 
 
-def name_op(loc, op_name, op_code, pop=-2, push=-2):
-    def_op(loc, op_name, op_code, pop, push)
-    loc["hasname"].append(op_code)
+def name_op(loc, op_name, opcode: int, pop=-2, push=-2):
+    def_op(loc, op_name, opcode, pop, push)
+    loc["hasname"].append(opcode)
+    loc["nullaryop"].add(opcode)
 
 
 def nargs_op(loc, name, op, pop=-2, push=-2, fallthrough=True):
@@ -229,8 +286,10 @@ def rm_op(loc, name, op):
 def store_op(loc, name, op, pop=0, push=1, is_type="def"):
     if is_type == "name":
         name_op(loc, name, op, pop, push)
+        loc["nullaryop"].remove(op)
     elif is_type == "local":
         local_op(loc, name, op, pop, push)
+        loc["nullaryop"].remove(op)
     elif is_type == "free":
         free_op(loc, name, op, pop, push)
     else:
@@ -240,7 +299,7 @@ def store_op(loc, name, op, pop=0, push=1, is_type="def"):
 
 
 def unary_op(loc, name: str, op, pop=1, push=1):
-    loc["unaryop"].append(op)
+    loc["unaryop"].add(op)
     def_op(loc, name, op, pop, push)
 
 
@@ -276,6 +335,13 @@ def finalize_opcodes(loc):
         loc[op] = loc["opmap"][op]
     loc["JUMP_OPs"] = frozenset(loc["hasjrel"] + loc["hasjabs"])
     loc["NOFOLLOW"] = frozenset(loc["nofollow"])
+    loc["operator_set"] = frozenset(
+        loc["nullaryop"]
+        | loc["unaryop"]
+        | loc["binaryop"]
+        | set([op for op in loc["hasnargs"] if op not in loc["nofollow"]])
+        | set([op for op in loc["hasvargs"] if loc["oppush"][op] == 1])
+    )
     opcode_check(loc)
     return
 
@@ -309,13 +375,15 @@ def update_sets(loc):
     loc["FREE_OPS"] = frozenset(loc["hasfree"])
     loc["JREL_OPS"] = frozenset(loc["hasjrel"])
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
-    if loc["python_version"] < (3, 11):
+
+    python_version = loc.get("python_version")
+    if python_version and python_version < (3, 11):
         loc["JUMP_UNCONDITONAL"] = frozenset(
             [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
         )
     else:
         loc["JUMP_UNCONDITONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
-    if PYTHON_VERSION_TRIPLE < (3, 8, 0) and loc["python_version"] < (3, 8):
+    if PYTHON_VERSION_TRIPLE < (3, 8, 0) and python_version and python_version < (3, 8):
         loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
         loc["LOOP_OPS"] = frozenset()

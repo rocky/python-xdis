@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2021 by Rocky Bernstein
+# (C) Copyright 2017-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -20,7 +20,8 @@ from copy import deepcopy
 from xdis.codetype.code15 import Code15, Code15FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
-# If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
+# If there is a list of types, then any will work, but the 1st one is
+# the correct one for types.CodeType.
 Code2FieldTypes = deepcopy(Code15FieldTypes)
 Code2FieldTypes.update(
     {

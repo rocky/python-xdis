@@ -31,7 +31,6 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.format import resolved_attrs
 from xdis.opcodes.opcode_36 import opcode_arg_fmt36, opcode_extended_fmt36
 
 version_tuple = (3, 7)
@@ -108,13 +107,19 @@ def extended_format_RAISE_VARARGS(opc, instructions):
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval
+    start_offset = raise_inst.start_offset
     if argc == 0:
-        return "reraise"
+        return "reraise", start_offset
     elif argc == 1:
-        instance_arg = resolved_attrs(instructions[1:])
-        if instance_arg:
-            return "instance_arg"
-    return format_RAISE_VARARGS(raise_inst.argval)
+        exception_name_inst = instructions[1]
+        start_offset = exception_name_inst.start_offset
+        exception_name = (
+            exception_name_inst.tos_str if exception_name_inst.tos_str
+            else exception_name_inst.argrepr
+        )
+        if exception_name is not None:
+            return "raise %s()" % exception_name, start_offset
+    return format_RAISE_VARARGS(raise_inst.argval), start_offset
 
 def format_RAISE_VARARGS(argc):
     assert 0 <= argc <= 2

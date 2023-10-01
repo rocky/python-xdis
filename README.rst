@@ -18,7 +18,11 @@ different versions?
 That's what this package is for. It can "marshal load" Python
 bytecodes from different versions of Python. The command-line routine
 *pydisasm* will show disassembly output using the most modern Python
-disassembly conventions.
+disassembly conventions in a variety of user-specified formats.  Some
+of these formats like `extended` and `extended-format` are the most
+advanced of any Python disassembler I know of because they can show
+expression-tree on operarators. See the [Disasembler
+Example][#disasembler-example] below.
 
 Also, if you need to modify and write bytecode, the routines here can
 be of help. There are routines to pack and unpack the read-only tuples
@@ -71,13 +75,15 @@ The cross-version disassembler that is packaged here, can produce
 assembly listing that are superior to those typically found in
 Python's dis module. Here is an example::
 
-    pydisasm --show-source -F extended-bytes bytecode_3.10/pydisasm-example.pyc
+    pydisasm --show-source -F extended bytecode_3.8/pydisasm-example.pyc
+    byte-compiling simple_source/pydisasm-example.py to bytecode_3.8/pydisasm-example.py.pyc
+    /src/external-vcs/github/rocky/python-xdis/test
     # pydisasm version 6.1.0.dev0
-    # Python bytecode 3.10.0 (3439)
-    # Disassembled from Python 3.9.17 (main, Jun 21 2023, 08:24:02)
+    # Python bytecode 3.8.0 (3413)
+    # Disassembled from Python 3.8.17 (default, Jun 21 2023, 08:20:16)
     # [GCC 12.2.0]
-    # Timestamp in code: 1692566016 (2023-08-20 17:13:36)
-    # Source code size mod 2**32: 264 bytes
+    # Timestamp in code: 1693155156 (2023-08-27 12:52:36)
+    # Source code size mod 2**32: 320 bytes
     # Method Name:       <module>
     # Filename:          simple_source/pydisasm-example.py
     # Argument count:    0
@@ -86,83 +92,93 @@ Python's dis module. Here is an example::
     # Number of locals:  0
     # Stack size:        3
     # Flags:             0x00000040 (NOFREE)
-    # First Line:        1
+    # First Line:        4
     # Constants:
     #    0: 0
     #    1: None
-    #    2: 1
-    #    3: (2, 4)
-    #    4: 'Is small power of two'
+    #    2: ('version_info',)
+    #    3: 1
+    #    4: (2, 4)
+    #    5: 'Is small power of two'
     # Names:
     #    0: sys
-    #    1: print
-    #    2: version
-    #    3: version_info
-    #    4: major
-    #    5: power_of_two
-                 # """An example to show off Python's extended disassembly.
-      1:           0 |09 00| NOP
-
-                 # """An example to show off Python's extended disassembly.
-      1:           2 |64 00| LOAD_CONST           (0)
-                   4 |64 01| LOAD_CONST           (None)
-                   6 |6c 00| IMPORT_NAME          (sys)
-                   8 |5a 00| STORE_NAME           (sys)
-
+    #    1: version_info
+    #    2: print
+    #    3: version
+    #    4: len
+    #    5: major
+    #    6: power_of_two
                  # import sys
-      4:          10 |65 01| LOAD_NAME            (print)
-                  12 |65 00| LOAD_NAME            (sys)
-                  14 |6a 02| LOAD_ATTR            (sys.version)
-                  16 |83 01| CALL_FUNCTION        (sys: 1 positional argument)
-                  18 |01 00| POP_TOP
+      4:           0 LOAD_CONST           (0)
+                   2 LOAD_CONST           (None)
+                   4 IMPORT_NAME          (sys)
+                   6 STORE_NAME           (sys) | sys = import(sys)
+
+                 # from sys import version_info
+      5:           8 LOAD_CONST           (0)
+                  10 LOAD_CONST           (('version_info',))
+                  12 IMPORT_NAME          (sys)
+                  14 IMPORT_FROM          (version_info)
+                  16 STORE_NAME           (version_info) | version_info = import(version_info)
+                  18 POP_TOP
 
                  # print(sys.version)
-      5:          20 |65 00| LOAD_NAME            (sys)
-                  22 |6a 03| LOAD_ATTR            (sys.version_info)
-                  24 |64 00| LOAD_CONST           (0)
-                  26 |19 00| BINARY_SUBSCR        (version_info[0])
-                  28 |5a 04| STORE_NAME           (major)
+      7:          20 LOAD_NAME            (print)
+                  22 LOAD_NAME            (sys)
+                  24 LOAD_ATTR            (version) | sys.version
+                  26 CALL_FUNCTION        (1 positional argument) | print(sys.version)
+                  28 POP_TOP
+
+                 # print(len(version_info))
+      8:          30 LOAD_NAME            (print)
+                  32 LOAD_NAME            (len)
+                  34 LOAD_NAME            (version_info)
+                  36 CALL_FUNCTION        (1 positional argument) | len(version_info)
+                  38 CALL_FUNCTION        (1 positional argument) | print(len(version_info))
+                  40 POP_TOP
 
                  # major = sys.version_info[0]
-      6:          30 |65 04| LOAD_NAME            (major)
-                  32 |65 04| LOAD_NAME            (major)
-                  34 |64 02| LOAD_CONST           (1)
-                  36 |18 00| BINARY_SUBTRACT      (major - 1)
-                  38 |40 00| BINARY_AND           (... & major - 1)
-                  40 |5a 05| STORE_NAME           (power_of_two)
+      9:          42 LOAD_NAME            (sys)
+                  44 LOAD_ATTR            (version_info) | sys.version_info
+                  46 LOAD_CONST           (0)
+                  48 BINARY_SUBSCR        sys.version_info[0]
+                  50 STORE_NAME           (major) | major = sys.version_info[0]
 
-                 # power_of_two = major & (major -1)
-      7:          42 |65 05| LOAD_NAME            (power_of_two)
-                  44 |64 03| LOAD_CONST           ((2, 4))
-                  46 |76 00| CONTAINS_OP          (power_of_two in (2, 4))
-                  48 |72 1f| POP_JUMP_IF_FALSE    (to 62)
+                 # power_of_two = major & (major - 1)
+     10:          52 LOAD_NAME            (major)
+                  54 LOAD_NAME            (major)
+                  56 LOAD_CONST           (1)
+                  58 BINARY_SUBTRACT      major - 1
+                  60 BINARY_AND           major & (major - 1)
+                  62 STORE_NAME           (power_of_two) | power_of_two = major & (major - 1)
 
                  # if power_of_two in (2, 4):
-      8:          50 |65 01| LOAD_NAME            (print)
-                  52 |64 04| LOAD_CONST           ('Is small power of two')
-                  54 |83 01| CALL_FUNCTION        (print: 1 positional argument)
-                  56 |01 00| POP_TOP
-                  58 |64 01| LOAD_CONST           (None)
-                  60 |53 00| RETURN_VALUE         (return None)
+     11:          64 LOAD_NAME            (power_of_two)
+                  66 LOAD_CONST           ((2, 4))
+                  68 COMPARE_OP           (in) | power_of_two in (2, 4)
+                  70 POP_JUMP_IF_FALSE    (to 80)
 
                  # print("Is small power of two")
-      9:     >>   62 |64 01| LOAD_CONST           (None)
-                  64 |53 00| RETURN_VALUE         (return None)
-
+     12:          72 LOAD_NAME            (print)
+                  74 LOAD_CONST           ('Is small power of two')
+                  76 CALL_FUNCTION        (1 positional argument) | print('Is small power of two')
+                  78 POP_TOP
+             >>   80 LOAD_CONST           (None)
+                  82 RETURN_VALUE         return None
 
 Note in the above that some operand interpretation is done on items that are in the stack.
 For example in ::
 
-              14 |6a 02| LOAD_ATTR            (sys.version)
+              24 LOAD_ATTR            (version) | sys.version
 
-from the instruction see clean that ``sys.version`` is the resolved attribute that is loaded.
+from the instruction see that ``sys.version`` is the resolved attribute that is loaded.
 
 Similarly in::
 
-              46 |76 00| CONTAINS_OP          (power_of_two in (2, 4))
-
+              68 COMPARE_OP           (in) | power_of_two in (2, 4)
 
 we see that we can resolve the two arguments of the ``in`` operation.
+Finally in some ``CALL_FUNCTIONS`` we can figure out the name of the function and arguments passed to it.
 
 
 
