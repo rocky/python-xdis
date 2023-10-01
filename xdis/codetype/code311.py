@@ -22,6 +22,9 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order. It is important to match this
 # with the 3.11 order.
+# "posonlyargcount" is not used, but it is in other Python versions so it
+# has to be included since this structure is used as the Union type
+# for all code types
 Code311FieldNames = """
         co_argcount
         co_posonlyargcount
@@ -38,13 +41,13 @@ Code311FieldNames = """
         co_qualname
         co_firstlineno
         co_lnotab
-        co_exception_table
+        co_exceptiontable
         co_freevars
         co_cellvars
 """
 
 Code311FieldTypes = deepcopy(Code38FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exception_table": bytes})
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
 
 
 class Code311(Code38):
@@ -63,7 +66,6 @@ class Code311(Code38):
     def __init__(
         self,
         co_argcount,
-        co_posonlyargcount,
         co_kwonlyargcount,
         co_nlocals,
         co_stacksize,
@@ -72,18 +74,18 @@ class Code311(Code38):
         co_consts,
         co_names,
         co_varnames,
+        co_freevars,
+        co_cellvars,
         co_filename,
         co_name,
         co_qualname,
         co_firstlineno,
-        co_lnotab,
-        co_exception_table,
-        co_freevars,
-        co_cellvars,
+        co_linetable,
+        co_exceptiontable,
     ):
         super(Code311, self).__init__(
             co_argcount,
-            co_posonlyargcount,
+            0,
             co_kwonlyargcount,
             co_nlocals,
             co_stacksize,
@@ -91,18 +93,16 @@ class Code311(Code38):
             co_code,
             co_consts,
             co_names,
-            co_qualname,
             co_varnames,
             co_filename,
             co_name,
             co_firstlineno,
-            co_lnotab,
-            co_exceptiontable,
+            co_linetable,
             co_freevars,
             co_cellvars,
         )
         self.co_qualname = co_qualname
-        self.co_exception_table = co_exception_table
+        self.co_exceptiontable = co_exceptiontable
         self.fieldtypes = Code311FieldTypes
         if type(self) == Code311:
             self.check()
@@ -123,7 +123,6 @@ class Code311(Code38):
 
         return types.CodeType(
             code.co_argcount,
-            code.co_posonlyargcount,
             code.co_kwonlyargcount,
             code.co_nlocals,
             code.co_stacksize,
@@ -132,12 +131,12 @@ class Code311(Code38):
             code.co_consts,
             code.co_names,
             code.co_varnames,
+            code.co_freevars,
+            code.co_cellvars,
             code.co_filename,
             code.co_name,
             code.co_qualname,
             code.co_firstlineno,
             code.co_lnotab,
-            code.co_exception_table,
-            code.co_freevars,
-            code.co_cellvars,
+            code.co_exceptiontable,
         )

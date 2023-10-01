@@ -81,7 +81,6 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
         else:  # version tuple >= 3, 11
             return Code311(
                 code.co_argcount,
-                code.co_posonlyargcount,  # Not in < 3.8
                 code.co_kwonlyargcount,
                 code.co_nlocals,
                 code.co_stacksize,
@@ -90,14 +89,14 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 code.co_consts,
                 code.co_names,
                 code.co_varnames,
+                code.co_freevars,
+                code.co_cellvars,
                 code.co_filename,
                 code.co_name,
                 code.co_qualname,
                 code.co_firstlineno,
                 code.co_lnotab,
                 code.co_exceptiontable,
-                code.co_freevars,
-                code.co_cellvars,
             )
     elif version_tuple > (2, 0):
         # 2.0 .. 2.7
@@ -187,7 +186,7 @@ CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 # default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
     co_argcount,
-    co_posonlyargcount: Optional[int] = -1,  # 3.8+
+    co_posonlyargcount: Optional[int] = -1,  # 3.8 .. 3.10
     co_kwonlyargcount: Optional[int] = -1,  # 3.0+
     co_nlocals=None,
     co_stacksize: Optional[int] = -1,  # 1.5+
@@ -195,35 +194,37 @@ def to_portable(
     co_code=None,  # 3.0+ this type changes from <str> to <bytes>
     co_consts=None,
     co_names=None,
-    co_qualname=None,
     co_varnames=None,
     co_filename=None,
     co_name=None,
+    co_qualname=None,
     co_firstlineno=-1,
     co_lnotab="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
+    # In 3.11 it is different
     co_freevars=(None,),  # 2.0+
     co_cellvars=(None,),  # 2.0+
+    co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
 ):
     code = CodeTypeUnion(
-        co_argcount,
-        co_posonlyargcount,
-        co_kwonlyargcount,
-        co_nlocals,
-        co_stacksize,
-        co_flags,
-        co_code,
-        co_consts,
-        co_names,
-        co_qualname,
-        co_varnames,
-        co_filename,
-        co_name,
-        co_qualname,
-        co_firstlineno,
-        co_lnotab,
-        co_freevars,
-        co_cellvars,
+        co_argcount=co_argcount,
+        co_posonlyargcount=co_posonlyargcount,
+        co_kwonlyargcount=co_kwonlyargcount,
+        co_nlocals=co_nlocals,
+        co_stacksize=co_stacksize,
+        co_flags=co_flags,
+        co_code=co_code,
+        co_consts=co_consts,
+        co_names=co_names,
+        co_varnames=co_varnames,
+        co_filename=co_filename,
+        co_name=co_name,
+        co_qualname=co_qualname,
+        co_firstlineno=co_firstlineno,
+        co_lnotab=co_lnotab,
+        co_freevars=co_freevars,
+        co_cellvars=co_cellvars,
+        co_exceptiontable=co_exceptiontable,
     )
     return codeType2Portable(code, version_triple)
 
