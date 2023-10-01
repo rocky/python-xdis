@@ -16,8 +16,6 @@
 """
 Routines for formatting opcodes.
 """
-from typing import Optional, Tuple
-
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))
@@ -44,7 +42,7 @@ def format_MAKE_FUNCTION_10_27(argc: int) -> str:
     Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
     shows that the change was really made in Python 3.0 or so.
     """
-    return f"{argc} default parameters"
+    return "%s default parameters" % argc
 
 
 # Up until 3.7

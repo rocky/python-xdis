@@ -20,8 +20,6 @@ This is like Python 3.7's opcode.py with some classification
 of stack usage and information for formatting instructions.
 """
 
-from typing import Optional, Tuple
-
 import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
     def_op,
@@ -105,7 +103,7 @@ nargs_op(loc, "CALL_METHOD",       161, -2,  1)
 format_MAKE_FUNCTION = opcode_36.format_MAKE_FUNCTION
 format_value_flags = opcode_36.format_value_flags
 
-def extended_format_RAISE_VARARGS(opc, instructions) -> Tuple[Optional[str], int]:
+def extended_format_RAISE_VARARGS(opc, instructions):
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval
@@ -120,7 +118,7 @@ def extended_format_RAISE_VARARGS(opc, instructions) -> Tuple[Optional[str], int
             else exception_name_inst.argrepr
         )
         if exception_name is not None:
-            return f"raise {exception_name}()", start_offset
+            return "raise %s()" % exception_name, start_offset
     return format_RAISE_VARARGS(raise_inst.argval), start_offset
 
 def format_RAISE_VARARGS(argc):

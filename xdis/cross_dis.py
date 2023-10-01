@@ -18,7 +18,6 @@
 # However, it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
-from typing import List
 from xdis.util import (
     COMPILER_FLAG_NAMES,
     PYPY_COMPILER_FLAG_NAMES,
@@ -292,7 +291,7 @@ def format_code_info(co, version_tuple, name=None, is_pypy=False):
 def format_exception_table(bytecode, version_tuple) -> str:
     if version_tuple < (3, 11) or not hasattr(bytecode, "exception_entries"):
         return ""
-    lines: List[str] = ["ExceptionTable:"]
+    lines = ["ExceptionTable:"]
     for entry in bytecode.exception_entries:
         lasti = " lasti" if entry.lasti else ""
         end = entry.end - 2

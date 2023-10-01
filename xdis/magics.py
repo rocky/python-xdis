@@ -76,7 +76,7 @@ def magic2int(magic: bytes) -> int:
     return struct.unpack("<Hcc", magic)[0]
 
 
-def __by_version(magic_versions: Dict[bytes, str]) -> dict:
+def __by_version(magic_versions: dict) -> dict:
     for m, version in list(magic_versions.items()):
         if m not in by_magic:
             by_magic[m] = {version}
