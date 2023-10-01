@@ -268,7 +268,7 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
     arg_count = call_inst.argval
     s = ""
 
-    arglist, arg_count, i = get_arglist(instructions, arg_count)
+    arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
 
     if arg_count != 0:
         return "", None

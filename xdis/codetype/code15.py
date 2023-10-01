@@ -88,9 +88,10 @@ class Code15(Code13):
         for i in range(0, len(self.co_lnotab), 2):
             offset_diff = self.co_lnotab[i]
             line_number_diff = self.co_lnotab[i + 1]
-            if not isinstance(offset_diff, int):
+            if isinstance(offset_diff, int):
                 offset_diff = ord(offset_diff)
-                line_number_diff = ord(line_number_diff)
+                if isinstance(line_number_diff, str):
+                    line_number_diff = ord(line_number_diff)
 
             assert offset_diff < 256
             if offset_diff == 255:
