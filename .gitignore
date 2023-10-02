@@ -1,5 +1,5 @@
-*.class
 *.DS_Store
+*.class
 *.egg
 *.iws
 *.pyc
@@ -37,6 +37,7 @@
 /nose-*.egg
 /out/
 /pytest/**/*.got
+/python-xdis.code-workspace
 /tmp
 /xdis.egg-info
 __pycache__

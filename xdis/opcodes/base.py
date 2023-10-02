@@ -40,15 +40,49 @@ cmp_op = (
     "BAD",
 )
 
+# opcodes that perform a binary operator of the top two stack entries
+binaryop = set([])
+
+hascompare = []
+hascondition = []  # conditional operator; has jump offset
+hasconst = []
+hasfree = []
+hasjabs = []
+hasjrel = []
+haslocal = []
+hasname = []
+hasnargs = []  # For function-like calls
+hasstore = []  # Some sort of store operation
+hasvargs = []  # Similar but for operators BUILD_xxx
+nofollow = []  # Instruction doesn't fall to the next opcode
+
+nullaryop = set([])  # Instruction do not consume a stack entry
+
+# opmap[opcode_name] => opcode_number
+opmap = {}
+
+# opcode[i] => opcode name
+opname = [""] * 256
+
+# oppush[op] => number of stack entries pushed
+oppush = [0] * 256
+
+# oppop[op] => number of stack entries popped
+oppop = [0] * 256
+
+# opcodes that perform a unary operation of the top stack entry
+unaryop = set()
 # Opcodes greater than 90 take an instruction operand or "argument"
+
 # as opcode.py likes to call it.
 HAVE_ARGUMENT = 90
 
 fields2copy = """
+binaryop
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
-nofollow
+nofollow nullaryop unaryop
 """.split()
 
 
@@ -59,13 +93,13 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     for the module is passed.
     """
 
-    if version_tuple:
+    if version_tuple is not None:
         loc["python_version"] = version_tuple
     loc["is_pypy"] = is_pypy
     loc["cmp_op"] = cmp_op
     loc["HAVE_ARGUMENT"] = HAVE_ARGUMENT
     loc["findlinestarts"] = findlinestarts
-    if version_tuple <= (3, 5):
+    if version_tuple is None or version_tuple <= (3, 5):
         loc["findlabels"] = findlabels
         loc["get_jump_targets"] = findlabels
         loc["get_jump_target_maps"] = get_jump_target_maps
@@ -74,28 +108,66 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["get_jump_targets"] = wordcode.findlabels
         loc["get_jump_target_maps"] = wordcode.get_jump_target_maps
 
-    loc["opmap"] = deepcopy(from_mod.opmap)
-    loc["opname"] = deepcopy(from_mod.opname)
+    if from_mod is not None:
+        loc["opmap"] = deepcopy(from_mod.opmap)
+        loc["opname"] = deepcopy(from_mod.opname)
+        for field in fields2copy:
+            loc[field] = getattr(from_mod, field).copy()
+        pass
+    else:
+        # FIXME: DRY with above
+        loc["binaryop"] = set([])
+        loc["hascompare"] = []
+        loc["hascondition"] = []
+        loc["hasconst"] = []
+        loc["hasfree"] = []
+        loc["hasjabs"] = []
+        loc["hasjrel"] = []
+        loc["haslocal"] = []
+        loc["hasname"] = []
+        loc["hasnargs"] = []
+        loc["hasstore"] = []
+        loc["hasvargs"] = []
+        loc["nofollow"] = []
+        loc["nullaryop"] = set([])
+        loc["opmap"] = {}
+        loc["opname"] = [""] * 256
+        for op in range(256):
+            loc["opname"][op] = "<%r>" % (op,)
+        loc["oppop"] = [0] * 256
+        loc["oppush"] = [0] * 256
+        loc["unaryop"] = set([])
 
-    for field in fields2copy:
-        loc[field] = list(getattr(from_mod, field))
+
+def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+    loc["binaryop"].add(opcode)
+    def_op(loc, name, opcode, pop, push)
 
 
-def compare_op(loc, name, op, pop=2, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hascompare"].append(op)
+def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hascompare"].append(opcode)
+    loc["binaryop"].add(opcode)
 
 
-def conditional_op(loc, name, op):
-    loc["hascompare"].append(op)
+def conditional_op(loc: dict, name: str, opcode: int):
+    loc["hascompare"].append(opcode)
 
 
-def const_op(loc, name, op, pop=0, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hasconst"].append(op)
+def const_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasconst"].append(opcode)
+    loc["nullaryop"].add(opcode)
 
 
-def def_op(loc, op_name, opcode, pop=-2, push=-2, fallthrough=True):
+def def_op(
+    loc: dict,
+    op_name: str,
+    opcode: int,
+    pop: int = -2,
+    push: int = -2,
+    fallthrough: bool = True,
+):
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
     loc["oppush"][opcode] = push
@@ -104,38 +176,70 @@ def def_op(loc, op_name, opcode, pop=-2, push=-2, fallthrough=True):
         loc["nofollow"].append(opcode)
 
 
-def free_op(loc, name, op, pop=0, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["hasfree"].append(op)
+def free_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasfree"].append(opcode)
 
 
-def jabs_op(loc, name, op, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(loc, name, op, pop, push, fallthrough=fallthrough)
-    loc["hasjabs"].append(op)
+def jabs_op(
+    loc: dict,
+    name: str,
+    opcode: int,
+    pop: int = 0,
+    push: int = 0,
+    conditional: bool = False,
+    fallthrough: bool = True,
+):
+    def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
+    loc["hasjabs"].append(opcode)
     if conditional:
-        loc["hascondition"].append(op)
+        loc["hascondition"].append(opcode)
 
 
-def jrel_op(loc, name, op, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(loc, name, op, pop, push)
-    loc["hasjrel"].append(op)
+def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=True):
+    def_op(loc, name, opcode, pop, push)
+    loc["hasjrel"].append(opcode)
     if conditional:
-        loc["hascondition"].append(op)
+        loc["hascondition"].append(opcode)
 
 
-def local_op(loc, name, op, pop=0, push=1):
-    def_op(loc, name, op, pop, push)
-    loc["haslocal"].append(op)
+def local_op(loc, name, opcode: int, pop=0, push=1):
+    def_op(loc, name, opcode, pop, push)
+    loc["haslocal"].append(opcode)
+    loc["nullaryop"].add(opcode)
 
 
-def name_op(loc, op_name, op_code, pop=-2, push=-2):
-    def_op(loc, op_name, op_code, pop, push)
-    loc["hasname"].append(op_code)
+def name_op(loc, op_name, opcode: int, pop=-2, push=-2):
+    def_op(loc, op_name, opcode, pop, push)
+    loc["hasname"].append(opcode)
+    loc["nullaryop"].add(opcode)
 
 
 def nargs_op(loc, name, op, pop=-2, push=-2, fallthrough=True):
     def_op(loc, name, op, pop, push, fallthrough=fallthrough)
     loc["hasnargs"].append(op)
+
+
+def opcode_check(loc):
+    """When the version of Python we are running happens
+    to have the same opcode set as the opcode we are
+    importing, we perform checks to make sure our opcode
+    set matches exactly.
+    """
+    if (PYTHON_VERSION_TRIPLE[:2] == loc["python_version"][:2]) and IS_PYPY == loc[
+        "is_pypy"
+    ]:
+        try:
+            import dis
+
+            opmap = fix_opcode_names(dis.opmap)
+            # print(set(opmap.items()) - set(loc['opmap'].items()))
+            # print(set(loc['opmap'].items()) - set(opmap.items()))
+
+            assert all(item in opmap.items() for item in loc["opmap"].items())
+            assert all(item in loc["opmap"].items() for item in opmap.items())
+        except Exception:
+            pass
 
 
 def rm_op(loc, name, op):
@@ -182,14 +286,21 @@ def rm_op(loc, name, op):
 def store_op(loc, name, op, pop=0, push=1, is_type="def"):
     if is_type == "name":
         name_op(loc, name, op, pop, push)
+        loc["nullaryop"].remove(op)
     elif is_type == "local":
         local_op(loc, name, op, pop, push)
+        loc["nullaryop"].remove(op)
     elif is_type == "free":
         free_op(loc, name, op, pop, push)
     else:
         assert is_type == "def"
         def_op(loc, name, op, pop, push)
     loc["hasstore"].append(op)
+
+
+def unary_op(loc, name: str, op, pop=1, push=1):
+    loc["unaryop"].add(op)
+    def_op(loc, name, op, pop, push)
 
 
 # This is not in Python. The operand indicates how
@@ -224,6 +335,13 @@ def finalize_opcodes(loc):
         loc[op] = loc["opmap"][op]
     loc["JUMP_OPs"] = frozenset(loc["hasjrel"] + loc["hasjabs"])
     loc["NOFOLLOW"] = frozenset(loc["nofollow"])
+    loc["operator_set"] = frozenset(
+        loc["nullaryop"]
+        | loc["unaryop"]
+        | loc["binaryop"]
+        | set([op for op in loc["hasnargs"] if op not in loc["nofollow"]])
+        | set([op for op in loc["hasvargs"] if loc["oppush"][op] == 1])
+    )
     opcode_check(loc)
     return
 
@@ -257,13 +375,15 @@ def update_sets(loc):
     loc["FREE_OPS"] = frozenset(loc["hasfree"])
     loc["JREL_OPS"] = frozenset(loc["hasjrel"])
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
-    if loc["python_version"] < (3, 11):
+
+    python_version = loc.get("python_version")
+    if python_version and python_version < (3, 11):
         loc["JUMP_UNCONDITONAL"] = frozenset(
             [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
         )
     else:
         loc["JUMP_UNCONDITONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
-    if PYTHON_VERSION_TRIPLE < (3, 8, 0) and loc["python_version"] < (3, 8):
+    if PYTHON_VERSION_TRIPLE < (3, 8, 0) and python_version and python_version < (3, 8):
         loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
         loc["LOOP_OPS"] = frozenset()
@@ -276,192 +396,7 @@ def update_sets(loc):
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
     loc["VARGS_OPS"] = frozenset(loc["hasvargs"])
     loc["STORE_OPS"] = frozenset(loc["hasstore"])
-
-
-def extended_format_CALL_FUNCTION(opc, instructions):
-    """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
-    `instructions` to see if we can find a method name.  If not we'll
-    return None.
-
-    """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
-    call_function_inst = instructions[0]
-    assert call_function_inst.opname == "CALL_FUNCTION"
-    argc = call_function_inst.arg
-    (
-        name_default,
-        pos_args,
-    ) = divmod(argc, 256)
-    function_pos = pos_args + name_default * 2 + 1
-    assert len(instructions) >= function_pos + 1
-    for i, inst in enumerate(instructions[1:]):
-        if i + 1 == function_pos:
-            i += 1
-            break
-        if inst.is_jump_target:
-            i += 1
-            break
-        # Make sure we are in the same basic block
-        # and ... ?
-        opcode = inst.opcode
-        if inst.optype in ("nargs", "vargs"):
-            break
-        if inst.opname == "LOAD_ATTR" or inst.optype != "name":
-            function_pos += (opc.oppop[opcode] - opc.oppush[opcode]) + 1
-        if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
-            break
-        pass
-
-    s = ""
-    if i == function_pos:
-        if instructions[function_pos].opname in (
-            "LOAD_CONST",
-            "LOAD_GLOBAL",
-            "LOAD_ATTR",
-            "LOAD_NAME",
-        ):
-            s = resolved_attrs(instructions[function_pos:])
-            s += ": "
-            pass
-        pass
-    s += format_CALL_FUNCTION_pos_name_encoded(call_function_inst.arg)
-    return s
-
-
-def resolved_attrs(instructions):
-    resolved = []
-    for inst in instructions:
-        name = inst.argrepr
-        if name:
-            if name[0] == "'" and name[-1] == "'":
-                name = name[1:-1]
-        else:
-            name = ""
-        resolved.append(name)
-        if inst.opname != "LOAD_ATTR":
-            break
-    return ".".join(reversed(resolved))
-
-
-def extended_format_ATTR(opc, instructions):
-    if instructions[1].opname in (
-        "LOAD_CONST",
-        "LOAD_GLOBAL",
-        "LOAD_ATTR",
-        "LOAD_NAME",
-    ):
-        return "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr)
-
-
-def extended_format_MAKE_FUNCTION_10_27(opc, instructions) -> str:
-    """
-    instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
-    should have the function or closure name.
-
-    This code works for Python versions up to and including 2.7.
-    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
-    shows that the change was really made in Python 3.0 or so.
-    """
-    # From opcode description: argc indicates the total number of positional and keyword arguments.
-    # Sometimes the function name is in the stack arg positions back.
-    assert len(instructions) >= 2
-    inst = instructions[0]
-    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
-    s = ""
-    code_inst = instructions[1]
-    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += "%s: " % code_inst.argval.co_name
-        pass
-    s += format_MAKE_FUNCTION_10_27(inst.arg)
-    return s
-
-
-def extended_format_RAISE_VARARGS_older(opc, instructions):
-    raise_inst = instructions[0]
-    assert raise_inst.opname == "RAISE_VARARGS"
-    assert len(instructions) >= 1
-    if instructions[1].opname in (
-        "LOAD_CONST",
-        "LOAD_GLOBAL",
-        "LOAD_ATTR",
-        "LOAD_NAME",
-    ):
-        return resolved_attrs(instructions[1:])
-    return format_RAISE_VARARGS_older(raise_inst.argval)
-
-
-def extended_format_RETURN_VALUE(opc, instructions):
-    return_inst = instructions[0]
-    assert return_inst.opname == "RETURN_VALUE"
-    assert len(instructions) >= 1
-    if instructions[1].opname in (
-        "LOAD_CONST",
-        "LOAD_GLOBAL",
-        "LOAD_ATTR",
-        "LOAD_NAME",
-    ):
-        return resolved_attrs(instructions[1:])
-    return None
-
-
-def format_extended_arg(arg):
-    return str(arg * (1 << 16))
-
-
-def format_CALL_FUNCTION_pos_name_encoded(argc):
-    """Encoded positional and named args. Used to
-    up to about 3.6 where wordcodes are used and
-    a different encoding occurs. Pypy36 though
-    sticks to this encoded version though."""
-    name_default, pos_args = divmod(argc, 256)
-    return "%d positional, %d named" % (pos_args, name_default)
-
-
-def format_MAKE_FUNCTION_10_27(argc: int) -> str:
-    """
-    ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
-
-    This code works for Python versions up to and including 2.7.
-    Python docs for MAKE_FUNCTION and MAKE_CLOSURE the was changed in 33, but testing
-    shows that the change was really made in Python 3.0 or so.
-    """
-    return "%s default parameters" % argc
-
-
-# Up until 3.7
-def format_RAISE_VARARGS_older(argc):
-    assert 0 <= argc <= 3
-    if argc == 0:
-        return "reraise"
-    elif argc == 1:
-        return "exception"
-    elif argc == 2:
-        return "exception, parameter"
-    elif argc == 3:
-        return "exception, parameter, traceback"
-
-
-def opcode_check(loc):
-    """When the version of Python we are running happens
-    to have the same opcode set as the opcode we are
-    importing, we perform checks to make sure our opcode
-    set matches exactly.
-    """
-    if (PYTHON_VERSION_TRIPLE[:2] == loc["python_version"][:2]) and IS_PYPY == loc[
-        "is_pypy"
-    ]:
-        try:
-            import dis
-
-            opmap = fix_opcode_names(dis.opmap)
-            # print(set(opmap.items()) - set(loc['opmap'].items()))
-            # print(set(loc['opmap'].items()) - set(opmap.items()))
-
-            assert all(item in opmap.items() for item in loc["opmap"].items())
-            assert all(item in loc["opmap"].items() for item in opmap.items())
-        except Exception:
-            pass
+    loc["STORE_OPS"] = frozenset(loc["hasstore"])
 
 
 def dump_opcodes(opmap):

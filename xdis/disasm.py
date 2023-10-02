@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2018, 2020-2021 by Rocky Bernstein
+# Copyright (c) 2016-2018, 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -30,8 +30,9 @@ from collections import deque
 
 import xdis
 from xdis.bytecode import Bytecode
-from xdis.codetype import codeType2Portable, iscode
-from xdis.cross_dis import format_code_info
+from xdis.codetype import codeType2Portable
+from xdis.codetype.base import iscode
+from xdis.cross_dis import format_code_info, format_exception_table
 from xdis.load import check_object_path, load_module
 from xdis.magics import PYTHON_MAGIC_INT
 from xdis.op_imports import op_imports, remap_opcodes
@@ -127,9 +128,10 @@ def disco(
     sip_hash=None,
     asm_format="classic",
     alternate_opmap=None,
+    show_source=False,
 ):
     """
-    diassembles and deparses a given code block 'co'
+    disassembles and deparses a given code block 'co'
     """
 
     assert iscode(co)
@@ -161,12 +163,24 @@ def disco(
     else:
         queue = deque([co])
         disco_loop(
-            opc, version_tuple, queue, real_out, asm_format=asm_format, dup_lines=True
+            opc,
+            version_tuple,
+            queue,
+            real_out,
+            asm_format=asm_format,
+            dup_lines=True,
+            show_source=show_source,
         )
 
 
 def disco_loop(
-    opc, version_tuple, queue, real_out, dup_lines=False, asm_format="classic"
+    opc,
+    version_tuple,
+    queue,
+    real_out,
+    dup_lines=False,
+    asm_format="classic",
+    show_source=False,
 ):
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
@@ -184,7 +198,14 @@ def disco_loop(
             real_out.write("\n" + format_code_info(co, version_tuple) + "\n")
 
         bytecode = Bytecode(co, opc, dup_lines=dup_lines)
-        real_out.write(bytecode.dis(asm_format=asm_format) + "\n")
+        real_out.write(
+            bytecode.dis(asm_format=asm_format, show_source=show_source) + "\n"
+        )
+
+        if version_tuple >= (3, 11):
+            if bytecode.exception_entries not in (None, []):
+                exception_table = format_exception_table(bytecode, version_tuple)
+                real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):
@@ -269,6 +290,7 @@ def disassemble_file(
     asm_format="classic",
     header=False,
     alternate_opmap=None,
+    show_source=False,
 ):
     """
     disassemble Python byte-code file (.pyc)
@@ -335,6 +357,7 @@ def disassemble_file(
             sip_hash=sip_hash,
             asm_format=asm_format,
             alternate_opmap=alternate_opmap,
+            show_source=show_source,
         )
     # print co.co_filename
     return (

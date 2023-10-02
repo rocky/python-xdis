@@ -15,7 +15,7 @@ import xdis.marsh as xmarshal
 
 # FIXME to use codeType2Portable
 # from xdis.codetype import codeType2Portable
-from xdis.codetype import Code2Compat
+from xdis.codetype.code20 import Code2Compat
 from xdis.version_info import PYTHON3
 
 
@@ -44,7 +44,7 @@ def MX(z, y, sum, key, p, e):
 
 def tea_decipher(v, key):
     """
-    Tiny Decryption Algorithm decription (TEA)
+    Tiny Decryption Algorithm description (TEA)
     See https://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm
     """
     DELTA = 0x9E3779B9

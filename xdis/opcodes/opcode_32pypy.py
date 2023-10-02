@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020 by Rocky Bernstein
+# (C) Copyright 2017, 2020, 2023 by Rocky Bernstein
 """
 PYPY 3.2 opcodes
 
@@ -6,9 +6,8 @@ This is a like Python 3.2's opcode.py with some classification
 of stack usage.
 """
 
+import xdis.opcodes.opcode_32 as opcode_32
 from xdis.opcodes.base import (
-    extended_format_ATTR,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
     init_opdata,
     jrel_op,
@@ -17,37 +16,38 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+from xdis.opcodes.format.extended import (
+    extended_format_ATTR,
+    extended_format_RETURN_VALUE,
+)
 
-version = 3.2
 version_tuple = (3, 2)
 python_implementation = "PyPy"
 
-import xdis.opcodes.opcode_32 as opcode_32
-
-l = locals()
-init_opdata(l, opcode_32, version_tuple, is_pypy=True)
+loc = locals()
+init_opdata(loc, opcode_32, version_tuple, is_pypy=True)
 
 ## FIXME: DRY common PYPY opcode additions
 
 # PyPy only
 # ----------
-name_op(l, "LOOKUP_METHOD", 201, 1, 2)
-nargs_op(l, "CALL_METHOD", 202, -1, 1)
-l["hasvargs"].append(202)
+name_op(loc, "LOOKUP_METHOD", 201, 1, 2)
+nargs_op(loc, "CALL_METHOD", 202, -1, 1)
+loc["hasvargs"].append(202)
 
 # Used only in single-mode compilation list-comprehension generators
-varargs_op(l, "BUILD_LIST_FROM_ARG", 203)
+varargs_op(loc, "BUILD_LIST_FROM_ARG", 203)
 
 # Used only in assert statements
-jrel_op(l, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
+jrel_op(loc, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 
 # There are no opcodes to remove or change.
 # If there were, they'd be listed below.
 
 # FIXME remove (fix uncompyle6)
-update_pj3(globals(), l)
+update_pj3(globals(), loc)
 
-finalize_opcodes(l)
+finalize_opcodes(loc)
 
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,

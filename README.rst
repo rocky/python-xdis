@@ -18,7 +18,11 @@ different versions?
 That's what this package is for. It can "marshal load" Python
 bytecodes from different versions of Python. The command-line routine
 *pydisasm* will show disassembly output using the most modern Python
-disassembly conventions.
+disassembly conventions in a variety of user-specified formats.  Some
+of these formats like `extended` and `extended-format` are the most
+advanced of any Python disassembler I know of because they can show
+expression-tree on operarators. See the [Disasembler
+Example][#disasembler-example] below.
 
 Also, if you need to modify and write bytecode, the routines here can
 be of help. There are routines to pack and unpack the read-only tuples
@@ -28,16 +32,16 @@ reduce the tedium in writing a bytecode file.
 
 This package also has an extensive knowledge of Python bytecode magic
 numbers, including Pypy and others, and how to translate from
-`sys.sys_info` major, minor, and release numbers to the corresponding
+``sys.sys_info`` major, minor, and release numbers to the corresponding
 magic value.
 
-So If you want to write a cross-version assembler, or a
+So if you want to write a cross-version assembler, or a
 bytecode-level optimizer this package may also be useful. In addition
-to the kinds of instruction categorization that `dis`` offers, we have
+to the kinds of instruction categorization that ``dis``` offers, we have
 additional categories for things that would be useful in such a
-bytecode optimizer.
+bytecode assembler, optimizer, or decompiler.
 
-The programs here accept bytecodes from Python version 1.0 to 3.10 or
+The programs here accept bytecodes from Python version 1.0 to 3.11 or
 so. The code requires Python 2.4 or later and has been tested on
 Python running lots of Python versions.
 
@@ -51,7 +55,6 @@ To install older versions for from source in git use the branch
 ``python-3.3-to-3.5`` for Python versions from 3.3 to 3.5. The master
 branch handles Python 3.6 and later.
 
-
 Installation
 ------------
 
@@ -64,6 +67,120 @@ The standard Python routine:
 
 A GNU makefile is also provided so ``make install`` (possibly as root or
 sudo) will do the steps above.
+
+Disassembler Example
+--------------------
+
+The cross-version disassembler that is packaged here, can produce
+assembly listing that are superior to those typically found in
+Python's dis module. Here is an example::
+
+    pydisasm --show-source -F extended bytecode_3.8/pydisasm-example.pyc
+    byte-compiling simple_source/pydisasm-example.py to bytecode_3.8/pydisasm-example.py.pyc
+    /src/external-vcs/github/rocky/python-xdis/test
+    # pydisasm version 6.1.0.dev0
+    # Python bytecode 3.8.0 (3413)
+    # Disassembled from Python 3.8.17 (default, Jun 21 2023, 08:20:16)
+    # [GCC 12.2.0]
+    # Timestamp in code: 1693155156 (2023-08-27 12:52:36)
+    # Source code size mod 2**32: 320 bytes
+    # Method Name:       <module>
+    # Filename:          simple_source/pydisasm-example.py
+    # Argument count:    0
+    # Position-only argument count: 0
+    # Keyword-only arguments: 0
+    # Number of locals:  0
+    # Stack size:        3
+    # Flags:             0x00000040 (NOFREE)
+    # First Line:        4
+    # Constants:
+    #    0: 0
+    #    1: None
+    #    2: ('version_info',)
+    #    3: 1
+    #    4: (2, 4)
+    #    5: 'Is small power of two'
+    # Names:
+    #    0: sys
+    #    1: version_info
+    #    2: print
+    #    3: version
+    #    4: len
+    #    5: major
+    #    6: power_of_two
+                 # import sys
+      4:           0 LOAD_CONST           (0)
+                   2 LOAD_CONST           (None)
+                   4 IMPORT_NAME          (sys)
+                   6 STORE_NAME           (sys) | sys = import(sys)
+
+                 # from sys import version_info
+      5:           8 LOAD_CONST           (0)
+                  10 LOAD_CONST           (('version_info',))
+                  12 IMPORT_NAME          (sys)
+                  14 IMPORT_FROM          (version_info)
+                  16 STORE_NAME           (version_info) | version_info = import(version_info)
+                  18 POP_TOP
+
+                 # print(sys.version)
+      7:          20 LOAD_NAME            (print)
+                  22 LOAD_NAME            (sys)
+                  24 LOAD_ATTR            (version) | sys.version
+                  26 CALL_FUNCTION        (1 positional argument) | print(sys.version)
+                  28 POP_TOP
+
+                 # print(len(version_info))
+      8:          30 LOAD_NAME            (print)
+                  32 LOAD_NAME            (len)
+                  34 LOAD_NAME            (version_info)
+                  36 CALL_FUNCTION        (1 positional argument) | len(version_info)
+                  38 CALL_FUNCTION        (1 positional argument) | print(len(version_info))
+                  40 POP_TOP
+
+                 # major = sys.version_info[0]
+      9:          42 LOAD_NAME            (sys)
+                  44 LOAD_ATTR            (version_info) | sys.version_info
+                  46 LOAD_CONST           (0)
+                  48 BINARY_SUBSCR        sys.version_info[0]
+                  50 STORE_NAME           (major) | major = sys.version_info[0]
+
+                 # power_of_two = major & (major - 1)
+     10:          52 LOAD_NAME            (major)
+                  54 LOAD_NAME            (major)
+                  56 LOAD_CONST           (1)
+                  58 BINARY_SUBTRACT      major - 1
+                  60 BINARY_AND           major & (major - 1)
+                  62 STORE_NAME           (power_of_two) | power_of_two = major & (major - 1)
+
+                 # if power_of_two in (2, 4):
+     11:          64 LOAD_NAME            (power_of_two)
+                  66 LOAD_CONST           ((2, 4))
+                  68 COMPARE_OP           (in) | power_of_two in (2, 4)
+                  70 POP_JUMP_IF_FALSE    (to 80)
+
+                 # print("Is small power of two")
+     12:          72 LOAD_NAME            (print)
+                  74 LOAD_CONST           ('Is small power of two')
+                  76 CALL_FUNCTION        (1 positional argument) | print('Is small power of two')
+                  78 POP_TOP
+             >>   80 LOAD_CONST           (None)
+                  82 RETURN_VALUE         return None
+
+Note in the above that some operand interpretation is done on items that are in the stack.
+For example in ::
+
+              24 LOAD_ATTR            (version) | sys.version
+
+from the instruction see that ``sys.version`` is the resolved attribute that is loaded.
+
+Similarly in::
+
+              68 COMPARE_OP           (in) | power_of_two in (2, 4)
+
+we see that we can resolve the two arguments of the ``in`` operation.
+Finally in some ``CALL_FUNCTIONS`` we can figure out the name of the function and arguments passed to it.
+
+
 
 Testing
 -------

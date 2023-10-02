@@ -1,4 +1,4 @@
-# (C) Copyright 2023 by Rocky Bernstein
+# (C) Copyright 2018-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -13,8 +13,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 """
-Bytecode opcode modules with some classification
-of stack usage and information for formatting instructions.
-This covers infortationni the Python stdlib opcodes.py.
+Modules for formatting bytecode assembly
 """

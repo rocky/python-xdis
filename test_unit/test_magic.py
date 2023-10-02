@@ -1,5 +1,5 @@
 import unittest, sys
-from xdis.version_info import PYTHON_VERSION, IS_PYPY, version_tuple_to_str
+from xdis.version_info import PYTHON_VERSION_STR, IS_PYPY, version_tuple_to_str
 import xdis.magics as magics
 
 class TestMagics(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestMagics(unittest.TestCase):
                             (version, magics.magics.keys()))
 
         self.assertEqual(magics.MAGIC, magics.int2magic(magics.magic2int(magics.MAGIC)))
-        lookup = str(PYTHON_VERSION)
+        lookup = PYTHON_VERSION_STR
         if IS_PYPY:
             lookup += 'pypy'
         self.assertTrue(lookup in magics.magics.keys(),
