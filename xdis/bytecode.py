@@ -1,26 +1,8 @@
 #  Copyright (c) 2018-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either version 2
-#  of the License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-"""
-Python bytecode and instruction classes
-Extracted from Python 3 dis module but generalized to
-allow running on Python 2.
-"""
-
-import sys, types
+import sys
+import types
 
 from xdis.cross_dis import (
     format_code_info,
@@ -28,8 +10,14 @@ from xdis.cross_dis import (
     instruction_size,
     op_has_argument,
 )
+from xdis.cross_types import UnicodeForPython3
 from xdis.instruction import Instruction
+from xdis.op_imports import get_opcode_module
+from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
+from xdis.version_info import IS_PYPY
+
+VARIANT = "pypy" if IS_PYPY else None
 
 from StringIO import StringIO
 
@@ -96,7 +84,7 @@ def get_const_info(const_index, const_list):
     return argval, repr(argval)
 
 
-# For compatiablity
+# For compatibility
 _get_const_info = get_const_info
 
 
@@ -121,8 +109,40 @@ def get_name_info(name_index, name_list):
     return argval, argrepr
 
 
-# For compatiablity
+# For compatibility
 _get_name_info = get_name_info
+
+
+_ExceptionTableEntry = collections.namedtuple(
+    "_ExceptionTableEntry", "start end target depth lasti"
+)
+
+
+def _parse_varint(iterator):
+    b = next(iterator)
+    val = b & 63
+    while b & 64:
+        val <<= 6
+        b = next(iterator)
+        val |= b & 63
+    return val
+
+
+def parse_exception_table(exception_table: bytes):
+    iterator = iter(exception_table)
+    entries = []
+    try:
+        while True:
+            start = _parse_varint(iterator) * 2
+            length = _parse_varint(iterator) * 2
+            end = start + length
+            target = _parse_varint(iterator) * 2
+            dl = _parse_varint(iterator)
+            depth = dl >> 1
+            lasti = bool(dl & 1)
+            entries.append(_ExceptionTableEntry(start, end, target, depth, lasti))
+    except StopIteration:
+        return entries
 
 
 def get_instructions_bytes(
@@ -134,6 +154,7 @@ def get_instructions_bytes(
     cells=None,
     linestarts=None,
     line_offset=0,
+    exception_entries=None,
 ):
     """Iterate over the instructions in a bytecode string.
 
@@ -144,6 +165,12 @@ def get_instructions_bytes(
 
     """
     labels = opc.findlabels(bytecode, opc)
+
+    if exception_entries is not None:
+        for start, end, target, _, _ in exception_entries:
+            for i in range(start, end):
+                labels.append(target)
+
     # label_maps = get_jump_target_maps(bytecode, opc)
     extended_arg = 0
 
@@ -161,7 +188,11 @@ def get_instructions_bytes(
     i = 0
     extended_arg_count = 0
     extended_arg = 0
-    extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
+    if hasattr(opc, "EXTENDED_ARG"):
+        extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
+    else:
+        extended_arg_size = 0
+
     while i < n:
         op = code2num(bytecode, i)
 
@@ -206,12 +237,18 @@ def get_instructions_bytes(
             #  available, and argrepr to the string representation of argval.
             #    disassemble_bytes needs the string repr of the
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
+
             argval = arg
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
                 optype = "const"
             elif op in opc.NAME_OPS:
-                argval, argrepr = _get_name_info(arg, names)
+                if opc.version_tuple >= (3, 11) and opc.opname[op] == "LOAD_GLOBAL":
+                    argval, argrepr = _get_name_info(arg >> 1, names)
+                    if arg & 1:
+                        argrepr = "NULL + " + argrepr
+                else:
+                    argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
             elif op in opc.JREL_OPS:
                 argval = i + get_jump_val(arg, opc.python_version)
@@ -232,18 +269,27 @@ def get_instructions_bytes(
                 argval, argrepr = _get_name_info(arg, cells)
                 optype = "free"
             elif op in opc.NARGS_OPS:
+                opname = opc.opname[op]
                 optype = "nargs"
-                if not (
-                    python_36
-                    or opc.opname[op] in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
-                ):
-                    argrepr = "%d positional, %d named" % (
-                        code2num(bytecode, i - 2),
-                        code2num(bytecode, i - 1),
-                    )
+                if python_36 and opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX"):
+                    if opname == "CALL_FUNCTION":
+                        argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
+                    else:
+                        assert opname == "CALL_FUNCTION_EX"
+                        argrepr = format_CALL_FUNCTION_EX(code2num(bytecode, i - 1))
+                else:
+                    if not (
+                        python_36
+                        or opname in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
+                    ):
+                        argrepr = "%d positional, %d named" % (
+                            code2num(bytecode, i - 2),
+                            code2num(bytecode, i - 1),
+                        )
             # This has to come after hasnargs. Some are in both?
             elif op in opc.VARGS_OPS:
                 optype = "vargs"
+                # argrepr = argval
             if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
         elif python_36:
@@ -252,6 +298,8 @@ def get_instructions_bytes(
         opname = opc.opname[op]
         inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
         # fallthrough = op not in opc.nofollow
+        start_offset = offset if opc.oppop[op] == 0 else None
+
         yield Instruction(
             opname,
             op,
@@ -265,6 +313,8 @@ def get_instructions_bytes(
             starts_line,
             is_jump_target,
             extended_arg_count != 0,
+            tos_str=None,
+            start_offset=start_offset,
         )
         # fallthrough)
         if op == opc.EXTENDED_ARG:
@@ -311,6 +361,11 @@ class Bytecode(object):
         self.opnames = opc.opname
         self.current_offset = current_offset
 
+        if opc.version_tuple >= (3, 11) and hasattr(co, "co_exceptiontable"):
+            self.exception_entries = parse_exception_table(co.co_exceptiontable)
+        else:
+            self.exception_entries = None
+
     def __iter__(self):
         co = self.codeobj
         return get_instructions_bytes(
@@ -322,25 +377,31 @@ class Bytecode(object):
             self._cell_names,
             self._linestarts,
             line_offset=self._line_offset,
+            exception_entries=self.exception_entries,
         )
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__.__name__, self._original_object)
 
     @classmethod
-    def from_traceback(cls, tb):
+    def from_traceback(cls, tb, opc=None):
         """Construct a Bytecode from the given traceback"""
+        if opc is None:
+            opc = get_opcode_module(sys.version_info, VARIANT)
         while tb.tb_next:
             tb = tb.tb_next
-        return cls(tb.tb_frame.f_code, current_offset=tb.tb_lasti)
+        return cls(
+            tb.tb_frame.f_code, opc=opc, first_line=None, current_offset=tb.tb_lasti
+        )
 
     def info(self):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version_tuple)
 
-    def dis(self, asm_format="classic"):
+    def dis(self, asm_format="classic", show_source=False):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
+        filename = co.co_filename
         if self.current_offset is not None:
             offset = self.current_offset
         else:
@@ -353,6 +414,14 @@ class Bytecode(object):
             cells = None
             linestarts = None
 
+        first_line_number = co.co_firstlineno if hasattr(co, "co_firstlineno") else None
+
+        if inspect.iscode(co):
+            filename = inspect.getfile(co)
+
+        if isinstance(filename, UnicodeForPython3):
+            filename = str(filename)
+
         self.disassemble_bytes(
             co.co_code,
             varnames=co.co_varnames,
@@ -364,6 +433,10 @@ class Bytecode(object):
             file=output,
             lasti=offset,
             asm_format=asm_format,
+            filename=filename,
+            show_source=show_source,
+            first_line_number=first_line_number,
+            exception_entries=self.exception_entries,
         )
         return output.getvalue()
 
@@ -376,11 +449,11 @@ class Bytecode(object):
                 raise RuntimeError("no last traceback to disassemble")
             while tb.tb_next:
                 tb = tb.tb_next
-        self.disassemble(tb.tb_frame.f_code, tb.tb_lasti)
+        self.disassemble_bytes(tb.tb_frame.f_code, tb.tb_lasti)
 
     def disassemble_bytes(
         self,
-        code,
+        bytecode,
         lasti=-1,
         varnames=None,
         names=None,
@@ -390,9 +463,31 @@ class Bytecode(object):
         file=sys.stdout,
         line_offset=0,
         asm_format="classic",
-    ):
+        filename=None,
+        show_source=True,
+        first_line_number=None,
+        exception_entries=None,
+    ) -> list:
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
+        show_source = show_source and show_lineno and first_line_number and filename
+
+        def show_source_text(line_number):
+            """
+            Show the Python source text if all conditions are right:
+              * source text was requested - this implies other checks
+                seen above
+              * the source is available via linecache.getline()
+            """
+            # There is some redundancy in the condition below
+            # to make type checking happy. In reality
+            # only the show_source is tested at runtime.
+            if show_source and filename and line_number:
+                source_text = getline(filename, line_number)
+                if source_text:
+                    file.write(" " * 13 + "# " + source_text.lstrip())
+
+        show_source_text(first_line_number)
 
         # Old Python's use "SET_LINENO" to set a line number
         set_lineno_number = 0
@@ -405,7 +500,7 @@ class Bytecode(object):
             lineno_width = 0
         instructions = []
         for instr in get_instructions_bytes(
-            code,
+            bytecode,
             self.opc,
             varnames,
             names,
@@ -413,22 +508,25 @@ class Bytecode(object):
             cells,
             linestarts,
             line_offset=line_offset,
+            exception_entries=exception_entries,
         ):
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
                 instr = Instruction(
-                    instr.opname,
-                    instr.opcode,
-                    instr.optype,
-                    instr.inst_size,
-                    instr.arg,
-                    instr.argval,
-                    instr.argrepr,
-                    instr.has_arg,
-                    instr.offset,
-                    set_lineno_number,  # this is the only field that changes
-                    instr.is_jump_target,
-                    instr.has_extended_arg,
+                    opname=instr.opname,
+                    opcode=instr.opcode,
+                    optype=instr.optype,
+                    inst_size=instr.inst_size,
+                    arg=instr.arg,
+                    argval=instr.argval,
+                    argrepr=instr.argrepr,
+                    has_arg=instr.has_arg,
+                    offset=instr.offset,
+                    starts_line=set_lineno_number,  # this is the only field that changes
+                    is_jump_target=instr.is_jump_target,
+                    has_extended_arg=instr.has_extended_arg,
+                    tos_str=None,
+                    start_offset=None,
                 )
             last_was_set_lineno = False
             if instr.opname == "SET_LINENO":
@@ -441,7 +539,18 @@ class Bytecode(object):
             )
             if new_source_line:
                 file.write("\n")
+                show_source_text(instr.starts_line)
+
             is_current_instr = instr.offset == lasti
+
+            # Python 3.11 introduces "CACHE" and the convention seems to be
+            # to not print these normally.
+            if instr.opname == "CACHE" and asm_format not in (
+                "extended_bytes",
+                "bytes",
+            ):
+                continue
+
             file.write(
                 instr.disassemble(
                     self.opc, lineno_width, is_current_instr, asm_format, instructions
@@ -455,11 +564,11 @@ class Bytecode(object):
             # locals and hope the two are the same.
             if instr.opname == "RESERVE_FAST":
                 file.write(
-                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST are "
-                    "inaccurate here in Python before 1.5\n"
+                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST "
+                    "are inaccurate here in Python before 1.5\n"
                 )
             pass
-        return
+        return instructions
 
     def get_instructions(self, x, first_line=None):
         """Iterator for the opcodes in methods, functions or code
@@ -491,12 +600,12 @@ class Bytecode(object):
         )
 
 
-def list2bytecode(l, opc, varnames, consts):
+def list2bytecode(inst_list, opc, varnames, consts):
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """
     bc = []
-    for i, opcodes in enumerate(l):
+    for i, opcodes in enumerate(inst_list):
         opname = opcodes[0]
         operands = opcodes[1:]
         if opname not in opc.opname:

@@ -24,8 +24,8 @@ class Bytes(str):
     def __repr__(self):
         return "b%s" % repr(self.s)
 
-# Ifw there is a list of types, then any will work, but the 1st one is
-# the corect one for types.CodeType
+# If there is a list of types, then any will work, but the 1st one is
+# the correct one for types.CodeType.
 Code13FieldTypes = {
     "co_argcount": int,
     "co_nlocals": int,
@@ -106,7 +106,7 @@ class Code13(CodeBase):
         """
         Return a copy of the code object with new values for the specified fields.
 
-        This is analoguous to the method added to types.CodeType in Python 3.8.
+        This is analogous to the method added to types.CodeType in Python 3.8.
         """
         code = deepcopy(self)
         for field, value in kwargs.items():

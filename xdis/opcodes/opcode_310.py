@@ -16,94 +16,161 @@
 """
 CPython 3.10 bytecode opcodes
 
-This is a like Python 3.10's opcode.py
+This is like Python 3.10's opcode.py with some classification
+of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_39 as opcode_39
-from xdis.opcodes.base import (
-    def_op,
-    extended_format_ATTR,
-    extended_format_RETURN_VALUE,
-    finalize_opcodes,
-    init_opdata,
-    rm_op,
-    update_pj3,
-)
-from xdis.opcodes.opcode_36 import (
-    extended_format_CALL_FUNCTION,
-    extended_format_CALL_METHOD,
-    extended_format_MAKE_FUNCTION,
-    format_BUILD_MAP_UNPACK_WITH_CALL,
-    format_CALL_FUNCTION_EX,
-    format_CALL_FUNCTION_KW,
-    format_extended_arg36,
-    format_MAKE_FUNCTION,
-)
-from xdis.opcodes.opcode_37 import extended_format_RAISE_VARARGS, format_RAISE_VARARGS
+from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
+from xdis.opcodes.opcode_39 import opcode_arg_fmt39, opcode_extended_fmt39
 
 version_tuple = (3, 10)
 python_implementation = "CPython"
 
-loc = l = locals()
+loc = locals()
 
-init_opdata(l, opcode_39, version_tuple)
+init_opdata(loc, opcode_39, version_tuple)
 
 # fmt: off
-format_value_flags = opcode_39.format_value_flags
+
 # These are removed since 3.9...
-rm_op(l,  "RERAISE",                  48)
+rm_op(loc,  "RERAISE",                  48)
 
 # These are added since 3.9...
-#         OP NAME                 OPCODE  POP PUSH
+#         OP NAME                   OPCODE  POP PUSH
 #------------------------------------------------
-def_op(l, "GET_LEN",                  30,   0, 1)
-def_op(l, "MATCH_MAPPING",            31,   0, 1)
-def_op(l, "MATCH_SEQUENCE",           32,   0, 1)
-def_op(l, "MATCH_KEYS",               33,   0, 2)
-def_op(l, "COPY_DICT_WITHOUT_KEYS",   34,   2, 2)
-def_op(l, "ROT_N",                    99,   0, 0)
-def_op(l, "RERAISE",                 119,   3, 0)
-def_op(l, "GEN_START",               129,   1, 0)
-def_op(l, "MATCH_CLASS",             152,   2, 1)
+def_op(loc, "GET_LEN",                  30,   0, 1)
+def_op(loc, "MATCH_MAPPING",            31,   0, 1)
+def_op(loc, "MATCH_SEQUENCE",           32,   0, 1)
+def_op(loc, "MATCH_KEYS",               33,   0, 2)
+def_op(loc, "COPY_DICT_WITHOUT_KEYS",   34,   2, 2)
+def_op(loc, "ROT_N",                    99,   0, 0)
+def_op(loc, "RERAISE",                 119,   3, 0)
+def_op(loc, "GEN_START",               129,   1, 0)
+def_op(loc, "MATCH_CLASS",             152,   2, 1)
 # fmt: on
 
 
-def format_extended_is_op(arg):
-    if arg == 0:
-      return "is"
-    else:
-       return "is not"
+opcode_arg_fmt = opcode_arg_fmt310 = opcode_arg_fmt39.copy()
+opcode_extended_fmt = opcode_extended_fmt310 = opcode_extended_fmt39.copy()
 
+update_pj3(globals(), loc)
+finalize_opcodes(loc)
 
-def format_extended_contains_op(arg):
-    if arg == 0:
-        return "in"
-    else:
-        return "not in"
-
-opcode_arg_fmt = {
-    "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
-    "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-    "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
-    "CONTAINS_OP": format_extended_contains_op,
-    "EXTENDED_ARG": format_extended_arg36,
-    "FORMAT_VALUE": format_value_flags,
-    "IS_OP": format_extended_is_op,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION,
-    "RAISE_VARARGS": format_RAISE_VARARGS,
-}
-
-opcode_extended_fmt = {
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "CALL_METHOD": extended_format_CALL_METHOD,
-    "LOAD_ATTR": extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-    "STORE_ATTR": extended_format_ATTR,
-}
 # fmt: on
 
-update_pj3(globals(), l)
+# lnotab format changed in 3.10.
+# Using pre 3.10 code, some line numbers can come out negative.
 
-finalize_opcodes(l)
+# From 3.10 https://github.com/python/cpython/blob/main/Objects/lnotab_notes.txt
+
+# Description of the internal format of the line number table in Python 3.10
+# and earlier.
+
+# (For 3.11 onwards, see Objects/locations.md)
+
+# Conceptually, the line number table consists of a sequence of triples:
+#     start-offset (inclusive), end-offset (exclusive), line-number.
+
+# Note that not all byte codes have a line number so we need handle
+# `None` for the line-number.
+
+# However, storing the above sequence directly would be very
+# inefficient as we would need 12 bytes per entry.
+
+# First, note that the end of one entry is the same as the start of
+# the next, so we can overlap entries.  Second, we don't really need
+# arbitrary access to the sequence, so we can store deltas.
+
+# We just need to store (end - start, line delta) pairs. The start
+# offset of the first entry is always zero.
+
+# Third, most deltas are small, so we can use a single byte for each
+# value, as long we allow several entries for the same line.
+
+# Consider the following table
+#      Start    End     Line
+#       0       6       1
+#       6       50      2
+#       50      350     7
+#       350     360     No line number
+#       360     376     8
+#       376     380     208
+
+# Stripping the redundant ends gives:
+
+#    End-Start  Line-delta
+#       6         +1
+#       44        +1
+#       300       +5
+#       10        No line number
+#       16        +1
+#       4         +200
+
+
+# Note that the end - start value is always positive.
+
+# Finally, in order to fit into a single byte we need to convert start
+# deltas to the range 0 <= delta <= 254, and line deltas to the range
+# -127 <= delta <= 127.
+#
+# A line delta of -128 is used to indicate no line number.  Also note
+# that a delta of zero indicates that there are no bytecodes in the
+# given range, which means we can use an invalid line number for that
+# range.
+
+# Final form:
+
+#    Start delta   Line delta
+#     6               +1
+#     44              +1
+#     254             +5
+#     46              0
+#     10              -128 (No line number, treated as a delta of zero)
+#     16              +1
+#     0               +127 (line 135, but the range is empty as no bytecodes are
+#                           at line 135)
+#     4               +73
+
+# Iterating over the table.
+# -------------------------
+
+# For the `co_lines` attribute we want to emit the full form, omitting
+# the (350, 360, No line number) and empty entries.
+
+NO_LINE_NUMBER = -128
+
+
+def findlinestarts(code, dup_lines=False):
+    """Find the offsets in a byte code which are start of lines in the source.
+
+    Generate pairs (offset, lineno) as described in Python/compile.c.
+    """
+    lineno_table = code.co_lnotab
+    start_deltas = list(lineno_table[0::2])
+    lineno_deltas = [x if x < 0x80 else x - 0x100 for x in lineno_table[1::2]]
+    lineno = code.co_firstlineno
+    end_offset = 0  # highest offset seen so far
+    yield 0, lineno
+    for start_delta, lineno_delta in zip(start_deltas, lineno_deltas):
+        if lineno_delta == 0:
+            # No change to line number, just accumulate changes to "end_offset"
+            # This allows us to accrue offset deltas larger than 254 or so.
+            end_offset += start_delta
+            continue
+        start_offset = end_offset
+        end_offset = start_offset + start_delta
+        if lineno_delta == NO_LINE_NUMBER:
+            # No line number -- omit reporting lineno table entry
+            continue
+        lineno += lineno_delta
+        if end_offset == start_offset:
+            # Empty range, omit reporting lineno table entry.
+            # This allows us to accrue line number deltas larger than 254 or so.
+            continue
+        yield start_offset, lineno
+
+
+update_pj3(globals(), loc)
+
+finalize_opcodes(loc)

@@ -38,7 +38,7 @@ import sys
 
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
-IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244, 256, 336)
+IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384)
 
 
 def add_magic_from_int(magic_int, version):
@@ -77,12 +77,12 @@ def magic2int(magic):
 
 
 def __by_version(magics):
-    for m, v in list(magics.items()):
+    for m, version in list(magics.items()):
         if m not in by_magic:
-            by_magic[m] = set([v])
+            by_magic[m] = set([version])
         else:
-            by_magic[m].add(v)
-        by_version[v] = m
+            by_magic[m].add(version)
+        by_version[version] = m
     return by_version
 
 
@@ -110,7 +110,7 @@ PYTHON_MAGIC_INT = magic2int(MAGIC)
 # Apple MPW compiler swaps their values, botching string constants.
 #
 # The magic numbers must be spaced apart at least 2 values, as the
-# -U interpeter flag will cause MAGIC+1 being used. They have been
+# -U interpreter flag will cause MAGIC+1 being used. They have been
 # odd numbers for some time now.
 #
 # There were a variety of old schemes for setting the magic number.
@@ -126,7 +126,7 @@ PYTHON_MAGIC_INT = magic2int(MAGIC)
 # that's come before.  The tags are included in the following table, starting
 # with Python 3.2a0.
 
-# The below is taken from from Python/import.c, and more recently
+# The below is taken from Python/import.c, and more recently
 # Lib/importlib/_bootstrap.py and other sources
 # And more recently:
 # https://github.com/google/pytype/blob/main/pytype/pyc/magic.py
@@ -163,7 +163,7 @@ add_magic_from_int(62111, "2.5b3")  # fix wrong code: x += yield
 # have been removed
 add_magic_from_int(62121, "2.5c1")
 
-# Fix wrong code: "for x, in ..." in listcomp/genexp)
+# Fix wrong code: "for x, in ..." in listcomp/genexp
 add_magic_from_int(62131, "2.5c2")
 
 # Dropbox-modified Python 2.5 used in versions 1.1x and before of Dropbox
@@ -202,7 +202,7 @@ add_magic_from_int(3091, "3.000+10")  # kill str8 interning
 add_magic_from_int(3101, "3.000+11")  # merge from 2.6a0, see 62151
 add_magic_from_int(3103, "3.000+12")  # __file__ points to source file
 add_magic_from_int(3111, "3.0a4")  # WITH_CLEANUP optimization
-add_magic_from_int(3131, "3.0a5")  # lexical exception stacking, including POP_EXCEPT)
+add_magic_from_int(3131, "3.0a5")  # lexical exception stacking, including POP_EXCEPT
 add_magic_from_int(3141, "3.1a0")  # optimize list, set and dict comprehensions
 add_magic_from_int(3151, "3.1a0+")  # optimize conditional branches
 add_magic_from_int(3160, "3.2a0")  # add SETUP_WITH
@@ -225,7 +225,7 @@ add_magic_from_int(3220, "3.3a1")  # changed PEP 380 implementation
 add_magic_from_int(3210, "3.3a2")
 add_magic_from_int(3230, "3.3a4")  # revert changes to implicit __class__ closure
 
-# Evaluate positional default arg keyword-only defaults)
+# Evaluate positional default arg keyword-only defaults
 add_magic_from_int(3250, "3.4a1")
 
 # Add LOAD_CLASSDEREF; add_magic_from_int locals, f class to override free vars
@@ -256,14 +256,14 @@ add_magic_from_int(
 )  # add SETUP_ANNOTATIONS and STORE_ANNOTATION opcodes #27985
 add_magic_from_int(
     3376, "3.6b1+2"
-)  # simplify CALL_FUNCTIONs & BUILD_MAP_UNPACK_WITH_CALL
+)  # simplify CALL_FUNCTION* & BUILD_MAP_UNPACK_WITH_CALL
 add_magic_from_int(3377, "3.6b1+3")  # set __class__ cell from type.__new__ #23722
 add_magic_from_int(3378, "3.6b2")  # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
 
 # more thorough __class__ validation #23722
 add_magic_from_int(3379, "3.6rc1")
 
-# add LOAD_METHOD and CALL_METHOD opcodes #26110)
+# add LOAD_METHOD and CALL_METHOD opcodes #26110
 add_magic_from_int(3390, "3.7.0alpha0")
 
 # update GET_AITER #31709
@@ -278,7 +278,7 @@ add_magic_from_int(3392, "3.7.0beta2")
 add_magic_from_int(3393, "3.7.0beta3")
 
 # restored docstring as the first stmt in the body; this might
-# affected the first line number #32911)
+# affect the first line number #32911
 add_magic_from_int(3394, "3.7.0")
 
 # move frame block handling to compiler #17611
@@ -295,7 +295,7 @@ add_magic_from_int(3410, "3.8.0a1+")
 add_magic_from_int(3411, "3.8.0b2+")
 
 # Swap the position of positional args and positional only args in
-# ast.arguments #37593)
+# ast.arguments #37593
 add_magic_from_int(3412, "3.8.0beta2")
 
 # Fix "break" and "continue" in "finally" #37830
@@ -393,7 +393,8 @@ add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
 add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(256, "3.8pypy")  # PyPy 3.8.15
-add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15
+add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15, PyPy 3.9.17
+add_magic_from_int(384, "3.10pypy")  # PyPy 3.10.12
 
 # NOTE: This is JVM bytecode not Python bytecode
 add_magic_from_int(21150, "3.8.5Graal")
@@ -410,17 +411,10 @@ magics["3.9.15pypy"] = magics["3.9.0alpha1"]
 canonic_python_version = {}
 
 
-def add_canonic_versions(versions, canonic):
-    for v in versions.split():
-        canonic_python_version[v] = canonic
-        magics[v] = magics[canonic]
-        try:
-            magics[float(v)] = magics[canonic]
-        except Exception:
-            pass
-        pass
-
-    return
+def add_canonic_versions(release_versions: str, canonic):
+    for version in release_versions.split():
+        canonic_python_version[version] = canonic
+        magics[version] = magics[canonic]
 
 
 add_canonic_versions("1.5.1 1.5.2", "1.5")
@@ -473,17 +467,19 @@ add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.
 add_canonic_versions(
     "3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy 3.8.16pypy", "3.8.12pypy"
 )
+add_canonic_versions("3.9.17pypy", "3.9pypy")
+add_canonic_versions("3.10.12pypy 3.10pypy", "3.10pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
     "3.7 3.7.0beta5 3.7.1 3.7.2 3.7.3 3.7.4 3.7.5 3.7.6 3.7.7 3.7.8 3.7.9 "
-    "3.7.10 3.7.11 3.7.12 3.7.13 3.7.14 3.7.15 3.7.16",
+    "3.7.10 3.7.11 3.7.12 3.7.13 3.7.14 3.7.15 3.7.16 3.7.17",
     "3.7.0",
 )
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 add_canonic_versions(
     "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7 3.8.8 "
-    "3.8.9 3.8.10 3.8.11 3.8.12 3.8.13 3.8.14 3.8.15 3.8.16",
+    "3.8.9 3.8.10 3.8.11 3.8.12 3.8.13 3.8.14 3.8.15 3.8.16 3.8.17 3.8.18",
     "3.8.0rc1+",
 )
 add_canonic_versions(
@@ -492,14 +488,19 @@ add_canonic_versions(
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 "
     "3.9.12 3.9.13 3.9.14 3.9.14 3.9.15 3.9.16 3.9.10pypy 3.9.11pypy 3.9.12pypy "
-    "3.9.15pypy 3.9.16pypy 3.9.0b5+",
+    "3.9.15pypy 3.9.16pypy 3.9.0b5+ 3.9.17 3.9.18",
     "3.9.0beta5",
 )
 
 add_canonic_versions(
     "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8 3.10.9 "
-    "3.10.10 3.10.11",
+    "3.10.10 3.10.11 3.10.12 3.10.13",
     "3.10.0rc2",
+)
+
+add_canonic_versions(
+    "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4 3.11.5",
+    "3.11a7e",
 )
 
 # The canonic version for a canonic version is itself
@@ -517,8 +518,8 @@ def magic_int2tuple(magic_int):
     """Convert a Python magic int into a 'canonic' tuple
     e.g. (2, 7), (3, 7). runtime error is raised if "version" is not found.
 
-    Note that there can be several magic_int's that map to a single floating-
-    point number. For example 3320 (3.5.a0), 3340 (3.5b1)
+    Note that there can be several magic_int's that map to a single floating-point
+    number. For example 3320 (3.5.a0), 3340 (3.5b1)
     all map to 3.5.
     """
     return py_str2tuple(magicint2version[magic_int])
@@ -538,18 +539,17 @@ def py_str2tuple(orig_version):
     if version in magics:
         m = re.match(r"^(\d)\.(\d+)\.(\d+)", version)
         if m:
-            return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
+            return int(m.group(1)), int(m.group(2)), int(m.group(3))
         else:
             # Match things like 3.5a0, 3.5b2, 3.6a1+1, 3.6rc1, 3.7.0beta3
-            m = re.match(r"^(\d)\.(\d)(\d+)?[abr]?", version)
+            m = re.match(r"^(\d)\.(\d(\d+)?)[abr]?", version)
             if m:
-                return (int(m.group(1)), int(m.group(2)))
+                return int(m.group(1)), int(m.group(2))
             pass
         pass
     raise RuntimeError(
         "Can't find a valid Python version for version %s" % orig_version
     )
-    return
 
 
 def sysinfo2magic(version_info=sys.version_info):

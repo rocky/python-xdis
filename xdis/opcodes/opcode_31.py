@@ -2,62 +2,45 @@
 """
 CPython 3.1 bytecode opcodes
 
-This is a like Python 3.1's opcode.py with some classification
-of stack usage.
+This is a like Python 3.1's opcode.py  with some classification
+of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_32 as opcode_32
 from xdis.opcodes.base import (
     def_op,
-    extended_format_ATTR,
-    extended_format_CALL_FUNCTION,
     finalize_opcodes,
-    format_extended_arg,
     init_opdata,
     name_op,
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.opcode_3x import (
-    extended_format_MAKE_FUNCTION_30_35,
-    format_MAKE_FUNCTION_30_35,
-)
+from xdis.opcodes.opcode_33 import opcode_arg_fmt33, opcode_extended_fmt33
 
-loc = l = locals()
+loc = locals()
 
 version_tuple = (3, 1)
 python_implementation = "CPython"
 
-init_opdata(l, opcode_32, version_tuple)
+init_opdata(loc, opcode_32, version_tuple)
 
 # fmt: off
 # These are in Python 3.2 but not in Python 3.1
-rm_op(l, "DUP_TOP_TWO",     5)
-rm_op(l, "DELETE_DEREF",  138)
-rm_op(l, "SETUP_WITH",    143)
+rm_op(loc, "DUP_TOP_TWO",     5)
+rm_op(loc, "DELETE_DEREF",  138)
+rm_op(loc, "SETUP_WITH",    143)
 
 # These are in Python 3.1 but not Python 3.2
-name_op(l, "IMPORT_NAME", 108,  1, 1)  # Imports TOS and TOS1; module pushed
-def_op(l, "ROT_FOUR",       5,  4, 4)
-def_op(l, "DUP_TOPX",      99, -1, 2)  # number of items to duplicate
+name_op(loc, "IMPORT_NAME", 108,  1, 1)  # Imports TOS and TOS1; module pushed
+def_op(loc, "ROT_FOUR",       5,  4, 4)
+def_op(loc, "DUP_TOPX",      99, -1, 2)  # number of items to duplicate
 
 # This op is in 3.2 but its opcode is a 144 instead
-def_op(l, "EXTENDED_ARG", 143)
+def_op(loc, "EXTENDED_ARG", 143)
 # fmt: on
 
-update_pj3(globals(), l)
+opcode_arg_fmt = opcode_arg_fmt31 = opcode_arg_fmt33.copy()
+opcode_extended_fmt = opcode_extended_fmt31 = opcode_extended_fmt33.copy()
 
-opcode_arg_fmt = {
-    "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
-    "EXTENDED_ARG": format_extended_arg,
-}
-
-opcode_extended_fmt = {
-    "LOAD_ATTR": extended_format_ATTR,
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "MAKE_CLOSURE": extended_format_MAKE_FUNCTION_30_35,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_30_35,
-    "STORE_ATTR": extended_format_ATTR,
-}
-finalize_opcodes(l)
+update_pj3(globals(), loc)
+finalize_opcodes(loc)

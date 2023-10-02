@@ -11,7 +11,7 @@ at valid locations.
 from xdis.namedtuple24 import namedtuple
 
 from xdis.bytecode import get_instructions_bytes
-from xdis.codetype import iscode
+from xdis.codetype.base import iscode
 from xdis.load import check_object_path, load_module
 from xdis.op_imports import get_opcode_module
 
@@ -68,7 +68,7 @@ class LineOffsetInfo(object):
                     self.lines.append(last_line_info)
                     pass
                 last_line_info = LineOffsets(instr.starts_line, [offset], code)
-            else:
+            elif last_line_info is not None:
                 last_line_info.offsets.append(offset)
                 pass
             pass

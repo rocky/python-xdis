@@ -123,7 +123,7 @@ Type -h for for full help.""" % program
             )
             continue
 
-        disassemble_file(path, sys.stdout, format)
+        disassemble_file(path, sys.stdout, format, show_source=show_source)
     return
 
 if __name__ == '__main__':

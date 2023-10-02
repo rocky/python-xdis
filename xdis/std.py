@@ -94,9 +94,15 @@ class _StdApi:
             Iterating over this yields the bytecode operations as Instruction instances.
             """
 
-            def __init__(self, x, first_line=None, current_offset=None):
-                super(Bytecode, self).__init__(
-                    x, opc=opc, first_line=first_line, current_offset=current_offset
+            def __init__(self, x, first_line=None, current_offset=None, opc=None):
+                if opc is None:
+                    opc = _std_api.opc
+                _Bytecode.__init__(
+                    self,
+                    x,
+                    opc=opc,
+                    first_line=first_line,
+                    current_offset=current_offset,
                 )
 
         self.Bytecode = Bytecode
