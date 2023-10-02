@@ -25,48 +25,35 @@ import xdis.opcodes.opcode_15 as opcode_15
 # This is used from outside this module
 from xdis.cross_dis import findlabels, findlinestarts  # noqa
 from xdis.opcodes.base import (
-    extended_format_ATTR,
-    extended_format_MAKE_FUNCTION_10_27,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_CALL_FUNCTION_pos_name_encoded,
-    format_extended_arg,
-    format_MAKE_FUNCTION_10_27,
     init_opdata,
     nargs_op,
     update_pj2,
 )
 
+from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+
 version_tuple = (1, 6)
 python_implementation = "CPython"
 
-loc = l = locals()
-init_opdata(l, opcode_15, version_tuple)
+loc = locals()
+
+# These are just to silence the import above
+loc["findlindstarts"] = findlinestarts
+loc["findlabels"] = findlabels
+
+init_opdata(loc, opcode_15, version_tuple)
 
 # fmt: off
 # 1.6 Bytecodes not in 1.5
-nargs_op(l, "CALL_FUNCTION_VAR",    140, -1, 1)  # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_KW",     141, -1, 1)  # #args + (#kwargs << 8)
-nargs_op(l, "CALL_FUNCTION_VAR_KW", 142, -1, 1)  # #args + (#kwargs << 8)
+nargs_op(loc, "CALL_FUNCTION_VAR",    140, -1, 1)  # #args + (#kwargs << 8)
+nargs_op(loc, "CALL_FUNCTION_KW",     141, -1, 1)  # #args + (#kwargs << 8)
+nargs_op(loc, "CALL_FUNCTION_VAR_KW", 142, -1, 1)  # #args + (#kwargs << 8)
 
-update_pj2(globals(), l)
-
-opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
-
-opcode_arg_fmt = {
-    "EXTENDED_ARG":         format_extended_arg,
-    "CALL_FUNCTION":        format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_KW":     format_CALL_FUNCTION_pos_name_encoded,
-    "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
-    "MAKE_FUNCTION"       : format_MAKE_FUNCTION_10_27,
-}
-
-opcode_extended_fmt = {
-    "LOAD_ATTR":     extended_format_ATTR,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
-    "RETURN_VALUE":  extended_format_RETURN_VALUE,
-    "STORE_ATTR":    extended_format_ATTR,
-}
 # fmt: on
 
-finalize_opcodes(l)
+opcode_arg_fmt = update_arg_fmt_base2x.copy()
+opcode_extended_fmt = opcode_extended_fmt12 = opcode_extended_fmt_base2x.copy()
+
+update_pj2(globals(), loc)
+finalize_opcodes(loc)

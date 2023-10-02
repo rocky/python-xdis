@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-# Here we are more closely modeling Python's Lib/dis.py organization.
+# Here, we are more closely modeling Python's ``lib/dis.py`` organization.
 # However, it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
@@ -134,6 +134,8 @@ def findlabels_310(code, opc):
     for offset, op, arg in unpack_opargs_bytecode_310(code, opc):
         if arg is not None:
             if op in opc.JREL_OPS:
+                if opc.version_tuple >= (3, 11) and "JUMP_BACKWARD" in opc.opname[op]:
+                    arg = -arg
                 label = offset + 2 + arg * 2
             elif op in opc.JABS_OPS:
                 label = arg * 2
@@ -176,7 +178,7 @@ def instruction_size(op, opc):
         return 2 if opc.version_tuple >= (3, 6) else 3
 
 
-# Compatiblity
+# Compatibility
 op_size = instruction_size
 
 
@@ -286,6 +288,24 @@ def format_code_info(co, version_tuple, name=None, is_pypy=False):
     return "\n".join(lines)
 
 
+def format_exception_table(bytecode, version_tuple) -> str:
+    if version_tuple < (3, 11) or not hasattr(bytecode, "exception_entries"):
+        return ""
+    lines = ["ExceptionTable:"]
+    for entry in bytecode.exception_entries:
+        lasti = " lasti" if entry.lasti else ""
+        end = entry.end - 2
+        lines.append(
+            "  %s to %s -> %s [%s]%s" % (
+                entry.start,
+                end,
+                entry.target,
+                entry.depth,
+                lasti)
+        )
+    return "\n".join(lines)
+
+
 def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
 
@@ -304,7 +324,7 @@ def unpack_opargs_bytecode_310(code, opc):
             extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
         else:
             arg = None
-        yield (offset, op, arg)
+        yield offset, op, arg
 
 
 # This is modified from Python 3.6's dis
@@ -323,11 +343,15 @@ def unpack_opargs_bytecode(code, opc):
         offset += 1
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
-            extended_arg = extended_arg_val(opc, arg) if op == opc.EXTENDED_ARG else 0
+            extended_arg = (
+                extended_arg_val(opc, arg)
+                if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                else 0
+            )
             offset += 2
         else:
             arg = None
-        yield (prev_offset, op, arg)
+        yield prev_offset, op, arg
 
 
 def get_jump_target_maps(code, opc):
@@ -473,10 +497,10 @@ def check_stack_effect():
 if __name__ == "__main__":
     from dis import findlabels as findlabels_std
 
-    code = findlabels.__code__.co_code
+    my_code = findlabels.__code__.co_code
     from xdis.op_imports import get_opcode_module
 
-    opc = get_opcode_module()
-    assert findlabels(code, opc) == findlabels_std(code)
+    my_opc = get_opcode_module()
+    assert findlabels(my_code, my_opc) == findlabels_std(my_code)
     if PYTHON_VERSION_TRIPLE >= (3, 4):
         check_stack_effect()

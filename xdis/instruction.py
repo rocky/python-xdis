@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2022 by Rocky Bernstein
+#  Copyright (c) 2018-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,8 +24,10 @@ from collections import namedtuple
 
 _Instruction = namedtuple(
     "_Instruction",
-    "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line is_jump_target has_extended_arg",
+    "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line "
+    "is_jump_target has_extended_arg tos_str start_offset",
 )
+
 # _Instruction.opname.__doc__ = "Human readable name for operation"
 # _Instruction.opcode.__doc__ = "Numeric code for operation"
 # _Instruction.arg.__doc__ = "Numeric argument to operation (if any), otherwise None"
@@ -43,8 +45,18 @@ _Instruction = namedtuple(
 #    "True there were EXTENDED_ARG opcodes before this, otherwise False"
 # )
 
+_Instruction.tos_str.__doc__ = (
+    "If not None, a string representation of the top of the stack (TOS)"
+)
+# Python expressions can be straight-line, operator like-basic block code that take
+# items off a stack and push a value onto the stack. In this case, in a linear scan
+# we can basically build up an expression tree.
+# Note this has to be the last field. Code to set this assumes this.
+_Instruction.start_offset.__doc__ = (
+    "If not None, the offset of the first instruction feeding into the operation"
+)
+
 _OPNAME_WIDTH = 20
-_OPARG_WIDTH = 6
 
 
 class Instruction(_Instruction):
@@ -74,6 +86,9 @@ class Instruction(_Instruction):
       fallthrough - True if the instruction can (not must) fall through to the next
                     instruction. Note conditionals are in this category, but
                     returns, raise, and unconditional jumps are not.
+      tos_str - if not None, a string representation of the top of the stack (TOS).
+                This is obtained by scanning previous instructions and
+                using information there and in their tos_str fields
     """
 
     # FIXME: remove has_arg from initialization but keep it as a field.
@@ -154,8 +169,10 @@ class Instruction(_Instruction):
         # Column: Opcode argument
         if self.arg is not None:
             argrepr = self.argrepr
-            # The ``argrepr`` value when the instruction was created generally has all the information we require.
-            # However, for "asm" format, want additional explicit information linking operands to tables.
+            # The ``argrepr`` value when the instruction was created
+            # generally has all the information we require.  However,
+            # for "asm" format, want additional explicit information
+            # linking operands to tables.
             if asm_format == "asm":
                 if self.optype in ("jabs", "jrel"):
                     assert self.argrepr.startswith("to ")
@@ -184,8 +201,19 @@ class Instruction(_Instruction):
                     new_repr = opc.opcode_extended_fmt[opc.opname[op]](
                         opc, list(reversed(instructions))
                     )
+                    start_offset = None
+                    if isinstance(new_repr, tuple) and len(new_repr) == 2:
+                        new_repr, start_offset = new_repr
                     if new_repr:
+                        # Add tos_str info to tos_str field of instruction.
+                        # This the last field in instruction.
+                        new_instruction = list(instructions[-1])
+                        new_instruction[-2] = new_repr
+                        new_instruction[-1] = start_offset
+                        del instructions[-1]
+                        instructions.append(Instruction(*new_instruction))
                         argrepr = new_repr
+                        start_offset = start_offset
                 pass
             if not argrepr:
                 if asm_format != "asm" or self.opname == "MAKE_FUNCTION":
@@ -193,7 +221,20 @@ class Instruction(_Instruction):
                 pass
             else:
                 # Column: Opcode argument details
-                fields.append("(%s)" % argrepr)
+                argval = instructions[-1].argval
+                if instructions[-1].tos_str is None or (
+                    self.argrepr is not None
+                    and self.argrepr == instructions[-1].tos_str
+                ):
+                    fields.append("(%s)" % self.argrepr)
+                else:
+                    if self.argrepr is None:
+                        prefix = ""
+                    else:
+                        prefix = "(%s) | " % self.argprepr
+                    if self.opcode in opc.operator_set:
+                        prefix += "TOS = "
+                    fields.append("%s%s" % (prefix, instructions[-1].tos_str))
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
@@ -202,11 +243,23 @@ class Instruction(_Instruction):
                 hasattr(opc, "opcode_extended_fmt")
                 and opc.opname[op] in opc.opcode_extended_fmt
             ):
-                new_repr = opc.opcode_extended_fmt[opc.opname[op]](
+                new_repr, start_offset = opc.opcode_extended_fmt[opc.opname[op]](
                     opc, list(reversed(instructions))
                 )
                 if new_repr:
-                    fields.append("(%s)" % new_repr)
+                    new_instruction = list(instructions[-1])
+                    new_instruction[-2] = new_repr
+                    new_instruction[-1] = start_offset
+                    del instructions[-1]
+                    instructions.append(Instruction(*new_instruction))
+                    argval = instructions[-1].argval
+                    if argval is None:
+                        prefix = ""
+                    else:
+                        prefix = "(%s) | " % argval
+                    if self.opcode in opc.operator_set:
+                        prefix += "TOS = "
+                    fields.append("%s%s" % (prefix, new_repr))
             pass
 
         return " ".join(fields).rstrip()

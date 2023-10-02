@@ -23,54 +23,37 @@ opcodes in Python's dis.py library.
 import xdis.opcodes.opcode_13 as opcode_13
 
 # This is used from outside this module
-from xdis.cross_dis import findlabels
+from xdis.cross_dis import findlabels  # noqa
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported
-    extended_format_CALL_FUNCTION,
-    extended_format_MAKE_FUNCTION_10_27,
-    extended_format_RAISE_VARARGS_older,
-    extended_format_RETURN_VALUE,
     finalize_opcodes,
-    format_extended_arg,
-    format_MAKE_FUNCTION_10_27,
-    format_RAISE_VARARGS_older,
     init_opdata,
     name_op,
     rm_op,
     store_op,
     update_pj2,
 )
+from xdis.opcodes.opcode_13 import opcode_arg_fmt13, opcode_extended_fmt13
 
 version_tuple = (1, 2)
 python_implementation = "CPython"
 
-loc = l = locals()
-init_opdata(l, opcode_13, version_tuple)
+loc = locals()
+init_opdata(loc, opcode_13, version_tuple)
 
 # fmt: off
-# 1.0 - 1.1 bytecodes differences
-rm_op(l,  "LOAD_FAST",         124)
-rm_op(l,  "STORE_FAST",        125)
-name_op(l, "LOAD_FAST",        124, 0, 1)  # Local variable number
-store_op(l, "STORE_FAST",      125, 1, 0, is_type="name")  # Local variable number
+# 1.3 - 1.2 bytecodes differences
+rm_op(loc,  "LOAD_FAST",         124)
+rm_op(loc,  "STORE_FAST",        125)
+name_op(loc, "LOAD_FAST",        124, 0, 1)  # Local variable number
+store_op(loc, "STORE_FAST",      125, 1, 0, is_type="name")  # Local variable number
 
 # fmt: on
 
-update_pj2(globals(), l)
-
-opcode_arg_fmt = {
-    "EXTENDED_ARG": format_extended_arg,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older,
-}
-
-finalize_opcodes(l)
-
-opcode_extended_fmt = {
-    "CALL_FUNCTION": extended_format_CALL_FUNCTION,
-    "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_10_27,
-    "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
-    "RETURN_VALUE": extended_format_RETURN_VALUE,
-}
-
 # These are used outside of this module
 findlinestarts = opcode_13.findlinestarts
+
+opcode_arg_fmt = opcode_arg_fmt12 = opcode_arg_fmt13.copy()
+opcode_extended_fmt = opcode_extended_fmt12 = opcode_extended_fmt13.copy()
+
+update_pj2(globals(), loc)
+finalize_opcodes(loc)

@@ -202,7 +202,7 @@ class _VersionIndependentUnmarshaller:
         """
         byte1 = ord(self.fp.read(1))
 
-        # FLAG_REF indiates whether we "intern" or
+        # FLAG_REF indicates whether we "intern" or
         # save a reference to the object.
         # byte1 without that reference is the
         # marshal type code, an ASCII character.
@@ -223,7 +223,7 @@ class _VersionIndependentUnmarshaller:
             try:
                 sys.stderr.write(
                     "Unknown type %i (hex %x) %c\n"
-                    % (ord(marshal_type), hex(ord(marshal_type)), marshal_type)
+                    % (ord(marshal_type), ord(marshal_type), marshal_type)
                 )
             except TypeError:
                 sys.stderr.write(
@@ -459,7 +459,10 @@ class _VersionIndependentUnmarshaller:
         else:
             kwonlyargcount = 0
 
-        if version_tuple >= (2, 3):
+        if version_tuple >= (3, 11):
+            # 3.11 doesn't removes co_nlocals differently
+            co_nlocals = 0
+        elif version_tuple >= (2, 3):
             co_nlocals = unpack("<i", self.fp.read(4))[0]
         elif version_tuple >= (1, 3):
             co_nlocals = unpack("<h", self.fp.read(2))[0]
@@ -485,16 +488,29 @@ class _VersionIndependentUnmarshaller:
         # FIXME: Check/verify that is true:
         bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (version_tuple > (3, 0))
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
+
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        if version_tuple >= (1, 3):
+        if version_tuple >= (3, 11):
+            # If we need these, figure out how to get.
+            # co_localplusnames = self.r_object(bytes_for_s=False)
+            # co_localpluskinds = self.r_object(bytes_for_s=False)
+            co_varnames = tuple()
+            # co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+        elif version_tuple >= (1, 3):
+            co_qualname = None
             co_varnames = self.r_object(bytes_for_s=False)
         else:
-            co_varnames = []
+            co_qualname = None
+            co_varnames = tuple()
 
         if version_tuple >= (2, 0):
             co_freevars = self.r_object(bytes_for_s=bytes_for_s)
             co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
+            # FIXME for 3.11
+            if version_tuple >= (3, 11):
+                co_cellvars = tuple()
+
         else:
             co_freevars = tuple()
             co_cellvars = tuple()
@@ -502,36 +518,52 @@ class _VersionIndependentUnmarshaller:
         co_filename = self.r_object(bytes_for_s=bytes_for_s)
         co_name = self.r_object(bytes_for_s=bytes_for_s)
 
+        if version_tuple >= (3, 11):
+            co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+        else:
+            co_qualname = None
+
+        co_exceptiontable = None
         if version_tuple >= (1, 5):
             if version_tuple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
             else:
                 co_firstlineno = unpack("<h", self.fp.read(2))[0]
-            co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
+
+            if version_tuple >= (3, 11):
+                co_linetable = self.r_object(bytes_for_s=bytes_for_s)
+                # FIXME compute co_lnotab from co_linetable
+
+                co_lnotab = co_linetable
+                co_exceptiontable = self.r_object(bytes_for_s=bytes_for_s)
+            else:
+                co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
         else:
             # < 1.5 there is no lnotab, so no firstlineno.
             # SET_LINENO is used instead.
-            co_firstlineno = -1  # Bogus sentinal value
+            co_firstlineno = -1  # Bogus sentinel value
             co_lnotab = ""
 
         code = to_portable(
-            co_argcount,
-            co_posonlyargcount,
-            kwonlyargcount,
-            co_nlocals,
-            co_stacksize,
-            co_flags,
-            co_code,
-            co_consts,
-            co_names,
-            co_varnames,
-            co_filename,
-            co_name,
-            co_firstlineno,
-            co_lnotab,
-            co_freevars,
-            co_cellvars,
-            version_tuple,
+            co_argcount=co_argcount,
+            co_posonlyargcount=co_posonlyargcount,
+            co_kwonlyargcount=kwonlyargcount,
+            co_nlocals=co_nlocals,
+            co_stacksize=co_stacksize,
+            co_flags=co_flags,
+            co_code=co_code,
+            co_consts=co_consts,
+            co_names=co_names,
+            co_varnames=co_varnames,
+            co_filename=co_filename,
+            co_name=co_name,
+            co_qualname=co_qualname,
+            co_firstlineno=co_firstlineno,
+            co_lnotab=co_lnotab,
+            co_freevars=co_freevars,
+            co_cellvars=co_cellvars,
+            co_exceptiontable=co_exceptiontable,
+            version_triple=version_tuple,
         )
 
         self.code_objects[str(code)] = code

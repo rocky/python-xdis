@@ -24,7 +24,7 @@ import os.path as osp
 
 # Things that change more often go here.
 copyright = """
-Copyright (C) 2015-2020 Rocky Bernstein <rb@dustyfeet.com>.
+Copyright (C) 2015-2020, 2023 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
 classifiers = [
@@ -49,6 +49,7 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Debuggers",
     "Topic :: Software Development :: Libraries :: Python Modules",

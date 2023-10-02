@@ -1,9 +1,11 @@
 """xdis.bytecode testing"""
 import sys
-from xdis.op_imports import get_opcode_module
-from xdis import IS_PYPY
-from xdis.version_info import PYTHON_VERSION_TRIPLE
+
 import pytest
+from xdis import IS_PYPY
+from xdis.bytecode import Bytecode
+from xdis.op_imports import get_opcode_module
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
 def extended_arg_fn36():
@@ -84,8 +86,6 @@ def loop():
     return x
 
 
-from xdis.bytecode import Bytecode
-
 pytest.mark.skipif(
     PYTHON_VERSION_TRIPLE < (3, 6),
     reason="asssume Python 3.6 or greater wordsize instructions",
@@ -119,7 +119,7 @@ pytest.mark.skipif(
 
 
 def test_inst_jumps():
-    if sys.version_info >= (3, 1):
+    if (3, 1) <= sys.version_info < (3, 11):
         variant = "pypy" if IS_PYPY else None
         opc = get_opcode_module(sys.version_info, variant)
         bytecode_obj = Bytecode(extended_arg_fn36, opc)

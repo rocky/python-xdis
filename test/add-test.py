@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 """ Trivial helper program to byte compile and run an pydisasm on the bytecode file.
 """
-import os, sys, py_compile
-from xdis.version_info import version_tuple_to_str, PYTHON_VERSION_TRIPLE
+import os
+import py_compile
+import sys
+
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 if len(sys.argv) < 2:
     print("Usage: add-test.py *python-source*... [optimize-level]")
@@ -12,13 +15,13 @@ try:
     optimize = int(sys.argv[-1])
     assert sys.argv >= 3
     py_source = sys.argv[1:-1]
-except:
+except Exception:
     optimize = 2
     py_source = sys.argv[1:]
 
 for path in py_source:
     short = os.path.basename(path)
-    if hasattr(sys, 'pypy_version_info'):
+    if hasattr(sys, "pypy_version_info"):
         version = version_tuple_to_str(end=2, delimiter="")
         bytecode = "bytecode_pypy%s/%s.pypy%s.pyc" % (version, short, version)
     else:
@@ -31,4 +34,4 @@ for path in py_source:
     else:
         py_compile.compile(path, bytecode)
 
-    os.system("../bin/pydisasm %s" % bytecode)
+    os.system("../bin/pydisasm --show-source -F extended %s" % bytecode)
