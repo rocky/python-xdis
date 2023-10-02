@@ -56,15 +56,15 @@ class Code15(Code13):
         co_lnotab,
     ):
         super(Code15, self).__init__(
-            co_argcount,
-            co_nlocals,
-            co_flags,
-            co_code,
-            co_consts,
-            co_names,
-            co_varnames,
-            co_filename,
-            co_name,
+            co_argcount=co_argcount,
+            co_nlocals=co_nlocals,
+            co_flags=co_flags,
+            co_code=co_code,
+            co_consts=co_consts,
+            co_names=co_names,
+            co_varnames=co_varnames,
+            co_filename=co_filename,
+            co_name=co_name,
         )
         self.co_stacksize = co_stacksize
         self.co_firstlineno = co_firstlineno

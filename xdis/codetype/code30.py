@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -30,8 +30,8 @@ Code3FieldTypes.update(
 
 
 class Code3(Code2):
-    """Class for a Python3 code object used when a Python interpreter less than 3 is
-    working on Python3 bytecode. It also functions as an object that can be used
+    """Class for a Python3 code object used when a Python not in the range between 3.0 and 3.7
+    but is working on Python 3.0 ..3.7 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
     When done mutating, call method freeze().
 
@@ -59,21 +59,23 @@ class Code3(Code2):
         co_freevars,
         co_cellvars,
     ):
+        # Keyword argument parameters in the call below is more robust.
+        # Since things change around, robustness is good.
         super(Code3, self).__init__(
-            co_argcount,
-            co_nlocals,
-            co_stacksize,
-            co_flags,
-            co_code,
-            co_consts,
-            co_names,
-            co_varnames,
-            co_filename,
-            co_name,
-            co_firstlineno,
-            co_lnotab,
-            co_freevars,
-            co_cellvars,
+            co_argcount=co_argcount,
+            co_nlocals=co_nlocals,
+            co_stacksize=co_stacksize,
+            co_flags=co_flags,
+            co_code=co_code,
+            co_consts=co_consts,
+            co_names=co_names,
+            co_varnames=co_varnames,
+            co_filename=co_filename,
+            co_name=co_name,
+            co_firstlineno=co_firstlineno,
+            co_lnotab=co_lnotab,
+            co_freevars=co_freevars,
+            co_cellvars=co_cellvars,
         )
         self.co_kwonlyargcount = co_kwonlyargcount
         self.fieldtypes = Code3FieldTypes
