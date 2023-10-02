@@ -180,11 +180,11 @@ fields2copy = """cmp_op hasjabs""".split()
 
 update_pj2(globals(), loc)
 
-update_arg_fmt_base1x = {
-    **opcode_arg_fmt_base,
-    **{
+update_arg_fmt_base1x = opcode_arg_fmt_base.copy
+update_arg_fmt_base1x.update(
+    {
         "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
     },
-}
+)
 
 opcode_extended_fmt_base1x = opcode_extended_fmt_base.copy()

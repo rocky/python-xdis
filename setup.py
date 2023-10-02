@@ -4,6 +4,7 @@ import sys
 from xdis.version import __version__
 
 SYS_VERSION = sys.version_info[0:2]
+print(SYS_VERSION)
 if not ((3, 0) <= SYS_VERSION <= (3, 2)):
     mess = "Python Release 3.0 .. 3.2 are supported in this code branch."
     if SYS_VERSION >= (3, 6):

@@ -45,16 +45,16 @@ _Instruction = namedtuple(
 #    "True there were EXTENDED_ARG opcodes before this, otherwise False"
 # )
 
-_Instruction.tos_str.__doc__ = (
-    "If not None, a string representation of the top of the stack (TOS)"
-)
+# _Instruction.tos_str.__doc__ = (
+#    "If not None, a string representation of the top of the stack (TOS)"
+# )
 # Python expressions can be straight-line, operator like-basic block code that take
 # items off a stack and push a value onto the stack. In this case, in a linear scan
 # we can basically build up an expression tree.
 # Note this has to be the last field. Code to set this assumes this.
-_Instruction.start_offset.__doc__ = (
-    "If not None, the offset of the first instruction feeding into the operation"
-)
+# _Instruction.start_offset.__doc__ = (
+#     "If not None, the offset of the first instruction feeding into the operation"
+# )
 
 _OPNAME_WIDTH = 20
 

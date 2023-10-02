@@ -16,7 +16,6 @@
 """
 Routines for formatting opcodes.
 """
-from typing import Optional, Tuple
 
 
 def format_extended_arg(arg):
