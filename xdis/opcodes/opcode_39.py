@@ -20,6 +20,8 @@ This is like Python 3.9's opcode.py with some classification
 of stack usage and information for formatting instructions.
 """
 
+from copy import copy
+
 import xdis.opcodes.opcode_38 as opcode_38
 from xdis.opcodes.base import (
     binary_op,
@@ -93,29 +95,33 @@ def extended_format_IS_OP(opc, instructions):
 
 
 def format_CONTAINS_OP(arg):
-    return "in" if arg == 0 else "not in"
+    if arg == 0:
+        return "in"
+    else:
+        return "not in"
 
->>>>>>> python-3.0-to-3.2
 
 def format_IS_OP(arg):
-    return "is" if arg == 0 else "is not"
+    if arg == 0:
+        return "is"
+    else:
+        return "is not"
 
 
-opcode_arg_fmt = opcode_arg_fmt39 = {
-    **opcode_arg_fmt38,
-    **{
+opcode_arg_fmt = opcode_arg_fmt39 = copy(opcode_arg_fmt38)
+opcode_arg_fmt.update(
+    {
         "CONTAINS_OP": format_CONTAINS_OP,
         "IS_OP": format_IS_OP,
     },
-}
+)
 
-opcode_extended_fmt = opcode_extended_fmt39 = {
-    **opcode_extended_fmt38.copy(),
-    **{
+opcode_extended_fmt = opcode_extended_fmt39 = copy(opcode_extended_fmt38)
+opcode_extended_fmt.update({
         "CONTAINS_OP": extended_format_CONTAINS_OP,
         "IS_OP": extended_format_IS_OP,
     },
-}
+)
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

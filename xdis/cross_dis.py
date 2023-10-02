@@ -293,12 +293,15 @@ def format_code_info(co, version_tuple, name=None, is_pypy=False):
     return "\n".join(lines)
 
 
-def format_exception_table(bytecode, version_tuple) -> str:
+def format_exception_table(bytecode, version_tuple):
     if version_tuple < (3, 11) or not hasattr(bytecode, "exception_entries"):
         return ""
     lines = ["ExceptionTable:"]
     for entry in bytecode.exception_entries:
-        lasti = " lasti" if entry.lasti else ""
+        if entry.lasti:
+            lasti = " lasti"
+        else:
+            lasti = ""
         end = entry.end - 2
         lines.append(
             "  %s to %s -> %s [%s]%s" % (

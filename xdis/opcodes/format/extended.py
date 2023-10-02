@@ -20,7 +20,7 @@ from xdis.opcodes.format.basic import format_IS_OP, format_RAISE_VARARGS_older
 
 
 def extended_format_binary_op(
-    opc, instructions, fmt_str: str
+    opc, instructions, fmt_str
 ):
     """
     General routine for formatting binary operations.
@@ -98,20 +98,18 @@ def extended_format_infix_binary_op(
             instructions[j].opcode in opc.operator_set
             and instructions[i].opcode in opc.operator_set
         ):
-            arg2 = (
-                instructions[j].tos_str
-                if instructions[j].tos_str is not None
-                else instructions[j].argrepr
-            )
+            if instructions[j].tos_str is not None:
+                arg2 = instructions[j].tos_str
+            else:
+                arg2 = instructions[j].argrepr
             start_offset = instructions[j].start_offset
             return "%s%s%s" % (arg2, op_str, arg1), start_offset
         elif instructions[j].start_offset is not None:
             start_offset = instructions[j].start_offset
-            arg2 = (
-                instructions[j].tos_str
-                if instructions[j].tos_str is not None
-                else instructions[j].argrepr
-            )
+            if instructions[j].tos_str:
+                arg2 = instructions[j].tos_str
+            else:
+                arg2 = instructions[j].argrepr
             if arg2 == "":
                 arg2 = "..."
             else:
@@ -303,7 +301,7 @@ def extended_format_BINARY_TRUE_DIVIDE(
 
 def extended_format_BINARY_XOR(opc, instructions):
     return extended_format_infix_binary_op(opc, instructions, " ^ ")
-n
+
 
 def extended_format_BUILD_LIST(opc, instructions):
     if instructions[0].argval == 0:
@@ -331,8 +329,12 @@ def extended_format_BUILD_SLICE(opc, instructions):
     assert argc in (2, 3)
     arglist, arg_count, i = get_arglist(instructions, 1, argc)
     if arg_count == 0:
-        arglist = ["" if arg == "None" else arg for arg in arglist]
-        return ":".join(reversed(arglist)), instructions[i].start_offset
+        result = []
+        for arg in arglist:
+            if arg == "None":
+                arg = ""
+            result.append(arg)
+        return ":".join(reversed(result)), instructions[i].start_offset
 
     if instructions[0].argval == 0:
         # Degenerate case
@@ -387,7 +389,11 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         if instructions[1].opname == "MAKE_FUNCTION" and opc.version_tuple >= (3, 3):
             arglist[0] = instructions[2].argval
 
-        fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+        if fn_inst.tos_str:
+            fn_name = fn_inst.tos_str
+        else:
+            fn_name = fn_inst.argrepr
+
         if opc.version_tuple >= (3, 6):
             arglist.reverse()
         s = '%s(%s)' % (fn_name, ", ".join(arglist))
@@ -520,11 +526,10 @@ def extended_format_RAISE_VARARGS_older(
     elif argc == 1:
         exception_name_inst = instructions[1]
         start_offset = exception_name_inst.start_offset
-        exception_name = (
-            exception_name_inst.tos_str
-            if exception_name_inst.tos_str
-            else exception_name_inst.argrepr
-        )
+        if exception_name_inst.tos_str:
+            exception_name = exception_name_inst.tos_str
+        else:
+            exception_name = exception_name_inst.argrepr
         if exception_name is not None:
             return "raise %s()" % exception_name, start_offset
     return format_RAISE_VARARGS_older(raise_inst.argval), start_offset
@@ -549,7 +554,7 @@ def extended_format_UNARY_NOT(opc, instructions):
 
 
 def get_arglist(
-    instructions, i: int, arg_count: int
+    instructions, i, arg_count
 ):
     """
     For a variable-length instruction like BUILD_TUPLE, or
@@ -567,7 +572,10 @@ def get_arglist(
         i += 1
         inst = instructions[i]
         arg_count -= 1
-        arg = inst.tos_str if inst.tos_str else inst.argrepr
+        if inst.tos_str:
+            arg = inst.tos_str
+        else:
+            arg = inst.argrepr
         if arg is not None:
             arglist.append(arg)
         elif not arg:
@@ -596,8 +604,14 @@ def get_arglist(
 
 
 def get_instruction_arg(inst, argval=None):
-    argval = inst.argrepr if argval is None else argval
-    return inst.tos_str if inst.tos_str is not None else argval
+    if argval is None:
+        argval = inst.argrepr
+    else:
+        arg = inst.argrepr
+    if inst.tos_str is not None:
+        return inst.tos_str
+    else:
+        return argval
 
 
 def resolved_attrs(instructions):
@@ -619,7 +633,7 @@ def resolved_attrs(instructions):
     return ".".join(reversed(resolved)), start_offset
 
 
-def safe_repr(obj, max_len: int = 20):
+def safe_repr(obj, max_len = 20):
     """
     String repr with length at most ``max_len``
     """
@@ -642,7 +656,7 @@ def short_code_repr(code):
         return "<code object %s>" % code
 
 
-def skip_cache(instructions, i: int):
+def skip_cache(instructions, i):
     """Python 3.11+ has CACHE instructions.
     Skip over those starting at index i and return
     the index of the first instruction that is not CACHE

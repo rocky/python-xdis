@@ -19,7 +19,7 @@ limited by, and somewhat compatible with the corresponding
 Python opcode.py structures
 """
 
-from copy import deepcopy
+from copy import copy
 
 from xdis import wordcode
 from xdis.cross_dis import findlabels, findlinestarts, get_jump_target_maps
@@ -109,10 +109,10 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["get_jump_target_maps"] = wordcode.get_jump_target_maps
 
     if from_mod is not None:
-        loc["opmap"] = deepcopy(from_mod.opmap)
-        loc["opname"] = deepcopy(from_mod.opname)
+        loc["opmap"] = copy(from_mod.opmap)
+        loc["opname"] = copy(from_mod.opname)
         for field in fields2copy:
-            loc[field] = getattr(from_mod, field).copy()
+            loc[field] = copy(getattr(from_mod, field))
         pass
     else:
         # FIXME: DRY with above
@@ -139,34 +139,34 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["unaryop"] = set([])
 
 
-def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+def binary_op(loc, name, opcode, pop = 2, push = 1):
     loc["binaryop"].add(opcode)
     def_op(loc, name, opcode, pop, push)
 
 
-def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+def compare_op(loc, name, opcode, pop = 2, push = 1):
     def_op(loc, name, opcode, pop, push)
     loc["hascompare"].append(opcode)
     loc["binaryop"].add(opcode)
 
 
-def conditional_op(loc: dict, name: str, opcode: int):
+def conditional_op(loc, name, opcode):
     loc["hascompare"].append(opcode)
 
 
-def const_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+def const_op(loc, name, opcode, pop = 0, push = 1):
     def_op(loc, name, opcode, pop, push)
     loc["hasconst"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
 def def_op(
-    loc: dict,
-    op_name: str,
-    opcode: int,
-    pop: int = -2,
-    push: int = -2,
-    fallthrough: bool = True,
+    loc,
+    op_name,
+    opcode,
+    pop = -2,
+    push = -2,
+    fallthrough = True,
 ):
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
@@ -176,19 +176,19 @@ def def_op(
         loc["nofollow"].append(opcode)
 
 
-def free_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+def free_op(loc, name, opcode, pop = 0, push = 1):
     def_op(loc, name, opcode, pop, push)
     loc["hasfree"].append(opcode)
 
 
 def jabs_op(
-    loc: dict,
-    name: str,
-    opcode: int,
-    pop: int = 0,
-    push: int = 0,
-    conditional: bool = False,
-    fallthrough: bool = True,
+    loc,
+    name,
+    opcode,
+    pop = 0,
+    push = 0,
+    conditional = False,
+    fallthrough = True,
 ):
     def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
     loc["hasjabs"].append(opcode)
@@ -203,13 +203,13 @@ def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=Tru
         loc["hascondition"].append(opcode)
 
 
-def local_op(loc, name, opcode: int, pop=0, push=1):
+def local_op(loc, name, opcode, pop=0, push=1):
     def_op(loc, name, opcode, pop, push)
     loc["haslocal"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
-def name_op(loc, op_name, opcode: int, pop=-2, push=-2):
+def name_op(loc, op_name, opcode, pop=-2, push=-2):
     def_op(loc, op_name, opcode, pop, push)
     loc["hasname"].append(opcode)
     loc["nullaryop"].add(opcode)
@@ -298,7 +298,7 @@ def store_op(loc, name, op, pop=0, push=1, is_type="def"):
     loc["hasstore"].append(op)
 
 
-def unary_op(loc, name: str, op, pop=1, push=1):
+def unary_op(loc, name, op, pop=1, push=1):
     loc["unaryop"].add(op)
     def_op(loc, name, op, pop, push)
 

@@ -20,8 +20,6 @@ This is like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
-from typing import Tuple
-
 import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
@@ -127,7 +125,7 @@ MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
 # Can combine with extended_format_MAKE_FUNCTION_10_27?
-def extended_format_MAKE_FUNCTION_36(opc, instructions) -> Tuple[str, int]:
+def extended_format_MAKE_FUNCTION_36(opc, instructions):
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
@@ -228,7 +226,7 @@ finalize_opcodes(loc)
 # since they make use of the information there.
 
 
-def extended_format_CALL_METHOD(opc, instructions) -> str:
+def extended_format_CALL_METHOD(opc, instructions):
     """Inst should be a "LOAD_METHOD" instruction. Looks in `instructions`
     to see if we can find a method name.  If not we'll return "".
 
@@ -280,7 +278,10 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
         if instructions[1].opname == "MAKE_FUNCTION":
             arglist[0] = instructions[2].argval
 
-        fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+        if fn_inst.tos_str:
+            fn_name = fn_inst.tos_str
+        else:
+            fn_name = fn_inst.argrepr
         s = '%s(%s)' % (fn_name, ", ".join(reversed(arglist)))
         return s, start_offset
     return "", None

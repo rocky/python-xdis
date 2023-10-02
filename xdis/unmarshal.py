@@ -29,7 +29,8 @@ object
 import sys
 from struct import unpack
 
-from xdis.codetype import Bytes, to_portable
+from xdis.codetype import to_portable
+from xdis.codetype.code13 import Bytes
 from xdis.magics import magic_int2tuple
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 

@@ -31,11 +31,14 @@ def format_CALL_FUNCTION_pos_name_encoded(argc):
     return "%d positional, %d named" % (pos_args, name_default)
 
 
-def format_IS_OP(arg: int) -> str:
-    return "is" if arg == 0 else "is not"
+def format_IS_OP(arg):
+    if arg == 0:
+        return "is"
+    else:
+        return "is not"
 
 
-def format_MAKE_FUNCTION_10_27(argc: int) -> str:
+def format_MAKE_FUNCTION_10_27(argc):
     """
     ``argc`` is the operand  of a  "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction.
 

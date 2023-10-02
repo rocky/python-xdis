@@ -47,7 +47,7 @@ Code311FieldNames = """
 """
 
 Code311FieldTypes = deepcopy(Code38FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": str})
 
 
 class Code311(Code38):
@@ -121,7 +121,7 @@ class Code311(Code38):
         code.freeze()
         try:
             code.check()
-        except AssertionError as e:
+        except AssertionError(e):
             raise TypeError(e)
 
         return types.CodeType(

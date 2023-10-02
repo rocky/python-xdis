@@ -1,4 +1,4 @@
-"""uncompyle6 packaging information"""
+"""xdis packaging information"""
 
 import os.path as osp
 

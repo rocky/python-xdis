@@ -20,7 +20,7 @@ This is like Python 3.7's opcode.py with some classification
 of stack usage and information for formatting instructions.
 """
 
-from typing import Optional, Tuple
+from copy import copy
 
 import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
@@ -105,7 +105,7 @@ nargs_op(loc, "CALL_METHOD",       161, -2,  1)
 format_MAKE_FUNCTION = opcode_36.format_MAKE_FUNCTION
 format_value_flags = opcode_36.format_value_flags
 
-def extended_format_RAISE_VARARGS(opc, instructions) -> Tuple[Optional[str], int]:
+def extended_format_RAISE_VARARGS(opc, instructions):
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval
@@ -115,10 +115,10 @@ def extended_format_RAISE_VARARGS(opc, instructions) -> Tuple[Optional[str], int
     elif argc == 1:
         exception_name_inst = instructions[1]
         start_offset = exception_name_inst.start_offset
-        exception_name = (
-            exception_name_inst.tos_str if exception_name_inst.tos_str
-            else exception_name_inst.argrepr
-        )
+        if exception_name_inst.tos_str:
+            exception_name = exception_name_inst.tos_str
+        else:
+            exception_name = exception_name_inst.argrepr
         if exception_name is not None:
             return "raise %s()" % exception_name, start_offset
     return format_RAISE_VARARGS(raise_inst.argval), start_offset
@@ -132,17 +132,16 @@ def format_RAISE_VARARGS(argc):
     elif argc == 2:
         return "exception instance with __cause__"
 
-opcode_arg_fmt = opcode_arg_fmt37 = {
-    **opcode_arg_fmt36,
-    **{"RAISE_VARARGS": format_RAISE_VARARGS}
-}
+opcode_arg_fmt = opcode_arg_fmt37 = copy(opcode_arg_fmt36)
+opcode_arg_fmt.update(
+    {"RAISE_VARARGS": format_RAISE_VARARGS}
+)
 
-opcode_extended_fmt = opcode_extended_fmt37 = {
-    **opcode_extended_fmt36,
-    **{
+opcode_extended_fmt = opcode_extended_fmt37 = copy(opcode_extended_fmt36)
+opcode_extended_fmt.update({
      "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     }
-}
+)
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

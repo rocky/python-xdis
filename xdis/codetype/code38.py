@@ -117,7 +117,7 @@ class Code38(Code3):
         code.freeze()
         try:
             code.check()
-        except AssertionError as e:
+        except AssertionError(e):
             raise TypeError(e)
 
         return types.CodeType(
@@ -137,5 +137,4 @@ class Code38(Code3):
             code.co_lnotab,
             code.co_freevars,
             code.co_cellvars,
->>>>>>> python-3.0-to-3.2
         )

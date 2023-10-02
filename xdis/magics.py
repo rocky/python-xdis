@@ -411,7 +411,7 @@ magics["3.9.15pypy"] = magics["3.9.0alpha1"]
 canonic_python_version = {}
 
 
-def add_canonic_versions(release_versions: str, canonic):
+def add_canonic_versions(release_versions, canonic):
     for version in release_versions.split():
         canonic_python_version[version] = canonic
         magics[version] = magics[canonic]

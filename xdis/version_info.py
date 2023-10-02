@@ -43,5 +43,5 @@ def version_tuple_to_str(
     return delimiter.join([str(v) for v in version_tuple[start:end]])
 
 
-def version_str_to_tuple(python_version: str, length=2):
+def version_str_to_tuple(python_version, length=2):
     return tuple([int(v) for v in python_version.split(".")[:length]])

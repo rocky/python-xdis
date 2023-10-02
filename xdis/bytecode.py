@@ -1,6 +1,7 @@
 #  Copyright (c) 2018-2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
+import inspect
 import sys
 import types
 
@@ -12,14 +13,19 @@ from xdis.cross_dis import (
 )
 from xdis.cross_types import UnicodeForPython3
 from xdis.instruction import Instruction
+from xdis.namedtuple24 import namedtuple
 from xdis.op_imports import get_opcode_module
 from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
 from xdis.version_info import IS_PYPY
 
-VARIANT = "pypy" if IS_PYPY else None
-
 from StringIO import StringIO
+
+if IS_PYPY:
+    VARIANT = "pypy"
+else:
+    VARIANT = None
+
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
 
@@ -113,7 +119,7 @@ def get_name_info(name_index, name_list):
 _get_name_info = get_name_info
 
 
-_ExceptionTableEntry = collections.namedtuple(
+_ExceptionTableEntry = namedtuple(
     "_ExceptionTableEntry", "start end target depth lasti"
 )
 
@@ -128,7 +134,7 @@ def _parse_varint(iterator):
     return val
 
 
-def parse_exception_table(exception_table: bytes):
+def parse_exception_table(exception_table):
     iterator = iter(exception_table)
     entries = []
     try:
@@ -298,7 +304,10 @@ def get_instructions_bytes(
         opname = opc.opname[op]
         inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
         # fallthrough = op not in opc.nofollow
-        start_offset = offset if opc.oppop[op] == 0 else None
+        if opc.oppop[op] == 0:
+            start_offset = offset
+        else:
+            start_offset = None
 
         yield Instruction(
             opname,
@@ -414,7 +423,10 @@ class Bytecode(object):
             cells = None
             linestarts = None
 
-        first_line_number = co.co_firstlineno if hasattr(co, "co_firstlineno") else None
+        if hasattr(co, "co_firstlineno"):
+            first_line_number = co.co_firstlineno
+        else:
+            first_line_number = None
 
         if inspect.iscode(co):
             filename = inspect.getfile(co)
@@ -467,7 +479,7 @@ class Bytecode(object):
         show_source=True,
         first_line_number=None,
         exception_entries=None,
-    ) -> list:
+    ):
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
         show_source = show_source and show_lineno and first_line_number and filename

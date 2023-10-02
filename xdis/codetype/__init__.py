@@ -16,6 +16,8 @@
 
 __docformat__ = "restructuredtext"
 
+import types
+
 from xdis.namedtuple24 import namedtuple
 
 from xdis.codetype.base import CodeBase
@@ -185,10 +187,10 @@ CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 # default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
     co_argcount,
-    co_posonlyargcount: Optional[int] = -1,  # 3.8 .. 3.10
-    co_kwonlyargcount: Optional[int] = -1,  # 3.0+
+    co_posonlyargcount = -1,  # 3.8 .. 3.10
+    co_kwonlyargcount = -1,  # 3.0+
     co_nlocals=None,
-    co_stacksize: Optional[int] = -1,  # 1.5+
+    co_stacksize = -1,  # 1.5+
     co_flags=None,
     co_code=None,  # 3.0+ this type changes from <str> to <bytes>
     co_consts=None,

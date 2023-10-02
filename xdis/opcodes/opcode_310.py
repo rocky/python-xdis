@@ -148,11 +148,18 @@ def findlinestarts(code, dup_lines=False):
     """
     lineno_table = code.co_lnotab
     start_deltas = list(lineno_table[0::2])
-    lineno_deltas = [x if x < 0x80 else x - 0x100 for x in lineno_table[1::2]]
+    lineno_deltas = []
+    # Treat lineno_table bytes has *signed* 8 bit integers
+    for x in lineno_table[1::2]:
+        x = ord(x)
+        if x >= 0x80:
+            x -= 0x100
+        lineno_deltas.append(x)
     lineno = code.co_firstlineno
     end_offset = 0  # highest offset seen so far
     yield 0, lineno
     for start_delta, lineno_delta in zip(start_deltas, lineno_deltas):
+        start_delta = ord(start_delta)
         if lineno_delta == 0:
             # No change to line number, just accumulate changes to "end_offset"
             # This allows us to accrue offset deltas larger than 254 or so.

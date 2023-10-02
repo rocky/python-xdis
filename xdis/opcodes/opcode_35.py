@@ -21,6 +21,7 @@ of stack usage and information for formatting instructions.
 of stack usage.
 """
 
+from copy import copy
 import xdis.opcodes.opcode_34 as opcode_34
 from xdis.opcodes.base import (
     def_op,
@@ -91,20 +92,20 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
     return "%d mappings, function at %d" % (count, count + rel_func_pos)
 
 
-opcode_arg_fmt = opcode_arg_fmt35 = {
-    **opcode_arg_fmt34,
-    **{
-        "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
-    },
-}
+opcode_arg_fmt = opcode_arg_fmt35 = copy(opcode_arg_fmt34)
+opcode_arg_fmt.update(
+    {
+     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
+    }
+)
 
-opcode_extended_fmt = opcode_extended_fmt35 = {
-    **opcode_extended_fmt34,
-    **{
+opcode_extended_fmt = opcode_extended_fmt35 = copy(opcode_extended_fmt34)
+opcode_extended_fmt.update(
+    {
         "BINARY_MATRIX_MULTIPLY": extended_format_BINARY_MATRIX_MULTIPLY,
         "INPLACE_MATRIX_MULTIPLY": extended_format_INPLACE_MATRIX_MULTIPLY,
     },
-}
+)
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
