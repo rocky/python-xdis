@@ -226,12 +226,15 @@ class Instruction(_Instruction):
                     self.argrepr is not None
                     and self.argrepr == instructions[-1].tos_str
                 ):
-                    fields.append(f"({self.argrepr})")
+                    fields.append("(%s)" % self.argrepr)
                 else:
-                    prefix = "" if self.argrepr is None else f"({self.argrepr}) | "
+                    if self.argrepr is None:
+                        prefix = ""
+                    else:
+                        prefix = "(%s) | " % self.argprepr
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "
-                    fields.append(f"{prefix}{instructions[-1].tos_str}")
+                    fields.append("%s%s" % (prefix, instructions[-1].tos_str))
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
@@ -250,10 +253,13 @@ class Instruction(_Instruction):
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
                     argval = instructions[-1].argval
-                    prefix = "" if argval is None else f"({argval}) | "
+                    if argval is None:
+                        prefix = ""
+                    else:
+                        prefix = "(%s) | " % argval
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "
-                    fields.append(f"{prefix}{new_repr}")
+                    fields.append("%s%s" % (prefix, new_repr))
             pass
 
         return " ".join(fields).rstrip()

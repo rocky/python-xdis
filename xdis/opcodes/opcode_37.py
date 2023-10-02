@@ -120,7 +120,7 @@ def extended_format_RAISE_VARARGS(opc, instructions) -> Tuple[Optional[str], int
             else exception_name_inst.argrepr
         )
         if exception_name is not None:
-            return f"raise {exception_name}()", start_offset
+            return "raise %s()" % exception_name, start_offset
     return format_RAISE_VARARGS(raise_inst.argval), start_offset
 
 def format_RAISE_VARARGS(argc):

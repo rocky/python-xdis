@@ -26,7 +26,6 @@ import sys
 import types
 from io import StringIO
 from linecache import getline
-from typing import Iterable, Optional, Union
 
 from xdis.cross_dis import (
     format_code_info,
@@ -468,7 +467,7 @@ class Bytecode(object):
 
     def disassemble_bytes(
         self,
-        bytecode: Union[bytes, str],
+        bytecode,
         lasti=-1,
         varnames=None,
         names=None,
@@ -478,16 +477,16 @@ class Bytecode(object):
         file=sys.stdout,
         line_offset=0,
         asm_format="classic",
-        filename: Optional[str] = None,
+        filename=None,
         show_source=True,
-        first_line_number: Optional[int] = None,
+        first_line_number=None,
         exception_entries=None,
     ) -> list:
         # Omit the line number column entirely if we have no line number info
         show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
         show_source = show_source and show_lineno and first_line_number and filename
 
-        def show_source_text(line_number: Optional[int]):
+        def show_source_text(line_number):
             """
             Show the Python source text if all conditions are right:
               * source text was requested - this implies other checks
@@ -612,7 +611,7 @@ class Bytecode(object):
         )
 
 
-def list2bytecode(inst_list: Iterable, opc, varnames, consts):
+def list2bytecode(inst_list, opc, varnames, consts):
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """

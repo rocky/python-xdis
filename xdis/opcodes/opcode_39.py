@@ -76,19 +76,19 @@ def_op(loc, 'DICT_UPDATE',            165,   2, 1)
 # fmt: on
 
 
-def extended_format_CONTAINS_OP(opc, instructions) -> str:
+def extended_format_CONTAINS_OP(opc, instructions):
     return extended_format_binary_op(
         opc,
         instructions,
-        f"%s {format_CONTAINS_OP(instructions[0].arg)} %s",
+        "%%s %s %%s" % format_CONTAINS_OP(instructions[0].arg),
     )
 
 
-def extended_format_IS_OP(opc, instructions) -> str:
+def extended_format_IS_OP(opc, instructions):
     return extended_format_binary_op(
         opc,
         instructions,
-        f"%s {format_IS_OP(instructions[0].arg)} %s",
+        "%%s %s %%s" % format_IS_OP(instructions[0].arg),
     )
 
 

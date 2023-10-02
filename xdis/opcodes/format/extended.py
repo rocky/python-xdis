@@ -86,7 +86,7 @@ def extended_format_infix_binary_op(
         if arg1 is None:
             arg1 = instructions[1].argrepr
         else:
-            arg1 = f"({arg1})"
+            arg1 = "(%s)" % arg1
         arg1_start_offset = instructions[1].start_offset
         if arg1_start_offset is not None:
             for i in range(1, len(instructions)):
@@ -106,7 +106,7 @@ def extended_format_infix_binary_op(
                 else instructions[j].argrepr
             )
             start_offset = instructions[j].start_offset
-            return f"{arg2}{op_str}{arg1}", start_offset
+            return "%s%s%s" % (arg2, op_str, arg1), start_offset
         elif instructions[j].start_offset is not None:
             start_offset = instructions[j].start_offset
             arg2 = (
@@ -117,10 +117,10 @@ def extended_format_infix_binary_op(
             if arg2 == "":
                 arg2 = "..."
             else:
-                arg2 = f"({arg2})"
-            return f"{arg2}{op_str}{arg1}", start_offset
+                arg2 = "(%s)" % arg2
+            return "%s%s%s" % (arg2, op_str, arg1), start_offset
         else:
-            return f"...{op_str}{arg1}", None
+            return "...%s%s" % (op_str, arg1), None
     return "", None
 
 
@@ -129,9 +129,9 @@ def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int
     prev_inst = instructions[1]
     start_offset = prev_inst.offset
     if prev_inst.opname == "IMPORT_NAME":
-        return f"{inst.argval} = import_module({inst.argval})", start_offset
+        return "%s = import_module(%s)" % (inst.argval, inst.argval), start_offset
     elif prev_inst.opname == "IMPORT_FROM":
-        return f"{inst.argval} = import_module({prev_inst.argval})", start_offset
+        return "%s = import_module(%s)" % (inst.argval, prev_inst.argval), start_offset
     elif prev_inst.opcode in opc.operator_set:
         if prev_inst.opname == "LOAD_CONST":
             argval = safe_repr(prev_inst.argval)
@@ -151,7 +151,7 @@ def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int
         if prev_inst.opname.startswith("INPLACE_"):
             # Inplace operators show their own assign
             return argval, start_offset
-        return f"{inst.argval} = {argval}", start_offset
+        return "%s = %s" % (inst.argval, argval), start_offset
 
     return "", start_offset
 
@@ -349,7 +349,7 @@ def extended_format_BUILD_TUPLE(opc, instructions: list) -> Tuple[str, Optional[
         return "()", instructions[0].start_offset
     arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
     if arg_count == 0:
-        return f'({", ".join(reversed(arglist))})', instructions[i].start_offset
+        return '(%s)' % ", ".join(reversed(arglist)), instructions[i].start_offset
     return "", None
 
 
@@ -357,7 +357,7 @@ def extended_format_COMPARE_OP(opc, instructions: list) -> Tuple[str, Optional[i
     return extended_format_infix_binary_op(
         opc,
         instructions,
-        f" {instructions[0].argval} ",
+        " %s " % instructions[0].argval,
     )
 
 
@@ -392,7 +392,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
         if opc.version_tuple >= (3, 6):
             arglist.reverse()
-        s = f'{fn_name}({", ".join(arglist)})'
+        s = '%s(%s)' % (fn_name, ", ".join(arglist))
         return s, start_offset
     return "", None
 
@@ -400,7 +400,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
 def extended_format_IMPORT_NAME(opc, instructions: list) -> Tuple[str, Optional[int]]:
     inst = instructions[0]
     start_offset = inst.start_offset
-    return f"import_module({inst.argval})", start_offset
+    return "import_module(%s)" % inst.argval, start_offset
 
 
 def extended_format_INPLACE_ADD(opc, instructions: list) -> Tuple[str, Optional[int]]:
@@ -469,7 +469,7 @@ def extended_format_IS_OP(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(
         opc,
         instructions,
-        f"%s {format_IS_OP(instructions[0].arg)} %s",
+        "%%s %s %%s" % format_IS_OP(instructions[0].arg),
     )
 
 
@@ -505,7 +505,7 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list) -> Tuple[str, i
         code_inst = instructions[2]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += f"make_function({short_code_repr(name_inst.argval)}"
+        s += "make_function(%s)" % short_code_repr(name_inst.argval)
         return s, start_offset
     return s, start_offset
 
@@ -528,7 +528,7 @@ def extended_format_RAISE_VARARGS_older(
             else exception_name_inst.argrepr
         )
         if exception_name is not None:
-            return f"raise {exception_name}()", start_offset
+            return "raise %s()" % exception_name, start_offset
     return format_RAISE_VARARGS_older(raise_inst.argval), start_offset
 
 
@@ -639,9 +639,9 @@ def short_code_repr(code) -> str:
     A shortened string representation of a code object
     """
     if hasattr(code, "co_name"):
-        return f"<code object {code.co_name}>"
+        return "<code object %s>" % code.co_name
     else:
-        return f"<code object {code}>"
+        return "<code object %s>" % code
 
 
 def skip_cache(instructions: list, i: int) -> int:

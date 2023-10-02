@@ -199,11 +199,11 @@ loc["hasjrel"] = [
 # fmt: on
 
 
-def extended_format_BINARY_OP(opc, instructions) -> Optional[str]:
+def extended_format_BINARY_OP(opc, instructions):
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
-    return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
+    return extended_format_binary_op(opc, instructions, "%%s %s %%s" % opname)
 
 
 def format_BINARY_OP(arg) -> str:

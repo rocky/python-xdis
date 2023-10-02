@@ -30,11 +30,11 @@ def_op(loc, "YIELD_FROM", 72, 1, 0)
 
 opcode_extended_fmt = opcode_extended_fmt33 = opcode_extended_fmt_base.copy()
 opcode_arg_fmt = opcode_arg_fmt33 = opcode_arg_fmt_base.copy()
-opcode_arg_fmt.update= {
+opcode_arg_fmt.update({
     "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
     "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
-}
+})
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
