@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,13 +14,17 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
-from xdis.codetype.code38 import Code38, Code38FieldTypes
 import types
 from copy import deepcopy
 
-# Note: order is the positional order. It is important to match this
-# with the 3.11 order.
+from xdis.codetype.code38 import Code38, Code38FieldTypes
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
+
+# Note: order is the positional order given in the Python docs for
+# 3.11 types.Codetype.
+# "posonlyargcount" is not used, but it is in other Python versions so it
+# has to be included since this structure is used as the Union type
+# for all code types.
 Code311FieldNames = """
         co_argcount
         co_posonlyargcount
@@ -28,32 +32,27 @@ Code311FieldNames = """
         co_nlocals
         co_stacksize
         co_flags
-        co_code
         co_consts
+        co_code
         co_names
         co_varnames
+        co_freevars
+        co_cellvars
         co_filename
         co_name
         co_qualname
         co_firstlineno
         co_lnotab
-        co_exception_table
-        co_freevars
-        co_cellvars
+        co_exceptiontable
 """
 
 Code311FieldTypes = deepcopy(Code38FieldTypes)
-Code311FieldTypes.update(
-    {
-        "co_qualname": str,
-        "co_exception_table": bytes
-    }
-)
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
 
 
 class Code311(Code38):
     """Class for a Python 3.11+ code object used when a Python interpreter less than 3.11 is
-    working on Python3 bytecode. It also functions as an object that can be used
+    working on Python 3.11 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
 
     When done mutating, call method to_native().
@@ -72,39 +71,41 @@ class Code311(Code38):
         co_nlocals,
         co_stacksize,
         co_flags,
-        co_code,
         co_consts,
+        co_code,
         co_names,
         co_varnames,
+        co_freevars,
+        co_cellvars,
         co_filename,
         co_name,
         co_qualname,
         co_firstlineno,
-        co_lnotab,
-        co_exception_table,
-        co_freevars,
-        co_cellvars,
+        co_linetable,
+        co_exceptiontable,
     ):
+        # Keyword argument parameters in the call below is more robust.
+        # Since things change around, robustness is good.
         super(Code311, self).__init__(
-            co_argcount,
-            co_posonlyargcount,
-            co_kwonlyargcount,
-            co_nlocals,
-            co_stacksize,
-            co_flags,
-            co_code,
-            co_consts,
-            co_names,
-            co_varnames,
-            co_filename,
-            co_name,
-            co_firstlineno,
-            co_lnotab,
-            co_freevars,
-            co_cellvars,
+            co_argcount = co_argcount,
+            co_posonlyargcount = co_posonlyargcount,
+            co_kwonlyargcount = co_kwonlyargcount,
+            co_nlocals = co_nlocals,
+            co_stacksize = co_stacksize,
+            co_flags = co_flags,
+            co_code = co_code,
+            co_consts = co_consts,
+            co_names = co_names,
+            co_varnames = co_varnames,
+            co_filename = co_filename,
+            co_name = co_name,
+            co_firstlineno = co_firstlineno,
+            co_lnotab = co_linetable,
+            co_freevars = co_freevars,
+            co_cellvars = co_cellvars,
         )
         self.co_qualname = co_qualname
-        self.co_exception_table = co_exception_table
+        self.co_exceptiontable = co_exceptiontable
         self.fieldtypes = Code311FieldTypes
         if type(self) == Code311:
             self.check()
@@ -139,7 +140,7 @@ class Code311(Code38):
             code.co_qualname,
             code.co_firstlineno,
             code.co_lnotab,
-            code.co_exception_table,
+            code.co_exceptiontable,
             code.co_freevars,
             code.co_cellvars,
         )
