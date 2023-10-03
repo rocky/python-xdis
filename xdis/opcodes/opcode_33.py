@@ -6,7 +6,7 @@ This is a like Python 3.3's opcode.py with some classification
 of stack usage.
 """
 
-import copy
+from copy import copy
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
@@ -28,14 +28,15 @@ def_op(loc, "YIELD_FROM", 72, 1, 0)
 # fmt: on
 
 
-opcode_extended_fmt = opcode_extended_fmt33 = opcode_extended_fmt_base.copy()
-opcode_arg_fmt = opcode_arg_fmt33 = opcode_arg_fmt_base.copy()
-opcode_arg_fmt.update({
-    "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
-    "RAISE_VARARGS": format_RAISE_VARARGS_older,
-})
-=======
+opcode_extended_fmt = opcode_extended_fmt33 = copy(opcode_extended_fmt_base)
+opcode_arg_fmt = opcode_arg_fmt33 = copy(opcode_arg_fmt_base)
+opcode_arg_fmt.update(
+    {
+        "MAKE_CLOSURE": format_MAKE_FUNCTION_30_35,
+        "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
+        "RAISE_VARARGS": format_RAISE_VARARGS_older,
+    }
+)
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

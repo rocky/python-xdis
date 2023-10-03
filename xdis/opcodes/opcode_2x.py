@@ -22,6 +22,8 @@ similar to the opcodes in Python's opcode.py library.
 If this file changes the other opcode files may have to be adjusted accordingly.
 """
 
+from copy import copy
+
 from xdis.opcodes.base import (
     binary_op,
     compare_op,
@@ -211,7 +213,7 @@ def_op(loc, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
 
 
-update_arg_fmt_base2x = opcode_arg_fmt_base.copy()
+update_arg_fmt_base2x = copy(opcode_arg_fmt_base)
 update_arg_fmt_base2x.update(
     {
         "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,

@@ -6,6 +6,7 @@ of stack usage and information for formatting instructions.
 """
 
 from copy import copy
+
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
     binary_op,
@@ -209,7 +210,7 @@ def format_BINARY_OP(arg):
     return _nb_ops[arg][1]
 
 
-opcode_arg_fmt311 = opcode_arg_fmt310.copy()
+opcode_arg_fmt311 = copy(opcode_arg_fmt310)
 del opcode_arg_fmt311["CALL_FUNCTION"]
 del opcode_arg_fmt311["CALL_FUNCTION_KW"]
 del opcode_arg_fmt311["CALL_METHOD"]

@@ -21,11 +21,14 @@ CPython version-independent disassembly routines
 # imports so this can run on older Pythons. This is
 # intended to be a more cross-version Python program
 
-import datetime, re, sys
+import datetime
+import re
+import sys
 
 try:
     from collections import deque
 except ImportError:
+
     class deque:
         def __init__(self, initial_todo=[]):
             self.todo = initial_todo
@@ -38,6 +41,7 @@ except ImportError:
 
         def __len__(self):
             return len(self.todo)
+
 
 import xdis
 from xdis.bytecode import Bytecode

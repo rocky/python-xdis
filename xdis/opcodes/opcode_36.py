@@ -138,7 +138,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions):
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         s += "make_function(%s, %s)" % (
             name_inst.argval,
-            short_code_repr(code_inst.argval)
+            short_code_repr(code_inst.argval),
         )
         return s, start_offset
     return s, start_offset
@@ -287,7 +287,7 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
             fn_name = fn_inst.tos_str
         else:
             fn_name = fn_inst.argrepr
-        s = '%s(%s)' % (fn_name, ", ".join(reversed(arglist)))
+        s = "%s(%s)" % (fn_name, ", ".join(reversed(arglist)))
         return s, start_offset
     return "", None
 
@@ -362,3 +362,5 @@ opcode_extended_fmt36.update(
         "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_36,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
         "STORE_ATTR": extended_format_ATTR,
+    }
+)

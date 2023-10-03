@@ -4,8 +4,9 @@
 import inspect
 import sys
 import types
-from io import StringIO
 from linecache import getline
+
+from StringIO import StringIO
 
 from xdis.cross_dis import (
     format_code_info,
@@ -20,8 +21,6 @@ from xdis.op_imports import get_opcode_module
 from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
 from xdis.version_info import IS_PYPY
-
-from StringIO import StringIO
 
 if IS_PYPY:
     VARIANT = "pypy"
@@ -224,7 +223,7 @@ def get_instructions_bytes(
             if python_36:
                 arg = code2num(bytecode, i) | extended_arg
                 if op == opc.EXTENDED_ARG:
-                    extended_arg = (arg << 8)
+                    extended_arg = arg << 8
                 else:
                     extended_arg = 0
                 # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
@@ -237,7 +236,7 @@ def get_instructions_bytes(
                 )
                 i += 2
                 if op == opc.EXTENDED_ARG:
-                    extended_arg = arg*65536
+                    extended_arg = arg * 65536
                 else:
                     extended_arg = 0
 
