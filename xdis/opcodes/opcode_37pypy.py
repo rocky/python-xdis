@@ -208,7 +208,7 @@ opcode_extended_fmt.update(
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     },
 )
-
+opcode_extended_fmt = opcode_extended_fmt37pypy
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

@@ -211,11 +211,10 @@ def_op(loc, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
 
 
-update_arg_fmt_base2x = opcode_arg_fmt_base
+update_arg_fmt_base2x = opcode_arg_fmt_base.copy()
 update_arg_fmt_base2x.update(
     {
         "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
-    },
+    }
 )
-
 opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()

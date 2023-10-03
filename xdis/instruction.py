@@ -27,22 +27,30 @@ _Instruction = namedtuple(
     "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line "
     "is_jump_target has_extended_arg tos_str start_offset",
 )
-
 # _Instruction.opname.__doc__ = "Human readable name for operation"
 # _Instruction.opcode.__doc__ = "Numeric code for operation"
+# _Instruction.optype.__doc__ = "Class of operation"
+# _Instruction.inst_size.__doc__ = "Number of byte of instruction"
 # _Instruction.arg.__doc__ = "Numeric argument to operation (if any), otherwise None"
 # _Instruction.argval.__doc__ = "Resolved arg value (if known), otherwise same as arg"
 # _Instruction.argrepr.__doc__ = "Human readable description of operation argument"
 # _Instruction.has_arg.__doc__ = "True if instruction has an operand, otherwise False"
 # _Instruction.offset.__doc__ = "Start index of operation within bytecode sequence"
 # _Instruction.starts_line.__doc__ = (
-#    "Line started by this opcode (if any), otherwise None"
+#     "Line started by this opcode (if any), otherwise None"
 # )
 # _Instruction.is_jump_target.__doc__ = (
-#    "True if other code jumps to here, otherwise False"
+#     "True if other code jumps to here, otherwise False"
 # )
 # _Instruction.has_extended_arg.__doc__ = (
-#    "True there were EXTENDED_ARG opcodes before this, otherwise False"
+#     "True there were EXTENDED_ARG opcodes before this, otherwise False"
+# )
+#
+# _Instruction.formatted.__doc__ = (
+#    "If not None, a somewhat hacky formatted representation of the instruction"
+# )
+# _Instruction.tos_str.__doc__ = (
+#    "If not None, a string representation of the top of the stack (TOS)"
 # )
 
 # _Instruction.tos_str.__doc__ = (

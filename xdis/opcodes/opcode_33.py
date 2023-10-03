@@ -35,6 +35,7 @@ opcode_arg_fmt.update({
     "MAKE_FUNCTION": format_MAKE_FUNCTION_30_35,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 })
+=======
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

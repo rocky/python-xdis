@@ -4,6 +4,8 @@
 import inspect
 import sys
 import types
+from io import StringIO
+from linecache import getline
 
 from xdis.cross_dis import (
     format_code_info,

@@ -20,6 +20,8 @@ This is like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
+from copy import copy
+
 import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
     def_op,
@@ -134,7 +136,10 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions):
     code_inst = instructions[2]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += "make_function(%s, %s)" % (name_inst.argval, short_code_repr(code_inst.argval))
+        s += "make_function(%s, %s)" % (
+            name_inst.argval,
+            short_code_repr(code_inst.argval)
+        )
         return s, start_offset
     return s, start_offset
 
@@ -333,7 +338,7 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
         return s
 
 
-opcode_arg_fmt = opcode_arg_fmt36 = opcode_arg_fmt35.copy()
+opcode_arg_fmt = opcode_arg_fmt36 = copy(opcode_arg_fmt35)
 opcode_arg_fmt.update(
     {
         "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
@@ -348,7 +353,7 @@ opcode_arg_fmt.update(
     },
 )
 
-opcode_extended_fmt36 = opcode_extended_fmt = opcode_extended_fmt35.copy()
+opcode_extended_fmt36 = opcode_extended_fmt = copy(opcode_extended_fmt35)
 opcode_extended_fmt36.update(
     {
         "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
@@ -357,5 +362,3 @@ opcode_extended_fmt36.update(
         "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_36,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
         "STORE_ATTR": extended_format_ATTR,
-    },
-)

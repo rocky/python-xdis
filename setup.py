@@ -2,6 +2,7 @@
 """Setup script for the 'xdis' distribution."""
 import sys
 from xdis.version import __version__
+from setuptools import setup, find_packages
 
 SYS_VERSION = sys.version_info[0:2]
 if not ((2, 4) <= SYS_VERSION <= (2, 7)):
@@ -43,9 +44,6 @@ from __pkginfo__ import (
     web,
     zip_safe,
 )
-from xdis.version import __version__
-
-from setuptools import setup, find_packages
 
 setup(
     author=author,

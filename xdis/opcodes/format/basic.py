@@ -17,7 +17,6 @@
 Routines for formatting opcodes.
 """
 
-
 def format_extended_arg(arg):
     return str(arg * (1 << 16))
 
