@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Facilitates importing opmaps for the a given Python version"""
+"""Facilitates importing opmaps for a given Python version"""
 import copy
 import sys
 
@@ -202,7 +202,7 @@ def get_opcode_module(version_info=None, variant=None):
 
 
 def remap_opcodes(op_obj, alternate_opmap):
-    # All these lists are 255 in length, with index i corresponding to opcode i
+    # All these lists are 255 in length, with index, ``i``, corresponding to opcode ``i``
     if hasattr(op_obj, "REMAPPED") and op_obj.REMAPPED:
         return op_obj
 

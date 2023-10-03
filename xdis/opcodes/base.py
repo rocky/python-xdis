@@ -349,7 +349,7 @@ def finalize_opcodes(loc):
 def fix_opcode_names(opmap):
     """
     Python stupidly named some OPCODES with a + which prevents using opcode name
-    directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3 so we
+    directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3, so we
     can then use opcode_23.SLICE_3.  Later Python's fix this.
     """
     return dict([(k.replace("+", "_"), v) for (k, v) in opmap.items()])

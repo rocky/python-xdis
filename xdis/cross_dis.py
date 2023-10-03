@@ -323,7 +323,7 @@ def unpack_opargs_bytecode_310(code, opc):
         yield offset, op, arg
 
 
-# This is modified from Python 3.6's dis
+# This is modified from Python 3.6's ``lib/dis`` module
 def unpack_opargs_bytecode(code, opc):
     extended_arg = 0
     try:

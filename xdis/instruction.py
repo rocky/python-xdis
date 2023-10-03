@@ -15,7 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """Python instruction class
-Extracted from Python 3 dis module but generalized to
+Extracted from Python 3's ``lib/dis`` module but generalized to
 allow running on Python 2.
 """
 
@@ -153,7 +153,7 @@ class Instruction(_Instruction):
                 # Not 3.6 or later
                 hex_bytecode += " " * (2 * 3)
             if self.inst_size == 2:
-                # Must by Python 3.6 or later
+                # Must be Python 3.6 or later
                 if self.has_arg:
                     hex_bytecode += " %02x" % (self.arg % 256)
                 else:
