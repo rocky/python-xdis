@@ -20,6 +20,7 @@ allow running on Python 2.
 """
 
 import re
+
 from xdis.namedtuple24 import namedtuple
 
 _Instruction = namedtuple(
@@ -239,7 +240,7 @@ class Instruction(_Instruction):
                     if self.argrepr is None:
                         prefix = ""
                     else:
-                        prefix = "(%s) | " % self.argprepr
+                        prefix = "(%s) | " % self.argrepr
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "
                     fields.append("%s%s" % (prefix, instructions[-1].tos_str))

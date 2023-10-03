@@ -34,7 +34,8 @@ bytecode from Python 2.7.13 and vice versa.
 Options:
   -F | --format {xasm | bytes | classic | extended | extended-bytes | header}
                      specifiy assembly output format
-  -V | --version     show version and stop
+  -V | --version     Show version and stop
+  -S | --show-source Show source code when it is available
   -h | --help        show this message
   --header           Show only the module header information
 
@@ -77,14 +78,15 @@ Type -h for for full help.""" % program
         sys.exit(1)
 
     try:
-        opts, files = getopt.getopt(sys.argv[1:], 'hVUHF:',
-                                    ['help', 'version', 'header', 'format'])
+        opts, files = getopt.getopt(sys.argv[1:], 'hVUHF:S',
+                                    ['help', 'version', 'header', 'format',
+                                     'show-source'])
     except getopt.GetoptError, e:
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
 
     format = "classic"
-    asm, header = False, False
+    asm, header, show_source = False, False, False
     for opt, val in opts:
         if opt in ('-h', '--help'):
             print(__doc__)
@@ -103,6 +105,8 @@ Type -h for for full help.""" % program
                                  (val, ", ".join(FORMATS)))
                 sys.exit(2)
             format = val
+        elif opt in ('-S', '--show-source'):
+            show_source = True
         else:
             print(opt)
             sys.stderr.write(Usage_short)
