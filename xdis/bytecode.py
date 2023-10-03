@@ -16,7 +16,7 @@
 
 """
 Python bytecode and instruction classes
-Extracted from Python 3 dis module but generalized to
+Extracted from Python 3 "dis" module but generalized to
 allow running on Python 2.
 """
 
@@ -325,7 +325,7 @@ def get_instructions_bytes(
             tos_str=None,
             start_offset=start_offset,
         )
-        # fallthrough)
+        # fallthrough
         extended_arg_count = (
             extended_arg_count + 1
             if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG

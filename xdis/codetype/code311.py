@@ -22,7 +22,7 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order given in the Python docs for
 # 3.11 types.Codetype.
-# "posonlyargcount" is not used, but it is in other Python versions so it
+# "posonlyargcount" is not used, but it is in other Python versions, so it
 # has to be included since this structure is used as the Union type
 # for all code types.
 Code311FieldNames = """
@@ -59,7 +59,7 @@ class Code311(Code38):
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
     """
 
