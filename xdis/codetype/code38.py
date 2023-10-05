@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -32,12 +32,12 @@ Code38FieldNames = """
         co_consts
         co_names
         co_varnames
+        co_freevars
+        co_cellvars
         co_filename
         co_name
         co_firstlineno
         co_lnotab
-        co_freevars
-        co_cellvars
 """
 
 Code38FieldTypes = deepcopy(Code3FieldTypes)
@@ -49,15 +49,15 @@ Code38FieldTypes.update(
 
 
 class Code38(Code3):
-    """Class for a Python 3.8+ code object used when a Python interpreter less than 3.8 is
-    working on Python3 bytecode. It also functions as an object that can be used
+    """Class for a Python 3.8..3.10 code object used when a Python interpreter less not in that
+    range but working on Python 3.8..3.10 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
 
     When done mutating, call method to_native().
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
     """
 
@@ -80,22 +80,24 @@ class Code38(Code3):
         co_freevars,
         co_cellvars,
     ):
+        # Keyword argument parameters in the call below is more robust.
+        # Since things change around, robustness is good.
         super(Code38, self).__init__(
-            co_argcount,
-            co_kwonlyargcount,
-            co_nlocals,
-            co_stacksize,
-            co_flags,
-            co_code,
-            co_consts,
-            co_names,
-            co_varnames,
-            co_filename,
-            co_name,
-            co_firstlineno,
-            co_lnotab,
-            co_freevars,
-            co_cellvars,
+            co_argcount = co_argcount,
+            co_kwonlyargcount = co_kwonlyargcount,
+            co_nlocals = co_nlocals,
+            co_stacksize = co_stacksize,
+            co_flags = co_flags,
+            co_code = co_code,
+            co_consts = co_consts,
+            co_names = co_names,
+            co_varnames = co_varnames,
+            co_filename = co_filename,
+            co_name = co_name,
+            co_firstlineno = co_firstlineno,
+            co_lnotab = co_lnotab,
+            co_freevars = co_freevars,
+            co_cellvars = co_cellvars,
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
@@ -103,9 +105,9 @@ class Code38(Code3):
             self.check()
 
     def to_native(self):
-        if not (PYTHON_VERSION_TRIPLE >= (3, 8)):
+        if not (3, 8) <= PYTHON_VERSION_TRIPLE < (3, 11):
             raise TypeError(
-                "Python Interpreter needs to be in 3.8 or greater; is %s"
+                "Python Interpreter needs to be in range 3.8..3.10; is %s"
                 % version_tuple_to_str()
             )
 

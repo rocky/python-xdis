@@ -82,5 +82,4 @@ class UnicodeForPython3(str):
         except UnicodeDecodeError:
             return f"""u'{str(self.value)[1:]}'"""
 
-        if is_ascii(utf8_value):
-            return f"""{utf8_value}"""
+        return f"""{utf8_value}"""

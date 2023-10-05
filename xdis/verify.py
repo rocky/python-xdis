@@ -44,7 +44,7 @@ def dump_compile(codeobject, filename, timestamp, magic):
     codeobject: code object
     filefile: bytecode file to write
     timestamp: timestamp to put in file
-    magic: Pyton bytecode magic
+    magic: Python bytecode magic
     """
     # Atomically write the pyc/pyo file.  Issue #13146.
     # id() is used to generate a pseudo-random filename.
@@ -122,9 +122,9 @@ def verify_file(real_source_filename, real_bytecode_filename):
     Compare that the code objects there are equal.
 
     Next write out the bytecode (using the same Python
-    bytecode writin routine as in step 1.
+    bytecode-writing routine as in step 1.
 
-    Finally compare the bytecode files.
+    Finally, compare the bytecode files.
     """
     tempdir = tempfile.gettempdir()
     source_filename = os.path.join(tempdir, "testing.py")

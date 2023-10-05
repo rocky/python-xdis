@@ -8,11 +8,8 @@ of stack usage.
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
-from xdis.opcodes.format import (
-    format_RAISE_VARARGS_older,
-    opcode_arg_fmt_base,
-    opcode_extended_fmt_base,
-)
+from xdis.opcodes.format.basic import format_RAISE_VARARGS_older, opcode_arg_fmt_base
+from xdis.opcodes.format.extended import opcode_extended_fmt_base
 from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_30_35
 
 version_tuple = (3, 3)

@@ -116,7 +116,7 @@ def extended_format_RAISE_VARARGS(opc, instructions) -> Tuple[Optional[str], int
         exception_name_inst = instructions[1]
         start_offset = exception_name_inst.start_offset
         exception_name = (
-            exception_name_inst.formatted if exception_name_inst.formatted
+            exception_name_inst.tos_str if exception_name_inst.tos_str
             else exception_name_inst.argrepr
         )
         if exception_name is not None:

@@ -34,10 +34,12 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.format import (
+from xdis.opcodes.format.basic import format_RAISE_VARARGS_older
+from xdis.opcodes.format.extended import (
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
-    format_RAISE_VARARGS_older,
+    get_arglist,
+    short_code_repr,
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
@@ -108,16 +110,17 @@ rm_op(loc, 'CALL_FUNCTION_VAR_KW', 142)
 # These are new since Python 3.6
 #          OP NAME                OPCODE POP PUSH
 # -----------------------------------------------
-store_op(loc,    'STORE_ANNOTATION', 127,  1,  0, is_type="name") # Stores TOS index in
+def_op(loc,      "LOAD_BUILD_CLASS",  71,  0,  1)
+store_op(loc,    "STORE_ANNOTATION", 127,  1,  0, is_type="name") # Stores TOS index in
                                                                    # name list;
-jrel_op(loc,     'SETUP_ASYNC_WITH', 154,  2,  8)  # pops __aenter__ and __aexit__;
+jrel_op(loc,     "SETUP_ASYNC_WITH", 154,  2,  8)  # pops __aenter__ and __aexit__;
                                                    # pushed results on stack
-def_op(loc,      'FORMAT_VALUE',     155,  1,  1)
-varargs_op(loc,  'BUILD_CONST_KEY_MAP', 156, -2, 1) # TOS is count of kwargs
-nargs_op(loc,    'CALL_FUNCTION_EX', 142, -2,  1)
-def_op(loc,      'SETUP_ANNOTATIONS', 85,  1,  1)
-varargs_op(loc,  'BUILD_STRING',     157, -2,  2)
-varargs_op(loc,  'BUILD_TUPLE_UNPACK_WITH_CALL', 158)
+def_op(loc,      "FORMAT_VALUE",     155,  1,  1)
+varargs_op(loc,  "BUILD_CONST_KEY_MAP", 156, -2, 1) # TOS is count of kwargs
+nargs_op(loc,    "CALL_FUNCTION_EX", 142, -2,  1)
+def_op(loc,      "SETUP_ANNOTATIONS", 85,  1,  1)
+varargs_op(loc,  "BUILD_STRING",     157, -2,  2)
+varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 # fmt: on
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
@@ -132,8 +135,8 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions) -> Tuple[str, int]:
     name_inst = instructions[1]
     code_inst = instructions[2]
     start_offset = code_inst.offset
-    if name_inst.opname in ("LOAD_CONST",):
-        s += f"{name_inst.argval} = {code_inst.argrepr}"
+    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
+        s += f"make_function({name_inst.argval}, {short_code_repr(code_inst.argval)})"
         return s, start_offset
     return s, start_offset
 
@@ -261,53 +264,23 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
     # From opcode description: arg_count indicates the total number of
     # positional and keyword arguments.
 
-    def get_arglist(arg_count: int):
-        arglist = []
-        i = 0
-        start_offset = None
-        inst = None
-        while arg_count > 0:
-            i += 1
-            inst = instructions[i]
-            arg_count -= 1
-            arg = inst.formatted if inst.formatted else inst.argrepr
-            if arg is not None:
-                arglist.append(arg)
-            else:
-                arglist.append("???")
-            if inst.is_jump_target:
-                i += 1
-                break
-            start_offset = inst.start_offset
-            if start_offset is not None:
-                j = i
-                while j < len(instructions) - 1:
-                    j += 1
-                    inst2 = instructions[j]
-                    if inst2.offset == start_offset:
-                        inst = inst2
-                        i = j
-                        break
-
-            pass
-        return arglist, arg_count, start_offset, i
-
     call_inst = instructions[0]
     arg_count = call_inst.argval
     s = ""
 
-    arglist, arg_count, start_offset, i = get_arglist(arg_count)
+    arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
 
     if arg_count != 0:
         return "", None
 
+    assert i is not None
     fn_inst = instructions[i + 1]
     if fn_inst.opcode in opc.operator_set:
         start_offset = fn_inst.offset
         if instructions[1].opname == "MAKE_FUNCTION":
             arglist[0] = instructions[2].argval
 
-        fn_name = fn_inst.formatted if fn_inst.formatted else fn_inst.argrepr
+        fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
         s = f'{fn_name}({", ".join(reversed(arglist))})'
         return s, start_offset
     return "", None
@@ -377,7 +350,6 @@ opcode_arg_fmt = opcode_arg_fmt36 = {
 opcode_extended_fmt36 = opcode_extended_fmt = {
     **opcode_extended_fmt35,
     **{
-        "CALL_FUNCTION": extended_format_CALL_FUNCTION36,
         "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
         # "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
         "CALL_METHOD": extended_format_CALL_METHOD,

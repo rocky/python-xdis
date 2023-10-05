@@ -16,7 +16,7 @@
 """
 CPython 1.5 bytecode opcodes
 
-This is a like Python 3.2's opcode.py with some classification
+This is a like Python 1.5's opcode.py with some classification
 of stack usage and information for formatting instructions.
 of stack usage.
 """

@@ -20,7 +20,7 @@ from xdis.codetype.base import CodeBase
 from xdis.cross_types import UnicodeForPython3
 
 # If there is a list of types, then any will work, but the 1st one is
-# the corect one for types.CodeType
+# the correct one for types.CodeType.
 Code13FieldTypes = {
     "co_argcount": int,
     "co_nlocals": int,
@@ -35,12 +35,12 @@ Code13FieldTypes = {
 
 
 class Code13(CodeBase):
-    """Class for a Python 1.0 .. 1.4 code object used for Python
-    interpreters other than 1.0 .. 1.4
+    """Class for a Python 1.0 ... 1.4 code object used for Python
+    interpreters other than 1.0 ... 1.4
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
 
     """
@@ -101,7 +101,7 @@ class Code13(CodeBase):
         """
         Return a copy of the code object with new values for the specified fields.
 
-        This is analoguous to the method added to types.CodeType in Python 3.8.
+        This is analogous to the method added to types.CodeType in Python 3.8.
         """
         code = deepcopy(self)
         for field, value in kwargs.items():

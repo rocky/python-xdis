@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020, 2023 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,10 +14,12 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.codetype.code13 import Code13, Code13FieldTypes
 from copy import deepcopy
 
-# If there is a list of types, then any will work, but the 1st one is the corect one for types.CodeType
+from xdis.codetype.code13 import Code13, Code13FieldTypes
+
+# If there is a list of types, then any will work, but the 1st one is
+# the correct one for types.CodeType
 Code15FieldTypes = deepcopy(Code13FieldTypes)
 Code15FieldTypes.update(
     {
@@ -34,7 +36,7 @@ class Code15(Code13):
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
     """
 
@@ -54,15 +56,15 @@ class Code15(Code13):
         co_lnotab,
     ):
         super(Code15, self).__init__(
-            co_argcount,
-            co_nlocals,
-            co_flags,
-            co_code,
-            co_consts,
-            co_names,
-            co_varnames,
-            co_filename,
-            co_name,
+            co_argcount=co_argcount,
+            co_nlocals=co_nlocals,
+            co_flags=co_flags,
+            co_code=co_code,
+            co_consts=co_consts,
+            co_names=co_names,
+            co_varnames=co_varnames,
+            co_filename=co_filename,
+            co_name=co_name,
         )
         self.co_stacksize = co_stacksize
         self.co_firstlineno = co_firstlineno
@@ -86,9 +88,10 @@ class Code15(Code13):
         for i in range(0, len(self.co_lnotab), 2):
             offset_diff = self.co_lnotab[i]
             line_number_diff = self.co_lnotab[i + 1]
-            if not isinstance(offset_diff, int):
+            if isinstance(offset_diff, int):
                 offset_diff = ord(offset_diff)
-                line_number_diff = ord(line_number_diff)
+                if isinstance(line_number_diff, str):
+                    line_number_diff = ord(line_number_diff)
 
             assert offset_diff < 256
             if offset_diff == 255:

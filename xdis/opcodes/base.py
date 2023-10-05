@@ -85,12 +85,6 @@ hasname hasnargs hasstore hasvargs oppop oppush
 nofollow nullaryop unaryop
 """.split()
 
-loc = locals()
-
-for op in range(256):
-    opname[op] = "<%r>" % (op,)
-del op
-
 
 def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     """Sets up a number of the structures found in Python's
@@ -292,8 +286,10 @@ def rm_op(loc, name, op):
 def store_op(loc, name, op, pop=0, push=1, is_type="def"):
     if is_type == "name":
         name_op(loc, name, op, pop, push)
+        loc["nullaryop"].remove(op)
     elif is_type == "local":
         local_op(loc, name, op, pop, push)
+        loc["nullaryop"].remove(op)
     elif is_type == "free":
         free_op(loc, name, op, pop, push)
     else:
@@ -339,7 +335,13 @@ def finalize_opcodes(loc):
         loc[op] = loc["opmap"][op]
     loc["JUMP_OPs"] = frozenset(loc["hasjrel"] + loc["hasjabs"])
     loc["NOFOLLOW"] = frozenset(loc["nofollow"])
-    loc["operator_set"] = loc["nullaryop"] | loc["unaryop"] | loc["binaryop"]
+    loc["operator_set"] = frozenset(
+        loc["nullaryop"]
+        | loc["unaryop"]
+        | loc["binaryop"]
+        | set([op for op in loc["hasnargs"] if op not in loc["nofollow"]])
+        | set([op for op in loc["hasvargs"] if loc["oppush"][op] == 1])
+    )
     opcode_check(loc)
     return
 
@@ -347,7 +349,7 @@ def finalize_opcodes(loc):
 def fix_opcode_names(opmap):
     """
     Python stupidly named some OPCODES with a + which prevents using opcode name
-    directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3 so we
+    directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3, so we
     can then use opcode_23.SLICE_3.  Later Python's fix this.
     """
     return dict([(k.replace("+", "_"), v) for (k, v) in opmap.items()])
