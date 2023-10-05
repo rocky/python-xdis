@@ -74,7 +74,7 @@ license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
 modname = "xdis"
 packages = ["xdis"]
-python_requires = ">=3.6,<3.12"
+python_requires = ">=3.6,<=3.12"
 # setup_requires     = ['pytest-runner']
 scripts = ["bin/pydisasm.py"]
 short_desc = "Python cross-version byte-code disassembler and marshal routines"
