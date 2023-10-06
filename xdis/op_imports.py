@@ -14,49 +14,50 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Facilitates importing opmaps for a given Python version"""
+"""Facilitates for importing Python opcode maps for a given Python version"""
 import copy
 import sys
 
 from xdis.magics import canonic_python_version
 from xdis.opcodes import (
-    opcode_10 as opcode_10,
-    opcode_11 as opcode_11,
-    opcode_12 as opcode_12,
-    opcode_13 as opcode_13,
-    opcode_14 as opcode_14,
-    opcode_15 as opcode_15,
-    opcode_16 as opcode_16,
-    opcode_20 as opcode_20,
-    opcode_21 as opcode_21,
-    opcode_22 as opcode_22,
-    opcode_23 as opcode_23,
-    opcode_24 as opcode_24,
-    opcode_25 as opcode_25,
-    opcode_26 as opcode_26,
-    opcode_26pypy as opcode_26pypy,
-    opcode_27 as opcode_27,
-    opcode_27pypy as opcode_27pypy,
-    opcode_30 as opcode_30,
-    opcode_31 as opcode_31,
-    opcode_32 as opcode_32,
-    opcode_32pypy as opcode_32pypy,
-    opcode_33 as opcode_33,
-    opcode_33pypy as opcode_33pypy,
-    opcode_34 as opcode_34,
-    opcode_35 as opcode_35,
-    opcode_35pypy as opcode_35pypy,
-    opcode_36 as opcode_36,
-    opcode_36pypy as opcode_36pypy,
-    opcode_37 as opcode_37,
-    opcode_37pypy as opcode_37pypy,
-    opcode_38 as opcode_38,
-    opcode_38pypy as opcode_38pypy,
-    opcode_39 as opcode_39,
-    opcode_39pypy as opcode_39pypy,
-    opcode_310 as opcode_310,
-    opcode_310pypy as opcode_310pypy,
-    opcode_311 as opcode_311,
+    opcode_10,
+    opcode_11,
+    opcode_12,
+    opcode_13,
+    opcode_14,
+    opcode_15,
+    opcode_16,
+    opcode_20,
+    opcode_21,
+    opcode_22,
+    opcode_23,
+    opcode_24,
+    opcode_25,
+    opcode_26,
+    opcode_26pypy,
+    opcode_27,
+    opcode_27pypy,
+    opcode_30,
+    opcode_31,
+    opcode_32,
+    opcode_32pypy,
+    opcode_33,
+    opcode_33pypy,
+    opcode_34,
+    opcode_35,
+    opcode_35pypy,
+    opcode_36,
+    opcode_36pypy,
+    opcode_37,
+    opcode_37pypy,
+    opcode_38,
+    opcode_38pypy,
+    opcode_39,
+    opcode_39pypy,
+    opcode_310,
+    opcode_310pypy,
+    opcode_311,
+    opcode_311 as opcode_312,
 )
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
@@ -139,7 +140,11 @@ op_imports = {
     "3.11.1": opcode_311,
     "3.11.2": opcode_311,
     "3.11.3": opcode_311,
+    "3.11.4": opcode_311,
+    "3.11.5": opcode_311,
     "3.11a7e": opcode_311,
+    "3.12.0rc2": opcode_312,
+    "3.12.0": opcode_312,
     "2.6pypy": opcode_26pypy,
     "2.7pypy": opcode_27pypy,
     "2.7.12pypy": opcode_27pypy,
@@ -178,7 +183,6 @@ def get_opcode_module(version_info=None, variant=None):
     vers_str = version_tuple_to_str(version_info)
     if len(version_info) > 3 and version_info[3] != "final":
         vers_str += version_tuple_to_str(version_info, start=3)
-
 
     if vers_str not in canonic_python_version:
         vers_str = version_tuple_to_str(version_info[:2])

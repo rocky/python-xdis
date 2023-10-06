@@ -382,6 +382,7 @@ add_magic_from_int(3492, "3.11a7b")
 add_magic_from_int(3493, "3.11a7c")
 add_magic_from_int(3494, "3.11a7d")
 add_magic_from_int(3495, "3.11a7e")
+add_magic_from_int(3531, "3.12.0rc2")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
@@ -502,6 +503,11 @@ add_canonic_versions(
 add_canonic_versions(
     "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4 3.11.5",
     "3.11a7e",
+)
+
+add_canonic_versions(
+    "3.12 3.12.0",
+    "3.12.0rc2",
 )
 
 # The canonic version for a canonic version is itself
