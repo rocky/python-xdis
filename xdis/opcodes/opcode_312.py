@@ -119,7 +119,10 @@ def_op(loc    , "LOAD_ZERO_SUPER_ATTR"             , 265,  0, 1)
 def_op(loc    , "STORE_FAST_MAYBE_NULL"            , 266,  0, 1)
 
 ### update opinfo tables
-loc["hasnargs"] = loc["hasstore"] = loc["hasvargs"] = None
+loc["hasnargs"] = []
+loc["hasstore"] = []
+loc["hasvargs"] = []
+
 loc["hasconst"].append(121)
 loc["hasfree"].append(176)
 # hasjrel removed 111 112 173 174 175 176 and added 260 261
