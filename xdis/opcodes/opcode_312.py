@@ -124,7 +124,7 @@ loc["hasstore"] = []
 loc["hasvargs"] = []
 
 loc["hasconst"].append(121)
-loc["hasfree"].append(176)
+loc["hasfree"].extend([148, 176])
 # hasjrel removed 111 112 173 174 175 176 and added 260 261
 loc["hasjrel"] = [93, 110, 114, 115, 123, 128, 129, 134, 140, 260, 261]
 loc["haslocal"].extend([127, 143, 266])
