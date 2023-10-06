@@ -57,7 +57,7 @@ from xdis.opcodes import (
     opcode_310,
     opcode_310pypy,
     opcode_311,
-    opcode_311 as opcode_312,
+    opcode_312,
 )
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
