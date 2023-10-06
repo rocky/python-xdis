@@ -19,6 +19,7 @@
 # earlier versions of xdis (and without attribution).
 
 from typing import List
+
 from xdis.util import (
     COMPILER_FLAG_NAMES,
     PYPY_COMPILER_FLAG_NAMES,
@@ -42,8 +43,77 @@ def _try_compile(source, name):
     return c
 
 
+# Adapted from https://github.com/python/cpython/blob/main/Objects/lnotab_notes.txt
+
+# prior to 3.10 code objects stored a field named co_lnotab.
+# This was an array of unsigned bytes disguised as a Python bytes object.
+
+# The old co_lnotab did not account for the presence of bytecodes without a line number,
+# nor was it well suited to tracing as a number of workarounds were required.
+
+# Below is the description of the pre 3.10 co_lnotab format:
+
+
+# The array is conceptually a compressed list of
+#     (bytecode offset increment, line number increment)
+# pairs.  The details are important and delicate, best illustrated by example:
+
+#     byte code offset    source code line number
+#         0                   1
+#         6                   2
+#        50                   7
+#       350                 207
+#       361                 208
+
+# Instead of storing these numbers literally, we compress the list by storing only
+# the difference from one row to the next.  Conceptually, the stored list might
+# look like:
+
+#     0, 1,  6, 1,  44, 5,  300, 200,  11, 1
+
+# The above doesn't really work, but it's a start. An unsigned byte (byte code
+# offset) can't hold negative values, or values larger than 255, a signed byte
+# (line number) can't hold values larger than 127 or less than -128, and the
+# above example contains two such values.  (Note that before 3.6, line number
+# was also encoded by an unsigned byte.)  So we make two tweaks:
+
+#  (a) there's a deep assumption that byte code offsets increase monotonically,
+#  and
+#  (b) if byte code offset jumps by more than 255 from one row to the next, or if
+#  source code line number jumps by more than 127 or less than -128 from one row
+#  to the next, more than one pair is written to the table. In case #b,
+#  there's no way to know from looking at the table later how many were written.
+#  That's the delicate part.  A user of co_lnotab desiring to find the source
+#  line number corresponding to a bytecode address A should do something like
+#  this:
+
+#     lineno = addr = 0
+#     for addr_incr, line_incr in co_lnotab:
+#         addr += addr_incr
+#         if addr > A:
+#             return lineno
+#         if line_incr >= 0x80:
+#             line_incr -= 0x100
+#         lineno += line_incr
+
+# (In C, this is implemented by PyCode_Addr2Line().)  In order for this to work,
+# when the addr field increments by more than 255, the line # increment in each
+# pair generated must be 0 until the remaining addr increment is < 256.  So, in
+# the example above, assemble_lnotab in compile.c should not (as was actually done
+# until 2.2) expand 300, 200 to
+#     255, 255, 45, 45,
+# but to
+#     255, 0, 45, 127, 0, 73.
+
+# The above is sufficient to reconstruct line numbers for tracebacks, but not for
+# line tracing.  Tracing is handled by PyCode_CheckLineNumber() in codeobject.c
+# and maybe_call_line_trace() in ceval.c.
 def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
+
+    This code is used up until 3.10. For 3.10 see lnotab comments
+    xdis.opcodes.opcode_310.
+
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
     """
@@ -62,17 +132,17 @@ def findlinestarts(code, dup_lines=False):
     else:
         if isinstance(lineno_table[0], int):
             byte_increments = list(code.co_lnotab[0::2])
-            line_increments = list(code.co_lnotab[1::2])
+            line_deltas = list(code.co_lnotab[1::2])
         else:
             byte_increments = [ord(c) for c in code.co_lnotab[0::2]]
-            line_increments = [ord(c) for c in code.co_lnotab[1::2]]
+            line_deltas = [ord(c) for c in code.co_lnotab[1::2]]
         bytecode_len = len(code.co_code)
 
         lastlineno = None
         lineno = code.co_firstlineno
         offset = 0
         byte_incr = 0
-        for byte_incr, line_incr in zip(byte_increments, line_increments):
+        for byte_incr, line_delta in zip(byte_increments, line_deltas):
             if byte_incr:
                 if lineno != lastlineno or dup_lines and 0 < byte_incr < 255:
                     yield offset, lineno
@@ -80,14 +150,14 @@ def findlinestarts(code, dup_lines=False):
                     pass
                 if offset >= bytecode_len:
                     # The rest of the ``lnotab byte offsets are past the end of
-                    # the bytecode, so the lines were optimized away.
+                    # the bytecode; any line numbers for these have been removed.
                     return
                 offset += byte_incr
                 pass
-            if line_incr >= 0x80:
-                # line_increments is an array of 8-bit signed integers
-                line_incr -= 0x100
-            lineno += line_incr
+            if line_delta >= 0x80:
+                # line_deltas is an array of 8-bit *signed* integers
+                line_delta -= 0x100
+            lineno += line_delta
         if lineno != lastlineno or (dup_lines and 0 < byte_incr < 255):
             yield offset, lineno
 
