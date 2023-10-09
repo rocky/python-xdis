@@ -256,6 +256,10 @@ def get_instructions_bytes(
                     argval, argrepr = _get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL + " + argrepr
+                elif opc.version_tuple >= (3,12) and opc.opname[op] in ("LOAD_ATTR", "LOAD_SUPER_ATTR"):
+                    argval, argrepr = _get_name_info(arg >> 1, names)
+                    if arg & 1:
+                        argrepr = "NULL|self + " + argrepr
                 else:
                     argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
