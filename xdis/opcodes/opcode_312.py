@@ -6,6 +6,7 @@ of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_311 as opcode_311
+from xdis.opcodes.opcode_311 import opcode_arg_fmt311, opcode_extended_fmt311
 from xdis.opcodes.base import (
     binary_op,
     def_op,
@@ -15,7 +16,6 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.format.extended import extended_format_binary_op
 
 version_tuple = (3, 12)
 python_implementation = "CPython"
@@ -130,6 +130,10 @@ loc["hasjrel"] = [93, 110, 114, 115, 123, 128, 129, 134, 140, 260, 261]
 loc["haslocal"].extend([127, 143, 266])
 # hasname removed 160 and added 141 175 262 234 264 265
 loc["hasname"] = [90, 91, 95, 96, 97, 98, 101, 106, 108, 109, 116, 141, 175, 262, 263, 264, 265]
+
+### update arg formatting
+opcode_arg_fmt = opcode_arg_fmt312 = opcode_arg_fmt311.copy()
+opcode_extended_fmt = opcode_extended_fmt312 = opcode_extended_fmt311.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
