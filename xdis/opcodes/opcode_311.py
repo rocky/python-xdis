@@ -119,6 +119,12 @@ rm_op(loc,  "YIELD_FROM",              72)
 # match, these two ops had stack effects changed
 rm_op(loc,  "MATCH_CLASS",            152)
 rm_op(loc,  "MATCH_KEYS",              33)
+## Redefined OPS
+rm_op(loc, "GET_AWAITABLE",                    73)
+rm_op(loc, "LOAD_CLOSURE",                    135)
+rm_op(loc, "LOAD_DEREF",                      136)
+rm_op(loc, "STORE_DEREF",                     137)
+rm_op(loc, "DELETE_DEREF",                    138)
 
 
 # These are added since 3.10...
@@ -169,25 +175,15 @@ jrel_op(loc, "PREP_RERAISE_STAR",              88,   1, 0)
 jrel_op(loc, "PUSH_EXC_INFO",                  35,   0, 1)
 # resume, acts like a nop
 def_op(loc, "RESUME",                         151,   0, 0)
-
 ## Redefined OPS
-rm_op(loc, "STORE_DEREF",                     137)
-def_op(loc, "STORE_DEREF",                    138,   1, 0)
-
-rm_op(loc, "LOAD_DEREF",                      136)
+def_op(loc, "GET_AWAITABLE",                  131,   0, 0)
+def_op(loc, "LOAD_CLOSURE",                   136,   0, 1)
 def_op(loc, "LOAD_DEREF",                     137,   0, 1)
-
-rm_op(loc, "DELETE_DEREF",                    138)
+def_op(loc, "STORE_DEREF",                    138,   1, 0)
 def_op(loc, "DELETE_DEREF",                   139,   0, 0)
 
-rm_op(loc, "GET_AWAITABLE",                    73)
-def_op(loc, "GET_AWAITABLE",                  131,   0, 0)
-
-rm_op(loc, "LOAD_CLOSURE",                    135)
-def_op(loc, "LOAD_CLOSURE",                   136,   0, 1)
 
 ## Update tables
-
 # removed jrel ops 35, 37, 143, 88, 154
 
 loc["hasconst"].append(172)  # KW_NAMES
