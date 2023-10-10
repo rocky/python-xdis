@@ -280,15 +280,21 @@ def get_instructions_bytes(
                 argrepr = "to " + repr(argval)
                 optype = "jabs"
             elif op in opc.LOCAL_OPS:
-                argval, argrepr = _get_name_info(arg, varnames)
+                if opc.version_tuple >= (3,11):
+                    argval, argrepr = _get_name_info(arg, (varnames or tuple()) + (cells or tuple()))
+                else:
+                    argval, argrepr = _get_name_info(arg, varnames)
                 optype = "local"
+            elif op in opc.FREE_OPS:
+                if opc.version_tuple >= (3,11):
+                    argval, argrepr = _get_name_info(arg, (varnames or tuple()) + (cells or tuple()))
+                else:
+                    argval, argrepr = _get_name_info(arg, cells)
+                optype = "free"
             elif op in opc.COMPARE_OPS:
                 argval = opc.cmp_op[arg >> 4] if opc.python_version >= (3, 12) else opc.cmp_op[arg]
                 argrepr = argval
                 optype = "compare"
-            elif op in opc.FREE_OPS:
-                argval, argrepr = _get_name_info(arg, cells)
-                optype = "free"
             elif op in opc.NARGS_OPS:
                 opname = opc.opname[op]
                 optype = "nargs"
