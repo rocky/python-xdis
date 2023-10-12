@@ -510,6 +510,7 @@ class _VersionIndependentUnmarshaller:
                 elif kind & CO_FAST_FREE:
                     co_freevars += (name,)
 
+            co_nlocals = len(co_varnames)
             co_filename = self.r_object(bytes_for_s=bytes_for_s)
             co_name = self.r_object(bytes_for_s=bytes_for_s)
             co_qualname = self.r_object(bytes_for_s=bytes_for_s)
