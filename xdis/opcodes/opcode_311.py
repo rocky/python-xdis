@@ -356,7 +356,12 @@ def findlinestarts(code, dup_lines=False):
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
     """
-    location_table_entries = parse_location_entries(code.co_lnotab, code.co_firstlineno)
+
+    # try to get the co_linetable from a native code object
+    # fall back to the lnotab if it's a portable code object, which will store the same bytes
+    # we do this because in a native code object, co_lnotab gets mapped back to the legacy lnotab format
+    locations_table_bytes = getattr(code, 'co_linetable', code.co_lnotab)
+    location_table_entries = parse_location_entries(locations_table_bytes, code.co_firstlineno)
 
     current_offset = 0
     previous_line = None
