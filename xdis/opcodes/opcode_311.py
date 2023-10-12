@@ -23,6 +23,9 @@ from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 version_tuple = (3, 11)
 python_implementation = "CPython"
 
+oppush = []
+oppop = []
+opmap = {}
 
 _nb_ops = [
     ("NB_ADD", "+"),
@@ -200,6 +203,11 @@ loc["hasjabs"] = []
 loc["hasjrel"] = [
     93, 110, 111, 112, 114, 115, 123, 128, 129, 134, 140, 173, 174, 175,
     176]
+
+# Changed stack effects
+oppop[opmap["POP_EXCEPT"]] = 1
+# This is 1 or 2 depending on whether low bit is set.
+oppush[opmap["LOAD_GLOBAL"]] = 100
 
 # fmt: on
 
