@@ -24,6 +24,7 @@ loc = locals()
 
 init_opdata(loc, opcode_311, version_tuple)
 
+
 # extend opcodes to cover psuedo ops
 loc["opname"].extend([f"<{i}>" for i in range(256, 267)])
 loc["oppop"].extend([0] * 11)
@@ -131,13 +132,48 @@ loc["haslocal"].extend([127, 143, 266])
 # hasname removed 160 and added 141 175 262 234 264 265
 loc["hasname"] = [90, 91, 95, 96, 97, 98, 101, 106, 108, 109, 116, 141, 175, 262, 263, 264, 265]
 
+
+### add new arg formats
+_intrinsic_1_descs = [
+    "INTRINSIC_1_INVALID",
+    "INTRINSIC_PRINT",
+    "INTRINSIC_IMPORT_STAR",
+    "INTRINSIC_STOPITERATION_ERROR",
+    "INTRINSIC_ASYNC_GEN_WRAP",
+    "INTRINSIC_UNARY_POSITIVE",
+    "INTRINSIC_LIST_TO_TUPLE",
+    "INTRINSIC_TYPEVAR",
+    "INTRINSIC_PARAMSPEC",
+    "INTRINSIC_TYPEVARTUPLE",
+    "INTRINSIC_SUBSCRIPT_GENERIC",
+    "INTRINSIC_TYPEALIAS",
+]
+
+_intrinsic_2_descs = [
+    "INTRINSIC_2_INVALID",
+    "INTRINSIC_PREP_RERAISE_STAR",
+    "INTRINSIC_TYPEVAR_WITH_BOUND",
+    "INTRINSIC_TYPEVAR_WITH_CONSTRAINTS",
+    "INTRINSIC_SET_FUNCTION_TYPE_PARAMS",
+]
+
+def format_CALL_INTRINSIC_1(arg) -> str:
+    return _intrinsic_1_descs[arg]
+
+def format_CALL_INTRINSIC_2(arg) -> str:
+    return _intrinsic_2_descs[arg]
+
 ### update arg formatting
-opcode_arg_fmt = opcode_arg_fmt312 = opcode_arg_fmt311.copy()
+opcode_arg_fmt = opcode_arg_fmt312 = {
+    **opcode_arg_fmt311,
+    **{
+        "CALL_INTRINSIC_1": format_CALL_INTRINSIC_1,
+        "CALL_INTRINSIC_2": format_CALL_INTRINSIC_2,
+    },
+}
 opcode_extended_fmt = opcode_extended_fmt312 = opcode_extended_fmt311.copy()
 
-update_pj3(globals(), loc)
-finalize_opcodes(loc)
-
+# overwrite legacy findlinestarts with the 3.11 version that uses the location_table syntax
 from xdis.opcodes.opcode_311 import parse_location_entries, findlinestarts
 
 update_pj3(globals(), loc)
