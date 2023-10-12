@@ -212,7 +212,7 @@ class _VersionIndependentUnmarshaller:
             byte1 = byte1 & (FLAG_REF - 1)
         marshal_type = chr(byte1)
 
-        # print(marshal_type)  # debug
+        #print(marshal_type)  # debug
 
         if marshal_type in UNMARSHAL_DISPATCH_TABLE:
             func_suffix = UNMARSHAL_DISPATCH_TABLE[marshal_type]
@@ -458,12 +458,13 @@ class _VersionIndependentUnmarshaller:
         else:
             kwonlyargcount = 0
 
-        if version_tuple >= (2, 3) and version_tuple < (3, 11):
-            co_nlocals = unpack("<i", self.fp.read(4))[0]
-        elif version_tuple >= (1, 3):
-            co_nlocals = unpack("<h", self.fp.read(2))[0]
-        else:
-            co_nlocals = 0
+        co_nlocals = 0
+        if version_tuple < (3, 11):
+            if version_tuple >= (2, 3):
+                co_nlocals = unpack("<i", self.fp.read(4))[0]
+            elif version_tuple >= (1, 3):
+                co_nlocals = unpack("<h", self.fp.read(2))[0]
+                
 
         if version_tuple >= (2, 3):
             co_stacksize = unpack("<i", self.fp.read(4))[0]
