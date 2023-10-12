@@ -458,10 +458,7 @@ class _VersionIndependentUnmarshaller:
         else:
             kwonlyargcount = 0
 
-        if version_tuple >= (3, 11):
-            # 3.11 doesn't removes co_nlocals differently
-            co_nlocals = 0
-        elif version_tuple >= (2, 3):
+        if version_tuple >= (2, 3) and version_tuple < (3, 11):
             co_nlocals = unpack("<i", self.fp.read(4))[0]
         elif version_tuple >= (1, 3):
             co_nlocals = unpack("<h", self.fp.read(2))[0]
