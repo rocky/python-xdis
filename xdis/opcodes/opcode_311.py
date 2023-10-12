@@ -282,6 +282,9 @@ def parse_location_entries(location_bytes, first_line):
                 entry_codes = [b]
             else:
                 entry_codes.append(b)
+        
+        if entry_codes:
+            yield entry_codes
 
     def iter_varints(varint_bytes):
         if len(varint_bytes) == 0:
