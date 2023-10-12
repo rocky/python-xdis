@@ -495,8 +495,23 @@ class _VersionIndependentUnmarshaller:
         co_cellvars = tuple()
 
         if version_tuple >= (3, 11):
-            co_localplusnames = self.r_object(bytes_for_s=bytes_for_s)
-            co_localpluskinds = self.r_object(bytes_for_s=bytes_for_s)
+            # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
+            co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
+            co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
+
+            CO_FAST_LOCAL = 0x20
+            CO_FAST_CELL = 0x40
+            CO_FAST_FREE = 0x80
+
+            for name, kind in zip(co_localsplusnames, co_localspluskinds):
+                if kind & CO_FAST_LOCAL:
+                    co_varnames += (name,)
+                    if kind & CO_FAST_CELL:
+                        co_cellvars += (name,)
+                elif kind & CO_FAST_CELL:
+                    co_cellvars += (name,)
+                elif kind & CO_FAST_FREE:
+                    co_freevars += (name,)
 
             co_filename = self.r_object(bytes_for_s=bytes_for_s)
             co_name = self.r_object(bytes_for_s=bytes_for_s)
