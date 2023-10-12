@@ -490,37 +490,31 @@ class _VersionIndependentUnmarshaller:
 
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        if version_tuple >= (3, 11):
-            # If we need these, figure out how to get.
-            # co_localplusnames = self.r_object(bytes_for_s=False)
-            # co_localpluskinds = self.r_object(bytes_for_s=False)
-            co_varnames = tuple()
-            # co_qualname = self.r_object(bytes_for_s=bytes_for_s)
-        elif version_tuple >= (1, 3):
-            co_qualname = None
-            co_varnames = self.r_object(bytes_for_s=False)
-        else:
-            co_qualname = None
-            co_varnames = tuple()
-
-        if version_tuple >= (2, 0):
-            co_freevars = self.r_object(bytes_for_s=bytes_for_s)
-            co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
-            # FIXME for 3.11
-            if version_tuple >= (3, 11):
-                co_cellvars = tuple()
-
-        else:
-            co_freevars = tuple()
-            co_cellvars = tuple()
-
-        co_filename = self.r_object(bytes_for_s=bytes_for_s)
-        co_name = self.r_object(bytes_for_s=bytes_for_s)
+        co_varnames = tuple()
+        co_freevars = tuple()
+        co_cellvars = tuple()
 
         if version_tuple >= (3, 11):
+            co_localplusnames = self.r_object(bytes_for_s=bytes_for_s)
+            co_localpluskinds = self.r_object(bytes_for_s=bytes_for_s)
+
+            co_filename = self.r_object(bytes_for_s=bytes_for_s)
+            co_name = self.r_object(bytes_for_s=bytes_for_s)
             co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+
         else:
             co_qualname = None
+            if version_tuple >= (1, 3):
+                co_varnames = self.r_object(bytes_for_s=False)
+            else:
+                co_varnames = tuple()
+
+            if version_tuple >= (2, 0):
+                co_freevars = self.r_object(bytes_for_s=bytes_for_s)
+                co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
+
+            co_filename = self.r_object(bytes_for_s=bytes_for_s)
+            co_name = self.r_object(bytes_for_s=bytes_for_s)
 
         co_exceptiontable = None
         if version_tuple >= (1, 5):
@@ -539,7 +533,7 @@ class _VersionIndependentUnmarshaller:
             # < 1.5 there is no lnotab, so no firstlineno.
             # SET_LINENO is used instead.
             co_firstlineno = -1  # Bogus sentinel value
-            co_lnotab = ""
+            co_lnotab = b""
 
         code = to_portable(
             co_argcount=co_argcount,
