@@ -369,7 +369,7 @@ def findlinestarts(code, dup_lines=False):
     for offset_delta, start_line, _, _, _ in location_table_entries:
 
         # emit an entry when the line changes; start_line==None means there is no line information
-        if start_line is not None and (start_line != previous_line or dup_lines):
+        if start_line is not None and start_line != previous_line:
             yield current_offset, start_line
             previous_line = start_line
     
