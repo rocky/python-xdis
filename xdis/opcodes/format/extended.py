@@ -701,6 +701,7 @@ opcode_extended_fmt_base = {
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,
     "STORE_FAST":            extended_format_store_op,
+    "STORE_GLOBAL":          extended_format_store_op,
     "STORE_NAME":            extended_format_store_op,
     "STORE_SUBSCR":          extended_format_STORE_SUBSCR,
     "UNARY_INVERT":          extended_format_UNARY_INVERT,
