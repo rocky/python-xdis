@@ -137,3 +137,8 @@ opcode_extended_fmt = opcode_extended_fmt312 = opcode_extended_fmt311.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
+
+from xdis.opcodes.opcode_311 import parse_location_entries, findlinestarts
+
+update_pj3(globals(), loc)
+finalize_opcodes(loc)

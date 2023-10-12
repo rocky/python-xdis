@@ -124,137 +124,6 @@ def compat_u2s(u):
             return s
     else:
         return str(u)
-
-
-def parse_location_entries(location_bytes, first_line):
-    """
-    Parses the locations table described in: https://github.com/python/cpython/blob/3.11/Objects/locations.md
-    The locations table replaced the line number table starting in 3.11
-    """
-    def starts_new_entry(b): return bool(b & 0b10000000) # bit 7 is set
-    def extract_code(b): return (b & 0b01111000) >> 3 # extracts bits 3-6
-    def extract_length(b): return (b & 0b00000111) + 1 # extracts bit 0-2
-
-    def iter_location_codes(loc_bytes):
-        if len(loc_bytes) == 0:
-            return []
-        
-        iter_locs = iter(loc_bytes)
-        entry_codes = [next(iter_locs)]
-
-        for b in iter_locs:
-            if starts_new_entry(b):
-                yield entry_codes
-                entry_codes = [b]
-            else:
-                entry_codes.append(b)
-
-    def iter_varints(varint_bytes):
-        if len(varint_bytes) == 0:
-            return []
-        
-        def has_next_byte(b): return bool(b & 0b0100_0000) # has bit 6 set
-        def get_value(b): return (b & 0b00111111) # extracts bits 0-5
-
-        iter_varint_bytes = iter(varint_bytes)
-
-        current_value = 0
-        shift_amt = 0
-
-        for b in iter_varint_bytes:
-            current_value += get_value(b) << shift_amt
-            if has_next_byte(b):
-                shift_amt += 6
-            else:
-                yield current_value
-                current_value = 0
-                shift_amt = 0
-
-    def handle_signed_varint(s): return ((-s)<<1)|1 if s < 0 else (s<<1)
-
-    entries = [] # tuples of (code units, start line, end line, start column, end column)
-
-    last_line = first_line
-
-    for location_codes in iter_location_codes(location_bytes):
-        first_byte = location_codes[0]
-        location_length = extract_length(first_byte)
-        code = extract_code(first_byte)
-
-        if code <= 9: # short form
-            start_line = last_line
-            end_line = start_line
-            second_byte = location_codes[1]
-            start_column = (code*8) + ((second_byte>>4)&7)
-            end_column = start_column + (second_byte&15)
-        elif code <= 12: # one line form
-            start_line = last_line + code - 10
-            end_line = start_line
-            start_column = location_codes[1]
-            end_column = location_codes[2]
-        elif code == 13: # no column info
-            (start_line_delta,) = iter_varints(location_codes[1:])
-            start_line = last_line + handle_signed_varint(start_line_delta)
-            end_line = start_line
-            start_column = None
-            end_column = None
-        elif code == 14: # long form
-            (start_line_delta, end_line_delta, start_column, end_column) = iter_varints(location_codes[1:])
-            start_line = last_line + handle_signed_varint(start_line_delta)
-            end_line = start_line + end_line_delta
-        else: # code == 15, no location
-            start_line = None
-            end_line = None
-            start_column = None
-            end_column = None
-
-        entries.append((location_length, start_line, end_line, start_column, end_column))
-
-        last_line = start_line if start_line is not None else last_line
-
-    return entries
-
-def location_entries_to_lnotab(location_entries):
-    """
-    Converts a 3.11+ location table into a pre-3.10 lnotab
-    """
-
-    previous_line = None
-
-    offset_delta = 0
-
-    offset_deltas = [] # unsigned bytes
-    line_deltas = [] # signed bytes
-
-    for entry_size, start_line, _, _, _ in location_entries:
-        offset_delta += entry_size
-
-        if offset_delta > 255:
-            offset_deltas.append(255)
-            line_deltas.append(0)
-            offset_delta -= 255
-
-        if start_line is None:
-            continue
-
-        if previous_line is None:
-            previous_line = start_line
-
-        line_delta = start_line - previous_line
-
-        if line_delta > 0:
-            while line_delta > 127:
-                offset_deltas.append(0)
-                line_deltas.append(127)
-                line_delta -= 127
-            
-            offset_deltas.append(offset_delta)
-            line_deltas.append(line_delta)
-            offset_delta = 0
-            line_delta = 0
-    
-    interleaved_deltas = [delta for pair in zip(offset_deltas, line_deltas) for delta in pair]
-    return bytes(interleaved_deltas)
         
 class _VersionIndependentUnmarshaller:
     def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
@@ -662,10 +531,7 @@ class _VersionIndependentUnmarshaller:
 
             if version_tuple >= (3, 11):
                 co_linetable = self.r_object(bytes_for_s=bytes_for_s)
-                # FIXME compute co_lnotab from co_linetable
-                # (@jdw) fix in place; needs to be verified
-                location_entries = parse_location_entries(co_linetable, co_firstlineno)
-                co_lnotab = location_entries_to_lnotab(location_entries)
+                co_lnotab = co_linetable # will be parsed later in opcode.findlinestarts
                 co_exceptiontable = self.r_object(bytes_for_s=bytes_for_s)
             else:
                 co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
