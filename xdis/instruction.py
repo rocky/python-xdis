@@ -222,17 +222,19 @@ class Instruction(_Instruction):
                 pass
             else:
                 # Column: Opcode argument details
-                argval = instructions[-1].argval
-                if instructions[-1].tos_str is None or (
-                    self.argrepr is not None
-                    and self.argrepr == instructions[-1].tos_str
-                ):
-                    fields.append(f"({self.argrepr})")
-                else:
-                    prefix = "" if self.argrepr is None else f"({self.argrepr}) | "
-                    if self.opcode in opc.operator_set:
-                        prefix += "TOS = "
-                    fields.append(f"{prefix}{instructions[-1].tos_str}")
+                if len(instructions) > 0:
+                    argval = instructions[-1].argval
+                    if instructions[-1].tos_str is None or (
+                        self.argrepr is not None
+                        and self.argrepr == instructions[-1].tos_str
+                    ):
+                        fields.append(f"({self.argrepr})")
+                    else:
+                        prefix = "" if self.argrepr is None else f"({self.argrepr}) | "
+                        if self.opcode in opc.operator_set:
+                            prefix += "TOS = "
+                        fields.append(f"{prefix}{instructions[-1].tos_str}")
+                    pass
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):

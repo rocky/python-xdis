@@ -120,6 +120,27 @@ rm_op(loc,  "YIELD_FROM",              72)
 rm_op(loc,  "MATCH_CLASS",            152)
 rm_op(loc,  "MATCH_KEYS",              33)
 
+## Redefined OPS.
+# Be careful to redefine in a way that that does not rm_op() an opcode
+# *after* the new one with that opcode has been (re)entered. For example,
+# we to redefine 138 from DELETE_REF to STORE_DEREF.
+# So we have to rm DELETE_DEREF with opcode 138 *before* adding
+# STORE_DEREF with opcode 138.
+
+rm_op(loc, "GET_AWAITABLE",                    73)
+def_op(loc, "GET_AWAITABLE",                  131,   0, 0)
+
+rm_op(loc, "DELETE_DEREF",                    138)
+def_op(loc, "DELETE_DEREF",                   139,   0, 0)
+
+rm_op(loc, "STORE_DEREF",                     137)
+def_op(loc, "STORE_DEREF",                    138,   1, 0)
+
+rm_op(loc, "LOAD_DEREF",                      136)
+def_op(loc, "LOAD_DEREF",                     137,   0, 1)
+
+rm_op(loc, "LOAD_CLOSURE",                    135)
+def_op(loc, "LOAD_CLOSURE",                   136,   0, 1)
 
 # These are added since 3.10...
 #          OP NAME                         OPCODE  POP PUSH
@@ -170,24 +191,7 @@ jrel_op(loc, "PUSH_EXC_INFO",                  35,   0, 1)
 # resume, acts like a nop
 def_op(loc, "RESUME",                         151,   0, 0)
 
-## Redefined OPS
-rm_op(loc, "STORE_DEREF",                     137)
-def_op(loc, "STORE_DEREF",                    138,   1, 0)
-
-rm_op(loc, "LOAD_DEREF",                      136)
-def_op(loc, "LOAD_DEREF",                     137,   0, 1)
-
-rm_op(loc, "DELETE_DEREF",                    138)
-def_op(loc, "DELETE_DEREF",                   139,   0, 0)
-
-rm_op(loc, "GET_AWAITABLE",                    73)
-def_op(loc, "GET_AWAITABLE",                  131,   0, 0)
-
-rm_op(loc, "LOAD_CLOSURE",                    135)
-def_op(loc, "LOAD_CLOSURE",                   136,   0, 1)
-
 ## Update tables
-
 # removed jrel ops 35, 37, 143, 88, 154
 
 loc["hasconst"].append(172)  # KW_NAMES
@@ -196,6 +200,7 @@ loc["hasjabs"] = []
 loc["hasjrel"] = [
     93, 110, 111, 112, 114, 115, 123, 128, 129, 134, 140, 173, 174, 175,
     176]
+
 # fmt: on
 
 
