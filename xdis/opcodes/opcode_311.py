@@ -154,7 +154,7 @@ binary_op(loc, "BINARY_OP",                   122)
 # call ops
 def_op(loc, "CALL",                           171,   1, 0)
 def_op(loc, "KW_NAMES",                       172,   0, 0)
-def_op(loc, "PRECALL",                        166,   0, 0)
+def_op(loc, "PRECALL",                        166, 100, 0)
 def_op(loc, "PUSH_NULL",                        2,   0, 1)
 # replaced DUP and ROT ops
 def_op(loc, "COPY",                           120,   0, 1)
@@ -175,7 +175,7 @@ jrel_op(loc, "POP_JUMP_FORWARD_IF_NONE",      129,   1, 0)
 # setup with
 def_op(loc,  "BEFORE_WITH",                     53,  0, 1)
 # match
-def_op(loc,  "MATCH_CLASS",                    152,  2, 1)
+def_op(loc,  "MATCH_CLASS",                    152,  3, 1)
 def_op(loc,  "MATCH_KEYS",                      33,  0, 1)
 # generators and co-routines
 def_op(loc,  "ASYNC_GEN_WRAP",                  87,  0, 0)
@@ -206,8 +206,8 @@ loc["hasjrel"] = [
 
 # Changed stack effects
 oppop[opmap["POP_EXCEPT"]] = 1
-# This is 1 or 2 depending on whether low bit is set.
-oppush[opmap["LOAD_GLOBAL"]] = 100
+oppop[opmap["END_ASYNC_FOR"]] = 2
+oppop[opmap["RERAISE"]] = 1
 
 # fmt: on
 

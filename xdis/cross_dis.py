@@ -482,19 +482,27 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
             if 0 <= oparg <= 10:
                 if opc.version_tuple == (3, 5):
                     return [-1, -2, -3, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
-                elif opc.version_tuple >= (3, 6):
+                elif (3, 6) <= opc.version_tuple < (3, 11):
                     return [-1, -2, -2, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
+                elif 0 <= oparg <= 2:
+                    return [0, -1, -1][oparg]
+                else:
+                    return None
             else:
                 return None
     elif opname == "CALL_FUNCTION_EX":
-        if opc.version_tuple >= (3, 5):
-            if 0 <= oparg <= 10:
-                return [-1, -2, -1][oparg]
-            else:
-                return None
+        if (3, 5) <= opc.version_tuple < (3, 11):
+            return -2 if oparg & 1 else -1
+        elif 0 <= oparg <= 3:
+            return -3 if oparg & 1 else -2
+        else:
+            return None
     elif opname == "LOAD_GLOBAL":
         if opc.version_tuple >= (3, 11):
             return 2 if oparg & 1 else 1
+    elif opname == "PRECALL":
+        if opc.version_tuple >= (3, 11):
+            return -oparg
     if push >= 0 and pop >= 0:
         return push - pop
     elif pop < 0:
