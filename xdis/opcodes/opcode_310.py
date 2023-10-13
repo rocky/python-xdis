@@ -54,9 +54,6 @@ def_op(loc, "MATCH_CLASS",             152,   2, 1)
 opcode_arg_fmt = opcode_arg_fmt310 = opcode_arg_fmt39.copy()
 opcode_extended_fmt = opcode_extended_fmt310 = opcode_extended_fmt39.copy()
 
-update_pj3(globals(), loc)
-finalize_opcodes(loc)
-
 # fmt: on
 
 # lnotab format changed in 3.10.
@@ -175,5 +172,4 @@ def findlinestarts(code, dup_lines=False):
 
 
 update_pj3(globals(), loc)
-
 finalize_opcodes(loc)
