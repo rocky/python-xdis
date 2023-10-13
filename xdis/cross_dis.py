@@ -482,16 +482,27 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
             if 0 <= oparg <= 10:
                 if opc.version_tuple == (3, 5):
                     return [-1, -2, -3, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
-                elif opc.version_tuple >= (3, 6):
+                elif (3, 6) <= opc.version_tuple < (3, 11):
                     return [-1, -2, -2, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
+                elif 0 <= oparg <= 2:
+                    return [0, -1, -1][oparg]
+                else:
+                    return None
             else:
                 return None
     elif opname == "CALL_FUNCTION_EX":
-        if opc.version_tuple >= (3, 5):
-            if 0 <= oparg <= 10:
-                return [-1, -2, -1][oparg]
-            else:
-                return None
+        if (3, 5) <= opc.version_tuple < (3, 11):
+            return -2 if oparg & 1 else -1
+        elif 0 <= oparg <= 3:
+            return -3 if oparg & 1 else -2
+        else:
+            return None
+    elif opname == "LOAD_GLOBAL":
+        if opc.version_tuple >= (3, 11):
+            return 2 if oparg & 1 else 1
+    elif opname == "PRECALL":
+        if opc.version_tuple >= (3, 11):
+            return -oparg
     if push >= 0 and pop >= 0:
         return push - pop
     elif pop < 0:
@@ -503,63 +514,6 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
     return -100
 
 
-def check_stack_effect():
-    import dis
-
-    from xdis import IS_PYPY
-    from xdis.op_imports import get_opcode_module
-
-    if IS_PYPY:
-        variant = "pypy"
-    else:
-        variant = ""
-    opc = get_opcode_module(None, variant)
-    for (
-        opname,
-        opcode,
-    ) in opc.opmap.items():
-        if opname in ("EXTENDED_ARG", "NOP"):
-            continue
-        xdis_args = [opcode, opc]
-        dis_args = [opcode]
-        if op_has_argument(opcode, opc):
-            xdis_args.append(0)
-            dis_args.append(0)
-        if (
-            PYTHON_VERSION_TRIPLE > (3, 7)
-            and opcode in opc.CONDITION_OPS
-            and opname
-            not in (
-                "JUMP_IF_FALSE_OR_POP",
-                "JUMP_IF_TRUE_OR_POP",
-                "POP_JUMP_IF_FALSE",
-                "POP_JUMP_IF_TRUE",
-                "SETUP_FINALLY",
-            )
-        ):
-            xdis_args.append(0)
-            dis_args.append(0)
-
-        effect = xstack_effect(*xdis_args)
-        check_effect = dis.stack_effect(*dis_args)
-        if effect == -100:
-            print(
-                "%d (%s) needs adjusting; should be: should have effect %d"
-                % (opcode, opname, check_effect)
-            )
-        elif check_effect == effect:
-            pass
-            # print("%d (%s) is good: effect %d" % (opcode, opname, effect))
-        else:
-            print(
-                "%d (%s) not okay; effect %d vs %d"
-                % (opcode, opname, effect, check_effect)
-            )
-            pass
-        pass
-    return
-
-
 if __name__ == "__main__":
     from dis import findlabels as findlabels_std
 
@@ -568,5 +522,3 @@ if __name__ == "__main__":
 
     my_opc = get_opcode_module()
     assert findlabels(my_code, my_opc) == findlabels_std(my_code)
-    if PYTHON_VERSION_TRIPLE >= (3, 4):
-        check_stack_effect()
