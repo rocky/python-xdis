@@ -142,6 +142,55 @@ def_op(loc, "LOAD_DEREF",                     137,   0, 1)
 def_op(loc, "STORE_DEREF",                    138,   1, 0)
 def_op(loc, "DELETE_DEREF",                   139,   0, 0)
 
+# These are added since 3.10...
+#          OP NAME                         OPCODE  POP PUSH
+#---------------------------------------------------------
+# replaced binary and inplace ops
+def_op(loc, "CACHE",                            0,   0, 0)
+binary_op(loc, "BINARY_OP",                   122)
+# call ops
+def_op(loc, "CALL",                           171,   1, 0)
+def_op(loc, "KW_NAMES",                       172,   0, 0)
+def_op(loc, "PRECALL",                        166, 100, 0)
+def_op(loc, "PUSH_NULL",                        2,   0, 1)
+# replaced DUP and ROT ops
+def_op(loc, "COPY",                           120,   0, 1)
+def_op(loc, "SWAP",                            99,   0, 0)
+# exception check
+def_op(loc, "CHECK_EXC_MATCH",                 36,   0, 0)
+# jumps, all jumps are now relative jumps
+# TODO will likely have to redefine all abs jump ops as reljumps
+jrel_op(loc, "JUMP_BACKWARD",                 140,   0, 0)
+jrel_op(loc, "POP_JUMP_BACKWARD_IF_FALSE",    175,   1, 0)
+jrel_op(loc, "POP_JUMP_BACKWARD_IF_TRUE",     176,   1, 0)
+jrel_op(loc, "POP_JUMP_BACKWARD_IF_NOT_NONE", 173,   1, 0)
+jrel_op(loc, "POP_JUMP_BACKWARD_IF_NONE",     174,   1, 0)
+jrel_op(loc, "POP_JUMP_FORWARD_IF_FALSE",     114,   1, 0)
+jrel_op(loc, "POP_JUMP_FORWARD_IF_TRUE",      115,   1, 0)
+jrel_op(loc, "POP_JUMP_FORWARD_IF_NOT_NONE",  128,   1, 0)
+jrel_op(loc, "POP_JUMP_FORWARD_IF_NONE",      129,   1, 0)
+# setup with
+def_op(loc,  "BEFORE_WITH",                     53,  0, 1)
+# match
+def_op(loc,  "MATCH_CLASS",                    152,  3, 1)
+def_op(loc,  "MATCH_KEYS",                      33,  0, 1)
+# generators and co-routines
+def_op(loc,  "ASYNC_GEN_WRAP",                  87,  0, 0)
+def_op(loc,  "RETURN_GENERATOR",                75,  0, 0)
+def_op(loc,  "SEND",                           123,  0, 0)
+# copy free vars for closures
+def_op(loc,  "COPY_FREE_VARS",                 149,  0, 0)
+# new jump
+jrel_op(loc, "JUMP_BACKWARD_NO_INTERRUPT",    134,   0, 0)
+# new create cells op
+jrel_op(loc, "MAKE_CELL",                     135,   0, 0)
+# new exception handling
+jrel_op(loc, "CHECK_EG_MATCH",                 37,   0, 0)
+jrel_op(loc, "PREP_RERAISE_STAR",              88,   1, 0)
+jrel_op(loc, "PUSH_EXC_INFO",                  35,   0, 1)
+# resume, acts like a nop
+def_op(loc, "RESUME",                         151,   0, 0)
+
 ## Update tables
 # removed jrel ops 35, 37, 143, 88, 154
 
