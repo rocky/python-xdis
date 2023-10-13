@@ -232,12 +232,12 @@ def get_instructions_bytes(
             else:
                 arg = (
                     code2num(bytecode, i)
-                    + code2num(bytecode, i + 1) * 256
+                    + code2num(bytecode, i + 1) * 0x100
                     + extended_arg
                 )
                 i += 2
                 extended_arg = (
-                    arg * 65536
+                    arg * 0x10000
                     if hasattr(op, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
                     else 0
                 )

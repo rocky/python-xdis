@@ -126,7 +126,6 @@ rm_op(loc, "LOAD_DEREF",                      136)
 rm_op(loc, "STORE_DEREF",                     137)
 rm_op(loc, "DELETE_DEREF",                    138)
 
-
 # These are added since 3.10...
 #          OP NAME                         OPCODE  POP PUSH
 #---------------------------------------------------------
