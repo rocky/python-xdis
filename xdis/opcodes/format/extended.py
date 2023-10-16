@@ -505,7 +505,8 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list) -> Tuple[str, i
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         # FIXME: we can probably much better than this.
         # But this is a start.
-        s = f"def {code_inst.argval.co_name}(...): ..."
+        signature = extended_function_signature(code_inst.argval)
+        s += f"def {code_inst.argval.co_name}({signature}): " "..."
     return s, start_offset
 
 
@@ -547,6 +548,15 @@ def extended_format_UNARY_NEGATIVE(
 
 def extended_format_UNARY_NOT(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "not (%s)")
+
+
+def extended_function_signature(code) -> str:
+    """
+    Return some representation for a code object.
+    """
+    # FIXME: we can probably much better than this.
+    # But this is a start.
+    return "..."
 
 
 def get_arglist(

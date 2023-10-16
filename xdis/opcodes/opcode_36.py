@@ -38,8 +38,8 @@ from xdis.opcodes.format.basic import format_RAISE_VARARGS_older
 from xdis.opcodes.format.extended import (
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
+    extended_function_signature,
     get_arglist,
-    short_code_repr,
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
@@ -137,7 +137,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions) -> Tuple[str, int]:
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         s += (
-            f"def {name_inst.argval}({extended_function_signature_36(instructions)}): "
+            f"def {name_inst.argval}({extended_function_signature(code_inst.argval)}): "
             "..."
         )
         return s, start_offset
@@ -220,15 +220,6 @@ opcode_arg_fmt36 = opcode_arg_fmt = {
     "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
-
-
-def extended_function_signature_36(instructions: list) -> str:
-    """
-    Return some representation of a function signature.
-    """
-    # FIXME: we can probably much better than this.
-    # But this is a start.
-    return "..."
 
 
 update_pj3(globals(), loc)
