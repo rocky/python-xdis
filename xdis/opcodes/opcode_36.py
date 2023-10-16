@@ -136,7 +136,10 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions) -> Tuple[str, int]:
     code_inst = instructions[2]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += f"make_function({name_inst.argval}, {short_code_repr(code_inst.argval)})"
+        s += (
+            f"def {name_inst.argval}({extended_function_signature_36(instructions)}): "
+            "..."
+        )
         return s, start_offset
     return s, start_offset
 
@@ -217,6 +220,15 @@ opcode_arg_fmt36 = opcode_arg_fmt = {
     "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
+
+
+def extended_function_signature_36(instructions: list) -> str:
+    """
+    Return some representation of a function signature.
+    """
+    # FIXME: we can probably much better than this.
+    # But this is a start.
+    return "..."
 
 
 update_pj3(globals(), loc)

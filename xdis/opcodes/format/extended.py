@@ -498,15 +498,14 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list) -> Tuple[str, i
     argc = instructions[0].argval
     if (argc >> 16) & 0x7FFF:
         # There is a tuple listing the parameter names for the annotations
-        name_inst = instructions[2]
-        code_inst = instructions[3]
-    else:
-        name_inst = instructions[1]
         code_inst = instructions[2]
+    else:
+        code_inst = instructions[1]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += f"make_function({short_code_repr(name_inst.argval)}"
-        return s, start_offset
+        # FIXME: we can probably much better than this.
+        # But this is a start.
+        s = f"def {code_inst.argval.co_name}(...): ..."
     return s, start_offset
 
 
@@ -696,6 +695,7 @@ opcode_extended_fmt_base = {
     "IS_OP":                 extended_format_IS_OP,
     "LOAD_ATTR":             extended_format_ATTR,
     "LOAD_BUILD_CLASS":      extended_format_LOAD_BUILD_CLASS,
+    "MAKE_FUNCTION":         extended_format_MAKE_FUNCTION_10_27,
     # "LOAD_DEREF":            extended_format_ATTR, # not quite right
     "RAISE_VARARGS":         extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
