@@ -274,19 +274,26 @@ opcode_extended_fmt = opcode_extended_fmt311
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
 
+
 def parse_location_entries(location_bytes, first_line):
     """
     Parses the locations table described in: https://github.com/python/cpython/blob/3.11/Objects/locations.md
     The locations table replaced the line number table starting in 3.11
     """
-    def starts_new_entry(b): return bool(b & 0b10000000) # bit 7 is set
-    def extract_code(b): return (b & 0b01111000) >> 3 # extracts bits 3-6
-    def extract_length(b): return (b & 0b00000111) + 1 # extracts bit 0-2
+
+    def starts_new_entry(b):
+        return bool(b & 0b10000000)  # bit 7 is set
+
+    def extract_code(b):
+        return (b & 0b01111000) >> 3  # extracts bits 3-6
+
+    def extract_length(b):
+        return (b & 0b00000111) + 1  # extracts bit 0-2
 
     def iter_location_codes(loc_bytes):
         if len(loc_bytes) == 0:
             return []
-        
+
         iter_locs = iter(loc_bytes)
         entry_codes = [next(iter_locs)]
 
@@ -296,16 +303,19 @@ def parse_location_entries(location_bytes, first_line):
                 entry_codes = [b]
             else:
                 entry_codes.append(b)
-        
+
         if entry_codes:
             yield entry_codes
 
     def iter_varints(varint_bytes):
         if len(varint_bytes) == 0:
             return []
-        
-        def has_next_byte(b): return bool(b & 0b0100_0000) # has bit 6 set
-        def get_value(b): return (b & 0b00111111) # extracts bits 0-5
+
+        def has_next_byte(b):
+            return bool(b & 0b0100_0000)  # has bit 6 set
+
+        def get_value(b):
+            return b & 0b00111111  # extracts bits 0-5
 
         iter_varint_bytes = iter(varint_bytes)
 
@@ -321,9 +331,12 @@ def parse_location_entries(location_bytes, first_line):
                 current_value = 0
                 shift_amt = 0
 
-    def decode_signed_varint(s): return -(s>>1) if s & 1 else (s>>1)
+    def decode_signed_varint(s):
+        return -(s >> 1) if s & 1 else (s >> 1)
 
-    entries = [] # tuples of (code units, start line, end line, start column, end column)
+    entries = (
+        []
+    )  # tuples of (code units, start line, end line, start column, end column)
 
     last_line = first_line
 
@@ -332,38 +345,43 @@ def parse_location_entries(location_bytes, first_line):
         location_length = extract_length(first_byte)
         code = extract_code(first_byte)
 
-        if code <= 9: # short form
+        if code <= 9:  # short form
             start_line = last_line
             end_line = start_line
             second_byte = location_codes[1]
-            start_column = (code*8) + ((second_byte>>4)&7)
-            end_column = start_column + (second_byte&15)
-        elif code <= 12: # one line form
+            start_column = (code * 8) + ((second_byte >> 4) & 7)
+            end_column = start_column + (second_byte & 15)
+        elif code <= 12:  # one line form
             start_line = last_line + code - 10
             end_line = start_line
             start_column = location_codes[1]
             end_column = location_codes[2]
-        elif code == 13: # no column info
+        elif code == 13:  # no column info
             (start_line_delta,) = iter_varints(location_codes[1:])
             start_line = last_line + decode_signed_varint(start_line_delta)
             end_line = start_line
             start_column = None
             end_column = None
-        elif code == 14: # long form
-            (start_line_delta, end_line_delta, start_column, end_column) = iter_varints(location_codes[1:])
+        elif code == 14:  # long form
+            (start_line_delta, end_line_delta, start_column, end_column) = iter_varints(
+                location_codes[1:]
+            )
             start_line = last_line + decode_signed_varint(start_line_delta)
             end_line = start_line + end_line_delta
-        else: # code == 15, no location
+        else:  # code == 15, no location
             start_line = None
             end_line = None
             start_column = None
             end_column = None
 
-        entries.append((location_length, start_line, end_line, start_column, end_column))
+        entries.append(
+            (location_length, start_line, end_line, start_column, end_column)
+        )
 
         last_line = start_line if start_line is not None else last_line
 
     return entries
+
 
 def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
@@ -374,8 +392,10 @@ def findlinestarts(code, dup_lines=False):
     # try to get the co_linetable from a native code object
     # fall back to the lnotab if it's a portable code object, which will store the same bytes
     # we do this because in a native code object, co_lnotab gets mapped back to the legacy lnotab format
-    locations_table_bytes = getattr(code, 'co_linetable', code.co_lnotab)
-    location_table_entries = parse_location_entries(locations_table_bytes, code.co_firstlineno)
+    locations_table_bytes = getattr(code, "co_linetable", code.co_lnotab)
+    location_table_entries = parse_location_entries(
+        locations_table_bytes, code.co_firstlineno
+    )
 
     current_offset = 0
     previous_line = None
@@ -386,8 +406,11 @@ def findlinestarts(code, dup_lines=False):
         if start_line is not None and start_line != previous_line:
             yield current_offset, start_line
             previous_line = start_line
-    
-        current_offset += 2*offset_delta
+
+        current_offset += 2 * offset_delta
+
+
+opcode_arg_fmt = opcode_arg_fmt11 = opcode_arg_fmt310.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

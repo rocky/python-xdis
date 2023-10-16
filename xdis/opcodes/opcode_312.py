@@ -6,7 +6,6 @@ of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_311 as opcode_311
-from xdis.opcodes.opcode_311 import opcode_arg_fmt311, opcode_extended_fmt311
 from xdis.opcodes.base import (
     binary_op,
     def_op,
@@ -16,6 +15,7 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
+from xdis.opcodes.opcode_311 import opcode_arg_fmt311, opcode_extended_fmt311
 
 version_tuple = (3, 12)
 python_implementation = "CPython"
@@ -173,8 +173,11 @@ opcode_arg_fmt = opcode_arg_fmt312 = {
 }
 opcode_extended_fmt = opcode_extended_fmt312 = opcode_extended_fmt311.copy()
 
-# overwrite legacy findlinestarts with the 3.11 version that uses the location_table syntax
-from xdis.opcodes.opcode_311 import parse_location_entries, findlinestarts
+# overwrite legacy findlinestarts with the 3.11 version that uses the
+# location_table syntax
+from xdis.opcodes.opcode_311 import findlinestarts, parse_location_entries
+
+opcode_arg_fmt = opcode_arg_fmt12 = opcode_arg_fmt311.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

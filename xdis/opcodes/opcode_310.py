@@ -171,5 +171,7 @@ def findlinestarts(code, dup_lines=False):
         yield start_offset, lineno
 
 
+opcode_arg_fmt = opcode_arg_fmt10 = opcode_arg_fmt39.copy()
+
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
