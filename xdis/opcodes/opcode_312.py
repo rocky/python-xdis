@@ -25,7 +25,7 @@ loc = locals()
 init_opdata(loc, opcode_311, version_tuple)
 
 
-# extend opcodes to cover psuedo ops
+# extend opcodes to cover pseudo ops
 loc["opname"].extend([f"<{i}>" for i in range(256, 267)])
 loc["oppop"].extend([0] * 11)
 loc["oppush"].extend([0] * 11)

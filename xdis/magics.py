@@ -186,7 +186,7 @@ add_magic_from_int(62211, "2.7")  # introduce MAP_ADD and SET_ADD
 
 add_magic_from_int(2657, "2.7pyston-0.6.1")
 
-# PyPy including pypy-2.6.1, pypy-5.0.1 PyPy adds 7 to the corresponding CPython nmber
+# PyPy including pypy-2.6.1, pypy-5.0.1 PyPy adds 7 to the corresponding CPython number
 add_magic_from_int(62211 + 7, "2.7pypy")
 
 add_magic_from_int(3000, "3.000")

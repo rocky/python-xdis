@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-Common routines for entering and classifiying opcodes. Inspired by,
+Common routines for entering and classifying opcodes. Inspired by,
 limited by, and somewhat compatible with the corresponding
 Python opcode.py structures
 """
@@ -382,7 +382,13 @@ def update_sets(loc):
             [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
         )
     elif python_version:
-        loc["JUMP_UNCONDITONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"], loc["opmap"]["JUMP_BACKWARD"], loc["opmap"]["JUMP_BACKWARD_NO_INTERRUPT"]])
+        loc["JUMP_UNCONDITONAL"] = frozenset(
+            [
+                loc["opmap"]["JUMP_FORWARD"],
+                loc["opmap"]["JUMP_BACKWARD"],
+                loc["opmap"]["JUMP_BACKWARD_NO_INTERRUPT"],
+            ]
+        )
     else:
         loc["JUMP_UNCONDITONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
     if PYTHON_VERSION_TRIPLE < (3, 8, 0) and python_version and python_version < (3, 8):
