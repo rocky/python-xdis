@@ -1,4 +1,4 @@
-# (C) Copyright 2023 by Rocky Bernstein
+# (C) Copyright 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -496,15 +496,15 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list):
     argc = instructions[0].argval
     if (argc >> 16) & 0x7FFF:
         # There is a tuple listing the parameter names for the annotations
-        name_inst = instructions[2]
-        code_inst = instructions[3]
-    else:
-        name_inst = instructions[1]
         code_inst = instructions[2]
+    else:
+        code_inst = instructions[1]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += "make_function(%s)" % short_code_repr(name_inst.argval)
-        return s, start_offset
+        # FIXME: we can probably much better than this.
+        # But this is a start.
+        signature = extended_function_signature(code_inst.argval)
+        s += "def %s(%s): " "..." % (code_inst.argval.co_name, signature)
     return s, start_offset
 
 
@@ -546,6 +546,15 @@ def extended_format_UNARY_NEGATIVE(
 
 def extended_format_UNARY_NOT(opc, instructions: list):
     return extended_format_unary_op(opc, instructions, "not (%s)")
+
+
+def extended_function_signature(code) -> str:
+    """
+    Return some representation for a code object.
+    """
+    # FIXME: we can probably much better than this.
+    # But this is a start.
+    return "..."
 
 
 def get_arglist(
@@ -694,11 +703,13 @@ opcode_extended_fmt_base = {
     "IS_OP":                 extended_format_IS_OP,
     "LOAD_ATTR":             extended_format_ATTR,
     "LOAD_BUILD_CLASS":      extended_format_LOAD_BUILD_CLASS,
+    "MAKE_FUNCTION":         extended_format_MAKE_FUNCTION_10_27,
     # "LOAD_DEREF":            extended_format_ATTR, # not quite right
     "RAISE_VARARGS":         extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,
     "STORE_FAST":            extended_format_store_op,
+    "STORE_GLOBAL":          extended_format_store_op,
     "STORE_NAME":            extended_format_store_op,
     "STORE_SUBSCR":          extended_format_STORE_SUBSCR,
     "UNARY_INVERT":          extended_format_UNARY_INVERT,

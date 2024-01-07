@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" Trivial helper program to byte compile and run an pydisasm on the bytecode file.
+""" Trivial helper program to byte compile and run ``dismasm`` on the bytecode file.
 """
 import os
 import py_compile

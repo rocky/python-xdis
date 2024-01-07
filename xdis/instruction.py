@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2023 by Rocky Bernstein
+#  Copyright (c) 2018-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """Python instruction class
-Extracted from Python 3 dis module but generalized to
+Extracted from Python 3's ``dis`` module but generalized to
 allow running on Python 2.
 """
 
@@ -157,7 +157,7 @@ class Instruction(_Instruction):
                 # Not 3.6 or later
                 hex_bytecode += " " * (2 * 3)
             if self.inst_size == 2:
-                # Must by Python 3.6 or later
+                # Must be Python 3.6 or later
                 if self.has_arg:
                     hex_bytecode += " %02x" % (self.arg % 256)
                 else:
@@ -226,18 +226,19 @@ class Instruction(_Instruction):
                 pass
             else:
                 # Column: Opcode argument details
-                argval = instructions[-1].argval
-                if instructions[-1].tos_str is None or (
-                    self.argrepr is not None
-                    and self.argrepr == instructions[-1].tos_str
-                ):
-                    fields.append("(%s)" % argrepr)
-                else:
-                    prefix = "" if self.argrepr is None else "(%s) | " % argval
-                    if self.opcode in opc.operator_set:
-                        prefix += "TOS = "
-                    fields.append("%s%s" % (prefix, instructions[-1].formatted))
-                pass
+                if len(instructions) > 0:
+                    argval = instructions[-1].argval
+                    if instructions[-1].tos_str is None or (
+                        self.argrepr is not None
+                        and self.argrepr == instructions[-1].tos_str
+                    ):
+                        fields.append("(%s)" % argrepr)
+                    else:
+                        prefix = "" if self.argrepr is None else "(%s) | " % argval
+                        if self.opcode in opc.operator_set:
+                            prefix += "TOS = "
+                        fields.append("%s%s" % (prefix, instructions[-1].formatted))
+                    pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
             op = self.opcode

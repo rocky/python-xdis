@@ -1,5 +1,5 @@
 # (C) Copyright 2018 by Daniel Bradburn
-# (C) Copyright 2018, 2020, 2023 by Rocky Bernstein
+# (C) Copyright 2018, 2020, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ example:
     for op in dis.Bytecode('for i in range(10): pass'):
         print(op)
 
-There is also the ability to generate an std api for a specific version, for example:
+There is also the ability to generate a std api for a specific version, for example:
 
     from xdis.std import make_std_api
     dis = make_std_api(2.4)
@@ -89,7 +89,7 @@ class _StdApi:
             Instantiate this with a function, method, string of code, or a code object
             (as returned by compile()).
 
-            Iterating over this yields the bytecode operations as Instruction instances.
+            Iterating over this yields a bytecode operation as Instruction instances.
             """
 
             def __init__(self, x, first_line=None, current_offset=None, opc=None):
@@ -109,11 +109,11 @@ class _StdApi:
             """Details for a bytecode operation
 
             Defined fields:
-              opname - human readable name for operation
+              opname - human-readable name for operation
               opcode - numeric code for operation
               arg - numeric argument to operation (if any), otherwise None
               argval - resolved arg value (if known), otherwise same as arg
-              argrepr - human readable description of operation argument
+              argrepr - human-readable description of operation argument
               offset - start index of operation within bytecode sequence
               starts_line - line started by this opcode (if any), otherwise None
               is_jump_target - True if other code jumps to here, otherwise False
@@ -187,7 +187,7 @@ class _StdApi:
         """Iterator for the opcodes in methods, functions or code
 
         Generates a series of Instruction named tuples giving the details of
-        each operations in the supplied code.
+        each operation in the supplied code.
 
         If *first_line* is not None, it indicates the line number that should
         be reported for the first source line in the disassembled code.
@@ -223,7 +223,7 @@ def make_std_api(python_version=sys.version_info, variant=VARIANT):
     :param python_version: Generate a dis module for this version of python
                            (defaults to the currently running python version.)
     :param variant:        The string denoting the variant of the python version
-                           being run, for example 'pypy' or 'alpha0', 'rc1' etc,
+                           being run, for example 'pypy' or 'alpha0', 'rc1' etc,,
                            or None to auto detect based on the currently running
                            interpreter.
 
