@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2023 by Rocky Bernstein
+# (C) Copyright 2018-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -429,7 +429,6 @@ class _StringBuffer:
 
 
 class _Unmarshaller:
-
     dispatch = {}
 
     def __init__(self, readfunc, python_version=None):
@@ -789,7 +788,6 @@ _load_dispatch = {}
 
 
 class _FastUnmarshaller:
-
     dispatch = {}
 
     def __init__(self, buffer, python_version=None):

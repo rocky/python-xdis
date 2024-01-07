@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2023 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -124,7 +124,8 @@ def compat_u2s(u):
             return s
     else:
         return str(u)
-        
+
+
 class _VersionIndependentUnmarshaller:
     def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
         """
@@ -212,7 +213,7 @@ class _VersionIndependentUnmarshaller:
             byte1 = byte1 & (FLAG_REF - 1)
         marshal_type = chr(byte1)
 
-        #print(marshal_type)  # debug
+        # print(marshal_type)  # debug
 
         if marshal_type in UNMARSHAL_DISPATCH_TABLE:
             func_suffix = UNMARSHAL_DISPATCH_TABLE[marshal_type]
@@ -464,7 +465,6 @@ class _VersionIndependentUnmarshaller:
                 co_nlocals = unpack("<i", self.fp.read(4))[0]
             elif version_tuple >= (1, 3):
                 co_nlocals = unpack("<h", self.fp.read(2))[0]
-                
 
         if version_tuple >= (2, 3):
             co_stacksize = unpack("<i", self.fp.read(4))[0]
@@ -539,7 +539,9 @@ class _VersionIndependentUnmarshaller:
 
             if version_tuple >= (3, 11):
                 co_linetable = self.r_object(bytes_for_s=bytes_for_s)
-                co_lnotab = co_linetable # will be parsed later in opcode.findlinestarts
+                co_lnotab = (
+                    co_linetable  # will be parsed later in opcode.findlinestarts
+                )
                 co_exceptiontable = self.r_object(bytes_for_s=bytes_for_s)
             else:
                 co_lnotab = self.r_object(bytes_for_s=bytes_for_s)

@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-# Here, we are more closely modeling Python's ``lib/dis.py`` organization.
+# Here, we are more closely modeling Python's ``dis`` module organization.
 # However, it appears that Python names and code has copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
@@ -104,6 +104,7 @@ def _try_compile(source, name):
 #     255, 255, 45, 45,
 # but to
 #     255, 0, 45, 127, 0, 73.
+
 
 # The above is sufficient to reconstruct line numbers for tracebacks, but not for
 # line tracing.  Tracing is handled by PyCode_CheckLineNumber() in codeobject.c
@@ -393,7 +394,7 @@ def unpack_opargs_bytecode_310(code, opc):
         yield offset, op, arg
 
 
-# This is modified from Python 3.6's ``lib/dis`` module
+# This is modified from Python 3.6's ``dis`` module
 def unpack_opargs_bytecode(code, opc):
     extended_arg = 0
     try:

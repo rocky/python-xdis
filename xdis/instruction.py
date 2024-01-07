@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2023 by Rocky Bernstein
+#  Copyright (c) 2018-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """Python instruction class
-Extracted from Python 3's ``lib/dis`` module but generalized to
+Extracted from Python 3's ``dis`` module but generalized to
 allow running on Python 2.
 """
 

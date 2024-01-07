@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2023 by Rocky Bernstein
+#  Copyright (c) 2018-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -256,11 +256,13 @@ def get_instructions_bytes(
                     argval, argrepr = _get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL + " + argrepr
-                elif opc.version_tuple >= (3,12) and opc.opname[op] == "LOAD_ATTR":
+                elif opc.version_tuple >= (3, 12) and opc.opname[op] == "LOAD_ATTR":
                     argval, argrepr = _get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL|self + " + argrepr
-                elif opc.version_tuple >= (3,12) and opc.opname[op] == "LOAD_SUPER_ATTR":
+                elif (
+                    opc.version_tuple >= (3, 12) and opc.opname[op] == "LOAD_SUPER_ATTR"
+                ):
                     argval, argrepr = _get_name_info(arg >> 2, names)
                     if arg & 1:
                         argrepr = "NULL|self + " + argrepr
@@ -268,10 +270,10 @@ def get_instructions_bytes(
                     argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
             elif op in opc.JREL_OPS:
-                signed_arg = -arg if 'JUMP_BACKWARD' in opc.opname[op] else arg
+                signed_arg = -arg if "JUMP_BACKWARD" in opc.opname[op] else arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
                 # FOR_ITER has a cache instruction in 3.12
-                if opc.version_tuple >= (3, 12) and opc.opname[op] == 'FOR_ITER':
+                if opc.version_tuple >= (3, 12) and opc.opname[op] == "FOR_ITER":
                     argval += 2
                 argrepr = "to " + repr(argval)
                 optype = "jrel"
@@ -280,19 +282,27 @@ def get_instructions_bytes(
                 argrepr = "to " + repr(argval)
                 optype = "jabs"
             elif op in opc.LOCAL_OPS:
-                if opc.version_tuple >= (3,11):
-                    argval, argrepr = _get_name_info(arg, (varnames or tuple()) + (cells or tuple()))
+                if opc.version_tuple >= (3, 11):
+                    argval, argrepr = _get_name_info(
+                        arg, (varnames or tuple()) + (cells or tuple())
+                    )
                 else:
                     argval, argrepr = _get_name_info(arg, varnames)
                 optype = "local"
             elif op in opc.FREE_OPS:
-                if opc.version_tuple >= (3,11):
-                    argval, argrepr = _get_name_info(arg, (varnames or tuple()) + (cells or tuple()))
+                if opc.version_tuple >= (3, 11):
+                    argval, argrepr = _get_name_info(
+                        arg, (varnames or tuple()) + (cells or tuple())
+                    )
                 else:
                     argval, argrepr = _get_name_info(arg, cells)
                 optype = "free"
             elif op in opc.COMPARE_OPS:
-                argval = opc.cmp_op[arg >> 4] if opc.python_version >= (3, 12) else opc.cmp_op[arg]
+                argval = (
+                    opc.cmp_op[arg >> 4]
+                    if opc.python_version >= (3, 12)
+                    else opc.cmp_op[arg]
+                )
                 argrepr = argval
                 optype = "compare"
             elif op in opc.NARGS_OPS:

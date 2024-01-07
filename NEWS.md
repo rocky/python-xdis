@@ -52,8 +52,8 @@
 Reworked for Python 3.10.
 
 We had been internally using floating point numbers for version testing.
-Clearl this doesn't work to distinguish 3.1 from 3.10.
-(This was a flaw known about for a while and we'd been avoiding).
+Clearly this doesn't work to distinguish 3.1 from 3.10.
+(This was a flaw known about for a while that we had been avoiding).
 
 * Add 3.10 opcodes.
 * Add 3.9 and 3.10 testing.
@@ -67,7 +67,7 @@ Clearl this doesn't work to distinguish 3.1 from 3.10.
 
 Added knowledge of Python versions 3.6.15 and 3.7.12.
 
-However the main motivation was to impove packaging to handle administration
+However, the main motivation was to improve packaging to handle administration
 of the 3 different branches or dialects of Python 2.4-2.7, 3.1-3.2, 3.3-3.5, and 3.6+
 
 Restrict wheel packaging for Python 3 only.
@@ -83,7 +83,7 @@ Use eggs for 2.x versions (and others as well).
 * Document unmarshal better
 * Correct stack information for `IMPORT_NAME`
 * Fix bug in code type handling where bytes were showing up as strings
-* More type annotations in master branch. Create more older variations without annotations
+* More type annotations in master branch. Create older variations without annotations
 
 5.0.11 2021-07-05
 ================
@@ -175,11 +175,11 @@ Disassembly format and options have simplified and improved.
 I had this "Aha!" moment working on the cross-version interpreter x-python. It can show a better disassembly because it has materialized stack entries.
 So for example when a `COMPARE_OP` instruction is run it can show what operands are getting compared.
 
-It was then that I realized that this is also true much of the time statically. For example you'll often find a `LOAD_CONST` instruction before a `RETURN_VALUE` and when you do can show exactly what is getting returned. Although cute, the place where something like this is most appreciated and needed is in calling functions such as via `CALL_FUNCTION`. The situation here is that the name of the function is on the stack and it can be several instructions back depending on the number of parameters. However in a large number of cases, by tracking use of stack effects (added in a previous release), we can often location the `LOAD_CONST` of that function name.
+It was then that I realized that this is also true much of the time statically. For example, you'll often find a `LOAD_CONST` instruction before a `RETURN_VALUE` and when you do can show exactly what is getting returned. Although cute, the place where something like this is most appreciated and needed is in calling functions such as via `CALL_FUNCTION`. The situation here is that the name of the function is on the stack, and it can be several instructions back depending on the number of parameters. However, in a large number of cases, by tracking use of stack effects (added in a previous release), we can often location the `LOAD_CONST` of that function name.
 
-Note though that we don't attempt work across basic blocks to track down information. Nor do we even attempt recreate expression trees. We don't track across call which has a parameter return value which is the return from another call. Still, I find this all very useful.
+Note though that we don't attempt work across basic blocks to track down information. Nor do we even attempt to recreate expression trees. We don't track across call which has a parameter return value which is the return from another call. Still, I find this all very useful.
 
-This is not shown by default though. Instead we use a mode called "classic". To get this, in `pydisasm` use the `--format extended` or `--format extended-bytes`.
+This is not shown by default though. Instead, we use a mode called "classic". To get this, in `pydisasm` use the `--format extended` or `--format extended-bytes`.
 
 And that brings up a second change in formatting. Before, we had separate flags and command-line options for whether to show just the header, and whether to include bytecode ops in the output. Now there is just a single parameter called `asm_format`, and choice option `--format` (short option `-F`).
 
@@ -212,7 +212,7 @@ For example in:
 
 there two offsets associated with that line. The first is to the assignment of `z` while the second is to the addition expression inside the lambda.
 
-In other news, a long-standing bug was fixed to handle bytestring constants in 3.x. We had been erroneously converting bytestrings into 3.x. However when decompiling 1.x or 2.x bytecode from 3.x we still need to convert bytestrings into strings.
+In other news, a long-standing bug was fixed to handle bytestring constants in 3.x. We had been erroneously converting bytestrings into 3.x. However, when decompiling 1.x or 2.x bytecode from 3.x we still need to convert bytestrings into strings.
 
 Also, operand formatting in assembly for `BUILD_UNMAP_WITH_CALL` has been improved, and
 we note how the operand encoding has changed between 3.5. and 3.6.
@@ -274,7 +274,7 @@ See the commit history or ChangeLog file for a full list of changes
 Incompatibility with earlier versions:
 
 Note: as a result of the reorganization, exported functions from
-bytecode are now in cross_dis.  However functions are exported from
+bytecode are now in cross_dis.  However, functions are exported from
 the top-level so use that and there will be no disruption in the
 future. For example `from xdis import iscode, instruction_size,
 code_info`.
@@ -334,19 +334,19 @@ Use `codeType2Portable()` to turn a native `types.CodeType` or a structure read 
 
 For example lists of thing like `co_consts`, or `varnames` can be Python lists as well as tuples. The line number table is stored as a dictionary mapping of address to bytecode offset rather than as a compressed structure. Bytecode can either be a string (which is advantageous if you are running Python before 3.x) or a sequence of bytes which is the datatype of a code object for 3.x.
 
-However when you need a `type.CodeType` that can be can be `eval()`'d by the Python interpreter you are running, use the `to_native()` method on the portable code type returned. It will compress and encode the line number table, and turn lists into tuples and convert other datatypes to the right type as needed.
+However, when you need a `type.CodeType` that can be `eval()`'d by the Python interpreter you are running, use the `to_native()` method on the portable code type returned. It will compress and encode the line number table, and turn lists into tuples and convert other datatypes to the right type as needed.
 
-If you have a *complete* `types.Codetype` structure for a particular Python version whether, it is the one the current Python interpreter is using or not, use the `to_portable()` function and it will figure out based on the version parameter supplied (or use the current Python interpreter version if none supplieed), which particlar portable code type is the right one.
+If you have a *complete* `types.Codetype` structure for a particular Python version whether, it is the one the current Python interpreter is using or not, use the `to_portable()` function, and it will figure out based on the version parameter supplied (or use the current Python interpreter version if none supplieed), which particlar portable code type is the right one.
 
-If on the other hand, you have a number of code-type fields which may be incomplete, but still want to work with something that has code-type characteristics while not worring about which fields are required an their exact proper datatypes, use the `CodeTypeUnion` structure.
+If on the other hand, you have a number of code-type fields which may be incomplete, but still want to work with something that has code-type characteristics while not worrying about which fields are required and their exact proper datatypes, use the `CodeTypeUnion` structure.
 
-Internally, we use OO inheretence to reduce the amount of duplicate code. The `load_code_internal()` function from `unmarshal.py` is now a lot shorter and cleaner as a result of this reorganization.
+Internally, we use OO inheritance to reduce the amount of duplicate code. The `load_code_internal()` function from `unmarshal.py` is now a lot shorter and cleaner as a result of this reorganization.
 
 ### New Portable Code Methods, Modules and Classes
 
 * Python 3.8-ish `replace()` method has been added to the portable code types
 * Portable code type classes `Code13`, `Code15` have been added to more precisely distinguish Python 1.3 and 1.5 code types. The other portable code classes are `Code2`, `Code3`, and `Code38`.
-* the to_native() conversts a portable code type into a native code type
+* the to_native() converts a portable code type into a native code type
 * the `decode_lineno_tab()` method on portable code types from Python 1.5 on decompresses the Python encode line number table into a dictionary mapping offset to line number.
 
 
@@ -602,7 +602,7 @@ License is GPL2.0 only now
 - Add pydisasm --header/--no-header
   option --header shows just the module-level header information
 - Add magic.magicint2version
-  In this dictionary, the key is an magic integer, e.g. 62211,
+  In this dictionary, the key is a magic integer, e.g. 62211,
   and the value is its canonic versions string, e.g. '2.7'
 
 3.6.2 2017-12-02
@@ -637,9 +637,9 @@ License is GPL2.0 only now
 - add unpack_opargs_bytecode which is similar to unpack_opargs_wordcode of 3.6
   This probably fixes a long-standing but little-noticed bug in Python 2.x disassembly
 - cross version compatability bug fixed in code2num()
-- Mark NOFOLOW opcodes (RETURN, RAISE)
+- Mark NOFOLLOW opcodes (RETURN, RAISE)
 - Mark conditional opcodes (POP_JUMP_IF...)
-- Add len() and getitem() to code types code types to mimic Python3 behavior
+- Add len() and getitem() to code types to mimic Python3 behavior
 - More tests; add appveyor CI testing
 
 3.5.5 2017-08-31
@@ -653,7 +653,7 @@ License is GPL2.0 only now
 =====================
 
 - Add internal switch in findlabels() to show multiple offsets for a
-  given line.  This is turned on in pydisasm --xasm mode. Otherwise it
+  given line.  This is turned on in pydisasm --xasm mode. Otherwise, it
   is off. Sme  programs make use of findlinstart's somewhat misleading
   behavior
 
@@ -673,8 +673,8 @@ License is GPL2.0 only now
 Showing all line number bolixes uncompyle6 and the trepan debuggers,
 so nuke that for now.
 
-However we show the full deal in pydisasm for asm format.  Here it is imporant since we recreate the line number table based on information
-given in the instructions.  We could and probably should allow showing all of the line number in the default format as well.  Underneath there is a parameter to control that.
+However, we show the full deal in pydisasm for asm format.  Here it is important since we recreate the line number table based on information
+given in the instructions.  We could and probably should allow showing all the line number in the default format as well.  Underneath there is a parameter to control that.
 
 * Add pypy 3.5.3 magic number
 
@@ -696,7 +696,7 @@ Overall: Better xasm support, pydisasm improvements
 - Allow lnotab as a dict before code freeze
 - pydisasm: don't show Freevars more than once. Do show varnames,
   the combined positional + local vars
-- change cmp_op values so they don't have an embedded space
+- change cmp_op values so that they don't have an embedded space
   this helps xasm tokenization of COMPARE_OP's operand
 - --asm option fixes
 - a frozenset is more appropriate for opcode sets
@@ -715,11 +715,11 @@ Overall: Support for bytecode assembler (xasm), Better 3.4-3.6 support
 - Add "optype" field to Instructions. Derived from the has_xxx lists
 - Marshaling for Python2 and Python3 code when using cross-version
   is aware that the format for the other type is different.
-- Add opcode sets corresponding to the the opcode has_xxx lists.
+- Add opcode sets corresponding to the opcode has_xxx lists.
 - Document Code2 and Code3 a little better
 - add Code2Compat and Code3Compat to make cross-version Code creation
   easier
-- add Code2/Code3 freeze() routine which convert from from a
+- add Code2/Code3 freeze() routine which converts from a
   programmer-friendly code object to one compacted and ready for
   marshalling or use.
 - Correct Python 3.6+ findlinestarts() and findlabels() methods
@@ -830,7 +830,7 @@ Python 3.6 bugs/features
   This is incompatible with previous (2.x) versions
 
 - add parameter in load_module to omit parsing code,
-  just other info (source-code-size, timestamp, magic, etc)
+  just other info (source-code-size, timestamp, magic, etc.)
 
 - Disassemble 1.5 bytecodes and test
 

@@ -1,5 +1,5 @@
 # (C) Copyright 2018 by Daniel Bradburn
-# (C) Copyright 2018, 2020, 2023 by Rocky Bernstein
+# (C) Copyright 2018, 2020, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -67,7 +67,6 @@ VARIANT = PYPY if IS_PYPY else None
 
 class _StdApi:
     def __init__(self, python_version=sys.version_info, variant=VARIANT):
-
         if python_version >= (3, 6):
             import xdis.wordcode as xcode
         else:
