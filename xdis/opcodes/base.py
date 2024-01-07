@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-Common routines for entering and classifiying opcodes. Inspired by,
+Common routines for entering and classifying opcodes. Inspired by,
 limited by, and somewhat compatible with the corresponding
 Python opcode.py structures
 """
@@ -349,7 +349,7 @@ def finalize_opcodes(loc):
 def fix_opcode_names(opmap):
     """
     Python stupidly named some OPCODES with a + which prevents using opcode name
-    directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3 so we
+    directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3, so we
     can then use opcode_23.SLICE_3.  Later Python's fix this.
     """
     return dict([(k.replace("+", "_"), v) for (k, v) in opmap.items()])
@@ -380,6 +380,14 @@ def update_sets(loc):
     if python_version and python_version < (3, 11):
         loc["JUMP_UNCONDITONAL"] = frozenset(
             [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
+        )
+    elif python_version:
+        loc["JUMP_UNCONDITONAL"] = frozenset(
+            [
+                loc["opmap"]["JUMP_FORWARD"],
+                loc["opmap"]["JUMP_BACKWARD"],
+                loc["opmap"]["JUMP_BACKWARD_NO_INTERRUPT"],
+            ]
         )
     else:
         loc["JUMP_UNCONDITONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])

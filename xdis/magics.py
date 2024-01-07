@@ -185,7 +185,7 @@ add_magic_from_int(62211, "2.7")  # introduce MAP_ADD and SET_ADD
 
 add_magic_from_int(2657, "2.7pyston-0.6.1")
 
-# PyPy including pypy-2.6.1, pypy-5.0.1 PyPy adds 7 to the corresponding CPython nmber
+# PyPy including pypy-2.6.1, pypy-5.0.1 PyPy adds 7 to the corresponding CPython number
 add_magic_from_int(62211 + 7, "2.7pypy")
 
 add_magic_from_int(3000, "3.000")
@@ -381,6 +381,7 @@ add_magic_from_int(3492, "3.11a7b")
 add_magic_from_int(3493, "3.11a7c")
 add_magic_from_int(3494, "3.11a7d")
 add_magic_from_int(3495, "3.11a7e")
+add_magic_from_int(3531, "3.12.0rc2")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
@@ -467,8 +468,8 @@ add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.
 add_canonic_versions(
     "3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy 3.8.16pypy", "3.8.12pypy"
 )
-add_canonic_versions("3.9.17pypy", "3.9pypy")
-add_canonic_versions("3.10.12pypy 3.10pypy", "3.10pypy")
+add_canonic_versions("3.9.17pypy 3.9.18pypy", "3.9pypy")
+add_canonic_versions("3.10.12pypy 3.10.13pypy 3.10pypy", "3.10pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
@@ -499,8 +500,13 @@ add_canonic_versions(
 )
 
 add_canonic_versions(
-    "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4 3.11.5",
+    "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4 3.11.5 3.11.6 3.11.7",
     "3.11a7e",
+)
+
+add_canonic_versions(
+    "3.12 3.12.0 3.12.1",
+    "3.12.0rc2",
 )
 
 # The canonic version for a canonic version is itself

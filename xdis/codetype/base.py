@@ -18,7 +18,7 @@ import inspect
 
 
 def iscode(obj):
-    """A replacement for inspect.iscode() which we can't used because we may be
+    """A replacement for inspect.iscode() which we can't be used because we may be
     using a different version of Python than the version of Python used
     in creating the byte-compiled objects. Here, the code types may mismatch.
     """

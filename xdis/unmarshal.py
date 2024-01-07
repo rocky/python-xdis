@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2023 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -459,15 +459,12 @@ class _VersionIndependentUnmarshaller:
         else:
             kwonlyargcount = 0
 
-        if version_tuple >= (3, 11):
-            # 3.11 doesn't removes co_nlocals differently
-            co_nlocals = 0
-        elif version_tuple >= (2, 3):
-            co_nlocals = unpack("<i", self.fp.read(4))[0]
-        elif version_tuple >= (1, 3):
-            co_nlocals = unpack("<h", self.fp.read(2))[0]
-        else:
-            co_nlocals = 0
+        co_nlocals = 0
+        if version_tuple < (3, 11):
+            if version_tuple >= (2, 3):
+                co_nlocals = unpack("<i", self.fp.read(4))[0]
+            elif version_tuple >= (1, 3):
+                co_nlocals = unpack("<h", self.fp.read(2))[0]
 
         if version_tuple >= (2, 3):
             co_stacksize = unpack("<i", self.fp.read(4))[0]
@@ -491,37 +488,47 @@ class _VersionIndependentUnmarshaller:
 
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        if version_tuple >= (3, 11):
-            # If we need these, figure out how to get.
-            # co_localplusnames = self.r_object(bytes_for_s=False)
-            # co_localpluskinds = self.r_object(bytes_for_s=False)
-            co_varnames = tuple()
-            # co_qualname = self.r_object(bytes_for_s=bytes_for_s)
-        elif version_tuple >= (1, 3):
-            co_qualname = None
-            co_varnames = self.r_object(bytes_for_s=False)
-        else:
-            co_qualname = None
-            co_varnames = tuple()
-
-        if version_tuple >= (2, 0):
-            co_freevars = self.r_object(bytes_for_s=bytes_for_s)
-            co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
-            # FIXME for 3.11
-            if version_tuple >= (3, 11):
-                co_cellvars = tuple()
-
-        else:
-            co_freevars = tuple()
-            co_cellvars = tuple()
-
-        co_filename = self.r_object(bytes_for_s=bytes_for_s)
-        co_name = self.r_object(bytes_for_s=bytes_for_s)
+        co_varnames = tuple()
+        co_freevars = tuple()
+        co_cellvars = tuple()
 
         if version_tuple >= (3, 11):
+            # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
+            co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
+            co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
+
+            CO_FAST_LOCAL = 0x20
+            CO_FAST_CELL = 0x40
+            CO_FAST_FREE = 0x80
+
+            for name, kind in zip(co_localsplusnames, co_localspluskinds):
+                if kind & CO_FAST_LOCAL:
+                    co_varnames += (name,)
+                    if kind & CO_FAST_CELL:
+                        co_cellvars += (name,)
+                elif kind & CO_FAST_CELL:
+                    co_cellvars += (name,)
+                elif kind & CO_FAST_FREE:
+                    co_freevars += (name,)
+
+            co_nlocals = len(co_varnames)
+            co_filename = self.r_object(bytes_for_s=bytes_for_s)
+            co_name = self.r_object(bytes_for_s=bytes_for_s)
             co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+
         else:
             co_qualname = None
+            if version_tuple >= (1, 3):
+                co_varnames = self.r_object(bytes_for_s=False)
+            else:
+                co_varnames = tuple()
+
+            if version_tuple >= (2, 0):
+                co_freevars = self.r_object(bytes_for_s=bytes_for_s)
+                co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
+
+            co_filename = self.r_object(bytes_for_s=bytes_for_s)
+            co_name = self.r_object(bytes_for_s=bytes_for_s)
 
         co_exceptiontable = None
         if version_tuple >= (1, 5):
@@ -532,9 +539,9 @@ class _VersionIndependentUnmarshaller:
 
             if version_tuple >= (3, 11):
                 co_linetable = self.r_object(bytes_for_s=bytes_for_s)
-                # FIXME compute co_lnotab from co_linetable
-
-                co_lnotab = co_linetable
+                co_lnotab = (
+                    co_linetable  # will be parsed later in opcode.findlinestarts
+                )
                 co_exceptiontable = self.r_object(bytes_for_s=bytes_for_s)
             else:
                 co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
@@ -542,7 +549,7 @@ class _VersionIndependentUnmarshaller:
             # < 1.5 there is no lnotab, so no firstlineno.
             # SET_LINENO is used instead.
             co_firstlineno = -1  # Bogus sentinel value
-            co_lnotab = ""
+            co_lnotab = b""
 
         code = to_portable(
             co_argcount=co_argcount,

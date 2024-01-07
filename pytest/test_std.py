@@ -10,7 +10,7 @@ import pytest
 
 # local
 import xdis.std as dis
-from xdis import PYTHON3, IS_PYPY, PYTHON_VERSION_TRIPLE
+from xdis import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON_VERSION_TRIPLE >= (3, 2):
     if pytest.__version__ >= "3.2.0":
@@ -50,7 +50,7 @@ EXPECTED_CODE_INFO = (
 #    0: a"""
 ).format(
     flags="0x00000000 (0x0)"
-    if PYTHON_VERSION_TRIPLE >= (3,11) or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
+    if PYTHON_VERSION_TRIPLE >= (3, 11) or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
     else "0x00000040 (NOFREE)"
 )
 
@@ -84,7 +84,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
     def traceback_fixture():
         try:
             raise Exception
-        except:
+        except Exception:
             _, _, tb = sys.exc_info()
             return tb
 

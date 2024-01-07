@@ -72,7 +72,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
             for line in got_lines
         ]
 
-        # In Python before 3.10 lines decribing Python versions were
+        # In Python before 3.10 lines describing Python versions were
         # two lines, e.g.:
         #  Python 3.7.11 (default, Jul  3 2021, 19:46:46)
         #    [GCC 9.3.0]

@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024 by Rocky Bernstein
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -287,9 +287,9 @@ def load_module_from_file_object(
                 timestamp = unpack("<I", ts)[0]
                 # Note: a higher magic number doesn't necessarily mean a later
                 # release.  At Python 3.0 the magic number decreased
-                # significantly. Hence the range below. Also note inclusion of
+                # significantly. Hence, the range below. Also note inclusion of
                 # the size info, occurred within a Python major/minor
-                # release. Hence the test on the magic value rather than
+                # release. That is why there is the test on the magic value rather than
                 # PYTHON_VERSION, although PYTHON_VERSION would probably work.
                 if (
                     (3200 <= magic_int < 20121)

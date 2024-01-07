@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2019-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2019-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -36,8 +36,8 @@ from xdis.opcodes.format.basic import format_RAISE_VARARGS_older
 from xdis.opcodes.format.extended import (
     extended_format_ATTR,
     extended_format_RAISE_VARARGS_older,
+    extended_function_signature,
     get_arglist,
-    short_code_repr,
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
@@ -134,9 +134,9 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions):
     code_inst = instructions[2]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += "make_function(%s, %s)" % (
-            name_inst.argval,
-            short_code_repr(code_inst.argval)
+        s += (
+            "def %s(%s): ..."
+            % (name_inst.argval, extended_function_signature(code_inst.argval))
         )
         return s, start_offset
     return s, start_offset

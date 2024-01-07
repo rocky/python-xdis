@@ -30,8 +30,8 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
 def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
-    """Converts a native types.CodeType code object into a the
-    corresponding more flexible xdis Code type,.
+    """Converts a native types.CodeType code object into a
+    corresponding more flexible xdis Code type.
     """
     if isinstance(code, CodeBase):
         return code
