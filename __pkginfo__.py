@@ -55,26 +55,27 @@ classifiers = [
 ]
 
 # The rest in alphabetic order
-author             = "Rocky Bernstein, Hartmut Goebel and others"
-author_email       = "rb@dustyfeet.com"
-entry_points       = {
+author = "Rocky Bernstein, Hartmut Goebel and others"
+author_email = "rb@dustyfeet.com"
+entry_points = {
     "console_scripts": [
         "pydisasm=xdis.bin.pydisasm:main",
-    ]}
-ftp_url            = None
-install_requires   = []
-license            = 'GPL-2.0'
-mailing_list       = 'python-debugger@googlegroups.com'
-modname            = 'xdis'
+    ]
+}
+ftp_url = None
+install_requires = []
+license = "GPL-2.0"
+mailing_list = "python-debugger@googlegroups.com"
+modname = "xdis"
 
-packages           = ["xdis"]
-py_modules         = None
+packages = ["xdis"]
+py_modules = None
 
 # setup_requires     = ['pytest-runner']
-scripts            = ['bin/pydisasm.py']
-short_desc         = 'Python cross-version byte-code disassembler and marshal routines'
-tests_require      = ['pytest']
-web                = 'https://github.com/rocky/python-xdis/'
+scripts = ["bin/pydisasm.py"]
+short_desc = "Python cross-version byte-code disassembler and marshal routines"
+tests_require = ["pytest"]
+web = "https://github.com/rocky/python-xdis/"
 
 # tracebacks in zip files are funky and not debuggable
 zip_safe = True

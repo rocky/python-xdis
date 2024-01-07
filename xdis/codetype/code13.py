@@ -14,15 +14,19 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.codetype.base import CodeBase
 from copy import deepcopy
+
+from xdis.codetype.base import CodeBase
+
 
 # A Python 2 class for bytes
 class Bytes(str):
     def __init__(self, s):
         self.s = s
+
     def __repr__(self):
         return "b%s" % repr(self.s)
+
 
 # If there is a list of types, then any will work, but the 1st one is
 # the correct one for types.CodeType.
@@ -37,6 +41,7 @@ Code13FieldTypes = {
     "co_filename": (str, unicode, Bytes),
     "co_name": (str, unicode, Bytes),
 }
+
 
 class Code13(CodeBase):
     """Class for a Python 1.0 ... 1.4 code object used for Python

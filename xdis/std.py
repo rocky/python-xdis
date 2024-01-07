@@ -67,6 +67,7 @@ if IS_PYPY:
 else:
     VARIANT = None
 
+
 class _StdApi:
     def __init__(self, python_version=sys.version_info, variant=VARIANT):
         if python_version >= (3, 6):

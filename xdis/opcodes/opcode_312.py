@@ -157,10 +157,10 @@ _intrinsic_2_descs = [
     "INTRINSIC_SET_FUNCTION_TYPE_PARAMS",
 ]
 
-def format_CALL_INTRINSIC_1(arg) -> str:
+def format_CALL_INTRINSIC_1(arg):
     return _intrinsic_1_descs[arg]
 
-def format_CALL_INTRINSIC_2(arg) -> str:
+def format_CALL_INTRINSIC_2(arg):
     return _intrinsic_2_descs[arg]
 
 ### update arg formatting
@@ -176,7 +176,6 @@ opcode_extended_fmt = opcode_arg_extended_fmt312 = opcode_arg_fmt312
 # overwrite legacy findlinestarts with the 3.11 version that uses the
 # location_table syntax
 from xdis.opcodes.opcode_311 import findlinestarts, parse_location_entries
-
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

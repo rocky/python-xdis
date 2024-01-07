@@ -282,13 +282,13 @@ def parse_location_entries(location_bytes, first_line):
     """
 
     def starts_new_entry(b):
-        return bool(b & 0b10000000)  # bit 7 is set
+        return bool(b & int("0b10000000", 2))  # bit 7 is set
 
     def extract_code(b):
-        return (b & 0b01111000) >> 3  # extracts bits 3-6
+        return (b & int("0b01111000", 2)) >> 3  # extracts bits 3-6
 
     def extract_length(b):
-        return (b & 0b00000111) + 1  # extracts bit 0-2
+        return (b & int("0b00000111", 2)) + 1  # extracts bit 0-2
 
     def iter_location_codes(loc_bytes):
         if len(loc_bytes) == 0:
@@ -313,10 +313,10 @@ def parse_location_entries(location_bytes, first_line):
             return []
 
         def has_next_byte(b):
-            return bool(b & 0b01000000)  # has bit 6 set
+            return bool(b & int("0b01000000", 2))  # has bit 6 set
 
         def get_value(b):
-            return b & 0b00111111  # extracts bits 0-5
+            return b & int("0b00111111", 2)  # extracts bits 0-5
 
         iter_varint_bytes = iter(varint_bytes)
 
@@ -334,9 +334,11 @@ def parse_location_entries(location_bytes, first_line):
                 shift_amt = 0
         return result
 
-
     def decode_signed_varint(s):
-        return -(s >> 1) if s & 1 else (s >> 1)
+        if s & 1:
+            return -(s >> 1)
+        else:
+            return s >> 1
 
     entries = (
         []
@@ -382,7 +384,8 @@ def parse_location_entries(location_bytes, first_line):
             (location_length, start_line, end_line, start_column, end_column)
         )
 
-        last_line = start_line if start_line is not None else last_line
+        if start_line is not None:
+            last_line = start_line
 
     return entries
 

@@ -14,8 +14,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import version_tuple_to_str
-from xdis.codetype.code30 import Code3, Code3FieldTypes
 from copy import deepcopy
 
 from xdis.codetype.code30 import Code3, Code3FieldTypes
@@ -85,21 +83,21 @@ class Code38(Code3):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code38, self).__init__(
-            co_argcount = co_argcount,
-            co_kwonlyargcount = co_kwonlyargcount,
-            co_nlocals = co_nlocals,
-            co_stacksize = co_stacksize,
-            co_flags = co_flags,
-            co_code = co_code,
-            co_consts = co_consts,
-            co_names = co_names,
-            co_varnames = co_varnames,
-            co_filename = co_filename,
-            co_name = co_name,
-            co_firstlineno = co_firstlineno,
-            co_lnotab = co_lnotab,
-            co_freevars = co_freevars,
-            co_cellvars = co_cellvars,
+            co_argcount=co_argcount,
+            co_kwonlyargcount=co_kwonlyargcount,
+            co_nlocals=co_nlocals,
+            co_stacksize=co_stacksize,
+            co_flags=co_flags,
+            co_code=co_code,
+            co_consts=co_consts,
+            co_names=co_names,
+            co_varnames=co_varnames,
+            co_filename=co_filename,
+            co_name=co_name,
+            co_firstlineno=co_firstlineno,
+            co_lnotab=co_lnotab,
+            co_freevars=co_freevars,
+            co_cellvars=co_cellvars,
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes

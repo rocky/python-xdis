@@ -139,12 +139,12 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["unaryop"] = set([])
 
 
-def binary_op(loc, name, opcode, pop = 2, push = 1):
+def binary_op(loc, name, opcode, pop=2, push=1):
     loc["binaryop"].add(opcode)
     def_op(loc, name, opcode, pop, push)
 
 
-def compare_op(loc, name, opcode, pop = 2, push = 1):
+def compare_op(loc, name, opcode, pop=2, push=1):
     def_op(loc, name, opcode, pop, push)
     loc["hascompare"].append(opcode)
     loc["binaryop"].add(opcode)
@@ -154,7 +154,7 @@ def conditional_op(loc, name, opcode):
     loc["hascompare"].append(opcode)
 
 
-def const_op(loc, name, opcode, pop = 0, push = 1):
+def const_op(loc, name, opcode, pop=0, push=1):
     def_op(loc, name, opcode, pop, push)
     loc["hasconst"].append(opcode)
     loc["nullaryop"].add(opcode)
@@ -164,9 +164,9 @@ def def_op(
     loc,
     op_name,
     opcode,
-    pop = -2,
-    push = -2,
-    fallthrough = True,
+    pop=-2,
+    push=-2,
+    fallthrough=True,
 ):
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
@@ -176,7 +176,7 @@ def def_op(
         loc["nofollow"].append(opcode)
 
 
-def free_op(loc, name, opcode, pop = 0, push = 1):
+def free_op(loc, name, opcode, pop=0, push=1):
     def_op(loc, name, opcode, pop, push)
     loc["hasfree"].append(opcode)
 
@@ -185,10 +185,10 @@ def jabs_op(
     loc,
     name,
     opcode,
-    pop = 0,
-    push = 0,
-    conditional = False,
-    fallthrough = True,
+    pop=0,
+    push=0,
+    conditional=False,
+    fallthrough=True,
 ):
     def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
     loc["hasjabs"].append(opcode)

@@ -287,7 +287,10 @@ def get_instructions_bytes(
                     argval, argrepr = _get_name_info(arg, names)
                 optype = "name"
             elif op in opc.JREL_OPS:
-                signed_arg = -arg if "JUMP_BACKWARD" in opc.opname[op] else arg
+                if "JUMP_BACKWARD" in opc.opname[op]:
+                    signed_arg = -arg
+                else:
+                    signed_arg = arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
                 # FOR_ITER has a cache instruction in 3.12
                 if opc.version_tuple >= (3, 12) and opc.opname[op] == "FOR_ITER":
@@ -315,11 +318,10 @@ def get_instructions_bytes(
                     argval, argrepr = _get_name_info(arg, cells)
                 optype = "free"
             elif op in opc.COMPARE_OPS:
-                argval = (
-                    opc.cmp_op[arg >> 4]
-                    if opc.python_version >= (3, 12)
-                    else opc.cmp_op[arg]
-                )
+                if opc.python_version >= (3, 12):
+                    argval = opc.cmp_op[arg >> 4]
+                else:
+                    argval = opc.cmp_op[arg]
                 argrepr = argval
                 optype = "compare"
             elif op in opc.NARGS_OPS:

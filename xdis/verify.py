@@ -59,7 +59,9 @@ def dump_compile(codeobject, filename, timestamp, magic):
         except OSError:
             pass
         raise
-    if fc: fc.close()
+    if fc:
+        fc.close()
+
 
 def compare_code(c1, c2):
     assert c1.co_code == c2.co_code, "code %s vs. %s" % (c1.co_code, c2.co_code)

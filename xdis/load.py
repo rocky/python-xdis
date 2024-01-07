@@ -67,8 +67,8 @@ def check_object_path(path):
     if not is_bytecode_extension(path) and is_python_source(path):
         try:
             import importlib
-            return importlib.util.cache_from_source(path,
-                                                    optimization='')
+
+            return importlib.util.cache_from_source(path, optimization="")
 
             bytecode_path = importlib.util.cache_from_source(path, optimization="")
             if osp.exists(bytecode_path):
@@ -96,6 +96,7 @@ def check_object_path(path):
         )
     return path
 
+
 def is_pypy(magic_int, filename):
     # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
     if magic_int in (3413, 3414) and filename.endswith("pypy38.pyc"):
@@ -112,7 +113,7 @@ def load_file(filename, out=sys.stdout):
     code_object: code_object compiled from this source code
     This function does NOT write any file!
     """
-    fp = open(filename, 'r')
+    fp = open(filename, "r")
     try:
         source = fp.read()
         try:
@@ -173,11 +174,17 @@ def load_module(filename, code_objects=None, fast_load=False, get_code=True):
         )
 
     try:
-        fp = open(filename, 'rb')
-        return load_module_from_file_object(fp, filename=filename, code_objects=code_objects,
-                                            fast_load=fast_load, get_code=get_code)
+        fp = open(filename, "rb")
+        return load_module_from_file_object(
+            fp,
+            filename=filename,
+            code_objects=code_objects,
+            fast_load=fast_load,
+            get_code=get_code,
+        )
     finally:
         fp.close()
+
 
 def load_module_from_file_object(
     fp, filename="<unknown>", code_objects=None, fast_load=False, get_code=True
@@ -343,7 +350,7 @@ def write_bytecode_file(
         if version >= (3, 7):  # pep552 bytes
             fp.write(pack("<I", 0))  # pep552 bytes
     else:
-        fp.write(pack('<Hcc', magic_int, "\r", "\n"))
+        fp.write(pack("<Hcc", magic_int, "\r", "\n"))
 
     if compilation_ts:
         if isinstance(compilation_ts, datetime):

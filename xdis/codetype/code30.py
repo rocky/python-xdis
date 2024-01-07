@@ -133,4 +133,4 @@ class Code3(Code2):
         raise TypeError(
             "Python Interpreter needs to be in range 3.0..3.7; is %s"
             % ".".join([str(v) for v in PYTHON_VERSION_TRIPLE])
-            )
+        )

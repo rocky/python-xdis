@@ -87,22 +87,22 @@ class Code311(Code38):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code311, self).__init__(
-            co_argcount = co_argcount,
-            co_posonlyargcount = co_posonlyargcount,
-            co_kwonlyargcount = co_kwonlyargcount,
-            co_nlocals = co_nlocals,
-            co_stacksize = co_stacksize,
-            co_flags = co_flags,
-            co_code = co_code,
-            co_consts = co_consts,
-            co_names = co_names,
-            co_varnames = co_varnames,
-            co_filename = co_filename,
-            co_name = co_name,
-            co_firstlineno = co_firstlineno,
-            co_lnotab = co_linetable,
-            co_freevars = co_freevars,
-            co_cellvars = co_cellvars,
+            co_argcount=co_argcount,
+            co_posonlyargcount=co_posonlyargcount,
+            co_kwonlyargcount=co_kwonlyargcount,
+            co_nlocals=co_nlocals,
+            co_stacksize=co_stacksize,
+            co_flags=co_flags,
+            co_code=co_code,
+            co_consts=co_consts,
+            co_names=co_names,
+            co_varnames=co_varnames,
+            co_filename=co_filename,
+            co_name=co_name,
+            co_firstlineno=co_firstlineno,
+            co_lnotab=co_linetable,
+            co_freevars=co_freevars,
+            co_cellvars=co_cellvars,
         )
         self.co_qualname = co_qualname
         self.co_exceptiontable = co_exceptiontable

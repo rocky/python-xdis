@@ -136,9 +136,9 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions):
     code_inst = instructions[2]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
-        s += (
-            "def %s(%s): ..."
-            % (name_inst.argval, extended_function_signature(code_inst.argval))
+        s += "def %s(%s): ..." % (
+            name_inst.argval,
+            extended_function_signature(code_inst.argval),
         )
         return s, start_offset
     return s, start_offset

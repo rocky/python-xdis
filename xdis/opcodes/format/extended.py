@@ -526,9 +526,7 @@ def extended_function_signature(code):
     return "..."
 
 
-def get_arglist(
-    instructions: list, i: int, arg_count: int
-):
+def get_arglist(instructions, i, arg_count):
     """
     For a variable-length instruction like BUILD_TUPLE, or
     a varlabie-name argument list, like CALL_FUNCTION

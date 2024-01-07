@@ -252,6 +252,7 @@ def instruction_size(op, opc):
         else:
             return 3
 
+
 # Compatibility
 op_size = instruction_size
 
@@ -373,12 +374,8 @@ def format_exception_table(bytecode, version_tuple):
             lasti = ""
         end = entry.end - 2
         lines.append(
-            "  %s to %s -> %s [%s]%s" % (
-                entry.start,
-                end,
-                entry.target,
-                entry.depth,
-                lasti)
+            "  %s to %s -> %s [%s]%s"
+            % (entry.start, end, entry.target, entry.depth, lasti)
         )
     return "\n".join(lines)
 
@@ -424,7 +421,7 @@ def unpack_opargs_bytecode(code, opc):
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
             if op == opc.EXTENDED_ARG:
-                extended_arg = (arg << opc.EXTENDED_ARG_SHIFT)
+                extended_arg = arg << opc.EXTENDED_ARG_SHIFT
             else:
                 extended_arg = 0
             offset += 2
@@ -468,7 +465,7 @@ def get_jump_target_maps(code, opc):
 
 # In CPython, this is C code. We redo this in Python using the
 # information in opc.
-def xstack_effect(opcode, opc, oparg = 0, jump=None):
+def xstack_effect(opcode, opc, oparg=0, jump=None):
     """Compute the stack effect of opcode with argument oparg, using
     oppush and oppop tables in opc.
 
@@ -505,14 +502,23 @@ def xstack_effect(opcode, opc, oparg = 0, jump=None):
                 return None
     elif opname == "CALL_FUNCTION_EX":
         if (3, 5) <= opc.version_tuple < (3, 11):
-            return -2 if oparg & 1 else -1
+            if oparg & 1:
+                return -2
+            else:
+                return -1
         elif 0 <= oparg <= 3:
-            return -3 if oparg & 1 else -2
+            if oparg & 1:
+                return -3
+            else:
+                return -2
         else:
             return None
     elif opname == "LOAD_GLOBAL":
         if opc.version_tuple >= (3, 11):
-            return 2 if oparg & 1 else 1
+            if oparg & 1:
+                return 2
+            else:
+                return 1
     elif opname == "PRECALL":
         if opc.version_tuple >= (3, 11):
             return -oparg

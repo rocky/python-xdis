@@ -27,14 +27,13 @@ object
 """
 
 import sys
+import unicodedata
 from struct import unpack
 
 from xdis.codetype import to_portable
 from xdis.codetype.code13 import Bytes
 from xdis.magics import magic_int2tuple
 from xdis.version_info import PYTHON_VERSION_TRIPLE
-
-import unicodedata
 
 if PYTHON_VERSION_TRIPLE < (2, 4):
     from sets import Set as set
@@ -364,9 +363,7 @@ class _VersionIndependentUnmarshaller:
         try:
             return self.r_ref(unicodestring.decode("utf-8"), save_ref)
         except UnicodeDecodeError:
-            return self.r_ref(
-                unicodestring.decode("utf-8", errors="ignore"), save_ref
-            )
+            return self.r_ref(unicodestring.decode("utf-8", errors="ignore"), save_ref)
 
     # Since Python 3.4
     def t_small_tuple(self, save_ref, bytes_for_s=False):
@@ -545,7 +542,7 @@ class _VersionIndependentUnmarshaller:
             # < 1.5 there is no lnotab, so no firstlineno.
             # SET_LINENO is used instead.
             co_firstlineno = -1  # Bogus sentinel value
-            co_lnotab = b""
+            co_lnotab = ""
 
         code = to_portable(
             co_argcount=co_argcount,
