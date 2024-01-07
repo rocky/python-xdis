@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2021, 2023-2024 by Rocky Bernstein
 """
 CPython 3.0 bytecode opcodes
 
@@ -32,6 +32,7 @@ rm_op(loc, "JUMP_IF_TRUE_OR_POP",  112)
 rm_op(loc, "POP_JUMP_IF_FALSE",    114)
 rm_op(loc, "POP_JUMP_IF_TRUE",     115)
 rm_op(loc, "LIST_APPEND",          145)
+rm_op(loc, "SET_ADD",              146)
 rm_op(loc, "MAP_ADD",              147)
 
 # These are are in 3.0 but are not in 3.1 or they have
@@ -41,13 +42,13 @@ rm_op(loc, "MAP_ADD",              147)
 
 #          OP NAME            OPCODE POP PUSH
 #--------------------------------------------
-
 def_op(loc, "SET_ADD",              17,  2, 0)  # Calls set.add(TOS1[-i], TOS).
                                              # Used to implement set comprehensions.
 def_op(loc, "LIST_APPEND",          18,  2, 0)  # Calls list.append(TOS1, TOS).
                                              # Used to implement list comprehensions.
 jrel_op(loc, "JUMP_IF_FALSE",      111,  1, 1)
 jrel_op(loc, "JUMP_IF_TRUE",       112,  1, 1)
+
 # fmt: on
 
 # Yes, pj2 not pj3 - Python 3.0 is more like 2.7 here with its

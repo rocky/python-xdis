@@ -31,13 +31,13 @@ Code3FieldTypes.update(
 
 class Code3(Code2):
     """Class for a Python3 code object used when a Python not in the range between 3.0 and 3.7
-    but is working on Python 3.0 ..3.7 bytecode. It also functions as an object that can be used
+    but is working on Python 3.0 ... 3.7 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
     When done mutating, call method freeze().
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
     """
 

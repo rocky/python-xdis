@@ -54,9 +54,6 @@ def_op(loc, "MATCH_CLASS",             152,   2, 1)
 opcode_arg_fmt = opcode_arg_fmt310 = opcode_arg_fmt39.copy()
 opcode_extended_fmt = opcode_extended_fmt310 = opcode_extended_fmt39.copy()
 
-update_pj3(globals(), loc)
-finalize_opcodes(loc)
-
 # fmt: on
 
 # lnotab format changed in 3.10.
@@ -163,10 +160,10 @@ def findlinestarts(code, dup_lines=False):
         if lineno_delta == 0:
             # No change to line number, just accumulate changes to "end_offset"
             # This allows us to accrue offset deltas larger than 254 or so.
-            end_offset += start_delta
+            end_offset += byte_incr
             continue
         start_offset = end_offset
-        end_offset = start_offset + start_delta
+        end_offset = start_offset + byte_incr
         if lineno_delta == NO_LINE_NUMBER:
             # No line number -- omit reporting lineno table entry
             continue
@@ -178,6 +175,7 @@ def findlinestarts(code, dup_lines=False):
         yield start_offset, lineno
 
 
-update_pj3(globals(), loc)
+opcode_arg_fmt = opcode_arg_fmt10 = opcode_arg_fmt39.copy()
 
+update_pj3(globals(), loc)
 finalize_opcodes(loc)

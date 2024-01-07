@@ -23,6 +23,9 @@ from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 version_tuple = (3, 11)
 python_implementation = "CPython"
 
+oppush = []
+oppop = []
+opmap = {}
 
 _nb_ops = [
     ("NB_ADD", "+"),
@@ -120,6 +123,24 @@ rm_op(loc,  "YIELD_FROM",              72)
 rm_op(loc,  "MATCH_CLASS",            152)
 rm_op(loc,  "MATCH_KEYS",              33)
 
+## Redefined OPS
+
+# We to redefine 138 from DELETE_REF to STORE_DEREF.
+# So we have to rm DELETE_DEREF with opcode 138 *before* adding
+# STORE_DEREF with opcode 138.
+
+rm_op(loc, "GET_AWAITABLE",                    73)
+rm_op(loc, "LOAD_CLOSURE",                    135)
+rm_op(loc, "LOAD_DEREF",                      136)
+rm_op(loc, "STORE_DEREF",                     137)
+rm_op(loc, "DELETE_DEREF",                    138)
+
+## Redefined OPS
+def_op(loc, "GET_AWAITABLE",                  131,   0, 0)
+def_op(loc, "LOAD_CLOSURE",                   136,   0, 1)
+def_op(loc, "LOAD_DEREF",                     137,   0, 1)
+def_op(loc, "STORE_DEREF",                    138,   1, 0)
+def_op(loc, "DELETE_DEREF",                   139,   0, 0)
 
 # These are added since 3.10...
 #          OP NAME                         OPCODE  POP PUSH
@@ -130,7 +151,7 @@ binary_op(loc, "BINARY_OP",                   122)
 # call ops
 def_op(loc, "CALL",                           171,   1, 0)
 def_op(loc, "KW_NAMES",                       172,   0, 0)
-def_op(loc, "PRECALL",                        166,   0, 0)
+def_op(loc, "PRECALL",                        166, 100, 0)
 def_op(loc, "PUSH_NULL",                        2,   0, 1)
 # replaced DUP and ROT ops
 def_op(loc, "COPY",                           120,   0, 1)
@@ -151,7 +172,7 @@ jrel_op(loc, "POP_JUMP_FORWARD_IF_NONE",      129,   1, 0)
 # setup with
 def_op(loc,  "BEFORE_WITH",                     53,  0, 1)
 # match
-def_op(loc,  "MATCH_CLASS",                    152,  2, 1)
+def_op(loc,  "MATCH_CLASS",                    152,  3, 1)
 def_op(loc,  "MATCH_KEYS",                      33,  0, 1)
 # generators and co-routines
 def_op(loc,  "ASYNC_GEN_WRAP",                  87,  0, 0)
@@ -170,24 +191,7 @@ jrel_op(loc, "PUSH_EXC_INFO",                  35,   0, 1)
 # resume, acts like a nop
 def_op(loc, "RESUME",                         151,   0, 0)
 
-## Redefined OPS
-rm_op(loc, "STORE_DEREF",                     137)
-def_op(loc, "STORE_DEREF",                    138,   1, 0)
-
-rm_op(loc, "LOAD_DEREF",                      136)
-def_op(loc, "LOAD_DEREF",                     137,   0, 1)
-
-rm_op(loc, "DELETE_DEREF",                    138)
-def_op(loc, "DELETE_DEREF",                   139,   0, 0)
-
-rm_op(loc, "GET_AWAITABLE",                    73)
-def_op(loc, "GET_AWAITABLE",                  131,   0, 0)
-
-rm_op(loc, "LOAD_CLOSURE",                    135)
-def_op(loc, "LOAD_CLOSURE",                   136,   0, 1)
-
 ## Update tables
-
 # removed jrel ops 35, 37, 143, 88, 154
 
 loc["hasconst"].append(172)  # KW_NAMES
@@ -196,6 +200,12 @@ loc["hasjabs"] = []
 loc["hasjrel"] = [
     93, 110, 111, 112, 114, 115, 123, 128, 129, 134, 140, 173, 174, 175,
     176]
+
+# Changed stack effects
+oppop[opmap["POP_EXCEPT"]] = 1
+oppop[opmap["END_ASYNC_FOR"]] = 2
+oppop[opmap["RERAISE"]] = 1
+
 # fmt: on
 
 
@@ -260,6 +270,151 @@ del opcode_extended_fmt311["INPLACE_TRUE_DIVIDE"]
 del opcode_extended_fmt311["INPLACE_XOR"]
 
 opcode_extended_fmt = opcode_extended_fmt311
+
+update_pj3(globals(), loc)
+finalize_opcodes(loc)
+
+
+def parse_location_entries(location_bytes, first_line):
+    """
+    Parses the locations table described in: https://github.com/python/cpython/blob/3.11/Objects/locations.md
+    The locations table replaced the line number table starting in 3.11
+    """
+
+    def starts_new_entry(b):
+        return bool(b & 0b10000000)  # bit 7 is set
+
+    def extract_code(b):
+        return (b & 0b01111000) >> 3  # extracts bits 3-6
+
+    def extract_length(b):
+        return (b & 0b00000111) + 1  # extracts bit 0-2
+
+    def iter_location_codes(loc_bytes):
+        if len(loc_bytes) == 0:
+            return []
+
+        result = []
+        iter_locs = iter(loc_bytes)
+        entry_codes = [next(iter_locs)]
+        result.append(entry_codes)
+
+        for b in iter_locs:
+            if starts_new_entry(b):
+                result.append(entry_codes)
+                entry_codes = [b]
+            else:
+                entry_codes.append(b)
+
+        return result
+
+    def iter_varints(varint_bytes):
+        if len(varint_bytes) == 0:
+            return []
+
+        def has_next_byte(b):
+            return bool(b & 0b01000000)  # has bit 6 set
+
+        def get_value(b):
+            return b & 0b00111111  # extracts bits 0-5
+
+        iter_varint_bytes = iter(varint_bytes)
+
+        current_value = 0
+        shift_amt = 0
+
+        result = []
+        for b in iter_varint_bytes:
+            current_value += get_value(b) << shift_amt
+            if has_next_byte(b):
+                shift_amt += 6
+            else:
+                result.append(current_value)
+                current_value = 0
+                shift_amt = 0
+        return result
+
+
+    def decode_signed_varint(s):
+        return -(s >> 1) if s & 1 else (s >> 1)
+
+    entries = (
+        []
+    )  # tuples of (code units, start line, end line, start column, end column)
+
+    last_line = first_line
+
+    for location_codes in iter_location_codes(location_bytes):
+        first_byte = location_codes[0]
+        location_length = extract_length(first_byte)
+        code = extract_code(first_byte)
+
+        if code <= 9:  # short form
+            start_line = last_line
+            end_line = start_line
+            second_byte = location_codes[1]
+            start_column = (code * 8) + ((second_byte >> 4) & 7)
+            end_column = start_column + (second_byte & 15)
+        elif code <= 12:  # one line form
+            start_line = last_line + code - 10
+            end_line = start_line
+            start_column = location_codes[1]
+            end_column = location_codes[2]
+        elif code == 13:  # no column info
+            (start_line_delta,) = iter_varints(location_codes[1:])
+            start_line = last_line + decode_signed_varint(start_line_delta)
+            end_line = start_line
+            start_column = None
+            end_column = None
+        elif code == 14:  # long form
+            (start_line_delta, end_line_delta, start_column, end_column) = iter_varints(
+                location_codes[1:]
+            )
+            start_line = last_line + decode_signed_varint(start_line_delta)
+            end_line = start_line + end_line_delta
+        else:  # code == 15, no location
+            start_line = None
+            end_line = None
+            start_column = None
+            end_column = None
+
+        entries.append(
+            (location_length, start_line, end_line, start_column, end_column)
+        )
+
+        last_line = start_line if start_line is not None else last_line
+
+    return entries
+
+
+def findlinestarts(code, dup_lines=False):
+    """Find the offsets in a byte code which are start of lines in the source.
+
+    Generate pairs (offset, lineno) as described in Python/compile.c.
+    """
+
+    # try to get the co_linetable from a native code object
+    # fall back to the lnotab if it's a portable code object, which will store the same bytes
+    # we do this because in a native code object, co_lnotab gets mapped back to the legacy lnotab format
+    locations_table_bytes = getattr(code, "co_linetable", code.co_lnotab)
+    location_table_entries = parse_location_entries(
+        locations_table_bytes, code.co_firstlineno
+    )
+
+    current_offset = 0
+    previous_line = None
+
+    for offset_delta, start_line, _, _, _ in location_table_entries:
+
+        # emit an entry when the line changes; start_line==None means there is no line information
+        if start_line is not None and start_line != previous_line:
+            yield current_offset, start_line
+            previous_line = start_line
+
+        current_offset += 2 * offset_delta
+
+
+opcode_arg_fmt = opcode_arg_fmt311 = opcode_arg_fmt310.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

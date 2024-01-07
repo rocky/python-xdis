@@ -1,5 +1,14 @@
 """xdis.bytecode testing"""
 
+import os.path as osp
+import sys
+
+from xdis import findlinestarts
+from xdis.bytecode import offset2line
+from xdis.load import load_module
+from xdis.opcodes import opcode_27, opcode_36
+from xdis.version_info import PYTHON_VERSION_TRIPLE
+
 # Below, we first give some test code to work on.
 
 # This code is sensitive to the line number ordering.
@@ -23,16 +32,6 @@ def bug_loop(disassemble, tb=None):
         while tb:
             tb = tb.tb_next
     disassemble(tb)
-
-
-import sys
-from xdis import findlinestarts
-from xdis.bytecode import offset2line
-from xdis.load import load_module
-from xdis.opcodes import opcode_27, opcode_36
-from xdis.version_info import PYTHON_VERSION_TRIPLE
-
-import os.path as osp
 
 
 def test_offset2line():

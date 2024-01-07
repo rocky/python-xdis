@@ -1,4 +1,4 @@
-# (C) Copyright 2023 by Rocky Bernstein
+# (C) Copyright 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,6 +16,7 @@
 """
 Routines for formatting opcodes.
 """
+
 
 def format_extended_arg(arg):
     return str(arg * (1 << 16))

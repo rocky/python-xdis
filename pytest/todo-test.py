@@ -1,6 +1,6 @@
 # Test write_bytecode_file
-from xdis.load import write_bytecode_file
 from xdis.bytecode import list2bytecode
+from xdis.load import write_bytecode_file
 
 a = """
 def fact():

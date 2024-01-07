@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019, 2021-2023 by Rocky Bernstein
+# (C) Copyright 2018-2019, 2021-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Facilitates importing opmaps for the a given Python version"""
+"""Facilitates for importing Python opcode maps for a given Python version"""
 import copy
 import sys
 
@@ -57,6 +57,7 @@ from xdis.opcodes import (
     opcode_310,
     opcode_310pypy,
     opcode_311,
+    opcode_312,
 )
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
@@ -139,7 +140,11 @@ op_imports = {
     "3.11.1": opcode_311,
     "3.11.2": opcode_311,
     "3.11.3": opcode_311,
+    "3.11.4": opcode_311,
+    "3.11.5": opcode_311,
     "3.11a7e": opcode_311,
+    "3.12.0rc2": opcode_312,
+    "3.12.0": opcode_312,
     "2.6pypy": opcode_26pypy,
     "2.7pypy": opcode_27pypy,
     "2.7.12pypy": opcode_27pypy,
@@ -153,8 +158,15 @@ op_imports = {
     "3.8pypy": opcode_38pypy,
     "3.8.12pypy": opcode_38pypy,
     "3.8.13pypy": opcode_38pypy,
+    "3.8.14pypy": opcode_38pypy,
+    "3.8.15pypy": opcode_38pypy,
+    "3.8.16pypy": opcode_38pypy,
+    "3.8.17pypy": opcode_38pypy,
     "3.9pypy": opcode_39pypy,
     "3.9.15pypy": opcode_39pypy,
+    "3.9.16pypy": opcode_39pypy,
+    "3.9.17pypy": opcode_39pypy,
+    "3.9.18pypy": opcode_39pypy,
     "3.10pypy": opcode_310pypy,
     "3.10.12pypy": opcode_310pypy,
 }
@@ -201,7 +213,7 @@ def get_opcode_module(version_info=None, variant=None):
 
 
 def remap_opcodes(op_obj, alternate_opmap):
-    # All these lists are 255 in length, with index i corresponding to opcode i
+    # All these lists are 255 in length, with index, ``i``, corresponding to opcode ``i``
     if hasattr(op_obj, "REMAPPED") and op_obj.REMAPPED:
         return op_obj
 

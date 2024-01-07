@@ -88,7 +88,7 @@ def loop():
 
 pytest.mark.skipif(
     PYTHON_VERSION_TRIPLE < (3, 6),
-    reason="asssume Python 3.6 or greater wordsize instructions",
+    reason="assume Python 3.6 or greater wordsize instructions",
 )
 
 
@@ -104,7 +104,7 @@ def test_inst_size():
 
         inst2 = instructions[2]
         assert inst2.opname == "POP_JUMP_IF_FALSE"
-        assert inst2.has_extended_arg == True
+        assert inst2.has_extended_arg is True
         assert inst2.inst_size == 4
 
         # for inst in instructions:
@@ -114,7 +114,7 @@ def test_inst_size():
 
 
 pytest.mark.skipif(
-    PYTHON_VERSION_TRIPLE < (2, 7), reason="asssume Python 2.7 or greater"
+    PYTHON_VERSION_TRIPLE < (2, 7), reason="assume Python 2.7 or greater"
 )
 
 

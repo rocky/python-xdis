@@ -59,7 +59,7 @@ class Code38(Code3):
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise the line number table `co_lnotab`
+    instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
     """
 

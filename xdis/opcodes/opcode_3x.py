@@ -20,7 +20,7 @@ CPython 3.2 bytecode opcodes to be used as a base for other opcodes including 3.
 This is used in bytecode disassembly among other things. This is
 similar to the opcodes in Python's opcode.py library.
 
-If this file changes the other opcode files may have to a adjusted accordingly.
+If this file changes the other opcode files may have to be adjusted accordingly.
 """
 
 from xdis.opcodes.base import (
@@ -86,9 +86,9 @@ binary_op(loc, 'INPLACE_FLOOR_DIVIDE', 28)
 binary_op(loc, 'INPLACE_TRUE_DIVIDE',  29)
 
 # Gone from Python 3 are Python2's
-# SLICE+0 .. SLICE+3
-# STORE_SLICE+0 .. STORE_SLICE+3
-# DELETE_SLICE+0 .. DELETE_SLICE+3
+# SLICE+0 ... SLICE+3
+# STORE_SLICE+0 ... STORE_SLICE+3
+# DELETE_SLICE+0 ... DELETE_SLICE+3
 
 store_op(loc, 'STORE_MAP',          54,  3,  1)
 def_op(loc, 'INPLACE_ADD',          55,  2,  1)
@@ -249,7 +249,7 @@ def parse_fn_counts_30_35(argc):
     In Python 3.0 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
     arguments counts of positional, default + named, and annotation
     arguments a particular kind of encoding where each of
-    the entry a a packed byte value of the lower 24 bits
+    the entry is a packed byte value of the lower 24 bits
     of ``argc``.  The high bits of argc may have come from
     an EXTENDED_ARG instruction. Here, we unpack the values
     from the ``argc`` int and return a triple of the

@@ -1,7 +1,10 @@
 import os.path as osp
 
+import pytest
+import xdis
 from xdis import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
+from xdis.op_imports import get_opcode_module
 
 
 def get_srcdir():
@@ -82,15 +85,16 @@ def test_stack_effect_fixed():
     return
 
 
+# @pytest.mark.skipif(
+#     xdis.PYTHON_VERSION_TRIPLE < (3, 4) or xdis.IS_PYPY,
+#     reason="Python version is before 3.4. Can't test",
+# )
 # def test_stack_effect_vs_dis():
-
-#     if xdis.PYTHON_VERSION_TRIPLE < (3, 4) or xdis.IS_PYPY:
-#         # TODO figure out some other kind if internal checks to do.
-#         print("Skipped for now - need to figure out how to test")
-#         return
+#     import dis
 
 #     def test_one(xdis_args, dis_args, has_arg):
 #         effect = xstack_effect(*xdis_args)
+#         check_effect = dis.stack_effect(*dis_args[:2])
 #         assert (
 #             effect != -100
 #         ), "%d (%s) needs adjusting; should be: should have effect %d" % (

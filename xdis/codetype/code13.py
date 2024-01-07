@@ -39,15 +39,13 @@ Code13FieldTypes = {
 }
 
 class Code13(CodeBase):
-    """Class for a Python 1.0 .. 1.4 code object used for Python
-    interpreters other than 1.0 .. 1.4
+    """Class for a Python 1.0 ... 1.4 code object used for Python
+    interpreters other than 1.0 ... 1.4
 
     For convenience in generating code objects, fields like
-    `co_consts`, co_names which are (immutable) tuples in the
-    end-result can be stored instead as (mutable) lists. Likewise the
-    line number table `co_lnotab` can be stored as a simple list of
-    offset, line_number tuples.
-
+    `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
+    instead as (mutable) lists. Likewise, the line number table `co_lnotab`
+    can be stored as a simple list of offset, line_number tuples.
     """
 
     def __init__(

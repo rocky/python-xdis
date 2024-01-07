@@ -21,7 +21,7 @@ bytecodes from different versions of Python. The command-line routine
 disassembly conventions in a variety of user-specified formats.  Some
 of these formats like `extended` and `extended-format` are the most
 advanced of any Python disassembler I know of because they can show
-expression-tree on operarators. See the [Disasembler
+expression-tree on operators. See the [Disasembler
 Example][#disasembler-example] below.
 
 Also, if you need to modify and write bytecode, the routines here can

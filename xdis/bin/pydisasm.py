@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Mode: -*- python -*-
-# Copyright (c) 2015-2021, 2023 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2021, 2023-2024 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -63,7 +63,7 @@ Type -h for for full help.""" % program
 
     if not ((2, 4) <= PYTHON_VERSION_TRIPLE < (2, 8)):
         mess = "This code works on 2.4 to 2.17."
-        if (3, 6) <= PYTHON_VERSION_TRIPLE <= (3, 11):
+        if (3, 6) <= PYTHON_VERSION_TRIPLE < (3, 13):
             mess += " Code that works for %s can be found in the master.4 branch\n"
         elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
             mess += " Code that works for %s can be found in the python-3.1 branch\n"
