@@ -104,7 +104,7 @@ def test_inst_size():
 
         inst2 = instructions[2]
         assert inst2.opname == "POP_JUMP_IF_FALSE"
-        assert inst2.has_extended_arg == True
+        assert inst2.has_extended_arg is True
         assert inst2.inst_size == 4
 
         # for inst in instructions:

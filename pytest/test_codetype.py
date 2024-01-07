@@ -2,6 +2,7 @@
 Check interoperability of native an emulated code type.
 """
 import types
+
 import xdis.codetype
 
 
