@@ -10,19 +10,19 @@ repos:
     - id: end-of-file-fixer
       stages: [commit]
 -   repo: https://github.com/pycqa/isort
-    rev: 5.11.5
+    rev: 5.13.2
     hooks:
       - id: isort
         stages: [commit]
--   repo: https://github.com/psf/black
-    rev: 22.6.0
-    hooks:
-    - id: black
-      language_version: python
-      stages: [commit]
-      additional_dependencies: ["click"]
-# -   repo: https://github.com/pycqa/flake8
-#     rev: 5.0.4
+# -   repo: https://github.com/psf/black
+#     rev: 23.12.0
 #     hooks:
-#       - id: flake8
-#         stages: [commit]
+#     - id: black
+#       language_version: python
+#       stages: [commit]
+#       additional_dependencies: ["click"]
+-   repo: https://github.com/pycqa/flake8
+    rev: 5.0.4
+    hooks:
+      - id: flake8
+        stages: [commit]
