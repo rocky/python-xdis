@@ -23,6 +23,7 @@
 /.cache
 /.coverage
 /.eggs
+/.hypothesis
 /.pytest_cache
 /.python-version
 /.tox
