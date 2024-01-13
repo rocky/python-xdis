@@ -138,37 +138,20 @@ opcode_extended_fmt = opcode_extended_fmt310 = opcode_extended_fmt39.copy()
 NO_LINE_NUMBER = -128
 
 
+# Taken from 3.10 findlinestarts
 def findlinestarts(code, dup_lines=False):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
     """
-    lineno_table = code.co_lnotab
-    byte_increments = list(lineno_table[0::2])
 
-    # line_deltas is an array of 8-bit *signed* integers
-    lineno_deltas = [x if x < 0x80 else x - 0x100 for x in lineno_table[1::2]]
+    lastline = None
+    for start, end, line in code.co_lines():
+        if line is not None and line != lastline:
+            lastline = line
+            yield start, line
+    return
 
-    lineno = code.co_firstlineno
-    end_offset = 0  # highest offset seen so far
-    yield 0, lineno
-    for byte_incr, lineno_delta in zip(byte_increments, lineno_deltas):
-        if lineno_delta == 0:
-            # No change to line number, just accumulate changes to "end_offset"
-            # This allows us to accrue offset deltas larger than 254 or so.
-            end_offset += byte_incr
-            continue
-        start_offset = end_offset
-        end_offset = start_offset + byte_incr
-        if lineno_delta == NO_LINE_NUMBER:
-            # No line number -- omit reporting lineno table entry
-            continue
-        lineno += lineno_delta
-        if end_offset == start_offset:
-            # Empty range, omit reporting lineno table entry.
-            # This allows us to accrue line number deltas larger than 254 or so.
-            continue
-        yield start_offset, lineno
 
 
 opcode_arg_fmt = opcode_arg_fmt10 = opcode_arg_fmt39.copy()
