@@ -19,9 +19,7 @@ Routines for formatting opcodes.
 from xdis.opcodes.format.basic import format_IS_OP, format_RAISE_VARARGS_older
 
 
-def extended_format_binary_op(
-    opc, instructions: list, fmt_str: str
-):
+def extended_format_binary_op(opc, instructions: list, fmt_str: str):
     """
     General routine for formatting binary operations.
     A binary operations pops a two arguments off of the evaluation stack and
@@ -68,9 +66,7 @@ def extended_format_binary_op(
     return "", None
 
 
-def extended_format_infix_binary_op(
-    opc, instructions, op_str: str
-):
+def extended_format_infix_binary_op(opc, instructions, op_str: str):
     """ """
     i = 1
     # 3.11+ has CACHE instructions
@@ -154,9 +150,7 @@ def extended_format_store_op(opc, instructions: list):
     return "", start_offset
 
 
-def extended_format_ternary_op(
-    opc, instructions, fmt_str: str
-):
+def extended_format_ternary_op(opc, instructions, fmt_str: str):
     """
     General routine for formatting ternary operations.
     A ternary operations pops a three arguments off of the evaluation stack and
@@ -221,9 +215,7 @@ def extended_format_STORE_SUBSCR(opc, instructions: list):
     )
 
 
-def extended_format_unary_op(
-    opc, instructions, fmt_str: str
-):
+def extended_format_unary_op(opc, instructions, fmt_str: str):
     stack_arg = instructions[1]
     start_offset = instructions[1].start_offset
     if stack_arg.tos_str is not None:
@@ -249,9 +241,7 @@ def extended_format_BINARY_AND(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " & ")
 
 
-def extended_format_BINARY_FLOOR_DIVIDE(
-    opc, instructions: list
-):
+def extended_format_BINARY_FLOOR_DIVIDE(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " // ")
 
 
@@ -263,9 +253,7 @@ def extended_format_BINARY_MODULO(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " %% ")
 
 
-def extended_format_BINARY_MULTIPLY(
-    opc, instructions: list
-):
+def extended_format_BINARY_MULTIPLY(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " * ")
 
 
@@ -289,15 +277,11 @@ def extended_format_BINARY_SUBSCR(opc, instructions: list):
     )
 
 
-def extended_format_BINARY_SUBTRACT(
-    opc, instructions: list
-):
+def extended_format_BINARY_SUBTRACT(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " - ")
 
 
-def extended_format_BINARY_TRUE_DIVIDE(
-    opc, instructions: list
-):
+def extended_format_BINARY_TRUE_DIVIDE(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " / ")
 
 
@@ -347,7 +331,7 @@ def extended_format_BUILD_TUPLE(opc, instructions: list):
         return "()", instructions[0].start_offset
     arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
     if arg_count == 0:
-        return '(%s' % ", ".join(reversed(arglist)), instructions[i].start_offset
+        return "(%s" % ", ".join(reversed(arglist)), instructions[i].start_offset
     return "", None
 
 
@@ -390,7 +374,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
         fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
         if opc.version_tuple >= (3, 6):
             arglist.reverse()
-        s = '%s(%s)' % (fn_name, ", ".join(arglist))
+        s = "%s(%s)" % (fn_name, ", ".join(arglist))
         return s, start_offset
     return "", None
 
@@ -409,27 +393,19 @@ def extended_format_INPLACE_AND(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " &= ")
 
 
-def extended_format_INPLACE_FLOOR_DIVIDE(
-    opc, instructions
-):
+def extended_format_INPLACE_FLOOR_DIVIDE(opc, instructions):
     return extended_format_infix_binary_op(opc, instructions, " //= ")
 
 
-def extended_format_INPLACE_LSHIFT(
-    opc, instructions: list
-):
+def extended_format_INPLACE_LSHIFT(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " <<= ")
 
 
-def extended_format_INPLACE_MODULO(
-    opc, instructions: list
-):
+def extended_format_INPLACE_MODULO(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " %%= ")
 
 
-def extended_format_INPLACE_MULTIPLY(
-    opc, instructions: list
-):
+def extended_format_INPLACE_MULTIPLY(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " *= ")
 
 
@@ -441,21 +417,15 @@ def extended_format_INPLACE_POWER(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " **= ")
 
 
-def extended_format_INPLACE_TRUE_DIVIDE(
-    opc, instructions: list
-):
+def extended_format_INPLACE_TRUE_DIVIDE(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " /= ")
 
 
-def extended_format_INPLACE_RSHIFT(
-    opc, instructions: list
-):
+def extended_format_INPLACE_RSHIFT(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " >>= ")
 
 
-def extended_format_INPLACE_SUBTRACT(
-    opc, instructions: list
-):
+def extended_format_INPLACE_SUBTRACT(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " -= ")
 
 
@@ -465,15 +435,11 @@ def extended_format_INPLACE_XOR(opc, instructions: list):
 
 def extended_format_IS_OP(opc, instructions: list):
     return extended_format_infix_binary_op(
-        opc,
-        instructions,
-        "%%s %s %%s" % format_IS_OP(instructions[0].arg)
+        opc, instructions, "%%s %s %%s" % format_IS_OP(instructions[0].arg)
     )
 
 
-def extended_format_LOAD_BUILD_CLASS(
-    opc, instructions: list
-):
+def extended_format_LOAD_BUILD_CLASS(opc, instructions: list):
     return "class", instructions[0].start_offset
 
 
@@ -508,9 +474,7 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list):
     return s, start_offset
 
 
-def extended_format_RAISE_VARARGS_older(
-    opc, instructions: list
-):
+def extended_format_RAISE_VARARGS_older(opc, instructions: list):
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval
@@ -538,9 +502,7 @@ def extended_format_UNARY_INVERT(opc, instructions: list):
     return extended_format_unary_op(opc, instructions, "~(%s)")
 
 
-def extended_format_UNARY_NEGATIVE(
-    opc, instructions: list
-):
+def extended_format_UNARY_NEGATIVE(opc, instructions: list):
     return extended_format_unary_op(opc, instructions, "-(%s)")
 
 
@@ -557,9 +519,7 @@ def extended_function_signature(code) -> str:
     return "..."
 
 
-def get_arglist(
-    instructions: list, i: int, arg_count: int
-):
+def get_arglist(instructions: list, i: int, arg_count: int):
     """
     For a variable-length instruction like BUILD_TUPLE, or
     a varlabie-name argument list, like CALL_FUNCTION

@@ -15,7 +15,6 @@ indent_size = 2
 
 [*.py]
 indent_style = space
->>>>>>> python-3.6-to-3.10
 
 # Tab indentation (no size specified)
 [Makefile]

@@ -382,10 +382,9 @@ def parse_location_entries(location_bytes, first_line):
     return entries
 
 
-from xdis.opcodes.opcode_310 import findlinestarts
+from xdis.cross_dis import findlinestarts  # noqa
 
-opcode_arg_fmt = opcode_arg_fmt11 = opcode_arg_fmt310.copy()
->>>>>>> python-3.6-to-3.10
+opcode_arg_fmt = opcode_arg_fmt311 = opcode_arg_fmt310.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
