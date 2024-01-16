@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021, 2023-2024 by Rocky Bernstein
 """
 CPython 3.1 bytecode opcodes
 
@@ -29,6 +29,7 @@ init_opdata(loc, opcode_32, version_tuple)
 rm_op(loc, "DUP_TOP_TWO",     5)
 rm_op(loc, "DELETE_DEREF",  138)
 rm_op(loc, "SETUP_WITH",    143)
+rm_op(loc, "EXTENDED_ARG",  144)
 
 # These are in Python 3.1 but not Python 3.2
 name_op(loc, "IMPORT_NAME", 108,  1, 1)  # Imports TOS and TOS1; module pushed
