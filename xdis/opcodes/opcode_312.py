@@ -175,8 +175,9 @@ opcode_extended_fmt = opcode_arg_extended_fmt312 = opcode_arg_fmt312
 
 # overwrite legacy findlinestarts with the 3.11 version that uses the
 # location_table syntax
-from xdis.opcodes.opcode_311 import findlinestarts, parse_location_entries
+from xdis.opcodes.opcode_311 import findlinestarts, parse_location_entries  # noqa
 
+opcode_arg_fmt = opcode_arg_fmt12 = opcode_arg_fmt311.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

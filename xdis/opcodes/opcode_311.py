@@ -386,32 +386,7 @@ def parse_location_entries(location_bytes, first_line):
     return entries
 
 
-def findlinestarts(code, dup_lines=False):
-    """Find the offsets in a byte code which are start of lines in the source.
-
-    Generate pairs (offset, lineno) as described in Python/compile.c.
-    """
-
-    # try to get the co_linetable from a native code object
-    # fall back to the lnotab if it's a portable code object, which will store the same bytes
-    # we do this because in a native code object, co_lnotab gets mapped back to the legacy lnotab format
-    locations_table_bytes = getattr(code, "co_linetable", code.co_lnotab)
-    location_table_entries = parse_location_entries(
-        locations_table_bytes, code.co_firstlineno
-    )
-
-    current_offset = 0
-    previous_line = None
-
-    for offset_delta, start_line, _, _, _ in location_table_entries:
-
-        # emit an entry when the line changes; start_line==None means there is no line information
-        if start_line is not None and start_line != previous_line:
-            yield current_offset, start_line
-            previous_line = start_line
-
-        current_offset += 2 * offset_delta
-
+from xdis.cross_dis import findlinestarts  # noqa
 
 opcode_arg_fmt = opcode_arg_fmt311 = opcode_arg_fmt310.copy()
 
