@@ -333,7 +333,6 @@ def parse_location_entries(location_bytes, first_line):
                 shift_amt = 0
         return result
 
-
     def decode_signed_varint(s):
         return -(s >> 1) if s & 1 else (s >> 1)
 
