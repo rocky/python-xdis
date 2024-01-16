@@ -14,15 +14,10 @@ repos:
     hooks:
       - id: isort
         stages: [commit]
-# -   repo: https://github.com/psf/black
-#     rev: 23.12.0
-#     hooks:
-#     - id: black
-#       language_version: python
-#       stages: [commit]
-#       additional_dependencies: ["click"]
--   repo: https://github.com/pycqa/flake8
-    rev: 5.0.4
+-   repo: https://github.com/psf/black
+    rev: 23.12.1
     hooks:
-      - id: flake8
-        stages: [commit]
+    - id: black
+      language_version: python3
+      stages: [commit]
+      exclude: 'trepan/version.py'
