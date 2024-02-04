@@ -70,6 +70,7 @@ modname = "xdis"
 
 packages = ["xdis"]
 py_modules = None
+
 # setup_requires     = ['pytest-runner']
 scripts = ["bin/pydisasm.py"]
 short_desc = "Python cross-version byte-code disassembler and marshal routines"
