@@ -407,6 +407,7 @@ add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 magics = __by_version(versions)
 magics["3.8.12pypy"] = magics["3.8.0rc1+"]
 magics["3.9.15pypy"] = magics["3.9.0alpha1"]
+magics["3.9.16pypy"] = magics["3.9.0alpha1"]
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
@@ -466,9 +467,8 @@ add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
 add_canonic_versions("3.6.9pypy", "3.6pypy")
 add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.7pypy")
-add_canonic_versions(
-    "3.8.0pypy 3.8pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy 3.8.16pypy", "3.8.12pypy"
-)
+add_canonic_versions("3.8.0pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy", "3.8.12pypy")
+add_canonic_versions("3.8.16pypy", "3.8pypy")
 add_canonic_versions("3.9.17pypy 3.9.18pypy", "3.9pypy")
 add_canonic_versions("3.10.12pypy 3.10.13pypy 3.10pypy", "3.10pypy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
@@ -481,7 +481,7 @@ add_canonic_versions(
 add_canonic_versions("3.8.0alpha0 3.8.0alpha3 3.8.0a0", "3.8.0a3+")
 add_canonic_versions(
     "3.8b4 3.8.0candidate1 3.8 3.8.0 3.8.1 3.8.2 3.8.3 3.8.4 3.8.5 3.8.6 3.8.7 3.8.8 "
-    "3.8.9 3.8.10 3.8.11 3.8.12 3.8.13 3.8.14 3.8.15 3.8.16 3.8.17 3.8.18",
+    "3.8.9 3.8.10 3.8.11 3.8.12 3.8.13 3.8.14 3.8.15 3.8.16 3.8.17 3.8.18 ",
     "3.8.0rc1+",
 )
 add_canonic_versions(
@@ -595,7 +595,7 @@ def test():
     print("This Python interpreter has versions:", magic_current)
     print("Magic code: ", PYTHON_MAGIC_INT)
     print(type(magic_20), len(magic_20), repr(magic_20))
-    assert sysinfo2magic() == MAGIC
+    assert sysinfo2magic() == MAGIC, (sysinfo2magic(), MAGIC)
 
 
 if __name__ == "__main__":
