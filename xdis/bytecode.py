@@ -238,7 +238,7 @@ def get_instructions_bytes(
                 i += 2
                 extended_arg = (
                     arg * 0x10000
-                    if hasattr(op, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                    if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
                     else 0
                 )
 
