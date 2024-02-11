@@ -242,7 +242,7 @@ def get_instructions_bytes(
                 i += 2
                 extended_arg = (
                     arg * 0x10000
-                    if hasattr(op, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                    if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
                     else 0
                 )
 
@@ -505,9 +505,9 @@ class Bytecode(object):
         file=sys.stdout,
         line_offset=0,
         asm_format="classic",
-        filename = None,
+        filename=None,
         show_source=True,
-        first_line_number = None,
+        first_line_number=None,
         exception_entries=None,
     ) -> list:
         # Omit the line number column entirely if we have no line number info
