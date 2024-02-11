@@ -332,9 +332,9 @@ def extended_format_BUILD_TUPLE(opc, instructions: list):
     arglist, _, i = get_arglist(instructions, 0, arg_count)
     args_str = ", ".join(reversed(arglist))
     if arg_count == 1:
-        return "(%s,)" % args_str
+        return "(%s,)" % args_str, instructions[i].start_offset
     else:
-        return "(%s)" % args_str
+        return "(%s)" % args_str, instructions[i].start_offset
     return "", None
 
 
