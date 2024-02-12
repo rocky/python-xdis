@@ -215,7 +215,6 @@ opcode_arg_fmt36 = opcode_arg_fmt = {
     "CALL_FUNCTION": format_CALL_FUNCTION,
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
-    "EXTENDED_ARG": format_extended_arg36,
     "FORMAT_VALUE": format_value_flags,
     "MAKE_FUNCTION": format_MAKE_FUNCTION,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,

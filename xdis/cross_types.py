@@ -1,4 +1,4 @@
-# Copyright (c) 2023 by Rocky Bernstein
+# Copyright (c) 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -51,6 +51,12 @@ class UnicodeForPython3(str):
 
     def __init__(self, value):
         self.value = value
+
+    def __eq__(self, other):
+        return self.value == other or self.value.decode("utf-8") == other
+
+    def __hash__(self):
+        return id(self.value)
 
     def __repr__(self):
         r"""
