@@ -22,14 +22,6 @@
 
 __docformat__ = "restructuredtext"
 
-# Export various things from the modules
-from xdis.version_info import (
-    IS_PYPY,
-    PYTHON3,
-    PYTHON_VERSION_STR,
-    PYTHON_VERSION_TRIPLE,
-)
-
 from xdis.bytecode import (
     Bytecode,
     get_instructions_bytes,
@@ -137,6 +129,8 @@ from xdis.util import (
 
 # This ensures __version__ will appear in pydoc
 from xdis.version import __version__  # noqa
+
+# Export various things from the modules
 from xdis.version_info import (
     IS_PYPY,
     PYTHON3,
