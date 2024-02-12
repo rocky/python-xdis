@@ -328,10 +328,13 @@ def extended_format_BUILD_TUPLE(opc, instructions: list):
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Degenerate case
-        return "()", instructions[0].start_offset
-    arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
-    if arg_count == 0:
-        return "(%s" % ", ".join(reversed(arglist)), instructions[i].start_offset
+        return "tuple()", instructions[0].start_offset
+    arglist, _, i = get_arglist(instructions, 0, arg_count)
+    args_str = ", ".join(reversed(arglist))
+    if arg_count == 1:
+        return "(%s,)" % args_str, instructions[i].start_offset
+    else:
+        return "(%s)" % args_str, instructions[i].start_offset
     return "", None
 
 
