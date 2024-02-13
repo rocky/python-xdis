@@ -1,4 +1,4 @@
-# (C) Copyright 2021-2023 by Rocky Bernstein
+# (C) Copyright 2021-2024 by Rocky Bernstein
 """
 PYPY 3.7 opcodes
 
@@ -37,7 +37,6 @@ oppop = {}
 loc = locals()
 init_opdata(loc, opcode_37, version_tuple, is_pypy=True)
 
-
 # FIXME: DRY common PYPY opcode additions
 
 # fmt: off
@@ -47,7 +46,7 @@ rm_op(loc, "LOAD_METHOD",                  160)
 nargs_op(loc, "CALL_FUNCTION_KW",          141, 9, 1)  # #args + (#kwargs << 8)
 nargs_op(loc, "CALL_FUNCTION_EX",          142, -2, 1)
 
-# The following were removed from 3.7 but still in Pypy 3.7
+# The following were removed from 3.7 but still in some versions Pypy 3.7
 
 store_op(loc,   'STORE_ANNOTATION',        127, 1, 0, is_type="name")
 
@@ -66,6 +65,7 @@ varargs_op(loc, "BUILD_LIST_FROM_ARG",     203)
 
 if sys.version_info[:3] >= (3, 6, 1):
     def_op(loc, "LOAD_REVDB_VAR",          205)
+
 
 # fmt: on
 def extended_format_CALL_METHOD(opc, instructions):
@@ -205,7 +205,6 @@ opcode_extended_fmt = opcode_extended_fmt37pypy = {
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
     },
 }
-
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
