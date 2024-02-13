@@ -44,8 +44,16 @@ varargs_op(loc, "BUILD_LIST_FROM_ARG", 203)
 # Used only in assert statements
 jrel_op(loc, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 
-# There are no opcodes to remove or change.
-# If there were, they'd be listed below.
+# Python 3.5.3 PyPYy 7.0.0 adds LOAD_REVDB.  We can't distinguish
+# between the two kinds of bytecode by Python version number, or magic
+# number. And we don't have a means of specifiying
+# platform.python_branch() which would give us the 7.0.0 as opposed to
+# 6.0.0.
+
+# Lacking anything better to do, we'll add this opcode since
+# the newest PyPy for 3.5 has it.
+
+def_op(loc, "LOAD_REVDB_VAR", 205)
 
 opcode_extended_fmt = {
     "LOAD_ATTR": extended_format_ATTR,
