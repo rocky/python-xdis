@@ -7,7 +7,6 @@ of stack usage and information for formatting instructions.
 """
 
 import sys
-
 from copy import copy
 
 import xdis.opcodes.opcode_36 as opcode_36
