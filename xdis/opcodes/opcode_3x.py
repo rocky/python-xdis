@@ -230,7 +230,6 @@ def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
     if name_inst.opname in ("LOAD_CONST",):
         s += f"make_function({short_code_repr(name_inst.argval)}"
         return s, start_offset
-    pos_args, name_pair_args, annotate_args = parse_fn_counts_30_35(inst.argval)
     s += format_MAKE_FUNCTION_30_35(inst.argval)
     return s
 
