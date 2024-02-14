@@ -505,7 +505,7 @@ add_canonic_versions(
 )
 
 add_canonic_versions(
-    "3.12 3.12.0 3.12.1",
+    "3.12 3.12.0 3.12.1 3.12.2",
     "3.12.0rc2",
 )
 
