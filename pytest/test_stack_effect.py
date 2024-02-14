@@ -1,10 +1,7 @@
 import os.path as osp
 
-import pytest
-import xdis
 from xdis import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
-from xdis.op_imports import get_opcode_module
 
 
 def get_srcdir():
@@ -106,7 +103,6 @@ def test_stack_effect_fixed():
 #             op_val = "with operand %d" % dis_args[1]
 #         else:
 #             op_val = ""
-
 #         assert check_effect == effect, "%d (%s) %s not okay; effect %d vs %d" % (
 #             opcode,
 #             opname,
