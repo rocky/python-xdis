@@ -1,6 +1,5 @@
 #!/bin/bash
 # Check out master branch and dependent development master branches
-set -e
 if [[ $0 == $${BASH_SOURCE[0]} ]] ; then
     echo "This script should be *sourced* rather than run directly through bash"
     exit 1
