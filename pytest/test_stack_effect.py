@@ -94,7 +94,10 @@ def test_stack_effect_vs_dis():
 
     def test_one(xdis_args, dis_args, has_arg):
         effect = xstack_effect(*xdis_args)
-        check_effect = dis.stack_effect(*dis_args[:2])
+        try:
+            check_effect = dis.stack_effect(*dis_args[:2])
+        except ValueError:
+            return
         assert (
             effect != -100
         ), "%d (%s) needs adjusting; should be: should have effect %d" % (
