@@ -18,7 +18,7 @@
                6 STORE_NAME           (f)
 
   9:           9 LOAD_NAME            (f)
-              12 LOAD_CONST           ('abc')
+              12 LOAD_CONST           ("abc")
               15 CALL_FUNCTION        (1 positional, 0 named)
               18 LOAD_CONST           (b'abc~\x80\x81\x82')
               21 COMPARE_OP           (==)
