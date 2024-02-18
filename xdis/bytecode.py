@@ -88,18 +88,24 @@ def get_const_info(const_index, const_list):
     list is defined.
     Otherwise, returns the constant index and its repr().
     """
-    argval = const_index
+    arg_val = const_index
     if const_list is not None:
-        argval = const_list[const_index]
+        arg_val = const_list[const_index]
+
+    arg_repr = (
+        prefer_double_quote(repr(arg_val))
+        if isinstance(arg_val, str)
+        else repr(arg_val)
+    )
 
     # float values nan and inf are not directly representable in Python at least
     # before 3.5 and even there it is via a library constant.
     # So we will canonicalize their representation as float('nan') and float('inf')
-    if isinstance(argval, float) and str(argval) in frozenset(
+    if isinstance(arg_val, float) and str(arg_val) in frozenset(
         ["nan", "-nan", "inf", "-inf"]
     ):
-        return argval, "float('%s')" % argval
-    return argval, repr(argval)
+        return arg_val, f"float('{arg_val}')"
+    return arg_val, arg_repr
 
 
 # For compatibility
@@ -161,6 +167,23 @@ def parse_exception_table(exception_table: bytes):
             entries.append(_ExceptionTableEntry(start, end, target, depth, lasti))
     except StopIteration:
         return entries
+
+
+def prefer_double_quote(string: str) -> str:
+    """
+    Prefer a double-quoted string over a single-quoted string when
+    possible. ``string`` is expected to already be a repr()-like
+    representation with quoting already in it.
+
+    Python formatting seems now to prefer double-quotes, even though
+    it's repr() function typically prefers single quotes.
+
+    Using the form that Python typically uses in its source can
+    make things easier on users of this, like decompilers.
+    """
+    if string[1:-1].find('"') == -1:
+        return f'"{string[1:-1]}"'
+    return string
 
 
 def get_instructions_bytes(
@@ -423,7 +446,7 @@ class Bytecode(object):
         )
 
     def __repr__(self):
-        return "{}({!r})".format(self.__class__.__name__, self._original_object)
+        return f"{self.__class__.__name__}({self._original_object!r})"
 
     @classmethod
     def from_traceback(cls, tb, opc=None):
@@ -659,7 +682,7 @@ def list2bytecode(inst_list, opc, varnames, consts):
             k = (consts if opcode in opc.CONST_OPS else varnames).index(j)
             if k == -1:
                 raise TypeError(
-                    "operand %s [%s, %s], not found in names" % (i, opname, operands)
+                    f"operand {i} [{opname}, {operands}], not found in names"
                 )
             else:
                 bc += num2code(k)
