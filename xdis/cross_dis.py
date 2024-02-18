@@ -439,9 +439,16 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
     ) and version_tuple >= (3, 12):
         return 1 - oparg
     elif opname in ("BUILD_SLICE") and version_tuple <= (2, 7):
-        return -2 if oparg == 3 else -1
+        if oparg == 3:
+            return -2
+        else:
+            return -1
+        pass
     elif opname == "LOAD_ATTR" and version_tuple >= (3, 12):
-        return 1 if oparg & 1 else 0
+        if oparg & 1:
+            return 2
+        else:
+            return 1
     elif opname == "MAKE_FUNCTION":
         if version_tuple >= (3, 5):
             if 0 <= oparg <= 10:
@@ -476,9 +483,23 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
                 return 2
             else:
                 return 1
-    elif opname == "PRECALL":
-        if opc.version_tuple >= (3, 11):
-            return -oparg
+    elif opname in (
+        "INSTRUMENTED_LOAD_SUPER_ATTR",
+        "LOAD_SUPER_ATTR",
+    ) and version_tuple >= (3, 12):
+        if oparg & 1:
+            return -1
+        else:
+            return -2
+    elif opname == "LOAD_GLOBAL" and version_tuple >= (3, 11):
+        if oparg & 1:
+            return 2
+        else:
+            return 1
+    elif opname == "PRECALL" and version_tuple >= (3, 11):
+        return -oparg
+    elif opname == "RAISE_VARARGS" and version_tuple >= (3, 12):
+        return -oparg
     if push >= 0 and pop >= 0:
         return push - pop
     elif pop < 0:
@@ -536,7 +557,7 @@ def check_stack_effect():
 if __name__ == "__main__":
     from dis import findlabels as findlabels_std
 
-    my_code = findlabels.__code__.co_code
+    my_code = findlabels.func_code.co_code
     from xdis.op_imports import get_opcode_module
 
     my_opc = get_opcode_module()
