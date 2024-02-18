@@ -1,20 +1,11 @@
 #!/bin/bash
 # Check out master branch and dependent development master branches
-set -e
 if [[ $0 == $${BASH_SOURCE[0]} ]] ; then
     echo "This script should be *sourced* rather than run directly through bash"
     exit 1
 fi
 
-# FIXME put some of the below in a common routine
-function finish {
-  cd $owd
-}
-owd=$(pwd)
-trap finish EXIT
-
 PYTHON_VERSION=3.10.13
 pyenv local $PYTHON_VERSION
 
 git checkout master && git pull && pyenv local $PYTHON_VERSION
-finish

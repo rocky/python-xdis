@@ -422,25 +422,32 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
     return the stack effect of not jumping. And if jump is None
     (default), it will return the maximal stack effect of both cases.
     """
+    version_tuple = opc.version_tuple
     pop, push = opc.oppop[opcode], opc.oppush[opcode]
     opname = opc.opname[opcode]
-    if opname in ("BUILD_MAP",):
-        if opc.version_tuple >= (3, 5):
-            return 1 - (2 * oparg)
-    elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX") and opc.version_tuple >= (3, 0):
+    if opname in "BUILD_CONST_KEY_MAP" and version_tuple >= (3, 12):
+        return -oparg
+    if opname == "BUILD_MAP" and version_tuple >= (3, 5):
+        return 1 - (2 * oparg)
+    elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX") and version_tuple >= (3, 0):
         return push + oparg
-    elif opname in ("BUILD_SLICE") and opc.version_tuple <= (2, 7):
-        if oparg == 3:
-            return -2
-        else:
-            return -1
-        pass
+    elif opname in (
+        "BUILD_LIST",
+        "BUILD_SET",
+        "BUILD_STRING",
+        "BUILD_TUPLE",
+    ) and version_tuple >= (3, 12):
+        return 1 - oparg
+    elif opname in ("BUILD_SLICE") and version_tuple <= (2, 7):
+        return -2 if oparg == 3 else -1
+    elif opname == "LOAD_ATTR" and version_tuple >= (3, 12):
+        return 1 if oparg & 1 else 0
     elif opname == "MAKE_FUNCTION":
-        if opc.version_tuple >= (3, 5):
+        if version_tuple >= (3, 5):
             if 0 <= oparg <= 10:
-                if opc.version_tuple == (3, 5):
+                if version_tuple == (3, 5):
                     return [-1, -2, -3, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
-                elif (3, 6) <= opc.version_tuple < (3, 11):
+                elif (3, 6) <= version_tuple < (3, 11):
                     return [-1, -2, -2, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
                 elif 0 <= oparg <= 2:
                     return [0, -1, -1][oparg]
@@ -448,6 +455,8 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
                     return None
             else:
                 return None
+    elif opname == "CALL" and version_tuple >= (3, 12):
+        return -oparg - 1
     elif opname == "CALL_FUNCTION_EX":
         if (3, 5) <= opc.version_tuple < (3, 11):
             if oparg & 1:
