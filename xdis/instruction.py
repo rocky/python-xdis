@@ -20,79 +20,138 @@ allow running on Python 2.
 """
 
 import re
-from collections import namedtuple
+from typing import Any, NamedTuple, Optional, Union
 
-_Instruction = namedtuple(
-    "_Instruction",
-    "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line "
-    "is_jump_target has_extended_arg tos_str start_offset",
-)
-_Instruction.opname.__doc__ = "Human readable name for operation"
-_Instruction.opcode.__doc__ = "Numeric code for operation"
-_Instruction.optype.__doc__ = "Class of operation"
-_Instruction.inst_size.__doc__ = "Number of byte of instruction"
-_Instruction.arg.__doc__ = "Numeric argument to operation (if any), otherwise None"
-_Instruction.argval.__doc__ = "Resolved arg value (if known), otherwise same as arg"
-_Instruction.argrepr.__doc__ = "Human readable description of operation argument"
-_Instruction.has_arg.__doc__ = "True if instruction has an operand, otherwise False"
-_Instruction.offset.__doc__ = "Start index of operation within bytecode sequence"
-_Instruction.starts_line.__doc__ = (
-    "Line started by this opcode (if any), otherwise None"
-)
-_Instruction.is_jump_target.__doc__ = (
-    "True if other code jumps to here, otherwise False"
-)
-_Instruction.has_extended_arg.__doc__ = (
-    "True there were EXTENDED_ARG opcodes before this, otherwise False"
-)
-
-_Instruction.tos_str.__doc__ = (
-    "If not None, a string representation of the top of the stack (TOS)"
-)
-# Python expressions can be straight-line, operator like-basic block code that take
-# items off a stack and push a value onto the stack. In this case, in a linear scan
-# we can basically build up an expression tree.
-# Note this has to be the last field. Code to set this assumes this.
-_Instruction.start_offset.__doc__ = (
-    "If not None, the offset of the first instruction feeding into the operation"
-)
+# _Instruction.tos_str.__doc__ = (
+#     "If not None, a string representation of the top of the stack (TOS)"
+# )
+# # Python expressions can be straight-line, operator like-basic block code that take
+# # items off a stack and push a value onto the stack. In this case, in a linear scan
+# # we can basically build up an expression tree.
+# # Note this has to be the last field. Code to set this assumes this.
+# _Instruction.start_offset.__doc__ = (
+#     "If not None, the offset of the first instruction feeding into the operation"
+# )
 
 _OPNAME_WIDTH = 20
 
 
-class Instruction(_Instruction):
+class Instruction(NamedTuple):
     """Details for a bytecode operation
 
-    Defined fields:
-      opname - human-readable name for operation
-      opcode - numeric code for operation
-      optype - opcode classification. One of
-         compare, const, free, jabs, jrel, local, name, nargs
-      inst_size - number of bytes the instruction occupies
-      arg - numeric argument to operation (if any), otherwise None
-      argval - resolved arg value (if known), otherwise same as arg
-      argrepr - human-readable description of operation argument
-      has_arg - True if opcode takes an argument. In that case,
-                ``argval`` and ``argepr`` will have that value. False
-                if this opcode doesn't take an argument. When False,
-                don't look at ``argval`` or ``argrepr``.
-      offset - Start index of operation within bytecode sequence.
-      starts_line - Line started by this opcode (if any), otherwise None
-      is_jump_target - True if other code jumps to here,
-                       'loop' if this is a loop beginning, which
-                       in Python can be determined jump to an earlier offset.
-                       Otherwise, False.
-      has_extended_arg - True if the instruction was built from EXTENDED_ARG
-                         opcodes.
-      fallthrough - True if the instruction can (not must) fall through to the next
+    Defined fields in the order in which they are defined:
+
+      opcode:  numeric code for operation.
+      opname:  human-readable name for operation
+      arg:     numeric argument to operation (if any), otherwise None
+      argval:  resolved arg value (if known), otherwise same as arg
+      argrepr: human-readable description of operation argument
+      offset:  Start index of operation within bytecode sequence.
+      starts_line: Line started by this opcode (if any), otherwise None
+
+      is_jump_target: True if other code jumps to here,
+                      'loop' if this is a loop beginning, which
+                      in Python can be determined jump to an earlier offset.
+                      Otherwise, False.
+
+      positions: Optional dis.Positions object holding the start and end locations that
+                 are covered by this instruction. This not implemented yet.
+
+      optype:    Opcode classification. One of:
+                    compare, const, free, jabs, jrel, local, name, nargs
+
+      has_arg:   True if opcode takes an argument. In that case,
+                 ``argval`` and ``argepr`` will have that value. False
+                 if this opcode doesn't take an argument. When False,
+                 don't look at ``argval`` or ``argrepr``.
+
+      inst_size: number of bytes the instruction occupies
+
+      has_extended_arg: True if the instruction was built from EXTENDED_ARG
+                        opcodes.
+
+      fallthrough:  True if the instruction can (not must) fall through to the next
                     instruction. Note conditionals are in this category, but
                     returns, raise, and unconditional jumps are not.
-      tos_str - if not None, a string representation of the top of the stack (TOS).
-                This is obtained by scanning previous instructions and
-                using information there and in their tos_str fields
+
+      tos_str:      If not None, a string representation of the top of the stack (TOS).
+                    This is obtained by scanning previous instructions and
+                    using information there and in their tos_str fields
+
+      start_offset: if not None the instruction with the lowest offset that
+                    pushes a stack entry that is consume by this opcode
     """
 
-    # FIXME: remove has_arg from initialization but keep it as a field.
+    # Numeric code for operation
+    opcode: int
+
+    # Human readable name for operation
+    opname: str
+
+    # Numeric operand value if operation has an operand, otherwise None.
+    # This operand value is an index into one of the lists of a code type.
+    # The exact table indexed depends on optype.
+    arg: int
+
+    # Resolved operand value (if known). This is obtained indexing the appropriate list
+    # indicated by optype using value arg.
+    # If for some reason we can't extract a value this way ``argval`` has value as
+    # ``arg``.
+    argval: Any
+
+    # String representation of argval if argval is not None.
+    argrepr: str
+
+    # Offset of the instruction
+    offset: int
+
+    starts_line: Optional[int]
+
+    # True if other code jumps to here, the string "loop" if this is a loop
+    # beginning, which in Python can be determined jump to an earlier
+    # offset.  Otherwise, False.
+    # Note that this is a generalization of Python's "is_jump_target".
+    is_jump_target: Union[bool, str]
+
+    # dis.Positions object holding the start and end locations that
+    # are covered by this instruction.
+    # FIXME: Implement. The below is just a placeholder.
+    #
+    positions: Optional[Any]
+
+    # The following values are our own extended information not found (yet) #
+    # in Python's Instruction structure.                                    #
+
+    # First, values which can be computed or derived from the above,
+    # along with an opcode structure. These We add these in an
+    # instruction to make the instruction self sufficient.
+
+    # opcode classification. One of:
+    #   compare, const, free, jabs, jrel, local, name, nargs
+    optype: str
+
+    # True if instruction has an operand, otherwise False.
+    has_arg: bool
+
+    # The number of bytes this instruction consumes.
+    inst_size: int
+
+    # True there were EXTENDED_ARG opcodes before this, otherwise False
+    has_extended_arg: Optional[bool] = None
+
+    # True if the instruction can (not must) fall through to the next
+    # instruction. Note conditionals are in this category, but
+    # returns, raise, and unconditional jumps are not.
+    fallthrough: Optional[bool] = None
+
+    # If not None, a string representation of the top of the stack (TOS)
+    tos_str: Optional[str] = None
+
+    # Python expressions can be straight-line, operator like-basic block code that take
+    # items off a stack and push a value onto the stack. In this case, in a linear scan
+    # we can basically build up an expression tree.
+    # Note this has to be the last field. Code to set this assumes this.
+    start_offset: Optional[int] = None
 
     def disassemble(
         self,
