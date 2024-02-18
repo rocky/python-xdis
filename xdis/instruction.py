@@ -20,7 +20,6 @@ allow running on Python 2.
 """
 
 import re
-from types import NoneType
 from typing import Any, NamedTuple, Optional, Union
 
 # _Instruction.tos_str.__doc__ = (
@@ -114,8 +113,11 @@ class Instruction(NamedTuple):
     # Note that this is a generalization of Python's "is_jump_target".
     is_jump_target: Union[bool, str]
 
-    # FIXME: add positions for 3.11 (and 3.4?)
-    positions: NoneType
+    # dis.Positions object holding the start and end locations that
+    # are covered by this instruction.
+    # FIXME: Implement. The below is just a placeholder.
+    #
+    positions: Optional[Any]
 
     # The following values are our own extended information not found (yet) #
     # in Python's Instruction structure.                                    #
