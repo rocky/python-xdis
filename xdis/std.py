@@ -50,15 +50,16 @@ import sys
 
 # xdis
 from xdis import IS_PYPY
-from xdis.bytecode import Bytecode as _Bytecode
+from xdis.bytecode import Bytecode as _Bytecode, get_optype
 from xdis.cross_dis import (
     code_info as _code_info,
+    op_has_argument,
     pretty_flags as _pretty_flags,
     show_code as _show_code,
     xstack_effect as _stack_effect,
 )
 from xdis.disasm import disco as _disco
-from xdis.instruction import _Instruction
+from xdis.instruction import Instruction as Instruction_xdis
 from xdis.op_imports import get_opcode_module
 
 PYPY = "pypy"
@@ -108,22 +109,57 @@ class _StdApi:
 
         self.Bytecode = Bytecode
 
-        class Instruction(_Instruction):
+        class Instruction(Instruction_xdis):
             """Details for a bytecode operation
 
             Defined fields:
-              opname - human-readable name for operation
               opcode - numeric code for operation
+              opname - human-readable name for operation
               arg - numeric argument to operation (if any), otherwise None
               argval - resolved arg value (if known), otherwise same as arg
               argrepr - human-readable description of operation argument
               offset - start index of operation within bytecode sequence
               starts_line - line started by this opcode (if any), otherwise None
               is_jump_target - True if other code jumps to here, otherwise False
+
+              If 3.4 (and changed in 3.11) or greater
+              positions
             """
 
-            def __init__(self, *args, **kwargs):
-                _Instruction(*args, **kwargs)
+            def __init__(
+                self,
+                opcode,
+                opname,
+                arg,
+                argval,
+                argrepr,
+                offset,
+                starts_line,
+                is_jump_target,
+                positions=None,
+                **kwargs
+            ):
+                has_args = op_has_argument(opcode, self.opc)
+                if "has_args" in kwargs:
+                    assert has_args == kwargs.pop("has_args")
+                optype = get_optype(opcode, self.opc)
+                if "optype" in kwargs:
+                    assert optype == kwargs.pop("has_args")
+
+                super().__init(
+                    opcode,
+                    opname,
+                    arg,
+                    argval,
+                    argrepr,
+                    offset,
+                    starts_line,
+                    is_jump_target,
+                    positions,
+                    optype=optype,
+                    has_args=has_args,
+                    **kwargs
+                )
                 self.opc = opc
 
         self.Instruction = Instruction

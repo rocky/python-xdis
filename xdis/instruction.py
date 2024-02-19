@@ -25,8 +25,11 @@ from xdis.namedtuple24 import namedtuple
 
 _Instruction = namedtuple(
     "_Instruction",
-    "opname opcode optype inst_size arg argval argrepr has_arg offset starts_line "
-    "is_jump_target has_extended_arg tos_str start_offset",
+    (
+        "opcode opname arg argval argrepr offset starts_line is_jump_target positions "
+        # The below do not have Python 3.6+ Instruction equvalents.
+        "optype has_arg inst_size has_extended_arg fallthrough tos_str start_offset"
+    ),
 )
 # _Instruction.opname.__doc__ = "Human readable name for operation"
 # _Instruction.opcode.__doc__ = "Numeric code for operation"
@@ -71,36 +74,48 @@ _OPNAME_WIDTH = 20
 class Instruction(_Instruction):
     """Details for a bytecode operation
 
-    Defined fields:
-      opname - human-readable name for operation
-      opcode - numeric code for operation
-      optype - opcode classification. One of
-         compare, const, free, jabs, jrel, local, name, nargs
-      inst_size - number of bytes the instruction occupies
-      arg - numeric argument to operation (if any), otherwise None
-      argval - resolved arg value (if known), otherwise same as arg
-      argrepr - human-readable description of operation argument
-      has_arg - True if opcode takes an argument. In that case,
-                ``argval`` and ``argepr`` will have that value. False
-                if this opcode doesn't take an argument. When False,
-                don't look at ``argval`` or ``argrepr``.
-      offset - Start index of operation within bytecode sequence.
-      starts_line - Line started by this opcode (if any), otherwise None
-      is_jump_target - True if other code jumps to here,
-                       'loop' if this is a loop beginning, which
-                       in Python can be determined jump to an earlier offset.
-                       Otherwise, False.
-      has_extended_arg - True if the instruction was built from EXTENDED_ARG
-                         opcodes.
-      fallthrough - True if the instruction can (not must) fall through to the next
+    Defined fields in the order in which they are defined:
+
+      opcode:  numeric code for operation.
+      opname:  human-readable name for operation
+      arg:     numeric argument to operation (if any), otherwise None
+      argval:  resolved arg value (if known), otherwise same as arg
+      argrepr: human-readable description of operation argument
+      offset:  Start index of operation within bytecode sequence.
+      starts_line: Line started by this opcode (if any), otherwise None
+
+      is_jump_target: True if other code jumps to here,
+                      'loop' if this is a loop beginning, which
+                      in Python can be determined jump to an earlier offset.
+                      Otherwise, False.
+
+      positions: Optional dis.Positions object holding the start and end locations that
+                 are covered by this instruction. This not implemented yet.
+
+      optype:    Opcode classification. One of:
+                    compare, const, free, jabs, jrel, local, name, nargs
+
+      has_arg:   True if opcode takes an argument. In that case,
+                 ``argval`` and ``argepr`` will have that value. False
+                 if this opcode doesn't take an argument. When False,
+                 don't look at ``argval`` or ``argrepr``.
+
+      inst_size: number of bytes the instruction occupies
+
+      has_extended_arg: True if the instruction was built from EXTENDED_ARG
+                        opcodes.
+
+      fallthrough:  True if the instruction can (not must) fall through to the next
                     instruction. Note conditionals are in this category, but
                     returns, raise, and unconditional jumps are not.
-      tos_str - if not None, a string representation of the top of the stack (TOS).
-                This is obtained by scanning previous instructions and
-                using information there and in their tos_str fields
-    """
 
-    # FIXME: remove has_arg from initialization but keep it as a field.
+      tos_str:      If not None, a string representation of the top of the stack (TOS).
+                    This is obtained by scanning previous instructions and
+                    using information there and in their tos_str fields
+
+      start_offset: if not None the instruction with the lowest offset that
+                    pushes a stack entry that is consume by this opcode
+    """
 
     def disassemble(
         self,
