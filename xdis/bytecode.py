@@ -23,7 +23,6 @@ allow running on Python 2.
 import collections
 import inspect
 import sys
-import types
 from io import StringIO
 from linecache import getline
 
@@ -42,8 +41,6 @@ from xdis.version_info import IS_PYPY
 
 VARIANT = "pypy" if IS_PYPY else None
 
-_have_code = (types.MethodType, types.FunctionType, types.CodeType, type)
-
 
 def extended_arg_val(opc, val):
     """Return the adjusted value of an extended argument operand."""
@@ -52,33 +49,6 @@ def extended_arg_val(opc, val):
 
 def get_jump_val(jump_arg, version):
     return jump_arg * 2 if version[:2] >= (3, 10) else jump_arg
-
-
-def offset2line(offset, linestarts):
-    """linestarts is expected to be a *list) of (offset, line number)
-    where both offset and line number are in increasing order.
-    Return the closes line number at or below the offset.
-    If offset is less than the first line number given in linestarts,
-    return line number 0.
-    """
-    if len(linestarts) == 0 or offset < linestarts[0][0]:
-        return 0
-    low = 0
-    high = len(linestarts) - 1
-    mid = (low + high + 1) // 2
-    while low <= high:
-        if linestarts[mid][0] > offset:
-            high = mid - 1
-        elif linestarts[mid][0] < offset:
-            low = mid + 1
-        else:
-            return linestarts[mid][1]
-        mid = (low + high + 1) // 2
-        pass
-    # Not found. Return closest position below
-    if mid >= len(linestarts):
-        return linestarts[len(linestarts) - 1][1]
-    return linestarts[high][1]
 
 
 def get_const_info(const_index, const_list):
@@ -104,7 +74,7 @@ def get_const_info(const_index, const_list):
     if isinstance(arg_val, float) and str(arg_val) in frozenset(
         ["nan", "-nan", "inf", "-inf"]
     ):
-        return arg_val, f"float('{arg_val}')"
+        return arg_val, "float('%s')" % arg_val
     return arg_val, arg_repr
 
 
@@ -133,13 +103,63 @@ def get_name_info(name_index, name_list):
     return argval, argrepr
 
 
+def get_optype(opcode: int, opc) -> str:
+    """Helper to determine what class of instructions ``opcode`` is in.
+    Return is a string in:
+       compare, const, free, jabs, jrel, local, name, nargs, or ??
+    """
+    if opcode in opc.COMPARE_OPS:
+        return "compare"
+    elif opcode in opc.CONST_OPS:
+        return "const"
+    elif opcode in opc.FREE_OPS:
+        return "free"
+    elif opcode in opc.JABS_OPS:
+        return "jabs"
+    elif opcode in opc.JREL_OPS:
+        return "jrel"
+    elif opcode in opc.LOCAL_OPS:
+        return "local"
+    elif opcode in opc.NAME_OPS:
+        return "name"
+    elif opcode in opc.NARGS_OPS:
+        return "nargs"
+    # This has to come after NARGS_OPS. Some are in both?
+    elif opcode in opc.VARGS_OPS:
+        return "vargs"
+
+    return "??"
+
+
 # For compatibility
 _get_name_info = get_name_info
 
 
-_ExceptionTableEntry = collections.namedtuple(
-    "_ExceptionTableEntry", "start end target depth lasti"
-)
+def offset2line(offset: int, linestarts):
+    """linestarts is expected to be a *list of (offset, line number)
+    where both offset and line number are in increasing order.
+    Return the closes line number at or below the offset.
+    If offset is less than the first line number given in linestarts,
+    return line number 0.
+    """
+    if len(linestarts) == 0 or offset < linestarts[0][0]:
+        return 0
+    low = 0
+    high = len(linestarts) - 1
+    mid = (low + high + 1) // 2
+    while low <= high:
+        if linestarts[mid][0] > offset:
+            high = mid - 1
+        elif linestarts[mid][0] < offset:
+            low = mid + 1
+        else:
+            return linestarts[mid][1]
+        mid = (low + high + 1) // 2
+        pass
+    # Not found. Return closest position below
+    if mid >= len(linestarts):
+        return linestarts[len(linestarts) - 1][1]
+    return linestarts[high][1]
 
 
 def _parse_varint(iterator):
@@ -150,6 +170,11 @@ def _parse_varint(iterator):
         b = next(iterator)
         val |= b & 63
     return val
+
+
+_ExceptionTableEntry = collections.namedtuple(
+    "_ExceptionTableEntry", "start end target depth lasti"
+)
 
 
 def parse_exception_table(exception_table: bytes):
@@ -182,7 +207,7 @@ def prefer_double_quote(string: str) -> str:
     make things easier on users of this, like decompilers.
     """
     if string[1:-1].find('"') == -1:
-        return f'"{string[1:-1]}"'
+        return '"%s"' % string[1:-1]
     return string
 
 
@@ -249,7 +274,7 @@ def get_instructions_bytes(
         argval = None
         argrepr = ""
         has_arg = op_has_argument(op, opc)
-        optype = None
+        optype = get_optype(op, opc)
         if has_arg:
             if python_36:
                 arg = code2num(bytecode, i) | extended_arg
@@ -277,7 +302,6 @@ def get_instructions_bytes(
             argval = arg
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
-                optype = "const"
             elif op in opc.NAME_OPS:
                 if opc.version_tuple >= (3, 11) and opc.opname[op] == "LOAD_GLOBAL":
                     argval, argrepr = _get_name_info(arg >> 1, names)
@@ -295,7 +319,6 @@ def get_instructions_bytes(
                         argrepr = "NULL|self + " + argrepr
                 else:
                     argval, argrepr = _get_name_info(arg, names)
-                optype = "name"
             elif op in opc.JREL_OPS:
                 signed_arg = -arg if "JUMP_BACKWARD" in opc.opname[op] else arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
@@ -303,11 +326,9 @@ def get_instructions_bytes(
                 if opc.version_tuple >= (3, 12) and opc.opname[op] == "FOR_ITER":
                     argval += 2
                 argrepr = "to " + repr(argval)
-                optype = "jrel"
             elif op in opc.JABS_OPS:
                 argval = get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
-                optype = "jabs"
             elif op in opc.LOCAL_OPS:
                 if opc.version_tuple >= (3, 11):
                     argval, argrepr = _get_name_info(
@@ -315,7 +336,6 @@ def get_instructions_bytes(
                     )
                 else:
                     argval, argrepr = _get_name_info(arg, varnames)
-                optype = "local"
             elif op in opc.FREE_OPS:
                 if opc.version_tuple >= (3, 11):
                     argval, argrepr = _get_name_info(
@@ -323,7 +343,6 @@ def get_instructions_bytes(
                     )
                 else:
                     argval, argrepr = _get_name_info(arg, cells)
-                optype = "free"
             elif op in opc.COMPARE_OPS:
                 argval = (
                     opc.cmp_op[arg >> 4]
@@ -331,10 +350,8 @@ def get_instructions_bytes(
                     else opc.cmp_op[arg]
                 )
                 argrepr = argval
-                optype = "compare"
             elif op in opc.NARGS_OPS:
                 opname = opc.opname[op]
-                optype = "nargs"
                 if python_36 and opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX"):
                     if opname == "CALL_FUNCTION":
                         argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
@@ -350,10 +367,6 @@ def get_instructions_bytes(
                             code2num(bytecode, i - 2),
                             code2num(bytecode, i - 1),
                         )
-            # This has to come after hasnargs. Some are in both?
-            elif op in opc.VARGS_OPS:
-                optype = "vargs"
-                # argrepr = argval
             if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
         elif python_36:
@@ -365,19 +378,21 @@ def get_instructions_bytes(
         start_offset = offset if opc.oppop[op] == 0 else None
 
         yield Instruction(
-            opname,
             op,
-            optype,
-            inst_size,
+            opname,
             arg,
             argval,
             argrepr,
-            has_arg,
             offset,
             starts_line,
             is_jump_target,
-            extended_arg_count != 0,
+            positions=None,
+            optype=optype,
+            has_arg=has_arg,
+            inst_size=inst_size,
+            has_extended_arg=extended_arg_count != 0,
             tos_str=None,
+            fallthrough=None,
             start_offset=start_offset,
         )
         # fallthrough
@@ -446,7 +461,7 @@ class Bytecode(object):
         )
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self._original_object!r})"
+        return "{}({!r})".format(self.__class__.__name__, self._original_object)
 
     @classmethod
     def from_traceback(cls, tb, opc=None):
@@ -575,19 +590,21 @@ class Bytecode(object):
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
                 instr = Instruction(
-                    opname=instr.opname,
                     opcode=instr.opcode,
-                    optype=instr.optype,
-                    inst_size=instr.inst_size,
+                    opname=instr.opname,
                     arg=instr.arg,
                     argval=instr.argval,
                     argrepr=instr.argrepr,
-                    has_arg=instr.has_arg,
                     offset=instr.offset,
                     starts_line=set_lineno_number,  # this is the only field that changes
                     is_jump_target=instr.is_jump_target,
+                    positions=None,
+                    optype=instr.optype,
+                    has_arg=instr.has_arg,
+                    inst_size=instr.inst_size,
                     has_extended_arg=instr.has_extended_arg,
                     tos_str=None,
+                    fallthrough=None,
                     start_offset=None,
                 )
             last_was_set_lineno = False
@@ -682,7 +699,7 @@ def list2bytecode(inst_list, opc, varnames, consts):
             k = (consts if opcode in opc.CONST_OPS else varnames).index(j)
             if k == -1:
                 raise TypeError(
-                    f"operand {i} [{opname}, {operands}], not found in names"
+                    "operand %d [%s, %s], not found in names" % (i, opname, operands)
                 )
             else:
                 bc += num2code(k)
@@ -693,29 +710,33 @@ def list2bytecode(inst_list, opc, varnames, consts):
     return bytes(bc)
 
 
-# if __name__ == '__main__':
-#     import xdis.opcodes.opcode_27  as opcode_27
-#     import xdis.opcodes.opcode_34  as opcode_34
-#     import xdis.opcodes.opcode_36  as opcode_36
-#     consts = (None, 2)
-#     varnames = ('a')
-#     instructions = [
-#         ('LOAD_CONST', 2),
-#         ('STORE_FAST', 'a'),
-#         ('LOAD_FAST', 'a'),
-#         ('RETURN_VALUE',)
-#     ]
-#     def f():
-#         a = 2
-#         return a
-#     if PYTHON3:
-#         print(f.__code__.co_code)
-#     else:
-#         print(f.func_code.co_code)
+if __name__ == "__main__":
+    import xdis.opcodes.opcode_27 as opcode_27
+    import xdis.opcodes.opcode_34 as opcode_34
+    import xdis.opcodes.opcode_36 as opcode_36
+    from xdis.version_info import PYTHON3
 
-#     bc = list2bytecode(instructions, opcode_27, varnames, consts)
-#     print(bc)
-#     bc = list2bytecode(instructions, opcode_34, varnames, consts)
-#     print(bc)
-#     bc = list2bytecode(instructions, opcode_36, varnames, consts)
-#     print(bc)
+    consts = (None, 2)
+    varnames = "a"
+    instructions = [
+        ("LOAD_CONST", 2),
+        ("STORE_FAST", "a"),
+        ("LOAD_FAST", "a"),
+        ("RETURN_VALUE",),
+    ]
+
+    def f():
+        a = 2
+        return a
+
+    if PYTHON3:
+        print(f.__code__.co_code)
+    else:
+        print(f.func_code.co_code)
+
+    bc = list2bytecode(instructions, opcode_27, varnames, consts)
+    print(bc)
+    bc = list2bytecode(instructions, opcode_34, varnames, consts)
+    print(bc)
+    bc = list2bytecode(instructions, opcode_36, varnames, consts)
+    print(bc)
