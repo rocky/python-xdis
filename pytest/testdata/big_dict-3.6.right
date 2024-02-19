@@ -330,7 +330,7 @@
 
  33:          60 LOAD_CONST           (('-',))
 
- 34:          62 LOAD_CONST           ('~%c')
+ 34:          62 LOAD_CONST           ("~%c")
 
  35:          64 LOAD_CONST           (('%c%c', 1, 0))
 
