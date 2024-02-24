@@ -303,7 +303,6 @@ def disassemble_file(
     filename,
     outstream=sys.stdout,
     asm_format="classic",
-    header=False,
     alternate_opmap=None,
     show_source=False,
 ):
@@ -357,7 +356,7 @@ def disassemble_file(
             magic_int,
             source_size,
             sip_hash,
-            header=header,
+            header=True,
             show_filename=True,
         )
     else:
