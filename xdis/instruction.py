@@ -30,40 +30,6 @@ _Instruction = namedtuple(
         "optype has_arg inst_size has_extended_arg fallthrough tos_str start_offset"
     ),
 )
-# _Instruction.opname.__doc__ = "Human readable name for operation"
-# _Instruction.opcode.__doc__ = "Numeric code for operation"
-# _Instruction.optype.__doc__ = "Class of operation"
-# _Instruction.inst_size.__doc__ = "Number of byte of instruction"
-# _Instruction.arg.__doc__ = "Numeric argument to operation (if any), otherwise None"
-# _Instruction.argval.__doc__ = "Resolved arg value (if known), otherwise same as arg"
-# _Instruction.argrepr.__doc__ = "Human readable description of operation argument"
-# _Instruction.has_arg.__doc__ = "True if instruction has an operand, otherwise False"
-# _Instruction.offset.__doc__ = "Start index of operation within bytecode sequence"
-# _Instruction.starts_line.__doc__ = (
-#     "Line started by this opcode (if any), otherwise None"
-# )
-# _Instruction.is_jump_target.__doc__ = (
-#     "True if other code jumps to here, otherwise False"
-# )
-# _Instruction.has_extended_arg.__doc__ = (
-#     "True there were EXTENDED_ARG opcodes before this, otherwise False"
-# )
-#
-# _Instruction.formatted.__doc__ = (
-#    "If not None, a somewhat hacky formatted representation of the instruction"
-# )
-# _Instruction.tos_str.__doc__ = (
-#    "If not None, a string representation of the top of the stack (TOS)"
-# )
-
-# Python expressions can be straight-line, operator like-basic block code that take
-# items off a stack and push a value onto the stack. In this case, in a linear scan
-# we can basically build up an expression tree.
-# # Note this has to be the last field. Code to set this assumes this.
-# _Instruction.start_offset.__doc__ = (
-#     "If not None, the offset of the first instruction feeding into the operation"
-# )
-
 _OPNAME_WIDTH = 20
 
 
@@ -254,6 +220,7 @@ class Instruction(_Instruction):
                             prefix += "TOS = "
                         fields.append("%s%s" % (prefix, instructions[-1].tos_str))
                     pass
+                pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
             op = self.opcode
