@@ -42,10 +42,6 @@ from xdis.version_info import IS_PYPY
 VARIANT = "pypy" if IS_PYPY else None
 
 
-def extended_arg_val(opc, val):
-    """Return the adjusted value of an extended argument operand."""
-    return val << opc.EXTENDED_ARG_SHIFT
-
 def get_docstring(filename: str, line_number: int, doc_str: str) -> str:
     while len(doc_str) < 80:
         next_line = getline(filename, line_number).strip()
@@ -56,7 +52,6 @@ def get_docstring(filename: str, line_number: int, doc_str: str) -> str:
     if len(doc_str) > 80:
         doc_str = doc_str[:-7] + '... """'
     return doc_str + "\n"
->>>>>>> python-3.6-to-3.10
 
 
 def get_jump_val(jump_arg, version):
