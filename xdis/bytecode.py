@@ -46,6 +46,18 @@ def extended_arg_val(opc, val):
     """Return the adjusted value of an extended argument operand."""
     return val << opc.EXTENDED_ARG_SHIFT
 
+def get_docstring(filename: str, line_number: int, doc_str: str) -> str:
+    while len(doc_str) < 80:
+        next_line = getline(filename, line_number).strip()
+        doc_str += "\\n" + next_line
+        if next_line.endswith('"""'):
+            break
+        line_number += 1
+    if len(doc_str) > 80:
+        doc_str = doc_str[:-7] + '... """'
+    return doc_str + "\n"
+>>>>>>> python-3.6-to-3.10
+
 
 def get_jump_val(jump_arg, version):
     return jump_arg * 2 if version[:2] >= (3, 10) else jump_arg
@@ -563,9 +575,13 @@ class Bytecode(object):
             # to make type checking happy. In reality
             # only the show_source is tested at runtime.
             if show_source and filename and line_number:
-                source_text = getline(filename, line_number)
+                source_text = getline(filename, line_number).lstrip()
+                if source_text.startswith('"""'):
+                    source_text = get_docstring(
+                        filename, line_number + 1, source_text.rstrip()
+                    )
                 if source_text:
-                    file.write(" " * 13 + "# " + source_text.lstrip())
+                    file.write(" " * 13 + "# " + source_text)
 
         show_source_text(first_line_number)
 
