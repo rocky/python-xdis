@@ -45,7 +45,8 @@ if IS_PYPY:
 else:
     VARIANT = None
 
-def get_docstring(filename: str, line_number: int, doc_str: str) -> str:
+
+def get_docstring(filename, line_number, doc_str):
     while len(doc_str) < 80:
         next_line = getline(filename, line_number).strip()
         doc_str += "\\n" + next_line
