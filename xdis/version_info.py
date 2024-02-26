@@ -1,5 +1,5 @@
 """
-  Copyright (c) 2020-2023 by Rocky Bernstein
+  Copyright (c) 2020-2024 by Rocky Bernstein
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -16,6 +16,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
+import platform
 import sys
 
 PYTHON3 = sys.version_info >= (3, 0)
@@ -24,6 +25,7 @@ PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
 PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 IS_PYPY = "__pypy__" in sys.builtin_module_names
+IS_GRAAL = "Graal" in platform.python_implementation()
 
 
 def version_tuple_to_str(

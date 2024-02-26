@@ -26,7 +26,7 @@ import xdis.marsh
 import xdis.unmarshal
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 from xdis.magics import (
-    IS_PYPY3,
+    PYPY3_MAGICS,
     PYTHON_MAGIC_INT,
     int2magic,
     magic2int,
@@ -99,7 +99,7 @@ def is_pypy(magic_int, filename):
     # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
     if magic_int in (3413, 3414) and filename.endswith("pypy38.pyc"):
         return True
-    return magic_int in ((62211 + 7, 3180 + 7) + IS_PYPY3)
+    return magic_int in ((62211 + 7, 3180 + 7) + PYPY3_MAGICS)
 
 
 def load_file(filename, out=sys.stdout):
@@ -294,7 +294,7 @@ def load_module_from_file_object(
                 if (
                     (3200 <= magic_int < 20121)
                     and version >= (1, 5)
-                    or magic_int in IS_PYPY3
+                    or magic_int in PYPY3_MAGICS
                 ):
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
