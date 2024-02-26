@@ -336,6 +336,9 @@ add_magic_from_int(3435, "3.10a7")
 add_magic_from_int(3438, "3.10b1")
 add_magic_from_int(3439, "3.10.0rc2")
 
+add_magic_from_int(21280, "3.10.8")
+
+
 add_magic_from_int(3450, "3.11a1a")
 add_magic_from_int(3451, "3.11a1b")
 add_magic_from_int(3452, "3.11a1c")
