@@ -49,7 +49,7 @@ Version 'variants' are also supported, for example:
 import sys
 
 # xdis
-from xdis import IS_PYPY
+from xdis import IS_GRAAL, IS_PYPY
 from xdis.bytecode import Bytecode as _Bytecode, get_optype
 from xdis.cross_dis import (
     code_info as _code_info,
@@ -63,7 +63,9 @@ from xdis.instruction import Instruction as Instruction_xdis
 from xdis.op_imports import get_opcode_module
 
 PYPY = "pypy"
+GRAAL = "Graal"
 VARIANT = PYPY if IS_PYPY else None
+VARIANT = GRAAL if IS_GRAAL else None
 
 
 class _StdApi:
@@ -77,6 +79,7 @@ class _StdApi:
         self.opc = opc = get_opcode_module(python_version, variant)
         self.python_version_tuple = opc.version_tuple
         self.is_pypy = variant == PYPY
+        self.is_graal = variant == GRAAL
         self.hasconst = opc.hasconst
         self.hasname = opc.hasname
         self.opmap = opc.opmap
@@ -217,6 +220,7 @@ class _StdApi:
             timestamp=None,
             out=file,
             is_pypy=self.is_pypy,
+            is_graal=self.is_graal,
         )
 
     def get_instructions(self, x, first_line=None):

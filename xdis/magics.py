@@ -37,7 +37,7 @@ import struct
 import sys
 from typing import Dict
 
-from xdis.version_info import IS_PYPY, version_tuple_to_str
+from xdis.version_info import IS_GRAAL, IS_PYPY, version_tuple_to_str
 
 PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384)
 GRAAL3_MAGICS = (21150, 21280)
@@ -577,12 +577,14 @@ def sysinfo2magic(version_info=sys.version_info) -> bytes:
 
     if IS_PYPY:
         vers_str += "pypy"
+    elif IS_GRAAL:
+        vers_str += "Graal"
     else:
         try:
             import platform
 
             platform_str = platform.python_implementation()
-            if platform in ("Jython", "Pyston", "GraalVM"):
+            if platform_str in ("Jython", "Pyston", "GraalVM"):
                 vers_str += platform_str
                 pass
         except ImportError:
