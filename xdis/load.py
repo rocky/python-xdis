@@ -59,7 +59,7 @@ def is_python_source(path):
     return True
 
 
-def is_bytecode_extension(path: str):
+def is_bytecode_extension(path):
     return path.endswith(".pyc") or path.endswith(".pyo")
 
 

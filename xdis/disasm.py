@@ -309,7 +309,7 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
 
 
 def disassemble_file(
-    filename: str,
+    filename,
     outstream=sys.stdout,
     asm_format="classic",
     alternate_opmap=None,

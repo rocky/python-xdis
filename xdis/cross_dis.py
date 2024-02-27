@@ -239,9 +239,7 @@ def pretty_flags(flags, is_pypy=False):
     return "%s (%s)" % (result, " | ".join(names))
 
 
-def format_code_info(
-    co, version_tuple: tuple, name=None, is_pypy=False, is_graal=False
-):
+def format_code_info(co, version_tuple, name=None, is_pypy=False, is_graal=False):
     if not name:
         name = co.co_name
     lines = []

@@ -25,7 +25,10 @@ PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
 PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 IS_PYPY = "__pypy__" in sys.builtin_module_names
-IS_GRAAL = "Graal" in platform.python_implementation()
+if hasattr(platform, "python_implementation"):
+    IS_GRAAL = "Graal" in platform.python_implementation()
+else:
+    IS_GRAAL = False
 
 
 def version_tuple_to_str(

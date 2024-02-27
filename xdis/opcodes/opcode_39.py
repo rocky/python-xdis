@@ -117,7 +117,8 @@ opcode_arg_fmt.update(
 )
 
 opcode_extended_fmt = opcode_extended_fmt39 = copy(opcode_extended_fmt38)
-opcode_extended_fmt.update({
+opcode_extended_fmt.update(
+    {
         "CONTAINS_OP": extended_format_CONTAINS_OP,
         "IS_OP": extended_format_IS_OP,
     },
