@@ -1,4 +1,5 @@
-# Copyright (c) 2016-2018, 2020-2021, 2023 by Rocky Bernstein
+# Copyright (c) 2016-2018, 2020-2021, 2023-2024
+# by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -34,7 +35,7 @@ from xdis.codetype import codeType2Portable
 from xdis.codetype.base import iscode
 from xdis.cross_dis import format_code_info, format_exception_table
 from xdis.load import check_object_path, load_module
-from xdis.magics import PYTHON_MAGIC_INT
+from xdis.magics import GRAAL3_MAGICS, PYTHON_MAGIC_INT
 from xdis.op_imports import op_imports, remap_opcodes
 from xdis.version import __version__
 from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
@@ -68,11 +69,14 @@ def show_module_header(
     sip_hash=None,
     header=True,
     show_filename=True,
+    is_graal=False,
 ):
     bytecode_version = ".".join((str(i) for i in version_tuple))
     real_out = out or sys.stdout
     if is_pypy:
         co_pypy_str = "PyPy "
+    elif is_graal:
+        co_pypy_str = "Graal "
     else:
         co_pypy_str = ""
 
@@ -129,6 +133,7 @@ def disco(
     asm_format="classic",
     alternate_opmap=None,
     show_source=False,
+    is_graal=False,
 ):
     """
     disassembles and deparses a given code block 'co'
@@ -147,6 +152,7 @@ def disco(
         sip_hash,
         header=True,
         show_filename=False,
+        is_graal=is_graal,
     )
 
     # store final output stream for case of error
@@ -158,6 +164,9 @@ def disco(
 
     opc = get_opcode(version_tuple, is_pypy, alternate_opmap)
 
+    if is_graal:
+        real_out.write("# We can't decode Graal bytecode")
+        return
     if asm_format == "xasm":
         disco_loop_asm_format(opc, version_tuple, co, real_out, {}, set([]))
     else:
@@ -285,7 +294,7 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
 
 
 def disassemble_file(
-    filename,
+    filename: str,
     outstream=sys.stdout,
     asm_format="classic",
     alternate_opmap=None,
@@ -329,6 +338,12 @@ def disassemble_file(
     else:
         filename = pyc_filename
 
+    is_graal = False
+    if magic_int in GRAAL3_MAGICS and asm_format != "header":
+        sys.stdout.write("We can only disassemble Graal module header information\n")
+        asm_format = "header"
+        is_graal = True
+
     if asm_format == "header":
         show_module_header(
             version_tuple,
@@ -341,6 +356,7 @@ def disassemble_file(
             sip_hash,
             header=True,
             show_filename=True,
+            is_graal=is_graal,
         )
     else:
         disco(

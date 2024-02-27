@@ -1,4 +1,5 @@
 import os
+import platform
 import re
 
 import pytest
@@ -60,6 +61,8 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
         function_to_test(in_file, resout)
         expected = "".join(open(filename_expected, "r").readlines())
         got_lines = resout.getvalue().split("\n")
+        if platform.python_implementation() in ("GraalVM", "PyPy"):
+            got_lines = got_lines[1:]
         got_lines = [
             re.sub(" at 0x[0-9a-f]+", " at 0xdeadbeef0000", line) for line in got_lines
         ]

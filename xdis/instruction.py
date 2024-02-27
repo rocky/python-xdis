@@ -91,7 +91,7 @@ class Instruction(NamedTuple):
     # Numeric operand value if operation has an operand, otherwise None.
     # This operand value is an index into one of the lists of a code type.
     # The exact table indexed depends on optype.
-    arg: int
+    arg: Optional[int]
 
     # Resolved operand value (if known). This is obtained indexing the appropriate list
     # indicated by optype using value arg.
@@ -213,7 +213,7 @@ class Instruction(NamedTuple):
                 hex_bytecode += " " * (2 * 3)
             if self.inst_size == 2:
                 # Must be Python 3.6 or later
-                if self.has_arg:
+                if self.has_arg and self.arg is not None:
                     hex_bytecode += " %02x" % (self.arg % 256)
                 else:
                     hex_bytecode += " 00"
