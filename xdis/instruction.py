@@ -139,7 +139,7 @@ class Instruction(_Instruction):
                 hex_bytecode += " " * (2 * 3)
             if self.inst_size == 2:
                 # Must be Python 3.6 or later
-                if self.has_arg:
+                if self.has_arg and self.arg is not None:
                     hex_bytecode += " %02x" % (self.arg % 256)
                 else:
                     hex_bytecode += " 00"

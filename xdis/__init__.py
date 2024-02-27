@@ -132,6 +132,7 @@ from xdis.util import (
 # This ensures __version__ will appear in pydoc
 from xdis.version import __version__  # noqa
 from xdis.version_info import (
+    IS_GRAAL,
     IS_PYPY,
     PYTHON3,
     PYTHON_VERSION_STR,
@@ -264,6 +265,7 @@ __all__ = [
     "code2num",
     "co_flags_is_async",
     # version_info
+    "IS_GRAAL",
     "IS_PYPY",
     "PYTHON3",
     "PYTHON_VERSION_STR",
