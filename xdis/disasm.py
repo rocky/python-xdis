@@ -338,9 +338,11 @@ def disassemble_file(
     else:
         filename = pyc_filename
 
+    is_graal = False
     if magic_int in GRAAL3_MAGICS and asm_format != "header":
         sys.stdout.write("We can only disassemble Graal module header information\n")
         asm_format = "header"
+        is_graal = True
 
     if asm_format == "header":
         show_module_header(
@@ -354,6 +356,7 @@ def disassemble_file(
             sip_hash,
             header=True,
             show_filename=True,
+            is_graal=is_graal,
         )
     else:
         disco(
