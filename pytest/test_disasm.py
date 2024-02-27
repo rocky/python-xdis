@@ -83,7 +83,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
         #    Python 3.10.0 (default, Oct  4 2021, 23:36:04) [GCC 9.3.0]
         skip_lines = 4 if PYTHON_VERSION_TRIPLE >= (3, 10) else 5
         if IS_PYPY:
-            if PYTHON_VERSION_TRIPLE[:2] in ((3, 6), (3, 7), (3, 8), (3, 9)):
+            if (3, 5) <= PYTHON_VERSION_TRIPLE[:2] <= (3, 9):
                 # PyPy also adds a timestamp line
                 skip_lines -= 1
 
