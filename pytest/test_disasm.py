@@ -4,7 +4,7 @@ import re
 
 import pytest
 from xdis import disassemble_file
-from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
+from xdis.version_info import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON3:
     from io import StringIO
@@ -82,6 +82,11 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
         # In Python 3.10 they are a single line, e.g:
         #    Python 3.10.0 (default, Oct  4 2021, 23:36:04) [GCC 9.3.0]
         skip_lines = 4 if PYTHON_VERSION_TRIPLE >= (3, 10) else 5
+        if IS_PYPY:
+            if (3, 5) <= PYTHON_VERSION_TRIPLE[:2] <= (3, 9):
+                # PyPy also adds a timestamp line
+                skip_lines -= 1
+
         got = "\n".join(got_lines[skip_lines:])
 
         if "XDIS_DONT_WRITE_DOT_GOT_FILES" not in os.environ:
