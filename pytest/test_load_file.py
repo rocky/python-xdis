@@ -40,7 +40,7 @@ def test_load_file():
 
     # FIXME: put in xdis code somewhere
     if IS_GRAAL:
-        CodeTypeUnionFields = [
+        fields = [
             "co_consts",
             "co_code",
             "co_names",
@@ -54,8 +54,10 @@ def test_load_file():
             "co_lnotab",
             "co_exceptiontable",
         ]
+    else:
+        fields = CodeTypeUnionFields
 
-    for field in CodeTypeUnionFields:
+    for field in fields:
         if hasattr(co_file, field):
             if field == "co_code" and (pypy or IS_PYPY):
                 continue
