@@ -32,6 +32,7 @@ from struct import unpack
 
 from xdis.codetype import to_portable
 from xdis.codetype.code13 import Bytes
+from xdis.magics import GRAAL3_MAGICS, magic_int2tuple
 from xdis.magics import magic_int2tuple
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
@@ -478,6 +479,34 @@ class _VersionIndependentUnmarshaller:
         co_code = self.r_object(bytes_for_s=True)
 
         # FIXME: Check/verify that is true:
+        bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (version_tuple > (3, 0))
+        if self.magic_int in GRAAL3_MAGICS:
+            co_consts = tuple()
+            co_names = tuple()
+            code = to_portable(
+                co_argcount=0,
+                co_posonlyargcount=0,
+                co_kwonlyargcount=0,
+                co_nlocals=0,
+                co_stacksize=0,
+                co_flags=0,
+                co_code=co_code,
+                co_consts=tuple(),
+                co_names=tuple(),
+                co_varnames=tuple(),
+                co_filename="??",
+                co_name="??",
+                co_qualname="??",
+                co_firstlineno=0,
+                co_lnotab="",
+                co_freevars=tuple(),
+                co_cellvars=tuple(),
+                co_exceptiontable=None,
+                version_triple=version_tuple,
+            )
+            ret = code
+            return self.r_ref_insert(ret, i)
+
         co_consts = self.r_object(bytes_for_s=False)
         co_names = self.r_object(bytes_for_s=False)
 

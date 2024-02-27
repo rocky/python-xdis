@@ -36,9 +36,10 @@ import re
 import struct
 import sys
 
-from xdis.version_info import IS_PYPY, version_tuple_to_str
+from xdis.version_info import IS_GRAAL, IS_PYPY, version_tuple_to_str
 
-IS_PYPY3 = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384)
+PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384)
+GRAAL3_MAGICS = (21150, 21280)
 
 
 def add_magic_from_int(magic_int, version):
@@ -400,6 +401,10 @@ add_magic_from_int(384, "3.10pypy")  # PyPy 3.10.12
 # NOTE: This is JVM bytecode not Python bytecode
 add_magic_from_int(21150, "3.8.5Graal")
 
+# Graal Java 21.0.2
+add_magic_from_int(21280, "3.10.8Graal")
+
+
 add_magic_from_int(1011, "2.7.1b3Jython")  # jython
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
@@ -460,6 +465,7 @@ add_canonic_versions("3.8a1", "3.8.0beta2")
 add_canonic_versions("2.7.10pypy 2.7.12pypy 2.7.13pypy 2.7.18pypy", "2.7pypy")
 add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
 add_canonic_versions("3.8.5Graal", "3.8.5Graal")
+add_canonic_versions("3.8.10Graal", "3.8.0rc1+")
 
 add_canonic_versions("3.2.5pypy", "3.2pypy")
 add_canonic_versions("3.3.5pypy", "3.3pypy")
@@ -570,6 +576,8 @@ def sysinfo2magic(version_info=sys.version_info):
 
     if IS_PYPY:
         vers_str += "pypy"
+    elif IS_GRAAL:
+        vers_str += "Graal"
     else:
         try:
             import platform

@@ -23,6 +23,7 @@ allow running on Python 2.
 import inspect
 import sys
 from linecache import getline
+from types import CodeType
 
 from StringIO import StringIO
 
@@ -251,7 +252,6 @@ def get_instructions_bytes(
                 labels.append(target)
 
     # label_maps = get_jump_target_maps(bytecode, opc)
-    extended_arg = 0
 
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
     # See below FIXME
@@ -554,12 +554,13 @@ class Bytecode(object):
                 raise RuntimeError("no last traceback to disassemble")
             while tb.tb_next:
                 tb = tb.tb_next
+        assert tb is not None
         self.disassemble_bytes(tb.tb_frame.f_code, tb.tb_lasti)
 
     def disassemble_bytes(
         self,
         bytecode,
-        lasti=-1,
+        lasti: int = -1,
         varnames=None,
         names=None,
         constants=None,
@@ -752,8 +753,8 @@ if __name__ == "__main__":
     import xdis.opcodes.opcode_36 as opcode_36
     from xdis.version_info import PYTHON3
 
-    consts = (None, 2)
-    varnames = "a"
+    my_constants = (None, 2)
+    var_names = "a"
     instructions = [
         ("LOAD_CONST", 2),
         ("STORE_FAST", "a"),
@@ -770,9 +771,9 @@ if __name__ == "__main__":
     else:
         print(f.func_code.co_code)
 
-    bc = list2bytecode(instructions, opcode_27, varnames, consts)
+    bc = list2bytecode(instructions, opcode_27, var_names, my_constants)
     print(bc)
-    bc = list2bytecode(instructions, opcode_34, varnames, consts)
+    bc = list2bytecode(instructions, opcode_34, var_names, my_constants)
     print(bc)
-    bc = list2bytecode(instructions, opcode_36, varnames, consts)
+    bc = list2bytecode(instructions, opcode_36, var_names, my_constants)
     print(bc)

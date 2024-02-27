@@ -10,7 +10,7 @@ import pytest
 
 # local
 import xdis.std as dis
-from xdis import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
+from xdis import IS_GRAAL, IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON_VERSION_TRIPLE >= (3, 2):
     if pytest.__version__ >= "3.2.0":
@@ -74,7 +74,7 @@ else:
     expected_dis = EXPECTED_DIS_36
 
 
-if PYTHON_VERSION_TRIPLE >= (3, 2):
+if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
 
     @pytest.fixture
     def bytecode_fixture():

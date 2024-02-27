@@ -1,6 +1,7 @@
 """
 Unit test for xdis.magics
 """
+from xdis import IS_GRAAL
 from xdis.magics import MAGIC, sysinfo2magic
 
 
