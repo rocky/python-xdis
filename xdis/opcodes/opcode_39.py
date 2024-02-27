@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2019-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -60,18 +60,18 @@ rm_op(loc, "POP_FINALLY",        163)
 
 #          OP NAME               OPCODE  POP PUSH
 #------------------------------------------------
-def_op(loc, 'RERAISE',                 48,   3, 0)
-def_op(loc, 'WITH_EXCEPT_START',       49,   0, 1)
-def_op(loc, 'LOAD_ASSERTION_ERROR',    74,   0, 1)
-def_op(loc, 'LIST_TO_TUPLE',           82,   1, 1)
+def_op(loc, "RERAISE",                 48,   3, 0)
+def_op(loc, "WITH_EXCEPT_START",       49,   0, 1)
+def_op(loc, "LOAD_ASSERTION_ERROR",    74,   0, 1)
+def_op(loc, "LIST_TO_TUPLE",           82,   1, 1)
 
-binary_op(loc, 'IS_OP',               117)
-jabs_op(loc, 'JUMP_IF_NOT_EXC_MATCH', 121,   2, 0)
-binary_op(loc, 'CONTAINS_OP',         118,   2, 1)
-def_op(loc, 'LIST_EXTEND',            162,   2, 1)
-def_op(loc, 'SET_UPDATE',             163,   2, 1)
-def_op(loc, 'DICT_MERGE',             164,   2, 1)
-def_op(loc, 'DICT_UPDATE',            165,   2, 1)
+binary_op(loc, "IS_OP",               117)
+jabs_op(loc, "JUMP_IF_NOT_EXC_MATCH", 121,   2, 0)
+binary_op(loc, "CONTAINS_OP",         118,   2, 1)
+def_op(loc, "LIST_EXTEND",            162,   2, 1)
+def_op(loc, "SET_UPDATE",             163,   2, 1)
+def_op(loc, "DICT_MERGE",             164,   2, 1)
+def_op(loc, "DICT_UPDATE",            165,   2, 1)
 
 # fmt: on
 

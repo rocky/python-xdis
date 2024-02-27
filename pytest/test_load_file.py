@@ -2,7 +2,7 @@ import os
 import os.path as osp
 
 import pytest
-from xdis import IS_PYPY
+from xdis import IS_GRAAL, IS_PYPY
 from xdis.codetype import CodeTypeUnionFields
 from xdis.load import check_object_path, load_file, load_module
 
@@ -38,7 +38,26 @@ def test_load_file():
         assert source_size is None, source_size
         assert sip_hash is None
 
-    for field in CodeTypeUnionFields:
+    # FIXME: put in xdis code somewhere
+    if IS_GRAAL:
+        fields = [
+            "co_consts",
+            "co_code",
+            "co_names",
+            "co_varnames",
+            "co_freevars",
+            "co_cellvars",
+            "co_filename",
+            "co_name",
+            "co_qualname",
+            "co_firstlineno",
+            "co_lnotab",
+            "co_exceptiontable",
+        ]
+    else:
+        fields = CodeTypeUnionFields
+
+    for field in fields:
         if hasattr(co_file, field):
             if field == "co_code" and (pypy or IS_PYPY):
                 continue

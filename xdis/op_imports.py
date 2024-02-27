@@ -206,7 +206,7 @@ def get_opcode_module(version_info=None, variant=None):
             # Python may be too old, e.g. < 2.6 or implementation may
             # just not have platform
             pass
-    else:
+    elif variant != "Graal":
         vers_str += variant
 
     return op_imports[canonic_python_version[vers_str]]

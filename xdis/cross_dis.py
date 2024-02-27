@@ -233,7 +233,9 @@ def pretty_flags(flags, is_pypy=False):
     return "%s (%s)" % (result, " | ".join(names))
 
 
-def format_code_info(co, version_tuple, name=None, is_pypy=False):
+def format_code_info(
+    co, version_tuple: tuple, name=None, is_pypy=False, is_graal=False
+):
     if not name:
         name = co.co_name
     lines = []
@@ -245,20 +247,25 @@ def format_code_info(co, version_tuple, name=None, is_pypy=False):
     # Later versions use "<module>"
     lines.append("# Filename:          %s" % co.co_filename)
 
-    if version_tuple >= (1, 3):
-        lines.append("# Argument count:    %s" % co.co_argcount)
+    if not is_graal:
+        if version_tuple >= (1, 3):
+            lines.append("# Argument count:    %s" % co.co_argcount)
 
-    if version_tuple >= (3, 8) and hasattr(co, "co_posonlyargcount"):
-        lines.append("# Position-only argument count: %s" % co.co_posonlyargcount)
+        if version_tuple >= (3, 8) and hasattr(co, "co_posonlyargcount"):
+            lines.append("# Position-only argument count: %s" % co.co_posonlyargcount)
 
-    if version_tuple >= (3, 0) and hasattr(co, "co_kwonlyargcount"):
-        lines.append("# Keyword-only arguments: %s" % co.co_kwonlyargcount)
+        if version_tuple >= (3, 0) and hasattr(co, "co_kwonlyargcount"):
+            lines.append("# Keyword-only arguments: %s" % co.co_kwonlyargcount)
 
-    pos_argc = co.co_argcount
-    if version_tuple >= (1, 3):
-        lines.append("# Number of locals:  %s" % co.co_nlocals)
-    if version_tuple >= (1, 5):
-        lines.append("# Stack size:        %s" % co.co_stacksize)
+        pos_argc = co.co_argcount
+        if version_tuple >= (1, 3):
+            lines.append("# Number of locals:  %s" % co.co_nlocals)
+        if version_tuple >= (1, 5):
+            lines.append("# Stack size:        %s" % co.co_stacksize)
+            pass
+        pass
+    else:
+        pos_argc = 0
 
     if version_tuple >= (1, 3):
         lines.append(
