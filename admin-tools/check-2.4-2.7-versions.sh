@@ -3,7 +3,6 @@ function finish {
   cd $owd
 }
 owd=$(pwd)
-trap finish EXIT
 
 cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-2.4-2.7-versions ; then
