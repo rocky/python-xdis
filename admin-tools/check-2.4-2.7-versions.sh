@@ -1,7 +1,4 @@
 #!/bin/bash
-function finish {
-  cd $owd
-}
 owd=$(pwd)
 
 cd $(dirname ${BASH_SOURCE[0]})
@@ -23,3 +20,4 @@ for version in $PYVERSIONS; do
     fi
     echo === $version ===
 done
+cd $owd
