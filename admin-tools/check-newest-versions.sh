@@ -1,11 +1,7 @@
 #!/bin/bash
-function finish {
-  cd $owd
-}
 
 # FIXME put some of the below in a common routine
 owd=$(pwd)
-trap finish EXIT
 
 cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-newest-versions ; then
@@ -26,3 +22,4 @@ for version in $PYVERSIONS; do
     fi
     echo === $version ===
 done
+cd $owd
