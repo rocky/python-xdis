@@ -449,14 +449,6 @@ class _VersionIndependentUnmarshaller:
                 co_posonlyargcount = 0
             else:
                 co_posonlyargcount = unpack("<i", self.fp.read(4))[0]
-=======
-        if self.version_tuple >= (3, 8):
-            co_posonlyargcount = (
-                0
-                if self.magic_int in (3400, 3401, 3410, 3411)
-                else unpack("<i", self.fp.read(4))[0]
-            )
->>>>>>> python-3.0-to-3.2
         else:
             co_posonlyargcount = None
 
