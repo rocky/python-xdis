@@ -418,7 +418,7 @@ def next_offset(op, opc, offset):
     return offset + instruction_size(op, opc)
 
 
-class Bytecode(object):
+class Bytecode:
     """Bytecode operations involving a Python code object.
 
     Instantiate this with a function, method, string of code, or a code object
