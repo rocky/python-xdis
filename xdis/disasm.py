@@ -174,13 +174,13 @@ def disco(
     real_out = out or sys.stdout
 
     if co.co_filename and asm_format != "xasm":
-        real_out.write(format_code_info(co, version_tuple) + "\n")
+        real_out.write(format_code_info(co, version_tuple, is_graal=is_graal) + "\n")
         pass
 
     opc = get_opcode(version_tuple, is_pypy, alternate_opmap)
 
     if is_graal:
-        real_out.write("# We can't decode Graal bytecode")
+        real_out.write("# We can't decode Graal bytecode\n")
         return
     if asm_format == "xasm":
         disco_loop_asm_format(opc, version_tuple, co, real_out, {}, set([]))
@@ -355,11 +355,7 @@ def disassemble_file(
     else:
         filename = pyc_filename
 
-    is_graal = False
-    if magic_int in GRAAL3_MAGICS and asm_format != "header":
-        sys.stdout.write("We can only disassemble Graal module header information\n")
-        asm_format = "header"
-        is_graal = True
+    is_graal = magic_int in GRAAL3_MAGICS
 
     if asm_format == "header":
         show_module_header(
@@ -388,6 +384,7 @@ def disassemble_file(
             asm_format=asm_format,
             alternate_opmap=alternate_opmap,
             show_source=show_source,
+            is_graal=is_graal,
         )
     # print co.co_filename
     return (

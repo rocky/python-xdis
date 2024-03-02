@@ -32,7 +32,7 @@ from struct import unpack
 
 from xdis.codetype import to_portable
 from xdis.codetype.code13 import Bytes
-from xdis.magics import GRAAL3_MAGICS, magic_int2tuple
+from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, magic_int2tuple
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 if PYTHON_VERSION_TRIPLE < (2, 4):
@@ -149,6 +149,9 @@ class _VersionIndependentUnmarshaller:
 
         self.internStrings = []
         self.internObjects = []
+        self.version_tuple = tuple()
+        self.is_graal = False
+        self.is_pypy = False
 
     def load(self):
         """
@@ -432,54 +435,65 @@ class _VersionIndependentUnmarshaller:
         # FIXME: Python 1.0 .. 1.3 isn't well known
 
         ret, i = self.r_ref_reserve(None, save_ref)
-        version_tuple = magic_int2tuple(self.magic_int)
+        self.version_tuple = magic_int2tuple(self.magic_int)
 
-        if version_tuple >= (2, 3):
+        if self.version_tuple >= (2, 3):
             co_argcount = unpack("<i", self.fp.read(4))[0]
-        elif version_tuple >= (1, 3):
+        elif self.version_tuple >= (1, 3):
             co_argcount = unpack("<h", self.fp.read(2))[0]
         else:
             co_argcount = 0
 
-        if version_tuple >= (3, 8):
+        if self.version_tuple >= (3, 8):
             if self.magic_int in (3400, 3401, 3410, 3411):
                 co_posonlyargcount = 0
             else:
                 co_posonlyargcount = unpack("<i", self.fp.read(4))[0]
+=======
+        if self.version_tuple >= (3, 8):
+            co_posonlyargcount = (
+                0
+                if self.magic_int in (3400, 3401, 3410, 3411)
+                else unpack("<i", self.fp.read(4))[0]
+            )
+>>>>>>> python-3.0-to-3.2
         else:
             co_posonlyargcount = None
 
-        if version_tuple >= (3, 0):
+        if self.version_tuple >= (3, 0):
             kwonlyargcount = unpack("<i", self.fp.read(4))[0]
         else:
             kwonlyargcount = 0
 
         co_nlocals = 0
-        if version_tuple < (3, 11):
-            if version_tuple >= (2, 3):
+        if self.version_tuple < (3, 11):
+            if self.version_tuple >= (2, 3):
                 co_nlocals = unpack("<i", self.fp.read(4))[0]
-            elif version_tuple >= (1, 3):
+            elif self.version_tuple >= (1, 3):
                 co_nlocals = unpack("<h", self.fp.read(2))[0]
 
-        if version_tuple >= (2, 3):
+        if self.version_tuple >= (2, 3):
             co_stacksize = unpack("<i", self.fp.read(4))[0]
-        elif version_tuple >= (1, 5):
+        elif self.version_tuple >= (1, 5):
             co_stacksize = unpack("<h", self.fp.read(2))[0]
         else:
             co_stacksize = 0
 
-        if version_tuple >= (2, 3):
+        if self.version_tuple >= (2, 3):
             co_flags = unpack("<i", self.fp.read(4))[0]
-        elif version_tuple >= (1, 3):
+        elif self.version_tuple >= (1, 3):
             co_flags = unpack("<h", self.fp.read(2))[0]
         else:
             co_flags = 0
 
         co_code = self.r_object(bytes_for_s=True)
 
+        self.is_graal = self.magic_int in GRAAL3_MAGICS
+        self.is_pypy = self.magic_int in PYPY3_MAGICS
+
         # FIXME: Check/verify that is true:
-        bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (version_tuple > (3, 0))
-        if self.magic_int in GRAAL3_MAGICS:
+        bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (self.version_tuple > (3, 0))
+        if self.is_graal:
             co_consts = tuple()
             co_names = tuple()
             code = to_portable(
@@ -501,7 +515,7 @@ class _VersionIndependentUnmarshaller:
                 co_freevars=tuple(),
                 co_cellvars=tuple(),
                 co_exceptiontable=None,
-                version_triple=version_tuple,
+                version_triple=self.version_tuple,
             )
             ret = code
             return self.r_ref_insert(ret, i)
@@ -513,7 +527,7 @@ class _VersionIndependentUnmarshaller:
         co_freevars = tuple()
         co_cellvars = tuple()
 
-        if version_tuple >= (3, 11):
+        if self.version_tuple >= (3, 11):
             # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
             co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
             co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
@@ -539,12 +553,12 @@ class _VersionIndependentUnmarshaller:
 
         else:
             co_qualname = None
-            if version_tuple >= (1, 3):
+            if self.version_tuple >= (1, 3):
                 co_varnames = self.r_object(bytes_for_s=False)
             else:
                 co_varnames = tuple()
 
-            if version_tuple >= (2, 0):
+            if self.version_tuple >= (2, 0):
                 co_freevars = self.r_object(bytes_for_s=bytes_for_s)
                 co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
 
@@ -552,13 +566,13 @@ class _VersionIndependentUnmarshaller:
             co_name = self.r_object(bytes_for_s=bytes_for_s)
 
         co_exceptiontable = None
-        if version_tuple >= (1, 5):
-            if version_tuple >= (2, 3):
+        if self.version_tuple >= (1, 5):
+            if self.version_tuple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
             else:
                 co_firstlineno = unpack("<h", self.fp.read(2))[0]
 
-            if version_tuple >= (3, 11):
+            if self.version_tuple >= (3, 11):
                 co_linetable = self.r_object(bytes_for_s=bytes_for_s)
                 co_lnotab = (
                     co_linetable  # will be parsed later in opcode.findlinestarts
@@ -591,7 +605,7 @@ class _VersionIndependentUnmarshaller:
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
             co_exceptiontable=co_exceptiontable,
-            version_triple=version_tuple,
+            version_triple=self.version_tuple,
         )
 
         self.code_objects[str(code)] = code
