@@ -36,18 +36,82 @@ from typing import Any, NamedTuple, Optional, Union
 _OPNAME_WIDTH = 20
 
 
+class AssembleFormat(NamedTuple):
+    """
+    A structure to hold the essential information
+    that would be shown in a line of assembly under any
+    formatting option, e.g. extended-bytes, or classic.
+
+    Fields in the order they in which they are defined in constructing an object:
+
+      is_jump_target: True if other code jumps to here,
+                      'loop' if this is a loop beginning, which
+                      in Python can be determined jump to an earlier offset.
+                      Otherwise, False.
+      is_current_instruction: True if we are stopped at this instruction.
+      starts_line: Optional Line started by this opcode (if any). Otherwise None.
+      offset:  Start index of operation within bytecode sequence.
+      opname:  human-readable name for operation.
+      opcode:  numeric code for operation.
+      has_arg:   True if opcode takes an argument. In that case,
+                 ``argepr`` will have that value. False
+                 if this opcode doesn't take an argument. When False,
+                 don't look at ``argval`` or ``argrepr``.
+      arg:     Optional numeric argument to operation (if any). Otherwise, None.
+
+      argrepr: human-readable description of operation argument.
+
+      tos_str:      If not None, a string representation of the top of the stack (TOS).
+                    This is obtained by scanning previous instructions and
+                    using information there and in their ``tos_str`` fields.
+    """
+
+    # True if other code jumps to here, the string "loop" if this is a loop
+    # beginning, which in Python can be determined jump to an earlier
+    # offset.  Otherwise, False.
+    # Note that this is a generalization of Python's "is_jump_target".
+    is_jump_target: Union[bool, str]
+
+    is_current_instruction: bool
+
+    starts_line: Optional[int]
+
+    # Offset of the instruction
+    offset: int
+
+    # Human readable name for operation
+    opname: str
+
+    # Numeric code for operation
+    opcode: int
+
+    # True if instruction has an operand, otherwise False.
+    has_arg: bool
+
+    # Numeric operand value if operation has an operand. Otherwise, None.
+    # This operand value is an index into one of the lists of a code type.
+    # The exact table indexed depends on optype.
+    arg: Optional[int]
+
+    # String representation of argval if argval is not None.
+    argrepr: Optional[str]
+
+    # If not None, a string representation of the top of the stack (TOS)
+    tos_str: Optional[str] = None
+
+
 class Instruction(NamedTuple):
     """Details for a bytecode operation
 
-    Defined fields in the order in which they are defined:
+    Fields in the order they in which they are defined in constructing an object:
 
       opcode:  numeric code for operation.
-      opname:  human-readable name for operation
-      arg:     numeric argument to operation (if any), otherwise None
-      argval:  resolved arg value (if known), otherwise same as arg
-      argrepr: human-readable description of operation argument
+      opname:  human-readable name for operation.
+      arg:     Optional numeric argument to operation (if any). Otherwise, None.
+      argval:  resolved arg value (if known). Otherwise, the same as ``arg``.
+      argrepr: human-readable description of operation argument.
       offset:  Start index of operation within bytecode sequence.
-      starts_line: Line started by this opcode (if any), otherwise None
+      starts_line: Optional Line started by this opcode (if any). Otherwise None.
 
       is_jump_target: True if other code jumps to here,
                       'loop' if this is a loop beginning, which
@@ -58,7 +122,8 @@ class Instruction(NamedTuple):
                  are covered by this instruction. This not implemented yet.
 
       optype:    Opcode classification. One of:
-                    compare, const, free, jabs, jrel, local, name, nargs
+                    "compare", "const", "free", "jabs", "jrel", "local",
+                    "name", or "nargs".
 
       has_arg:   True if opcode takes an argument. In that case,
                  ``argval`` and ``argepr`` will have that value. False
@@ -76,7 +141,7 @@ class Instruction(NamedTuple):
 
       tos_str:      If not None, a string representation of the top of the stack (TOS).
                     This is obtained by scanning previous instructions and
-                    using information there and in their tos_str fields
+                    using information there and in their ``tos_str`` fields.
 
       start_offset: if not None the instruction with the lowest offset that
                     pushes a stack entry that is consume by this opcode
@@ -319,6 +384,28 @@ class Instruction(NamedTuple):
             pass
 
         return " ".join(fields).rstrip()
+
+    def format_to_assembly_line(
+        self,
+        is_current_instruction=False,
+    ) -> AssembleFormat:
+        """
+        Format instruction into a structure that can be easily
+        turned a structure contains the essential information
+        that would be shown as a line in an assembly listing
+        """
+        return AssembleFormat(
+            self.is_jump_target,
+            is_current_instruction,
+            self.starts_line,
+            self.offset,
+            self.opname,
+            self.opcode,
+            self.has_arg,
+            self.arg,
+            self.argrepr,
+            self.tos_str,
+        )
 
     def is_jump(self):
         """
