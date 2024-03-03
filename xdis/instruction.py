@@ -103,20 +103,34 @@ class AssembleFormat(NamedTuple):
 class Instruction(NamedTuple):
     """Details for a bytecode operation
 
-    Fields in the order they in which they are defined in constructing an object:
-
-      opcode:  numeric code for operation.
-      opname:  human-readable name for operation.
-      arg:     Optional numeric argument to operation (if any). Otherwise, None.
-      argval:  resolved arg value (if known). Otherwise, the same as ``arg``.
-      argrepr: human-readable description of operation argument.
-      offset:  Start index of operation within bytecode sequence.
-      starts_line: Optional Line started by this opcode (if any). Otherwise None.
+    The order of the fields below follows roughly how the values might be displayed
+    in an assembly listing.
 
       is_jump_target: True if other code jumps to here,
                       'loop' if this is a loop beginning, which
                       in Python can be determined jump to an earlier offset.
                       Otherwise, False.
+
+      starts_line: Optional Line started by this opcode (if any). Otherwise None.
+
+      offset:  Start index of operation within bytecode sequence.
+
+      opname:  human-readable name for operation.
+      opcode:  numeric code for operation.
+
+      has_arg:   True if opcode takes an argument. In that case,
+                 ``argval`` and ``argepr`` will have that value. False
+                 if this opcode doesn't take an argument. When False,
+                 don't look at ``argval`` or ``argrepr``.
+
+      arg:     Optional numeric argument to operation (if any). Otherwise, None.
+
+      argval:  resolved arg value (if known). Otherwise, the same as ``arg``.
+      argrepr: human-readable description of operation argument.
+
+      tos_str:      If not None, a string representation of the top of the stack (TOS).
+                    This is obtained by scanning previous instructions and
+                    using information there and in their ``tos_str`` fields.
 
       positions: Optional dis.Positions object holding the start and end locations that
                  are covered by this instruction. This not implemented yet.
@@ -124,11 +138,6 @@ class Instruction(NamedTuple):
       optype:    Opcode classification. One of:
                     "compare", "const", "free", "jabs", "jrel", "local",
                     "name", or "nargs".
-
-      has_arg:   True if opcode takes an argument. In that case,
-                 ``argval`` and ``argepr`` will have that value. False
-                 if this opcode doesn't take an argument. When False,
-                 don't look at ``argval`` or ``argrepr``.
 
       inst_size: number of bytes the instruction occupies
 
@@ -138,10 +147,6 @@ class Instruction(NamedTuple):
       fallthrough:  True if the instruction can (not must) fall through to the next
                     instruction. Note conditionals are in this category, but
                     returns, raise, and unconditional jumps are not.
-
-      tos_str:      If not None, a string representation of the top of the stack (TOS).
-                    This is obtained by scanning previous instructions and
-                    using information there and in their ``tos_str`` fields.
 
       start_offset: if not None the instruction with the lowest offset that
                     pushes a stack entry that is consume by this opcode
