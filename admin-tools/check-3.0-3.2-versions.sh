@@ -1,6 +1,6 @@
 #!/bin/bash
 # FIXME put some of the below in a common routine
-owd=$(pwd)
+check_xdis_30_owd=$(pwd)
 
 cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-3.0-3.2-versions ; then
@@ -21,4 +21,4 @@ for version in $PYVERSIONS; do
     fi
     echo === $version ===
 done
-cd $owd
+cd $check_xdis_30_owd
