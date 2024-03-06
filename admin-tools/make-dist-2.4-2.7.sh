@@ -3,9 +3,9 @@ PACKAGE=xdis
 
 # FIXME put some of the below in a common routine
 function finish {
-  cd $owd
+  cd $make_dist_24_owd
 }
-owd=$(pwd)
+make_dist_24_owd=$(pwd)
 trap finish EXIT
 
 cd $(dirname ${BASH_SOURCE[0]})

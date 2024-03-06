@@ -3,11 +3,11 @@ PACKAGE=xdis
 
 # FIXME put some of the below in a common routine
 function finish {
-  cd $owd
+  cd $make_dist_33_owd
 }
 
 cd $(dirname ${BASH_SOURCE[0]})
-owd=$(pwd)
+make_dist_33_owd=$(pwd)
 trap finish EXIT
 
 if ! source ./pyenv-3.3-3.5-versions ; then
