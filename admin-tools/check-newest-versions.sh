@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # FIXME put some of the below in a common routine
-owd=$(pwd)
+xdis_check_newest_owd=$(pwd)
 
 cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-newest-versions ; then
@@ -22,4 +22,4 @@ for version in $PYVERSIONS; do
     fi
     echo === $version ===
 done
-cd $owd
+cd $xdis_check_newest_owd
