@@ -1,6 +1,6 @@
 #!/bin/bash
 
-owd=$(pwd)
+check_xdis_33_owd=$(pwd)
 
 cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-3.3-3.5-versions ; then
@@ -21,4 +21,4 @@ for version in $PYVERSIONS; do
     fi
     echo === $version ===
 done
-cd $owd
+cd $check_xdis_33_owd
