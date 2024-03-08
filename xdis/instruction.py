@@ -392,7 +392,7 @@ class Instruction(NamedTuple):
 
     def format_to_assembly_line(
         self,
-        is_current_instruction=False,
+        current_instruction_line,
     ) -> AssembleFormat:
         """
         Format instruction into a structure that can be easily
@@ -401,7 +401,7 @@ class Instruction(NamedTuple):
         """
         return AssembleFormat(
             self.is_jump_target,
-            is_current_instruction,
+            current_instruction_line == self.starts_line,
             self.starts_line,
             self.offset,
             self.opname,
