@@ -23,7 +23,6 @@ allow running on Python 2.
 import inspect
 import sys
 from linecache import getline
-from types import CodeType
 
 from StringIO import StringIO
 
@@ -401,20 +400,20 @@ def get_instructions_bytes(
             start_offset = None
 
         yield Instruction(
-            op,
-            opname,
-            arg,
-            argval,
-            argrepr,
-            offset,
-            starts_line,
-            is_jump_target,
+            is_jump_target=is_jump_target,
+            starts_line=starts_line,
+            offset=offset,
+            opname=opname,
+            opcode=op,
+            has_arg=has_arg,
+            arg=arg,
+            argval=argval,
+            argrepr=argrepr,
+            tos_str=None,
             positions=None,
             optype=optype,
-            has_arg=has_arg,
             inst_size=inst_size,
             has_extended_arg=extended_arg_count != 0,
-            tos_str=None,
             fallthrough=None,
             start_offset=start_offset,
         )
