@@ -224,7 +224,7 @@ class Instruction(_Instruction):
                     if self.argrepr is None:
                         prefix = ""
                     else:
-                        prefix = "(%s) | " % self.argrepr
+                        prefix = "(%s) ; " % self.argrepr
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "
                     fields.append("%s%s" % (prefix, instructions[-1].tos_str))
