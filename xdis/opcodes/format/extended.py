@@ -238,9 +238,10 @@ def extended_format_unary_op(
 def extended_format_ATTR(opc, instructions: list) -> Optional[Tuple[str, int]]:
     if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
         return (
-            "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr),
+            f"{instructions[0].argrepr}.{instructions[1].argrepr}",
             instructions[1].offset,
         )
+    return None
 
 
 def extended_format_BINARY_ADD(opc, instructions: list) -> Tuple[str, Optional[int]]:
