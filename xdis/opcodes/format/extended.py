@@ -235,12 +235,13 @@ def extended_format_unary_op(
     return "", None
 
 
-def extended_format_ATTR(opc, instructions: list) -> Optional[Tuple[str, int]]:
+def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
     if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
         return (
-            "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr),
+            f"{instructions[0].argrepr}.{instructions[1].argrepr}",
             instructions[1].offset,
         )
+    return "", None
 
 
 def extended_format_BINARY_ADD(opc, instructions: list) -> Tuple[str, Optional[int]]:
@@ -364,7 +365,7 @@ def extended_format_COMPARE_OP(opc, instructions: list) -> Tuple[str, Optional[i
     )
 
 
-def extended_format_CALL_FUNCTION(opc, instructions):
+def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]]:
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -574,7 +575,6 @@ def get_arglist(
 
     """
     arglist = []
-    i = 0
     inst = None
     n = len(instructions) - 1
     while arg_count > 0 and i < n:
