@@ -21,17 +21,7 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.format.basic import (
-    format_CALL_FUNCTION_pos_name_encoded,
-    format_extended_arg,
-    format_RAISE_VARARGS_older,
-)
-from xdis.opcodes.opcode_36 import (
-    extended_format_MAKE_FUNCTION_36,
-    format_MAKE_FUNCTION,
-    opcode_arg_fmt36,
-    opcode_extended_fmt36,
-)
+from xdis.opcodes.opcode_36 import opcode_arg_fmt36, opcode_extended_fmt36
 
 version_tuple = (3, 6)
 python_implementation = "PyPy"
@@ -47,6 +37,7 @@ init_opdata(loc, opcode_36, version_tuple, is_pypy=True)
 # Opcodes removed from 3.6.
 
 # fmt: off
+rm_op(loc,    "CALL_FUNCTION_EX",             142)
 rm_op(loc,    "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 
 # The following were removed from 3.6 but still in Pypy 3.6
