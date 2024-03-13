@@ -299,12 +299,12 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions) -> tuple:
         for i in range(len(keywords)):
             j = -(i + 1)
             param_name = keywords[j]
-            arglist[j] = f"{param_name}={arglist[j]}"
+            arglist[j] = "%s=%s}" % (param_name, arglist[j])
 
         str_arglist = ", ".join(arglist)
         if len(str_arglist) > 30:
             str_arglist = str_arglist[:27] + "..."
-        s = f"{fn_name}({str_arglist})"
+        s = "%s(%s)" % (fn_name, str_arglist)
         return s, start_offset
     return "", None
 

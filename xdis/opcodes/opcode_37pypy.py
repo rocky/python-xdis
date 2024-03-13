@@ -64,12 +64,11 @@ if sys.version_info[:3] >= (3, 6, 1):
 
 # fmt: on
 
-opcode_arg_fmt = opcode_arg_fmt37pypy = {**opcode_arg_fmt37, **opcode_arg_fmt36pypy}
+opcode_arg_fmt = opcode_arg_fmt37pypy = opcode_arg_fmt37.copy()
+opcode_arg_fmt37pypy.update(opcode_arg_fmt36pypy)
 
-opcode_extended_fmt = opcode_extended_fmt37pypy = {
-    **opcode_extended_fmt37,
-    **opcode_extended_fmt36pypy,
-}
+opcode_extended_fmt = opcode_extended_fmt37pypy = opcode_extended_fmt37.copy()
+opcode_extended_fmt37pypy.update(opcode_extended_fmt36pypy)
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

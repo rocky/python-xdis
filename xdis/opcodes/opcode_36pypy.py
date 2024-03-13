@@ -163,10 +163,11 @@ def extended_format_CALL_METHOD_KW(opc, instructions):
 
 
 def extended_format_LOOKUP_METHOD(opc, instructions: list) -> tuple:
-    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
+    instr1 = instructions[1]
+    if instr1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
         return (
-            f"{instructions[1].argrepr}.{instructions[0].argrepr}",
-            instructions[1].offset,
+            "%s.%s" % (instr1.argrepr, instructions[0].argrepr),
+            instr1.offset,
         )
     return "", None
 
@@ -195,13 +196,9 @@ def format_CALL_METHOD_KW(argc, kwarg_count=None):
         return "%d positional + keyword" % (argc)
 
 
-opcode_arg_fmt = opcode_arg_fmt36pypy = {
-    **opcode_arg_fmt36,
-}
+opcode_arg_fmt = opcode_arg_fmt36pypy = opcode_arg_fmt36.copy()
 
-opcode_extended_fmt = opcode_extended_fmt36pypy = {
-    **opcode_extended_fmt36,
-}
+opcode_extended_fmt = opcode_extended_fmt36pypy = opcode_extended_fmt36.copy()
 
 # FIXME remove (fix uncompyle6)
 update_pj3(globals(), loc)
