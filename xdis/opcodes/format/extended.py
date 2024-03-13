@@ -228,7 +228,7 @@ def extended_format_unary_op(opc, instructions, fmt_str: str):
 def extended_format_ATTR(opc, instructions: list) -> tuple:
     if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
         return (
-            f"{instructions[0].argrepr}.{instructions[1].argrepr}",
+            "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr),
             instructions[1].offset,
         )
     return "", None
