@@ -7,7 +7,6 @@ of stack usage and information for formatting instructions.
 """
 
 import sys
-from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
@@ -163,7 +162,7 @@ def extended_format_CALL_METHOD_KW(opc, instructions):
     return s
 
 
-def extended_format_LOOKUP_METHOD(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_LOOKUP_METHOD(opc, instructions: list) -> tuple:
     if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
         return (
             f"{instructions[1].argrepr}.{instructions[0].argrepr}",

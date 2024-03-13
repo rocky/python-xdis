@@ -229,7 +229,7 @@ finalize_opcodes(loc)
 # since they make use of the information there.
 
 
-def extended_format_CALL_FUNCTION36(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_CALL_FUNCTION36(opc, instructions) -> tuple:
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -260,7 +260,7 @@ def extended_format_CALL_FUNCTION36(opc, instructions) -> Tuple[str, Optional[in
     return "", None
 
 
-def extended_format_CALL_FUNCTION_KW(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_CALL_FUNCTION_KW(opc, instructions) -> tuple:
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
