@@ -1,9 +1,26 @@
+# (C) Copyright 2024
+# by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 CPython 3.11 bytecode opcodes
 
 This is like Python 3.11's opcode.py  with some classification
 of stack usage and information for formatting instructions.
 """
+
 
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
@@ -207,7 +224,7 @@ oppop[opmap["RERAISE"]] = 1
 # fmt: on
 
 
-def extended_format_BINARY_OP(opc, instructions):
+def extended_format_BINARY_OP(opc, instructions) -> tuple:
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
@@ -253,7 +270,7 @@ del opcode_extended_fmt311["BINARY_TRUE_DIVIDE"]
 del opcode_extended_fmt311["BINARY_XOR"]
 del opcode_extended_fmt311["CALL_FUNCTION"]
 del opcode_extended_fmt311["CALL_FUNCTION_KW"]
-del opcode_extended_fmt311["CALL_METHOD"]
+# del opcode_extended_fmt311["CALL_METHOD"]
 del opcode_extended_fmt311["INPLACE_ADD"]
 del opcode_extended_fmt311["INPLACE_AND"]
 del opcode_extended_fmt311["INPLACE_FLOOR_DIVIDE"]
