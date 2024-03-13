@@ -402,15 +402,20 @@ def disassemble_file(
 def _test():
     """Simple test program to disassemble a file."""
     argc = len(sys.argv)
-    if argc != 2:
-        if argc == 1 and xdis.PYTHON3:
+    if argc == 1:
+        if xdis.PYTHON3:
             fn = __file__
         else:
-            sys.stderr.write("usage: %s [-|CPython compiled file]\n" % __file__)
+            sys.stderr.write(
+                "usage: %s [-|CPython compiled file [format]]\n" % __file__
+            )
             sys.exit(2)
+    elif argc == 3:
+        fn, asm_format = sys.argv[1:3]
+        disassemble_file(fn, asm_format=asm_format)
     else:
         fn = sys.argv[1]
-    disassemble_file(fn)
+        disassemble_file(fn)
 
 
 if __name__ == "__main__":

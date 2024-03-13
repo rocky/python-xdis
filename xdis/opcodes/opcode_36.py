@@ -1,4 +1,5 @@
-# (C) Copyright 2016-2017, 2019-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2019-2021, 2023-2024
+# by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -230,34 +231,8 @@ finalize_opcodes(loc)
 # since they make use of the information there.
 
 
-def extended_format_CALL_METHOD(opc, instructions):
-    """Inst should be a "LOAD_METHOD" instruction. Looks in `instructions`
-    to see if we can find a method name.  If not we'll return "".
-
-    """
-    # From opcode description: Loads a method named co_names[namei] from the TOS object.
-    # Sometimes the method name is in the stack arg positions back.
-    call_method_inst = instructions[0]
-    assert call_method_inst.opname == "CALL_METHOD"
-    method_pos = call_method_inst.arg + 1
-    assert len(instructions) >= method_pos
-    s = ""
-    for inst in instructions[1:method_pos]:
-        # Make sure we are in the same basic block
-        # and ... ?
-        if inst.opname in ("CALL_METHOD",) or inst.is_jump_target:
-            break
-        pass
-    else:
-        if instructions[method_pos].opname == "LOAD_METHOD":
-            s += "%s: " % instructions[method_pos].argrepr
-            pass
-        pass
-    s += format_CALL_FUNCTION(call_method_inst.arg)
-    return s
-
-
-def extended_format_CALL_FUNCTION36(opc, instructions):
+def extended_format_CALL_FUNCTION36(opc, instructions) -> tuple:
+>>>>>>> python-3.0-to-3.2
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -291,7 +266,7 @@ def extended_format_CALL_FUNCTION36(opc, instructions):
     return "", None
 
 
-def extended_format_CALL_FUNCTION_KW(opc, instructions):
+def extended_format_CALL_FUNCTION_KW(opc, instructions) -> tuple:
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -300,41 +275,44 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions):
     # From opcode description: argc indicates the total number of
     # positional and keyword arguments.  Sometimes the function name
     # is in the stack arg positions back.
-    call_function_inst = instructions[0]
-    assert call_function_inst.opname == "CALL_FUNCTION_KW"
-    function_pos = call_function_inst.arg
-    assert len(instructions) >= function_pos + 1
-    load_const = instructions[1]
-    if load_const.opname == "LOAD_CONST" and isinstance(load_const.argval, tuple):
-        function_pos += len(load_const.argval) + 1
-        s = ""
-        i = -1
-        for i, inst in enumerate(instructions[2:]):
-            if i == function_pos:
-                break
-            if inst.is_jump_target:
-                i += 1
-                break
-            # Make sure we are in the same basic block
-            # and ... ?
-            opcode = inst.opcode
-            if inst.optype in ("nargs", "vargs"):
-                break
-            if inst.optype != "name":
-                function_pos += (oppop[opcode] - oppush[opcode]) + 1
-            if inst.opname in ("CALL_FUNCTION", "CALL_FUNCTION_KW"):
-                break
-            pass
+    # From opcode description: arg_count indicates the total number of
+    # positional and keyword arguments.
 
-        if i == function_pos:
-            if instructions[function_pos].opname in opc.NAME_OPS | opc.CONST_OPS:
-                if instructions[function_pos].opname == "LOAD_ATTR":
-                    s += "."
-                s += "%s() " % instructions[function_pos].argrepr
-                pass
-            pass
-        s += format_CALL_FUNCTION(call_function_inst.arg)
-        return s
+    call_inst = instructions[0]
+    arg_count = call_inst.argval
+    keywords = instructions[1].argval
+    s = ""
+
+    arglist, arg_count, i = get_arglist(instructions, 1, arg_count)
+
+    if arg_count != 0:
+        return "", None
+
+    assert i is not None
+    if i >= len(instructions) - 1:
+        return "", None
+
+    fn_inst = instructions[i + 1]
+    start_offset = instructions[i].start_offset
+    if fn_inst.opcode in opc.operator_set:
+        if instructions[1].opname == "MAKE_FUNCTION" and opc.version_tuple >= (3, 3):
+            arglist[0] = instructions[2].argval
+
+        fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+        # Note, 3.5 and 3.4 and before work slightly different with respect
+        # to placement of keyword values, and order of arguments.
+        arglist.reverse()
+        for i in range(len(keywords)):
+            j = -(i + 1)
+            param_name = keywords[j]
+            arglist[j] = "%s=%s}" % (param_name, arglist[j])
+
+        str_arglist = ", ".join(arglist)
+        if len(str_arglist) > 30:
+            str_arglist = str_arglist[:27] + "..."
+        s = "%s(%s)" % (fn_name, str_arglist)
+        return s, start_offset
+    return "", None
 
 
 opcode_arg_fmt = opcode_arg_fmt36 = copy(opcode_arg_fmt35)
@@ -357,7 +335,6 @@ opcode_extended_fmt36.update(
     {
         "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
         # "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
-        "CALL_METHOD": extended_format_CALL_METHOD,
         "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_36,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
         "STORE_ATTR": extended_format_ATTR,

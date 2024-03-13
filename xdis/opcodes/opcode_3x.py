@@ -1,4 +1,5 @@
-# (C) Copyright 2017-2018, 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2017-2018, 2020-2021, 2023-2024
+# by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -222,7 +223,7 @@ EXTENDED_ARG = 144
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 
-def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
+def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> tuple:
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
     """
@@ -239,7 +240,7 @@ def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
         s += "make_function(%s)" % short_code_repr(name_inst.argval)
         return s, start_offset
     s += format_MAKE_FUNCTION_30_35(inst.argval)
-    return s
+    return s, start_offset
 
 
 def format_MAKE_FUNCTION_30_35(argc):
