@@ -225,7 +225,7 @@ oppop[opmap["RERAISE"]] = 1
 # fmt: on
 
 
-def extended_format_BINARY_OP(opc, instructions) -> tuple:
+def extended_format_BINARY_OP(opc, instructions):
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"

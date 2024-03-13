@@ -223,7 +223,7 @@ EXTENDED_ARG = 144
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
 
-def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> tuple:
+def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
     """

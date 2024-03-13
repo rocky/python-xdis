@@ -231,8 +231,7 @@ finalize_opcodes(loc)
 # since they make use of the information there.
 
 
-def extended_format_CALL_FUNCTION36(opc, instructions) -> tuple:
->>>>>>> python-3.0-to-3.2
+def extended_format_CALL_FUNCTION36(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -266,7 +265,7 @@ def extended_format_CALL_FUNCTION36(opc, instructions) -> tuple:
     return "", None
 
 
-def extended_format_CALL_FUNCTION_KW(opc, instructions) -> tuple:
+def extended_format_CALL_FUNCTION_KW(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -298,7 +297,11 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions) -> tuple:
         if instructions[1].opname == "MAKE_FUNCTION" and opc.version_tuple >= (3, 3):
             arglist[0] = instructions[2].argval
 
-        fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+        if fn_inst.tos_str:
+            fn_name = fn_inst.tos_str
+        else:
+            fn_name = fn_inst.argrepr
+
         # Note, 3.5 and 3.4 and before work slightly different with respect
         # to placement of keyword values, and order of arguments.
         arglist.reverse()

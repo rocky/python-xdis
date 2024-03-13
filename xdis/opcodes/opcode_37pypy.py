@@ -70,7 +70,6 @@ opcode_arg_fmt37pypy.update(opcode_arg_fmt36pypy)
 
 opcode_extended_fmt = opcode_extended_fmt37pypy = opcode_extended_fmt37.copy()
 opcode_extended_fmt37pypy.update(opcode_extended_fmt36pypy)
->>>>>>> python-3.0-to-3.2
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

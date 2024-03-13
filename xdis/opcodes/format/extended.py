@@ -349,7 +349,7 @@ def extended_format_COMPARE_OP(opc, instructions):
     )
 
 
-def extended_format_CALL_FUNCTION(opc, instructions) -> tuple:
+def extended_format_CALL_FUNCTION(opc, instructions):
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.

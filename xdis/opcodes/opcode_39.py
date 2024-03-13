@@ -78,18 +78,17 @@ def_op(loc, "DICT_UPDATE",            165,   2, 1)
 # fmt: on
 
 
-def extended_format_CONTAINS_OP(opc, instructions) -> tuple:
+def extended_format_CONTAINS_OP(opc, instructions):
     instr = instructions[0]
     return extended_format_binary_op(
         opc, instructions, "%%s %s %%s" % format_CONTAINS_OP(instr.arg), instr.offset
     )
 
 
-def extended_format_IS_OP(opc, instructions) -> tuple:
+def extended_format_IS_OP(opc, instructions):
     instr = instructions[0]
     return extended_format_binary_op(
         opc, instructions, "%%s %s %%s" % format_IS_OP(instr.arg), instr.offset
->>>>>>> python-3.0-to-3.2
     )
 
 

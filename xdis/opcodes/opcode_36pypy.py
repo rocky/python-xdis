@@ -162,7 +162,7 @@ def extended_format_CALL_METHOD_KW(opc, instructions):
     return s
 
 
-def extended_format_LOOKUP_METHOD(opc, instructions: list) -> tuple:
+def extended_format_LOOKUP_METHOD(opc, instructions):
     instr1 = instructions[1]
     if instr1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
         return (
