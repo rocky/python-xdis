@@ -20,6 +20,8 @@ This is like Python 3.9's opcode.py with some classification
 of stack usage and information for formatting instructions.
 """
 
+from typing import Optional, Tuple
+
 import xdis.opcodes.opcode_38 as opcode_38
 from xdis.opcodes.base import (
     binary_op,
@@ -76,19 +78,17 @@ def_op(loc, "DICT_UPDATE",            165,   2, 1)
 # fmt: on
 
 
-def extended_format_CONTAINS_OP(opc, instructions) -> str:
+def extended_format_CONTAINS_OP(opc, instructions) -> Tuple[Optional[str], int]:
+    instr = instructions[0]
     return extended_format_binary_op(
-        opc,
-        instructions,
-        f"%s {format_CONTAINS_OP(instructions[0].arg)} %s",
+        opc, instructions, f"%s {format_CONTAINS_OP(instr.arg)} %s", instr.offset
     )
 
 
-def extended_format_IS_OP(opc, instructions) -> str:
+def extended_format_IS_OP(opc, instructions) -> Tuple[Optional[str], int]:
+    instr = instructions[0]
     return extended_format_binary_op(
-        opc,
-        instructions,
-        f"%s {format_IS_OP(instructions[0].arg)} %s",
+        opc, instructions, f"%s {format_IS_OP(instr.arg)} %s", instr.offset
     )
 
 
