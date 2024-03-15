@@ -21,6 +21,11 @@ source $PACKAGE/version.py
 echo $__version__
 
 for pyversion in $PYVERSIONS; do
+    echo --- $pyversion ---
+    if [[ ${pyversion:0:4} == "pypy" ]] ; then
+	echo "$pyversion - PyPy does not get special packaging"
+	continue
+    fi
     if ! pyenv local $pyversion ; then
 	exit $?
     fi

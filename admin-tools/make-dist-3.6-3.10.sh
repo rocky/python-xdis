@@ -19,10 +19,14 @@ fi
 
 cd ..
 source $PACKAGE/version.py
-echo $VERSION
+echo $__version__
 
 for pyversion in $PYVERSIONS; do
     echo --- $pyversion ---
+    if [[ ${pyversion:0:4} == "pypy" ]] ; then
+	echo "$pyversion - PyPy does not get special packaging"
+	continue
+    fi
     if ! pyenv local $pyversion ; then
 	exit $?
     fi
@@ -37,4 +41,10 @@ for pyversion in $PYVERSIONS; do
     echo === $pyversion ===
 done
 
-# python ./setup.py sdist
+python ./setup.py sdist
+
+tarball=dist/${PACKAGE}-${__version__}.tar.gz
+if [[ -f $tarball ]]; then
+    mv -v $tarball dist/${PACKAGE}_36-${__version__}.tar.gz
+fi
+finish
