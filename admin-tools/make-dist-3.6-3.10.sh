@@ -3,11 +3,11 @@ PACKAGE=xdis
 
 # FIXME put some of the below in a common routine
 function finish {
-  cd $owd
+  cd $make_dist_36_owd
 }
 
 cd $(dirname ${BASH_SOURCE[0]})
-owd=$(pwd)
+make_dist_36_owd=$(pwd)
 trap finish EXIT
 
 if ! source ./pyenv-3.6-3.10-versions ; then
@@ -29,10 +29,10 @@ for pyversion in $PYVERSIONS; do
     # pip bdist_egg create too-general wheels. So
     # we narrow that by moving the generated wheel.
 
-    # Pick out first two number of version, e.g. 3.5.1 -> 35
+    # Pick out first two numbers of version, e.g. 3.5.1 -> 35
     first_two=$(echo $pyversion | cut -d'.' -f 1-2 | sed -e 's/\.//')
     rm -fr build
-    # python setup.py bdist_egg bdist_wheel
+    python setup.py bdist_egg bdist_wheel
     mv -v dist/${PACKAGE}-$VERSION-{py3,py$first_two}-none-any.whl
     echo === $pyversion ===
 done
