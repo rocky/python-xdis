@@ -4,8 +4,10 @@ from xdis.instruction import Instruction
 def get_source_map():
     return
 
+
 def from_op_code(bytecode, bci):
     return Instruction()
+
 
 def compute_if_absent(bci):
     return []
