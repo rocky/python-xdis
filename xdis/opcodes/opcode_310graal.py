@@ -12,13 +12,13 @@ init_opdata(opc, None, None)
 
 
 def def_graal_op(
-    loc: dict,
-    op_name: str,
-    opcode: int,
-    pop: int = -2,
-    push: int = -2,
-    unknown: int = 0,
-    fallthrough: bool = True,
+    loc,
+    op_name,
+    opcode,
+    pop=-2,
+    push=-2,
+    unknown=0,
+    fallthrough=True,
 ):
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
