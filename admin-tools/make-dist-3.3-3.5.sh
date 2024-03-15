@@ -23,13 +23,17 @@ echo $VERSION
 
 for pyversion in $PYVERSIONS; do
     echo --- $pyversion ---
+    if [[ ${pyversion:0:2} == "pypy" ]] ; then
+	echo "$pyversion - PyPy does not get special packaging"
+	continue
+    fi
     if ! pyenv local $pyversion ; then
 	exit $?
     fi
     # pip bdist_egg create too-general wheels. So
     # we narrow that by moving the generated wheel.
 
-    # Pick out first two number of version, e.g. 3.5.1 -> 35
+    # Pick out first two numbers of version, e.g. 3.5.1 -> 35
     first_two=$(echo $pyversion | cut -d'.' -f 1-2 | sed -e 's/\.//')
     rm -fr build
     python setup.py bdist_egg bdist_wheel
@@ -37,4 +41,5 @@ for pyversion in $PYVERSIONS; do
     echo === $pyversion ===
 done
 
-python ./setup.py sdist
+# python ./setup.py sdist
+finish
