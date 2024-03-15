@@ -1,3 +1,33 @@
+6.1.0 2024-03-15
+=================
+
+Lots of changes major changes. API has changed.
+
+We now support many disassembly options:
+  * classic:  disasm-like output
+  * bytes: disasm-like output with bytecode
+  * extended: simple interpretation of previous sequence of instructions
+  * extended-bytes: same as above, but with "bytes" bytecode ouptut
+  * header: show header/metadata information only
+
+This is reflected in the `--format` (`-F`) options on `pydisasm`.
+Option `--show-source` (`-S`) gives add the source text line (or part of it) before assembly instructions that implement the line.
+
+Released Python magic numbers have been updated as of this release (up to Python 3.12.2, including PyPy magic numbers.
+
+Some support for the [GraalVM](https://www.graalvm.org/python/)
+implementation of Python started.
+
+Many bugs fixed.
+
+A lot of Linting and coding style modernization.
+
+typing.NameTuple used for Python versions that support this.
+Additional fields "start_offset" and "tos_str" added to instruction.
+
+Elliot Tarbet (2elli) largely provided support for Python 3.11 and 3.12 bytecode
+
+
 6.0.5 2022-12-22
 =================
 
