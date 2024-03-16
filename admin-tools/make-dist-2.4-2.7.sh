@@ -50,3 +50,4 @@ tarball=dist/${PACKAGE}-${__version__}.tar.gz
 if [[ -f $tarball ]]; then
     mv -v $tarball dist/${PACKAGE}_24-${__version__}.tar.gz
 fi
+finish
