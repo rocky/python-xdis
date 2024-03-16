@@ -14,9 +14,7 @@ name = "xdis"
 description = "Python cross-version byte-code library and disassembler"
 dependencies = [
     "click",
-    "pygments",
     "xdis >= 6.0.0, < 6.2.0",
-    "term-background >= 1.0.1",
     "six >= 1.10.0",
 ]
 readme = "README.rst"
