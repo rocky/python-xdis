@@ -35,6 +35,7 @@ else:
         ["xasm", "bytes", "classic", "extended", "extended-bytes", "header"],
         **case_sensitive
     ),
+    help="Select disassembly style",
 )
 @click.option(
     "--show-source/--no-show-source",
