@@ -55,7 +55,7 @@ def get_opcode(version_tuple, is_pypy, alternate_opmap=None):
         pypy_str = " for pypy"
     else:
         pypy_str = ""
-    raise TypeError("%s is not a Python version%s I know about" % (lookup, pypy_str))
+    raise TypeError(f"{lookup} is not a Python version{pypy_str} I know about")
 
 
 def show_module_header(
@@ -265,7 +265,7 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
     co.co_consts = new_consts
 
     m = re.match("^<(.+)>$", co.co_name)
-    if m or co_name in all_fns:
+    if m is not None or co_name in all_fns:
         if co_name in all_fns:
             basename = co_name
         else:
