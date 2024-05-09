@@ -224,10 +224,12 @@ def extended_format_SLICE_1(opc, instructions):
     return "", None
 
 
-def extended_format_SLICE_2(opc, instructions: list):
+def extended_format_SLICE_2(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
     if arg_count == 0:
-        arglist = ["" if arg == "None" else arg for arg in arglist]
+        for i, arg in enumerate(arglist):
+            if arg == "None":
+                arglist[i] = ""
         return ":".join(reversed(arglist)), instructions[i].start_offset
 
     if instructions[0].argval == 0:
@@ -236,10 +238,12 @@ def extended_format_SLICE_2(opc, instructions: list):
     return "", None
 
 
-def extended_format_SLICE_3(opc, instructions: list):
+def extended_format_SLICE_3(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
     if arg_count == 0:
-        arglist = ["" if arg == "None" else arg for arg in arglist]
+        for i, arg in enumerate(arglist):
+            if arg == "None":
+                arglist[i] = ""
         return ":".join(reversed(arglist)), instructions[i].start_offset
 
     if instructions[0].argval == 0:
@@ -249,14 +253,13 @@ def extended_format_SLICE_3(opc, instructions: list):
 
 
 update_arg_fmt_base2x = copy(opcode_arg_fmt_base)
->>>>>>> python-3.0-to-3.2
 update_arg_fmt_base2x.update(
     {
         "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
     }
 )
 
-opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()
+opcode_extended_fmt_base2x = copy(opcode_extended_fmt_base)
 opcode_extended_fmt_base2x.update(
     {
         "SLICE+1": extended_format_SLICE_1,
