@@ -145,7 +145,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions) -> Tuple[str, int]:
     return s, start_offset
 
 
-def format_MAKE_FUNCTION(flags) -> str:
+def format_MAKE_FUNCTION(flags: int) -> str:
     if flags == 0:
         return "No arguments"
     pattr = ""

@@ -247,6 +247,8 @@ def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> Tuple[Optional[str
 
 def format_MAKE_FUNCTION_30_35(argc: int) -> str:
     pos_args, name_pair_args, annotate_args = parse_fn_counts_30_35(argc)
+    if (pos_args, name_pair_args, annotate_args) == (0, 0, 0):
+        return "No arguments"
 
     s = "%d positional, %d keyword only, %d annotated" % (
         pos_args,

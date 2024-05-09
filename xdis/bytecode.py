@@ -15,9 +15,10 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """
-Python bytecode and instruction classes
-Extracted from Python 3 "dis" module but generalized to
-allow running on Python 2.
+Python bytecode and instruction classes Extracted from Python 3
+"dis" module but generalized to allow running on multiple code types
+including those from Python 1.x and 2.x.
+
 """
 
 import collections

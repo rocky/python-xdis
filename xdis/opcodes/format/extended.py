@@ -331,8 +331,9 @@ def extended_format_BUILD_SET(opc, instructions: list) -> Tuple[str, Optional[in
 
 def extended_format_BUILD_SLICE(opc, instructions: list) -> Tuple[str, Optional[int]]:
     argc = instructions[0].argval
+
     assert argc in (2, 3)
-    arglist, arg_count, i = get_arglist(instructions, 1, argc)
+    arglist, arg_count, i = get_arglist(instructions, 0, argc)
     if arg_count == 0:
         arglist = ["" if arg == "None" else arg for arg in arglist]
         return ":".join(reversed(arglist)), instructions[i].start_offset
@@ -664,7 +665,7 @@ def skip_cache(instructions: list, i: int) -> int:
     such an instruction.
     """
     n = len(instructions)
-    while instructions[i].opname == "CACHE" and i < n:
+    while i < n and instructions[i].opname == "CACHE":
         i += 1
     return i
 
