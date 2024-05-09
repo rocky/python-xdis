@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -54,7 +54,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 code.co_filename,
                 code.co_name,
                 code.co_firstlineno,
-                code.co_lnotab,
+                code.co_lnotab,  # noqa
                 code.co_freevars,
                 code.co_cellvars,
             )

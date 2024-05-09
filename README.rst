@@ -21,23 +21,24 @@ bytecodes from different versions of Python. The command-line routine
 disassembly conventions in a variety of user-specified formats.  Some
 of these formats like `extended` and `extended-format` are the most
 advanced of any Python disassembler I know of because they can show
-expression-tree on operators. See the [Disasembler
-Example][#disasembler-example] below.
+expression-tree on operators. See the [Disassembler
+Example][#disassembler-example] below.
 
 Also, if you need to modify and write bytecode, the routines here can
 be of help. There are routines to pack and unpack the read-only tuples
-in Python's Code type. For interoperability between Python 2 and 3 we
-provide our own versions of the Code type, and we provide routines to
-reduce the tedium in writing a bytecode file.
+in Python's Code type. For interoperability between the changes over
+the years to Python CodeType, provide our own versions of the Code
+Type to allow interoperability, and we provide routines to reduce the
+tedium in writing a bytecode file.
 
 This package also has an extensive knowledge of Python bytecode magic
-numbers, including Pypy and others, and how to translate from
+numbers, including PyPy and others, and how to translate from
 ``sys.sys_info`` major, minor, and release numbers to the corresponding
 magic value.
 
-So if you want to write a cross-version assembler, or a
-bytecode-level optimizer this package may also be useful. In addition
-to the kinds of instruction categorization that ``dis``` offers, we have
+So if you want to write a cross-version assembler, bytecode-level
+analyzer, or optimizer this package may also be useful. In addition to
+the kinds of instruction categorization that ``dis``` offers, we have
 additional categories for things that would be useful in such a
 bytecode assembler, optimizer, or decompiler.
 

@@ -280,7 +280,7 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
     co.co_consts = new_consts
 
     m = re.match("^<(.+)>$", co.co_name)
-    if m or co_name in all_fns:
+    if m is not None or co_name in all_fns:
         if co_name in all_fns:
             basename = co_name
         else:

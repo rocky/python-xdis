@@ -311,8 +311,9 @@ def extended_format_BUILD_SET(opc, instructions):
 
 def extended_format_BUILD_SLICE(opc, instructions):
     argc = instructions[0].argval
+
     assert argc in (2, 3)
-    arglist, arg_count, i = get_arglist(instructions, 1, argc)
+    arglist, arg_count, i = get_arglist(instructions, 0, argc)
     if arg_count == 0:
         result = []
         for arg in arglist:
@@ -638,7 +639,7 @@ def skip_cache(instructions, i):
     such an instruction.
     """
     n = len(instructions)
-    while instructions[i].opname == "CACHE" and i < n:
+    while i < n and instructions[i].opname == "CACHE":
         i += 1
     return i
 

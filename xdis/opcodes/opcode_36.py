@@ -147,7 +147,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions):
 
 def format_MAKE_FUNCTION(flags):
     if flags == 0:
-        return "Neither defaults, keyword-only args, annotations, nor closures"
+        return "No arguments"
     pattr = ""
     for flag in MAKE_FUNCTION_FLAGS:
         bit = flags & 1

@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020-2023 by Rocky Bernstein
+# (C) Copyright 2018, 2020-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.format.basic import format_MAKE_FUNCTION_10_27, opcode_arg_fmt_base
-from xdis.opcodes.format.extended import opcode_extended_fmt_base
+from xdis.opcodes.format.extended import get_arglist, opcode_extended_fmt_base
 
 loc = locals()
 init_opdata(loc, None, None)
@@ -213,10 +213,54 @@ def_op(loc, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
 
 
+def extended_format_SLICE_1(opc, instructions):
+    arglist, arg_count, i = get_arglist(instructions, 0, 1)
+    if arg_count == 0:
+        return ":%s" % arglist[0], instructions[0].start_offset
+
+    if instructions[0].argval == 0:
+        # Degenerate case
+        return "set()", instructions[0].start_offset
+    return "", None
+
+
+def extended_format_SLICE_2(opc, instructions: list):
+    arglist, arg_count, i = get_arglist(instructions, 0, 2)
+    if arg_count == 0:
+        arglist = ["" if arg == "None" else arg for arg in arglist]
+        return ":".join(reversed(arglist)), instructions[i].start_offset
+
+    if instructions[0].argval == 0:
+        # Degenerate case
+        return "set()", instructions[0].start_offset
+    return "", None
+
+
+def extended_format_SLICE_3(opc, instructions: list):
+    arglist, arg_count, i = get_arglist(instructions, 0, 3)
+    if arg_count == 0:
+        arglist = ["" if arg == "None" else arg for arg in arglist]
+        return ":".join(reversed(arglist)), instructions[i].start_offset
+
+    if instructions[0].argval == 0:
+        # Degenerate case
+        return "set()", instructions[0].start_offset
+    return "", None
+
+
 update_arg_fmt_base2x = copy(opcode_arg_fmt_base)
+>>>>>>> python-3.0-to-3.2
 update_arg_fmt_base2x.update(
     {
         "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
     }
 )
+
 opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()
+opcode_extended_fmt_base2x.update(
+    {
+        "SLICE+1": extended_format_SLICE_1,
+        "SLICE+2": extended_format_SLICE_2,
+        "SLICE+3": extended_format_SLICE_3,
+    },
+)
