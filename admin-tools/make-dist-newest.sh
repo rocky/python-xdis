@@ -3,11 +3,11 @@ PACKAGE=xdis
 
 # FIXME put some of the below in a common routine
 function finish {
-  cd $owd
+  cd $make_dist_xdis_newest_owd
 }
 
 cd $(dirname ${BASH_SOURCE[0]})
-owd=$(pwd)
+make_dist_xdis_newest_owd=$(pwd)
 trap finish EXIT
 
 if ! source ./pyenv-newest-versions ; then
@@ -50,3 +50,4 @@ for pyversion in $PYVERSIONS; do
 done
 
 python ./setup.py sdist
+finish
