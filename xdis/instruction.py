@@ -364,6 +364,8 @@ class Instruction(NamedTuple):
                             prefix += "TOS = "
                         fields.append(f"{prefix}{instructions[-1].tos_str}")
                     pass
+                else:
+                    fields.append(self.argrepr)
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
