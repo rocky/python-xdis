@@ -205,8 +205,14 @@ class Instruction(_Instruction):
                         new_instruction[-1] = start_offset
                         del instructions[-1]
                         instructions.append(Instruction(*new_instruction))
-                        argrepr = new_repr
-                        start_offset = start_offset
+                        argval = instructions[-1].argval
+                        if argval is None:
+                            prefix = ""
+                        else:
+                            prefix = "(%s) | " % argval
+                        if self.opcode in opc.operator_set:
+                            prefix += "TOS = "
+                        fields.append("%s%s" % (prefix, new_repr))
                 pass
             if not argrepr:
                 if asm_format != "asm" or self.opname == "MAKE_FUNCTION":
@@ -230,6 +236,8 @@ class Instruction(_Instruction):
                         if self.opcode in opc.operator_set:
                             prefix += "TOS = "
                         fields.append("%s%s" % (prefix, instructions[-1].tos_str))
+                else:
+                    fields.append(self.argrepr)
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
