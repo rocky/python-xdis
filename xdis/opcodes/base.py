@@ -112,7 +112,7 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["opmap"] = deepcopy(from_mod.opmap)
         loc["opname"] = deepcopy(from_mod.opname)
         for field in fields2copy:
-            loc[field] = getattr(from_mod, field).copy()
+            loc[field] = deepcopy(getattr(from_mod, field))
         pass
     else:
         # FIXME: DRY with above

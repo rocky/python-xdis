@@ -310,18 +310,19 @@ def parse_location_entries(location_bytes, first_line):
         if len(loc_bytes) == 0:
             return []
 
+        result = []
         iter_locs = iter(loc_bytes)
         entry_codes = [next(iter_locs)]
+        result.append(entry_codes)
 
         for b in iter_locs:
             if starts_new_entry(b):
-                yield entry_codes
+                result.append(entry_codes)
                 entry_codes = [b]
             else:
                 entry_codes.append(b)
 
-        if entry_codes:
-            yield entry_codes
+        return result
 
     def iter_varints(varint_bytes):
         if len(varint_bytes) == 0:
@@ -338,14 +339,16 @@ def parse_location_entries(location_bytes, first_line):
         current_value = 0
         shift_amt = 0
 
+        result = []
         for b in iter_varint_bytes:
             current_value += get_value(b) << shift_amt
             if has_next_byte(b):
                 shift_amt += 6
             else:
-                yield current_value
+                result.append(current_value)
                 current_value = 0
                 shift_amt = 0
+        return result
 
     def decode_signed_varint(s):
         return -(s >> 1) if s & 1 else (s >> 1)
