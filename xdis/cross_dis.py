@@ -212,8 +212,11 @@ def show_code(co, version_tuple, file=None, is_pypy=False):
         file.write(code_info(co, version_tuple) + "\n")
 
 
-def op_has_argument(op, opc):
-    return op >= opc.HAVE_ARGUMENT
+def op_has_argument(opcode: int, opc) -> bool:
+    """
+    Return True if `opcode` instruction has an operand.
+    """
+    return opcode >= opc.HAVE_ARGUMENT
 
 
 def pretty_flags(flags, is_pypy=False):

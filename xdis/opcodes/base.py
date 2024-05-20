@@ -316,6 +316,9 @@ def varargs_op(loc, op_name, op_code, pop=-1, push=1):
 
 
 def finalize_opcodes(loc):
+    """
+    Things done to Python codes after all opcode have been defined.
+    """
     # Not sure why, but opcode.py address has opcode.EXTENDED_ARG
     # as well as opmap['EXTENDED_ARG']
     loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]
@@ -369,6 +372,10 @@ def update_pj2(g, loc):
 
 
 def update_sets(loc):
+    """
+    Updates various category sets all opcode have been defined.
+    """
+
     loc["COMPARE_OPS"] = frozenset(loc["hascompare"])
     loc["CONDITION_OPS"] = frozenset(loc["hascondition"])
     loc["CONST_OPS"] = frozenset(loc["hasconst"])
@@ -403,7 +410,6 @@ def update_sets(loc):
     loc["NAME_OPS"] = frozenset(loc["hasname"])
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
     loc["VARGS_OPS"] = frozenset(loc["hasvargs"])
-    loc["STORE_OPS"] = frozenset(loc["hasstore"])
     loc["STORE_OPS"] = frozenset(loc["hasstore"])
 
 
