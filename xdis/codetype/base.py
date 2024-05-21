@@ -56,8 +56,8 @@ class CodeBase:
 
     def __repr__(self):
         msg = (
-            f"<{self.__class__.__name__} code object %s"
-            f" at 0x{hex(id(self))}, file {self.co_filename}>"
+            f"<{self.__class__.__name__} code object {self.co_name}"
+            f" at {hex(id(self))}, file {self.co_filename}>"
         )
 
         if hasattr(self, "co_firstlineno"):

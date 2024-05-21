@@ -131,7 +131,7 @@ def findlinestarts(code, dup_lines=False):
     if hasattr(code, "co_lines"):
         # Taken from 3.10 findlinestarts
         lastline = None
-        for start, end, line in code.co_lines():
+        for start, _, line in code.co_lines():
             if line is not None and line != lastline:
                 lastline = line
                 yield start, line
