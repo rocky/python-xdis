@@ -236,12 +236,15 @@ def extended_format_unary_op(
 
 
 def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+    instr1 = instructions[1]
     if (
-        instructions[1].opcode
-        in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
+        instr1.tos_str
+        or instr1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
     ):
+        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+
         return (
-            f"{instructions[1].argrepr}.{instructions[0].argrepr}",
+            f"{base}.{instructions[0].argrepr}",
             instructions[1].offset,
         )
     return "", None
