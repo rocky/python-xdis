@@ -245,7 +245,7 @@ def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
 
         return (
             f"{base}.{instructions[0].argrepr}",
-            instructions[1].offset,
+            instr1.start_offset,
         )
     return "", None
 
