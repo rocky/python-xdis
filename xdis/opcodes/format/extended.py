@@ -241,7 +241,7 @@ def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
         in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
     ):
         return (
-            f"{instructions[0].argrepr}.{instructions[1].argrepr}",
+            f"{instructions[1].argrepr}.{instructions[0].argrepr}",
             instructions[1].offset,
         )
     return "", None
