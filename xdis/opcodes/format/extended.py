@@ -236,7 +236,10 @@ def extended_format_unary_op(
 
 
 def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
-    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
+    if (
+        instructions[1].opcode
+        in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
+    ):
         return (
             f"{instructions[0].argrepr}.{instructions[1].argrepr}",
             instructions[1].offset,
