@@ -360,7 +360,7 @@ class Instruction(NamedTuple):
                         fields.append(f"({self.argrepr})")
                     else:
                         prefix = "" if self.argrepr is None else f"({self.argrepr}) ; "
-                        if self.opcode in opc.operator_set:
+                        if self.opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
                         fields.append(f"{prefix}{instructions[-1].tos_str}")
                     pass

@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2019-2021, 2023-2024 by Rocky Bernstein
 """
 PYPY 3.3 opcodes
 
@@ -8,16 +8,17 @@ of stack usage.
 
 import xdis.opcodes.opcode_33 as opcode_33
 from xdis.opcodes.base import (
+    call_op,
     finalize_opcodes,
     init_opdata,
     jrel_op,
     name_op,
-    nargs_op,
     update_pj3,
     varargs_op,
 )
 from xdis.opcodes.format.extended import (
     extended_format_ATTR,
+    extended_format_CALL_METHOD,
     extended_format_RETURN_VALUE,
 )
 
@@ -32,7 +33,7 @@ init_opdata(loc, opcode_33, version_tuple, is_pypy=True)
 # PyPy only
 # ----------
 name_op(loc, "LOOKUP_METHOD", 201, 1, 2)
-nargs_op(loc, "CALL_METHOD", 202, -1, 1)
+call_op(loc, "CALL_METHOD", 202, -1, 1)
 loc["hasvargs"].append(202)
 
 # Used only in single-mode compilation list-comprehension generators
@@ -46,6 +47,7 @@ jrel_op(loc, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 
 # FIXME remove (fix uncompyle6)
 opcode_extended_fmt = {
+    "CALL_METHOD": extended_format_CALL_METHOD,
     "LOAD_ATTR": extended_format_ATTR,
     "RETURN_VALUE": extended_format_RETURN_VALUE,
     "STORE_ATTR": extended_format_ATTR,

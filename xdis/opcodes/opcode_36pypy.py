@@ -11,12 +11,12 @@ from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
+    call_op,
     def_op,
     finalize_opcodes,
     init_opdata,
     jrel_op,
     name_op,
-    nargs_op,
     rm_op,
     update_pj3,
     varargs_op,
@@ -42,9 +42,9 @@ rm_op(loc,    "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 
 # The following were removed from 3.6 but still in Pypy 3.6
 def_op(loc,   "MAKE_CLOSURE",                 134, 9, 1)  # TOS is number of items to pop
-nargs_op(loc, "CALL_FUNCTION_VAR",            140, 9, 1)  # #args + (#kwargs << 8)
-nargs_op(loc, "CALL_FUNCTION_KW",             141, 9, 1)  # #args + (#kwargs << 8)
-nargs_op(loc, "CALL_FUNCTION_VAR_KW",         142, 9, 1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_VAR",             140, 9, 1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_KW",              141, 9, 1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_VAR_KW",          142, 9, 1)  # #args + (#kwargs << 8)
 
 # PyPy only
 # ----------
@@ -52,7 +52,7 @@ nargs_op(loc, "CALL_FUNCTION_VAR_KW",         142, 9, 1)  # #args + (#kwargs << 
 # See:
 # https://doc.pypy.org/en/latest/interpreter-optimizations.html#lookup-method-call-method
 name_op(loc, "LOOKUP_METHOD",                 201, 1, 2)
-nargs_op(loc, "CALL_METHOD",                  202, -1, 1)
+call_op(loc, "CALL_METHOD",                  202, -1, 1)
 loc["hasvargs"].append(202)
 
 
