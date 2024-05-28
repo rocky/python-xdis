@@ -253,6 +253,13 @@ class Instruction(_Instruction):
                         prefix += "TOS = "
                     fields.append("%s%s" % (prefix, new_repr))
 
+                pass
+            elif (
+                hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt
+            ):
+                fields.append(self.argrepr)
+                pass
+>>>>>>> python-3.6-to-3.10
             pass
 
         return " ".join(fields).rstrip()
