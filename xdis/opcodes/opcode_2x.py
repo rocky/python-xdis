@@ -214,6 +214,15 @@ def_op(loc, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
 
 
+def extended_format_PRINT_ITEM(opc, instructions):
+    instr1 = instructions[1]
+    print_arg = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+    return (
+        "print %s," % print_arg,
+        instr1.start_offset,
+    )
+
+
 def extended_format_SLICE_1(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 1)
     if arg_count == 0:
@@ -253,16 +262,22 @@ def extended_format_SLICE_3(opc, instructions):
     return "", None
 
 
+def format_PRINT_NEWLINE(arg) -> str:
+    return 'print "\\n"'
+
+
 update_arg_fmt_base2x = copy(opcode_arg_fmt_base)
 update_arg_fmt_base2x.update(
     {
         "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
+        "PRINT_NEWLINE": format_PRINT_NEWLINE,
     }
 )
 
 opcode_extended_fmt_base2x = copy(opcode_extended_fmt_base)
 opcode_extended_fmt_base2x.update(
     {
+        "PRINT_ITEM": extended_format_PRINT_ITEM,
         "SLICE+1": extended_format_SLICE_1,
         "SLICE+2": extended_format_SLICE_2,
         "SLICE+3": extended_format_SLICE_3,
