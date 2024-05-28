@@ -226,9 +226,15 @@ def extended_format_unary_op(opc, instructions, fmt_str: str):
 
 
 def extended_format_ATTR(opc, instructions: list) -> tuple:
-    if instructions[1].opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS:
+    instr1 = instructions[1]
+    if (
+        instr1.tos_str
+        or instr1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
+    ):
+        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+
         return (
-            "%s.%s" % (instructions[1].argrepr, instructions[0].argrepr),
+            "%s.%s" % (base, instructions[0].argrepr),
             instructions[1].offset,
         )
     return "", None
@@ -477,6 +483,36 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list):
         signature = extended_function_signature(code_inst.argval)
         s += "def %s(%s): " "..." % (code_inst.argval.co_name, signature)
     return s, start_offset
+
+
+def extended_format_CALL_METHOD(opc, instructions) -> tuple:
+    """call_method should be a "CALL_METHOD" instruction. Look in
+    `instructions` to see if we can find a method name.  If not we'll
+    return None.
+
+    """
+    # From opcode description: arg_count indicates the total number of
+    # positional and keyword arguments.
+
+    call_method_inst = instructions[0]
+    arg_count = call_method_inst.argval
+    s = ""
+
+    arglist, arg_count, first_arg = get_arglist(instructions, 0, arg_count)
+
+    assert first_arg is not None
+    if first_arg >= len(instructions) - 1:
+        return "", None
+
+    fn_inst = instructions[first_arg + 1]
+    if fn_inst.opcode in opc.operator_set:
+        start_offset = fn_inst.offset
+        if fn_inst.opname == "LOAD_METHOD":
+            fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+            arglist.reverse()
+            s = "%s(%s)" % (fn_name, ", ".join(arglist))
+            return s, start_offset
+    return "", None
 
 
 def extended_format_RAISE_VARARGS_older(opc, instructions: list):
