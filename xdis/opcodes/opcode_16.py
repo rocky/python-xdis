@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2019-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,14 +24,8 @@ import xdis.opcodes.opcode_15 as opcode_15
 
 # This is used from outside this module
 from xdis.cross_dis import findlabels, findlinestarts  # noqa
-from xdis.opcodes.base import (
-    finalize_opcodes,
-    init_opdata,
-    nargs_op,
-    update_pj2,
-)
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.base import call_op, finalize_opcodes, init_opdata, update_pj2
+from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (1, 6)
 python_implementation = "CPython"
@@ -46,9 +40,9 @@ init_opdata(loc, opcode_15, version_tuple)
 
 # fmt: off
 # 1.6 Bytecodes not in 1.5
-nargs_op(loc, "CALL_FUNCTION_VAR",    140, -1, 1)  # #args + (#kwargs << 8)
-nargs_op(loc, "CALL_FUNCTION_KW",     141, -1, 1)  # #args + (#kwargs << 8)
-nargs_op(loc, "CALL_FUNCTION_VAR_KW", 142, -1, 1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_VAR",    140, -1, 1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_KW",     141, -1, 1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_VAR_KW", 142, -1, 1)  # #args + (#kwargs << 8)
 
 # fmt: on
 

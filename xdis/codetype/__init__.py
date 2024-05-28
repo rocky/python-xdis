@@ -37,7 +37,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
         return code
     if not (isinstance(code, types.CodeType) or isinstance(code, CodeTypeUnion)):
         raise TypeError(
-            "parameter expected to be a types.CodeType type; is %s instead" % type(code)
+            f"parameter expected to be a types.CodeType type; is {type(code)} instead"
         )
     if version_tuple >= (3, 0):
         if version_tuple < (3, 8):

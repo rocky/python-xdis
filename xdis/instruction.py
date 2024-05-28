@@ -221,10 +221,13 @@ class Instruction(_Instruction):
                         fields.append("(%s)" % argrepr)
                     else:
                         prefix = "" if argrepr is None else "(%s) ; " % argval
-                        if self.opcode in opc.operator_set:
+                        prefix = "" if self.argrepr is None else f"({self.argrepr}) ; "
+                        if self.opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
                         fields.append("%s%s" % (prefix, instructions[-1].tos_str))
                     pass
+                else:
+                    fields.append(self.argrepr)
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
