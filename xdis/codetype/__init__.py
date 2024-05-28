@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
         return code
     if not (isinstance(code, types.CodeType) or isinstance(code, CodeTypeUnion)):
         raise TypeError(
-            f"parameter expected to be a types.CodeType type; is {type(code)} instead"
+            "parameter expected to be a types.CodeType type; is %s instead" % type(code)
         )
     if version_tuple >= (3, 0):
         if version_tuple < (3, 8):

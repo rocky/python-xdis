@@ -485,7 +485,7 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list):
     return s, start_offset
 
 
-def extended_format_RAISE_VARARGS_older(opc, instructions: list):
+def extended_format_CALL_METHOD(opc, instructions) -> tuple:
     """call_method should be a "CALL_METHOD" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -510,15 +510,12 @@ def extended_format_RAISE_VARARGS_older(opc, instructions: list):
         if fn_inst.opname == "LOAD_METHOD":
             fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
             arglist.reverse()
-            s = f'{fn_name}({", ".join(arglist)})'
+            s = "%s(%s)" % (fn_name, ", ".join(arglist))
             return s, start_offset
     return "", None
 
 
-def extended_format_RAISE_VARARGS_older(
-    opc, instructions: list
-) -> Tuple[Optional[str], int]:
->>>>>>> python-3.6-to-3.10
+def extended_format_RAISE_VARARGS_older(opc, instructions: list):
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval

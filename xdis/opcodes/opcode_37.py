@@ -109,7 +109,7 @@ call_op(loc, "CALL_METHOD",        161, -2,  1)
 format_MAKE_FUNCTION = opcode_36.format_MAKE_FUNCTION
 format_value_flags = opcode_36.format_value_flags
 
-def extended_format_LOAD_METHOD(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_LOAD_METHOD(opc, instructions: list) -> tuple:
     instr1 = instructions[1]
     if (
         instr1.tos_str
@@ -118,7 +118,7 @@ def extended_format_LOAD_METHOD(opc, instructions: list) -> Tuple[str, Optional[
         base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
 
         return (
-            f"{base}.{instructions[0].argrepr}",
+            "%s.%s" % (base, instructions[0].argrepr),
             instr1.start_offset,
         )
     return "", None
@@ -163,6 +163,8 @@ opcode_arg_fmt = opcode_arg_fmt37
 opcode_extended_fmt37 = opcode_extended_fmt36.copy()
 opcode_extended_fmt37.update(
     {
+     "CALL_METHOD": extended_format_CALL_METHOD,
+     "LOAD_METHOD": extended_format_LOAD_METHOD,
      "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     }
 )

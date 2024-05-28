@@ -54,7 +54,7 @@ def get_opcode(version_tuple, is_pypy, alternate_opmap=None):
         pypy_str = " for pypy"
     else:
         pypy_str = ""
-    raise TypeError(f"{lookup} is not a Python version{pypy_str} I know about")
+    raise TypeError("%s is not a Python version%s I know about" % (lookup, pypy_str))
 
 
 def show_module_header(
@@ -275,7 +275,7 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
             if mapped_name in fn_name_map:
                 # We can have two lambda's created that are the same
                 # but have different line numbers
-                mapped_name += f"_{str(co.co_firstlineno)}"
+                mapped_name += "_%s" % str(co.co_firstlineno)
         fn_name_map[mapped_name] = basename
         co.co_name = mapped_name
         pass

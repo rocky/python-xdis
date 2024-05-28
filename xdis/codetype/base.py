@@ -39,10 +39,10 @@ def code_has_star_star_arg(code):
 
 class CodeBase:
     # These mimic some of the attributes in a Python code type
-    co_code: bytes
-    co_name: str
-    co_filename: str
-    co_firstlineno: int
+    # co_code: bytes
+    # co_name: str
+    # co_filename: str
+    # co_firstlineno: int
 
     # Mimic Python 3 code access functions
     def __len__(self):
@@ -56,11 +56,10 @@ class CodeBase:
 
     def __repr__(self):
         msg = (
-            f"<{self.__class__.__name__} code object {self.co_name}"
-            f" at {hex(id(self))}, file {self.co_filename}>"
-        )
+            "<%s code object %s" % (self.__class__.__name__, self.co_name)
+        ) + " at %s, file %s>" % (hex(id(self)), self.co_filename)
 
         if hasattr(self, "co_firstlineno"):
-            msg += f", line {self.co_firstlineno}"
+            msg += ", line %s" % self.co_firstlineno
 
         return msg
