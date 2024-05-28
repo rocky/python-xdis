@@ -111,7 +111,7 @@ def extended_format_infix_binary_op(opc, instructions, op_str: str):
             if arg2 == "":
                 arg2 = "..."
             else:
-                arg2 = "({arg2})" % arg2
+                arg2 = "(%s)" % arg2
                 return "%s%s%s" % (arg2, op_str, arg1), start_offset
         else:
             return "...%s%s" % (op_str, arg1), None
@@ -226,6 +226,9 @@ def extended_format_unary_op(opc, instructions, fmt_str: str):
 
 
 def extended_format_ATTR(opc, instructions: list) -> tuple:
+    """
+    Handles both LOAD_ATTR and STORE_ATTR
+    """
     instr1 = instructions[1]
     if (
         instr1.tos_str
