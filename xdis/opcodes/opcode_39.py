@@ -78,17 +78,19 @@ def_op(loc, "DICT_UPDATE",            165,   2, 1)
 # fmt: on
 
 
-def extended_format_CONTAINS_OP(opc, instructions) -> Tuple[Optional[str], int]:
+def extended_format_CONTAINS_OP(
+    opc, instructions
+) -> Tuple[Optional[str], Optional[int]]:
     instr = instructions[0]
     return extended_format_binary_op(
-        opc, instructions, f"%s {format_CONTAINS_OP(instr.arg)} %s", instr.offset
+        opc, instructions, f"%s {format_CONTAINS_OP(instr.arg)} %s"
     )
 
 
-def extended_format_IS_OP(opc, instructions) -> Tuple[Optional[str], int]:
+def extended_format_IS_OP(opc, instructions) -> Tuple[Optional[str], Optional[int]]:
     instr = instructions[0]
     return extended_format_binary_op(
-        opc, instructions, f"%s {format_IS_OP(instr.arg)} %s", instr.offset
+        opc, instructions, f"%s {format_IS_OP(instr.arg)} %s"
     )
 
 

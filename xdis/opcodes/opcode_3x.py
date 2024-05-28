@@ -28,6 +28,7 @@ from typing import Optional, Tuple
 
 from xdis.opcodes.base import (
     binary_op,
+    call_op,
     compare_op,
     const_op,
     def_op,
@@ -191,7 +192,7 @@ local_op(loc, "DELETE_FAST",         126,  0,  0)  # Local variable number
 nargs_op(loc, "RAISE_VARARGS",       130, -1,  1, fallthrough=False)
                                                  # Number of raise arguments (1, 2, or 3)
 
-nargs_op(loc, "CALL_FUNCTION",       131, -1,  1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION",        131, -1,  1)  # #args + (#kwargs << 8)
 
 nargs_op(loc, "MAKE_FUNCTION",       132, -2,  1) # TOS is number of args if < 3.6
 varargs_op(loc, "BUILD_SLICE",       133,  2,  1) # TOS is number of items to pop

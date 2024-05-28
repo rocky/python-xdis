@@ -25,16 +25,21 @@ from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
+    call_op,
     def_op,
     finalize_opcodes,
     init_opdata,
     jrel_op,
     name_op,
-    nargs_op,
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.opcode_36 import opcode_arg_fmt36, opcode_extended_fmt36
+from xdis.opcodes.format.extended import extended_format_CALL_METHOD
+from xdis.opcodes.opcode_36 import (
+    format_CALL_FUNCTION,
+    opcode_arg_fmt36,
+    opcode_extended_fmt36,
+)
 
 version_tuple = (3, 7)
 python_implementation = "CPython"
@@ -101,10 +106,25 @@ jrel_op(loc, "SETUP_ASYNC_WITH",   154,  0,  5)
 
 # These are new since Python 3.7
 name_op(loc, "LOAD_METHOD",        160,  0,  1)
-nargs_op(loc, "CALL_METHOD",       161, -2,  1)
+call_op(loc, "CALL_METHOD",        161, -2,  1)
 
 format_MAKE_FUNCTION = opcode_36.format_MAKE_FUNCTION
 format_value_flags = opcode_36.format_value_flags
+
+def extended_format_LOAD_METHOD(opc, instructions: list) -> Tuple[str, Optional[int]]:
+    instr1 = instructions[1]
+    if (
+        instr1.tos_str
+        or instr1.opname in {"LOAD_NAME", "LOAD_GLOBAL", "LOAD_FAST", "LOAD_DEREF"}
+    ):
+        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+
+        return (
+            f"{base}.{instructions[0].argrepr}",
+            instr1.start_offset,
+        )
+    return "", None
+
 
 def extended_format_RAISE_VARARGS(opc, instructions) -> Tuple[Optional[str], int]:
     raise_inst = instructions[0]
@@ -135,12 +155,17 @@ def format_RAISE_VARARGS(argc):
 
 opcode_arg_fmt = opcode_arg_fmt37 = {
     **opcode_arg_fmt36,
-    **{"RAISE_VARARGS": format_RAISE_VARARGS}
+    **{
+       "CALL_METHOD": format_CALL_FUNCTION,
+       "RAISE_VARARGS": format_RAISE_VARARGS
+       }
 }
 
 opcode_extended_fmt = opcode_extended_fmt37 = {
     **opcode_extended_fmt36,
     **{
+     "CALL_METHOD": extended_format_CALL_METHOD,
+     "LOAD_METHOD": extended_format_LOAD_METHOD,
      "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     }
 }

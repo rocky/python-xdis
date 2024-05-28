@@ -8,12 +8,12 @@ of stack usage.
 
 import xdis.opcodes.opcode_39 as opcode_39
 from xdis.opcodes.base import (
+    call_op,
     def_op,
     finalize_opcodes,
     init_opdata,
     jrel_op,
     name_op,
-    nargs_op,
     rm_op,
     update_pj3,
     varargs_op,
@@ -49,7 +49,7 @@ def_op(loc, "DICT_UPDATE",                 167,   2, 1)
 
 name_op(loc, "LOAD_METHOD",                160, 1, 2)
 loc["hasvargs"].append(202)
-nargs_op(loc, "CALL_METHOD_KW",            204, -1, 1)
+call_op(loc, "CALL_METHOD_KW",             204, -1, 1)
 
 # Used only in single-mode compilation list-comprehension generators
 jrel_op(loc, 'SETUP_EXCEPT',               120,  0,  6, conditional=True)  # ""

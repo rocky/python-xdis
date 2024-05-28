@@ -516,6 +516,8 @@ add_canonic_versions(
     "3.12.0rc2",
 )
 
+add_canonic_versions("3.10.13Graal", "3.10.8Graal")
+
 # The canonic version for a canonic version is itself
 for v in versions.values():
     canonic_python_version[v] = v

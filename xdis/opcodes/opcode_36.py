@@ -25,11 +25,11 @@ from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_35 as opcode_35
 from xdis.opcodes.base import (
+    call_op,
     def_op,
     finalize_opcodes,
     init_opdata,
     jrel_op,
-    nargs_op,
     rm_op,
     store_op,
     update_pj3,
@@ -118,7 +118,7 @@ jrel_op(loc,     "SETUP_ASYNC_WITH", 154,  2,  8)  # pops __aenter__ and __aexit
                                                    # pushed results on stack
 def_op(loc,      "FORMAT_VALUE",     155,  1,  1)
 varargs_op(loc,  "BUILD_CONST_KEY_MAP", 156, -2, 1) # TOS is count of kwargs
-nargs_op(loc,    "CALL_FUNCTION_EX", 142, -2,  1)
+call_op(loc,     "CALL_FUNCTION_EX", 142, -2,  1)
 def_op(loc,      "SETUP_ANNOTATIONS", 85,  1,  1)
 varargs_op(loc,  "BUILD_STRING",     157, -2,  2)
 varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
@@ -319,7 +319,6 @@ opcode_arg_fmt = opcode_arg_fmt36 = {
         "CALL_FUNCTION": format_CALL_FUNCTION,
         "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
         "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-        "CALL_METHOD": format_CALL_FUNCTION,
         "MAKE_FUNCTION": format_MAKE_FUNCTION,
         "FORMAT_VALUE": format_value_flags,
         "EXTENDED_ARG": format_extended_arg36,

@@ -1,4 +1,4 @@
-# (C) Copyright 2020 by Rocky Bernstein
+# (C) Copyright 2020, 2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -32,12 +32,17 @@ def code_has_star_arg(code):
 
 
 def code_has_star_star_arg(code):
-    """Return True iff
-    The code object has a variable keyword parameter (**kwargs-like)."""
+    """
+    Return True iff the code object has a variable keyword parameter (**kwargs-like)."""
     return (code.co_flags & 8) != 0
 
 
-class CodeBase(object):
+class CodeBase:
+    # These mimic some of the attributes in a Python code type
+    co_code: bytes
+    co_name: str
+    co_filename: str
+    co_firstlineno: int
 
     # Mimic Python 3 code access functions
     def __len__(self):
@@ -50,10 +55,12 @@ class CodeBase(object):
         return op
 
     def __repr__(self):
-        msg = "<%s code object %s at 0x%x, file %s>" % (
-            (self.__class__.__name__, self.co_name, id(self), self.co_filename)
+        msg = (
+            f"<{self.__class__.__name__} code object {self.co_name}"
+            f" at {hex(id(self))}, file {self.co_filename}>"
         )
+
         if hasattr(self, "co_firstlineno"):
-            msg += ", line %d" % self.co_firstlineno
+            msg += f", line {self.co_firstlineno}"
 
         return msg
