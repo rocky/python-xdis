@@ -388,6 +388,12 @@ class Instruction(NamedTuple):
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "
                     fields.append(f"{prefix}{new_repr}")
+                pass
+            elif (
+                hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt
+            ):
+                fields.append(self.argrepr)
+                pass
             pass
 
         return " ".join(fields).rstrip()
