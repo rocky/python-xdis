@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2023 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -40,8 +40,11 @@ cmp_op = (
     "BAD",
 )
 
-# opcodes that perform a binary operator of the top two stack entries
+# opcodes that perform a binary operation on the top two stack entries
 binaryop = set([])
+
+# opcodes that perform some sort of call
+callop = set([])
 
 hascompare = []
 hascondition = []  # conditional operator; has jump offset
@@ -79,6 +82,7 @@ HAVE_ARGUMENT = 90
 
 fields2copy = """
 binaryop
+callop
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
@@ -117,6 +121,7 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     else:
         # FIXME: DRY with above
         loc["binaryop"] = set([])
+        loc["callop"] = set([])
         loc["hascompare"] = []
         loc["hascondition"] = []
         loc["hasconst"] = []
@@ -140,11 +145,24 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
 
 
 def binary_op(loc, name, opcode, pop=2, push=1):
+    """
+    Put opcode in the class of instructions that are binary operations.
+    """
     loc["binaryop"].add(opcode)
     def_op(loc, name, opcode, pop, push)
 
 
-def compare_op(loc, name, opcode, pop=2, push=1):
+def call_op(
+    loc: dict, name: str, opcode: int, pop: int = -2, push: int = 1, fallthrough=True
+):
+    """
+    Put opcode in the class of instructions that perform calls.
+    """
+    loc["callop"].add(opcode)
+    nargs_op(loc, name, opcode, pop, push, fallthrough)
+
+
+def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
     def_op(loc, name, opcode, pop, push)
     loc["hascompare"].append(opcode)
     loc["binaryop"].add(opcode)
@@ -190,6 +208,9 @@ def jabs_op(
     conditional=False,
     fallthrough=True,
 ):
+    """
+    Put opcode in the class of instructions that can perform an absolute jump.
+    """
     def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
     loc["hasjabs"].append(opcode)
     if conditional:
@@ -197,7 +218,10 @@ def jabs_op(
 
 
 def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=True):
-    def_op(loc, name, opcode, pop, push)
+    """
+    Put opcode in the class of instructions that can perform a relative jump.
+    """
+    def_op(loc, name, opcode, pop, push, fallthrough)
     loc["hasjrel"].append(opcode)
     if conditional:
         loc["hascondition"].append(opcode)
@@ -210,14 +234,23 @@ def local_op(loc, name, opcode, pop=0, push=1):
 
 
 def name_op(loc, op_name, opcode, pop=-2, push=-2):
+    """
+    Put opcode in the class of instructions that index into the "name" table.
+    """
+>>>>>>> python-3.0-to-3.2
     def_op(loc, op_name, opcode, pop, push)
     loc["hasname"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
-def nargs_op(loc, name, op, pop=-2, push=-2, fallthrough=True):
-    def_op(loc, name, op, pop, push, fallthrough=fallthrough)
-    loc["hasnargs"].append(op)
+def nargs_op(
+    loc, name: str, opcode: int, pop: int = -2, push: int = -1, fallthrough=True
+):
+    """
+    Put opcode in the class of instructions that have a variable number of (or *n*) arguments
+    """
+    def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
+    loc["hasnargs"].append(opcode)
 
 
 def opcode_check(loc):
@@ -316,6 +349,9 @@ def varargs_op(loc, op_name, op_code, pop=-1, push=1):
 
 
 def finalize_opcodes(loc):
+    """
+    Things done to Python codes after all opcode have been defined.
+    """
     # Not sure why, but opcode.py address has opcode.EXTENDED_ARG
     # as well as opmap['EXTENDED_ARG']
     loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]
@@ -369,6 +405,10 @@ def update_pj2(g, loc):
 
 
 def update_sets(loc):
+    """
+    Updates various category sets all opcode have been defined.
+    """
+
     loc["COMPARE_OPS"] = frozenset(loc["hascompare"])
     loc["CONDITION_OPS"] = frozenset(loc["hascondition"])
     loc["CONST_OPS"] = frozenset(loc["hasconst"])

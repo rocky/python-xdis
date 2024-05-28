@@ -24,6 +24,7 @@ from copy import copy
 
 from xdis.opcodes.base import (
     binary_op,
+    call_op,
     compare_op,
     const_op,
     def_op,
@@ -32,7 +33,6 @@ from xdis.opcodes.base import (
     jrel_op,
     local_op,
     name_op,
-    nargs_op,
     store_op,
     unary_op,
     update_pj2,
@@ -167,7 +167,7 @@ def_op(loc, "SET_LINENO",        127)  # Current line number
 
 def_op(loc, "RAISE_VARARGS",     130, -1, 0, fallthrough=False)
 # Number of raise arguments (1, 2, or 3)
-nargs_op(loc, "CALL_FUNCTION",   131, -1, 1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION",   131, -1, 1)  # #args + (#kwargs << 8)
 
 def_op(loc, "MAKE_FUNCTION",     132, -1, 1)  # Number of args with default values
 varargs_op(loc, "BUILD_SLICE",   133, -1, 1)  # Number of items

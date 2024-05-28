@@ -26,6 +26,7 @@ from copy import copy
 
 from xdis.opcodes.base import (
     binary_op,
+    call_op,
     compare_op,
     const_op,
     def_op,
@@ -192,7 +193,7 @@ local_op(loc, "DELETE_FAST",          126,  0,  0) # Local variable number is in
 
 nargs_op(loc, "RAISE_VARARGS",        130, -1,  2, fallthrough=False)
                                                 # Number of raise arguments (1, 2, or 3)
-nargs_op(loc, "CALL_FUNCTION",        131, -1,  2)  # TOS is #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION",        131, -1,  2)  # TOS is #args + (#kwargs << 8)
 
 nargs_op(loc, "MAKE_FUNCTION",        132, -1,  2)  # TOS is number of args with
                                                     # default values
@@ -203,9 +204,9 @@ free_op(loc, "LOAD_CLOSURE",          135,  0,  1)
 free_op(loc, "LOAD_DEREF",            136,  0,  1)
 store_op(loc, "STORE_DEREF",          137,  1,  0, is_type="free")
 
-nargs_op(loc, "CALL_FUNCTION_VAR",    140, -2,  1) # #args + (#kwargs << 8)
-nargs_op(loc, "CALL_FUNCTION_KW",     141, -2,  1) # #args + (#kwargs << 8)
-nargs_op(loc, "CALL_FUNCTION_VAR_KW", 142, -3,  1) # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_VAR",    140, -2,  1) # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_KW",     141, -2,  1) # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_VAR_KW", 142, -3,  1) # #args + (#kwargs << 8)
 
 def_op(loc, "EXTENDED_ARG", 143)
 # fmt: on

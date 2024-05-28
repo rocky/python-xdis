@@ -11,6 +11,7 @@ from copy import copy
 
 import xdis.opcodes.opcode_37 as opcode_37
 from xdis.opcodes.base import (
+    call_op,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -39,8 +40,8 @@ init_opdata(loc, opcode_37, version_tuple, is_pypy=True)
 rm_op(loc, "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 rm_op(loc, "LOAD_METHOD",                  160)
 
-nargs_op(loc, "CALL_FUNCTION_KW",          141, 9, 1)  # #args + (#kwargs << 8)
-nargs_op(loc, "CALL_FUNCTION_EX",          142, -2, 1)
+call_op(loc, "CALL_FUNCTION_KW",           141, 9, 1)  # #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION_EX",           142, -2, 1)
 
 # The following were removed from 3.7 but still in some versions Pypy 3.7
 
@@ -51,7 +52,7 @@ store_op(loc,   'STORE_ANNOTATION',        127, 1, 0, is_type="name")
 
 name_op(loc, "LOOKUP_METHOD",              201, 1, 2)
 loc["hasvargs"].append(202)
-nargs_op(loc, "CALL_METHOD_KW",            204, -1, 1)
+call_op(loc, "CALL_METHOD_KW",             204, -1, 1)
 
 
 # Used only in single-mode compilation list-comprehension generators
