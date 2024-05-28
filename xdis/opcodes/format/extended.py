@@ -229,7 +229,10 @@ def extended_format_ATTR(opc, instructions):
         instr1.tos_str
         or instr1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
     ):
-        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+        if instr1.tos_str is not None:
+            base = instr1.tos_str
+        else:
+            base = instr1.argrepr
 
         return (
             "%s.%s" % (base, instructions[0].argrepr),
@@ -493,8 +496,7 @@ def extended_format_MAKE_FUNCTION_10_27(opc, instructions):
     return s, start_offset
 
 
-def extended_format_RAISE_VARARGS_older(opc, instructions):
-def extended_format_CALL_METHOD(opc, instructions) -> tuple:
+def extended_format_CALL_METHOD(opc, instructions):
     """call_method should be a "CALL_METHOD" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -517,15 +519,17 @@ def extended_format_CALL_METHOD(opc, instructions) -> tuple:
     if fn_inst.opcode in opc.operator_set:
         start_offset = fn_inst.offset
         if fn_inst.opname == "LOAD_METHOD":
-            fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+            if fn_inst.tos_str:
+                fn_name = fn_inst.tos_str
+            else:
+                fn_name = fn_inst.argrepr
             arglist.reverse()
             s = "%s(%s)" % (fn_name, ", ".join(arglist))
             return s, start_offset
     return "", None
 
 
-def extended_format_RAISE_VARARGS_older(opc, instructions: list):
->>>>>>> python-3.0-to-3.2
+def extended_format_RAISE_VARARGS_older(opc, instructions):
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval

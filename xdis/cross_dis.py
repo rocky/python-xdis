@@ -216,7 +216,7 @@ def show_code(co, version_tuple, file=None, is_pypy=False):
         file.write(code_info(co, version_tuple) + "\n")
 
 
-def op_has_argument(opcode: int, opc) -> bool:
+def op_has_argument(opcode, opc):
     """
     Return True if `opcode` instruction has an operand.
     """

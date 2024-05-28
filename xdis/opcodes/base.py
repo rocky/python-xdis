@@ -152,9 +152,7 @@ def binary_op(loc, name, opcode, pop=2, push=1):
     def_op(loc, name, opcode, pop, push)
 
 
-def call_op(
-    loc: dict, name: str, opcode: int, pop: int = -2, push: int = 1, fallthrough=True
-):
+def call_op(loc, name, opcode, pop=-2, push=1, fallthrough=True):
     """
     Put opcode in the class of instructions that perform calls.
     """
@@ -162,7 +160,7 @@ def call_op(
     nargs_op(loc, name, opcode, pop, push, fallthrough)
 
 
-def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+def compare_op(loc, name, opcode, pop=2, push=1):
     def_op(loc, name, opcode, pop, push)
     loc["hascompare"].append(opcode)
     loc["binaryop"].add(opcode)
@@ -237,14 +235,13 @@ def name_op(loc, op_name, opcode, pop=-2, push=-2):
     """
     Put opcode in the class of instructions that index into the "name" table.
     """
->>>>>>> python-3.0-to-3.2
     def_op(loc, op_name, opcode, pop, push)
     loc["hasname"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
 def nargs_op(
-    loc, name: str, opcode: int, pop: int = -2, push: int = -1, fallthrough=True
+    loc, name, opcode, pop=-2, push=-1, fallthrough=True
 ):
     """
     Put opcode in the class of instructions that have a variable number of (or *n*) arguments

@@ -37,7 +37,7 @@ def code_has_star_star_arg(code):
     return (code.co_flags & 8) != 0
 
 
-class CodeBase:
+class CodeBase(object):
     # These mimic some of the attributes in a Python code type
     # co_code: bytes
     # co_name: str
