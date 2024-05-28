@@ -216,7 +216,10 @@ EXTENDED_ARG = 143
 
 def extended_format_PRINT_ITEM(opc, instructions):
     instr1 = instructions[1]
-    print_arg = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+    if instr1.tos_str is not None:
+        print_arg = instr1.tos_str
+    else:
+        print_arg = instr1.argrepr
     return (
         "print %s," % print_arg,
         instr1.start_offset,
@@ -262,7 +265,7 @@ def extended_format_SLICE_3(opc, instructions):
     return "", None
 
 
-def format_PRINT_NEWLINE(arg) -> str:
+def format_PRINT_NEWLINE(arg):
     return 'print "\\n"'
 
 
