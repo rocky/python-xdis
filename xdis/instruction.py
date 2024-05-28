@@ -221,7 +221,7 @@ class Instruction(_Instruction):
                         fields.append("(%s)" % argrepr)
                     else:
                         prefix = "" if argrepr is None else "(%s) ; " % argval
-                        if self.opcode in opc.operator_set | opc.callop::
+                        if self.opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
                         fields.append("%s%s" % (prefix, instructions[-1].tos_str))
                     pass
