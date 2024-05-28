@@ -378,8 +378,11 @@ def get_instructions_bytes(
                         )
             if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
-        elif python_36:
-            i += 1
+        else:
+            if python_36:
+                i += 1
+            if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
+                argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
 
         opname = opc.opname[op]
         inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)

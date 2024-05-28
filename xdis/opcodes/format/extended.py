@@ -236,6 +236,9 @@ def extended_format_unary_op(
 
 
 def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+    """
+    Handles both LOAD_ATTR and STORE_ATTR
+    """
     instr1 = instructions[1]
     if (
         instr1.tos_str
