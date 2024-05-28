@@ -212,11 +212,11 @@ def_op(loc, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
 
 
-def extended_format_PRINT_ITEM(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_PRINT_ITEM(opc, instructions: list) -> tuple:
     instr1 = instructions[1]
     print_arg = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
     return (
-        f"print {print_arg},",
+        "print %s," % print_arg,
         instr1.start_offset,
     )
 
@@ -264,16 +264,9 @@ update_arg_fmt_base2x = opcode_arg_fmt_base.copy()
 update_arg_fmt_base2x.update(
     {
         "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
+        "PRINT_NEWLINE": format_PRINT_NEWLINE,
     }
 )
-
-opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()
-opcode_extended_fmt_base2x.update(
-    **{
-        "MAKE_FUNCTION": format_MAKE_FUNCTION_10_27,
-        "PRINT_NEWLINE": format_PRINT_NEWLINE,
-    },
-}
 
 opcode_extended_fmt_base2x = opcode_extended_fmt_base.copy()
 opcode_extended_fmt_base2x.update(

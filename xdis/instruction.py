@@ -259,7 +259,6 @@ class Instruction(_Instruction):
             ):
                 fields.append(self.argrepr)
                 pass
->>>>>>> python-3.6-to-3.10
             pass
 
         return " ".join(fields).rstrip()
