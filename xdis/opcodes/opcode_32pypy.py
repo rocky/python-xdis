@@ -2,7 +2,7 @@
 """
 PYPY 3.2 opcodes
 
-This is a like Python 3.2's opcode.py with some classification
+This is like Python 3.2's opcode.py with some classification
 of stack usage.
 """
 
