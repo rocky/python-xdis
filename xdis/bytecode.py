@@ -76,7 +76,7 @@ def get_const_info(const_index, const_list):
         else repr(arg_val)
     )
 
-    # float values nan and inf are not directly representable in Python at least
+    # Float values "nan" and "inf" are not directly representable in Python at least
     # before 3.5 and even there it is via a library constant.
     # So we will canonicalize their representation as float('nan') and float('inf')
     if isinstance(arg_val, float) and str(arg_val) in frozenset(
@@ -101,7 +101,7 @@ def get_name_info(name_index, name_list):
     if (
         name_list is not None
         # PyPY seems to "optimize" out constant names,
-        # so we need for that:
+        # so we need the following condition to handle this situation:
         and name_index < len(name_list)
     ):
         argval = name_list[name_index]
@@ -146,8 +146,8 @@ _get_name_info = get_name_info
 def offset2line(offset: int, linestarts):
     """linestarts is expected to be a *list of (offset, line number)
     where both offset and line number are in increasing order.
-    Return the closes line number at or below the offset.
-    If offset is less than the first line number given in linestarts,
+    Return the closest line number at or below the offset.
+    If offset is less than the first line number given in `linestarts`,
     return line number 0.
     """
     if len(linestarts) == 0 or offset < linestarts[0][0]:
@@ -164,7 +164,7 @@ def offset2line(offset: int, linestarts):
             return linestarts[mid][1]
         mid = (low + high + 1) // 2
         pass
-    # Not found. Return closest position below
+    # Not found. Return the closest position below.
     if mid >= len(linestarts):
         return linestarts[len(linestarts) - 1][1]
     return linestarts[high][1]
@@ -234,7 +234,7 @@ def get_instructions_bytes(
 
     Generates a sequence of Instruction namedtuples giving the details of each
     opcode.  Additional information about the code's runtime environment
-    (e.g. variable names, constants) can be specified using optional
+    e.g., variable names, constants, can be specified using optional
     arguments.
 
     """
@@ -571,7 +571,7 @@ class Bytecode:
               * the source is available via linecache.getline()
             """
             # There is some redundancy in the condition below
-            # to make type checking happy. In reality
+            # to make type checking happy. In reality,
             # only the show_source is tested at runtime.
             if show_source and filename and line_number:
                 source_text = getline(filename, line_number).lstrip()

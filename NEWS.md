@@ -2,12 +2,11 @@
 =================
 
 Lots of changes major changes. API has changed.
-
 We now support many disassembly options:
   * classic:  disasm-like output
   * bytes: disasm-like output with bytecode
   * extended: simple interpretation of previous sequence of instructions
-  * extended-bytes: same as above, but with "bytes" bytecode ouptut
+  * extended-bytes: same as above, but with "bytes" bytecode output
   * header: show header/metadata information only
 
 This is reflected in the `--format` (`-F`) options on `pydisasm`.
@@ -32,7 +31,7 @@ Elliot Tarbet (2elli) largely provided support for Python 3.11 and 3.12 bytecode
 =================
 
 * Detect versions pypy3.8.15, pypy-3.9.15
-* Dectect Python 3.{7,8,9}.14 3.10.{5,6,7}
+* Detect Python 3.{7,8,9}.14 3.10.{5,6,7}
 * correct 3.10+ pydisasm -F xasm label
 * Revise marshal error handling (Issue #97)
 * Improve PyPy 3.7 `CALL_FUNCTION` arg interpretation
@@ -65,7 +64,7 @@ Elliot Tarbet (2elli) largely provided support for Python 3.11 and 3.12 bytecode
 * Remove str2float, sysinfo2float and magic_int2float. With Python 3.10 this is no
   longer tenable
 * Reduce PYTHON_VERSION usage in xdis.
-* Allow optional delimeter and start length in `version_tuple_to_str()`
+* Allow optional delimiter and start length in `version_tuple_to_str()`
 * fix logic bug in setting MAGIC
 * Add a little Python 3.8.5 Graal (Java VM) knowledge
 
@@ -90,7 +89,7 @@ Clearly this doesn't work to distinguish 3.1 from 3.10.
 * Some tolerance for running from 3.11
 * Update magic numbers
 * Expanding testing to include pyston and PyPy 3.7
-* Improve distribution packaging, e.g. Python 3 wheels should no longer be attmpted on Python 2.x
+* Improve distribution packaging, e.g. Python 3 wheels should no longer be attempted on Python 2.x
 
 5.0.13 2021-09-24
 =================
@@ -278,7 +277,7 @@ The major impetus for this release is expanding the Python in Python interpreter
   `xasm` and `x-python`
 * Remove duplicate `findlinestarts()` code. Remove testing on the Python version and simplify
   this where possible.
-* get_opcode_module allows either a float and string datatype for the version, and coverts
+* get_opcode_module allows either a float and string datatype for the version, and converts
   the bytecode datatype when needed
 * Fix a bugs in marshal and unmarshal
 
@@ -366,7 +365,7 @@ For example lists of thing like `co_consts`, or `varnames` can be Python lists a
 
 However, when you need a `type.CodeType` that can be `eval()`'d by the Python interpreter you are running, use the `to_native()` method on the portable code type returned. It will compress and encode the line number table, and turn lists into tuples and convert other datatypes to the right type as needed.
 
-If you have a *complete* `types.Codetype` structure for a particular Python version whether, it is the one the current Python interpreter is using or not, use the `to_portable()` function, and it will figure out based on the version parameter supplied (or use the current Python interpreter version if none supplieed), which particlar portable code type is the right one.
+If you have a *complete* `types.Codetype` structure for a particular Python version whether, it is the one the current Python interpreter is using or not, use the `to_portable()` function, and it will figure out based on the version parameter supplied (or use the current Python interpreter version if none supplieed), which particular portable code type is the right one.
 
 If on the other hand, you have a number of code-type fields which may be incomplete, but still want to work with something that has code-type characteristics while not worrying about which fields are required and their exact proper datatypes, use the `CodeTypeUnion` structure.
 
@@ -416,7 +415,7 @@ Correct and clean up compiler flags. Add 3.5+ `ITERABLE_COROUTINE` and
 3.6+ `ASYNC_GENERATOR`.
 
 Clean up PYPY 3.6 flags and opcodes Many thanks again to Arman
-Rigo. Split PYPY specfic compiler-specific flags into its own thing.
+Rigo. Split PYPY specific compiler-specific flags into its own thing.
 
 4.2.0 2019-12-10 gecko gecko
 ============================
@@ -587,7 +586,7 @@ License is GPL2.0 only now
 
 
 - Handle pypy in str2float
-- Accomodate broken or incomplete "import platform"
+- Accommodate broken or incomplete "import platform"
 - Pin Hypothesis to 3.0.0 - it has been broken after 3.0.0
 
 3.6.9 2018-01-21
@@ -666,7 +665,7 @@ License is GPL2.0 only now
   needing EXTENDED_ARGS
 - add unpack_opargs_bytecode which is similar to unpack_opargs_wordcode of 3.6
   This probably fixes a long-standing but little-noticed bug in Python 2.x disassembly
-- cross version compatability bug fixed in code2num()
+- cross version compatibility bug fixed in code2num()
 - Mark NOFOLLOW opcodes (RETURN, RAISE)
 - Mark conditional opcodes (POP_JUMP_IF...)
 - Add len() and getitem() to code types to mimic Python3 behavior
@@ -740,7 +739,7 @@ Overall: Support for bytecode assembler (xasm), Better 3.4-3.6 support
   suitable for an assembler, specifically xasm.
 - Add magic lookup for 3.4.[0..6] 3.5.[0..2] and 3.6.[0..1]
 - Add magic lookup for base versions, e.g. 2.7 or 3.4
-- Trap ill-formed python bytecode bettern
+- Trap ill-formed python bytecode better
 - Show timestamp in pydisasm output as it is stored
 - Add "optype" field to Instructions. Derived from the has_xxx lists
 - Marshaling for Python2 and Python3 code when using cross-version
@@ -804,7 +803,7 @@ Python 3.6 bugs/features
 3.2.2 2016-11-02
 =====================
 
-- Distrbute COPYING.txt
+- Distribute COPYING.txt
 - Correct pypy 3.2 bytecode
 - Start adding stack use on opcodes for Python 3.x
 

@@ -38,11 +38,11 @@ def wr_long(f, x):
 
 
 def dump_compile(codeobject, filename, timestamp, magic):
-    """Write code object as a byte-compiled file
+    """Write ``codeobject`` as a byte-compiled file.
 
     Arguments:
     codeobject: code object
-    filefile: bytecode file to write
+    filename: bytecode file to write
     timestamp: timestamp to put in file
     magic: Python bytecode magic
     """
@@ -97,11 +97,11 @@ def compare_bytecode_files(bc_file1, bc_file2):
     # Now compare bytes in bytecode files
     f = open(bc_file1, "rb")
     bytes1 = f.read()
-    f.close
+    f.close()
 
     f = open(bc_file2, "rb")
     bytes2 = f.read()
-    f.close
+    f.close()
 
     if PYTHON_VERSION_TRIPLE[:2] == (3, 2) and IS_PYPY:
         assert bytes1[4:] == bytes2[4:], "bytecode:\n%s\nvs\n%s" % (
@@ -118,10 +118,10 @@ def verify_file(real_source_filename, real_bytecode_filename):
     write bytecode out to a new place again using
     Python's routines.
 
-    Next load it in using two of our routines.
+    Next, load it in using two of our routines.
     Compare that the code objects there are equal.
 
-    Next write out the bytecode (using the same Python
+    Then write out the bytecode using the same Python
     bytecode-writing routine as in step 1.
 
     Finally, compare the bytecode files.
