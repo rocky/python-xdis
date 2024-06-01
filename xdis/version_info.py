@@ -35,8 +35,8 @@ def version_tuple_to_str(
     Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6".
 
     ``version_tuple`` is a tuple similar to what is might be returned in
-    tuple(sys.version_info[:3]), however, the parts in their could anything that
-    has a str() method. By default, and often the length is 3 but in practice
+    tuple(sys.version_info[:3]), however, the parts in the tuple could anything that
+    has a str() method. By default, and often the length is 3, but in practice
     it could be other lengths.
 
     ``end`` is the length of version_tuple that you want to use.

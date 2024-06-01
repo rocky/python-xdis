@@ -166,7 +166,7 @@ def format_CALL_INTRINSIC_2(arg) -> str:
     return _intrinsic_2_descs[arg]
 
 ### update arg formatting
-opcode_arg_fmt = opcode_arg_fmt312 = {
+opcode_arg_fmt312 = {
     **opcode_arg_fmt311,
     **{
         "CALL_INTRINSIC_1": format_CALL_INTRINSIC_1,
@@ -175,8 +175,8 @@ opcode_arg_fmt = opcode_arg_fmt312 = {
 }
 opcode_extended_fmt = opcode_extended_fmt312 = opcode_extended_fmt311.copy()
 
-# overwrite legacy findlinestarts with the 3.11 version that uses the
-# location_table syntax
+# Overwrite legacy findlinestarts with the 3.11 version that uses the
+# location_table syntax.
 from xdis.opcodes.opcode_311 import findlinestarts, parse_location_entries
 
 opcode_arg_fmt = opcode_arg_fmt12 = opcode_arg_fmt311.copy()
