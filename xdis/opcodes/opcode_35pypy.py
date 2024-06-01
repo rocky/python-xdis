@@ -47,7 +47,7 @@ jrel_op(loc, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 
 # Python 3.5.3 PyPYy 7.0.0 adds LOAD_REVDB.  We can't distinguish
 # between the two kinds of bytecode by Python version number, or magic
-# number. And we don't have a means of specifiying
+# number. And we don't have a means of specifying
 # platform.python_branch() which would give us the 7.0.0 as opposed to
 # 6.0.0.
 

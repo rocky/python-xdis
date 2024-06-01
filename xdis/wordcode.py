@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2018, 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ def unpack_opargs_wordcode(code, opc):
                     pass
             else:
                 arg = None
-            yield (i, op, arg)
+            yield i, op, arg
     else:
         for i in range(0, n, 2):
             op = code[i]
@@ -54,12 +54,12 @@ def unpack_opargs_wordcode(code, opc):
             else:
                 arg = None
                 pass
-            yield (i, op, arg)
+            yield i, op, arg
 
 
 def findlabels(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
-    which are the targets of some sort of jump instruction.
+    which are the targets of jump instruction.
     """
     offsets = []
     for offset, op, arg in unpack_opargs_wordcode(code, opc):
@@ -80,10 +80,10 @@ def findlabels(code, opc):
 
 
 def get_jump_target_maps(code, opc):
-    """Returns a dictionary where the key is an offset and the values are
+    """Returns a dictionary where the key is an offset, and the values are
     a list of instruction offsets which can get run before that
     instruction. This includes jump instructions as well as non-jump
-    instructions. Therefore, the keys of the dictionary are reachible
+    instructions. Therefore, the keys of the dictionary are reachable
     instructions. The values of the dictionary may be useful in control-flow
     analysis.
     """

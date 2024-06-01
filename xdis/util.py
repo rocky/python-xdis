@@ -48,13 +48,13 @@ PYPY_COMPILER_FLAG_NAMES = {
 }
 
 # Invert above dictionary, so we can look up a bit value
-# from the compile flag name
+# from the "compile" flag name
 COMPILER_FLAG_BIT = {}
 for (v, k) in COMPILER_FLAG_NAMES.items():
     COMPILER_FLAG_BIT[k] = v
 
-# Allow us to access by just name, prefixed with CO. e.g
-# CO_OPTIMIZED, CO_NOFREE
+# Allow us to access by just name, prefixed with CO., e.g
+# CO_OPTIMIZED, CO_NOFREE.
 globals().update(dict(("CO_" + k, v) for (k, v) in COMPILER_FLAG_BIT.items()))
 
 for v, k in COMPILER_FLAG_BIT.items():
@@ -95,7 +95,7 @@ def better_repr(v):
     """Work around Python's not orthogonal and unhelpful repr() for primitive float
     and complex."""
     if isinstance(v, float):
-        # float values 'nan' and 'inf' are not directly
+        # Float values 'nan' and 'inf' are not directly
         # representable in Python before Python 3.5. In Python 3.5
         # it is accessible via a library constant math.inf.  We
         # will canonicalize representation of these value as

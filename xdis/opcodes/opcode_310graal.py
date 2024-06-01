@@ -182,7 +182,7 @@ def_graal_op(opc, "LOAD_FAST", 30, 1, 0, 1)
 
 # Writes a local variable determined by the immediate operand which indexes a stack slot and a
 # variable name in varnames array ({@code co_varnames}).
-#  Pops: value to be writen
+#  Pops: value to be written
 def_graal_op(opc, "STORE_FAST", 31, 1, 1, 0)
 
 # Deletes a local variable determined by the immediate operand which indexes a stack slot and a
