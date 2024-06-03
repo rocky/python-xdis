@@ -25,8 +25,11 @@ from xdis.opcodes.opcode_36 import opcode_arg_fmt36, opcode_extended_fmt36
 version_tuple = (3, 6)
 python_implementation = "PyPy"
 
-oppush = {}
-oppop = {}
+# oppush[op] => number of stack entries pushed
+oppush = [0] * 256
+
+# oppop[op] => number of stack entries popped
+oppop = [0] * 256
 
 loc = locals()
 init_opdata(loc, opcode_36, version_tuple, is_pypy=True)

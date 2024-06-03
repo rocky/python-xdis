@@ -42,8 +42,11 @@ from xdis.opcodes.format.extended import (
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
-oppush = {}
-oppop = {}
+# oppush[op] => number of stack entries pushed
+oppush = [0] * 256
+
+# oppop[op] => number of stack entries popped
+oppop = [0] * 256
 
 # When we use EXTENDED_ARG, by how much do we
 # shift (or what power of two do we multiply) the operand value?
