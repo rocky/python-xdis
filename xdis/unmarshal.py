@@ -100,7 +100,7 @@ def compat_str(s, str_is_bytes):
     """
     if str_is_bytes:
         return Bytes(s)
-    else:
+    elif not isinstance(s, str):
         return str(s)
     else:
         return s

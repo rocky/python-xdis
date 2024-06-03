@@ -75,7 +75,7 @@ def findlabels(code, opc):
         return findlabels_310(code, opc)
 
 
-def findlabels_310(code: bytes, opc):
+def findlabels_310(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
     which are the targets of some sort of jump instruction.
     """
