@@ -7,7 +7,7 @@ of stack usage and information for formatting instructions.
 """
 
 import sys
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import xdis.opcodes.opcode_36 as opcode_36
 from xdis.opcodes.base import (
@@ -26,8 +26,11 @@ from xdis.opcodes.opcode_36 import opcode_arg_fmt36, opcode_extended_fmt36
 version_tuple = (3, 6)
 python_implementation = "PyPy"
 
-oppush = {}
-oppop = {}
+# oppush[op] => number of stack entries pushed
+oppush: List[int] = [0] * 256
+
+# oppop[op] => number of stack entries popped
+oppop: List[int] = [0] * 256
 
 loc = locals()
 init_opdata(loc, opcode_36, version_tuple, is_pypy=True)
