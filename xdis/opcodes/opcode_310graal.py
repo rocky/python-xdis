@@ -285,10 +285,10 @@ def_graal_op(opc, "MATCH_KEYS", 49, 0, 2, 4)
 
 # Creates a copy of a dict (stack second) without elements matching a
 # tuple of keys (stack top).
-def_graal_op(opc, 50, "COPY_DICT_WITHOUT_KEYS", 0, 1, 1)
+def_graal_op(opc, "COPY_DICT_WITHOUT_KEYS", 50, 0, 1, 1)
 
 # Retrieves the length of a Python object and stores it on top.
-def_graal_op(opc, 51, "GET_LEN", 0, 0, 1)
+def_graal_op(opc, "GET_LEN", 51, 0, 0, 1)
 
 # -------------------------------------
 # load bytecodes for special constants

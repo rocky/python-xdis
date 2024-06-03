@@ -102,6 +102,8 @@ def compat_str(s, str_is_bytes):
         return Bytes(s)
     else:
         return str(s)
+    else:
+        return s
 
 
 def compat_u2s(u):

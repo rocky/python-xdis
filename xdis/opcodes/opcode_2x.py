@@ -239,7 +239,7 @@ def extended_format_SLICE_1(opc, instructions):
 
 def extended_format_SLICE_2(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
-    if arg_count == 0:
+    if arg_count == 0 and i is not None:
         for i, arg in enumerate(arglist):
             if arg == "None":
                 arglist[i] = ""
@@ -253,7 +253,7 @@ def extended_format_SLICE_2(opc, instructions):
 
 def extended_format_SLICE_3(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
-    if arg_count == 0:
+    if arg_count == 0 and i is not None:
         for i, arg in enumerate(arglist):
             if arg == "None":
                 arglist[i] = ""

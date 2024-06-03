@@ -39,10 +39,14 @@ from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 version_tuple = (3, 11)
 python_implementation = "CPython"
 
-oppush = []
-oppop = []
-opmap = {}
+# oppush[op] => number of stack entries pushed
+oppush = [0] * 256
 
+# oppop[op] => number of stack entries popped
+oppop = [0] * 256
+
+# opmap[opcode_name] => opcode_number
+opmap = {}
 _nb_ops = [
     ("NB_ADD", "+"),
     ("NB_AND", "&"),
