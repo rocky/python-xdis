@@ -646,6 +646,9 @@ class Bytecode:
             ):
                 continue
 
+            if instr.opname == "EXTENDED_ARG" and asm_format == "asm":
+                continue
+
             file.write(
                 instr.disassemble(
                     self.opc, lineno_width, is_current_instr, asm_format, instructions

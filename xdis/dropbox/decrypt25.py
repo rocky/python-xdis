@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # Copyright Hagen Fritsch, 2012, License: GPL-2.0
 # Adaption and generalization for xdis use by Rocky Bernstein
-# Copyright 2019-2020
+# Copyright 2019-2020, 2024
 
 # Dropbox Python bytecode decryption tool for Dropbox versions of 1.1x
 # (and possibly earlier) which uses Python bytecode 2.5.
 
-from __future__ import print_function
-
 import struct
 import types
+from typing import Dict
 
 import xdis.marsh as xmarshal
 
@@ -19,7 +18,7 @@ from xdis.codetype.code20 import Code2Compat
 from xdis.version_info import PYTHON3
 
 
-def rng(a, b):
+def rng(a: int, b: int) -> int:
     b = ((b << 13) ^ b) & 0xFFFFFFFF
     c = b ^ (b >> 17)
     c = c ^ (c << 5)
@@ -252,7 +251,7 @@ table[3] = 59
 table[11] = 75
 table[58] = 76
 
-misses = {}
+misses: Dict[int, int] = {}
 
 
 def patch(code):

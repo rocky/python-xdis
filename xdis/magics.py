@@ -35,7 +35,7 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 import re
 import struct
 import sys
-from typing import Dict
+from typing import Dict, Set
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, version_tuple_to_str
 
@@ -89,7 +89,7 @@ def __by_version(magic_versions: Dict[bytes, str]) -> dict:
 
 
 # Documentation for the below variables is above.
-by_magic: Dict[bytes, set] = {}
+by_magic: Dict[bytes, Set] = {}
 by_version: Dict[str, bytes] = {}
 magicint2version: Dict[int, str] = {}
 versions: Dict[bytes, str] = {}
