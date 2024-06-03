@@ -179,7 +179,7 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
 # In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
 # an incomplete code type, which might be converted to another code type
 # later.
-CodeTypeUnionFields = Code311FieldNames.split()
+CodeTypeUnionFields = tuple(Code311FieldNames.split())
 CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 
 
