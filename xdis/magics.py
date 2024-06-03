@@ -92,6 +92,7 @@ by_magic = {}
 by_version = {}
 magicint2version = {}
 versions = {}
+
 try:
     from importlib.util import MAGIC_NUMBER as MAGIC
 except ImportError:

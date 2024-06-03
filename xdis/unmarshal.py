@@ -29,7 +29,6 @@ object
 import io
 import sys
 from struct import unpack
-from typing import Union
 
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3

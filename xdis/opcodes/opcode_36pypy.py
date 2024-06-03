@@ -26,10 +26,10 @@ version_tuple = (3, 6)
 python_implementation = "PyPy"
 
 # oppush[op] => number of stack entries pushed
-oppush: List[int] = [0] * 256
+oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
-oppop: List[int] = [0] * 256
+oppop = [0] * 256
 
 loc = locals()
 init_opdata(loc, opcode_36, version_tuple, is_pypy=True)

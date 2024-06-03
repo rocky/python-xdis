@@ -21,7 +21,6 @@ This is like Python 3.11's opcode.py  with some classification
 of stack usage and information for formatting instructions.
 """
 
-from typing import Dict, List, Optional, Tuple
 
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
@@ -40,14 +39,13 @@ version_tuple = (3, 11)
 python_implementation = "CPython"
 
 # oppush[op] => number of stack entries pushed
-oppush: List[int] = [0] * 256
+oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
-oppop: List[int] = [0] * 256
+oppop = [0] * 256
 
 # opmap[opcode_name] => opcode_number
-opmap: Dict[str, int] = {}
-
+opmap = {}
 _nb_ops = [
     ("NB_ADD", "+"),
     ("NB_AND", "&"),
