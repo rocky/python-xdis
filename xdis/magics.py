@@ -89,8 +89,8 @@ def __by_version(magic_versions: Dict[bytes, str]) -> dict:
 
 
 # Documentation for the below variables is above.
-by_magic = {}
-by_version = {}
+by_magic: Dict[bytes, set] = {}
+by_version: Dict[str, bytes] = {}
 magicint2version: Dict[int, str] = {}
 versions: Dict[bytes, str] = {}
 
