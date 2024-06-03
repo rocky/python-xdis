@@ -234,7 +234,7 @@ def extended_format_SLICE_1(opc, instructions: list):
 
 def extended_format_SLICE_2(opc, instructions: list):
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
-    if arg_count == 0:
+    if arg_count == 0 and i is not None:
         arglist = ["" if arg == "None" else arg for arg in arglist]
         return ":".join(reversed(arglist)), instructions[i].start_offset
 
@@ -246,7 +246,7 @@ def extended_format_SLICE_2(opc, instructions: list):
 
 def extended_format_SLICE_3(opc, instructions: list):
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
-    if arg_count == 0:
+    if arg_count == 0 and i is not None:
         arglist = ["" if arg == "None" else arg for arg in arglist]
         return ":".join(reversed(arglist)), instructions[i].start_offset
 

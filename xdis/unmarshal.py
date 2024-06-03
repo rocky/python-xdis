@@ -29,6 +29,7 @@ object
 import io
 import sys
 from struct import unpack
+from typing import Union
 
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
@@ -100,15 +101,17 @@ def compat_str(s):
     """
     This handles working with strings between Python2 and Python3.
     """
-    if PYTHON3:
+    if isinstance(s, bytes):
         try:
             return s.decode("utf-8")
         except UnicodeDecodeError:
             # If not Unicode, return bytes,
             # and it will get converted to str when needed.
             return s
-    else:
+    elif not isinstance(s, str):
         return str(s)
+    else:
+        return s
 
 
 def compat_u2s(u):

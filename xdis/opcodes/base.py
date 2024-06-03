@@ -20,6 +20,7 @@ Python opcode.py structures
 """
 
 from copy import deepcopy
+from typing import Dict, List, Set
 
 from xdis import wordcode
 from xdis.cross_dis import findlabels, findlinestarts, get_jump_target_maps
@@ -41,40 +42,40 @@ cmp_op = (
 )
 
 # opcodes that perform a binary operation on the top two stack entries
-binaryop = set([])
+binaryop: Set[int] = set([])
 
 # opcodes that perform some sort of call
-callop = set([])
+callop: Set[int] = set([])
 
-hascompare = []
-hascondition = []  # conditional operator; has jump offset
-hasconst = []
-hasfree = []
-hasjabs = []
-hasjrel = []
-haslocal = []
-hasname = []
-hasnargs = []  # For function-like calls
-hasstore = []  # Some sort of store operation
-hasvargs = []  # Similar but for operators BUILD_xxx
-nofollow = []  # Instruction doesn't fall to the next opcode
+hascompare: List[int] = []
+hascondition: List[int] = []  # conditional operator; has jump offset
+hasconst: List[int] = []
+hasfree: List[int] = []
+hasjabs: List[int] = []
+hasjrel: List[int] = []
+haslocal: List[int] = []
+hasname: List[int] = []
+hasnargs: List[int] = []  # For function-like calls
+hasstore: List[int] = []  # Some sort of store operation
+hasvargs: List[int] = []  # Similar but for operators BUILD_xxx
+nofollow: List[int] = []  # Instruction doesn't fall to the next opcode
 
-nullaryop = set([])  # Instruction do not consume a stack entry
+nullaryop: Set[int] = set([])  # Instruction do not consume a stack entry
 
 # opmap[opcode_name] => opcode_number
-opmap = {}
+opmap: Dict[str, int] = {}
 
 # opcode[i] => opcode name
-opname = [""] * 256
+opname: List[str] = [""] * 256
 
 # oppush[op] => number of stack entries pushed
-oppush = [0] * 256
+oppush: List[int] = [0] * 256
 
 # oppop[op] => number of stack entries popped
-oppop = [0] * 256
+oppop: List[int] = [0] * 256
 
 # opcodes that perform a unary operation of the top stack entry
-unaryop = set()
+unaryop: Set[int] = set()
 # Opcodes greater than 90 take an instruction operand or "argument"
 
 # as opcode.py likes to call it.
