@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,10 +14,11 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
-from xdis.codetype.code30 import Code3, Code3FieldTypes
 import types
 from copy import deepcopy
+
+from xdis.codetype.code30 import Code3, Code3FieldTypes
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order. It is important to match this
 # with the 3.8 order.
@@ -83,21 +84,21 @@ class Code38(Code3):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code38, self).__init__(
-            co_argcount = co_argcount,
-            co_kwonlyargcount = co_kwonlyargcount,
-            co_nlocals = co_nlocals,
-            co_stacksize = co_stacksize,
-            co_flags = co_flags,
-            co_code = co_code,
-            co_consts = co_consts,
-            co_names = co_names,
-            co_varnames = co_varnames,
-            co_filename = co_filename,
-            co_name = co_name,
-            co_firstlineno = co_firstlineno,
-            co_lnotab = co_lnotab,
-            co_freevars = co_freevars,
-            co_cellvars = co_cellvars,
+            co_argcount=co_argcount,
+            co_kwonlyargcount=co_kwonlyargcount,
+            co_nlocals=co_nlocals,
+            co_stacksize=co_stacksize,
+            co_flags=co_flags,
+            co_code=co_code,
+            co_consts=co_consts,
+            co_names=co_names,
+            co_varnames=co_varnames,
+            co_filename=co_filename,
+            co_name=co_name,
+            co_firstlineno=co_firstlineno,
+            co_lnotab=co_lnotab,
+            co_freevars=co_freevars,
+            co_cellvars=co_cellvars,
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
@@ -105,9 +106,9 @@ class Code38(Code3):
             self.check()
 
     def to_native(self):
-        if not (3, 8) <= PYTHON_VERSION_TRIPLE < (3, 11):
+        if not (3, 8) <= PYTHON_VERSION_TRIPLE < (3, 13):
             raise TypeError(
-                "Python Interpreter needs to be in range 3.8..3.10; is %s"
+                "Python Interpreter needs to be in range 3.8..3.12; is %s"
                 % version_tuple_to_str()
             )
 

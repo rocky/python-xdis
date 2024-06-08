@@ -101,7 +101,7 @@ class Code3(Code2):
                 co_lnotab += bytearray([0, 255])
                 line_diff -= 255
             if 0 <= line_diff <= 256:
-                # FIXME: should warn bout dropping off a line number
+                # FIXME: should warn about dropping off a line number
                 co_lnotab += bytearray([offset_diff, line_diff])
 
         self.co_lnotab = co_lnotab
