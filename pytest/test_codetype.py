@@ -18,6 +18,7 @@ def test_codeType2Portable():
         # Python 2.6-
         five_code = five.func_code
 
+    xdis.codetype.portableCodeType()
     cc = xdis.codetype.codeType2Portable(five_code)
     assert xdis.codetype.portableCodeType() == type(cc)
     new_code = cc.to_native()

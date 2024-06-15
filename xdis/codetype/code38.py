@@ -50,9 +50,11 @@ Code38FieldTypes.update(
 
 
 class Code38(Code3):
-    """Class for a Python 3.8..3.10 code object used when a Python interpreter less not in that
-    range but working on Python 3.8..3.10 bytecode. It also functions as an object that can be used
-    to build or write a Python3 code object, since we allow mutable structures.
+    """
+    Class for a Python 3.8..3.9 code object used when a Python
+    interpreter less not in that range but working on Python 3.8..3.10
+    bytecode. It also functions as an object that can be used to build
+    or write a Python3 code object, since we allow mutable structures.
 
     When done mutating, call method to_native().
 
@@ -60,23 +62,24 @@ class Code38(Code3):
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
     instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
+
     """
 
     def __init__(
         self,
-        co_argcount,
-        co_posonlyargcount,
-        co_kwonlyargcount,
-        co_nlocals,
-        co_stacksize,
+        co_argcount: int,
+        co_posonlyargcount: int,
+        co_kwonlyargcount: int,
+        co_nlocals: int,
+        co_stacksize: int,
         co_flags,
         co_code,
         co_consts,
         co_names,
         co_varnames,
         co_filename,
-        co_name,
-        co_firstlineno,
+        co_name: str,
+        co_firstlineno: int,
         co_lnotab,
         co_freevars,
         co_cellvars,
@@ -105,11 +108,11 @@ class Code38(Code3):
         if type(self) == Code38:
             self.check()
 
-    def to_native(self):
-        if not (3, 8) <= PYTHON_VERSION_TRIPLE < (3, 13):
+    def to_native(self) -> types.CodeType:
+        if not (3, 8) <= PYTHON_VERSION_TRIPLE < (3, 10):
             raise TypeError(
-                "Python Interpreter needs to be in range 3.8..3.12; is %s"
-                % version_tuple_to_str()
+                "Python Interpreter needs to be in range 3.8..3.9; "
+                f"is {version_tuple_to_str()}"
             )
 
         code = deepcopy(self)
@@ -133,7 +136,7 @@ class Code38(Code3):
             code.co_filename,
             code.co_name,
             code.co_firstlineno,
-            code.co_lnotab,
+            code.co_lnotab,  # noqa
             code.co_freevars,
             code.co_cellvars,
         )
