@@ -206,7 +206,7 @@ class Code310(Code38):
                 co_linetable += bytearray([0, -127])
                 line_diff -= 127
             if -127 <= line_diff <= 127:
-                co_linetable += bytearray([offset_diff, line_diff % 255])
+                co_linetable += bytearray([offset_diff, line_diff % 256])
 
         self.co_linetable = co_linetable
 
