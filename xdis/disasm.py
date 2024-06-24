@@ -264,8 +264,8 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
     co.co_consts = new_consts
 
     m = re.match("^<(.+)>$", co.co_name)
-    if m is not None or co_name in all_fns:
-        if co_name in all_fns:
+    if m is not None or co.co_name in all_fns:
+        if co.co_name in all_fns:
             basename = co_name
         else:
             basename = m.group(1)
@@ -285,6 +285,8 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
         fn_name_map[mapped_name] = co_name
         co.co_name = mapped_name
         pass
+    else:
+        mapped_name = co.co_name
 
     co = co.freeze()
     all_fns.add(co_name)

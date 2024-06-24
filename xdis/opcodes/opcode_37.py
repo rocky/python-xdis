@@ -108,13 +108,17 @@ call_op(loc, "CALL_METHOD",        161, -2,  1)
 
 format_MAKE_FUNCTION = opcode_36.format_MAKE_FUNCTION
 format_value_flags = opcode_36.format_value_flags
+# fmt: on
+
 
 def extended_format_LOAD_METHOD(opc, instructions: list) -> tuple:
     instr1 = instructions[1]
-    if (
-        instr1.tos_str
-        or instr1.opname in {"LOAD_NAME", "LOAD_GLOBAL", "LOAD_FAST", "LOAD_DEREF"}
-    ):
+    if instr1.tos_str or instr1.opname in {
+        "LOAD_NAME",
+        "LOAD_GLOBAL",
+        "LOAD_FAST",
+        "LOAD_DEREF",
+    }:
         base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
 
         return (
@@ -135,12 +139,14 @@ def extended_format_RAISE_VARARGS(opc, instructions):
         exception_name_inst = instructions[1]
         start_offset = exception_name_inst.start_offset
         exception_name = (
-            exception_name_inst.tos_str if exception_name_inst.tos_str
+            exception_name_inst.tos_str
+            if exception_name_inst.tos_str
             else exception_name_inst.argrepr
         )
         if exception_name is not None:
             return "raise %s()" % exception_name, start_offset
     return format_RAISE_VARARGS(raise_inst.argval), start_offset
+
 
 def format_RAISE_VARARGS(argc):
     assert 0 <= argc <= 2
@@ -151,21 +157,19 @@ def format_RAISE_VARARGS(argc):
     elif argc == 2:
         return "exception instance with __cause__"
 
+
 opcode_arg_fmt37 = opcode_arg_fmt36.copy()
 opcode_arg_fmt37.update(
-    {
-     "CALL_METHOD": format_CALL_FUNCTION,
-     "RAISE_VARARGS": format_RAISE_VARARGS
-    }
+    {"CALL_METHOD": format_CALL_FUNCTION, "RAISE_VARARGS": format_RAISE_VARARGS}
 )
 opcode_arg_fmt = opcode_arg_fmt37
 
 opcode_extended_fmt37 = opcode_extended_fmt36.copy()
 opcode_extended_fmt37.update(
     {
-     "CALL_METHOD": extended_format_CALL_METHOD,
-     "LOAD_METHOD": extended_format_LOAD_METHOD,
-     "RAISE_VARARGS": extended_format_RAISE_VARARGS,
+        "CALL_METHOD": extended_format_CALL_METHOD,
+        "LOAD_METHOD": extended_format_LOAD_METHOD,
+        "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     }
 )
 opcode_extended_fmt = opcode_extended_fmt37
