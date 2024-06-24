@@ -591,6 +591,9 @@ class Bytecode:
         # TODO?: Adjust width upwards if max(linestarts.values()) >= 1000?
         lineno_width = 3 if show_lineno else 0
         instructions = []
+        extended_arg_starts_line: Optional[int] = None
+        extended_arg_jump_target_offset: Optional[int] = None
+
         for instr in get_instructions_bytes(
             bytecode,
             self.opc,
@@ -627,13 +630,64 @@ class Bytecode:
                 set_lineno_number = instr.argval
                 last_was_set_lineno = True
 
+            if instr.opname == "EXTENDED_ARG" and asm_format == "asm":
+                extended_arg_starts_line = instr.starts_line
+                extended_arg_jump_target_offset = instr.offset
+                continue
+
+            if extended_arg_starts_line:
+                instr = Instruction(
+                    opcode=instr.opcode,
+                    opname=instr.opname,
+                    arg=instr.arg,
+                    argval=instr.argval,
+                    argrepr=instr.argrepr,
+                    offset=instr.offset,
+                    starts_line=extended_arg_starts_line,  # this is the only field that changes
+                    is_jump_target=instr.is_jump_target,
+                    positions=instr.positions,
+                    optype=instr.optype,
+                    has_arg=instr.has_arg,
+                    inst_size=instr.inst_size,
+                    has_extended_arg=instr.has_extended_arg,
+                    tos_str=instr.tos_str,
+                    start_offset=instr.start_offset,
+                )
+                extended_arg_starts_line = None
+
+            if extended_arg_jump_target_offset is not None:
+                instr = Instruction(
+                    opcode=instr.opcode,
+                    opname=instr.opname,
+                    arg=instr.arg,
+                    argval=instr.argval,
+                    argrepr=instr.argrepr,
+                    offset=extended_arg_jump_target_offset,
+                    starts_line=extended_arg_starts_line,
+                    is_jump_target=True,
+                    positions=instr.positions,
+                    optype=instr.optype,
+                    has_arg=instr.has_arg,
+                    inst_size=instr.inst_size,
+                    has_extended_arg=instr.has_extended_arg,
+                    tos_str=instr.tos_str,
+                    start_offset=instr.start_offset,
+                )
+                extended_arg_jump_target_offset = None
+
             instructions.append(instr)
-            new_source_line = (
-                show_lineno and instr.starts_line is not None and instr.offset > 0
+            new_source_line = show_lineno and (
+                extended_arg_starts_line
+                or instr.starts_line is not None
+                and instr.offset > 0
             )
             if new_source_line:
                 file.write("\n")
-                show_source_text(instr.starts_line)
+                show_source_text(
+                    extended_arg_starts_line
+                    if extended_arg_starts_line
+                    else instr.starts_line
+                )
 
             is_current_instr = instr.offset == lasti
 

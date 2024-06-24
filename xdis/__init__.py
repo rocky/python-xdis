@@ -32,7 +32,16 @@ from xdis.bytecode import (
     offset2line,
     op_has_argument,
 )
-from xdis.codetype import Code2, Code3, Code13, Code15, Code38, codeType2Portable
+from xdis.codetype import (
+    Code2,
+    Code3,
+    Code13,
+    Code15,
+    Code38,
+    Code310,
+    Code311,
+    codeType2Portable,
+)
 from xdis.codetype.base import code_has_star_arg, code_has_star_star_arg, iscode
 from xdis.cross_dis import (
     code_info,
@@ -170,6 +179,8 @@ __all__ = [
     "Code15",
     "Code2",
     "Code3",
+    "Code310",
+    "Code311",
     "Code38",
     "code_has_star_star_arg",
     "code_has_star_arg",

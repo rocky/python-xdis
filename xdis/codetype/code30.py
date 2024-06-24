@@ -30,10 +30,12 @@ Code3FieldTypes.update(
 
 
 class Code3(Code2):
-    """Class for a Python3 code object used when a Python not in the range between 3.0 and 3.7
-    but is working on Python 3.0 ... 3.7 bytecode. It also functions as an object that can be used
-    to build or write a Python3 code object, since we allow mutable structures.
-    When done mutating, call method freeze().
+    """
+    Class for a Python3 code object used when a Python not in the
+    range between 3.0 and 3.7 but is working on Python 3.0 ... 3.7
+    bytecode. It also functions as an object that can be used to
+    build or write a Python3 code object, since we allow mutable
+    structures.  When done mutating, call method freeze().
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
@@ -101,7 +103,7 @@ class Code3(Code2):
                 co_lnotab += bytearray([0, 255])
                 line_diff -= 255
             if 0 <= line_diff <= 256:
-                # FIXME: should warn bout dropping off a line number
+                # FIXME: should warn about dropping off a line number
                 co_lnotab += bytearray([offset_diff, line_diff])
 
         self.co_lnotab = co_lnotab
