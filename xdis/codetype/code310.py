@@ -165,7 +165,21 @@ class Code310(Code38):
         start_offset = 0
         byte_increments = [c for c in tuple(self.co_linetable[0::2])]
         line_deltas = [c for c in tuple(self.co_linetable[1::2])]
-        for byte_incr, line_delta in zip(byte_increments, line_deltas):
+
+        if len(byte_increments) == 0:
+            return start_offset, len(self.co_code), line_number
+
+        byte_incr = byte_increments[0]
+        line_delta = line_deltas[0]
+        if line_delta > 127:
+            line_delta = 256 - line_delta
+
+        if line_delta == -128:
+            yield start_offset, end_offset, line_number
+        else:
+            line_number += line_delta
+
+        for byte_incr, line_delta in zip(byte_increments[1:], line_deltas[1:]):
             end_offset = start_offset + byte_incr
             if line_delta > 127:
                 line_delta = 256 - line_delta
@@ -173,8 +187,8 @@ class Code310(Code38):
             if line_delta == -128:
                 yield start_offset, end_offset, line_number
             else:
-                line_number += line_delta
                 yield start_offset, end_offset, line_number
+                line_number += line_delta
             start_offset = end_offset
 
         end_offset = len(self.co_code)
