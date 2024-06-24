@@ -651,6 +651,7 @@ class Bytecode:
                     inst_size=instr.inst_size,
                     has_extended_arg=instr.has_extended_arg,
                     tos_str=instr.tos_str,
+                    fallthrough=instr.fallthrough,
                     start_offset=instr.start_offset,
                 )
                 extended_arg_starts_line = None
@@ -671,6 +672,7 @@ class Bytecode:
                     inst_size=instr.inst_size,
                     has_extended_arg=instr.has_extended_arg,
                     tos_str=instr.tos_str,
+                    fallthrough=instr.fallthrough,
                     start_offset=instr.start_offset,
                 )
                 extended_arg_jump_target_offset = None

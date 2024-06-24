@@ -121,7 +121,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2):
                 got_filename = filename_expected + ".got"
                 with open(got_filename, "w") as out:
                     out.write(got)
-            assert got == expected, f"see {got_filename} for diffs"
+            assert got == expected, "see %s for diffs" % got_filename
         else:
             assert got == expected
 
