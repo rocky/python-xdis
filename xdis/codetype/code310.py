@@ -178,7 +178,8 @@ class Code310(Code38):
             start_offset = end_offset
 
         end_offset = len(self.co_code)
-        return start_offset, end_offset, line_number
+        yield start_offset, end_offset, line_number
+        return
 
     def encode_lineno_tab(self):
         """
