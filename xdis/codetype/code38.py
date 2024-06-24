@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -49,9 +49,11 @@ Code38FieldTypes.update(
 
 
 class Code38(Code3):
-    """Class for a Python 3.8..3.10 code object used when a Python interpreter less not in that
-    range but working on Python 3.8..3.10 bytecode. It also functions as an object that can be used
-    to build or write a Python3 code object, since we allow mutable structures.
+    """
+    Class for a Python 3.8..3.9 code object used when a Python
+    interpreter less not in that range but working on Python 3.8..3.10
+    bytecode. It also functions as an object that can be used to build
+    or write a Python3 code object, since we allow mutable structures.
 
     When done mutating, call method to_native().
 
@@ -59,6 +61,7 @@ class Code38(Code3):
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
     instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
+
     """
 
     def __init__(
@@ -105,10 +108,10 @@ class Code38(Code3):
             self.check()
 
     def to_native(self):
-        if not (3, 8) <= PYTHON_VERSION_TRIPLE < (3, 11):
+        if not (3, 8) <= PYTHON_VERSION_TRIPLE < (3, 10):
             raise TypeError(
-                "Python Interpreter needs to be in 3.8 or greater; is %s"
-                % version_tuple_to_str()
+                "Python Interpreter needs to be in range 3.8..3.9; "
+                + "is %s" % version_tuple_to_str()
             )
 
         code = deepcopy(self)
@@ -132,7 +135,7 @@ class Code38(Code3):
             code.co_filename,
             code.co_name,
             code.co_firstlineno,
-            code.co_lnotab,
+            code.co_lnotab,  # noqa
             code.co_freevars,
             code.co_cellvars,
         )

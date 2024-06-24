@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Copyright Hagen Fritsch, 2012, License: GPL-2.0
 # Adaption and generalization for xdis use by Rocky Bernstein
-# Copyright 2019-2020
+# Copyright 2019-2020, 2024
 
 # Dropbox Python bytecode decryption tool for Dropbox versions of 1.1x
 # (and possibly earlier) which uses Python bytecode 2.5.
@@ -274,6 +274,7 @@ try:
 except ImportError:
     builtinify = lambda f: f
 
+
 def loads(s):
     """
     xdis.marshal.load() but with its dispatch load_code() function replaced
@@ -369,13 +370,12 @@ if 0:
         k.sort()
         table = {}
         for i in k:
-            print("%c (%02x %s) =>" %
-                  (ord(i), ord(i), bin(ord(i))))
-            for j,count in m[i].iteritems():
-                if j == i: continue
+            print("%c (%02x %s) =>" % (ord(i), ord(i), bin(ord(i))))
+            for j, count in m[i].iteritems():
+                if j == i:
+                    continue
                 table[ord(i)] = ord(j)
-                print("\t%c (%02x %s) [%d]" %
-                      (ord(j), ord(j), bin(ord(j)), count))
+                print("\t%c (%02x %s) [%d]" % (ord(j), ord(j), bin(ord(j)), count))
                 # print("%c (%02x %s) => %c (%02x %s)\t%d\t%s" % (ord(i),ord(i),bin(ord(i)),ord(j),ord(j),bin(ord(j)),ord(j)-ord(i),bin(ord(i)^ord(j)|0x100).replace('0', ' ')))
             print()
         return table

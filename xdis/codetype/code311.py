@@ -17,7 +17,7 @@
 import types
 from copy import deepcopy
 
-from xdis.codetype.code38 import Code38, Code38FieldTypes
+from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order given in the Python docs for
@@ -42,15 +42,15 @@ Code311FieldNames = """
         co_name
         co_qualname
         co_firstlineno
-        co_lnotab
+        co_linetable
         co_exceptiontable
 """
 
-Code311FieldTypes = deepcopy(Code38FieldTypes)
+Code311FieldTypes = deepcopy(Code310FieldTypes)
 Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": str})
 
 
-class Code311(Code38):
+class Code311(Code310):
     """Class for a Python 3.11+ code object used when a Python interpreter less than 3.11 is
     working on Python 3.11 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
@@ -59,7 +59,7 @@ class Code311(Code38):
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
-    instead as (mutable) lists. Likewise, the line number table `co_lnotab`
+    instead as (mutable) lists. Likewise, the line number table `co_linetable`
     can be stored as a simple list of offset, line_number tuples.
     """
 
@@ -100,7 +100,7 @@ class Code311(Code38):
             co_filename=co_filename,
             co_name=co_name,
             co_firstlineno=co_firstlineno,
-            co_lnotab=co_linetable,
+            co_linetable=co_linetable,
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
         )
@@ -139,7 +139,7 @@ class Code311(Code38):
             code.co_name,
             code.co_qualname,
             code.co_firstlineno,
-            code.co_lnotab,
+            code.co_linetable,
             code.co_exceptiontable,
             code.co_freevars,
             code.co_cellvars,

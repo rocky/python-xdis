@@ -110,12 +110,16 @@ call_op(loc, "CALL_METHOD",        161, -2,  1)
 
 format_MAKE_FUNCTION = opcode_36.format_MAKE_FUNCTION
 format_value_flags = opcode_36.format_value_flags
+# fmt: on
+
 
 def extended_format_LOAD_METHOD(opc, instructions):
     instr1 = instructions[1]
-    if (
-        instr1.tos_str
-        or instr1.opname in ("LOAD_NAME", "LOAD_GLOBAL", "LOAD_FAST", "LOAD_DEREF")
+    if instr1.tos_str or instr1.opname in (
+        "LOAD_NAME",
+        "LOAD_GLOBAL",
+        "LOAD_FAST",
+        "LOAD_DEREF",
     ):
         if instr1.tos_str is not None:
             base = instr1.tos_str
@@ -147,6 +151,7 @@ def extended_format_RAISE_VARARGS(opc, instructions):
             return "raise %s()" % exception_name, start_offset
     return format_RAISE_VARARGS(raise_inst.argval), start_offset
 
+
 def format_RAISE_VARARGS(argc):
     assert 0 <= argc <= 2
     if argc == 0:
@@ -156,20 +161,18 @@ def format_RAISE_VARARGS(argc):
     elif argc == 2:
         return "exception instance with __cause__"
 
+
 opcode_arg_fmt = opcode_arg_fmt37 = copy(opcode_arg_fmt36)
 opcode_arg_fmt.update(
-    {
-     "CALL_METHOD": format_CALL_FUNCTION,
-     "RAISE_VARARGS": format_RAISE_VARARGS
-     }
+    {"CALL_METHOD": format_CALL_FUNCTION, "RAISE_VARARGS": format_RAISE_VARARGS}
 )
 
 opcode_extended_fmt = opcode_extended_fmt37 = copy(opcode_extended_fmt36)
 opcode_extended_fmt.update(
     {
-     "CALL_METHOD": extended_format_CALL_METHOD,
-     "LOAD_METHOD": extended_format_LOAD_METHOD,
-     "RAISE_VARARGS": extended_format_RAISE_VARARGS,
+        "CALL_METHOD": extended_format_CALL_METHOD,
+        "LOAD_METHOD": extended_format_LOAD_METHOD,
+        "RAISE_VARARGS": extended_format_RAISE_VARARGS,
     }
 )
 

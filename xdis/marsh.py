@@ -357,7 +357,11 @@ class _Marshaller:
         self.dump(x.co_filename)
         self.dump(x.co_name)
         self.w_long(x.co_firstlineno)
-        self.dump(x.co_lnotab)
+        if hasattr(x, "co_linetable"):
+            linetable = x.co_linetable
+        else:
+            linetable = x.co_lnotab
+        self.dump(linetable)
 
     dispatch[Code3] = dump_code3
 
