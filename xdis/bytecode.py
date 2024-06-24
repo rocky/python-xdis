@@ -591,8 +591,8 @@ class Bytecode:
         # TODO?: Adjust width upwards if max(linestarts.values()) >= 1000?
         lineno_width = 3 if show_lineno else 0
         instructions = []
-        extended_arg_starts_line: Optional[int] = None
-        extended_arg_jump_target_offset: Optional[int] = None
+        extended_arg_starts_line = None
+        extended_arg_jump_target_offset = None
 
         for instr in get_instructions_bytes(
             bytecode,

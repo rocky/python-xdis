@@ -8,7 +8,6 @@
 
 import struct
 import types
-from typing import Dict
 
 import xdis.marsh as xmarshal
 
@@ -251,7 +250,7 @@ table[3] = 59
 table[11] = 75
 table[58] = 76
 
-misses: Dict[int, int] = {}
+misses = {}
 
 
 def patch(code):

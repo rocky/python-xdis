@@ -112,7 +112,7 @@ class Code38(Code3):
         if not (3, 8) <= PYTHON_VERSION_TRIPLE < (3, 10):
             raise TypeError(
                 "Python Interpreter needs to be in range 3.8..3.9; "
-                f"is {version_tuple_to_str()}"
+                + "is %s" % version_tuple_to_str()
             )
 
         code = deepcopy(self)

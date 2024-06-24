@@ -242,7 +242,7 @@ class Code310(Code38):
     def to_native(self) -> types.CodeType:
         if (3, 10) != PYTHON_VERSION_TRIPLE[:2]:
             raise TypeError(
-                f"Python Interpreter needs to be 3.10; is {version_tuple_to_str()}"
+                "Python Interpreter needs to be 3.10; is %s" % version_tuple_to_str()
             )
 
         code = deepcopy(self)
