@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2017-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -64,18 +64,18 @@ class Code2(Code15):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code2, self).__init__(
-            co_argcount = co_argcount,
-            co_nlocals = co_nlocals,
-            co_stacksize = co_stacksize,
-            co_flags = co_flags,
-            co_code = co_code,
-            co_consts = co_consts,
-            co_names = co_names,
-            co_varnames = co_varnames,
-            co_filename = co_filename,
-            co_name = co_name,
-            co_firstlineno = co_firstlineno,
-            co_lnotab = co_lnotab,
+            co_argcount=co_argcount,
+            co_nlocals=co_nlocals,
+            co_stacksize=co_stacksize,
+            co_flags=co_flags,
+            co_code=co_code,
+            co_consts=co_consts,
+            co_names=co_names,
+            co_varnames=co_varnames,
+            co_filename=co_filename,
+            co_name=co_name,
+            co_firstlineno=co_firstlineno,
+            co_lnotab=co_lnotab,
         )
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars

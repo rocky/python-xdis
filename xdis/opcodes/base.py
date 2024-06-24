@@ -356,10 +356,10 @@ def finalize_opcodes(loc):
     # as well as opmap['EXTENDED_ARG']
     loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]
 
-    # In Python 3.6+ this is 8, but we expect
-    # those opcodes to set that
-    if "EXTENDED_ARG_SHIFT" not in loc:
+    if loc["version_tuple"] < (3, 6):
         loc["EXTENDED_ARG_SHIFT"] = 16
+    else:
+        loc["EXTENDED_ARG_SHIFT"] = 8
 
     loc["ARG_MAX_VALUE"] = (1 << loc["EXTENDED_ARG_SHIFT"]) - 1
     loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]
