@@ -1,0 +1,60 @@
+# Method Name:       <module>
+# Filename:          simple_source/04_pypy_lambda.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000000 (0x0)
+# First Line:        4
+# Constants:
+#    0: <code object at 0xdeadbeef0000>, line 4
+#    1: None
+# Names:
+#    0: f
+  4:           0 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 4)
+               3 MAKE_FUNCTION        (0 default parameters)
+               6 STORE_NAME           (f)
+               9 LOAD_CONST           (None)
+              12 RETURN_VALUE
+
+
+# Method Name:       <lambda>
+# Filename:          simple_source/04_pypy_lambda.py
+# Argument count:    1
+# Number of locals:  1
+# Stack size:        3
+# Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
+# First Line:        4
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0000>, line 4
+# Names:
+#    0: map
+# Varnames:
+#	right
+# Positional arguments:
+#	right
+  4:           0 BUILD_LIST           0
+               3 LOOKUP_METHOD        (map)
+               6 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 4)
+               9 MAKE_FUNCTION        (0 default parameters)
+              12 CALL_METHOD          (1 positional, 0 named)
+              15 RETURN_VALUE
+
+
+# Method Name:       <lambda>
+# Filename:          simple_source/04_pypy_lambda.py
+# Argument count:    1
+# Number of locals:  1
+# Stack size:        1
+# Flags:             0x00000053 (NOFREE | NESTED | NEWLOCALS | OPTIMIZED)
+# First Line:        4
+# Constants:
+#    0: None
+#    1: ()
+# Varnames:
+#	length
+# Positional arguments:
+#	length
+  4:           0 LOAD_CONST           (())
+               3 RETURN_VALUE
+

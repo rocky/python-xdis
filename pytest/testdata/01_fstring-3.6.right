@@ -1,0 +1,79 @@
+# Source code size mod 2**32: 292 bytes
+# Method Name:       <module>
+# Filename:          version_specific/bug36/01_fstring.py
+# Argument count:    0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        8
+# Flags:             0x00000040 (NOFREE)
+# First Line:        3
+# Constants:
+#    0: 0
+#    1: None
+#    2: 'Fred'
+#    3: 50
+#    4: 1991
+#    5: 10
+#    6: 12
+#    7: 'My name is '
+#    8: ', my age next year is '
+#    9: 1
+#   10: ', my anniversary is '
+#   11: '%A, %B %d, %Y'
+#   12: '.'
+#   13: 'He said his name is '
+# Names:
+#    0: datetime
+#    1: name
+#    2: age
+#    3: date
+#    4: anniversary
+#    5: print
+  3:           0 LOAD_CONST           (0)
+               2 LOAD_CONST           (None)
+               4 IMPORT_NAME          (datetime)
+               6 STORE_NAME           (datetime)
+
+  4:           8 LOAD_CONST           ("Fred")
+              10 STORE_NAME           (name)
+
+  5:          12 LOAD_CONST           (50)
+              14 STORE_NAME           (age)
+
+  6:          16 LOAD_NAME            (datetime)
+              18 LOAD_ATTR            (date)
+              20 LOAD_CONST           (1991)
+              22 LOAD_CONST           (10)
+              24 LOAD_CONST           (12)
+              26 CALL_FUNCTION        (3 positional arguments)
+              28 STORE_NAME           (anniversary)
+
+  7:          30 LOAD_NAME            (print)
+              32 LOAD_CONST           ("My name is ")
+              34 LOAD_NAME            (name)
+              36 FORMAT_VALUE         0
+              38 LOAD_CONST           (", my age next year is ")
+              40 LOAD_NAME            (age)
+              42 LOAD_CONST           (1)
+              44 BINARY_ADD
+              46 FORMAT_VALUE         0
+              48 LOAD_CONST           (", my anniversary is ")
+              50 LOAD_NAME            (anniversary)
+              52 LOAD_CONST           ("%A, %B %d, %Y")
+              54 FORMAT_VALUE         4
+              56 LOAD_CONST           (".")
+              58 BUILD_STRING         7
+              60 CALL_FUNCTION        (1 positional argument)
+              62 POP_TOP
+
+  8:          64 LOAD_NAME            (print)
+              66 LOAD_CONST           ("He said his name is ")
+              68 LOAD_NAME            (name)
+              70 FORMAT_VALUE         (!r)
+              72 LOAD_CONST           (".")
+              74 BUILD_STRING         3
+              76 CALL_FUNCTION        (1 positional argument)
+              78 POP_TOP
+              80 LOAD_CONST           (None)
+              82 RETURN_VALUE
+
