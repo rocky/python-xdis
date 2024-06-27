@@ -1,0 +1,16 @@
+# Source code size mod 2**32: 0 bytes
+# SipHash:           0x0
+
+# Method Name:       <module>
+# Filename:          /src/external-vcs/github/rocky/python-xdis/pytest/../test/bytecode_2.7/03_big_dict.pyc
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000040 (NOFREE)
+# First Line:        1
+# Constants:
+#    0: None
+            LOAD_CONST           0 (None)
+            RETURN_VALUE
