@@ -1,0 +1,839 @@
+# Source code size mod 2**32: 4714 bytes
+
+# Method Name:       <module>
+# Filename:          simple_source/03_big_dict.py
+# Argument count:    0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        228
+# Flags:             0x00000040 (NOFREE)
+# First Line:        2
+# Constants:
+#    0: 'BINARY_ADD'
+#    1: '+'
+#    2: 'BINARY_SUBTRACT'
+#    3: '-'
+#    4: 'BINARY_MULTIPLY'
+#    5: '*'
+#    6: 'BINARY_DIVIDE'
+#    7: '/'
+#    8: 'BINARY_MATRIX_MULTIPLY'
+#    9: '@'
+#   10: 'BINARY_TRUE_DIVIDE'
+#   11: 'BINARY_FLOOR_DIVIDE'
+#   12: '//'
+#   13: 'BINARY_MODULO'
+#   14: '%%'
+#   15: 'BINARY_POWER'
+#   16: '**'
+#   17: 'BINARY_LSHIFT'
+#   18: '<<'
+#   19: 'BINARY_RSHIFT'
+#   20: '>>'
+#   21: 'BINARY_AND'
+#   22: '&'
+#   23: 'BINARY_OR'
+#   24: '|'
+#   25: 'BINARY_XOR'
+#   26: '^'
+#   27: 'INPLACE_ADD'
+#   28: '+='
+#   29: 'INPLACE_SUBTRACT'
+#   30: '-='
+#   31: 'INPLACE_MULTIPLY'
+#   32: '*='
+#   33: 'INPLACE_MATRIX_MULTIPLY'
+#   34: '@='
+#   35: 'INPLACE_DIVIDE'
+#   36: '/='
+#   37: 'INPLACE_TRUE_DIVIDE'
+#   38: 'INPLACE_FLOOR_DIVIDE'
+#   39: '//='
+#   40: 'INPLACE_MODULO'
+#   41: '%%='
+#   42: 'INPLACE_POWER'
+#   43: '**='
+#   44: 'INPLACE_LSHIFT'
+#   45: '<<='
+#   46: 'INPLACE_RSHIFT'
+#   47: '>>='
+#   48: 'INPLACE_AND'
+#   49: '&='
+#   50: 'INPLACE_OR'
+#   51: '|='
+#   52: 'INPLACE_XOR'
+#   53: '^='
+#   54: 'binary_expr'
+#   55: '%c %c %c'
+#   56: 0
+#   57: 1
+#   58: 'UNARY_POSITIVE'
+#   59: 'UNARY_NEGATIVE'
+#   60: 'UNARY_INVERT'
+#   61: '~%c'
+#   62: 'unary_expr'
+#   63: '%c%c'
+#   64: 'unary_not'
+#   65: 'not %c'
+#   66: 'unary_convert'
+#   67: '`%c`'
+#   68: 'get_iter'
+#   69: 'iter(%c)'
+#   70: 'slice0'
+#   71: '%c[:]'
+#   72: 'slice1'
+#   73: '%c[%p:]'
+#   74: 100
+#   75: 'slice2'
+#   76: '%c[:%p]'
+#   77: 'slice3'
+#   78: '%c[%p:%p]'
+#   79: 2
+#   80: 'IMPORT_FROM'
+#   81: '%{pattr}'
+#   82: 'load_attr'
+#   83: '%c.%[1]{pattr}'
+#   84: 'LOAD_FAST'
+#   85: 'LOAD_NAME'
+#   86: 'LOAD_CLASSNAME'
+#   87: 'LOAD_GLOBAL'
+#   88: 'LOAD_DEREF'
+#   89: 'LOAD_LOCALS'
+#   90: 'locals()'
+#   91: 'LOAD_ASSERT'
+#   92: 'DELETE_FAST'
+#   93: '%|del %{pattr}\n'
+#   94: 'DELETE_NAME'
+#   95: 'DELETE_GLOBAL'
+#   96: 'delete_subscr'
+#   97: '%|del %c[%c]\n'
+#   98: 'binary_subscr'
+#   99: '%c[%p]'
+#  100: 'binary_subscr2'
+#  101: 'store_subscr'
+#  102: '%c[%c]'
+#  103: 'STORE_FAST'
+#  104: 'STORE_NAME'
+#  105: 'STORE_GLOBAL'
+#  106: 'STORE_DEREF'
+#  107: 'unpack'
+#  108: '%C%,'
+#  109: 5
+#  110: ', '
+#  111: 'unpack_w_parens'
+#  112: '(%C%,)'
+#  113: 10
+#  114: 'unpack_list'
+#  115: '[%C]'
+#  116: 15
+#  117: 'build_tuple2'
+#  118: '%P'
+#  119: 'list_iter'
+#  120: '%c'
+#  121: 'list_for'
+#  122: ' for %c in %c%c'
+#  123: 3
+#  124: 'list_if'
+#  125: ' if %c%c'
+#  126: 'list_if_not'
+#  127: ' if not %p%c'
+#  128: 22
+#  129: 'lc_body'
+#  130: ''
+#  131: 'comp_body'
+#  132: 'set_comp_body'
+#  133: 'gen_comp_body'
+#  134: 'dict_comp_body'
+#  135: '%c:%c'
+#  136: 'assign'
+#  137: '%|%c = %p\n'
+#  138: 200
+#  139: 'augassign1'
+#  140: '%|%c %c %c\n'
+#  141: 'augassign2'
+#  142: '%|%c.%[2]{pattr} %c %c\n'
+#  143: 4
+#  144: 'designList'
+#  145: '%c = %c'
+#  146: 'and'
+#  147: '%c and %c'
+#  148: 'ret_and'
+#  149: 'and2'
+#  150: 'or'
+#  151: '%c or %c'
+#  152: 'ret_or'
+#  153: 'conditional'
+#  154: '%p if %p else %p'
+#  155: 27
+#  156: 'conditionalTrue'
+#  157: '%p if 1 else %p'
+#  158: 'ret_cond'
+#  159: 'conditionalnot'
+#  160: '%p if not %p else %p'
+#  161: 'ret_cond_not'
+#  162: 'conditional_lambda'
+#  163: '(%c if %c else %c)'
+#  164: 'return_lambda'
+#  165: 'compare'
+#  166: '%p %[-1]{pattr} %p'
+#  167: 19
+#  168: 'cmp_list'
+#  169: '%p %p'
+#  170: 29
+#  171: 30
+#  172: 'cmp_list1'
+#  173: '%[3]{pattr} %p %p'
+#  174: 'cmp_list2'
+#  175: '%[1]{pattr} %p'
+#  176: 'funcdef'
+#  177: '\n\n%|def %c\n'
+#  178: 'funcdefdeco'
+#  179: '\n\n%c'
+#  180: 'mkfuncdeco'
+#  181: '%|@%c\n%c'
+#  182: 'mkfuncdeco0'
+#  183: '%|def %c\n'
+#  184: 'classdefdeco'
+#  185: 'classdefdeco1'
+#  186: 'kwarg'
+#  187: '%[0]{pattr}=%c'
+#  188: 'kwargs'
+#  189: '%D'
+#  190: 10000
+#  191: 'assert_expr_or'
+#  192: 'assert_expr_and'
+#  193: 'print_items_stmt'
+#  194: '%|print %c%c,\n'
+#  195: 'print_items_nl_stmt'
+#  196: '%|print %c%c\n'
+#  197: 'print_item'
+#  198: ', %c'
+#  199: 'print_nl'
+#  200: '%|print\n'
+#  201: 'print_to'
+#  202: '%|print >> %c, %c,\n'
+#  203: 'print_to_nl'
+#  204: '%|print >> %c, %c\n'
+#  205: 'print_nl_to'
+#  206: '%|print >> %c\n'
+#  207: 'print_to_items'
+#  208: '%C'
+#  209: 'kv'
+#  210: '%c: %c'
+#  211: 'kv2'
+#  212: None
+#  213: ('+',)
+#  214: ('-',)
+#  215: ('*',)
+#  216: ('/',)
+#  217: ('@',)
+#  218: ('/',)
+#  219: ('//',)
+#  220: ('%%',)
+#  221: ('**',)
+#  222: ('<<',)
+#  223: ('>>',)
+#  224: ('&',)
+#  225: ('|',)
+#  226: ('^',)
+#  227: ('+=',)
+#  228: ('-=',)
+#  229: ('*=',)
+#  230: ('@=',)
+#  231: ('/=',)
+#  232: ('/=',)
+#  233: ('//=',)
+#  234: ('%%=',)
+#  235: ('**=',)
+#  236: ('<<=',)
+#  237: ('>>=',)
+#  238: ('&=',)
+#  239: ('|=',)
+#  240: ('^=',)
+#  241: -1
+#  242: ('%c %c %c', 0, -1, 1)
+#  243: ('+',)
+#  244: ('-',)
+#  245: ('%c%c', 1, 0)
+#  246: ('not %c', 0)
+#  247: ('`%c`', 0)
+#  248: ('iter(%c)', 0)
+#  249: ('%c[:]', 0)
+#  250: (1, 100)
+#  251: ('%c[%p:]', 0, (1, 100))
+#  252: (1, 100)
+#  253: ('%c[:%p]', 0, (1, 100))
+#  254: (1, 100)
+#  255: (2, 100)
+#  256: ('%c[%p:%p]', 0, (1, 100), (2, 100))
+#  257: ('%{pattr}',)
+#  258: ('%c.%[1]{pattr}', 0)
+#  259: ('%{pattr}',)
+#  260: ('%{pattr}',)
+#  261: ('%{pattr}',)
+#  262: ('%{pattr}',)
+#  263: ('%{pattr}',)
+#  264: ('locals()',)
+#  265: ('%{pattr}',)
+#  266: ('%|del %{pattr}\n',)
+#  267: ('%|del %{pattr}\n',)
+#  268: ('%|del %{pattr}\n',)
+#  269: ('%|del %c[%c]\n', 0, 1)
+#  270: (1, 100)
+#  271: ('%c[%p]', 0, (1, 100))
+#  272: (1, 100)
+#  273: ('%c[%p]', 0, (1, 100))
+#  274: ('%c[%c]', 0, 1)
+#  275: ('%{pattr}',)
+#  276: ('%{pattr}',)
+#  277: ('%{pattr}',)
+#  278: ('%{pattr}',)
+#  279: (1, 5, ', ')
+#  280: ('%C%,', (1, 5, ', '))
+#  281: (1, 10, ', ')
+#  282: ('(%C%,)', (1, 10, ', '))
+#  283: (1, 15, ', ')
+#  284: ('[%C]', (1, 15, ', '))
+#  285: -1
+#  286: (0, -1, ', ', 100)
+#  287: ('%P', (0, -1, ', ', 100))
+#  288: ('%c', 0)
+#  289: (' for %c in %c%c', 2, 0, 3)
+#  290: (' if %c%c', 0, 2)
+#  291: (0, 22)
+#  292: (' if not %p%c', (0, 22), 2)
+#  293: ('',)
+#  294: ('',)
+#  295: ('%c', 0)
+#  296: ('%c', 0)
+#  297: ('%c:%c', 1, 0)
+#  298: -1
+#  299: (0, 200)
+#  300: ('%|%c = %p\n', -1, (0, 200))
+#  301: ('%|%c %c %c\n', 0, 2, 1)
+#  302: -3
+#  303: -4
+#  304: ('%|%c.%[2]{pattr} %c %c\n', 0, -3, -4)
+#  305: -1
+#  306: ('%c = %c', 0, -1)
+#  307: ('%c and %c', 0, 2)
+#  308: ('%c and %c', 0, 2)
+#  309: ('%c', 3)
+#  310: ('%c or %c', 0, 2)
+#  311: ('%c or %c', 0, 2)
+#  312: (2, 27)
+#  313: (0, 27)
+#  314: (4, 27)
+#  315: ('%p if %p else %p', (2, 27), (0, 27), (4, 27))
+#  316: (0, 27)
+#  317: (2, 27)
+#  318: ('%p if 1 else %p', (0, 27), (2, 27))
+#  319: (2, 27)
+#  320: (0, 27)
+#  321: -1
+#  322: (-1, 27)
+#  323: ('%p if %p else %p', (2, 27), (0, 27), (-1, 27))
+#  324: (2, 27)
+#  325: (0, 22)
+#  326: (4, 27)
+#  327: ('%p if not %p else %p', (2, 27), (0, 22), (4, 27))
+#  328: (2, 27)
+#  329: (0, 22)
+#  330: -1
+#  331: (-1, 27)
+#  332: ('%p if not %p else %p', (2, 27), (0, 22), (-1, 27))
+#  333: ('(%c if %c else %c)', 2, 0, 3)
+#  334: ('%c', 0)
+#  335: (0, 19)
+#  336: (1, 19)
+#  337: ('%p %[-1]{pattr} %p', (0, 19), (1, 19))
+#  338: (0, 29)
+#  339: (1, 30)
+#  340: ('%p %p', (0, 29), (1, 30))
+#  341: (0, 19)
+#  342: -2
+#  343: (-2, 19)
+#  344: ('%[3]{pattr} %p %p', (0, 19), (-2, 19))
+#  345: (0, 19)
+#  346: ('%[1]{pattr} %p', (0, 19))
+#  347: -2
+#  348: ('\n\n%|def %c\n', -2)
+#  349: ('\n\n%c', 0)
+#  350: ('%|@%c\n%c', 0, 1)
+#  351: ('%|def %c\n', 0)
+#  352: ('\n\n%c', 0)
+#  353: ('%|@%c\n%c', 0, 1)
+#  354: ('%[0]{pattr}=%c', 1)
+#  355: (0, 10000, ', ')
+#  356: ('%D', (0, 10000, ', '))
+#  357: ('%c or %c', 0, 2)
+#  358: ('%c and %c', 0, 2)
+#  359: ('%|print %c%c,\n', 0, 2)
+#  360: ('%|print %c%c\n', 0, 2)
+#  361: (', %c', 0)
+#  362: ('%|print\n',)
+#  363: ('%|print >> %c, %c,\n', 0, 1)
+#  364: ('%|print >> %c, %c\n', 0, 1)
+#  365: ('%|print >> %c\n', 0)
+#  366: (0, 2, ', ')
+#  367: ('%C', (0, 2, ', '))
+#  368: ('%c: %c', 3, 1)
+#  369: ('%c: %c', 1, 2)
+# Names:
+#    0: TABLE_DIRECT
+  2:
+            LOAD_CONST           0 ("BINARY_ADD")
+            LOAD_CONST           213 (('+',))
+
+  3:
+            LOAD_CONST           2 ("BINARY_SUBTRACT")
+            LOAD_CONST           214 (('-',))
+
+  4:
+            LOAD_CONST           4 ("BINARY_MULTIPLY")
+            LOAD_CONST           215 (('*',))
+
+  5:
+            LOAD_CONST           6 ("BINARY_DIVIDE")
+            LOAD_CONST           216 (('/',))
+
+  6:
+            LOAD_CONST           8 ("BINARY_MATRIX_MULTIPLY")
+            LOAD_CONST           217 (('@',))
+
+  7:
+            LOAD_CONST           10 ("BINARY_TRUE_DIVIDE")
+            LOAD_CONST           218 (('/',))
+
+  8:
+            LOAD_CONST           11 ("BINARY_FLOOR_DIVIDE")
+            LOAD_CONST           219 (('//',))
+
+  9:
+            LOAD_CONST           13 ("BINARY_MODULO")
+            LOAD_CONST           220 (('%%',))
+
+ 10:
+            LOAD_CONST           15 ("BINARY_POWER")
+            LOAD_CONST           221 (('**',))
+
+ 11:
+            LOAD_CONST           17 ("BINARY_LSHIFT")
+            LOAD_CONST           222 (('<<',))
+
+ 12:
+            LOAD_CONST           19 ("BINARY_RSHIFT")
+            LOAD_CONST           223 (('>>',))
+
+ 13:
+            LOAD_CONST           21 ("BINARY_AND")
+            LOAD_CONST           224 (('&',))
+
+ 14:
+            LOAD_CONST           23 ("BINARY_OR")
+            LOAD_CONST           225 (('|',))
+
+ 15:
+            LOAD_CONST           25 ("BINARY_XOR")
+            LOAD_CONST           226 (('^',))
+
+ 16:
+            LOAD_CONST           27 ("INPLACE_ADD")
+            LOAD_CONST           227 (('+=',))
+
+ 17:
+            LOAD_CONST           29 ("INPLACE_SUBTRACT")
+            LOAD_CONST           228 (('-=',))
+
+ 18:
+            LOAD_CONST           31 ("INPLACE_MULTIPLY")
+            LOAD_CONST           229 (('*=',))
+
+ 19:
+            LOAD_CONST           33 ("INPLACE_MATRIX_MULTIPLY")
+            LOAD_CONST           230 (('@=',))
+
+ 20:
+            LOAD_CONST           35 ("INPLACE_DIVIDE")
+            LOAD_CONST           231 (('/=',))
+
+ 21:
+            LOAD_CONST           37 ("INPLACE_TRUE_DIVIDE")
+            LOAD_CONST           232 (('/=',))
+
+ 22:
+            LOAD_CONST           38 ("INPLACE_FLOOR_DIVIDE")
+            LOAD_CONST           233 (('//=',))
+
+ 23:
+            LOAD_CONST           40 ("INPLACE_MODULO")
+            LOAD_CONST           234 (('%%=',))
+
+ 24:
+            LOAD_CONST           42 ("INPLACE_POWER")
+            LOAD_CONST           235 (('**=',))
+
+ 25:
+            LOAD_CONST           44 ("INPLACE_LSHIFT")
+            LOAD_CONST           236 (('<<=',))
+
+ 26:
+            LOAD_CONST           46 ("INPLACE_RSHIFT")
+            LOAD_CONST           237 (('>>=',))
+
+ 27:
+            LOAD_CONST           48 ("INPLACE_AND")
+            LOAD_CONST           238 (('&=',))
+
+ 28:
+            LOAD_CONST           50 ("INPLACE_OR")
+            LOAD_CONST           239 (('|=',))
+
+ 29:
+            LOAD_CONST           52 ("INPLACE_XOR")
+            LOAD_CONST           240 (('^=',))
+
+ 30:
+            LOAD_CONST           54 ("binary_expr")
+            LOAD_CONST           242 (('%c %c %c', 0, -1, 1))
+
+ 32:
+            LOAD_CONST           58 ("UNARY_POSITIVE")
+            LOAD_CONST           243 (('+',))
+
+ 33:
+            LOAD_CONST           59 ("UNARY_NEGATIVE")
+            LOAD_CONST           244 (('-',))
+
+ 34:
+            LOAD_CONST           60 ("UNARY_INVERT")
+            LOAD_CONST           61 ("~%c")
+
+ 35:
+            LOAD_CONST           62 ("unary_expr")
+            LOAD_CONST           245 (('%c%c', 1, 0))
+
+ 37:
+            LOAD_CONST           64 ("unary_not")
+            LOAD_CONST           246 (('not %c', 0))
+
+ 38:
+            LOAD_CONST           66 ("unary_convert")
+            LOAD_CONST           247 (('`%c`', 0))
+
+ 39:
+            LOAD_CONST           68 ("get_iter")
+            LOAD_CONST           248 (('iter(%c)', 0))
+
+ 40:
+            LOAD_CONST           70 ("slice0")
+            LOAD_CONST           249 (('%c[:]', 0))
+
+ 41:
+            LOAD_CONST           72 ("slice1")
+            LOAD_CONST           251 (('%c[%p:]', 0, (1, 100)))
+
+ 42:
+            LOAD_CONST           75 ("slice2")
+            LOAD_CONST           253 (('%c[:%p]', 0, (1, 100)))
+
+ 43:
+            LOAD_CONST           77 ("slice3")
+            LOAD_CONST           256 (('%c[%p:%p]', 0, (1, 100), (2, 100)))
+
+ 45:
+            LOAD_CONST           80 ("IMPORT_FROM")
+            LOAD_CONST           257 (('%{pattr}',))
+
+ 46:
+            LOAD_CONST           82 ("load_attr")
+            LOAD_CONST           258 (('%c.%[1]{pattr}', 0))
+
+ 47:
+            LOAD_CONST           84 ("LOAD_FAST")
+            LOAD_CONST           259 (('%{pattr}',))
+
+ 48:
+            LOAD_CONST           85 ("LOAD_NAME")
+            LOAD_CONST           260 (('%{pattr}',))
+
+ 49:
+            LOAD_CONST           86 ("LOAD_CLASSNAME")
+            LOAD_CONST           261 (('%{pattr}',))
+
+ 50:
+            LOAD_CONST           87 ("LOAD_GLOBAL")
+            LOAD_CONST           262 (('%{pattr}',))
+
+ 51:
+            LOAD_CONST           88 ("LOAD_DEREF")
+            LOAD_CONST           263 (('%{pattr}',))
+
+ 52:
+            LOAD_CONST           89 ("LOAD_LOCALS")
+            LOAD_CONST           264 (('locals()',))
+
+ 53:
+            LOAD_CONST           91 ("LOAD_ASSERT")
+            LOAD_CONST           265 (('%{pattr}',))
+
+ 54:
+            LOAD_CONST           92 ("DELETE_FAST")
+            LOAD_CONST           266 (('%|del %{pattr}\n',))
+
+ 55:
+            LOAD_CONST           94 ("DELETE_NAME")
+            LOAD_CONST           267 (('%|del %{pattr}\n',))
+
+ 56:
+            LOAD_CONST           95 ("DELETE_GLOBAL")
+            LOAD_CONST           268 (('%|del %{pattr}\n',))
+
+ 57:
+            LOAD_CONST           96 ("delete_subscr")
+            LOAD_CONST           269 (('%|del %c[%c]\n', 0, 1))
+
+ 58:
+            LOAD_CONST           98 ("binary_subscr")
+            LOAD_CONST           271 (('%c[%p]', 0, (1, 100)))
+
+ 59:
+            LOAD_CONST           100 ("binary_subscr2")
+            LOAD_CONST           273 (('%c[%p]', 0, (1, 100)))
+
+ 60:
+            LOAD_CONST           101 ("store_subscr")
+            LOAD_CONST           274 (('%c[%c]', 0, 1))
+
+ 61:
+            LOAD_CONST           103 ("STORE_FAST")
+            LOAD_CONST           275 (('%{pattr}',))
+
+ 62:
+            LOAD_CONST           104 ("STORE_NAME")
+            LOAD_CONST           276 (('%{pattr}',))
+
+ 63:
+            LOAD_CONST           105 ("STORE_GLOBAL")
+            LOAD_CONST           277 (('%{pattr}',))
+
+ 64:
+            LOAD_CONST           106 ("STORE_DEREF")
+            LOAD_CONST           278 (('%{pattr}',))
+
+ 65:
+            LOAD_CONST           107 ("unpack")
+            LOAD_CONST           280 (('%C%,', (1, 5, ', ')))
+
+ 66:
+            LOAD_CONST           111 ("unpack_w_parens")
+            LOAD_CONST           282 (('(%C%,)', (1, 10, ', ')))
+
+ 68:
+            LOAD_CONST           114 ("unpack_list")
+            LOAD_CONST           284 (('[%C]', (1, 15, ', ')))
+
+ 69:
+            LOAD_CONST           117 ("build_tuple2")
+            LOAD_CONST           287 (('%P', (0, -1, ', ', 100)))
+
+ 71:
+            LOAD_CONST           119 ("list_iter")
+            LOAD_CONST           288 (('%c', 0))
+
+ 72:
+            LOAD_CONST           121 ("list_for")
+            LOAD_CONST           289 ((' for %c in %c%c', 2, 0, 3))
+
+ 73:
+            LOAD_CONST           124 ("list_if")
+            LOAD_CONST           290 ((' if %c%c', 0, 2))
+
+ 74:
+            LOAD_CONST           126 ("list_if_not")
+            LOAD_CONST           292 ((' if not %p%c', (0, 22), 2))
+
+ 75:
+            LOAD_CONST           129 ("lc_body")
+            LOAD_CONST           293 (('',))
+
+ 77:
+            LOAD_CONST           131 ("comp_body")
+            LOAD_CONST           294 (('',))
+
+ 78:
+            LOAD_CONST           132 ("set_comp_body")
+            LOAD_CONST           295 (('%c', 0))
+
+ 79:
+            LOAD_CONST           133 ("gen_comp_body")
+            LOAD_CONST           296 (('%c', 0))
+
+ 80:
+            LOAD_CONST           134 ("dict_comp_body")
+            LOAD_CONST           297 (('%c:%c', 1, 0))
+
+ 82:
+            LOAD_CONST           136 ("assign")
+            LOAD_CONST           300 (('%|%c = %p\n', -1, (0, 200)))
+
+ 84:
+            LOAD_CONST           139 ("augassign1")
+            LOAD_CONST           301 (('%|%c %c %c\n', 0, 2, 1))
+
+ 86:
+            LOAD_CONST           141 ("augassign2")
+            LOAD_CONST           304 (('%|%c.%[2]{pattr} %c %c\n', 0, -3, -4))
+
+ 87:
+            LOAD_CONST           144 ("designList")
+            LOAD_CONST           306 (('%c = %c', 0, -1))
+
+ 88:
+            LOAD_CONST           146 ("and")
+            LOAD_CONST           307 (('%c and %c', 0, 2))
+
+ 89:
+            LOAD_CONST           148 ("ret_and")
+            LOAD_CONST           308 (('%c and %c', 0, 2))
+
+ 90:
+            LOAD_CONST           149 ("and2")
+            LOAD_CONST           309 (('%c', 3))
+
+ 91:
+            LOAD_CONST           150 ("or")
+            LOAD_CONST           310 (('%c or %c', 0, 2))
+
+ 92:
+            LOAD_CONST           152 ("ret_or")
+            LOAD_CONST           311 (('%c or %c', 0, 2))
+
+ 93:
+            LOAD_CONST           153 ("conditional")
+            LOAD_CONST           315 (('%p if %p else %p', (2, 27), (0, 27), (4, 27)))
+
+ 94:
+            LOAD_CONST           156 ("conditionalTrue")
+            LOAD_CONST           318 (('%p if 1 else %p', (0, 27), (2, 27)))
+
+ 95:
+            LOAD_CONST           158 ("ret_cond")
+            LOAD_CONST           323 (('%p if %p else %p', (2, 27), (0, 27), (-1, 27)))
+
+ 96:
+            LOAD_CONST           159 ("conditionalnot")
+            LOAD_CONST           327 (('%p if not %p else %p', (2, 27), (0, 22), (4, 27)))
+
+ 97:
+            LOAD_CONST           161 ("ret_cond_not")
+            LOAD_CONST           332 (('%p if not %p else %p', (2, 27), (0, 22), (-1, 27)))
+
+ 98:
+            LOAD_CONST           162 ("conditional_lambda")
+            LOAD_CONST           333 (('(%c if %c else %c)', 2, 0, 3))
+
+ 99:
+            LOAD_CONST           164 ("return_lambda")
+            LOAD_CONST           334 (('%c', 0))
+
+100:
+            LOAD_CONST           165 ("compare")
+            LOAD_CONST           337 (('%p %[-1]{pattr} %p', (0, 19), (1, 19)))
+
+101:
+            LOAD_CONST           168 ("cmp_list")
+            LOAD_CONST           340 (('%p %p', (0, 29), (1, 30)))
+
+102:
+            LOAD_CONST           172 ("cmp_list1")
+            LOAD_CONST           344 (('%[3]{pattr} %p %p', (0, 19), (-2, 19)))
+
+103:
+            LOAD_CONST           174 ("cmp_list2")
+            LOAD_CONST           346 (('%[1]{pattr} %p', (0, 19)))
+
+104:
+            LOAD_CONST           176 ("funcdef")
+            LOAD_CONST           348 (('\n\n%|def %c\n', -2))
+
+105:
+            LOAD_CONST           178 ("funcdefdeco")
+            LOAD_CONST           349 (('\n\n%c', 0))
+
+106:
+            LOAD_CONST           180 ("mkfuncdeco")
+            LOAD_CONST           350 (('%|@%c\n%c', 0, 1))
+
+107:
+            LOAD_CONST           182 ("mkfuncdeco0")
+            LOAD_CONST           351 (('%|def %c\n', 0))
+
+108:
+            LOAD_CONST           184 ("classdefdeco")
+            LOAD_CONST           352 (('\n\n%c', 0))
+
+109:
+            LOAD_CONST           185 ("classdefdeco1")
+            LOAD_CONST           353 (('%|@%c\n%c', 0, 1))
+
+110:
+            LOAD_CONST           186 ("kwarg")
+            LOAD_CONST           354 (('%[0]{pattr}=%c', 1))
+
+111:
+            LOAD_CONST           188 ("kwargs")
+            LOAD_CONST           356 (('%D', (0, 10000, ', ')))
+
+113:
+            LOAD_CONST           191 ("assert_expr_or")
+            LOAD_CONST           357 (('%c or %c', 0, 2))
+
+114:
+            LOAD_CONST           192 ("assert_expr_and")
+            LOAD_CONST           358 (('%c and %c', 0, 2))
+
+115:
+            LOAD_CONST           193 ("print_items_stmt")
+            LOAD_CONST           359 (('%|print %c%c,\n', 0, 2))
+
+116:
+            LOAD_CONST           195 ("print_items_nl_stmt")
+            LOAD_CONST           360 (('%|print %c%c\n', 0, 2))
+
+117:
+            LOAD_CONST           197 ("print_item")
+            LOAD_CONST           361 ((', %c', 0))
+
+118:
+            LOAD_CONST           199 ("print_nl")
+            LOAD_CONST           362 (('%|print\n',))
+
+119:
+            LOAD_CONST           201 ("print_to")
+            LOAD_CONST           363 (('%|print >> %c, %c,\n', 0, 1))
+
+120:
+            LOAD_CONST           203 ("print_to_nl")
+            LOAD_CONST           364 (('%|print >> %c, %c\n', 0, 1))
+
+121:
+            LOAD_CONST           205 ("print_nl_to")
+            LOAD_CONST           365 (('%|print >> %c\n', 0))
+
+122:
+            LOAD_CONST           207 ("print_to_items")
+            LOAD_CONST           367 (('%C', (0, 2, ', ')))
+
+123:
+            LOAD_CONST           209 ("kv")
+            LOAD_CONST           368 (('%c: %c', 3, 1))
+
+124:
+            LOAD_CONST           211 ("kv2")
+            LOAD_CONST           369 (('%c: %c', 1, 2))
+            BUILD_MAP            113
+            STORE_NAME           0 (TABLE_DIRECT)
+            LOAD_CONST           212 (None)
+            RETURN_VALUE
+
