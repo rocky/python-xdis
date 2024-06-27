@@ -165,20 +165,35 @@ class Code310(Code38):
         start_offset = 0
         byte_increments = [c for c in tuple(self.co_linetable[0::2])]
         line_deltas = [c for c in tuple(self.co_linetable[1::2])]
-        for byte_incr, line_delta in zip(byte_increments, line_deltas):
+
+        if len(byte_increments) == 0:
+            return start_offset, len(self.co_code), line_number
+
+        byte_incr = byte_increments[0]
+        line_delta = line_deltas[0]
+        assert line_delta != -128, "the first line delta can't logically be -128"
+        assert isinstance(line_delta, int)
+        if line_delta > 127:
+            line_delta = 256 - line_delta
+        else:
+            line_number += line_delta
+
+        for byte_incr, line_delta in zip(byte_increments[1:], line_deltas[1:]):
+            assert isinstance(line_delta, int)
+            assert isinstance(byte_incr, int)
             end_offset = start_offset + byte_incr
             if line_delta > 127:
                 line_delta = 256 - line_delta
 
             if line_delta == -128:
-                yield start_offset, end_offset, line_number
-            else:
-                line_number += line_delta
-                yield start_offset, end_offset, line_number
+                line_delta = 0
+            yield start_offset, end_offset, line_number
+            line_number += line_delta
             start_offset = end_offset
 
         end_offset = len(self.co_code)
-        return start_offset, end_offset, line_number
+        yield start_offset, end_offset, line_number
+        return
 
     def encode_lineno_tab(self):
         """
@@ -191,22 +206,23 @@ class Code310(Code38):
 
         prev_line_number = self.co_firstlineno
         prev_offset = 0
+        offset_diff = 0
+
         for offset, line_number in self.co_linetable:
-            offset_diff = offset - prev_offset
             line_diff = line_number - prev_line_number
-            prev_offset = offset
             prev_line_number = line_number
+            offset_diff = offset - prev_offset
+            prev_offset = offset
             while offset_diff >= 256:
                 co_linetable += bytearray([255, 0])
                 offset_diff -= 255
+            co_linetable += bytearray([offset_diff, line_diff % 256])
             while line_diff >= 127:
                 co_linetable += bytearray([0, 127])
                 line_diff -= 127
             while line_diff < -127:
                 co_linetable += bytearray([0, -127])
                 line_diff -= 127
-            if -127 <= line_diff <= 127:
-                co_linetable += bytearray([offset_diff, line_diff % 256])
 
         self.co_linetable = co_linetable
 
