@@ -12,7 +12,7 @@
 # Names:
 #    0: compact_traceback
   6:           0 LOAD_CONST           (<code object at 0xdeadbeef0000>, line 6)
-               3 MAKE_FUNCTION        (0 positional, 0 keyword only, 0 annotated)
+               3 MAKE_FUNCTION        (No arguments)
                6 STORE_NAME           (compact_traceback)
                9 LOAD_CONST           (None)
               12 RETURN_VALUE
@@ -40,9 +40,9 @@
                6 POP_TOP
 
   8:           7 LOAD_GLOBAL          (AssertionError)
-              10 LOAD_CONST           ('traceback does not exist')
+              10 LOAD_CONST           ("traceback does not exist")
               13 CALL_FUNCTION        (1 positional, 0 named)
-              16 RAISE_VARARGS        1
+              16 RAISE_VARARGS        (exception)
               19 JUMP_FORWARD         (to 23)
          >>   22 POP_TOP
 
