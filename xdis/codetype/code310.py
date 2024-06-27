@@ -167,7 +167,8 @@ class Code310(Code38):
         line_deltas = [c for c in tuple(self.co_linetable[1::2])]
 
         if len(byte_increments) == 0:
-            return start_offset, len(self.co_code), line_number
+            yield start_offset, len(self.co_code), line_number
+            return
 
         byte_incr = byte_increments[0]
         line_delta = line_deltas[0]
