@@ -108,49 +108,17 @@ def run_check_disasm(test_tuple, function_to_test):
         # ("03_big_dict", "3.10"), # FIXME
     ],
 )
-def test_funcoutput(test_tuple, function_to_test):
-    in_file, filename_expected = [os.path.join(get_srcdir(), p) for p in test_tuple]
-    resout = StringIO()
-    function_to_test(in_file, resout)
-    expected_lines = open(filename_expected, "r").readlines()
-    expected = "".join(expected_lines)
-    got_lines = resout.getvalue().split("\n")
-    if platform.python_implementation() in ("GraalVM", "PyPy"):
-        got_lines = got_lines[1:]
-    got_lines = [
-        re.sub(" at 0x[0-9a-f]+", " at 0xdeadbeef0000", line) for line in got_lines
-    ]
-    got_lines = [
-        re.sub(
-            "<code object .*>|<Code.+ code object .*>",
-            "<code object at 0xdeadbeef0000>",
-            line,
-        )
-        for line in got_lines
-    ]
-
-    # In Python before 3.10 lines describing Python versions were
-    # two lines, e.g.:
-    #  Python 3.7.11 (default, Jul  3 2021, 19:46:46)
-    #    [GCC 9.3.0]
-    # In Python 3.10 they are a single line, e.g:
-    #    Python 3.10.0 (default, Oct  4 2021, 23:36:04) [GCC 9.3.0]
-    skip_lines = 4 if PYTHON_VERSION_TRIPLE >= (3, 10) else 5
-    if IS_PYPY:
-        if (3, 5) <= PYTHON_VERSION_TRIPLE[:2] <= (3, 9):
-            # PyPy also adds a timestamp line
-            skip_lines -= 1
-
-    got = "\n".join(got_lines[skip_lines:])
-
-    if "XDIS_DONT_WRITE_DOT_GOT_FILES" not in os.environ:
-        if got != expected:
-            got_filename = filename_expected + ".got"
-            with open(got_filename, "w") as out:
-                out.write(got)
-        assert got == expected, "see %s for diffs" % got_filename
-    else:
-        assert got == expected
+def test_funcoutput(test_name, version):
+    test_tuple = (
+        "../test/bytecode_%s/%s.pyc" % (version, test_name),
+        "testdata/%s-%s.right" % (test_name, version),
+    )
+    run_check_disasm(test_tuple, disassemble_file)
+    test_tuple = (
+        "../test/bytecode_%s/%s.pyc" % (version, test_name),
+        "testdata/%s-xasm-%s.right" % (test_name, version),
+    )
+    run_check_disasm(test_tuple, disassemble_file_xasm)
 
 
 if __name__ == "__main__":
