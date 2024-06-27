@@ -89,38 +89,29 @@ def run_check_disasm(test_tuple, function_to_test):
 #  ),
 
 
-# FIXME: redo putting more in loop. Add more Python versions and
-# more formats
-@pytest.mark.skipif(
-    PYTHON_VERSION_TRIPLE < (3, 3), reason="Haven't tested on older Python"
-)
-@pytest.mark.skipif(
-    os.name == "nt", reason="Windows differences in output need going over"
-)
-@pytest.mark.parametrize(
-    ("test_name", "version"),
-    [
-        ("01_fstring", "3.6"),
-        # ("01_fstring", "3.10"),  # FIXME
-        ("04_pypy_lambda", "2.7pypy"),
-        ("03_big_dict", "2.7"),
-        ("03_big_dict", "3.3"),
-        ("03_big_dict", "3.5"),
-        ("03_big_dict", "3.6"),
-        # ("03_big_dict", "3.10"), # FIXME
-    ],
-)
-def test_funcoutput(test_name, version):
-    test_tuple = (
-        "../test/bytecode_%s/%s.pyc" % (version, test_name),
-        "testdata/%s-%s.right" % (test_name, version),
-    )
-    run_check_disasm(test_tuple, disassemble_file)
-    test_tuple = (
-        "../test/bytecode_%s/%s.pyc" % (version, test_name),
-        "testdata/%s-xasm-%s.right" % (test_name, version),
-    )
-    run_check_disasm(test_tuple, disassemble_file_xasm)
+if os.name != "nt":
+
+    def test_funcoutput():
+        for test_name, version in [
+            ("01_fstring", "3.6"),
+            # ("01_fstring", "3.10"),  # FIXME
+            ("04_pypy_lambda", "2.7pypy"),
+            ("03_big_dict", "2.7"),
+            ("03_big_dict", "3.3"),
+            ("03_big_dict", "3.5"),
+            ("03_big_dict", "3.6"),
+            # ("03_big_dict", "3.10"), # FIXME
+        ]:
+            test_tuple = (
+                "../test/bytecode_%s/%s.pyc" % (version, test_name),
+                "testdata/%s-%s.right" % (test_name, version),
+            )
+            run_check_disasm(test_tuple, disassemble_file)
+            test_tuple = (
+                "../test/bytecode_%s/%s.pyc" % (version, test_name),
+                "testdata/%s-xasm-%s.right" % (test_name, version),
+            )
+            run_check_disasm(test_tuple, disassemble_file_xasm)
 
 
 if __name__ == "__main__":
