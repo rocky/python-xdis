@@ -104,6 +104,8 @@ def run_check_disasm(test_tuple, function_to_test):
         # ("01_fstring", "3.10"),  # FIXME
         ("04_pypy_lambda", "2.7pypy"),
         ("03_big_dict", "2.7"),
+        ("03_big_dict", "3.3"),
+        ("03_big_dict", "3.5"),
         ("03_big_dict", "3.6"),
         # ("03_big_dict", "3.10"), # FIXME
     ],
