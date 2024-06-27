@@ -13,7 +13,7 @@ if len(sys.argv) < 2:
 
 try:
     optimize = int(sys.argv[-1])
-    assert sys.argv >= 3
+    assert len(sys.argv) >= 3
     py_source = sys.argv[1:-1]
 except Exception:
     optimize = 2
@@ -21,6 +21,9 @@ except Exception:
 
 for path in py_source:
     short = os.path.basename(path)
+    if short.endswith(".py"):
+        short = short[:-3]
+
     if hasattr(sys, "pypy_version_info"):
         version = version_tuple_to_str(end=2, delimiter="")
         bytecode = "bytecode_pypy%s/%s.pypy%s.pyc" % (version, short, version)

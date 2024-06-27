@@ -358,7 +358,9 @@ class _Marshaller:
         self.dump(x.co_filename)
         self.dump(x.co_name)
         self.w_long(x.co_firstlineno)
+        # 3.10 and greater uses co_linetable.
         linetable = x.co_linetable if hasattr(x, "co_linetable") else x.co_lnotab
+
         self.dump(linetable)
 
     dispatch[Code3] = dump_code3
