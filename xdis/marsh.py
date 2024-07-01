@@ -362,10 +362,6 @@ class _Marshaller:
         else:
             # 3.10 and greater uses co_linetable.
             linetable = x.co_lnotab
-=======
-        linetable = x.co_linetable if hasattr(x, "co_linetable") else x.co_lnotab
-
->>>>>>> python-3.0-to-3.2
         self.dump(linetable)
 
     dispatch[Code3] = dump_code3

@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,6 +17,7 @@
 import types
 from copy import deepcopy
 
+from xdis.codetype.code13 import Bytes
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
@@ -47,7 +48,7 @@ Code311FieldNames = """
 """
 
 Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": str})
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": Bytes})
 
 
 class Code311(Code310):

@@ -15,7 +15,7 @@ from xdis import disassemble_file
 from xdis.version import __version__
 from xdis.version_info import PYTHON_VERSION_STR, PYTHON_VERSION_TRIPLE
 
-FORMATS=("xasm", "bytes", "classic", "extended", "extended-bytes", "header")
+FORMATS=("xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header")
 
 program, ext = os.path.splitext(os.path.basename(__file__))
 
@@ -32,7 +32,7 @@ the Python interpreter used to run this program. For example, you can disassembl
 bytecode from Python 2.7.13 and vice versa.
 
 Options:
-  -F | --format {xasm | bytes | classic | extended | extended-bytes | header}
+  -F | --format {xasm | bytes | classic | dis | extended | extended-bytes | header}
                      specifiy assembly output format
   -V | --version     Show version and stop
   -S | --show-source Show source code when it is available
@@ -50,26 +50,6 @@ Examples:
 PATTERNS = ('*.pyc', '*.pyo')
 
 def main():
-=======
-@click.command()
-@click.option(
-    "--format",
-    "-F",
-    type=click.Choice(
-        ["xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header"],
-        **case_sensitive
-    ),
-    help="Select disassembly style",
-)
-@click.option(
-    "--show-source/--no-show-source",
-    "-S",
-    help="Intersperse Python source text from linecache if available.",
-)
-@click.version_option(version=__version__)
-@click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format, show_source: bool, files):
->>>>>>> python-3.0-to-3.2
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.

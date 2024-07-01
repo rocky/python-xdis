@@ -162,12 +162,6 @@ def format_RAISE_VARARGS(argc):
         return "exception instance with __cause__"
 
 
-opcode_arg_fmt37 = opcode_arg_fmt36.copy()
-opcode_arg_fmt37.update(
-    {"CALL_METHOD": format_CALL_FUNCTION, "RAISE_VARARGS": format_RAISE_VARARGS}
-)
-opcode_arg_fmt = opcode_arg_fmt37
-
 opcode_arg_fmt = opcode_arg_fmt37 = copy(opcode_arg_fmt36)
 opcode_arg_fmt.update(
     {"CALL_METHOD": format_CALL_FUNCTION, "RAISE_VARARGS": format_RAISE_VARARGS}
