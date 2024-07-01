@@ -16,12 +16,12 @@ def get_srcdir():
     return os.path.realpath(filename)
 
 
-def disassemble_file_xasm(file, resout):
-    disassemble_file(file, resout, asm_format="xasm")
-
-
 def disassemble_file_extended_bytes(file, resout):
     disassemble_file(file, resout, asm_format="extended-bytes")
+
+
+def disassemble_file_xasm(file, resout):
+    disassemble_file(file, resout, asm_format="xasm")
 
 
 def run_check_disasm(test_tuple, function_to_test):
@@ -90,9 +90,6 @@ def run_check_disasm(test_tuple, function_to_test):
 
 # FIXME: redo putting more in loop. Add more Python versions and
 # more formats
-@pytest.mark.skipif(
-    PYTHON_VERSION_TRIPLE < (3, 3), reason="Haven't tested on older Python"
-)
 @pytest.mark.skipif(
     os.name == "nt", reason="Windows differences in output need going over"
 )
