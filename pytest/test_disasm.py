@@ -1,24 +1,21 @@
 import os
 import platform
 import re
+from io import StringIO
 
-import pytest
 from xdis import disassemble_file
-from xdis.version_info import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
+from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
-if PYTHON3:
-    from io import StringIO
-
-    hextring_file = "testdata/01_hexstring-2.7-for3x.right"
-else:
-    from StringIO import StringIO
-
-    hextring_file = "testdata/01_hexstring-2.7.right"
+hextring_file = "testdata/01_hexstring-2.7-for3x.right"
 
 
 def get_srcdir():
     filename = os.path.normcase(os.path.dirname(__file__))
     return os.path.realpath(filename)
+
+
+def disassemble_file_extended_bytes(file, resout):
+    disassemble_file(file, resout, asm_format="extended-bytes")
 
 
 def disassemble_file_xasm(file, resout):
@@ -115,7 +112,4 @@ if os.name != "nt":
 
 
 if __name__ == "__main__":
-    test_funcoutput(
-        ("../test/bytecode_3.0/04_raise.pyc", "testdata/raise-3.0.right"),
-        disassemble_file,
-    )
+    test_funcoutput()
