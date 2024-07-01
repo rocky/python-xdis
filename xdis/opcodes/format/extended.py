@@ -149,7 +149,7 @@ def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int
         argval = get_instruction_arg(prev_inst, argval)
         start_offset = prev_inst.start_offset
         if prev_inst.opname.startswith("INPLACE_"):
-            # Inplace operators show their own assign
+            # Inplace operators have their own assign routine.
             return argval, start_offset
         return f"{inst.argval} = {argval}", start_offset
 
@@ -753,6 +753,7 @@ opcode_extended_fmt_base = {
     "RAISE_VARARGS":         extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,
+    "STORE_DEREF":           extended_format_store_op,
     "STORE_FAST":            extended_format_store_op,
     "STORE_GLOBAL":          extended_format_store_op,
     "STORE_NAME":            extended_format_store_op,
