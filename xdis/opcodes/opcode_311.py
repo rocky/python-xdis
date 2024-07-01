@@ -30,6 +30,7 @@ from xdis.opcodes.base import (
     init_opdata,
     jrel_op,
     rm_op,
+    store_op,
     update_pj3,
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
@@ -158,7 +159,7 @@ rm_op(loc, "DELETE_DEREF",                    138)
 def_op(loc, "GET_AWAITABLE",                  131,   0, 0)
 def_op(loc, "LOAD_CLOSURE",                   136,   0, 1)
 def_op(loc, "LOAD_DEREF",                     137,   0, 1)
-def_op(loc, "STORE_DEREF",                    138,   1, 0)
+store_op(loc, "STORE_DEREF",                  138,   1, 0, is_type="free")
 def_op(loc, "DELETE_DEREF",                   139,   0, 0)
 
 # These are added since 3.10...

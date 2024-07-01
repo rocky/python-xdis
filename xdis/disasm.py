@@ -23,6 +23,8 @@ CPython version-independent disassembly routines
 # intended to be a more cross-version Python program
 
 import datetime
+import dis
+import os
 import re
 import sys
 import types
@@ -205,15 +207,22 @@ def disco_loop(
         if co.co_name not in ("<module>", "?"):
             real_out.write("\n" + format_code_info(co, version_tuple) + "\n")
 
-        bytecode = Bytecode(co, opc, dup_lines=dup_lines)
-        real_out.write(
-            bytecode.dis(asm_format=asm_format, show_source=show_source) + "\n"
-        )
+        if asm_format == "dis":
+            assert version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2], (
+                "dis requires disassembly from the same Python verison: "
+                f"Bytecode is for {version_tuple[:2]}; Running:{PYTHON_VERSION_TRIPLE[:2]}"
+            )
+            dis.disassemble(co, lasti=-1, file=real_out)
+        else:
+            bytecode = Bytecode(co, opc, dup_lines=dup_lines)
+            real_out.write(
+                bytecode.dis(asm_format=asm_format, show_source=show_source) + "\n"
+            )
 
-        if version_tuple >= (3, 11):
-            if bytecode.exception_entries not in (None, []):
-                exception_table = format_exception_table(bytecode, version_tuple)
-                real_out.write(exception_table + "\n")
+            if version_tuple >= (3, 11):
+                if bytecode.exception_entries not in (None, []):
+                    exception_table = format_exception_table(bytecode, version_tuple)
+                    real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):

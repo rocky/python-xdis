@@ -199,7 +199,10 @@ varargs_op(loc, "BUILD_SLICE",        133,  2,  1)  # TOS is number of items
 
 def_op(loc, "MAKE_CLOSURE",           134, -3,  1)
 free_op(loc, "LOAD_CLOSURE",          135,  0,  1)
+
 free_op(loc, "LOAD_DEREF",            136,  0,  1)
+loc["nullaryop"].add(136)
+
 store_op(loc, "STORE_DEREF",          137,  1,  0, is_type="free")
 
 call_op(loc, "CALL_FUNCTION_VAR",    140, -2,  1) # #args + (#kwargs << 8)

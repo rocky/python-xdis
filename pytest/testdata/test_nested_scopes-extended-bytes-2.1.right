@@ -1,0 +1,1114 @@
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        2
+# Flags:             0x00000010 (NESTED)
+# First Line:        9
+# Constants:
+#    0: ('nested_scopes',)
+#    1: 1
+#    2: <code object at 0xdeadbeef0001>, line 13
+#    3: <code object at 0xdeadbeef0001>, line 18
+#    4: <code object at 0xdeadbeef0001>, line 23
+#    5: <code object at 0xdeadbeef0001>, line 28
+#    6: <code object at 0xdeadbeef0001>, line 34
+#    7: <code object at 0xdeadbeef0001>, line 43
+#    8: <code object at 0xdeadbeef0001>, line 55
+#    9: <code object at 0xdeadbeef0001>, line 67
+#   10: <code object at 0xdeadbeef0001>, line 76
+#   11: 2
+#   12: 3
+#   13: <code object at 0xdeadbeef0001>, line 83
+#   14: <code object at 0xdeadbeef0001>, line 88
+#   15: 'blurb ='
+#   16: None
+# Names:
+#    0: __future__
+#    1: nested_scopes
+#    2: blurb
+#    3: k0
+#    4: x0
+#    5: x1
+#    6: x2
+#    7: x3a
+#    8: x3
+#    9: x3b
+#   10: x4
+#   11: x
+#   12: func_with_tuple_args6
+#   13: find
+# Varnames:
+#	find, x1, x0, x, x2, x3a, x3b, k0, x4, x3, nested_scopes, func_with_tuple_args6
+# Local variables:
+#    0: find
+#    1: x1
+#    2: x0
+#    3: x
+#    4: x2
+#    5: x3a
+#    6: x3b
+#    7: k0
+#    8: x4
+#    9: x3
+#   10: nested_scopes
+#   11: func_with_tuple_args6
+  9:           0 |7f 00 00| SET_LINENO           0
+
+  0:           3 |7f 00 09| SET_LINENO           9
+
+  9:           6 |64 00 00| LOAD_CONST           (('nested_scopes',))
+               9 |6b 00 00| IMPORT_NAME          (__future__) ; TOS = import_module(__future__)
+              12 |6c 00 01| IMPORT_FROM          (nested_scopes)
+              15 |5a 00 01| STORE_NAME           (nested_scopes) ; nested_scopes = import_module(nested_scopes)
+              18 |01      | POP_TOP
+
+ 11:          19 |7f 00 0b| SET_LINENO           11
+
+ 11:          22 |64 00 01| LOAD_CONST           (1)
+              25 |61 00 02| STORE_GLOBAL         (blurb) ; blurb = 1
+
+ 13:          28 |7f 00 0d| SET_LINENO           13
+
+ 13:          31 |64 00 02| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 13)
+              34 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def k0(...): ...
+              37 |5a 00 03| STORE_NAME           (k0) ; k0 = def k0(...): ...
+
+ 18:          40 |7f 00 12| SET_LINENO           18
+
+ 18:          43 |64 00 03| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 18)
+              46 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x0(...): ...
+              49 |5a 00 04| STORE_NAME           (x0) ; x0 = def x0(...): ...
+
+ 23:          52 |7f 00 17| SET_LINENO           23
+
+ 23:          55 |64 00 04| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 23)
+              58 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x1(...): ...
+              61 |5a 00 05| STORE_NAME           (x1) ; x1 = def x1(...): ...
+
+ 28:          64 |7f 00 1c| SET_LINENO           28
+
+ 28:          67 |64 00 05| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 28)
+              70 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x2(...): ...
+              73 |5a 00 06| STORE_NAME           (x2) ; x2 = def x2(...): ...
+
+ 34:          76 |7f 00 22| SET_LINENO           34
+
+ 34:          79 |64 00 06| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 34)
+              82 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x3a(...): ...
+              85 |5a 00 07| STORE_NAME           (x3a) ; x3a = def x3a(...): ...
+
+ 43:          88 |7f 00 2b| SET_LINENO           43
+
+ 43:          91 |64 00 07| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 43)
+              94 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x3(...): ...
+              97 |5a 00 08| STORE_NAME           (x3) ; x3 = def x3(...): ...
+
+ 55:         100 |7f 00 37| SET_LINENO           55
+
+ 55:         103 |64 00 08| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 55)
+             106 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x3b(...): ...
+             109 |5a 00 09| STORE_NAME           (x3b) ; x3b = def x3b(...): ...
+
+ 67:         112 |7f 00 43| SET_LINENO           67
+
+ 67:         115 |64 00 09| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 67)
+             118 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x4(...): ...
+             121 |5a 00 0a| STORE_NAME           (x4) ; x4 = def x4(...): ...
+
+ 76:         124 |7f 00 4c| SET_LINENO           76
+
+ 76:         127 |64 00 0a| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 76)
+             130 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x(...): ...
+             133 |5a 00 0b| STORE_NAME           (x) ; x = def x(...): ...
+
+ 83:         136 |7f 00 53| SET_LINENO           83
+
+ 83:         139 |64 00 0b| LOAD_CONST           (2)
+             142 |64 00 0c| LOAD_CONST           (3)
+             145 |66 00 02| BUILD_TUPLE          () ; TOS = (2, 3)
+             148 |64 00 0d| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 83)
+             151 |84 00 01| MAKE_FUNCTION        (1 default parameters) ; TOS = def func_with_tuple_args6(...): ...
+             154 |5a 00 0c| STORE_NAME           (func_with_tuple_args6) ; func_with_tuple_args6 = def func_with_tuple_args6(...): ...
+
+ 88:         157 |7f 00 58| SET_LINENO           88
+
+ 88:         160 |64 00 0e| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 88)
+             163 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def find(...): ...
+             166 |5a 00 0d| STORE_NAME           (find) ; find = def find(...): ...
+
+ 92:         169 |7f 00 5c| SET_LINENO           92
+
+ 92:         172 |65 00 04| LOAD_NAME            (x0)
+             175 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = x0()
+             178 |01      | POP_TOP
+             179 |65 00 05| LOAD_NAME            (x1)
+             182 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = x1()
+             185 |01      | POP_TOP
+             186 |65 00 06| LOAD_NAME            (x2)
+             189 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = x2()
+             192 |01      | POP_TOP
+
+ 93:         193 |7f 00 5d| SET_LINENO           93
+
+ 93:         196 |65 00 08| LOAD_NAME            (x3)
+             199 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = x3()
+             202 |01      | POP_TOP
+             203 |65 00 07| LOAD_NAME            (x3a)
+             206 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = x3a()
+             209 |01      | POP_TOP
+             210 |65 00 09| LOAD_NAME            (x3b)
+             213 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = x3b()
+             216 |01      | POP_TOP
+
+ 94:         217 |7f 00 5e| SET_LINENO           94
+
+ 94:         220 |65 00 0a| LOAD_NAME            (x4)
+             223 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = x4()
+             226 |01      | POP_TOP
+             227 |65 00 0b| LOAD_NAME            (x)
+             230 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = x()
+             233 |01      | POP_TOP
+
+ 95:         234 |7f 00 5f| SET_LINENO           95
+
+ 95:         237 |64 00 0f| LOAD_CONST           ("blurb =")
+             240 |47      | PRINT_ITEM           print "blurb =",
+             241 |74 00 02| LOAD_GLOBAL          (blurb)
+             244 |47      | PRINT_ITEM           print blurb,
+             245 |48      | PRINT_NEWLINE        print "\n"
+             246 |64 00 10| LOAD_CONST           (None)
+             249 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       k0
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  1
+# Stack size:        2
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        13
+# Constants:
+#    0: None
+#    1: 1
+#    2: <code object at 0xdeadbeef0001>, line 14
+# Names:
+#    0: l0
+# Varnames:
+#	l0
+# Local variables:
+#    0: l0
+ 13:           0 |7f 00 0d| SET_LINENO           13
+
+ 13:           3 |7f 00 0e| SET_LINENO           14
+
+ 14:           6 |64 00 01| LOAD_CONST           (1)
+               9 |64 00 02| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 14)
+              12 |84 00 01| MAKE_FUNCTION        (1 default parameters) ; TOS = def l0(...): ...
+              15 |7d 00 00| STORE_FAST           (l0) ; l0 = def l0(...): ...
+
+ 16:          18 |7f 00 10| SET_LINENO           16
+
+ 16:          21 |7c 00 00| LOAD_FAST            (l0)
+              24 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = l0()
+              27 |01      | POP_TOP
+              28 |64 00 00| LOAD_CONST           (None)
+              31 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       x0
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  1
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        18
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 19
+# Names:
+#    0: y0
+# Varnames:
+#	y0
+# Local variables:
+#    0: y0
+ 18:           0 |7f 00 12| SET_LINENO           18
+
+ 18:           3 |7f 00 13| SET_LINENO           19
+
+ 19:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 19)
+               9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y0(...): ...
+              12 |7d 00 00| STORE_FAST           (y0) ; y0 = def y0(...): ...
+
+ 21:          15 |7f 00 15| SET_LINENO           21
+
+ 21:          18 |7c 00 00| LOAD_FAST            (y0)
+              21 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = y0()
+              24 |01      | POP_TOP
+              25 |64 00 00| LOAD_CONST           (None)
+              28 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       x1
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  1
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        23
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 24
+# Names:
+#    0: y1
+# Varnames:
+#	y1
+# Local variables:
+#    0: y1
+ 23:           0 |7f 00 17| SET_LINENO           23
+
+ 23:           3 |7f 00 18| SET_LINENO           24
+
+ 24:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 24)
+               9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y1(...): ...
+              12 |7d 00 00| STORE_FAST           (y1) ; y1 = def y1(...): ...
+
+ 26:          15 |7f 00 1a| SET_LINENO           26
+
+ 26:          18 |7c 00 00| LOAD_FAST            (y1)
+              21 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = y1()
+              24 |01      | POP_TOP
+              25 |64 00 00| LOAD_CONST           (None)
+              28 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       x2
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  2
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        28
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 29
+#    2: 2
+# Names:
+#    0: y2
+#    1: blurb
+# Varnames:
+#	y2, blurb
+# Local variables:
+#    0: y2
+#    1: blurb
+ 28:           0 |7f 00 1c| SET_LINENO           28
+
+ 28:           3 |7f 00 1d| SET_LINENO           29
+
+ 29:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 29)
+               9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y2(...): ...
+              12 |7d 00 00| STORE_FAST           (y2) ; y2 = def y2(...): ...
+
+ 31:          15 |7f 00 1f| SET_LINENO           31
+
+ 31:          18 |64 00 02| LOAD_CONST           (2)
+              21 |7d 00 01| STORE_FAST           (blurb) ; blurb = 2
+
+ 32:          24 |7f 00 20| SET_LINENO           32
+
+ 32:          27 |7c 00 00| LOAD_FAST            (y2)
+              30 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = y2()
+              33 |01      | POP_TOP
+              34 |64 00 00| LOAD_CONST           (None)
+              37 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       x3a
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  3
+# Stack size:        4
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        34
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 35
+#    2: 3
+#    3: 7
+#    4: 1
+#    5: 'x3a-blurb ='
+# Names:
+#    0: y3a
+#    1: blurb
+#    2: flurb
+# Varnames:
+#	blurb, y3a, flurb
+# Local variables:
+#    0: blurb
+#    1: y3a
+#    2: flurb
+# Cell variables:
+#    0: blurb
+#    1: flurb
+ 34:           0 |7f 00 22| SET_LINENO           34
+
+ 34:           3 |7f 00 23| SET_LINENO           35
+
+ 35:           6 |87 00 00| LOAD_CLOSURE         (blurb)
+               9 |87 00 01| LOAD_CLOSURE         (flurb)
+              12 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 35)
+              15 |86 00 00| MAKE_CLOSURE         0
+              18 |7d 00 01| STORE_FAST           (y3a)
+
+ 37:          21 |7f 00 25| SET_LINENO           37
+
+ 37:          24 |48      | PRINT_NEWLINE        print "\n"
+
+ 38:          25 |7f 00 26| SET_LINENO           38
+
+ 38:          28 |64 00 02| LOAD_CONST           (3)
+              31 |89 00 00| STORE_DEREF          (blurb) ; blurb = 3
+
+ 39:          34 |7f 00 27| SET_LINENO           39
+
+ 39:          37 |64 00 03| LOAD_CONST           (7)
+              40 |89 00 01| STORE_DEREF          (flurb) ; flurb = 7
+
+ 40:          43 |7f 00 28| SET_LINENO           40
+
+ 40:          46 |7c 00 01| LOAD_FAST            (y3a)
+              49 |64 00 04| LOAD_CONST           (1)
+              52 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y3a(1)
+              55 |01      | POP_TOP
+
+ 41:          56 |7f 00 29| SET_LINENO           41
+
+ 41:          59 |64 00 05| LOAD_CONST           ("x3a-blurb =")
+              62 |47      | PRINT_ITEM           print "x3a-blurb =",
+              63 |88 00 00| LOAD_DEREF           (blurb)
+              66 |47      | PRINT_ITEM           print blurb,
+              67 |48      | PRINT_NEWLINE        print "\n"
+              68 |64 00 00| LOAD_CONST           (None)
+              71 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       x3
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  2
+# Stack size:        3
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        43
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 44
+#    2: 3
+#    3: 1
+#    4: 'x3-blurb ='
+# Names:
+#    0: y3
+#    1: blurb
+# Varnames:
+#	y3, blurb
+# Local variables:
+#    0: y3
+#    1: blurb
+# Cell variables:
+#    0: blurb
+ 43:           0 |7f 00 2b| SET_LINENO           43
+
+ 43:           3 |7f 00 2c| SET_LINENO           44
+
+ 44:           6 |87 00 00| LOAD_CLOSURE         (blurb)
+               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 44)
+              12 |86 00 00| MAKE_CLOSURE         0
+              15 |7d 00 00| STORE_FAST           (y3)
+
+ 50:          18 |7f 00 32| SET_LINENO           50
+
+ 50:          21 |48      | PRINT_NEWLINE        print "\n"
+
+ 51:          22 |7f 00 33| SET_LINENO           51
+
+ 51:          25 |64 00 02| LOAD_CONST           (3)
+              28 |89 00 00| STORE_DEREF          (blurb) ; blurb = 3
+
+ 52:          31 |7f 00 34| SET_LINENO           52
+
+ 52:          34 |7c 00 00| LOAD_FAST            (y3)
+              37 |64 00 03| LOAD_CONST           (1)
+              40 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y3(1)
+              43 |01      | POP_TOP
+
+ 53:          44 |7f 00 35| SET_LINENO           53
+
+ 53:          47 |64 00 04| LOAD_CONST           ("x3-blurb =")
+              50 |47      | PRINT_ITEM           print "x3-blurb =",
+              51 |88 00 00| LOAD_DEREF           (blurb)
+              54 |47      | PRINT_ITEM           print blurb,
+              55 |48      | PRINT_NEWLINE        print "\n"
+              56 |64 00 00| LOAD_CONST           (None)
+              59 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       x3b
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  2
+# Stack size:        2
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        55
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 56
+#    2: 3
+#    3: 1
+#    4: 'x3-blurb ='
+# Names:
+#    0: y3b
+#    1: blurb
+# Varnames:
+#	blurb, y3b
+# Local variables:
+#    0: blurb
+#    1: y3b
+ 55:           0 |7f 00 37| SET_LINENO           55
+
+ 55:           3 |7f 00 38| SET_LINENO           56
+
+ 56:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 56)
+               9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y3b(...): ...
+              12 |7d 00 01| STORE_FAST           (y3b) ; y3b = def y3b(...): ...
+
+ 62:          15 |7f 00 3e| SET_LINENO           62
+
+ 62:          18 |48      | PRINT_NEWLINE        print "\n"
+
+ 63:          19 |7f 00 3f| SET_LINENO           63
+
+ 63:          22 |64 00 02| LOAD_CONST           (3)
+              25 |7d 00 00| STORE_FAST           (blurb) ; blurb = 3
+
+ 64:          28 |7f 00 40| SET_LINENO           64
+
+ 64:          31 |7c 00 01| LOAD_FAST            (y3b)
+              34 |64 00 03| LOAD_CONST           (1)
+              37 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y3b(1)
+              40 |01      | POP_TOP
+
+ 65:          41 |7f 00 41| SET_LINENO           65
+
+ 65:          44 |64 00 04| LOAD_CONST           ("x3-blurb =")
+              47 |47      | PRINT_ITEM           print "x3-blurb =",
+              48 |7c 00 00| LOAD_FAST            (blurb)
+              51 |47      | PRINT_ITEM           print blurb,
+              52 |48      | PRINT_NEWLINE        print "\n"
+              53 |64 00 00| LOAD_CONST           (None)
+              56 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       x4
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  1
+# Stack size:        2
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        67
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 68
+#    2: 3
+#    3: 1
+# Names:
+#    0: y4
+#    1: blurb
+# Varnames:
+#	y4
+# Local variables:
+#    0: y4
+ 67:           0 |7f 00 43| SET_LINENO           67
+
+ 67:           3 |7f 00 44| SET_LINENO           68
+
+ 68:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 68)
+               9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y4(...): ...
+              12 |7d 00 00| STORE_FAST           (y4) ; y4 = def y4(...): ...
+
+ 72:          15 |7f 00 48| SET_LINENO           72
+
+ 72:          18 |7f 00 49| SET_LINENO           73
+
+ 73:          21 |64 00 02| LOAD_CONST           (3)
+              24 |61 00 01| STORE_GLOBAL         (blurb) ; blurb = 3
+
+ 74:          27 |7f 00 4a| SET_LINENO           74
+
+ 74:          30 |7c 00 00| LOAD_FAST            (y4)
+              33 |64 00 03| LOAD_CONST           (1)
+              36 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y4(1)
+              39 |01      | POP_TOP
+              40 |64 00 00| LOAD_CONST           (None)
+              43 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       x
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  2
+# Stack size:        3
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        76
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 77
+#    2: 2
+#    3: 1
+# Names:
+#    0: y
+#    1: blurb
+# Varnames:
+#	blurb, y
+# Local variables:
+#    0: blurb
+#    1: y
+# Cell variables:
+#    0: blurb
+ 76:           0 |7f 00 4c| SET_LINENO           76
+
+ 76:           3 |7f 00 4d| SET_LINENO           77
+
+ 77:           6 |87 00 00| LOAD_CLOSURE         (blurb)
+               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 77)
+              12 |86 00 00| MAKE_CLOSURE         0
+              15 |7d 00 01| STORE_FAST           (y)
+
+ 79:          18 |7f 00 4f| SET_LINENO           79
+
+ 79:          21 |64 00 02| LOAD_CONST           (2)
+              24 |89 00 00| STORE_DEREF          (blurb) ; blurb = 2
+
+ 80:          27 |7f 00 50| SET_LINENO           80
+
+ 80:          30 |7c 00 01| LOAD_FAST            (y)
+              33 |64 00 03| LOAD_CONST           (1)
+              36 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y(1)
+              39 |01      | POP_TOP
+              40 |64 00 00| LOAD_CONST           (None)
+              43 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       func_with_tuple_args6
+# Filename:          test/test_nested_scopes.py
+# Argument count:    2
+# Number of locals:  9
+# Stack size:        2
+# Flags:             0x0000000f (VARKEYWORDS | VARARGS | NEWLOCALS | OPTIMIZED)
+# First Line:        83
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 84
+# Names:
+#    0: a
+#    1: b
+#    2: c
+#    3: d
+#    4: y
+# Varnames:
+#	.0, .2, args, kwargs, a, b, c, d, y
+# Positional arguments:
+#	.0, .2
+# Local variables:
+#    2: args
+#    3: kwargs
+#    4: a
+#    5: b
+#    6: c
+#    7: d
+#    8: y
+# Cell variables:
+#    0: a
+ 83:           0 |7f 00 53| SET_LINENO           83
+
+ 83:           3 |7c 00 00| LOAD_FAST            (.0)
+               6 |5c 00 02| UNPACK_SEQUENCE      2
+               9 |89 00 00| STORE_DEREF          (a)
+              12 |7d 00 05| STORE_FAST           (b)
+              15 |7c 00 01| LOAD_FAST            (.2)
+              18 |5c 00 02| UNPACK_SEQUENCE      2
+              21 |7d 00 06| STORE_FAST           (c)
+              24 |7d 00 07| STORE_FAST           (d)
+
+ 84:          27 |7f 00 54| SET_LINENO           84
+
+ 84:          30 |87 00 00| LOAD_CLOSURE         (a)
+              33 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 84)
+              36 |86 00 00| MAKE_CLOSURE         0
+              39 |7d 00 08| STORE_FAST           (y)
+
+ 86:          42 |7f 00 56| SET_LINENO           86
+
+ 86:          45 |7c 00 06| LOAD_FAST            (c)
+              48 |47      | PRINT_ITEM           print c,
+              49 |48      | PRINT_NEWLINE        print "\n"
+              50 |64 00 00| LOAD_CONST           (None)
+              53 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       find
+# Filename:          test/test_nested_scopes.py
+# Argument count:    2
+# Number of locals:  3
+# Stack size:        3
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        88
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 90
+# Names:
+#    0: filter
+#    1: self
+#    2: list_attribute
+#    3: L
+# Varnames:
+#	self, name, L
+# Positional arguments:
+#	self, name
+# Local variables:
+#    2: L
+ 88:           0 |7f 00 58| SET_LINENO           88
+
+ 88:           3 |7f 00 5a| SET_LINENO           90
+
+ 90:           6 |74 00 00| LOAD_GLOBAL          (filter)
+               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 90)
+              12 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def <lambda>(...): ...
+              15 |7c 00 00| LOAD_FAST            (self)
+              18 |69 00 02| LOAD_ATTR            (list_attribute) ; TOS = self.list_attribute
+              21 |83 00 02| CALL_FUNCTION        (2 positional, 0 named) ; TOS = filter(self.list_attribute, def <lambda>(...): ...)
+              24 |7d 00 02| STORE_FAST           (L) ; L = filter(self.list_attribute, def <lambda>(...): ...)
+              27 |64 00 00| LOAD_CONST           (None)
+              30 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       l0
+# Filename:          test/test_nested_scopes.py
+# Argument count:    1
+# Number of locals:  1
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        14
+# Constants:
+#    0: None
+# Varnames:
+#	m
+# Positional arguments:
+#	m
+ 14:           0 |7f 00 0e| SET_LINENO           14
+
+ 14:           3 |7f 00 0f| SET_LINENO           15
+
+ 15:           6 |48      | PRINT_NEWLINE        print "\n"
+               7 |64 00 00| LOAD_CONST           (None)
+              10 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y0
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        19
+# Constants:
+#    0: None
+ 19:           0 |7f 00 13| SET_LINENO           19
+
+ 19:           3 |7f 00 14| SET_LINENO           20
+
+ 20:           6 |48      | PRINT_NEWLINE        print "\n"
+               7 |64 00 00| LOAD_CONST           (None)
+              10 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y1
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        24
+# Constants:
+#    0: None
+#    1: 'y-blurb ='
+# Names:
+#    0: blurb
+ 24:           0 |7f 00 18| SET_LINENO           24
+
+ 24:           3 |7f 00 19| SET_LINENO           25
+
+ 25:           6 |64 00 01| LOAD_CONST           ("y-blurb =")
+               9 |47      | PRINT_ITEM           print "y-blurb =",
+              10 |74 00 00| LOAD_GLOBAL          (blurb)
+              13 |47      | PRINT_ITEM           print blurb,
+              14 |48      | PRINT_NEWLINE        print "\n"
+              15 |64 00 00| LOAD_CONST           (None)
+              18 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y2
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        29
+# Constants:
+#    0: None
+ 29:           0 |7f 00 1d| SET_LINENO           29
+
+ 29:           3 |7f 00 1e| SET_LINENO           30
+
+ 30:           6 |48      | PRINT_NEWLINE        print "\n"
+               7 |64 00 00| LOAD_CONST           (None)
+              10 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y3a
+# Filename:          test/test_nested_scopes.py
+# Argument count:    1
+# Number of locals:  1
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        35
+# Constants:
+#    0: None
+#    1: 'y-blurb ='
+# Names:
+#    0: blurb
+#    1: flurb
+# Varnames:
+#	x
+# Positional arguments:
+#	x
+# Free variables:
+#    0: blurb
+#    1: flurb
+ 35:           0 |7f 00 23| SET_LINENO           35
+
+ 35:           3 |7f 00 24| SET_LINENO           36
+
+ 36:           6 |64 00 01| LOAD_CONST           ("y-blurb =")
+               9 |47      | PRINT_ITEM           print "y-blurb =",
+              10 |88 00 00| LOAD_DEREF           (blurb)
+              13 |47      | PRINT_ITEM           print blurb,
+              14 |88 00 01| LOAD_DEREF           (flurb)
+              17 |47      | PRINT_ITEM           print flurb,
+              18 |48      | PRINT_NEWLINE        print "\n"
+              19 |64 00 00| LOAD_CONST           (None)
+              22 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y3
+# Filename:          test/test_nested_scopes.py
+# Argument count:    1
+# Number of locals:  2
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        44
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 45
+#    2: 'y-blurb ='
+# Names:
+#    0: z
+#    1: blurb
+# Varnames:
+#	x, z
+# Positional arguments:
+#	x
+# Local variables:
+#    1: z
+# Free variables:
+#    0: blurb
+ 44:           0 |7f 00 2c| SET_LINENO           44
+
+ 44:           3 |7f 00 2d| SET_LINENO           45
+
+ 45:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 45)
+               9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def z(...): ...
+              12 |7d 00 01| STORE_FAST           (z) ; z = def z(...): ...
+
+ 48:          15 |7f 00 30| SET_LINENO           48
+
+ 48:          18 |7c 00 01| LOAD_FAST            (z)
+              21 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = z()
+              24 |01      | POP_TOP
+
+ 49:          25 |7f 00 31| SET_LINENO           49
+
+ 49:          28 |64 00 02| LOAD_CONST           ("y-blurb =")
+              31 |47      | PRINT_ITEM           print "y-blurb =",
+              32 |88 00 00| LOAD_DEREF           (blurb)
+              35 |47      | PRINT_ITEM           print blurb,
+              36 |64 00 00| LOAD_CONST           (None)
+              39 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y3b
+# Filename:          test/test_nested_scopes.py
+# Argument count:    1
+# Number of locals:  3
+# Stack size:        2
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        56
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 57
+#    2: 25
+#    3: 'y-blurb ='
+# Names:
+#    0: z
+#    1: blurb
+# Varnames:
+#	x, blurb, z
+# Positional arguments:
+#	x
+# Local variables:
+#    1: blurb
+#    2: z
+# Cell variables:
+#    0: blurb
+ 56:           0 |7f 00 38| SET_LINENO           56
+
+ 56:           3 |7f 00 39| SET_LINENO           57
+
+ 57:           6 |87 00 00| LOAD_CLOSURE         (blurb)
+               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 57)
+              12 |86 00 00| MAKE_CLOSURE         0
+              15 |7d 00 02| STORE_FAST           (z)
+
+ 59:          18 |7f 00 3b| SET_LINENO           59
+
+ 59:          21 |64 00 02| LOAD_CONST           (25)
+              24 |89 00 00| STORE_DEREF          (blurb) ; blurb = 25
+
+ 60:          27 |7f 00 3c| SET_LINENO           60
+
+ 60:          30 |7c 00 02| LOAD_FAST            (z)
+              33 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = z()
+              36 |01      | POP_TOP
+
+ 61:          37 |7f 00 3d| SET_LINENO           61
+
+ 61:          40 |64 00 03| LOAD_CONST           ("y-blurb =")
+              43 |47      | PRINT_ITEM           print "y-blurb =",
+              44 |88 00 00| LOAD_DEREF           (blurb)
+              47 |47      | PRINT_ITEM           print blurb,
+              48 |64 00 00| LOAD_CONST           (None)
+              51 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y4
+# Filename:          test/test_nested_scopes.py
+# Argument count:    1
+# Number of locals:  2
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        68
+# Constants:
+#    0: None
+#    1: <code object at 0xdeadbeef0001>, line 69
+# Names:
+#    0: z
+# Varnames:
+#	x, z
+# Positional arguments:
+#	x
+# Local variables:
+#    1: z
+ 68:           0 |7f 00 44| SET_LINENO           68
+
+ 68:           3 |7f 00 45| SET_LINENO           69
+
+ 69:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 69)
+               9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def z(...): ...
+              12 |7d 00 01| STORE_FAST           (z) ; z = def z(...): ...
+
+ 71:          15 |7f 00 47| SET_LINENO           71
+
+ 71:          18 |7c 00 01| LOAD_FAST            (z)
+              21 |83 00 00| CALL_FUNCTION        (0 positional, 0 named) ; TOS = z()
+              24 |01      | POP_TOP
+              25 |64 00 00| LOAD_CONST           (None)
+              28 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y
+# Filename:          test/test_nested_scopes.py
+# Argument count:    1
+# Number of locals:  1
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        77
+# Constants:
+#    0: None
+#    1: 'y-blurb ='
+# Names:
+#    0: blurb
+# Varnames:
+#	x
+# Positional arguments:
+#	x
+# Free variables:
+#    0: blurb
+ 77:           0 |7f 00 4d| SET_LINENO           77
+
+ 77:           3 |7f 00 4e| SET_LINENO           78
+
+ 78:           6 |64 00 01| LOAD_CONST           ("y-blurb =")
+               9 |47      | PRINT_ITEM           print "y-blurb =",
+              10 |88 00 00| LOAD_DEREF           (blurb)
+              13 |47      | PRINT_ITEM           print blurb,
+              14 |48      | PRINT_NEWLINE        print "\n"
+              15 |64 00 00| LOAD_CONST           (None)
+              18 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       y
+# Filename:          test/test_nested_scopes.py
+# Argument count:    1
+# Number of locals:  1
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        84
+# Constants:
+#    0: None
+#    1: 'y-a ='
+# Names:
+#    0: a
+# Varnames:
+#	x
+# Positional arguments:
+#	x
+# Free variables:
+#    0: a
+ 84:           0 |7f 00 54| SET_LINENO           84
+
+ 84:           3 |7f 00 55| SET_LINENO           85
+
+ 85:           6 |64 00 01| LOAD_CONST           ("y-a =")
+               9 |47      | PRINT_ITEM           print "y-a =",
+              10 |88 00 00| LOAD_DEREF           (a)
+              13 |47      | PRINT_ITEM           print a,
+              14 |48      | PRINT_NEWLINE        print "\n"
+              15 |64 00 00| LOAD_CONST           (None)
+              18 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       <lambda>
+# Filename:          test/test_nested_scopes.py
+# Argument count:    2
+# Number of locals:  2
+# Stack size:        2
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        90
+# Constants:
+#    0: None
+# Names:
+#    0: x
+#    1: name
+# Varnames:
+#	x, name
+# Positional arguments:
+#	x, name
+ 90:           0 |7f 00 5a| SET_LINENO           90
+
+ 90:           3 |7c 00 00| LOAD_FAST            (x)
+               6 |7c 00 01| LOAD_FAST            (name)
+               9 |6a 00 02| COMPARE_OP           (==) ; TOS = x == name
+              12 |53      | RETURN_VALUE         return x == name
+
+
+# Method Name:       z
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  1
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        45
+# Constants:
+#    0: None
+#    1: 25
+#    2: 'z-blurb ='
+# Names:
+#    0: blurb
+# Varnames:
+#	blurb
+# Local variables:
+#    0: blurb
+ 45:           0 |7f 00 2d| SET_LINENO           45
+
+ 45:           3 |7f 00 2e| SET_LINENO           46
+
+ 46:           6 |64 00 01| LOAD_CONST           (25)
+               9 |7d 00 00| STORE_FAST           (blurb) ; blurb = 25
+
+ 47:          12 |7f 00 2f| SET_LINENO           47
+
+ 47:          15 |64 00 02| LOAD_CONST           ("z-blurb =")
+              18 |47      | PRINT_ITEM           print "z-blurb =",
+              19 |7c 00 00| LOAD_FAST            (blurb)
+              22 |47      | PRINT_ITEM           print blurb,
+              23 |64 00 00| LOAD_CONST           (None)
+              26 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       z
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        57
+# Constants:
+#    0: None
+#    1: 'z-blurb ='
+# Names:
+#    0: blurb
+# Free variables:
+#    0: blurb
+ 57:           0 |7f 00 39| SET_LINENO           57
+
+ 57:           3 |7f 00 3a| SET_LINENO           58
+
+ 58:           6 |64 00 01| LOAD_CONST           ("z-blurb =")
+               9 |47      | PRINT_ITEM           print "z-blurb =",
+              10 |88 00 00| LOAD_DEREF           (blurb)
+              13 |47      | PRINT_ITEM           print blurb,
+              14 |64 00 00| LOAD_CONST           (None)
+              17 |53      | RETURN_VALUE         return None
+
+
+# Method Name:       z
+# Filename:          test/test_nested_scopes.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000003 (NEWLOCALS | OPTIMIZED)
+# First Line:        69
+# Constants:
+#    0: None
+#    1: 'z-blurb ='
+# Names:
+#    0: blurb
+ 69:           0 |7f 00 45| SET_LINENO           69
+
+ 69:           3 |7f 00 46| SET_LINENO           70
+
+ 70:           6 |64 00 01| LOAD_CONST           ("z-blurb =")
+               9 |47      | PRINT_ITEM           print "z-blurb =",
+              10 |74 00 00| LOAD_GLOBAL          (blurb)
+              13 |47      | PRINT_ITEM           print blurb,
+              14 |48      | PRINT_NEWLINE        print "\n"
+              15 |64 00 00| LOAD_CONST           (None)
+              18 |53      | RETURN_VALUE         return None
+

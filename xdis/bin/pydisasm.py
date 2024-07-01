@@ -32,7 +32,7 @@ else:
     "--format",
     "-F",
     type=click.Choice(
-        ["xasm", "bytes", "classic", "extended", "extended-bytes", "header"],
+        ["xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header"],
         **case_sensitive
     ),
     help="Select disassembly style",
