@@ -50,6 +50,26 @@ Examples:
 PATTERNS = ('*.pyc', '*.pyo')
 
 def main():
+=======
+@click.command()
+@click.option(
+    "--format",
+    "-F",
+    type=click.Choice(
+        ["xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header"],
+        **case_sensitive
+    ),
+    help="Select disassembly style",
+)
+@click.option(
+    "--show-source/--no-show-source",
+    "-S",
+    help="Intersperse Python source text from linecache if available.",
+)
+@click.version_option(version=__version__)
+@click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
+def main(format, show_source: bool, files):
+>>>>>>> python-3.0-to-3.2
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.

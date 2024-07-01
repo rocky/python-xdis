@@ -201,6 +201,7 @@ def_graal_op(opc, "LOAD_DEREF", 33, 1, 0, 1)
 # cellvars or freevars array ({@code co_cellvars}, {@code
 # co_freevars}).
 #  Pops: value to be written into the cell contents
+# FIXME: this should be tagged as both a "free" and as "store" op.
 def_graal_op(opc, "STORE_DEREF", 34, 1, 1, 0)
 
 # Deletes a local cell variable determined by the immediate operand

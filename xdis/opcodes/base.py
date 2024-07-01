@@ -26,17 +26,17 @@ from xdis.cross_dis import findlabels, findlinestarts, get_jump_target_maps
 from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
 cmp_op = (
-    "<",
-    "<=",
-    "==",
-    "!=",
-    ">",
-    ">=",
-    "in",
-    "not-in",
-    "is",
-    "is-not",
-    "exception-match",
+    "<",  # 0
+    "<=",  # 1
+    "==",  # 2
+    "!=",  # 3
+    ">",  # 4
+    ">=",  # 5
+    "in",  # 6
+    "not-in",  # 7
+    "is",  # 8
+    "is-not",  # 9
+    "exception-match",  # 10
     "BAD",
 )
 

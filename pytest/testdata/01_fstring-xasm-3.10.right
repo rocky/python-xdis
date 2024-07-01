@@ -3,11 +3,12 @@
 # Method Name:       <module>
 # Filename:          version_specific/bug36/01_fstring.py
 # Argument count:    0
+# Position-only argument count: 0
 # Keyword-only arguments: 0
 # Number of locals:  0
 # Stack size:        8
 # Flags:             0x00000040 (NOFREE)
-# First Line:        3
+# First Line:        1
 # Constants:
 #    0: 0
 #    1: None
@@ -46,11 +47,11 @@
 
   6:
             LOAD_NAME            0 (datetime)
-            LOAD_ATTR            3 (date)
+            LOAD_METHOD          3 (date)
             LOAD_CONST           4 (1991)
             LOAD_CONST           5 (10)
             LOAD_CONST           6 (12)
-            CALL_FUNCTION        3 (3 positional arguments)
+            CALL_METHOD          3 (3 positional arguments)
             STORE_NAME           4 (anniversary)
 
   7:
@@ -83,7 +84,4 @@
             POP_TOP
             LOAD_CONST           1 (None)
             RETURN_VALUE
-<<<<<<< HEAD
-=======
 
->>>>>>> python-3.0-to-3.2

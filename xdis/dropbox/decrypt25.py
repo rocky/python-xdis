@@ -17,7 +17,7 @@ from xdis.codetype.code20 import Code2Compat
 from xdis.version_info import PYTHON3
 
 
-def rng(a, b):
+def rng(a: int, b: int) -> int:
     b = ((b << 13) ^ b) & 0xFFFFFFFF
     c = b ^ (b >> 17)
     c = c ^ (c << 5)

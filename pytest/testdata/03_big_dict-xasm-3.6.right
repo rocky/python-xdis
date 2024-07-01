@@ -610,3 +610,7 @@ L226:
             STORE_NAME           0 (TABLE_DIRECT)
             LOAD_CONST           100 (None)
             RETURN_VALUE
+<<<<<<< HEAD
+=======
+
+>>>>>>> python-3.0-to-3.2

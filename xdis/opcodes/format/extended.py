@@ -118,6 +118,14 @@ def extended_format_infix_binary_op(opc, instructions, op_str):
 
 def extended_format_store_op(opc, instructions):
     inst = instructions[0]
+
+    # If the store instruction is a jump target, then
+    # the previous instruction is ambiguous. Here, things
+    # are more complicated, so let's not try to figure this out.
+    # This kind of things is best left for a decompiler.
+    if inst.is_jump_target:
+        return "", None
+
     prev_inst = instructions[1]
     start_offset = prev_inst.offset
     if prev_inst.opname == "IMPORT_NAME":
@@ -141,7 +149,7 @@ def extended_format_store_op(opc, instructions):
         argval = get_instruction_arg(prev_inst, argval)
         start_offset = prev_inst.start_offset
         if prev_inst.opname.startswith("INPLACE_"):
-            # Inplace operators show their own assign
+            # Inplace operators have their own assign routine.
             return argval, start_offset
         return "%s = %s" % (inst.argval, argval), start_offset
 
@@ -733,6 +741,7 @@ opcode_extended_fmt_base = {
     "RAISE_VARARGS":         extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,
+    "STORE_DEREF":           extended_format_store_op,
     "STORE_FAST":            extended_format_store_op,
     "STORE_GLOBAL":          extended_format_store_op,
     "STORE_NAME":            extended_format_store_op,

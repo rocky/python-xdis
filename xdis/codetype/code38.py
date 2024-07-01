@@ -77,7 +77,7 @@ class Code38(Code3):
         co_names,
         co_varnames,
         co_filename,
-        co_name,
+        co_name: str,
         co_firstlineno,
         co_lnotab,
         co_freevars,
