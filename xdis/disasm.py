@@ -207,13 +207,13 @@ def disco_loop(
             real_out.write("\n" + format_code_info(co, version_tuple) + "\n")
 
         if asm_format == "dis":
-            assert (
-                version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2]
-            ), "dis requires disassembly from the same Python verison: "(
+            assert version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2], (
+                "dis requires disassembly from the same Python version: "
                 "Bytecode is for %s; Running: %s"
                 % (version_tuple[:2], PYTHON_VERSION_TRIPLE[:2])
             )
-            dis.disassemble(co, lasti=-1, file=real_out)
+            dis.disassemble(co, lasti=-1)
+>>>>>>> python-3.3-to-3.5
         else:
             bytecode = Bytecode(co, opc, dup_lines=dup_lines)
             real_out.write(
