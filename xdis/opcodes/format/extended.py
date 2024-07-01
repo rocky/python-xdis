@@ -126,6 +126,14 @@ def extended_format_infix_binary_op(
 
 def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int]]:
     inst = instructions[0]
+
+    # If the store instruction is a jump target, then
+    # the previous instruction is ambiguous. Here, things
+    # are more complicated, so let's not try to figure this out.
+    # This kind of things is best left for a decompiler.
+    if inst.is_jump_target:
+        return "", None
+
     prev_inst = instructions[1]
     start_offset = prev_inst.offset
     if prev_inst.opname == "IMPORT_NAME":
