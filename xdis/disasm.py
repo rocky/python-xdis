@@ -24,7 +24,6 @@ CPython version-independent disassembly routines
 
 import datetime
 import dis
-import os
 import re
 import sys
 import types
@@ -208,9 +207,11 @@ def disco_loop(
             real_out.write("\n" + format_code_info(co, version_tuple) + "\n")
 
         if asm_format == "dis":
-            assert version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2], (
-                "dis requires disassembly from the same Python verison: "
-                f"Bytecode is for {version_tuple[:2]}; Running:{PYTHON_VERSION_TRIPLE[:2]}"
+            assert (
+                version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2]
+            ), "dis requires disassembly from the same Python verison: "(
+                "Bytecode is for %s; Running: %s"
+                % (version_tuple[:2], PYTHON_VERSION_TRIPLE[:2])
             )
             dis.disassemble(co, lasti=-1, file=real_out)
         else:
