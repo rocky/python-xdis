@@ -10,18 +10,6 @@ repos:
     - id: end-of-file-fixer
       exclude: '^pytest/testdata'
       stages: [commit]
--   repo: https://github.com/pycqa/isort
-    rev: 5.11.5
-    hooks:
-      - id: isort
-        stages: [commit]
--   repo: https://github.com/psf/black
-    rev: 22.6.0
-    hooks:
-    - id: black
-      language_version: python
-      stages: [commit]
-      additional_dependencies: ["click"]
 # -   repo: https://github.com/pycqa/flake8
 #     rev: 5.0.4
 #     hooks:
