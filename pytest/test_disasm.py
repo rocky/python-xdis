@@ -15,12 +15,12 @@ def get_srcdir():
     return os.path.realpath(filename)
 
 
-def disassemble_file_xasm(file, resout):
-    disassemble_file(file, resout, asm_format="xasm")
-
-
 def disassemble_file_extended_bytes(file, resout):
     disassemble_file(file, resout, asm_format="extended-bytes")
+
+
+def disassemble_file_xasm(file, resout):
+    disassemble_file(file, resout, asm_format="xasm")
 
 
 def run_check_disasm(test_tuple, function_to_test):
