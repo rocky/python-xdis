@@ -213,7 +213,6 @@ def disco_loop(
                 % (version_tuple[:2], PYTHON_VERSION_TRIPLE[:2])
             )
             dis.disassemble(co, lasti=-1)
->>>>>>> python-3.3-to-3.5
         else:
             bytecode = Bytecode(co, opc, dup_lines=dup_lines)
             real_out.write(
