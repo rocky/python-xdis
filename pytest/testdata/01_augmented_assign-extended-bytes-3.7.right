@@ -1,0 +1,315 @@
+# Source code size mod 2**32: 1345 bytes
+# Method Name:       <module>
+# Filename:          simple_source/stmts/01_augmented_assign.py
+# Argument count:    0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        2
+# Flags:             0x00000040 (NOFREE)
+# First Line:        13
+# Constants:
+#    0: "This program can't be run"
+#    1: 1
+#    2: 2
+#    3: 21
+#    4: 3
+#    5: 7
+#    6: None
+#    7: 9
+#    8: 4
+#    9: 42
+#   10: 43
+#   11: 0
+#   12: <code object at 0xdeadbeef0001>, line 63
+#   13: 'f'
+# Names:
+#    0: RuntimeError
+#    1: a
+#    2: b
+#    3: l
+#    4: value
+#    5: val
+#    6: range
+#    7: i
+#    8: lj
+#    9: j
+#   10: lk
+#   11: k
+#   12: append
+#   13: f
+ 13:           0 |65 00| LOAD_NAME            (RuntimeError)
+               2 |64 00| LOAD_CONST           ("This program can't be run")
+               4 |83 01| CALL_FUNCTION        (1 positional argument) ; TOS = RuntimeError("This program can't be run")
+               6 |82 01| RAISE_VARARGS        (exception instance) ; raise RuntimeError("This program can't be run")()
+
+ 15:           8 |64 01| LOAD_CONST           (1)
+              10 |5a 01| STORE_NAME           (a) ; a = 1
+
+ 16:          12 |64 02| LOAD_CONST           (2)
+              14 |5a 02| STORE_NAME           (b) ; b = 2
+
+ 17:          16 |65 01| LOAD_NAME            (a)
+              18 |65 02| LOAD_NAME            (b)
+              20 |37 00| INPLACE_ADD          TOS = a += b
+              22 |5a 01| STORE_NAME           (a) ; a += b
+
+ 18:          24 |65 01| LOAD_NAME            (a)
+              26 |65 02| LOAD_NAME            (b)
+              28 |38 00| INPLACE_SUBTRACT     TOS = a -= b
+              30 |5a 01| STORE_NAME           (a) ; a -= b
+
+ 19:          32 |65 01| LOAD_NAME            (a)
+              34 |65 02| LOAD_NAME            (b)
+              36 |39 00| INPLACE_MULTIPLY     TOS = a *= b
+              38 |5a 01| STORE_NAME           (a) ; a *= b
+
+ 20:          40 |65 01| LOAD_NAME            (a)
+              42 |65 01| LOAD_NAME            (a)
+              44 |38 00| INPLACE_SUBTRACT     TOS = a -= a
+              46 |5a 01| STORE_NAME           (a) ; a -= a
+
+ 21:          48 |65 01| LOAD_NAME            (a)
+              50 |64 03| LOAD_CONST           (21)
+              52 |37 00| INPLACE_ADD          TOS = a += 21
+              54 |5a 01| STORE_NAME           (a) ; a += 21
+
+ 23:          56 |64 01| LOAD_CONST           (1)
+              58 |64 02| LOAD_CONST           (2)
+              60 |64 04| LOAD_CONST           (3)
+              62 |67 03| BUILD_LIST           3
+              64 |5a 03| STORE_NAME           (l)
+
+ 24:          66 |65 03| LOAD_NAME            (l)
+              68 |64 01| LOAD_CONST           (1)
+              70 |05 00| DUP_TOP_TWO
+              72 |19 00| BINARY_SUBSCR
+              74 |64 04| LOAD_CONST           (3)
+              76 |39 00| INPLACE_MULTIPLY     TOS =  *= 3
+              78 |03 00| ROT_THREE
+              80 |3c 00| STORE_SUBSCR
+
+ 25:          82 |64 05| LOAD_CONST           (7)
+              84 |65 03| LOAD_NAME            (l)
+              86 |64 01| LOAD_CONST           (1)
+              88 |19 00| BINARY_SUBSCR        TOS = l[1]
+              90 |64 02| LOAD_CONST           (2)
+              92 |19 00| BINARY_SUBSCR        TOS = l[1][2]
+              94 |64 04| LOAD_CONST           (3)
+              96 |3c 00| STORE_SUBSCR         l[1][2][3] = 2
+
+ 26:          98 |65 03| LOAD_NAME            (l)
+             100 |64 01| LOAD_CONST           (1)
+             102 |19 00| BINARY_SUBSCR        TOS = l[1]
+             104 |64 02| LOAD_CONST           (2)
+             106 |19 00| BINARY_SUBSCR        TOS = l[1][2]
+             108 |64 04| LOAD_CONST           (3)
+             110 |05 00| DUP_TOP_TWO
+             112 |19 00| BINARY_SUBSCR
+             114 |64 04| LOAD_CONST           (3)
+             116 |39 00| INPLACE_MULTIPLY     TOS =  *= 3
+             118 |03 00| ROT_THREE
+             120 |3c 00| STORE_SUBSCR
+
+ 30:         122 |65 03| LOAD_NAME            (l)
+             124 |64 06| LOAD_CONST           (None)
+             126 |64 06| LOAD_CONST           (None)
+             128 |85 02| BUILD_SLICE          () ; TOS = :
+             130 |05 00| DUP_TOP_TWO
+             132 |19 00| BINARY_SUBSCR
+             134 |64 07| LOAD_CONST           (9)
+             136 |67 01| BUILD_LIST           1
+             138 |37 00| INPLACE_ADD          TOS = 9 +=
+             140 |03 00| ROT_THREE
+             142 |3c 00| STORE_SUBSCR
+
+ 34:         144 |65 03| LOAD_NAME            (l)
+             146 |64 06| LOAD_CONST           (None)
+             148 |64 02| LOAD_CONST           (2)
+             150 |85 02| BUILD_SLICE          () ; TOS = :2
+             152 |05 00| DUP_TOP_TWO
+             154 |19 00| BINARY_SUBSCR
+             156 |64 07| LOAD_CONST           (9)
+             158 |67 01| BUILD_LIST           1
+             160 |37 00| INPLACE_ADD          TOS = 9 +=
+             162 |03 00| ROT_THREE
+             164 |3c 00| STORE_SUBSCR
+
+ 39:         166 |65 03| LOAD_NAME            (l)
+             168 |64 01| LOAD_CONST           (1)
+             170 |64 06| LOAD_CONST           (None)
+             172 |85 02| BUILD_SLICE          () ; TOS = 1:
+             174 |05 00| DUP_TOP_TWO
+             176 |19 00| BINARY_SUBSCR
+             178 |64 07| LOAD_CONST           (9)
+             180 |67 01| BUILD_LIST           1
+             182 |37 00| INPLACE_ADD          TOS = 9 +=
+             184 |03 00| ROT_THREE
+             186 |3c 00| STORE_SUBSCR
+
+ 43:         188 |65 03| LOAD_NAME            (l)
+             190 |64 01| LOAD_CONST           (1)
+             192 |64 08| LOAD_CONST           (4)
+             194 |85 02| BUILD_SLICE          () ; TOS = 1:4
+             196 |05 00| DUP_TOP_TWO
+             198 |19 00| BINARY_SUBSCR
+             200 |64 07| LOAD_CONST           (9)
+             202 |67 01| BUILD_LIST           1
+             204 |37 00| INPLACE_ADD          TOS = 9 +=
+             206 |03 00| ROT_THREE
+             208 |3c 00| STORE_SUBSCR
+
+ 45:         210 |65 03| LOAD_NAME            (l)
+             212 |64 09| LOAD_CONST           (42)
+             214 |64 0a| LOAD_CONST           (43)
+             216 |67 02| BUILD_LIST           2
+             218 |37 00| INPLACE_ADD          TOS = 43 +=
+             220 |5a 03| STORE_NAME           (l) ; 43 +=
+
+ 47:         222 |64 01| LOAD_CONST           (1)
+             224 |65 01| LOAD_NAME            (a)
+             226 |5f 04| STORE_ATTR           (value) ; a.value
+
+ 48:         228 |65 01| LOAD_NAME            (a)
+             230 |04 00| DUP_TOP
+             232 |6a 04| LOAD_ATTR            (value)
+             234 |64 01| LOAD_CONST           (1)
+             236 |37 00| INPLACE_ADD          TOS = value += 1
+             238 |02 00| ROT_TWO
+             240 |5f 04| STORE_ATTR           (value)
+
+ 49:         242 |64 01| LOAD_CONST           (1)
+             244 |65 01| LOAD_NAME            (a)
+             246 |6a 02| LOAD_ATTR            (b) ; TOS = a.b
+             248 |5f 05| STORE_ATTR           (val) ; a.b.val
+
+ 50:         250 |65 01| LOAD_NAME            (a)
+             252 |6a 02| LOAD_ATTR            (b) ; TOS = a.b
+             254 |04 00| DUP_TOP
+             256 |6a 05| LOAD_ATTR            (val)
+             258 |64 01| LOAD_CONST           (1)
+             260 |37 00| INPLACE_ADD          TOS = val += 1
+             262 |02 00| ROT_TWO
+             264 |5f 05| STORE_ATTR           (val)
+
+ 52:         266 |67 00| BUILD_LIST           () ; TOS = []
+             268 |5a 03| STORE_NAME           (l) ; l = []
+
+ 53:         270 |78 60| SETUP_LOOP           (to 368)
+             272 |65 06| LOAD_NAME            (range)
+             274 |64 04| LOAD_CONST           (3)
+             276 |83 01| CALL_FUNCTION        (1 positional argument) ; TOS = range(3)
+             278 |44 00| GET_ITER
+         >>  280 |5d 54| FOR_ITER             (to 366)
+             282 |61 07| STORE_GLOBAL         (i)
+
+ 54:         284 |67 00| BUILD_LIST           () ; TOS = []
+             286 |5a 08| STORE_NAME           (lj) ; lj = []
+
+ 55:         288 |78 3e| SETUP_LOOP           (to 352)
+             290 |65 06| LOAD_NAME            (range)
+             292 |64 04| LOAD_CONST           (3)
+             294 |83 01| CALL_FUNCTION        (1 positional argument) ; TOS = range(3)
+             296 |44 00| GET_ITER
+         >>  298 |5d 32| FOR_ITER             (to 350)
+             300 |5a 09| STORE_NAME           (j)
+
+ 56:         302 |67 00| BUILD_LIST           () ; TOS = []
+             304 |5a 0a| STORE_NAME           (lk) ; lk = []
+
+ 57:         306 |78 1c| SETUP_LOOP           (to 336)
+             308 |65 06| LOAD_NAME            (range)
+             310 |64 04| LOAD_CONST           (3)
+             312 |83 01| CALL_FUNCTION        (1 positional argument) ; TOS = range(3)
+             314 |44 00| GET_ITER
+         >>  316 |5d 10| FOR_ITER             (to 334)
+             318 |5a 0b| STORE_NAME           (k)
+
+ 58:         320 |65 0a| LOAD_NAME            (lk)
+             322 |a0 0c| LOAD_METHOD          (append) ; TOS = lk.append
+             324 |64 0b| LOAD_CONST           (0)
+             326 |a1 01| CALL_METHOD          (1 positional argument) ; TOS = lk.append(0)
+             328 |01 00| POP_TOP
+             330 |90 01| EXTENDED_ARG         (256)
+             332 |71| JUMP_ABSOLUTE        (to 316)
+         >>  334 |57 00| POP_BLOCK
+
+ 59:     >>  336 |65 08| LOAD_NAME            (lj)
+             338 |a0 0c| LOAD_METHOD          (append) ; TOS = lj.append
+             340 |65 0a| LOAD_NAME            (lk)
+             342 |a1 01| CALL_METHOD          (1 positional argument) ; TOS = lj.append(lk)
+             344 |01 00| POP_TOP
+             346 |90 01| EXTENDED_ARG         (256)
+             348 |71| JUMP_ABSOLUTE        (to 298)
+         >>  350 |57 00| POP_BLOCK
+
+ 60:     >>  352 |65 03| LOAD_NAME            (l)
+             354 |a0 0c| LOAD_METHOD          (append) ; TOS = l.append
+             356 |65 08| LOAD_NAME            (lj)
+             358 |a1 01| CALL_METHOD          (1 positional argument) ; TOS = l.append(lj)
+             360 |01 00| POP_TOP
+             362 |90 01| EXTENDED_ARG         (256)
+             364 |71| JUMP_ABSOLUTE        (to 280)
+         >>  366 |57 00| POP_BLOCK
+
+ 62:     >>  368 |64 01| LOAD_CONST           (1)
+             370 |04 00| DUP_TOP
+             372 |61 07| STORE_GLOBAL         (i)
+             374 |04 00| DUP_TOP
+             376 |5a 09| STORE_NAME           (j)
+             378 |5a 0b| STORE_NAME           (k)
+
+ 63:         380 |64 0c| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 63)
+             382 |64 0d| LOAD_CONST           ("f")
+             384 |84 00| MAKE_FUNCTION        (No arguments) ; TOS = def f(...): ...
+             386 |5a 0d| STORE_NAME           (f) ; f = def f(...): ...
+
+ 68:         388 |64 01| LOAD_CONST           (1)
+             390 |65 03| LOAD_NAME            (l)
+             392 |74 07| LOAD_GLOBAL          (i)
+             394 |19 00| BINARY_SUBSCR        TOS = l[i]
+             396 |65 09| LOAD_NAME            (j)
+             398 |19 00| BINARY_SUBSCR        TOS = l[i][j]
+             400 |65 0b| LOAD_NAME            (k)
+             402 |3c 00| STORE_SUBSCR         l[i][j][k] = j
+
+ 69:         404 |64 01| LOAD_CONST           (1)
+             406 |61 07| STORE_GLOBAL         (i) ; i = 1
+
+ 70:         408 |65 03| LOAD_NAME            (l)
+             410 |65 0d| LOAD_NAME            (f)
+             412 |83 00| CALL_FUNCTION        (0 positional arguments) ; TOS = f()
+             414 |19 00| BINARY_SUBSCR        TOS = l[f()]
+             416 |65 09| LOAD_NAME            (j)
+             418 |19 00| BINARY_SUBSCR        TOS = l[f()][j]
+             420 |65 0b| LOAD_NAME            (k)
+             422 |05 00| DUP_TOP_TWO
+             424 |19 00| BINARY_SUBSCR
+             426 |64 01| LOAD_CONST           (1)
+             428 |37 00| INPLACE_ADD          TOS =  += 1
+             430 |03 00| ROT_THREE
+             432 |3c 00| STORE_SUBSCR
+             434 |64 06| LOAD_CONST           (None)
+             436 |53 00| RETURN_VALUE         return None
+
+
+# Method Name:       f
+# Filename:          simple_source/stmts/01_augmented_assign.py
+# Argument count:    0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        2
+# Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
+# First Line:        63
+# Constants:
+#    0: None
+#    1: 1
+# Names:
+#    0: i
+ 65:           0 |74 00| LOAD_GLOBAL          (i)
+               2 |64 01| LOAD_CONST           (1)
+               4 |37 00| INPLACE_ADD          TOS = i += 1
+               6 |61 00| STORE_GLOBAL         (i) ; i += 1
+
+ 66:           8 |74 00| LOAD_GLOBAL          (i)
+              10 |53 00| RETURN_VALUE         return i
+

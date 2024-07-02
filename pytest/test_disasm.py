@@ -105,6 +105,7 @@ def run_check_disasm(test_tuple, function_to_test):
         ("03_big_dict", "3.6", ["classic", "xasm"]),
         ("03_big_dict", "3.6", ["classic", "xasm"]),
         ("test_nested_scopes", "2.1", ["extended-bytes"]),
+        ("01_augmented_assign", "3.7", ["extended-bytes"]),
         # ("03_big_dict", "3.10"), # FIXME
     ],
 )

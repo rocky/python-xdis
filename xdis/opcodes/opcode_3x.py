@@ -97,11 +97,11 @@ binary_op(loc, "INPLACE_TRUE_DIVIDE",    29)
 #          OP NAME                OPCODE POP PUSH
 #-----------------------------------------------
 store_op(loc, "STORE_MAP",            54,  3,  1)
-def_op(loc, "INPLACE_ADD",            55,  2,  1)
-def_op(loc, "INPLACE_SUBTRACT",       56,  2,  1)
-def_op(loc, "INPLACE_MULTIPLY",       57,  2,  1)
+binary_op(loc, "INPLACE_ADD",            55,  2,  1)
+binary_op(loc, "INPLACE_SUBTRACT",       56,  2,  1)
+binary_op(loc, "INPLACE_MULTIPLY",       57,  2,  1)
 
-def_op(loc, "INPLACE_MODULO",         59,  2,  1)
+binary_op(loc, "INPLACE_MODULO",         59,  2,  1)
 store_op(loc, "STORE_SUBSCR",         60,  3,  0) # Implements TOS1[TOS] = TOS2.
 def_op(loc, "DELETE_SUBSCR",          61,  2,  0) # Implements del TOS1[TOS].
 binary_op(loc, "BINARY_LSHIFT",       62)
