@@ -20,7 +20,7 @@
 #    9: 42
 #   10: 43
 #   11: 0
-#   12: <code object at 0xdeadbeef0001>, line 63
+#   12: <code object at 0xdeadbeef0001, line 63
 #   13: 'f'
 # Names:
 #    0: RuntimeError
@@ -258,7 +258,7 @@
              376 |5a 09| STORE_NAME           (j)
              378 |5a 0b| STORE_NAME           (k)
 
- 63:         380 |64 0c| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 63)
+ 63:         380 |64 0c| LOAD_CONST           (<code object at 0xdeadbeef0001, line 63)
              382 |64 0d| LOAD_CONST           ("f")
              384 |84 00| MAKE_FUNCTION        (No arguments) ; TOS = def f(...): ...
              386 |5a 0d| STORE_NAME           (f) ; f = def f(...): ...

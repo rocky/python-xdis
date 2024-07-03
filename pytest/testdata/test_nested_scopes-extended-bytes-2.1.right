@@ -7,19 +7,19 @@
 # Constants:
 #    0: ('nested_scopes',)
 #    1: 1
-#    2: <code object at 0xdeadbeef0001>, line 13
-#    3: <code object at 0xdeadbeef0001>, line 18
-#    4: <code object at 0xdeadbeef0001>, line 23
-#    5: <code object at 0xdeadbeef0001>, line 28
-#    6: <code object at 0xdeadbeef0001>, line 34
-#    7: <code object at 0xdeadbeef0001>, line 43
-#    8: <code object at 0xdeadbeef0001>, line 55
-#    9: <code object at 0xdeadbeef0001>, line 67
-#   10: <code object at 0xdeadbeef0001>, line 76
+#    2: <code object at 0xdeadbeef0001, line 13
+#    3: <code object at 0xdeadbeef0001, line 18
+#    4: <code object at 0xdeadbeef0001, line 23
+#    5: <code object at 0xdeadbeef0001, line 28
+#    6: <code object at 0xdeadbeef0001, line 34
+#    7: <code object at 0xdeadbeef0001, line 43
+#    8: <code object at 0xdeadbeef0001, line 55
+#    9: <code object at 0xdeadbeef0001, line 67
+#   10: <code object at 0xdeadbeef0001, line 76
 #   11: 2
 #   12: 3
-#   13: <code object at 0xdeadbeef0001>, line 83
-#   14: <code object at 0xdeadbeef0001>, line 88
+#   13: <code object at 0xdeadbeef0001, line 83
+#   14: <code object at 0xdeadbeef0001, line 88
 #   15: 'blurb ='
 #   16: None
 # Names:
@@ -69,55 +69,55 @@
 
  13:          28 |7f 00 0d| SET_LINENO           13
 
- 13:          31 |64 00 02| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 13)
+ 13:          31 |64 00 02| LOAD_CONST           (<code object at 0xdeadbeef0001, line 13)
               34 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def k0(...): ...
               37 |5a 00 03| STORE_NAME           (k0) ; k0 = def k0(...): ...
 
  18:          40 |7f 00 12| SET_LINENO           18
 
- 18:          43 |64 00 03| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 18)
+ 18:          43 |64 00 03| LOAD_CONST           (<code object at 0xdeadbeef0001, line 18)
               46 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x0(...): ...
               49 |5a 00 04| STORE_NAME           (x0) ; x0 = def x0(...): ...
 
  23:          52 |7f 00 17| SET_LINENO           23
 
- 23:          55 |64 00 04| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 23)
+ 23:          55 |64 00 04| LOAD_CONST           (<code object at 0xdeadbeef0001, line 23)
               58 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x1(...): ...
               61 |5a 00 05| STORE_NAME           (x1) ; x1 = def x1(...): ...
 
  28:          64 |7f 00 1c| SET_LINENO           28
 
- 28:          67 |64 00 05| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 28)
+ 28:          67 |64 00 05| LOAD_CONST           (<code object at 0xdeadbeef0001, line 28)
               70 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x2(...): ...
               73 |5a 00 06| STORE_NAME           (x2) ; x2 = def x2(...): ...
 
  34:          76 |7f 00 22| SET_LINENO           34
 
- 34:          79 |64 00 06| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 34)
+ 34:          79 |64 00 06| LOAD_CONST           (<code object at 0xdeadbeef0001, line 34)
               82 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x3a(...): ...
               85 |5a 00 07| STORE_NAME           (x3a) ; x3a = def x3a(...): ...
 
  43:          88 |7f 00 2b| SET_LINENO           43
 
- 43:          91 |64 00 07| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 43)
+ 43:          91 |64 00 07| LOAD_CONST           (<code object at 0xdeadbeef0001, line 43)
               94 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x3(...): ...
               97 |5a 00 08| STORE_NAME           (x3) ; x3 = def x3(...): ...
 
  55:         100 |7f 00 37| SET_LINENO           55
 
- 55:         103 |64 00 08| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 55)
+ 55:         103 |64 00 08| LOAD_CONST           (<code object at 0xdeadbeef0001, line 55)
              106 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x3b(...): ...
              109 |5a 00 09| STORE_NAME           (x3b) ; x3b = def x3b(...): ...
 
  67:         112 |7f 00 43| SET_LINENO           67
 
- 67:         115 |64 00 09| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 67)
+ 67:         115 |64 00 09| LOAD_CONST           (<code object at 0xdeadbeef0001, line 67)
              118 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x4(...): ...
              121 |5a 00 0a| STORE_NAME           (x4) ; x4 = def x4(...): ...
 
  76:         124 |7f 00 4c| SET_LINENO           76
 
- 76:         127 |64 00 0a| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 76)
+ 76:         127 |64 00 0a| LOAD_CONST           (<code object at 0xdeadbeef0001, line 76)
              130 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def x(...): ...
              133 |5a 00 0b| STORE_NAME           (x) ; x = def x(...): ...
 
@@ -126,13 +126,13 @@
  83:         139 |64 00 0b| LOAD_CONST           (2)
              142 |64 00 0c| LOAD_CONST           (3)
              145 |66 00 02| BUILD_TUPLE          () ; TOS = (2, 3)
-             148 |64 00 0d| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 83)
+             148 |64 00 0d| LOAD_CONST           (<code object at 0xdeadbeef0001, line 83)
              151 |84 00 01| MAKE_FUNCTION        (1 default parameters) ; TOS = def func_with_tuple_args6(...): ...
              154 |5a 00 0c| STORE_NAME           (func_with_tuple_args6) ; func_with_tuple_args6 = def func_with_tuple_args6(...): ...
 
  88:         157 |7f 00 58| SET_LINENO           88
 
- 88:         160 |64 00 0e| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 88)
+ 88:         160 |64 00 0e| LOAD_CONST           (<code object at 0xdeadbeef0001, line 88)
              163 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def find(...): ...
              166 |5a 00 0d| STORE_NAME           (find) ; find = def find(...): ...
 
@@ -190,7 +190,7 @@
 # Constants:
 #    0: None
 #    1: 1
-#    2: <code object at 0xdeadbeef0001>, line 14
+#    2: <code object at 0xdeadbeef0001, line 14
 # Names:
 #    0: l0
 # Varnames:
@@ -202,7 +202,7 @@
  13:           3 |7f 00 0e| SET_LINENO           14
 
  14:           6 |64 00 01| LOAD_CONST           (1)
-               9 |64 00 02| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 14)
+               9 |64 00 02| LOAD_CONST           (<code object at 0xdeadbeef0001, line 14)
               12 |84 00 01| MAKE_FUNCTION        (1 default parameters) ; TOS = def l0(...): ...
               15 |7d 00 00| STORE_FAST           (l0) ; l0 = def l0(...): ...
 
@@ -224,7 +224,7 @@
 # First Line:        18
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 19
+#    1: <code object at 0xdeadbeef0001, line 19
 # Names:
 #    0: y0
 # Varnames:
@@ -235,7 +235,7 @@
 
  18:           3 |7f 00 13| SET_LINENO           19
 
- 19:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 19)
+ 19:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 19)
                9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y0(...): ...
               12 |7d 00 00| STORE_FAST           (y0) ; y0 = def y0(...): ...
 
@@ -257,7 +257,7 @@
 # First Line:        23
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 24
+#    1: <code object at 0xdeadbeef0001, line 24
 # Names:
 #    0: y1
 # Varnames:
@@ -268,7 +268,7 @@
 
  23:           3 |7f 00 18| SET_LINENO           24
 
- 24:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 24)
+ 24:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 24)
                9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y1(...): ...
               12 |7d 00 00| STORE_FAST           (y1) ; y1 = def y1(...): ...
 
@@ -290,7 +290,7 @@
 # First Line:        28
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 29
+#    1: <code object at 0xdeadbeef0001, line 29
 #    2: 2
 # Names:
 #    0: y2
@@ -304,7 +304,7 @@
 
  28:           3 |7f 00 1d| SET_LINENO           29
 
- 29:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 29)
+ 29:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 29)
                9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y2(...): ...
               12 |7d 00 00| STORE_FAST           (y2) ; y2 = def y2(...): ...
 
@@ -331,7 +331,7 @@
 # First Line:        34
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 35
+#    1: <code object at 0xdeadbeef0001, line 35
 #    2: 3
 #    3: 7
 #    4: 1
@@ -355,7 +355,7 @@
 
  35:           6 |87 00 00| LOAD_CLOSURE         (blurb)
                9 |87 00 01| LOAD_CLOSURE         (flurb)
-              12 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 35)
+              12 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 35)
               15 |86 00 00| MAKE_CLOSURE         0
               18 |7d 00 01| STORE_FAST           (y3a)
 
@@ -400,7 +400,7 @@
 # First Line:        43
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 44
+#    1: <code object at 0xdeadbeef0001, line 44
 #    2: 3
 #    3: 1
 #    4: 'x3-blurb ='
@@ -419,7 +419,7 @@
  43:           3 |7f 00 2c| SET_LINENO           44
 
  44:           6 |87 00 00| LOAD_CLOSURE         (blurb)
-               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 44)
+               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 44)
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 00| STORE_FAST           (y3)
 
@@ -459,7 +459,7 @@
 # First Line:        55
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 56
+#    1: <code object at 0xdeadbeef0001, line 56
 #    2: 3
 #    3: 1
 #    4: 'x3-blurb ='
@@ -475,7 +475,7 @@
 
  55:           3 |7f 00 38| SET_LINENO           56
 
- 56:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 56)
+ 56:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 56)
                9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y3b(...): ...
               12 |7d 00 01| STORE_FAST           (y3b) ; y3b = def y3b(...): ...
 
@@ -515,7 +515,7 @@
 # First Line:        67
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 68
+#    1: <code object at 0xdeadbeef0001, line 68
 #    2: 3
 #    3: 1
 # Names:
@@ -529,7 +529,7 @@
 
  67:           3 |7f 00 44| SET_LINENO           68
 
- 68:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 68)
+ 68:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 68)
                9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def y4(...): ...
               12 |7d 00 00| STORE_FAST           (y4) ; y4 = def y4(...): ...
 
@@ -559,7 +559,7 @@
 # First Line:        76
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 77
+#    1: <code object at 0xdeadbeef0001, line 77
 #    2: 2
 #    3: 1
 # Names:
@@ -577,7 +577,7 @@
  76:           3 |7f 00 4d| SET_LINENO           77
 
  77:           6 |87 00 00| LOAD_CLOSURE         (blurb)
-               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 77)
+               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 77)
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 01| STORE_FAST           (y)
 
@@ -605,7 +605,7 @@
 # First Line:        83
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 84
+#    1: <code object at 0xdeadbeef0001, line 84
 # Names:
 #    0: a
 #    1: b
@@ -640,7 +640,7 @@
  84:          27 |7f 00 54| SET_LINENO           84
 
  84:          30 |87 00 00| LOAD_CLOSURE         (a)
-              33 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 84)
+              33 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 84)
               36 |86 00 00| MAKE_CLOSURE         0
               39 |7d 00 08| STORE_FAST           (y)
 
@@ -662,7 +662,7 @@
 # First Line:        88
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 90
+#    1: <code object at 0xdeadbeef0001, line 90
 # Names:
 #    0: filter
 #    1: self
@@ -679,7 +679,7 @@
  88:           3 |7f 00 5a| SET_LINENO           90
 
  90:           6 |74 00 00| LOAD_GLOBAL          (filter)
-               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 90)
+               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 90)
               12 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def <lambda>(...): ...
               15 |7c 00 00| LOAD_FAST            (self)
               18 |69 00 02| LOAD_ATTR            (list_attribute) ; TOS = self.list_attribute
@@ -816,7 +816,7 @@
 # First Line:        44
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 45
+#    1: <code object at 0xdeadbeef0001, line 45
 #    2: 'y-blurb ='
 # Names:
 #    0: z
@@ -833,7 +833,7 @@
 
  44:           3 |7f 00 2d| SET_LINENO           45
 
- 45:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 45)
+ 45:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 45)
                9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def z(...): ...
               12 |7d 00 01| STORE_FAST           (z) ; z = def z(...): ...
 
@@ -862,7 +862,7 @@
 # First Line:        56
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 57
+#    1: <code object at 0xdeadbeef0001, line 57
 #    2: 25
 #    3: 'y-blurb ='
 # Names:
@@ -882,7 +882,7 @@
  56:           3 |7f 00 39| SET_LINENO           57
 
  57:           6 |87 00 00| LOAD_CLOSURE         (blurb)
-               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 57)
+               9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 57)
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 02| STORE_FAST           (z)
 
@@ -916,7 +916,7 @@
 # First Line:        68
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 69
+#    1: <code object at 0xdeadbeef0001, line 69
 # Names:
 #    0: z
 # Varnames:
@@ -929,7 +929,7 @@
 
  68:           3 |7f 00 45| SET_LINENO           69
 
- 69:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001>, line 69)
+ 69:           6 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 69)
                9 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def z(...): ...
               12 |7d 00 01| STORE_FAST           (z) ; z = def z(...): ...
 

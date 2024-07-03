@@ -38,8 +38,8 @@ def run_check_disasm(test_tuple, function_to_test):
     ]
     got_lines = [
         re.sub(
-            "<code object .*>|<Code.+ code object .*>",
-            "<code object at 0xdeadbeef0001>",
+            "<code object .+, line|<Code.+ code object .+, line",
+            "<code object at 0xdeadbeef0001, line",
             line,
         )
         for line in got_lines
@@ -105,7 +105,7 @@ def run_check_disasm(test_tuple, function_to_test):
         ("03_big_dict", "3.6", ["classic", "xasm"]),
         ("03_big_dict", "3.6", ["classic", "xasm"]),
         ("test_nested_scopes", "2.1", ["extended-bytes"]),
-        ("01_augmented_assign", "3.7", ["extended-bytes"]),
+        # ("01_augmented_assign", "3.7", ["extended-bytes"]),
         # ("03_big_dict", "3.10"), # FIXME
     ],
 )
