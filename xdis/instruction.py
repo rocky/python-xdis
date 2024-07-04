@@ -226,6 +226,7 @@ class Instruction(NamedTuple):
     def disassemble(
         self,
         opc,
+        line_starts,
         lineno_width=3,
         mark_as_current=False,
         asm_format="classic",
@@ -325,6 +326,14 @@ class Instruction(NamedTuple):
             elif asm_format in ("extended", "extended-bytes"):
                 op = self.opcode
                 if (
+                    self.optype in ("jrel", "jabs")
+                    and line_starts.get(self.argval) is not None
+                ):
+                    new_instruction = list(instructions[-1])
+                    new_instruction[-2] = f"To line {line_starts[self.argval]}"
+                    del instructions[-1]
+                    instructions.append(Instruction(*new_instruction))
+                elif (
                     hasattr(opc, "opcode_extended_fmt")
                     and opc.opname[op] in opc.opcode_extended_fmt
                 ):
