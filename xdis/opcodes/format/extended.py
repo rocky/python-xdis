@@ -40,33 +40,37 @@ def extended_format_binary_op(
     i = skip_cache(instructions, 1)
     stack_inst1 = instructions[i]
     arg1 = None
-    if stack_inst1.tos_str is not None:
-        arg1 = stack_inst1.tos_str
-    if arg1 is not None or stack_inst1.opcode in opc.operator_set:
-        if arg1 is None:
-            arg1 = stack_inst1.argrepr
-        arg1_start_offset = stack_inst1.start_offset
-        if arg1_start_offset is not None:
-            for i in range(1, len(instructions)):
-                if instructions[i].offset == arg1_start_offset:
-                    break
-        j = skip_cache(instructions, i + 1)
-        stack_inst2 = instructions[j]
-        if (
-            stack_inst1.opcode in opc.operator_set
-            and stack_inst2.opcode in opc.operator_set
-        ):
-            arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
-            start_offset = stack_inst2.start_offset
-            return fmt_str % (arg2, arg1), start_offset
-        elif stack_inst2.start_offset is not None:
-            start_offset = stack_inst2.start_offset
-            arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
-            if arg2 == "":
-                arg2 = "..."
-            return fmt_str % (arg2, arg1), start_offset
-        else:
-            return fmt_str % ("...", arg1), None
+
+    # If stack_inst1 is a jump target, then its predecessor stack_inst2
+    # is possibly one of two values.
+    if not stack_inst1.is_jump_target:
+        if stack_inst1.tos_str is not None:
+            arg1 = stack_inst1.tos_str
+        if arg1 is not None or stack_inst1.opcode in opc.operator_set:
+            if arg1 is None:
+                arg1 = stack_inst1.argrepr
+            arg1_start_offset = stack_inst1.start_offset
+            if arg1_start_offset is not None:
+                for i in range(1, len(instructions)):
+                    if instructions[i].offset == arg1_start_offset:
+                        break
+            j = skip_cache(instructions, i + 1)
+            stack_inst2 = instructions[j]
+            if (
+                stack_inst1.opcode in opc.operator_set
+                and stack_inst2.opcode in opc.operator_set
+            ):
+                arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
+                start_offset = stack_inst2.start_offset
+                return fmt_str % (arg2, arg1), start_offset
+            elif stack_inst2.start_offset is not None:
+                start_offset = stack_inst2.start_offset
+                arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
+                if arg2 == "":
+                    arg2 = "..."
+                return fmt_str % (arg2, arg1), start_offset
+            else:
+                return fmt_str % ("...", arg1), None
     return "", None
 
 
@@ -352,6 +356,7 @@ def extended_format_BUILD_SLICE(opc, instructions: list) -> Tuple[str, Optional[
     assert argc in (2, 3)
     arglist, arg_count, i = get_arglist(instructions, 0, argc)
     if arg_count == 0:
+        assert isinstance(i, int)
         arglist = ["" if arg == "None" else arg for arg in arglist]
         return ":".join(reversed(arglist)), instructions[i].start_offset
 
@@ -367,11 +372,13 @@ def extended_format_BUILD_TUPLE(opc, instructions: list) -> Tuple[str, Optional[
         # Degenerate case
         return "tuple()", instructions[0].start_offset
     arglist, _, i = get_arglist(instructions, 0, arg_count)
-    args_str = ", ".join(reversed(arglist))
-    if arg_count == 1:
-        return f"({args_str},)", instructions[i].start_offset
-    else:
-        return f"({args_str})", instructions[i].start_offset
+    if arglist is not None:
+        assert isinstance(i, int)
+        args_str = ", ".join(reversed(arglist))
+        if arg_count == 1:
+            return f"({args_str},)", instructions[i].start_offset
+        else:
+            return f"({args_str})", instructions[i].start_offset
     return "", None
 
 
@@ -552,7 +559,7 @@ def extended_format_CALL_METHOD(opc, instructions) -> Tuple[str, Optional[int]]:
         return "", None
 
     fn_inst = instructions[first_arg + 1]
-    if fn_inst.opcode in opc.operator_set:
+    if fn_inst.opcode in opc.operator_set and arglist is not None:
         start_offset = fn_inst.offset
         if fn_inst.opname == "LOAD_METHOD":
             fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
@@ -613,10 +620,10 @@ def extended_function_signature(code) -> str:
 
 def get_arglist(
     instructions: list, i: int, arg_count: int
-) -> Tuple[list, int, Optional[int]]:
+) -> Tuple[Optional[list], int, Optional[int]]:
     """
     For a variable-length instruction like BUILD_TUPLE, or
-    a varlabie-name argument list, like CALL_FUNCTION
+    a variable-name argument list, like CALL_FUNCTION
     accumulate and find the beginning of the list and return:
     * argument list
     * the instruction index of the first instruction
@@ -628,6 +635,9 @@ def get_arglist(
     while arg_count > 0 and i < n:
         i += 1
         inst = instructions[i]
+        if inst.is_jump_target:
+            return None, -1, None
+
         arg_count -= 1
         arg = inst.tos_str if inst.tos_str else inst.argrepr
         if arg is not None:

@@ -228,7 +228,7 @@ def extended_format_PRINT_ITEM(opc, instructions: list) -> Tuple[str, Optional[i
 
 def extended_format_SLICE_1(opc, instructions: list) -> Tuple[str, Optional[int]]:
     arglist, arg_count, i = get_arglist(instructions, 0, 1)
-    if arg_count == 0:
+    if arg_count == 0 and arglist is not None:
         return f":{arglist[0]}", instructions[0].start_offset
 
     if instructions[0].argval == 0:
@@ -239,7 +239,7 @@ def extended_format_SLICE_1(opc, instructions: list) -> Tuple[str, Optional[int]
 
 def extended_format_SLICE_2(opc, instructions: list) -> Tuple[str, Optional[int]]:
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
-    if arg_count == 0 and i is not None:
+    if arg_count == 0 and i is not None and arglist is not None:
         arglist = ["" if arg == "None" else arg for arg in arglist]
         return ":".join(reversed(arglist)), instructions[i].start_offset
 
@@ -251,7 +251,7 @@ def extended_format_SLICE_2(opc, instructions: list) -> Tuple[str, Optional[int]
 
 def extended_format_SLICE_3(opc, instructions: list) -> Tuple[str, Optional[int]]:
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
-    if arg_count == 0 and i is not None:
+    if arg_count == 0 and i is not None and arglist is not None:
         arglist = ["" if arg == "None" else arg for arg in arglist]
         return ":".join(reversed(arglist)), instructions[i].start_offset
 
