@@ -159,6 +159,8 @@ name_op(loc, "DELETE_GLOBAL",         98,  0,  0)   # ""
 #          OP NAME                OPCODE POP PUSH
 #-----------------------------------------------
 const_op(loc,   "LOAD_CONST",        100,  0,  1)  # Operand is in const list
+loc["nullaryloadop"].add(100)
+
 name_op(loc,    "LOAD_NAME",         101,  0,  1)  # Operand is in name list
 varargs_op(loc, "BUILD_TUPLE",       102, -1,  1)  # TOS is count of tuple items
 varargs_op(loc, "BUILD_LIST",        103, -1,  1)  # TOS is count of list items
@@ -177,6 +179,8 @@ jabs_op(loc, "POP_JUMP_IF_FALSE",    114,  2,  1, conditional=True) # ""
 jabs_op(loc, "POP_JUMP_IF_TRUE",     115,  2,  1, conditional=True) # ""
 
 name_op(loc, "LOAD_GLOBAL",          116,  0,  1)  # Operand is in name list
+loc["nullaryloadop"].add(116)
+
 
 #          OP NAME                OPCODE POP PUSH
 #-----------------------------------------------
@@ -186,6 +190,8 @@ jrel_op(loc, "SETUP_EXCEPT",         121,  0,  6, conditional=True)  # ""
 jrel_op(loc, "SETUP_FINALLY",        122,  0,  6, conditional=True)  # ""
 
 local_op(loc, "LOAD_FAST",           124,  0,  1)  # Local variable number
+loc["nullaryloadop"].add(124)
+
 store_op(loc, "STORE_FAST",          125,  1,  0, is_type="local")  # Local variable number
 local_op(loc, "DELETE_FAST",         126,  0,  0)  # Local variable number
 
@@ -199,9 +205,16 @@ varargs_op(loc, "BUILD_SLICE",       133,  2,  1) # TOS is number of items to po
 
 nargs_op(loc, "MAKE_CLOSURE",        134, -3,  1) # TOS is number of items to pop
 free_op(loc, "LOAD_CLOSURE",         135,  0,  1)
+loc["nullaryloadop"].add(135)
+
+loc["nullaryloadop"].add(136)
+
 
 free_op(loc, "LOAD_DEREF",           136,  0,  1)
+loc["nullaryloadop"].add(136)
+
 loc["nullaryop"].add(136)
+loc["nullaryloadop"].add(136)
 
 store_op(loc, "STORE_DEREF",         137,  1,  0, is_type="free")
 free_op(loc, "DELETE_DEREF",         138,  0,  0)

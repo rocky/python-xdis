@@ -44,6 +44,7 @@ init_opdata(loc, opcode_11, version_tuple)
 rm_op(loc,  "LOAD_GLOBALS", 84)
 rm_op(loc,  "LOAD_FAST",         124)
 name_op(loc, "LOAD_FAST",        124, 0, 1)  # Local variable number
+loc["nullaryloadop"].add(124)
 
 # fmt: on
 

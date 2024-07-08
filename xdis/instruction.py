@@ -349,7 +349,7 @@ class Instruction(NamedTuple):
                         instructions.append(Instruction(*new_instruction))
                         argrepr = new_repr
                         start_offset = start_offset
-                elif hasattr(opc, "nullaryop") and self.opcode in opc.nullaryop:
+                elif self.opcode in opc.nullaryloadop:
                     new_instruction = list(self)
                     start_offset = new_instruction[-1] = self.offset
                     del instructions[-1]

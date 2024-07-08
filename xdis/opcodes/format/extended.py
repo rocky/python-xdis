@@ -767,7 +767,6 @@ opcode_extended_fmt_base = {
     "LOAD_ATTR":             extended_format_ATTR,
     "LOAD_BUILD_CLASS":      extended_format_LOAD_BUILD_CLASS,
     "MAKE_FUNCTION":         extended_format_MAKE_FUNCTION_10_27,
-    # "LOAD_DEREF":            extended_format_ATTR, # not quite right
     "RAISE_VARARGS":         extended_format_RAISE_VARARGS_older,
     "RETURN_VALUE":          extended_format_RETURN_VALUE,
     "STORE_ATTR":            extended_format_ATTR,

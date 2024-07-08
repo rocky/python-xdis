@@ -62,6 +62,10 @@ nofollow: List[int] = []  # Instruction doesn't fall to the next opcode
 
 nullaryop: Set[int] = set([])  # Instruction do not consume a stack entry
 
+# Nullary instruction that loads a value. LOAD_CONST is like this but
+# LOAD_ATTR is not since it requires an operand
+nullaryloadop: Set[int] = set([])
+
 # opmap[opcode_name] => opcode_number
 opmap: Dict[str, int] = {}
 
@@ -87,7 +91,7 @@ callop
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
-nofollow nullaryop unaryop
+nofollow nullaryop nullaryloadop unaryop
 """.split()
 
 
@@ -136,6 +140,7 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["hasvargs"] = []
         loc["nofollow"] = []
         loc["nullaryop"] = set([])
+        loc["nullaryloadop"] = set([])
         loc["opmap"] = {}
         loc["opname"] = [""] * 256
         for op in range(256):
@@ -309,6 +314,10 @@ def rm_op(loc, name, op):
         loc["hasvargs"].remove(op)
     if op in loc["nofollow"]:
         loc["nofollow"].remove(op)
+    if op in loc["nullaryloadop"]:
+        loc["nullaryloadop"].remove(op)
+    if op in loc["nullaryop"]:
+        loc["nullaryop"].remove(op)
 
     if loc["opmap"][name] != op:
         print(name, loc["opmap"][name], op)
