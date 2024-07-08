@@ -346,14 +346,16 @@ class Instruction(NamedTuple):
                         new_instruction[-2] = new_repr
                         new_instruction[-1] = start_offset
                         del instructions[-1]
-                        instructions.append(Instruction(*new_instruction))
+                        self = Instruction(*new_instruction)
+                        instructions.append(self)
                         argrepr = new_repr
                         start_offset = start_offset
                 elif self.opcode in opc.nullaryloadop:
                     new_instruction = list(self)
                     start_offset = new_instruction[-1] = self.offset
                     del instructions[-1]
-                    instructions.append(Instruction(*new_instruction))
+                    self = Instruction(*new_instruction)
+                    instructions.append(self)
                 pass
             if not argrepr:
                 if asm_format != "asm" or self.opname == "MAKE_FUNCTION":
@@ -368,7 +370,12 @@ class Instruction(NamedTuple):
                     ):
                         fields.append(f"({self.argrepr})")
                     else:
-                        prefix = "" if self.argrepr is None else f"({self.argrepr}) ; "
+                        if self.optype == "vargs":
+                            prefix = f"{self.argval}; "
+                        elif self.argrepr is None:
+                            prefix = ""
+                        else:
+                            prefix = f"({self.argrepr}) ; "
                         if self.opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
                         fields.append(f"{prefix}{self.tos_str}")
