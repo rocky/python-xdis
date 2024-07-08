@@ -329,11 +329,30 @@ def extended_format_BINARY_XOR(opc, instructions: list) -> Tuple[str, Optional[i
     return extended_format_infix_binary_op(opc, instructions, " ^ ")
 
 
-def extended_format_BUILD_LIST(opc, instructions: list) -> Tuple[str, Optional[int]]:
-    if instructions[0].argval == 0:
+def extended_format_build_tuple_or_list(
+    opc, instructions: list, left_delim: str, right_delim: str
+) -> Tuple[str, Optional[int]]:
+    arg_count = instructions[0].argval
+    is_tuple = left_delim == "("
+    if arg_count == 0:
         # Degenerate case
-        return "[]", instructions[0].start_offset
+        if is_tuple:
+            return "tuple()", instructions[0].start_offset
+        else:
+            return "{left_delim}{right_delim}", instructions[0].start_offset
+    arglist, _, i = get_arglist(instructions, 0, arg_count)
+    if arglist is not None:
+        assert isinstance(i, int)
+        args_str = ", ".join(reversed(arglist))
+        if arg_count == 1 and is_tuple:
+            return f"{left_delim}{args_str},{right_delim}", instructions[i].start_offset
+        else:
+            return f"{left_delim}{args_str}{right_delim}", instructions[i].start_offset
     return "", None
+
+
+def extended_format_BUILD_LIST(opc, instructions: list) -> Tuple[str, Optional[int]]:
+    return extended_format_build_tuple_or_list(opc, instructions, "[", "]")
 
 
 def extended_format_BUILD_MAP(opc, instructions: list) -> Tuple[str, Optional[int]]:
@@ -367,19 +386,7 @@ def extended_format_BUILD_SLICE(opc, instructions: list) -> Tuple[str, Optional[
 
 
 def extended_format_BUILD_TUPLE(opc, instructions: list) -> Tuple[str, Optional[int]]:
-    arg_count = instructions[0].argval
-    if arg_count == 0:
-        # Degenerate case
-        return "tuple()", instructions[0].start_offset
-    arglist, _, i = get_arglist(instructions, 0, arg_count)
-    if arglist is not None:
-        assert isinstance(i, int)
-        args_str = ", ".join(reversed(arglist))
-        if arg_count == 1:
-            return f"({args_str},)", instructions[i].start_offset
-        else:
-            return f"({args_str})", instructions[i].start_offset
-    return "", None
+    return extended_format_build_tuple_or_list(opc, instructions, "(", ")")
 
 
 def extended_format_COMPARE_OP(opc, instructions: list) -> Tuple[str, Optional[int]]:
