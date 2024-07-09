@@ -252,7 +252,7 @@ def extended_format_CALL_FUNCTION36(opc, instructions) -> tuple:
 
     assert i is not None
     fn_inst = instructions[i + 1]
-    if fn_inst.opcode in opc.operator_set:
+    if arglist is not None and fn_inst.opcode in opc.operator_set:
         start_offset = fn_inst.offset
         if instructions[1].opname == "MAKE_FUNCTION":
             arglist[0] = instructions[2].argval
@@ -291,7 +291,7 @@ def extended_format_CALL_FUNCTION_KW(opc, instructions) -> tuple:
 
     fn_inst = instructions[i + 1]
     start_offset = instructions[i].start_offset
-    if fn_inst.opcode in opc.operator_set:
+    if arglist is not None and fn_inst.opcode in opc.operator_set:
         if instructions[1].opname == "MAKE_FUNCTION" and opc.version_tuple >= (3, 3):
             arglist[0] = instructions[2].argval
 
