@@ -122,6 +122,8 @@ def_graal_op(opc, "RETURN_VALUE", 18, 0, 1, 0)
 # immediate operand which indexes the names array ({@code co_names}).
 #  Pushes: read object
 def_graal_op(opc, "LOAD_NAME", 19, 1, 0, 1)
+opc["nullaryloadop"].add(19)
+
 
 # Writes the stack top into a name in locals dict or globals
 # determined by the immediate operand which indexes the names array
@@ -161,6 +163,8 @@ def_graal_op(opc, "DELETE_ATTR", 25, 1, 1, 0)
 # operand which indexes the names array ({@code co_names}).
 #   Pushes: read object
 def_graal_op(opc, "LOAD_GLOBAL", 26, 1, 0, 1)
+opc["nullaryloadop"].add(26)
+
 
 # Writes a global variable. The name is determined by the immediate
 # operand which indexes the names array ({@code co_names}).
@@ -174,11 +178,14 @@ def_graal_op(opc, "DELETE_GLOBAL", 28, 1, 0, 0)
 # Reads a constant object from constants array ({@code co_consts}). Performs no conversion.
 #   Pushes: read constant
 def_graal_op(opc, "LOAD_CONST", 29, 1, 0, 1)
+opc["nullaryloadop"].add(29)
 
 # Reads a local variable determined by the immediate operand which indexes a stack slot and a
 # variable name in varnames array ({@code co_varnames}).
 #   Pushes: read value
 def_graal_op(opc, "LOAD_FAST", 30, 1, 0, 1)
+opc["nullaryloadop"].add(30)
+
 
 # Writes a local variable determined by the immediate operand which indexes a stack slot and a
 # variable name in varnames array ({@code co_varnames}).
@@ -296,9 +303,15 @@ def_graal_op(opc, "GET_LEN", 51, 0, 0, 1)
 # -------------------------------------
 
 def_graal_op(opc, "LOAD_NONE", 52, 0, 0, 1)
+opc["nullaryloadop"].add(52)
+
 def_graal_op(opc, "LOAD_ELLIPSIS", 53, 0, 0, 1)
 def_graal_op(opc, "LOAD_TRUE", 54, 0, 0, 1)
+opc["nullaryloadop"].add(54)
+
 def_graal_op(opc, "LOAD_FALSE", 55, 0, 0, 1)
+opc["nullaryloadop"].add(55)
+
 
 #### Continue adding opcode numbers here...
 
@@ -328,6 +341,7 @@ def_graal_op(opc, "LOAD_BIGINT", 1, 0, 1)
 # Currently the same as {@link #LOAD_CONST}.
 #
 def_graal_op(opc, "LOAD_STRING", 1, 0, 1)
+
 #
 # Creates python {@code bytes} from a {@code byte[]} array in constants array indexed by the
 # immediate operand.

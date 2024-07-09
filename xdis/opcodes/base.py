@@ -61,6 +61,10 @@ nofollow = []  # Instruction doesn't fall to the next opcode
 
 nullaryop = set([])  # Instruction do not consume a stack entry
 
+# Nullary instruction that loads a value. LOAD_CONST is like this but
+# LOAD_ATTR is not since it requires an operand
+nullaryloadop = set([])
+
 # opmap[opcode_name] => opcode_number
 opmap = {}
 
@@ -86,7 +90,7 @@ callop
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
-nofollow nullaryop unaryop
+nofollow nullaryop nullaryloadop unaryop
 """.split()
 
 
@@ -135,6 +139,7 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["hasvargs"] = []
         loc["nofollow"] = []
         loc["nullaryop"] = set([])
+        loc["nullaryloadop"] = set([])
         loc["opmap"] = {}
         loc["opname"] = [""] * 256
         for op in range(256):
@@ -304,6 +309,10 @@ def rm_op(loc, name, op):
         loc["hasvargs"].remove(op)
     if op in loc["nofollow"]:
         loc["nofollow"].remove(op)
+    if op in loc["nullaryloadop"]:
+        loc["nullaryloadop"].remove(op)
+    if op in loc["nullaryop"]:
+        loc["nullaryop"].remove(op)
 
     if loc["opmap"][name] != op:
         print(name, loc["opmap"][name], op)
@@ -371,7 +380,7 @@ def finalize_opcodes(loc):
         | loc["unaryop"]
         | loc["binaryop"]
         | set([op for op in loc["hasnargs"] if op not in loc["nofollow"]])
-        | set([op for op in loc["hasvargs"] if loc["oppush"][op] == 1])
+        | set([op for op in loc["hasvargs"]])
     )
     opcode_check(loc)
     return

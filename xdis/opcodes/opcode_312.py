@@ -12,6 +12,7 @@ from xdis.opcodes.base import (
     finalize_opcodes,
     init_opdata,
     jrel_op,
+    name_op,
     rm_op,
     update_pj3,
 )
@@ -115,7 +116,7 @@ def_op(loc    , "POP_BLOCK"                        , 259,   0, 1)
 jrel_op(loc   , "JUMP"                             , 260,   0, 0)
 jrel_op(loc   , "JUMP_NO_INTERRUPT"                , 261,   0, 0)
 
-def_op(loc    , "LOAD_METHOD"                      , 262,   0, 1)
+name_op(loc   , "LOAD_METHOD"                      , 262,   0, 1)
 def_op(loc    , "LOAD_SUPER_METHOD"                , 263,   1, 0)
 def_op(loc    , "LOAD_ZERO_SUPER_METHOD"           , 264,   1, 0)
 def_op(loc    , "LOAD_ZERO_SUPER_ATTR"             , 265,   1, 0)

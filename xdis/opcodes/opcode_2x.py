@@ -156,8 +156,15 @@ name_op(loc, "DELETE_ATTR",            96,  1,  0)  # ""
 store_op(loc, "STORE_GLOBAL",          97,  1,  0, is_type="name")  # ""
 name_op(loc, "DELETE_GLOBAL",          98,  0,  0)  # ""
 nargs_op(loc, "DUP_TOPX",              99, -1,  2)  # number of items to duplicate
+
 const_op(loc, "LOAD_CONST",           100,  0,  1)  # Operand is in const list
+loc["nullaryloadop"].add(100)
+
+loc["nullaryloadop"].add(100)
+
 name_op(loc, "LOAD_NAME",             101,  0,  1)  # Operand is in name list
+loc["nullaryloadop"].add(101)
+
 varargs_op(loc, "BUILD_TUPLE",        102, -1,  1)  # TOS is number of tuple items
 varargs_op(loc, "BUILD_LIST",         103, -1,  1)  # TOS is number of list items
 varargs_op(loc, "BUILD_MAP",          104,  0,  1)  # TOS is number of kwarg items.
@@ -179,6 +186,8 @@ jabs_op(loc, "JUMP_ABSOLUTE",         113,  0,  0, fallthrough=False)
                                                  #code
 
 name_op(loc, "LOAD_GLOBAL",           116,  0,  1)  # Operand is in name list
+loc["nullaryloadop"].add(116)
+
 
 jabs_op(loc, "CONTINUE_LOOP",         119,  0,  0, fallthrough=False)  # Target address
 jrel_op(loc, "SETUP_LOOP",            120,  0,  0, conditional=True)  # Distance to
@@ -187,6 +196,8 @@ jrel_op(loc, "SETUP_EXCEPT",          121,  0,  3, conditional=True)  # ""
 jrel_op(loc, "SETUP_FINALLY",         122,  0,  3, conditional=True)  # ""
 
 local_op(loc, "LOAD_FAST",            124,  0,  1)  # Local variable number
+loc["nullaryloadop"].add(124)
+
 store_op(loc, "STORE_FAST",           125,  1,  0, is_type="local")  # Local variable
                                                                      # number
 local_op(loc, "DELETE_FAST",          126,  0,  0) # Local variable number is in operand
@@ -200,10 +211,13 @@ nargs_op(loc, "MAKE_FUNCTION",        132, -1,  2)  # TOS is number of args with
 varargs_op(loc, "BUILD_SLICE",        133,  2,  1)  # TOS is number of items
 
 def_op(loc, "MAKE_CLOSURE",           134, -3,  1)
-free_op(loc, "LOAD_CLOSURE",          135,  0,  1)
+
+free_op(loc, "LOAD_CLOSURE",          135,  0,  1)  # Load of a closured variable
+loc["nullaryloadop"].add(135)
 
 free_op(loc, "LOAD_DEREF",            136,  0,  1)
 loc["nullaryop"].add(136)
+loc["nullaryloadop"].add(136)
 
 store_op(loc, "STORE_DEREF",          137,  1,  0, is_type="free")
 
@@ -231,7 +245,7 @@ def extended_format_PRINT_ITEM(opc, instructions):
 
 def extended_format_SLICE_1(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 1)
-    if arg_count == 0:
+    if arg_count == 0 and arglist is not None:
         return ":%s" % arglist[0], instructions[0].start_offset
 
     if instructions[0].argval == 0:
@@ -242,7 +256,7 @@ def extended_format_SLICE_1(opc, instructions):
 
 def extended_format_SLICE_2(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
-    if arg_count == 0 and i is not None:
+    if arg_count == 0 and i is not None and arglist is not None:
         for i, arg in enumerate(arglist):
             if arg == "None":
                 arglist[i] = ""
@@ -256,7 +270,7 @@ def extended_format_SLICE_2(opc, instructions):
 
 def extended_format_SLICE_3(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
-    if arg_count == 0 and i is not None:
+    if arg_count == 0 and i is not None and arglist is not None::
         for i, arg in enumerate(arglist):
             if arg == "None":
                 arglist[i] = ""

@@ -115,16 +115,15 @@ format_value_flags = opcode_36.format_value_flags
 
 def extended_format_LOAD_METHOD(opc, instructions):
     instr1 = instructions[1]
-    if instr1.tos_str or instr1.opname in (
-        "LOAD_NAME",
-        "LOAD_GLOBAL",
-        "LOAD_FAST",
-        "LOAD_DEREF",
-    ):
+    if instr1.tos_str or instr1.opcode in opc.nullaryloadop:
         if instr1.tos_str is not None:
             base = instr1.tos_str
         else:
             base = instr1.argrepr
+=======
+    if instr1.tos_str or instr1.opcode in opc.nullaryloadop:
+        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+>>>>>>> python-3.0-to-3.2
 
         return (
             "%s.%s" % (base, instructions[0].argrepr),

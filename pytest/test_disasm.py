@@ -37,8 +37,8 @@ def run_check_disasm(test_tuple, function_to_test):
     ]
     got_lines = [
         re.sub(
-            "<code object .*>|<Code.+ code object .*>",
-            "<code object at 0xdeadbeef0001>",
+            "<code object .+, line|<Code.+ code object .+, line",
+            "<code object at 0xdeadbeef0001, line",
             line,
         )
         for line in got_lines

@@ -28,6 +28,7 @@ from xdis.opcodes.base import (
     binary_op,
     def_op,
     finalize_opcodes,
+    free_op,
     init_opdata,
     jrel_op,
     rm_op,
@@ -158,8 +159,13 @@ rm_op(loc, "DELETE_DEREF",                    138)
 
 ## Redefined OPS
 def_op(loc, "GET_AWAITABLE",                  131,   0, 0)
-def_op(loc, "LOAD_CLOSURE",                   136,   0, 1)
-def_op(loc, "LOAD_DEREF",                     137,   0, 1)
+free_op(loc, "LOAD_CLOSURE",                  136,   0, 1)
+loc["nullaryloadop"].add(136)
+
+free_op(loc, "LOAD_DEREF",                    137,   0, 1)
+loc["nullaryop"].add(137)
+loc["nullaryloadop"].add(137)
+
 store_op(loc, "STORE_DEREF",                  138,   1, 0, is_type="free")
 def_op(loc, "DELETE_DEREF",                   139,   0, 0)
 

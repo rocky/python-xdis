@@ -135,7 +135,11 @@ store_op(loc,    "STORE_GLOBAL",    97, 1, 0, is_type="name")  # ""
 name_op(loc,    "DELETE_GLOBAL",    98, 0, 0)  # ""
 
 const_op(loc,   "LOAD_CONST",      100, 0, 1)  # Operand is in const list
+loc["nullaryloadop"].add(100)
+
 name_op(loc,    "LOAD_NAME",       101, 0, 1)  # Operand is in name list
+loc["nullaryloadop"].add(101)
+
 varargs_op(loc, "BUILD_TUPLE",     102, -1, 1)  # Number of tuple items
 varargs_op(loc, "BUILD_LIST",      103, -1, 1)  # Number of list items
 varargs_op(loc, "BUILD_MAP",       104, -1, 1)  # Always zero for now
@@ -153,6 +157,7 @@ jabs_op(loc,    "JUMP_ABSOLUTE", 113, 0, 0, fallthrough=False)
 def_op(loc,     "FOR_LOOP",      114)  # Number of bytes to skip
 
 name_op(loc,    "LOAD_GLOBAL",   116, 0, 1)  # Operand is in name list
+loc["nullaryloadop"].add(116)
 
 jrel_op(loc,    "SETUP_LOOP",    120, 0, 0, conditional=True)
                                              # Distance to target address
@@ -160,6 +165,8 @@ jrel_op(loc,    "SETUP_EXCEPT",  121, 0, 0)  # ""
 jrel_op(loc,    "SETUP_FINALLY", 122, 0, 0)  # ""
 
 local_op(loc, "LOAD_FAST",       124, 0, 1)  # Local variable number
+loc["nullaryloadop"].add(124)
+
 store_op(loc, "STORE_FAST",      125, 1, 0, is_type="local")  # Local variable number
 local_op(loc, "DELETE_FAST",     126)  # Local variable number
 

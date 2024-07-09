@@ -514,10 +514,10 @@ class Bytecode:
         output = StringIO()
         if self.opc.version_tuple > (2, 0):
             cells = self._cell_names
-            linestarts = self._linestarts
+            line_starts = self._linestarts
         else:
             cells = None
-            linestarts = None
+            line_starts = None
 
         if hasattr(co, "co_firstlineno"):
             first_line_number = co.co_firstlineno
@@ -536,7 +536,7 @@ class Bytecode:
             names=co.co_names,
             constants=co.co_consts,
             cells=cells,
-            linestarts=linestarts,
+            line_starts=line_starts,
             line_offset=self._line_offset,
             file=output,
             lasti=offset,
@@ -568,7 +568,7 @@ class Bytecode:
         names=None,
         constants=None,
         cells=None,
-        linestarts=None,
+        line_starts=None,
         file=sys.stdout,
         line_offset=0,
         asm_format="classic",
@@ -578,7 +578,7 @@ class Bytecode:
         exception_entries=None,
     ):
         # Omit the line number column entirely if we have no line number info
-        show_lineno = linestarts is not None or self.opc.version_tuple < (2, 3)
+        show_lineno = line_starts is not None or self.opc.version_tuple < (2, 3)
         show_source = show_source and show_lineno and first_line_number and filename
 
         def show_source_text(line_number):
@@ -606,7 +606,7 @@ class Bytecode:
         set_lineno_number = 0
         last_was_set_lineno = False
 
-        # TODO?: Adjust width upwards if max(linestarts.values()) >= 1000?
+        # TODO?: Adjust width upwards if max(line_starts.values()) >= 1000?
         if show_lineno:
             lineno_width = 3
         else:
@@ -622,7 +622,7 @@ class Bytecode:
             names,
             constants,
             cells,
-            linestarts,
+            line_starts,
             line_offset=line_offset,
             exception_entries=exception_entries,
         ):
@@ -724,7 +724,12 @@ class Bytecode:
 
             file.write(
                 instr.disassemble(
-                    self.opc, lineno_width, is_current_instr, asm_format, instructions
+                    self.opc,
+                    line_starts,
+                    lineno_width,
+                    is_current_instr,
+                    asm_format,
+                    instructions,
                 )
                 + "\n"
             )
@@ -754,7 +759,7 @@ class Bytecode:
         """
         co = get_code_object(x)
         cell_names = co.co_cellvars + co.co_freevars
-        linestarts = dict(self.opc.findlinestarts(co))
+        line_starts = dict(self.opc.findlinestarts(co))
         if first_line is not None:
             line_offset = first_line - co.co_firstlineno
         else:
@@ -766,7 +771,7 @@ class Bytecode:
             co.co_names,
             co.co_consts,
             cell_names,
-            linestarts,
+            line_starts,
             line_offset,
         )
 
