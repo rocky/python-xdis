@@ -226,6 +226,7 @@ class Instruction(NamedTuple):
     def disassemble(
         self,
         opc,
+        line_starts,
         lineno_width=3,
         mark_as_current=False,
         asm_format="classic",
@@ -316,15 +317,19 @@ class Instruction(NamedTuple):
                     fields.append(repr(self.arg))
                     fields.append("(%s)" % argrepr)
                     argrepr = None
-                elif self.optype == "const" and not re.search(r"\s", argrepr):
-                    fields.append(repr(self.arg))
-                    fields.append("(%s)" % argrepr)
-                    argrepr = None
                 else:
                     fields.append(repr(self.arg))
             elif asm_format in ("extended", "extended-bytes"):
                 op = self.opcode
                 if (
+                    self.optype in ("jrel", "jabs")
+                    and line_starts.get(self.argval) is not None
+                ):
+                    new_instruction = list(self)
+                    new_instruction[-2] = f"To line {line_starts[self.argval]}"
+                    del instructions[-1]
+                    instructions.append(Instruction(*new_instruction))
+                elif (
                     hasattr(opc, "opcode_extended_fmt")
                     and opc.opname[op] in opc.opcode_extended_fmt
                 ):
@@ -337,13 +342,19 @@ class Instruction(NamedTuple):
                     if new_repr:
                         # Add tos_str info to tos_str field of instruction.
                         # This the last field in instruction.
-                        new_instruction = list(instructions[-1])
+                        new_instruction = list(self)
                         new_instruction[-2] = new_repr
                         new_instruction[-1] = start_offset
                         del instructions[-1]
-                        instructions.append(Instruction(*new_instruction))
+                        self = Instruction(*new_instruction)
+                        instructions.append(self)
                         argrepr = new_repr
-                        start_offset = start_offset
+                elif self.opcode in opc.nullaryloadop:
+                    new_instruction = list(self)
+                    start_offset = new_instruction[-1] = self.offset
+                    del instructions[-1]
+                    self = Instruction(*new_instruction)
+                    instructions.append(self)
                 pass
             if not argrepr:
                 if asm_format != "asm" or self.opname == "MAKE_FUNCTION":
@@ -352,17 +363,21 @@ class Instruction(NamedTuple):
             else:
                 # Column: Opcode argument details
                 if len(instructions) > 0:
-                    argval = instructions[-1].argval
-                    if instructions[-1].tos_str is None or (
-                        self.argrepr is not None
-                        and self.argrepr == instructions[-1].tos_str
+                    argval = self.argval
+                    if self.tos_str is None or (
+                        self.argrepr is not None and self.argrepr == self.tos_str
                     ):
                         fields.append(f"({self.argrepr})")
                     else:
-                        prefix = "" if self.argrepr is None else f"({self.argrepr}) ; "
+                        if self.optype == "vargs":
+                            prefix = f"{self.argval}; "
+                        elif self.argrepr is None:
+                            prefix = ""
+                        else:
+                            prefix = f"({self.argrepr}) ; "
                         if self.opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
-                        fields.append(f"{prefix}{instructions[-1].tos_str}")
+                        fields.append(f"{prefix}{self.tos_str}")
                     pass
                 else:
                     fields.append(self.argrepr)
@@ -378,12 +393,12 @@ class Instruction(NamedTuple):
                     opc, list(reversed(instructions))
                 )
                 if new_repr:
-                    new_instruction = list(instructions[-1])
+                    new_instruction = list(self)
                     new_instruction[-2] = new_repr
                     new_instruction[-1] = start_offset
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
-                    argval = instructions[-1].argval
+                    argval = self.argval
                     prefix = "" if argval is None else f"({argval}) | "
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "

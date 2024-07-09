@@ -50,6 +50,8 @@ def_op(loc, "BUILD_FUNCTION",     86)
 varargs_op(loc, "UNPACK_ARG",     94)  # Number of arguments expected
 varargs_op(loc, "UNPACK_VARARG",  99)  # Minimal number of arguments
 name_op(loc, "LOAD_LOCAL",       115)
+loc["nullaryloadop"].add(115)
+
 varargs_op(loc, "SET_FUNC_ARGS", 117)  # Argcount
 varargs_op(loc, "RESERVE_FAST",  123)  # Number of local variables
 # fmt: on

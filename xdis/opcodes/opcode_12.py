@@ -44,7 +44,10 @@ init_opdata(loc, opcode_13, version_tuple)
 # 1.3 - 1.2 bytecodes differences
 rm_op(loc,  "LOAD_FAST",         124)
 rm_op(loc,  "STORE_FAST",        125)
+
 name_op(loc, "LOAD_FAST",        124, 0, 1)  # Local variable number
+loc["nullaryloadop"].add(124)
+
 store_op(loc, "STORE_FAST",      125, 1, 0, is_type="name")  # Local variable number
 
 # fmt: on

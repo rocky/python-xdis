@@ -33,8 +33,7 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (2, 7)
 python_implementation = "CPython"
@@ -65,7 +64,7 @@ def_op(l, "LIST_APPEND",            94,  2,  1)  # Calls list.append(TOS[-i], TO
 
 # Used to implement list comprehensions.
 varargs_op(l, 'BUILD_SET',         104, -1,  1)  # TOS is count of set items
-def_op(l,  "BUILD_MAP",            105,  0,  1)  # count is in argument
+varargs_op(l,  "BUILD_MAP",        105,  0,  1)  # count is in argument
 name_op(l, "LOAD_ATTR",            106,  1,  1)  # Operand is in name list
 compare_op(l, "COMPARE_OP", 107)
 
