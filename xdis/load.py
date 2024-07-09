@@ -302,6 +302,11 @@ def load_module_from_file_object(
                 if my_magic_int == magic_int:
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
+                    # Python 3.10 returns a tuple here?
+                    if isinstance(co, tuple):
+                        co = co[0]
+                        assert isinstance(co, types.CodeType)
+
                 elif fast_load:
                     co = xdis.marsh.load(fp, magicint2version[magic_int])
                 else:

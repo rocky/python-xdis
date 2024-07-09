@@ -36,8 +36,8 @@ def run_check_disasm(test_tuple, function_to_test):
     ]
     got_lines = [
         re.sub(
-            "<code object .*>|<Code.+ code object .*>",
-            "<code object at 0xdeadbeef0001>",
+            "<code object .+, line|<Code.+ code object .+, line",
+            "<code object at 0xdeadbeef0001, line",
             line,
         )
         for line in got_lines
@@ -109,6 +109,47 @@ if os.name != "nt":
                 "testdata/%s-xasm-%s.right" % (test_name, version),
             )
             run_check_disasm(test_tuple, disassemble_file_xasm)
+=======
+# FIXME: redo putting more in loop. Add more Python versions and
+# more formats
+@pytest.mark.skipif(
+    os.name == "nt", reason="Windows differences in output need going over"
+)
+@pytest.mark.parametrize(
+    ("test_name", "version", "formats"),
+    [
+        ("01_fstring", "3.6", ["classic", "xasm"]),
+        # ("01_fstring", "3.10"),  # FIXME
+        ("04_pypy_lambda", "2.7pypy", ["classic", "xasm"]),
+        ("03_big_dict", "2.7", ["classic", "xasm"]),
+        ("03_big_dict", "3.3", ["classic", "xasm"]),
+        ("03_big_dict", "3.5", ["classic", "xasm"]),
+        ("03_big_dict", "3.6", ["classic", "xasm"]),
+        ("03_big_dict", "3.6", ["classic", "xasm"]),
+        ("test_nested_scopes", "2.1", ["extended-bytes"]),
+        # ("01_augmented_assign", "3.7", ["extended-bytes"]),
+        # ("03_big_dict", "3.10"), # FIXME
+    ],
+)
+def test_funcoutput(test_name, version, formats):
+    if "classic" in formats:
+        test_tuple = (
+            "../test/bytecode_%s/%s.pyc" % (version, test_name),
+            "testdata/%s-%s.right" % (test_name, version),
+        )
+        run_check_disasm(test_tuple, disassemble_file)
+    if "extended_bytes" in formats:
+        test_tuple = (
+            "../test/bytecode_%s/%s.pyc" % (version, test_name),
+            "testdata/%s-extended-bytes-%s.right" % (test_name, version),
+        )
+        run_check_disasm(test_tuple, disassemble_file_extended_bytes)
+    if "xasm" in formats:
+        test_tuple = (
+            "../test/bytecode_%s/%s.pyc" % (version, test_name),
+            "testdata/%s-xasm-%s.right" % (test_name, version),
+        )
+        run_check_disasm(test_tuple, disassemble_file_xasm)
 
 
 if __name__ == "__main__":

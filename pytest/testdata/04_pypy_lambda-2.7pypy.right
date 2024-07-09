@@ -6,11 +6,11 @@
 # Flags:             0x00000000 (0x0)
 # First Line:        4
 # Constants:
-#    0: <code object at 0xdeadbeef0001>, line 4
+#    0: <code object at 0xdeadbeef0001, line 4
 #    1: None
 # Names:
 #    0: f
-  4:           0 LOAD_CONST           (<code object at 0xdeadbeef0001>, line 4)
+  4:           0 LOAD_CONST           (<code object at 0xdeadbeef0001, line 4)
                3 MAKE_FUNCTION        (0 default parameters)
                6 STORE_NAME           (f)
                9 LOAD_CONST           (None)
@@ -26,7 +26,7 @@
 # First Line:        4
 # Constants:
 #    0: None
-#    1: <code object at 0xdeadbeef0001>, line 4
+#    1: <code object at 0xdeadbeef0001, line 4
 # Names:
 #    0: map
 # Varnames:
@@ -35,7 +35,7 @@
 #	right
   4:           0 BUILD_LIST           0
                3 LOOKUP_METHOD        (map)
-               6 LOAD_CONST           (<code object at 0xdeadbeef0001>, line 4)
+               6 LOAD_CONST           (<code object at 0xdeadbeef0001, line 4)
                9 MAKE_FUNCTION        (0 default parameters)
               12 CALL_METHOD          (1 positional, 0 named)
               15 RETURN_VALUE
