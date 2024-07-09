@@ -63,7 +63,7 @@ nullaryop = set([])  # Instruction do not consume a stack entry
 
 # Nullary instruction that loads a value. LOAD_CONST is like this but
 # LOAD_ATTR is not since it requires an operand
-nullaryloadop: Set[int] = set([])
+nullaryloadop = set([])
 
 # opmap[opcode_name] => opcode_number
 opmap = {}

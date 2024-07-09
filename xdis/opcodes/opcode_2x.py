@@ -242,10 +242,6 @@ def extended_format_SLICE_1(opc, instructions: list):
     arglist, arg_count, i = get_arglist(instructions, 0, 1)
     if arg_count == 0 and arglist is not None:
         return ":%s" % arglist[0], instructions[0].start_offset
-=======
-    if arg_count == 0 and arglist is not None:
-        return f":{arglist[0]}", instructions[0].start_offset
->>>>>>> python-3.6-to-3.10
 
     if instructions[0].argval == 0:
         # Degenerate case

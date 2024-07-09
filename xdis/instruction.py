@@ -188,7 +188,7 @@ class Instruction(_Instruction):
                     and line_starts.get(self.argval) is not None
                 ):
                     new_instruction = list(self)
-                    new_instruction[-2] = f"To line {line_starts[self.argval]}"
+                    new_instruction[-2] = "To line %s" % line_starts[self.argval]
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
                 elif (
@@ -231,15 +231,14 @@ class Instruction(_Instruction):
                         fields.append("(%s)" % argrepr)
                     else:
                         if self.optype == "vargs":
-                            prefix = "{self.argval}; " % self.argval
+                            prefix = "%s; " % self.argval
                         elif self.argrepr is None:
                             prefix = ""
                         else:
-                            prefix = f"({self.argrepr}) ; "
+                            prefix = "(%s); " % self.argval
                         if self.opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
                         fields.append("%s%s" % (prefix, self.tos_str))
->>>>>>> python-3.6-to-3.10
                     pass
                 else:
                     fields.append(self.argrepr)

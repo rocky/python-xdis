@@ -324,9 +324,15 @@ def extended_format_build_tuple_or_list(
         assert isinstance(i, int)
         args_str = ", ".join(reversed(arglist))
         if arg_count == 1 and is_tuple:
-            return f"{left_delim}{args_str},{right_delim}", instructions[i].start_offset
+            return (
+                "%s%s,%s" % (left_delim, args_str, right_delim),
+                instructions[i].start_offset,
+            )
         else:
-            return f"{left_delim}{args_str}{right_delim}", instructions[i].start_offset
+            return (
+                "%s%s%s" % (left_delim, args_str, right_delim),
+                instructions[i].start_offset,
+            )
     return "", None
 
 
@@ -342,7 +348,9 @@ def extended_format_BUILD_MAP(opc, instructions: list) -> tuple:
     arglist, _, i = get_arglist(instructions, 0, 2 * arg_count)
     if arglist is not None:
         assert isinstance(i, int)
-        arg_pairs = [f"{arglist[i]}:{arglist[i+1]}" for i in range(len(arglist, 2))]
+        arg_pairs = [
+            "%s:%s" % (arglist[i], arglist[i + 1]) for i in range(len(arglist, 2))
+        ]
         args_str = ", ".join(arg_pairs)
         return "{" + args_str + "}", instructions[i].start_offset
     return "", None
