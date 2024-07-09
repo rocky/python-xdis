@@ -193,8 +193,9 @@ class Instruction(_Instruction):
                 ):
                     new_instruction = list(self)
                     new_instruction[-2] = "To line %s" % line_starts[self.argval]
+                    self = Instruction(*new_instruction)
                     del instructions[-1]
-                    instructions.append(Instruction(*new_instruction))
+                    instructions.append(self)
                 elif (
                     hasattr(opc, "opcode_extended_fmt")
                     and opc.opname[op] in opc.opcode_extended_fmt
@@ -265,10 +266,6 @@ class Instruction(_Instruction):
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
                     argval = self.argval
-                    if argval is None:
-                        prefix = ""
-                    else:
-                        prefix = "(%s) | " % argval
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "
                     fields.append("%s%s" % (prefix, new_repr))
