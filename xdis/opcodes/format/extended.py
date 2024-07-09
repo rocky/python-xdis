@@ -358,11 +358,11 @@ def extended_format_BUILD_CONST_KEY_MAP(opc, instructions):
     return "", None
 
 
-def extended_format_BUILD_LIST(opc, instructions: list) -> tuple:
+def extended_format_BUILD_LIST(opc, instructions):
     return extended_format_build_tuple_or_list(opc, instructions, "[", "]")
 
 
-def extended_format_BUILD_LIST(opc, instructions):
+def extended_format_BUILD_MAP(opc, instructions):
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Note: caller generally handles this when the below isn't right.

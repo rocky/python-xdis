@@ -265,7 +265,6 @@ class Instruction(_Instruction):
                     new_instruction[-1] = start_offset
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
-                    argval = self.argval
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "
                     fields.append("%s%s" % (prefix, new_repr))
