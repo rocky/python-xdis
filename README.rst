@@ -247,4 +247,5 @@ See Also
 .. |PyPI Installs| image:: https://pepy.tech/badge/xdis/month
 .. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg
 		 :target: https://repology.org/project/python:xdis/versions
+		 :alt: Packaging Status
 .. _dis: https://docs.python.org/3/library/dis.html

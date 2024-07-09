@@ -189,8 +189,9 @@ class Instruction(_Instruction):
                 ):
                     new_instruction = list(self)
                     new_instruction[-2] = "To line %s" % line_starts[self.argval]
+                    self = Instruction(*new_instruction)
                     del instructions[-1]
-                    instructions.append(Instruction(*new_instruction))
+                    instructions.append(self)
                 elif (
                     hasattr(opc, "opcode_extended_fmt")
                     and opc.opname[op] in opc.opcode_extended_fmt

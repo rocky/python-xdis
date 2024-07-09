@@ -336,6 +336,27 @@ def extended_format_build_tuple_or_list(
     return "", None
 
 
+def extended_format_BUILD_CONST_KEY_MAP(opc, instructions):
+    arg_count = instructions[0].argval
+    if arg_count == 0:
+        # Note: caller generally handles this when the below isn't right.
+        return "{}", instructions[0].offset
+    assert len(instructions) > 0
+    key_tuple = instructions[1]
+    key_values = key_tuple.argval
+    if key_tuple.opname == "LOAD_CONST" and isinstance(key_values, tuple):
+        arglist, _, i = get_arglist(instructions, 1, arg_count)
+        if arglist is not None:
+            assert isinstance(i, int)
+            assert len(arglist) == len(key_values)
+            arg_pairs = []
+            for i in range(len(arglist)):
+                arg_pairs.append(f"{key_values[i]}: {arglist[i]}")
+            args_str = ", ".join(arg_pairs)
+            return "{" + args_str + "}", instructions[i].start_offset
+    return "", None
+
+
 def extended_format_BUILD_LIST(opc, instructions: list) -> tuple:
     return extended_format_build_tuple_or_list(opc, instructions, "[", "]")
 
@@ -349,8 +370,11 @@ def extended_format_BUILD_MAP(opc, instructions: list) -> tuple:
     if arglist is not None:
         assert isinstance(i, int)
         arg_pairs = [
-            "%s:%s" % (arglist[i], arglist[i + 1]) for i in range(len(arglist, 2))
+            "%s:%s" % (arglist[i], arglist[i + 1]) for i in range(len(arglist), 2)
         ]
+=======
+        arg_pairs = [f"{arglist[i]}:{arglist[i+1]}" for i in range(len(arglist), 2)]
+>>>>>>> python-3.6-to-3.10
         args_str = ", ".join(arg_pairs)
         return "{" + args_str + "}", instructions[i].start_offset
     return "", None
@@ -723,6 +747,7 @@ opcode_extended_fmt_base = {
     "BINARY_OR":             extended_format_BINARY_OR,
     "BINARY_POWER":          extended_format_BINARY_POWER,
     "BINARY_XOR":            extended_format_BINARY_XOR,
+    "BUILD_CONST_KEY_MAP":   extended_format_BUILD_CONST_KEY_MAP,
     "BUILD_LIST":            extended_format_BUILD_LIST,
     "BUILD_MAP":             extended_format_BUILD_MAP,
     "BUILD_SET":             extended_format_BUILD_SET,
