@@ -265,8 +265,10 @@ class Instruction(_Instruction):
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
                     argval = self.argval
-                    prefix = "" if argval is None else "(%s) | " % argval
->>>>>>> python-3.0-to-3.2
+                    if argval is None:
+                        prefix = ""
+                    else:
+                        prefix = "(%s) | " % argval
                     if self.opcode in opc.operator_set:
                         prefix += "TOS = "
                     fields.append("%s%s" % (prefix, new_repr))

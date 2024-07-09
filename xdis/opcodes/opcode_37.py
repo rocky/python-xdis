@@ -120,10 +120,6 @@ def extended_format_LOAD_METHOD(opc, instructions):
             base = instr1.tos_str
         else:
             base = instr1.argrepr
-=======
-    if instr1.tos_str or instr1.opcode in opc.nullaryloadop:
-        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
->>>>>>> python-3.0-to-3.2
 
         return (
             "%s.%s" % (base, instructions[0].argrepr),

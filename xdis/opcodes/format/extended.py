@@ -337,11 +337,11 @@ def extended_format_build_tuple_or_list(
     return "", None
 
 
-def extended_format_BUILD_LIST(opc, instructions: list) -> tuple:
+def extended_format_BUILD_LIST(opc, instructions):
     return extended_format_build_tuple_or_list(opc, instructions, "[", "]")
 
 
-def extended_format_BUILD_MAP(opc, instructions: list) -> tuple:
+def extended_format_BUILD_MAP(opc, instructions):
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Note: caller generally handles this when the below isn't right.
@@ -371,9 +371,13 @@ def extended_format_BUILD_SLICE(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, argc)
     if arg_count == 0:
         assert isinstance(i, int)
-        arglist = ["" if arg == "None" else arg for arg in arglist]
+        arglist = []
+        for arg in arglist:
+            if arg == "None":
+                arglist.append("")
+            else:
+                arglist.append(arg)
         return ":".join(reversed(arglist)), instructions[i].start_offset
->>>>>>> python-3.0-to-3.2
 
     if instructions[0].argval == 0:
         # Degenerate case
