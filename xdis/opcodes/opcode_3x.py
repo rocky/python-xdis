@@ -162,6 +162,8 @@ const_op(loc,   "LOAD_CONST",        100,  0,  1)  # Operand is in const list
 loc["nullaryloadop"].add(100)
 
 name_op(loc,    "LOAD_NAME",         101,  0,  1)  # Operand is in name list
+loc["nullaryloadop"].add(101)
+
 varargs_op(loc, "BUILD_TUPLE",       102, -1,  1)  # TOS is count of tuple items
 varargs_op(loc, "BUILD_LIST",        103, -1,  1)  # TOS is count of list items
 varargs_op(loc, "BUILD_SET",         104, -1,  1)  # TOS is count of set items
