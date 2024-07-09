@@ -349,7 +349,6 @@ class Instruction(NamedTuple):
                         self = Instruction(*new_instruction)
                         instructions.append(self)
                         argrepr = new_repr
-                        start_offset = start_offset
                 elif self.opcode in opc.nullaryloadop:
                     new_instruction = list(self)
                     start_offset = new_instruction[-1] = self.offset

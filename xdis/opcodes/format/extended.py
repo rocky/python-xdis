@@ -335,11 +335,8 @@ def extended_format_build_tuple_or_list(
     arg_count = instructions[0].argval
     is_tuple = left_delim == "("
     if arg_count == 0:
-        # Degenerate case
-        if is_tuple:
-            return "tuple()", instructions[0].start_offset
-        else:
-            return "{left_delim}{right_delim}", instructions[0].start_offset
+        # Note: caller generally handles this when the below isn't right.
+        return "{left_delim}{right_delim}", instructions[0].offset
     arglist, _, i = get_arglist(instructions, 0, arg_count)
     if arglist is not None:
         assert isinstance(i, int)
@@ -356,9 +353,16 @@ def extended_format_BUILD_LIST(opc, instructions: list) -> Tuple[str, Optional[i
 
 
 def extended_format_BUILD_MAP(opc, instructions: list) -> Tuple[str, Optional[int]]:
-    if instructions[0].argval == 0:
-        # Degenerate case
-        return "{}", instructions[0].start_offset
+    arg_count = instructions[0].argval
+    if arg_count == 0:
+        # Note: caller generally handles this when the below isn't right.
+        return "{}", instructions[0].offset
+    arglist, _, i = get_arglist(instructions, 0, 2 * arg_count)
+    if arglist is not None:
+        assert isinstance(i, int)
+        arg_pairs = [f"{arglist[i]}:{arglist[i+1]}" for i in range(len(arglist, 2))]
+        args_str = ", ".join(arg_pairs)
+        return "{" + args_str + "}", instructions[i].start_offset
     return "", None
 
 
@@ -366,7 +370,7 @@ def extended_format_BUILD_SET(opc, instructions: list) -> Tuple[str, Optional[in
     if instructions[0].argval == 0:
         # Degenerate case
         return "set()", instructions[0].start_offset
-    return "", None
+    return extended_format_build_tuple_or_list(opc, instructions, "{", "}")
 
 
 def extended_format_BUILD_SLICE(opc, instructions: list) -> Tuple[str, Optional[int]]:
@@ -386,6 +390,9 @@ def extended_format_BUILD_SLICE(opc, instructions: list) -> Tuple[str, Optional[
 
 
 def extended_format_BUILD_TUPLE(opc, instructions: list) -> Tuple[str, Optional[int]]:
+    arg_count = instructions[0].argval
+    if arg_count == 0:
+        return "tuple()", instructions[0].start_offset
     return extended_format_build_tuple_or_list(opc, instructions, "(", ")")
 
 

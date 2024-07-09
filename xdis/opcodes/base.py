@@ -385,7 +385,7 @@ def finalize_opcodes(loc):
         | loc["unaryop"]
         | loc["binaryop"]
         | set([op for op in loc["hasnargs"] if op not in loc["nofollow"]])
-        | set([op for op in loc["hasvargs"] if loc["oppush"][op] == 1])
+        | set([op for op in loc["hasvargs"]])
     )
     opcode_check(loc)
     return
