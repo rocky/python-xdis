@@ -351,7 +351,7 @@ def extended_format_BUILD_CONST_KEY_MAP(opc, instructions):
             assert len(arglist) == len(key_values)
             arg_pairs = []
             for i in range(len(arglist)):
-                arg_pairs.append(f"{key_values[i]}: {arglist[i]}")
+                arg_pairs.append("%s: %s" % (key_values[i], arglist[i]))
             args_str = ", ".join(arg_pairs)
             return "{" + args_str + "}", instructions[i].start_offset
     return "", None
@@ -372,9 +372,6 @@ def extended_format_BUILD_MAP(opc, instructions: list) -> tuple:
         arg_pairs = [
             "%s:%s" % (arglist[i], arglist[i + 1]) for i in range(len(arglist), 2)
         ]
-=======
-        arg_pairs = [f"{arglist[i]}:{arglist[i+1]}" for i in range(len(arglist), 2)]
->>>>>>> python-3.6-to-3.10
         args_str = ", ".join(arg_pairs)
         return "{" + args_str + "}", instructions[i].start_offset
     return "", None
