@@ -205,7 +205,7 @@ class Instruction(_Instruction):
                         # Add tos_str info to tos_str field of instruction.
                         # This the last field in instruction.
                         new_instruction = list(self)
-                        new_instruction[8] = new_repr
+                        new_instruction[9] = new_repr
                         new_instruction[-1] = start_offset
                         del instructions[-1]
                         self = Instruction(*new_instruction)
@@ -226,16 +226,16 @@ class Instruction(_Instruction):
                 # Column: Opcode argument details
                 if len(instructions) > 0:
                     if self.tos_str is None or (
-                        argrepr is not None and argrepr == self.tos_str
+                        self.argrepr is not None and self.argrepr == self.tos_str
                     ):
                         fields.append("(%s)" % argrepr)
                     else:
                         if self.optype in ("vargs", "encoded_arg"):
-                            prefix = "%s; " % self.argval
+                            prefix = "%s ; " % self.argval
                         elif self.argrepr is None:
                             prefix = ""
                         else:
-                            prefix = "(%s); " % self.argval
+                            prefix = "(%s) ; " % self.argval
                         if self.opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
                         fields.append("%s%s" % (prefix, self.tos_str))
@@ -255,7 +255,7 @@ class Instruction(_Instruction):
                 )
                 if new_repr:
                     new_instruction = list(self)
-                    new_instruction[8] = new_repr
+                    new_instruction[9] = new_repr
                     new_instruction[-1] = start_offset
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
