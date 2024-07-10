@@ -22,7 +22,6 @@ of stack usage.
 """
 
 import xdis.opcodes.opcode_35 as opcode_35
-from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     call_op,
     def_op,
