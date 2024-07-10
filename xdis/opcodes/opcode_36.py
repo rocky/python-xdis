@@ -170,7 +170,7 @@ def extended_format_FORMAT_VALUE(opc, instructions):
 
 
 # Can combine with extended_format_MAKE_FUNCTION_10_27?
-def extended_format_MAKE_FUNCTION_36(opc, instructions: list):
+def extended_format_MAKE_FUNCTION_36(opc, instructions):
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
