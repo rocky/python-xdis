@@ -686,7 +686,7 @@ def get_instruction_arg(inst, argval=None):
     if argval is None:
         argval = inst.argrepr
     else:
-        arg = inst.argrepr
+        argval = inst.argrepr
     if inst.tos_str is not None:
         return inst.tos_str
     else:

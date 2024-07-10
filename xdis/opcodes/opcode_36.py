@@ -134,7 +134,7 @@ varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
-def extended_format_BUILD_STRING(opc, instructions: list):
+def extended_format_BUILD_STRING(opc, instructions):
     inst = instructions[0]
     arg_count = inst.argval
     assert len(instructions) > arg_count
@@ -157,7 +157,7 @@ def extended_format_BUILD_STRING(opc, instructions: list):
     return 'f"' + str + '"', start_offset
 
 
-def extended_format_FORMAT_VALUE(opc, instructions: list):
+def extended_format_FORMAT_VALUE(opc, instructions):
     inst = instructions[0]
     assert len(instructions) > 1
     string_value = instructions[1]
