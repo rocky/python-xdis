@@ -167,7 +167,7 @@ class Instruction(_Instruction):
             # for "asm" format, want additional explicit information
             # linking operands to tables.
             if asm_format == "asm":
-                if self.optype in ("jabs", "jrel"):
+                if self.is_jump():
                     assert self.argrepr.startswith("to ")
                     jump_target = self.argrepr[len("to ") :]
                     fields.append("L" + jump_target)
@@ -183,10 +183,7 @@ class Instruction(_Instruction):
                     fields.append(repr(self.arg))
             elif asm_format in ("extended", "extended-bytes"):
                 op = self.opcode
-                if (
-                    self.optype in ("jrel", "jabs")
-                    and line_starts.get(self.argval) is not None
-                ):
+                if self.is_jump() and line_starts.get(self.argval) is not None:
                     new_instruction = list(self)
                     new_instruction[9] = "To line %s" % line_starts[self.argval]
                     self = Instruction(*new_instruction)

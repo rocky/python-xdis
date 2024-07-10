@@ -22,6 +22,7 @@ of stack usage.
 """
 
 import xdis.opcodes.opcode_35 as opcode_35
+from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     call_op,
     def_op,
@@ -168,7 +169,7 @@ def extended_format_FORMAT_VALUE(opc, instructions: list):
 
 
 # Can combine with extended_format_MAKE_FUNCTION_10_27?
-def extended_format_MAKE_FUNCTION_36(opc, instructions):
+def extended_format_MAKE_FUNCTION_36(opc, instructions: list):
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
