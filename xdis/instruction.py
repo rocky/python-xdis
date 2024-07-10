@@ -188,7 +188,6 @@ class Instruction(_Instruction):
                     and line_starts.get(self.argval) is not None
                 ):
                     new_instruction = list(self)
-                    new_instruction[-2] = "To line %s" % line_starts[self.argval]
                     self = Instruction(*new_instruction)
                     del instructions[-1]
                     instructions.append(self)
@@ -231,7 +230,7 @@ class Instruction(_Instruction):
                     ):
                         fields.append("(%s)" % argrepr)
                     else:
-                        if self.optype == "vargs":
+                        if self.optype in ("vargs", "encoded_arg"):
                             prefix = "%s; " % self.argval
                         elif self.argrepr is None:
                             prefix = ""

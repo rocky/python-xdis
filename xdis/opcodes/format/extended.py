@@ -246,7 +246,7 @@ def extended_format_ATTR(opc, instructions: list) -> tuple:
         instr1.tos_str
         or instr1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
     ):
-        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+        base = get_instruction_arg(instr1)
 
         return (
             "%s.%s" % (base, instructions[0].argrepr),
@@ -318,7 +318,7 @@ def extended_format_build_tuple_or_list(
     is_tuple = left_delim == "("
     if arg_count == 0:
         # Note: caller generally handles this when the below isn't right.
-        return "{left_delim}{right_delim}", instructions[0].offset
+        return "%s%s" % (left_delim, right_delim), instructions[0].offset
     arglist, _, i = get_arglist(instructions, 0, arg_count)
     if arglist is not None:
         assert isinstance(i, int)
@@ -668,7 +668,7 @@ def get_arglist(instructions: list, i: int, arg_count: int):
     return arglist, arg_count, i
 
 
-def get_instruction_arg(inst, argval=None) -> str:
+def get_instruction_arg(inst, argval=None):
     argval = inst.argrepr if argval is None else argval
     return inst.tos_str if inst.tos_str is not None else argval
 

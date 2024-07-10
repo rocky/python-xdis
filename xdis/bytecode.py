@@ -135,6 +135,8 @@ def get_optype(opcode: int, opc) -> str:
     # This has to come after NARGS_OPS. Some are in both?
     elif opcode in opc.VARGS_OPS:
         return "vargs"
+    elif opcode in opc.ENCODED_ARG_OPS:
+        return "encoded_arg"
 
     return "??"
 
