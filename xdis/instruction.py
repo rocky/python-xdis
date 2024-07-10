@@ -171,7 +171,7 @@ class Instruction(_Instruction):
             # for "asm" format, want additional explicit information
             # linking operands to tables.
             if asm_format == "asm":
-                if self.optype in ("jabs", "jrel"):
+                if self.is_jump():
                     assert self.argrepr.startswith("to ")
                     jump_target = self.argrepr[len("to ") :]
                     fields.append("L" + jump_target)
@@ -187,12 +187,9 @@ class Instruction(_Instruction):
                     fields.append(repr(self.arg))
             elif asm_format in ("extended", "extended-bytes"):
                 op = self.opcode
-                if (
-                    self.optype in ("jrel", "jabs")
-                    and line_starts.get(self.argval) is not None
-                ):
+                if self.is_jump() and line_starts.get(self.argval) is not None:
                     new_instruction = list(self)
-                    new_instruction[-2] = "To line %s" % line_starts[self.argval]
+                    new_instruction[9] = "To line %s" % line_starts[self.argval]
                     self = Instruction(*new_instruction)
                     del instructions[-1]
                     instructions.append(self)
@@ -210,12 +207,11 @@ class Instruction(_Instruction):
                         # Add tos_str info to tos_str field of instruction.
                         # This the last field in instruction.
                         new_instruction = list(self)
-                        new_instruction[8] = new_repr
+                        new_instruction[9] = new_repr
                         new_instruction[-1] = start_offset
                         del instructions[-1]
                         self = Instruction(*new_instruction)
                         instructions.append(self)
-                        argrepr = new_repr
                 elif self.opcode in opc.nullaryloadop:
                     new_instruction = list(self)
                     start_offset = new_instruction[-1] = self.offset
@@ -236,11 +232,11 @@ class Instruction(_Instruction):
                         fields.append("(%s)" % argrepr)
                     else:
                         if self.optype in ("vargs", "encoded_arg"):
-                            prefix = "%s; " % self.argval
+                            prefix = "%s ; " % self.argval
                         elif self.argrepr is None:
                             prefix = ""
                         else:
-                            prefix = "(%s); " % self.argval
+                            prefix = "(%s) ; " % self.argrepr
                         if self.opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
                         fields.append("%s%s" % (prefix, self.tos_str))
@@ -260,7 +256,7 @@ class Instruction(_Instruction):
                 )
                 if new_repr:
                     new_instruction = list(self)
-                    new_instruction[-2] = new_repr
+                    new_instruction[9] = new_repr
                     new_instruction[-1] = start_offset
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))

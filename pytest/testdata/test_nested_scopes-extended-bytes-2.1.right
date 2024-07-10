@@ -125,7 +125,7 @@
 
  83:         139 |64 00 0b| LOAD_CONST           (2)
              142 |64 00 0c| LOAD_CONST           (3)
-             145 |66 00 02| BUILD_TUPLE          2; TOS = (2, 3)
+             145 |66 00 02| BUILD_TUPLE          2 ; TOS = (2, 3)
              148 |64 00 0d| LOAD_CONST           (<code object at 0xdeadbeef0001, line 83)
              151 |84 00 01| MAKE_FUNCTION        (1 default parameters) ; TOS = def func_with_tuple_args6(...): ...
              154 |5a 00 0c| STORE_NAME           (func_with_tuple_args6) ; func_with_tuple_args6 = def func_with_tuple_args6(...): ...
