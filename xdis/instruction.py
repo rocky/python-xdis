@@ -372,6 +372,8 @@ class Instruction(NamedTuple):
                     else:
                         if self.optype == "vargs":
                             prefix = f"{self.argval}; "
+                        elif self.optype == "encoded_arg":
+                            prefix = f"{self.argval} ; "
                         elif self.argrepr is None:
                             prefix = ""
                         else:

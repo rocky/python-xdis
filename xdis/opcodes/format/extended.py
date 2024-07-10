@@ -256,7 +256,7 @@ def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
         instr1.tos_str
         or instr1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
     ):
-        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+        base = get_instruction_arg(instr1)
 
         return (
             f"{base}.{instructions[0].argrepr}",
