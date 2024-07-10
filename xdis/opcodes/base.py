@@ -46,7 +46,7 @@ binaryop = set([])
 # opcodes that perform some sort of call
 callop = set([])
 
-encoded_arg= set([])
+encoded_arg = set([])
 
 hascompare = []
 hascondition = []  # conditional operator; has jump offset
@@ -60,22 +60,6 @@ hasnargs = []  # For function-like calls
 hasstore = []  # Some sort of store operation
 hasvargs = []  # Similar but for operators BUILD_xxx
 nofollow = []  # Instruction doesn't fall to the next opcode
-=======
-# opcodes that have some encoding of its argument
-
-hascompare: List[int] = []
-hascondition: List[int] = []  # conditional operator; has jump offset
-hasconst: List[int] = []
-hasfree: List[int] = []
-hasjabs: List[int] = []
-hasjrel: List[int] = []
-haslocal: List[int] = []
-hasname: List[int] = []
-hasnargs: List[int] = []  # For function-like calls
-hasstore: List[int] = []  # Some sort of store operation
-hasvargs: List[int] = []  # Similar but for operators BUILD_xxx
-nofollow: List[int] = []  # Instruction doesn't fall to the next opcode
->>>>>>> python-3.6-to-3.10
 
 nullaryop = set([])  # Instruction do not consume a stack entry
 

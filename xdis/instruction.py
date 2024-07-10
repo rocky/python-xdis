@@ -230,11 +230,8 @@ class Instruction(_Instruction):
                     ):
                         fields.append("(%s)" % argrepr)
                     else:
-                        if self.optype == "vargs":
+                        if self.optype in ("vargs", "encoded_arg"):
                             prefix = "%s; " % self.argval
-                        elif self.optype == "encoded_arg":
-                            prefix = f"{self.argval} ; "
->>>>>>> python-3.6-to-3.10
                         elif self.argrepr is None:
                             prefix = ""
                         else:
