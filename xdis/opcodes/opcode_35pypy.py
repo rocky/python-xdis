@@ -22,6 +22,7 @@ from xdis.opcodes.format.extended import (
     extended_format_CALL_METHOD,
     extended_format_RETURN_VALUE,
 )
+from xdis.opcodes.opcode_36 import extended_format_BUILD_STRING
 
 version_tuple = (3, 5)
 python_implementation = "PyPy"
@@ -34,7 +35,7 @@ init_opdata(loc, opcode_35, version_tuple, is_pypy=True)
 # PyPy only
 # ----------
 def_op(loc, "FORMAT_VALUE", 155)
-def_op(loc, "BUILD_STRING", 157)
+varargs_op(loc, "BUILD_STRING", 157)
 name_op(loc, "LOOKUP_METHOD", 201, 1, 2)
 call_op(loc, "CALL_METHOD", 202, -1, 1)
 loc["hasvargs"].append(202)
@@ -57,6 +58,7 @@ jrel_op(loc, "JUMP_IF_NOT_DEBUG", 204, conditional=True)
 def_op(loc, "LOAD_REVDB_VAR", 205)
 
 opcode_extended_fmt = {
+    "BUILD_STRING": extended_format_BUILD_STRING,
     "CALL_METHOD": extended_format_CALL_METHOD,
     "LOAD_ATTR": extended_format_ATTR,
     "RETURN_VALUE": extended_format_RETURN_VALUE,

@@ -47,6 +47,9 @@ binaryop: Set[int] = set([])
 # opcodes that perform some sort of call
 callop: Set[int] = set([])
 
+# opcodes that have some encoding of its argument
+encoded_arg: Set[int] = set([])
+
 hascompare: List[int] = []
 hascondition: List[int] = []  # conditional operator; has jump offset
 hasconst: List[int] = []
@@ -88,6 +91,7 @@ HAVE_ARGUMENT = 90
 fields2copy = """
 binaryop
 callop
+encoded_arg
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
@@ -127,6 +131,7 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         # FIXME: DRY with above
         loc["binaryop"] = set([])
         loc["callop"] = set([])
+        loc["encoded_arg"] = set([])
         loc["hascompare"] = []
         loc["hascondition"] = []
         loc["hasconst"] = []
@@ -421,6 +426,7 @@ def update_sets(loc):
     loc["COMPARE_OPS"] = frozenset(loc["hascompare"])
     loc["CONDITION_OPS"] = frozenset(loc["hascondition"])
     loc["CONST_OPS"] = frozenset(loc["hasconst"])
+    loc["ENCODED_ARG_OPS"] = frozenset(loc["encoded_arg"])
     loc["FREE_OPS"] = frozenset(loc["hasfree"])
     loc["JREL_OPS"] = frozenset(loc["hasjrel"])
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
