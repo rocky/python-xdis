@@ -255,11 +255,12 @@ class Instruction(_Instruction):
                     opc, list(reversed(instructions))
                 )
                 if new_repr:
+                    # Add tos_str info to tos_str field of instruction.
+                    # This the last field in instruction.
                     new_instruction = list(self)
                     new_instruction[9] = new_repr
                     new_instruction[-1] = start_offset
                     del instructions[-1]
-                    instructions.append(Instruction(*new_instruction))
                     self = Instruction(*new_instruction)
                     instructions.append(self)
                     argrepr = new_repr
@@ -269,6 +270,57 @@ class Instruction(_Instruction):
                     del instructions[-1]
                     self = Instruction(*new_instruction)
                     instructions.append(self)
+                pass
+            if not argrepr:
+                if asm_format != "asm" or self.opname == "MAKE_FUNCTION":
+                    fields.append(repr(self.arg))
+                pass
+            else:
+                # Column: Opcode argument details
+                if len(instructions) > 0:
+                    if self.tos_str is None or (
+                        self.argrepr is not None and self.argrepr == self.tos_str
+                    ):
+                        fields.append("(%s)" % argrepr)
+                    else:
+                        if self.optype in ("vargs", "encoded_arg"):
+                            prefix = "%s ; " % self.argval
+                        elif self.argrepr is None:
+                            prefix = ""
+                        else:
+                            prefix = "(%s) ; " % self.argrepr
+                        if self.opcode in opc.operator_set | opc.callop:
+                            prefix += "TOS = "
+                        fields.append("%s%s" % (prefix, self.tos_str))
+                    pass
+                else:
+                    fields.append(self.argrepr)
+                pass
+            pass
+        elif asm_format in ("extended", "extended-bytes"):
+            op = self.opcode
+            if (
+                hasattr(opc, "opcode_extended_fmt")
+                and opc.opname[op] in opc.opcode_extended_fmt
+            ):
+                new_repr, start_offset = opc.opcode_extended_fmt[opc.opname[op]](
+                    opc, list(reversed(instructions))
+                )
+                if new_repr:
+                    new_instruction = list(self)
+                    new_instruction[9] = new_repr
+                    new_instruction[-1] = start_offset
+                    del instructions[-1]
+                    instructions.append(Instruction(*new_instruction))
+                    argval = self.argval
+                    if argval is None:
+                        prefix = ""
+                    else:
+                        prefix = "(%s) | " % argval
+                    if self.opcode in opc.operator_set:
+                        prefix += "TOS = "
+                    fields.append("%s%s" % (prefix, new_repr))
+
                 pass
             elif (
                 hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt

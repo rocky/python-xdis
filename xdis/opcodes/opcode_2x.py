@@ -270,6 +270,7 @@ def extended_format_SLICE_2(opc, instructions):
 
 
 def extended_format_SLICE_3(opc, instructions):
+    from trepan.api import debug; debug()
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
     if arg_count == 0 and i is not None and arglist is not None:
         for i, arg in enumerate(arglist):
