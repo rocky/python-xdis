@@ -205,12 +205,11 @@ class Instruction(_Instruction):
                         # Add tos_str info to tos_str field of instruction.
                         # This the last field in instruction.
                         new_instruction = list(self)
-                        new_instruction[8] = new_repr
+                        new_instruction[9] = new_repr
                         new_instruction[-1] = start_offset
                         del instructions[-1]
                         self = Instruction(*new_instruction)
                         instructions.append(self)
-                        argrepr = new_repr
                 elif self.opcode in opc.nullaryloadop:
                     new_instruction = list(self)
                     start_offset = new_instruction[-1] = self.offset
