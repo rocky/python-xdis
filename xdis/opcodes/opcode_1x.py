@@ -39,6 +39,12 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.format.basic import format_MAKE_FUNCTION_10_27, opcode_arg_fmt_base
 from xdis.opcodes.format.extended import opcode_extended_fmt_base
+from xdis.opcodes.opcode_2x import (
+    extended_format_PRINT_ITEM,
+    extended_format_SLICE_1,
+    extended_format_SLICE_2,
+    extended_format_SLICE_3,
+)
 
 loc = locals()
 init_opdata(loc, None, None)
@@ -194,4 +200,12 @@ update_arg_fmt_base1x = {
     },
 }
 
-opcode_extended_fmt_base1x = opcode_extended_fmt_base.copy()
+opcode_extended_fmt_base1x = {
+    **opcode_extended_fmt_base,
+    **{
+        "PRINT_ITEM": extended_format_PRINT_ITEM,
+        "SLICE+1": extended_format_SLICE_1,
+        "SLICE+2": extended_format_SLICE_2,
+        "SLICE+3": extended_format_SLICE_3,
+    },
+}
