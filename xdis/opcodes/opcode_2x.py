@@ -42,7 +42,11 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.format.basic import format_MAKE_FUNCTION_10_27, opcode_arg_fmt_base
-from xdis.opcodes.format.extended import get_arglist, opcode_extended_fmt_base
+from xdis.opcodes.format.extended import (
+    get_arglist,
+    get_instruction_arg,
+    opcode_extended_fmt_base,
+)
 
 loc = locals()
 init_opdata(loc, None, None)
@@ -233,10 +237,7 @@ EXTENDED_ARG = 143
 
 def extended_format_PRINT_ITEM(opc, instructions):
     instr1 = instructions[1]
-    if instr1.tos_str is not None:
-        print_arg = instr1.tos_str
-    else:
-        print_arg = instr1.argrepr
+    print_arg = get_instruction_arg(instr1)
     return (
         "print %s," % print_arg,
         instr1.start_offset,

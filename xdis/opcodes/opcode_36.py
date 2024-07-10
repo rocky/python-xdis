@@ -32,6 +32,7 @@ from xdis.opcodes.base import (
     jrel_op,
     rm_op,
     store_op,
+    unary_op,
     update_pj3,
     varargs_op,
 )
@@ -41,6 +42,7 @@ from xdis.opcodes.format.extended import (
     extended_format_RAISE_VARARGS_older,
     extended_function_signature,
     get_arglist,
+    get_instruction_arg,
 )
 from xdis.opcodes.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
@@ -119,7 +121,9 @@ store_op(loc,    "STORE_ANNOTATION", 127,  1,  0, is_type="name") # Stores TOS i
                                                                    # name list;
 jrel_op(loc,     "SETUP_ASYNC_WITH", 154,  2,  8)  # pops __aenter__ and __aexit__;
                                                    # pushed results on stack
-def_op(loc,      "FORMAT_VALUE",     155,  1,  1)
+unary_op(loc,      "FORMAT_VALUE",     155,  1,  1)
+loc["encoded_arg"].add(155)
+
 varargs_op(loc,  "BUILD_CONST_KEY_MAP", 156, -2, 1) # TOS is count of kwargs
 call_op(loc,     "CALL_FUNCTION_EX", 142, -2,  1)
 def_op(loc,      "SETUP_ANNOTATIONS", 85,  1,  1)
@@ -128,6 +132,41 @@ varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 # fmt: on
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
+
+
+def extended_format_BUILD_STRING(opc, instructions: list):
+    inst = instructions[0]
+    arg_count = inst.argval
+    assert len(instructions) > arg_count
+    i = 0
+    str = ""
+    for _ in range(arg_count):
+        i += 1
+        start_offset = instructions[i].start_offset
+        str_part = get_instruction_arg(instructions[i])
+        if str_part.startswith('f"'):
+            str_part = str_part[2:-1]
+        elif str_part.startswith('"'):
+            str_part = str_part[1:-1]
+        str += str_part
+        for j in range(i, len(instructions)):
+            if instructions[j].offset == start_offset:
+                break
+        i = j
+
+    return 'f"' + str + '"', start_offset
+
+
+def extended_format_FORMAT_VALUE(opc, instructions: list):
+    inst = instructions[0]
+    assert len(instructions) > 1
+    string_value = instructions[1]
+    start_offset = instructions[1].start_offset
+    argval = get_instruction_arg(string_value)
+    s = argval
+    if inst.argval == 0:
+        s = 'f"{%s}"' % argval
+    return s, start_offset
 
 
 # Can combine with extended_format_MAKE_FUNCTION_10_27?
@@ -338,8 +377,10 @@ opcode_arg_fmt.update(
 opcode_extended_fmt36 = opcode_extended_fmt = copy(opcode_extended_fmt35)
 opcode_extended_fmt36.update(
     {
+        "BUILD_STRING": extended_format_BUILD_STRING,
         "CALL_FUNCTION_KW": extended_format_CALL_FUNCTION_KW,
         # "CALL_FUNCTION_VAR": extended_format_CALL_FUNCTION,
+        "FORMAT_VALUE": extended_format_FORMAT_VALUE,
         "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_36,
         "RAISE_VARARGS": extended_format_RAISE_VARARGS_older,
         "STORE_ATTR": extended_format_ATTR,
