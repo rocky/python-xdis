@@ -32,7 +32,10 @@ from xdis.opcodes.base import (
     rm_op,
     update_pj3,
 )
-from xdis.opcodes.format.extended import extended_format_CALL_METHOD
+from xdis.opcodes.format.extended import (
+    extended_format_CALL_METHOD,
+    get_instruction_arg,
+)
 from xdis.opcodes.opcode_36 import (
     format_CALL_FUNCTION,
     opcode_arg_fmt36,
@@ -114,7 +117,7 @@ format_value_flags = opcode_36.format_value_flags
 def extended_format_LOAD_METHOD(opc, instructions: list) -> tuple:
     instr1 = instructions[1]
     if instr1.tos_str or instr1.opcode in opc.nullaryloadop:
-        base = instr1.tos_str if instr1.tos_str is not None else instr1.argrepr
+        base = get_instruction_arg(instr1)
 
         return (
             "%s.%s" % (base, instructions[0].argrepr),
