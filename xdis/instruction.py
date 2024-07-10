@@ -192,6 +192,7 @@ class Instruction(_Instruction):
                     and line_starts.get(self.argval) is not None
                 ):
                     new_instruction = list(self)
+                    new_instruction[-2] = "To line %s" % line_starts[self.argval]
                     self = Instruction(*new_instruction)
                     del instructions[-1]
                     instructions.append(self)
@@ -228,10 +229,9 @@ class Instruction(_Instruction):
                 pass
             else:
                 # Column: Opcode argument details
-
                 if len(instructions) > 0:
                     if self.tos_str is None or (
-                        argrepr is not None and argrepr == self.tos_str
+                        self.argrepr is not None and self.argrepr == self.tos_str
                     ):
                         fields.append("(%s)" % argrepr)
                     else:
@@ -260,14 +260,19 @@ class Instruction(_Instruction):
                 )
                 if new_repr:
                     new_instruction = list(self)
-                    new_instruction[8] = new_repr
+                    new_instruction[-2] = new_repr
                     new_instruction[-1] = start_offset
                     del instructions[-1]
                     instructions.append(Instruction(*new_instruction))
-                    if self.opcode in opc.operator_set:
-                        prefix += "TOS = "
-                    fields.append("%s%s" % (prefix, new_repr))
-
+                    self = Instruction(*new_instruction)
+                    instructions.append(self)
+                    argrepr = new_repr
+                elif self.opcode in opc.nullaryloadop:
+                    new_instruction = list(self)
+                    start_offset = new_instruction[-1] = self.offset
+                    del instructions[-1]
+                    self = Instruction(*new_instruction)
+                    instructions.append(self)
                 pass
             elif (
                 hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt
