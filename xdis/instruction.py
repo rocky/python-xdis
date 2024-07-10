@@ -370,10 +370,8 @@ class Instruction(NamedTuple):
                     ):
                         fields.append(f"({self.argrepr})")
                     else:
-                        if self.optype == "vargs":
+                        if self.optype in ("vargs", "encoded_arg"):
                             prefix = f"{self.argval}; "
-                        elif self.optype == "encoded_arg":
-                            prefix = f"{self.argval} ; "
                         elif self.argrepr is None:
                             prefix = ""
                         else:

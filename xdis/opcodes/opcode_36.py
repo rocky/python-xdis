@@ -24,6 +24,7 @@ of stack usage.
 from typing import List, Optional, Tuple
 
 import xdis.opcodes.opcode_35 as opcode_35
+from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     call_op,
     def_op,
@@ -134,7 +135,9 @@ varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
-def extended_format_BUILD_STRING(opc, instructions) -> Tuple[str, int]:
+def extended_format_BUILD_STRING(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, int]:
     inst = instructions[0]
     arg_count = inst.argval
     assert len(instructions) > arg_count
@@ -157,7 +160,9 @@ def extended_format_BUILD_STRING(opc, instructions) -> Tuple[str, int]:
     return 'f"' + str + '"', start_offset
 
 
-def extended_format_FORMAT_VALUE(opc, instructions) -> Tuple[str, int]:
+def extended_format_FORMAT_VALUE(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, int]:
     inst = instructions[0]
     assert len(instructions) > 1
     string_value = instructions[1]
@@ -170,7 +175,9 @@ def extended_format_FORMAT_VALUE(opc, instructions) -> Tuple[str, int]:
 
 
 # Can combine with extended_format_MAKE_FUNCTION_10_27?
-def extended_format_MAKE_FUNCTION_36(opc, instructions) -> Tuple[str, int]:
+def extended_format_MAKE_FUNCTION_36(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, int]:
     assert len(instructions) >= 2
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
@@ -305,7 +312,9 @@ def extended_format_CALL_FUNCTION36(opc, instructions) -> Tuple[str, Optional[in
     return "", None
 
 
-def extended_format_CALL_FUNCTION_KW(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_CALL_FUNCTION_KW(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     """call_function_inst should be a "CALL_FUNCTION_KW" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
