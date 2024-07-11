@@ -377,7 +377,7 @@
 
  40:          46 |7c 00 01| LOAD_FAST            (y3a)
               49 |64 00 04| LOAD_CONST           (1)
-              52 |83 00 01| CALL_FUNCTION        (1 positional, 0 named)
+              52 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y3a(1)
               55 |01      | POP_TOP
 
  41:          56 |7f 00 29| SET_LINENO           41
@@ -436,7 +436,7 @@
 
  52:          34 |7c 00 00| LOAD_FAST            (y3)
               37 |64 00 03| LOAD_CONST           (1)
-              40 |83 00 01| CALL_FUNCTION        (1 positional, 0 named)
+              40 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y3(1)
               43 |01      | POP_TOP
 
  53:          44 |7f 00 35| SET_LINENO           53
@@ -492,7 +492,7 @@
 
  64:          31 |7c 00 01| LOAD_FAST            (y3b)
               34 |64 00 03| LOAD_CONST           (1)
-              37 |83 00 01| CALL_FUNCTION        (1 positional, 0 named)
+              37 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y3b(1)
               40 |01      | POP_TOP
 
  65:          41 |7f 00 41| SET_LINENO           65
@@ -544,7 +544,7 @@
 
  74:          30 |7c 00 00| LOAD_FAST            (y4)
               33 |64 00 03| LOAD_CONST           (1)
-              36 |83 00 01| CALL_FUNCTION        (1 positional, 0 named)
+              36 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y4(1)
               39 |01      | POP_TOP
               40 |64 00 00| LOAD_CONST           (None)
               43 |53      | RETURN_VALUE         return None
@@ -590,7 +590,7 @@
 
  80:          30 |7c 00 01| LOAD_FAST            (y)
               33 |64 00 03| LOAD_CONST           (1)
-              36 |83 00 01| CALL_FUNCTION        (1 positional, 0 named)
+              36 |83 00 01| CALL_FUNCTION        (1 positional, 0 named) ; TOS = y(1)
               39 |01      | POP_TOP
               40 |64 00 00| LOAD_CONST           (None)
               43 |53      | RETURN_VALUE         return None
@@ -683,8 +683,8 @@
               12 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def <lambda>(...): ...
               15 |7c 00 00| LOAD_FAST            (self)
               18 |69 00 02| LOAD_ATTR            (list_attribute) ; TOS = self.list_attribute
-              21 |83 00 02| CALL_FUNCTION        (2 positional, 0 named)
-              24 |7d 00 02| STORE_FAST           (L)
+              21 |83 00 02| CALL_FUNCTION        (2 positional, 0 named) ; TOS = filter(self.list_attribute, def <lambda>(...): ...)
+              24 |7d 00 02| STORE_FAST           (L) ; L = filter(self.list_attribute, def <lambda>(...): ...)
               27 |64 00 00| LOAD_CONST           (None)
               30 |53      | RETURN_VALUE         return None
 
