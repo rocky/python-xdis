@@ -38,6 +38,7 @@ from xdis.opcodes.base import (
     name_op,
     nargs_op,
     store_op,
+    ternary_op,
     unary_op,
     varargs_op,
 )
@@ -88,10 +89,10 @@ binary_op(loc, "BINARY_TRUE_DIVIDE",     27)
 binary_op(loc, "INPLACE_FLOOR_DIVIDE",   28)
 binary_op(loc, "INPLACE_TRUE_DIVIDE",    29)
 
-def_op(loc, "SLICE+0",                30,  2,  2)
-def_op(loc, "SLICE+1",                31,  2,  2)
-def_op(loc, "SLICE+2",                32,  2,  2)
-def_op(loc, "SLICE+3",                33,  3,  2)
+unary_op(loc, "SLICE+0",                 30)
+binary_op(loc, "SLICE+1",                31)
+binary_op(loc, "SLICE+2",                32)
+ternary_op(loc, "SLICE+3",               33)
 
 #          OP NAME              OPCODE POP PUSH
 #-----------------------------------------------
@@ -245,38 +246,35 @@ def extended_format_PRINT_ITEM(opc, instructions):
 
 
 def extended_format_SLICE_1(opc, instructions):
-    arglist, arg_count, i = get_arglist(instructions, 0, 1)
-    if arg_count == 0 and arglist is not None:
-        return ":%s" % arglist[0], instructions[0].start_offset
+    arglist, arg_count, _ = get_arglist(instructions, 0, 1)
+    if arg_count == 1 and arglist is not None:
+        return "%s[:]" % arglist[0], instructions[0].start_offset
+    return "", None
 
-    if instructions[0].argval == 0:
-        # Degenerate case
-        return "set()", instructions[0].start_offset
+
+def extended_format_SLICE_1(opc, instructions: list):
+    arglist, arg_count, i = get_arglist(instructions, 0, 2)
+    if arg_count == 2 and arglist is not None:
+        return "%s[%s:]" % (arglist[1], arglist[0]), instructions[0].start_offset
     return "", None
 
 
 def extended_format_SLICE_2(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
-    if arg_count == 0 and i is not None and arglist is not None:
-        for i, arg in enumerate(arglist):
-            if arg == "None":
-                arglist[i] = ""
-        return ":".join(reversed(arglist)), instructions[i].start_offset
-
-    if instructions[0].argval == 0:
-        # Degenerate case
-        return "set()", instructions[0].start_offset
+    if arg_count == 2 and i is not None and arglist is not None:
+        return "%s[:%s:]" % (arglist[1], arglist[0]), instructions[0].start_offset
     return "", None
 
 
 def extended_format_SLICE_3(opc, instructions):
     from trepan.api import debug; debug()
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
-    if arg_count == 0 and i is not None and arglist is not None:
-        for i, arg in enumerate(arglist):
-            if arg == "None":
-                arglist[i] = ""
-        return ":".join(reversed(arglist)), instructions[i].start_offset
+    if arg_count == 3 and i is not None and arglist is not None:
+        arglist = ["" if arg == "None" else arg for arg in arglist]
+        return (
+            "%s[:%s:%s]" % (arglist[2], arglist[1], arglist[0]),
+            instructions[0].start_offset,
+        )
 
     if instructions[0].argval == 0:
         # Degenerate case
@@ -300,6 +298,7 @@ opcode_extended_fmt_base2x = copy(opcode_extended_fmt_base)
 opcode_extended_fmt_base2x.update(
     {
         "PRINT_ITEM": extended_format_PRINT_ITEM,
+        "SLICE+0": extended_format_SLICE_0,
         "SLICE+1": extended_format_SLICE_1,
         "SLICE+2": extended_format_SLICE_2,
         "SLICE+3": extended_format_SLICE_3,
