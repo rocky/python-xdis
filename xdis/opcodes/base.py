@@ -79,7 +79,7 @@ oppush = [0] * 256
 # oppop[op] => number of stack entries popped
 oppop = [0] * 256
 
-ternaryop: Set[int] = set([])
+ternaryop = set([])
 
 # opcodes that perform a unary operation of the top stack entry
 unaryop = set()

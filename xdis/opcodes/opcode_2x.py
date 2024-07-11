@@ -250,18 +250,17 @@ def extended_format_SLICE_0(opc, instructions: list):
     return "", None
 
 
-def extended_format_SLICE_1(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_SLICE_1(opc, instructions: list):
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
     if arg_count == 2 and arglist is not None:
         return "%s[%s:]" % (arglist[1], arglist[0]), instructions[0].start_offset
-        return f"{arglist[1]}[{arglist[0]}:]", instructions[i].start_offset
     return "", None
 
 
 def extended_format_SLICE_2(opc, instructions: list):
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
     if arg_count == 2 and i is not None and arglist is not None:
-        return f"{arglist[1]}[:{arglist[0]}]", instructions[i].start_offset
+        return "%s[:%s:]" % (arglist[1], arglist[0]), instructions[0].start_offset
     return "", None
 
 
@@ -269,7 +268,10 @@ def extended_format_SLICE_3(opc, instructions: list):
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
     if arg_count == 3 and i is not None and arglist is not None:
         arglist = ["" if arg == "None" else arg for arg in arglist]
-        return f"{arglist[2]}[{arglist[1]}:{arglist[0]}]", instructions[i].start_offset
+        return (
+            "%s[:%s:%s]" % (arglist[2], arglist[1], arglist[0]),
+            instructions[0].start_offset,
+        )
 
     if instructions[0].argval == 0:
         # Degenerate case

@@ -204,13 +204,13 @@ update_arg_fmt_base1x.update(
     },
 )
 
-opcode_extended_fmt_base1x = {
-    **opcode_extended_fmt_base,
-    **{
+opcode_extended_fmt_base1x = opcode_extended_fmt_base.copy()
+opcode_extended_fmt_base1x.update(
+    {
         "PRINT_ITEM": extended_format_PRINT_ITEM,
         "SLICE+0": extended_format_SLICE_0,
         "SLICE+1": extended_format_SLICE_1,
         "SLICE+2": extended_format_SLICE_2,
         "SLICE+3": extended_format_SLICE_3,
     },
-}
+)
