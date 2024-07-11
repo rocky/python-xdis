@@ -245,14 +245,14 @@ def extended_format_PRINT_ITEM(opc, instructions):
     )
 
 
-def extended_format_SLICE_1(opc, instructions):
+def extended_format_SLICE_0(opc, instructions):
     arglist, arg_count, _ = get_arglist(instructions, 0, 1)
     if arg_count == 1 and arglist is not None:
         return "%s[:]" % arglist[0], instructions[0].start_offset
     return "", None
 
 
-def extended_format_SLICE_1(opc, instructions: list):
+def extended_format_SLICE_1(opc, instructions):
     arglist, arg_count, i = get_arglist(instructions, 0, 2)
     if arg_count == 2 and arglist is not None:
         return "%s[%s:]" % (arglist[1], arglist[0]), instructions[0].start_offset
@@ -267,12 +267,16 @@ def extended_format_SLICE_2(opc, instructions):
 
 
 def extended_format_SLICE_3(opc, instructions):
-    from trepan.api import debug; debug()
     arglist, arg_count, i = get_arglist(instructions, 0, 3)
     if arg_count == 3 and i is not None and arglist is not None:
-        arglist = ["" if arg == "None" else arg for arg in arglist]
+        new_arglist = []
+        for arg in arglist:
+            if arg == "None":
+                new_arglist.append("")
+            else:
+                new_arglist.append(arg)
         return (
-            "%s[:%s:%s]" % (arglist[2], arglist[1], arglist[0]),
+            "%s[:%s:%s]" % (new_arglist[2], new_arglist[1], new_arglist[0]),
             instructions[0].start_offset,
         )
 

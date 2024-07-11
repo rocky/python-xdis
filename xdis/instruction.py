@@ -164,8 +164,8 @@ class Instruction(_Instruction):
         fields.append(self.opname.ljust(_OPNAME_WIDTH))
 
         # Column: Opcode argument
+        argrepr = self.argrepr
         if self.arg is not None:
-            argrepr = self.argrepr
             # The ``argrepr`` value when the instruction was created
             # generally has all the information we require.  However,
             # for "asm" format, want additional explicit information
