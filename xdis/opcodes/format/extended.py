@@ -272,7 +272,7 @@ def extended_format_BINARY_LSHIFT(opc, instructions: list):
 
 
 def extended_format_BINARY_MODULO(opc, instructions: list):
-    return extended_format_infix_binary_op(opc, instructions, " %% ")
+    return extended_format_infix_binary_op(opc, instructions, " % ")
 
 
 def extended_format_BINARY_MULTIPLY(opc, instructions: list):
@@ -430,7 +430,7 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> tuple:
 
     arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
 
-    if arg_count != 0:
+    if arglist is None:
         return "", None
 
     assert i is not None
@@ -627,24 +627,26 @@ def get_arglist(instructions: list, i: int, arg_count: int):
     a variable-name argument list, like CALL_FUNCTION
     accumulate and find the beginning of the list and return:
     * argument list
+    * number of arguments parsed
     * the instruction index of the first instruction
 
     """
     arglist = []
     inst = None
     n = len(instructions) - 1
-    while arg_count > 0 and i < n:
+    to_do = arg_count
+    while to_do > 0 and i < n:
         i += 1
         inst = instructions[i]
         if inst.is_jump_target:
             return None, -1, None
 
-        arg_count -= 1
+        to_do -= 1
         arg = inst.tos_str if inst.tos_str else inst.argrepr
         if arg is not None:
             arglist.append(arg)
         elif not arg:
-            return arglist, arg_count, i
+            return arglist, arg_count - to_do, i
         else:
             arglist.append("???")
         if inst.is_jump_target:
@@ -665,7 +667,7 @@ def get_arglist(instructions: list, i: int, arg_count: int):
                         start_offset = inst2.start_offset
 
         pass
-    return arglist, arg_count, i
+    return arglist, arg_count - to_do, i
 
 
 def get_instruction_arg(inst, argval=None):

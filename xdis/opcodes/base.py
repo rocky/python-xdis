@@ -79,6 +79,8 @@ oppush = [0] * 256
 # oppop[op] => number of stack entries popped
 oppop = [0] * 256
 
+ternaryop: Set[int] = set([])
+
 # opcodes that perform a unary operation of the top stack entry
 unaryop = set()
 # Opcodes greater than 90 take an instruction operand or "argument"
@@ -93,7 +95,7 @@ encoded_arg
 hascompare hascondition
 hasconst hasfree hasjabs hasjrel haslocal
 hasname hasnargs hasstore hasvargs oppop oppush
-nofollow nullaryop nullaryloadop unaryop
+nofollow nullaryop nullaryloadop ternaryop unaryop
 """.split()
 
 
@@ -150,6 +152,7 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
             loc["opname"][op] = "<%r>" % (op,)
         loc["oppop"] = [0] * 256
         loc["oppush"] = [0] * 256
+        loc["ternaryop"] = set([])
         loc["unaryop"] = set([])
 
 
@@ -343,6 +346,14 @@ def store_op(loc, name, op, pop=0, push=1, is_type="def"):
     loc["hasstore"].append(op)
 
 
+def ternary_op(loc: dict, name: str, opcode: int, pop: int = 3, push: int = 1):
+    """
+    Put opcode in the class of instructions that are ternary operations.
+    """
+    loc["ternaryop"].add(opcode)
+    def_op(loc, name, opcode, pop, push)
+
+
 def unary_op(loc, name: str, op, pop=1, push=1):
     loc["unaryop"].add(op)
     def_op(loc, name, op, pop, push)
@@ -387,6 +398,7 @@ def finalize_opcodes(loc):
         loc["nullaryop"]
         | loc["unaryop"]
         | loc["binaryop"]
+        | loc["ternaryop"]
         | set([op for op in loc["hasnargs"] if op not in loc["nofollow"]])
         | set([op for op in loc["hasvargs"]])
     )

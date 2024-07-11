@@ -33,12 +33,20 @@ from xdis.opcodes.base import (
     local_op,
     name_op,
     store_op,
+    ternary_op,
     unary_op,
     update_pj2,
     varargs_op,
 )
 from xdis.opcodes.format.basic import format_MAKE_FUNCTION_10_27, opcode_arg_fmt_base
 from xdis.opcodes.format.extended import opcode_extended_fmt_base
+from xdis.opcodes.opcode_2x import (
+    extended_format_PRINT_ITEM,
+    extended_format_SLICE_0,
+    extended_format_SLICE_1,
+    extended_format_SLICE_2,
+    extended_format_SLICE_3,
+)
 
 loc = locals()
 init_opdata(loc, None, None)
@@ -81,11 +89,13 @@ binary_op(loc,  "BINARY_ADD",       23)
 binary_op(loc,  "BINARY_SUBTRACT",  24)
 binary_op(loc,  "BINARY_SUBSCR",    25)
 
-def_op(loc,     "SLICE+0",          30, 1, 1)
-def_op(loc,     "SLICE+1",          31, 2, 1)
-def_op(loc,     "SLICE+2",          32, 2, 1)
-def_op(loc,     "SLICE+3",          33, 3, 1)
+unary_op(loc, "SLICE+0",            30)
+binary_op(loc, "SLICE+1",           31)
+binary_op(loc, "SLICE+2",           32)
+ternary_op(loc, "SLICE+3",          33)
 
+#          OP NAME              OPCODE POP PUSH
+#-----------------------------------------------
 store_op(loc,   "STORE_SLICE+0",    40, 2, 0)
 store_op(loc,   "STORE_SLICE+1",    41, 3, 0)
 store_op(loc,   "STORE_SLICE+2",    42, 3, 0)
@@ -194,4 +204,13 @@ update_arg_fmt_base1x.update(
     },
 )
 
-opcode_extended_fmt_base1x = opcode_extended_fmt_base.copy()
+opcode_extended_fmt_base1x = {
+    **opcode_extended_fmt_base,
+    **{
+        "PRINT_ITEM": extended_format_PRINT_ITEM,
+        "SLICE+0": extended_format_SLICE_0,
+        "SLICE+1": extended_format_SLICE_1,
+        "SLICE+2": extended_format_SLICE_2,
+        "SLICE+3": extended_format_SLICE_3,
+    },
+}
