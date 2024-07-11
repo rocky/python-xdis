@@ -440,7 +440,7 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]
 
     arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
 
-    if arg_count != 0:
+    if arglist is None:
         return "", None
 
     assert i is not None
