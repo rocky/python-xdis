@@ -209,7 +209,7 @@ def disco_loop(
 
         if asm_format == "dis":
             assert version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2], (
-                "dis requires disassembly from the same Python verison: "
+                "dis requires disassembly from the same Python version: "
                 f"Bytecode is for {version_tuple[:2]}; Running:{PYTHON_VERSION_TRIPLE[:2]}"
             )
             dis.disassemble(co, lasti=-1, file=real_out)
