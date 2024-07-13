@@ -236,7 +236,7 @@ def_op(loc, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
 
 
-def extended_format_BUILD_MAP_older(opc, instructions: list):
+def extended_format_BUILD_MAP_older(opc, instructions):
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Note: caller generally handles this when the below isn't right.

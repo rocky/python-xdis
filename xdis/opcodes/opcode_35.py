@@ -84,7 +84,7 @@ def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 
-def extended_format_BUILD_MAP_35(opc, instructions: list):
+def extended_format_BUILD_MAP_35(opc, instructions):
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Note: caller generally handles this when the below isn't right.
