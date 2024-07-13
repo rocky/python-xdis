@@ -31,7 +31,7 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.format.extended import extended_format_binary_op
+from xdis.opcodes.format.extended import extended_format_binary_op, get_arglist
 from xdis.opcodes.opcode_34 import opcode_arg_fmt34, opcode_extended_fmt34
 
 version_tuple = (3, 5)
@@ -83,6 +83,22 @@ def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 
+def extended_format_BUILD_MAP_35(opc, instructions: list):
+    arg_count = instructions[0].argval
+    if arg_count == 0:
+        # Note: caller generally handles this when the below isn't right.
+        return "{}", instructions[0].offset
+    arglist, _, i = get_arglist(instructions, 0, 2 * arg_count)
+    if arglist is not None:
+        assert isinstance(i, int)
+        arg_pairs = [
+            "%s:%s" % (arglist[i], arglist[i + 1]) for i in range(len(arglist), 2)
+        ]
+        args_str = ", ".join(arg_pairs)
+        return "{" + args_str + "}", instructions[i].start_offset
+    return "", None
+
+
 def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
     """The lowest byte of oparg is the count of mappings, the relative
     position of the corresponding callable f is encoded in the second byte
@@ -103,6 +119,7 @@ opcode_extended_fmt35 = opcode_extended_fmt34.copy()
 opcode_extended_fmt35.update(
     {
         "BINARY_MATRIX_MULTIPLY": extended_format_BINARY_MATRIX_MULTIPLY,
+        "BUILD_MAP": extended_format_BUILD_MAP_35,
         "INPLACE_MATRIX_MULTIPLY": extended_format_INPLACE_MATRIX_MULTIPLY,
     }
 )
