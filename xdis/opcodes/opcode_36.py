@@ -133,14 +133,18 @@ varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
+FSTRING_CONVERSION_MAP = {0: "", 1: "!s", 2: "!r", 3: "!a"}
+
 
 def extended_format_BUILD_STRING(opc, instructions):
-    inst = instructions[0]
-    arg_count = inst.argval
+    assert len(instructions) > 0
+    arg_count = instructions[0].argval
     assert len(instructions) > arg_count
-    i = 0
+    i = 0  # index into instructions
+    start_offset = instructions[i].offset
     str = ""
     for _ in range(arg_count):
+        # Advance to previous instruction and offset
         i += 1
         start_offset = instructions[i].start_offset
         str_part = get_instruction_arg(instructions[i])
@@ -151,8 +155,10 @@ def extended_format_BUILD_STRING(opc, instructions):
         str += str_part
         for j in range(i, len(instructions)):
             if instructions[j].offset == start_offset:
+                i = j
                 break
-        i = j
+        else:
+            return "", None
 
     return 'f"' + str + '"', start_offset
 
@@ -164,8 +170,8 @@ def extended_format_FORMAT_VALUE(opc, instructions):
     start_offset = instructions[1].start_offset
     argval = get_instruction_arg(string_value)
     s = argval
-    if inst.argval == 0:
-        s = 'f"{%s}"' % argval
+    format_spec = FSTRING_CONVERSION_MAP.get(inst.argval, "")
+    s = 'f"{%s%s}"' % (format_spec, argval)
     return s, start_offset
 
 
