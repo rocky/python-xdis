@@ -21,6 +21,8 @@ of stack usage and information for formatting instructions.
 of stack usage.
 """
 
+from typing import Optional, Tuple
+
 import xdis.opcodes.opcode_34 as opcode_34
 from xdis.opcodes.base import (
     def_op,
@@ -91,6 +93,20 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
     return "%d mappings, function at %d" % (count, count + rel_func_pos)
 
 
+def extended_format_BUILD_MAP_35(opc, instructions: list) -> Tuple[str, Optional[int]]:
+    arg_count = instructions[0].argval
+    if arg_count == 0:
+        # Note: caller generally handles this when the below isn't right.
+        return "{}", instructions[0].offset
+    arglist, _, i = get_arglist(instructions, 0, 2 * arg_count)
+    if arglist is not None:
+        assert isinstance(i, int)
+        arg_pairs = [f"{arglist[i]}:{arglist[i+1]}" for i in range(len(arglist) - 1, 2)]
+        args_str = ", ".join(arg_pairs)
+        return "{" + args_str + "}", instructions[i].start_offset
+    return "", None
+
+
 opcode_arg_fmt = opcode_arg_fmt35 = {
     **opcode_arg_fmt34,
     **{
@@ -102,6 +118,7 @@ opcode_extended_fmt = opcode_extended_fmt35 = {
     **opcode_extended_fmt34,
     **{
         "BINARY_MATRIX_MULTIPLY": extended_format_BINARY_MATRIX_MULTIPLY,
+        "BUILD_MAP": extended_format_BUILD_MAP_35,
         "INPLACE_MATRIX_MULTIPLY": extended_format_INPLACE_MATRIX_MULTIPLY,
     },
 }

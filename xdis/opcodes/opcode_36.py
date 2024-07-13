@@ -21,7 +21,7 @@ This is like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import xdis.opcodes.opcode_35 as opcode_35
 from xdis.instruction import Instruction
@@ -135,15 +135,20 @@ varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
+FSTRING_CONVERSION_MAP: Dict[int, str] = {0: "", 1: "!s", 2: "!r", 3: "!a"}
+
+
 def extended_format_BUILD_STRING(
     opc, instructions: List[Instruction]
-) -> Tuple[str, int]:
-    inst = instructions[0]
-    arg_count = inst.argval
+) -> Tuple[str, Optional[int]]:
+    assert len(instructions) > 0
+    arg_count = instructions[0].argval
     assert len(instructions) > arg_count
-    i = 0
+    i = 0  # index into instructions
+    start_offset = instructions[i].offset
     str = ""
     for _ in range(arg_count):
+        # Advance to previous instruction and offset
         i += 1
         start_offset = instructions[i].start_offset
         str_part = get_instruction_arg(instructions[i])
@@ -154,23 +159,25 @@ def extended_format_BUILD_STRING(
         str += str_part
         for j in range(i, len(instructions)):
             if instructions[j].offset == start_offset:
+                i = j
                 break
-        i = j
+        else:
+            return "", None
 
     return 'f"' + str + '"', start_offset
 
 
 def extended_format_FORMAT_VALUE(
     opc, instructions: List[Instruction]
-) -> Tuple[str, int]:
+) -> Tuple[str, Optional[int]]:
     inst = instructions[0]
     assert len(instructions) > 1
     string_value = instructions[1]
     start_offset = instructions[1].start_offset
     argval = get_instruction_arg(string_value)
     s = argval
-    if inst.argval == 0:
-        s = 'f"{%s}"' % argval
+    format_spec = FSTRING_CONVERSION_MAP.get(inst.argval, "")
+    s = 'f"{%s%s}"' % (format_spec, argval)
     return s, start_offset
 
 

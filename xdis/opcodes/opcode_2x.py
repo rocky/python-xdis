@@ -236,6 +236,23 @@ def_op(loc, "EXTENDED_ARG", 143)
 EXTENDED_ARG = 143
 
 
+def extended_format_BUILD_MAP_older(
+    opc, instructions: list
+) -> Tuple[str, Optional[int]]:
+    arg_count = instructions[0].argval
+    if arg_count == 0:
+        # Note: caller generally handles this when the below isn't right.
+        return "{}", instructions[0].offset
+    arglist, _, i = get_arglist(instructions, 0, arg_count)
+    # from trepan.api import debug; debug()
+    if arglist is not None:
+        assert isinstance(i, int)
+        arg_pairs = [f"{arglist[i]}:{arglist[i+1]}" for i in range(len(arglist), 2)]
+        args_str = ", ".join(arg_pairs)
+        return "{" + args_str + "}", instructions[i].start_offset
+    return "", None
+
+
 def extended_format_PRINT_ITEM(opc, instructions: list) -> Tuple[str, Optional[int]]:
     instr1 = instructions[1]
     print_arg = get_instruction_arg(instr1)
@@ -293,6 +310,7 @@ update_arg_fmt_base2x = {
 opcode_extended_fmt_base2x = {
     **opcode_extended_fmt_base,
     **{
+        # "BUILD_MAP": extended_format_BUILD_MAP_older,
         "PRINT_ITEM": extended_format_PRINT_ITEM,
         "SLICE+0": extended_format_SLICE_0,
         "SLICE+1": extended_format_SLICE_1,
