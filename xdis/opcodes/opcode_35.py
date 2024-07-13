@@ -21,8 +21,6 @@ of stack usage and information for formatting instructions.
 of stack usage.
 """
 
-from typing import Optional, Tuple
-
 import xdis.opcodes.opcode_34 as opcode_34
 from xdis.opcodes.base import (
     def_op,
@@ -85,7 +83,7 @@ def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 
-def extended_format_BUILD_MAP_35(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_MAP_35(opc, instructions: list):
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Note: caller generally handles this when the below isn't right.
@@ -93,15 +91,14 @@ def extended_format_BUILD_MAP_35(opc, instructions: list) -> Tuple[str, Optional
     arglist, _, i = get_arglist(instructions, 0, 2 * arg_count)
     if arglist is not None:
         assert isinstance(i, int)
-        arg_pairs = [f"{arglist[i]}:{arglist[i+1]}" for i in range(len(arglist) - 1, 2)]
+        arg_pairs = [
+            "%s:%s" % (arglist[i], arglist[i + 1]) for i in range(len(arglist), 2)
+        ]
         args_str = ", ".join(arg_pairs)
         return "{" + args_str + "}", instructions[i].start_offset
     return "", None
 
 
-opcode_arg_fmt = opcode_arg_fmt35 = {
-    **opcode_arg_fmt34,
-    **{
 def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
     """The lowest byte of oparg is the count of mappings, the relative
     position of the corresponding callable f is encoded in the second byte
@@ -113,8 +110,6 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
 opcode_arg_fmt35 = opcode_arg_fmt34.copy()
 opcode_arg_fmt35.update(
     {
-=======
->>>>>>> python-3.6-to-3.10
         "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     }
 )

@@ -132,13 +132,12 @@ varargs_op(loc,  "BUILD_TUPLE_UNPACK_WITH_CALL", 158)
 MAKE_FUNCTION_FLAGS = tuple("default keyword-only annotation closure".split())
 
 
-FSTRING_CONVERSION_MAP: Dict[int, str] = {0: "", 1: "!s", 2: "!r", 3: "!a"}
+FSTRING_CONVERSION_MAP = {0: "", 1: "!s", 2: "!r", 3: "!a"}
 
 
 def extended_format_BUILD_STRING(opc, instructions: list):
     assert len(instructions) > 0
     arg_count = instructions[0].argval
->>>>>>> python-3.6-to-3.10
     assert len(instructions) > arg_count
     i = 0  # index into instructions
     start_offset = instructions[i].offset
