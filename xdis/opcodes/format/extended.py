@@ -55,6 +55,7 @@ def extended_format_binary_op(opc, instructions: list, fmt_str: str):
             if (
                 stack_inst1.opcode in opc.operator_set
                 and stack_inst2.opcode in opc.operator_set
+                and not stack_inst2.is_jump_target
             ):
                 arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
                 start_offset = stack_inst2.start_offset
@@ -194,20 +195,23 @@ def extended_format_ternary_op(opc, instructions, fmt_str: str):
         if (
             stack_inst1.opcode in opc.operator_set
             and stack_inst2.opcode in opc.operator_set
+            and not stack_inst2.is_jump_target
         ):
             arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
             k = skip_cache(instructions, j + 1)
-            stack_inst3 = instructions[k]
-            if stack_inst3.opcode in opc.operator_set:
-                start_offset = stack_inst3.start_offset
+            stack_inst3 = instructions[k + 1]
+            start_offset = stack_inst3.start_offset
+            if (
+                stack_inst3.opcode in opc.operator_set
+                and not stack_inst3.is_jump_target
+            ):
                 arg3 = get_instruction_arg(stack_inst3, stack_inst3.argrepr)
                 return fmt_str % (arg2, arg1, arg3), start_offset
             else:
-                start_offset = stack_inst2.start_offset
                 arg3 = "..."
                 return fmt_str % (arg2, arg1, arg3), start_offset
 
-        elif stack_inst2.start_offset is not None:
+        elif stack_inst2.start_offset is not None and not stack_inst2.is_jump_target:
             start_offset = stack_inst2.start_offset
             arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
             if arg2 == "":
@@ -230,7 +234,7 @@ def extended_format_STORE_SUBSCR(opc, instructions: list):
 def extended_format_unary_op(opc, instructions, fmt_str: str):
     stack_arg = instructions[1]
     start_offset = instructions[1].start_offset
-    if stack_arg.tos_str is not None:
+    if stack_arg.tos_str is not None and not stack_arg.is_jump_target:
         return fmt_str % stack_arg.tos_str, start_offset
     if stack_arg.opcode in opc.operator_set:
         return fmt_str % stack_arg.argrepr, start_offset
