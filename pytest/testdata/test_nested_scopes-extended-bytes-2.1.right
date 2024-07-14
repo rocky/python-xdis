@@ -683,8 +683,8 @@
               12 |84 00 00| MAKE_FUNCTION        (0 default parameters) ; TOS = def <lambda>(...): ...
               15 |7c 00 00| LOAD_FAST            (self)
               18 |69 00 02| LOAD_ATTR            (list_attribute) ; TOS = self.list_attribute
-              21 |83 00 02| CALL_FUNCTION        (2 positional, 0 named) ; TOS = filter(self.list_attribute, def <lambda>(...): ...)
-              24 |7d 00 02| STORE_FAST           (L) ; L = filter(self.list_attribute, def <lambda>(...): ...)
+              21 |83 00 02| CALL_FUNCTION        (2 positional, 0 named) ; TOS = filter(def <lambda>(...): ..., self.list_attribute)
+              24 |7d 00 02| STORE_FAST           (L) ; L = filter(def <lambda>(...): ..., self.list_attribute)
               27 |64 00 00| LOAD_CONST           (None)
               30 |53      | RETURN_VALUE         return None
 

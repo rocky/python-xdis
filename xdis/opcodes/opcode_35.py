@@ -101,7 +101,9 @@ def extended_format_BUILD_MAP_35(opc, instructions: list) -> Tuple[str, Optional
     arglist, _, i = get_arglist(instructions, 0, 2 * arg_count)
     if arglist is not None:
         assert isinstance(i, int)
-        arg_pairs = [f"{arglist[i]}:{arglist[i+1]}" for i in range(len(arglist) - 1, 2)]
+        arg_pairs = [
+            f"{arglist[i]}:{arglist[i+1]}" for i in range(0, len(arglist) - 1, 2)
+        ]
         args_str = ", ".join(arg_pairs)
         return "{" + args_str + "}", instructions[i].start_offset
     return "", None
