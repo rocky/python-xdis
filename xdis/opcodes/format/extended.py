@@ -444,8 +444,7 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]
             arglist[0] = instructions[2].argval
 
         fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
-        if opc.version_tuple >= (3, 6):
-            arglist.reverse()
+        arglist.reverse()
         s = f'{fn_name}({", ".join(arglist)})'
         return s, start_offset
     return "", None
