@@ -205,13 +205,15 @@ def extended_format_ternary_op(
         ):
             arg2 = get_instruction_arg(stack_inst2, stack_inst2.argrepr)
             k = skip_cache(instructions, j + 1)
-            stack_inst3 = instructions[k]
-            if stack_inst3.opcode in opc.operator_set:
-                start_offset = stack_inst3.start_offset
+            stack_inst3 = instructions[k + 1]
+            start_offset = stack_inst3.start_offset
+            if (
+                stack_inst3.opcode in opc.operator_set
+                and not stack_inst3.is_jump_target
+            ):
                 arg3 = get_instruction_arg(stack_inst3, stack_inst3.argrepr)
                 return fmt_str % (arg2, arg1, arg3), start_offset
             else:
-                start_offset = stack_inst2.start_offset
                 arg3 = "..."
                 return fmt_str % (arg2, arg1, arg3), start_offset
 
