@@ -20,7 +20,7 @@ allow running on Python 2.
 """
 
 import re
-from typing import Any, NamedTuple, Optional, Union
+from typing import Any, Dict, NamedTuple, Optional, Union
 
 # _Instruction.tos_str.__doc__ = (
 #     "If not None, a string representation of the top of the stack (TOS)"
@@ -226,16 +226,21 @@ class Instruction(NamedTuple):
     def disassemble(
         self,
         opc,
-        line_starts,
+        line_starts: Optional[Dict[int, int]] = None,
         lineno_width=3,
         mark_as_current=False,
         asm_format="classic",
         instructions=[],
     ):
-        """Format instruction details for inclusion in disassembly output
+        """
+        Format instruction details for inclusion in disassembly output.
 
-        *lineno_width* sets the width of the line number field (0 omits it)
-        *mark_as_current* inserts a '-->' marker arrow as part of the line
+        ``line_starts`` when it exists is a dictionary mapping a bytecode offsets to
+        line numbers.
+
+        ``lineno_width`` sets the width of the line number field (0 omits it)
+
+        ``mark_as_current`` inserts a '-->' marker arrow as part of the line.
         """
         fields = []
         indexed_operand = frozenset(["name", "local", "compare", "free"])
