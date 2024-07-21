@@ -663,7 +663,7 @@ def extended_format_CALL_METHOD(opc, instructions) -> Tuple[str, Optional[int]]:
 
 def extended_format_RAISE_VARARGS_older(
     opc, instructions: List[Instruction]
-) -> Tuple[Optional[str], int]:
+) -> Tuple[str, Optional[int]]:
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval
