@@ -1,4 +1,4 @@
-# Much of this is borrowed from Python's Lib/dis.py
+# Much of this is borrowed from Python's ``Lib/dis.py``.
 
 from math import copysign
 from typing import Dict
@@ -57,7 +57,7 @@ COMPILER_FLAG_BIT: Dict[str, int] = dict(
     (v, k) for (k, v) in COMPILER_FLAG_NAMES.items()
 )
 
-# Allow us to access by just name, prefixed with CO., e.g
+# Allow us to access by just name, prefixed with CO., e.g.,
 # CO_OPTIMIZED, CO_NOFREE.
 globals().update(dict(("CO_" + k, v) for (k, v) in COMPILER_FLAG_BIT.items()))
 
