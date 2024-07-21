@@ -139,7 +139,7 @@ class _Marshaller:
         self._write(a + b + c + d)
 
     def w_short(self, x):
-        self._write(chr((x) & 0xFF))
+        self._write(chr(x & 0xFF))
         self._write(chr((x >> 8) & 0xFF))
 
     def dump_none(self, x):

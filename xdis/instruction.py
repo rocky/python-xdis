@@ -155,7 +155,7 @@ class Instruction(_Instruction):
                     hex_bytecode += " %02x" % (self.arg % 256)
                 else:
                     hex_bytecode += " 00"
-            elif self.inst_size == 3:
+            elif self.inst_size == 3 and self.arg is not None:
                 # Not 3.6 or later
                 hex_bytecode += " %02x %02x" % divmod(self.arg, 256)
 
@@ -172,7 +172,7 @@ class Instruction(_Instruction):
             # for "asm" format, want additional explicit information
             # linking operands to tables.
             if asm_format == "asm":
-                if self.is_jump():
+                if self.is_jump() and self.argrepr is not None:
                     assert self.argrepr.startswith("to ")
                     jump_target = self.argrepr[len("to ") :]
                     fields.append("L" + jump_target)
@@ -180,7 +180,11 @@ class Instruction(_Instruction):
                     fields.append(repr(self.arg))
                     fields.append("(%s)" % argrepr)
                     argrepr = None
-                elif self.optype == "const" and not re.search(r"\s", argrepr):
+                elif (
+                    self.optype == "const"
+                    and argrepr is not None
+                    and not re.search(r"\s", argrepr)
+                ):
                     fields.append(repr(self.arg))
                     fields.append("(%s)" % argrepr)
                     argrepr = None
@@ -188,7 +192,11 @@ class Instruction(_Instruction):
                     fields.append(repr(self.arg))
             elif asm_format in ("extended", "extended-bytes"):
                 op = self.opcode
-                if self.is_jump() and line_starts.get(self.argval) is not None:
+                if (
+                    self.is_jump()
+                    and line_starts is not None
+                    and line_starts.get(self.argval) is not None
+                ):
                     new_instruction = list(self)
                     new_instruction[9] = "To line %s" % line_starts[self.argval]
                     self = Instruction(*new_instruction)
@@ -243,7 +251,7 @@ class Instruction(_Instruction):
                             prefix += "TOS = "
                         fields.append("%s%s" % (prefix, self.tos_str))
                     pass
-                else:
+                elif self.argrepr is not None:
                     fields.append(self.argrepr)
                 pass
             pass
@@ -271,7 +279,7 @@ class Instruction(_Instruction):
                 pass
             elif (
                 hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt
-            ):
+            ) and self.argrepr is not None:
                 fields.append(self.argrepr)
                 pass
             pass
