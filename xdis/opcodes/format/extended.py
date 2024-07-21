@@ -135,12 +135,8 @@ def extended_format_store_op(opc, instructions: list):
 
     prev_inst = instructions[1]
     start_offset = prev_inst.offset
-    if prev_inst.opname == "IMPORT_NAME":
-        return "%s = import_module(%s)" % (inst.argval, inst.argval), start_offset
-    elif prev_inst.opname == "IMPORT_FROM":
-        return "%s = import_module(%s)" % (inst.argval, prev_inst.argval), start_offset
-    elif prev_inst.opcode in opc.operator_set:
-        if prev_inst.opname == "LOAD_CONST":
+    if prev_inst.opcode in opc.operator_set:
+        if prev_inst.opcode in opc.nullaryloadop:
             argval = safe_repr(prev_inst.argval)
         elif (
             prev_inst.opcode in opc.VARGS_OPS | opc.NARGS_OPS
@@ -439,10 +435,20 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> tuple:
     return "", None
 
 
+def extended_format_IMPORT_FROM(opc, instructions: list) -> tuple:
+    assert len(instructions) >= 2
+    module_name = get_instruction_arg(instructions[1])
+    if module_name.startswith("import_module("):
+        module_name = module_name[len("import_module(") : -1]
+    return (
+        "from %s import %s" % (module_name, instructions[0].argval),
+        instructions[-1].start_offset,
+    )
+
+
 def extended_format_IMPORT_NAME(opc, instructions: list):
     inst = instructions[0]
-    start_offset = inst.start_offset
-    return "import_module(%s)" % inst.argval, start_offset
+    return "import_module(%s)" % inst.argval, inst.offset
 
 
 def extended_format_INPLACE_ADD(opc, instructions: list):
@@ -741,6 +747,7 @@ opcode_extended_fmt_base = {
     "BUILD_TUPLE":           extended_format_BUILD_TUPLE,
     "CALL_FUNCTION":         extended_format_CALL_FUNCTION,
     "COMPARE_OP":            extended_format_COMPARE_OP,
+    "IMPORT_FROM":           extended_format_IMPORT_FROM,
     "IMPORT_NAME":           extended_format_IMPORT_NAME,
     "INPLACE_ADD":           extended_format_INPLACE_ADD,
     "INPLACE_AND":           extended_format_INPLACE_AND,

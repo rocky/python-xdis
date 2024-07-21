@@ -16,10 +16,11 @@ feature, for example: user scenarios, or the value of the feature. -->
 
 ## Priority
 
-<!-- If this is important for a particular public good state that here.
+<!-- If this is important for a particular public, state that here.
      If this is blocking some important activity let us know what activity it blocks.
+	 If you are asking about a release because you are packing for a distribution like Ubuntu or Fedora, BlackArch, say so. I generally make releases otherwise on whim or when I have a need, such as I am giving a talk. If you sponsor, the project your release request has greater importance.
 
-	 Otherwise, we'll assume this has the lowest priority in addressing.
+	 Otherwise, we'll assume whatever is wrong or needed has the lowest priority in addressing.
 
 -->
 

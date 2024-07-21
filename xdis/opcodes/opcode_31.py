@@ -33,6 +33,8 @@ rm_op(loc, "EXTENDED_ARG",  144)
 
 # These are in Python 3.1 but not Python 3.2
 name_op(loc, "IMPORT_NAME", 108,  1, 1)  # Imports TOS and TOS1; module pushed
+loc["nullaryloadop"].add(108)
+
 def_op(loc, "ROT_FOUR",       5,  4, 4)
 def_op(loc, "DUP_TOPX",      99, -1, 2)  # number of items to duplicate
 
