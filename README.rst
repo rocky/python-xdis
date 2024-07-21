@@ -19,7 +19,7 @@ That's what this package is for. It can "marshal load" Python
 bytecodes from different versions of Python. The command-line routine
 *pydisasm* will show disassembly output using the most modern Python
 disassembly conventions in a variety of user-specified formats.  Some
-of these formats like `extended` and `extended-format` are the most
+of these formats like ``extended`` and ``extended-format`` are the most
 advanced of any Python disassembler I know of because they can show
 expression-tree on operators. See the [Disassembler
 Example][#disassembler-example] below.
