@@ -38,7 +38,7 @@ magic value.
 
 So if you want to write a cross-version assembler, bytecode-level
 analyzer, or optimizer this package may also be useful. In addition to
-the kinds of instruction categorization that ``dis``` offers, we have
+the kinds of instruction categorization that ``dis`` offers, we have
 additional categories for things that would be useful in such a
 bytecode assembler, optimizer, or decompiler.
 
