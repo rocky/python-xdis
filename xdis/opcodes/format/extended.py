@@ -632,7 +632,10 @@ def extended_function_signature(code):
     """
     # FIXME: we can probably much better than this.
     # But this is a start.
-    return "" if code.co_argcount == 0 else "..."
+    if code.co_argcount == 0:
+        return ""
+    else:
+        return "..."
 
 
 def get_arglist(instructions, i, arg_count):
@@ -699,7 +702,7 @@ def get_instruction_arg(inst, argval=None):
 
 
 def get_instruction_index_from_offset(
-    target_offset: int, instructions: list, start_index: int = 1
+    target_offset, instructions, start_index = 1
 ):
     for i in range(start_index, len(instructions)):
         if instructions[i].offset == target_offset:
@@ -708,7 +711,6 @@ def get_instruction_index_from_offset(
 
 
 def resolved_attrs(instructions):
->>>>>>> python-3.0-to-3.2
     """ """
     # we can probably speed up using the "tos_str" field.
     resolved = []
