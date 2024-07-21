@@ -1,4 +1,4 @@
-# Much of this is borrowed from Python's Lib/dis.py
+# Much of this is borrowed from Python's ``Lib/dis.py``.
 
 def code2num(code, i):
     if isinstance(code, str):
@@ -53,7 +53,7 @@ COMPILER_FLAG_BIT = {}
 for (v, k) in COMPILER_FLAG_NAMES.items():
     COMPILER_FLAG_BIT[k] = v
 
-# Allow us to access by just name, prefixed with CO., e.g
+# Allow us to access by just name, prefixed with CO., e.g.,
 # CO_OPTIMIZED, CO_NOFREE.
 globals().update(dict(("CO_" + k, v) for (k, v) in COMPILER_FLAG_BIT.items()))
 

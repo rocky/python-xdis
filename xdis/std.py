@@ -16,13 +16,14 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """
-Provide the same API as Python 3.x so xdis can be used as a drop in
-replacement for dis. This will provide a dis module with support for the
-Python version being run.
+Provide the same API as Python 3.x so xdis can be used as a drop-in
+replacement for ``dis``.
+
+This will provide ``dis`` module with support for the Python version being run.
 
 Why would you want this? The main reason is if you want a compatibility shim
-for supporting the more advanced Python 3 dis API (being able to iterate through
-opcodes, supplying a custom file to dump the dis to) across python versions, for
+for supporting the more advanced Python3 dis API. That is, to be able to iterate through
+opcodes, supplying a custom file to dump the dis to across python versions. For
 example:
 
     import xdis.std as dis
@@ -31,7 +32,7 @@ example:
     for op in dis.Bytecode('for i in range(10): pass'):
         print(op)
 
-There is also the ability to generate a std api for a specific version, for example:
+There is also the ability to generate a std api for a specific version. For example:
 
     from xdis.std import make_std_api
     dis = make_std_api(2.4)
@@ -92,12 +93,12 @@ class _StdApi:
         self.HAVE_ARGUMENT = opc.HAVE_ARGUMENT
 
         class Bytecode(_Bytecode):
-            """The bytecode operations of a piece of code
+            """The bytecode operations in a piece of code
 
             Instantiate this with a function, method, string of code, or a code object
             (as returned by compile()).
 
-            Iterating over this yields a bytecode operation as Instruction instances.
+            Iterating over these yields a bytecode operation as Instruction instances.
             """
 
             def __init__(self, x, first_line=None, current_offset=None, opc=None):
@@ -252,26 +253,27 @@ class _StdApi:
         """Detect all offsets in a byte code which are jump targets.
 
         Return the list of offsets.
-
         """
         return self.opc.findlabels(code, self.opc)
 
 
 def make_std_api(python_version=sys.version_info, variant=VARIANT):
     """
-    Generate an object which can be used in the same way as the python
-    standard dis module. The difference is that the generated 'module' can be
+    Generate an object which can be used in the same way as the Python
+    standard ``dis`` module.
+
+    The difference is that the generated 'module' can be
     used to disassemble byte / word code from a different python version than
     the version of the interpreter under which we are running.
 
     :param python_version: Generate a dis module for this version of python
                            (defaults to the currently running python version.)
     :param variant:        The string denoting the variant of the python version
-                           being run, for example 'pypy' or 'alpha0', 'rc1' etc,,
-                           or None to auto detect based on the currently running
+                           being run, for example 'pypy' or 'alpha0', 'rc1' etc.,
+                           or None to auto-detect based on the currently running
                            interpreter.
 
-    :return: object which can be used like the std dis module.
+    :return: An Object which can be used like the std ``dis`` module.
     """
     if isinstance(python_version, float):
         major = int(python_version)

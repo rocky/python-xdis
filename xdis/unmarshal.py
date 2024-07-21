@@ -22,8 +22,8 @@ This is needed when the bytecode extracted is from
 a different version than the currently-running Python.
 
 When the running interpreter and the read-in bytecode are the same,
-you can simply use Python's built-in marshal.loads() to produce a code
-object
+you can use Python's built-in ``marshal.loads()`` to produce a code
+object.
 """
 
 import sys
@@ -51,14 +51,14 @@ FLAG_REF = 0x80
 FLAG_REF = 0x80
 
 
-# The keys in following dictionary are an unmashal codes, like "s",
-# "c", "<", etc.  the values of the dictionary are names of routines
+# The keys in the following dictionary are unmarshal codes, like "s",
+# "c", "<", etc. The values of the dictionary are names of routines
 # to call that do the data unmarshaling.
 #
-# Note: we could eliminate the parameters, if this were all inside a
+# Note: we could eliminate the parameters if this were all inside a
 # class.  This might be good from an efficiency standpoint, and bad
 # from a functional-programming standpoint. Pick your poison.
-# EDIT: I'm choosing efficiency over functional-programming.
+# EDIT: I'm choosing efficiency over functional programming.
 UNMARSHAL_DISPATCH_TABLE = {
     "0": "C_NULL",
     "N": "None",
@@ -128,7 +128,7 @@ class _VersionIndependentUnmarshaller:
             3: [3.4a0, 3.4a3) (self.magic_int: 3250 until 3280)
             4: [3.4a3, current) (self.magic_int: 3280 onwards)
 
-        In Python 3 a bytes type is used for strings.
+        In Python 3, a ``bytes`` type is used for strings.
         """
         self.fp = fp
         self.magic_int = magic_int
@@ -157,7 +157,7 @@ class _VersionIndependentUnmarshaller:
 
     def load(self):
         """
-        marshal.load() written in Python. When the Python bytecode magic loaded is the
+        ``marshal.load()`` written in Python. When the Python bytecode magic loaded is the
         same magic for the running Python interpreter, we can simply use the
         Python-supplied marshal.load().
 
@@ -309,8 +309,8 @@ class _VersionIndependentUnmarshaller:
     # Note: could mean bytes in Python3 processing Python2 bytecode
     def t_string(self, save_ref, bytes_for_s):
         """
-        In Python3 this is a bytes types. In Python2 it is a string.
-        `bytes_for_s` distinguishes what we need.
+        In Python3, this is a ``bytes`` type.  In Python2, it is a string type;
+        ``bytes_for_s`` distinguishes what we need.
         """
         strsize = unpack("<i", self.fp.read(4))[0]
         s = self.fp.read(strsize)

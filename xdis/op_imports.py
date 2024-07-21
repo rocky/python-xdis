@@ -204,7 +204,7 @@ def get_opcode_module(version_info=None, variant=None):
                 pass
         except:
             # Python may be too old, e.g. < 2.6 or implementation may
-            # just not have platform
+            # just not have the ``platform`` attribute.
             pass
     elif variant != "Graal":
         vers_str += variant
