@@ -404,7 +404,7 @@ def _test():
         if xdis.PYTHON3:
             disassemble_file(__file__)
         else:
-            sys.stderr.write(f"usage: {__file__} [-|CPython compiled file [format]]\n")
+            sys.stderr.write("usage: %s [-|CPython compiled file [format]]\n" % __file__)
             sys.exit(2)
     elif argc == 3:
         fn, asm_format = sys.argv[1:3]
