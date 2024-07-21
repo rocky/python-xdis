@@ -1,3 +1,12 @@
+6.1.1 2024-07-21
+=================
+
+* Greatly improve extended-format output. (More could be done though)
+* Update Python versions recognize, e.g. 3.12.4
+* Add nullaryloadop for nullary load opcodes
+* More code linting and type annotation
+
+
 6.1.0 2024-03-15
 =================
 
