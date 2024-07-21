@@ -171,6 +171,8 @@ varargs_op(loc, "BUILD_MAP",         105,  0,  1)  # argument is dictionary coun
 name_op(loc, "LOAD_ATTR",            106,  1,  1)  # Operand is in name list
 compare_op(loc, "COMPARE_OP",        107,  2,  1)  # Comparison operator
 name_op(loc, "IMPORT_NAME",          108,  2,  1)  # Imports TOS and TOS1; module pushed
+loc["nullaryloadop"].add(108)
+
 name_op(loc, "IMPORT_FROM",          109,  0,  1)  # Operand is in name list
 
 jrel_op(loc, "JUMP_FORWARD",         110,  0,  0, fallthrough=False)  # Number of bytes to skip

@@ -29,8 +29,7 @@ from xdis.opcodes.base import (
     store_op,
     update_pj2,
 )
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 python_implementation = "CPython"
 
@@ -48,6 +47,8 @@ store_op(loc, "STORE_MAP",          54,  3,  1)
 rm_op(loc,    "IMPORT_NAME",       107)
 name_op(loc,  "IMPORT_NAME",       107,  2,  1)  # Imports namei; TOS and TOS1 provide
                                                  # fromlist and level. Module pushed.
+loc["nullaryloadop"].add(107)
+
 # fmt: on
 
 opcode_arg_fmt = update_arg_fmt_base2x.copy()
