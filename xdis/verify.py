@@ -41,9 +41,9 @@ def dump_compile(codeobject, filename, timestamp, magic):
     """Write ``codeobject`` as a byte-compiled file.
 
     Arguments:
-    codeobject: code object
-    filename: bytecode file to write
-    timestamp: timestamp to put in file
+    codeobject: Code object
+    filename:  ytecode file to write
+    timestamp: Tme stamp to put in file
     magic: Python bytecode magic
     """
     # Atomically write the pyc/pyo file.  Issue #13146.

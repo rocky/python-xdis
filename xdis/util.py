@@ -1,4 +1,4 @@
-# Much of this is borrowed from Python's Lib/dis.py
+# Much of this is borrowed from Python's ``Lib/dis.py``.
 
 from math import copysign
 
@@ -54,7 +54,7 @@ PYPY_COMPILER_FLAG_NAMES = {
 # from the "compile" flag name
 COMPILER_FLAG_BIT = dict((v, k) for (k, v) in COMPILER_FLAG_NAMES.items())
 
-# Allow us to access by just name, prefixed with CO., e.g
+# Allow us to access by just name, prefixed with CO., e.g.,
 # CO_OPTIMIZED, CO_NOFREE.
 globals().update(dict(("CO_" + k, v) for (k, v) in COMPILER_FLAG_BIT.items()))
 
