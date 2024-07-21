@@ -111,7 +111,7 @@ jrel_op(loc, "SETUP_ASYNC_WITH",   154,  0,  5)
 name_op(loc, "LOAD_METHOD",        160,  0,  1)
 call_op(loc, "CALL_METHOD",        161, -2,  1)
 
-format_MAKE_FUNCTION = opcode_36.format_MAKE_FUNCTION
+format_MAKE_FUNCTION_36 = opcode_36.format_MAKE_FUNCTION_36
 format_value_flags = opcode_36.format_value_flags
 # fmt: on
 
