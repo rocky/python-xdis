@@ -76,13 +76,10 @@ The cross-version disassembler that is packaged here, can produce
 assembly listing that are superior to those typically found in
 Python's dis module. Here is an example::
 
-    pydisasm --show-source -F extended bytecode_3.8/pydisasm-example.pyc
-    byte-compiling simple_source/pydisasm-example.py to bytecode_3.8/pydisasm-example.py.pyc
-    /src/external-vcs/github/rocky/python-xdis/test
-    # pydisasm version 6.1.0.dev0
+    pydisasm -S -F extended bytecode_3.8/pydisasm-example.pyc
+    # pydisasm version 6.1.1.dev0
     # Python bytecode 3.8.0 (3413)
-    # Disassembled from Python 3.8.17 (default, Jun 21 2023, 08:20:16)
-    # [GCC 12.2.0]
+    # Disassembled from Python 3.11.8 (main, Feb 14 2024, 04:47:01) [GCC 13.2.0]
     # Timestamp in code: 1693155156 (2023-08-27 12:52:36)
     # Source code size mod 2**32: 320 bytes
     # Method Name:       <module>
@@ -110,61 +107,61 @@ Python's dis module. Here is an example::
     #    5: major
     #    6: power_of_two
                  # import sys
-      4:           0 LOAD_CONST           (0)
-                   2 LOAD_CONST           (None)
-                   4 IMPORT_NAME          (sys)
-                   6 STORE_NAME           (sys) | sys = import(sys)
+      4:           0 LOAD_CONST           (0) ; TOS = 0
+                   2 LOAD_CONST           (None) ; TOS = None
+                   4 IMPORT_NAME          (sys) ; TOS = import_module(sys)
+                   6 STORE_NAME           (sys) ; sys = import_module(sys)
 
                  # from sys import version_info
-      5:           8 LOAD_CONST           (0)
-                  10 LOAD_CONST           (('version_info',))
-                  12 IMPORT_NAME          (sys)
-                  14 IMPORT_FROM          (version_info)
-                  16 STORE_NAME           (version_info) | version_info = import(version_info)
+      5:           8 LOAD_CONST           (0) ; TOS = 0
+                  10 LOAD_CONST           (('version_info',)) ; TOS = ('version_info',)
+                  12 IMPORT_NAME          (sys) ; TOS = import_module(sys)
+                  14 IMPORT_FROM          (version_info) ; TOS = from sys import version_info
+                  16 STORE_NAME           (version_info) ; version_info = from sys import version_info
                   18 POP_TOP
 
                  # print(sys.version)
-      7:          20 LOAD_NAME            (print)
-                  22 LOAD_NAME            (sys)
-                  24 LOAD_ATTR            (version) | sys.version
-                  26 CALL_FUNCTION        (1 positional argument) | print(sys.version)
+      7:          20 LOAD_NAME            (print) ; TOS = print
+                  22 LOAD_NAME            (sys) ; TOS = sys
+                  24 LOAD_ATTR            (version) ; TOS = sys.version
+                  26 CALL_FUNCTION        (1 positional argument) ; TOS = print(sys.version)
                   28 POP_TOP
 
                  # print(len(version_info))
-      8:          30 LOAD_NAME            (print)
-                  32 LOAD_NAME            (len)
-                  34 LOAD_NAME            (version_info)
-                  36 CALL_FUNCTION        (1 positional argument) | len(version_info)
-                  38 CALL_FUNCTION        (1 positional argument) | print(len(version_info))
+      8:          30 LOAD_NAME            (print) ; TOS = print
+                  32 LOAD_NAME            (len) ; TOS = len
+                  34 LOAD_NAME            (version_info) ; TOS = version_info
+                  36 CALL_FUNCTION        (1 positional argument) ; TOS = len(version_info)
+                  38 CALL_FUNCTION        (1 positional argument) ; TOS = print(len(version_info))
                   40 POP_TOP
 
                  # major = sys.version_info[0]
-      9:          42 LOAD_NAME            (sys)
-                  44 LOAD_ATTR            (version_info) | sys.version_info
-                  46 LOAD_CONST           (0)
-                  48 BINARY_SUBSCR        sys.version_info[0]
-                  50 STORE_NAME           (major) | major = sys.version_info[0]
+      9:          42 LOAD_NAME            (sys) ; TOS = sys
+                  44 LOAD_ATTR            (version_info) ; TOS = sys.version_info
+                  46 LOAD_CONST           (0) ; TOS = 0
+                  48 BINARY_SUBSCR        TOS = sys.version_info[0]
+                  50 STORE_NAME           (major) ; major = sys.version_info[0]
 
                  # power_of_two = major & (major - 1)
-     10:          52 LOAD_NAME            (major)
-                  54 LOAD_NAME            (major)
-                  56 LOAD_CONST           (1)
-                  58 BINARY_SUBTRACT      major - 1
-                  60 BINARY_AND           major & (major - 1)
-                  62 STORE_NAME           (power_of_two) | power_of_two = major & (major - 1)
+     10:          52 LOAD_NAME            (major) ; TOS = major
+                  54 LOAD_NAME            (major) ; TOS = major
+                  56 LOAD_CONST           (1) ; TOS = 1
+                  58 BINARY_SUBTRACT      TOS = major - (1)
+                  60 BINARY_AND           TOS = major & (major - (1))
+                  62 STORE_NAME           (power_of_two) ; power_of_two = major & (major - (1))
 
                  # if power_of_two in (2, 4):
-     11:          64 LOAD_NAME            (power_of_two)
-                  66 LOAD_CONST           ((2, 4))
-                  68 COMPARE_OP           (in) | power_of_two in (2, 4)
+     11:          64 LOAD_NAME            (power_of_two) ; TOS = power_of_two
+                  66 LOAD_CONST           ((2, 4)) ; TOS = (2, 4)
+                  68 COMPARE_OP           (in) ; TOS = power_of_two in ((2, 4))
                   70 POP_JUMP_IF_FALSE    (to 80)
 
                  # print("Is small power of two")
-     12:          72 LOAD_NAME            (print)
-                  74 LOAD_CONST           ('Is small power of two')
-                  76 CALL_FUNCTION        (1 positional argument) | print('Is small power of two')
+     12:          72 LOAD_NAME            (print) ; TOS = print
+                  74 LOAD_CONST           ("Is small power of two") ; TOS = "Is small power of two"
+                  76 CALL_FUNCTION        (1 positional argument) ; TOS = print("Is small power of two")
                   78 POP_TOP
-             >>   80 LOAD_CONST           (None)
+             >>   80 LOAD_CONST           (None) ; TOS = None
                   82 RETURN_VALUE         return None
 
 Note in the above that some operand interpretation is done on items that are in the stack.

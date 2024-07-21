@@ -257,6 +257,8 @@ def_graal_op(opc, "EXTENDED_ARG", 40, 1, 0, 0)
 #  Pops: fromlist (must be a constant {@code TruffleString[]}), then level (must be {@code int})
 #  Pushes: imported module
 def_graal_op(opc, "IMPORT_NAME", 41, 1, 2, 1)
+opc["nullaryloadop"].add(41)
+
 
 # Imports a name from a module. The name determined by the immediate operand which indexes the
 # names array ({@code co_names}).
