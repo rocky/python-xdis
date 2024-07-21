@@ -88,16 +88,21 @@ class Instruction(_Instruction):
     def disassemble(
         self,
         opc,
-        line_starts,
+        line_starts: Optional[Dict[int, int]] = None,
         lineno_width=3,
         mark_as_current=False,
         asm_format="classic",
         instructions=[],
     ):
-        """Format instruction details for inclusion in disassembly output
+        """
+        Format instruction details for inclusion in disassembly output.
 
-        *lineno_width* sets the width of the line number field (0 omits it)
-        *mark_as_current* inserts a '-->' marker arrow as part of the line
+        ``line_starts`` when it exists is a dictionary mapping a bytecode offsets to
+        line numbers.
+
+        ``lineno_width`` sets the width of the line number field (0 omits it)
+
+        ``mark_as_current`` inserts a '-->' marker arrow as part of the line.
         """
         fields = []
         indexed_operand = frozenset(["name", "local", "compare", "free"])
@@ -203,14 +208,15 @@ class Instruction(_Instruction):
                         # Add tos_str info to tos_str field of instruction.
                         # This the last field in instruction.
                         new_instruction = list(self)
-                        new_instruction[9] = new_repr
                         new_instruction[-1] = start_offset
+                        new_instruction[-2] = new_repr
                         del instructions[-1]
                         self = Instruction(*new_instruction)
                         instructions.append(self)
                         argrepr = new_repr
                 elif self.opcode in opc.nullaryloadop:
                     new_instruction = list(self)
+                    new_instruction[-2] = self.argrepr
                     start_offset = new_instruction[-1] = self.offset
                     del instructions[-1]
                     self = Instruction(*new_instruction)
@@ -223,9 +229,8 @@ class Instruction(_Instruction):
             else:
                 # Column: Opcode argument details
                 if len(instructions) > 0:
-                    if self.tos_str is None or (
-                        self.argrepr is not None and self.argrepr == self.tos_str
-                    ):
+                    argval = self.argval
+                    if self.tos_str is None:
                         fields.append("(%s)" % argrepr)
                     else:
                         if self.optype in ("vargs", "encoded_arg"):

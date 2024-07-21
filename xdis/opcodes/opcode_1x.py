@@ -156,6 +156,8 @@ name_op(loc,    "LOAD_ATTR",       105, 1, 1)  # Operand is in name list
 compare_op(loc, "COMPARE_OP",      106, 2, 1)  # Comparison operator
 
 name_op(loc,    "IMPORT_NAME",   107, 2, 1)  # Operand is in name list
+loc["nullaryloadop"].add(107)
+
 name_op(loc,    "IMPORT_FROM",   108, 0, 1)  # Operand is in name list
 
 jrel_op(loc,    "JUMP_FORWARD",  110, 0, 0, fallthrough=False)  # Number of bytes to skip
