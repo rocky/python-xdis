@@ -192,7 +192,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions: list):
     return s, start_offset
 
 
-def format_MAKE_FUNCTION(flags: int) -> str:
+def format_MAKE_FUNCTION_36(flags: int) -> str:
     if flags == 0:
         return "No arguments"
     pattr = ""
@@ -264,7 +264,7 @@ opcode_arg_fmt36 = opcode_arg_fmt = {
     "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
     "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
     "FORMAT_VALUE": format_value_flags,
-    "MAKE_FUNCTION": format_MAKE_FUNCTION,
+    "MAKE_FUNCTION": format_MAKE_FUNCTION_36,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
 }
 
@@ -365,7 +365,7 @@ opcode_arg_fmt36.update(
         "CALL_FUNCTION": format_CALL_FUNCTION,
         "CALL_FUNCTION_KW": format_CALL_FUNCTION_KW,
         "CALL_FUNCTION_EX": format_CALL_FUNCTION_EX,
-        "MAKE_FUNCTION": format_MAKE_FUNCTION,
+        "MAKE_FUNCTION": format_MAKE_FUNCTION_36,
         "FORMAT_VALUE": format_value_flags,
         "EXTENDED_ARG": format_extended_arg36,
         "RAISE_VARARGS": format_RAISE_VARARGS_older,
