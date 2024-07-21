@@ -346,14 +346,15 @@ class Instruction(NamedTuple):
                         # Add tos_str info to tos_str field of instruction.
                         # This the last field in instruction.
                         new_instruction = list(self)
-                        new_instruction[-2] = new_repr
                         new_instruction[-1] = start_offset
+                        new_instruction[-2] = new_repr
                         del instructions[-1]
                         self = Instruction(*new_instruction)
                         instructions.append(self)
                         argrepr = new_repr
                 elif self.opcode in opc.nullaryloadop:
                     new_instruction = list(self)
+                    new_instruction[-2] = self.argrepr
                     start_offset = new_instruction[-1] = self.offset
                     del instructions[-1]
                     self = Instruction(*new_instruction)
@@ -367,9 +368,7 @@ class Instruction(NamedTuple):
                 # Column: Opcode argument details
                 if len(instructions) > 0:
                     argval = self.argval
-                    if self.tos_str is None or (
-                        self.argrepr is not None and self.argrepr == self.tos_str
-                    ):
+                    if self.tos_str is None:
                         fields.append(f"({self.argrepr})")
                     else:
                         if self.optype in ("vargs", "encoded_arg"):
