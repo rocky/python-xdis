@@ -47,9 +47,11 @@ def extended_format_binary_op(opc, instructions: list, fmt_str: str):
                 arg1 = stack_inst1.argrepr
             arg1_start_offset = stack_inst1.start_offset
             if arg1_start_offset is not None:
-                for i in range(1, len(instructions)):
-                    if instructions[i].offset == arg1_start_offset:
-                        break
+                i = get_instruction_index_from_offset(
+                    arg1_start_offset, instructions, 1
+                )
+                if i is None:
+                    return "", None
             j = skip_cache(instructions, i + 1)
             stack_inst2 = instructions[j]
             if (
@@ -88,9 +90,9 @@ def extended_format_infix_binary_op(opc, instructions, op_str: str):
             arg1 = "(%s)" % arg1
         arg1_start_offset = instructions[1].start_offset
         if arg1_start_offset is not None:
-            for i in range(1, len(instructions)):
-                if instructions[i].offset == arg1_start_offset:
-                    break
+            i = get_instruction_index_from_offset(arg1_start_offset, instructions, 1)
+            if i is None:
+                return "", None
         j = i + 1
         # 3.11+ has CACHE instructions
         while instructions[j].opname == "CACHE":
@@ -183,9 +185,9 @@ def extended_format_ternary_op(opc, instructions, fmt_str: str):
             arg1 = stack_inst1.argrepr
         arg1_start_offset = stack_inst1.start_offset
         if arg1_start_offset is not None:
-            for i in range(1, len(instructions)):
-                if instructions[i].offset == arg1_start_offset:
-                    break
+            i = get_instruction_index_from_offset(arg1_start_offset, instructions, 1)
+            if i is None:
+                return "", None
         j = skip_cache(instructions, i + 1)
         stack_inst2 = instructions[j]
         if (
@@ -299,15 +301,21 @@ def extended_format_BINARY_SUBSCR(opc, instructions: list):
     )
 
 
-def extended_format_BINARY_SUBTRACT(opc, instructions: list):
+def extended_format_BINARY_SUBTRACT(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " - ")
 
 
-def extended_format_BINARY_TRUE_DIVIDE(opc, instructions: list):
+def extended_format_BINARY_TRUE_DIVIDE(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " / ")
 
 
-def extended_format_BINARY_XOR(opc, instructions: list):
+def extended_format_BINARY_XOR(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " ^ ")
 
 
@@ -357,11 +365,15 @@ def extended_format_BUILD_CONST_KEY_MAP(opc, instructions):
     return "", None
 
 
-def extended_format_BUILD_LIST(opc, instructions: list) -> tuple:
+def extended_format_BUILD_LIST(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_build_tuple_or_list(opc, instructions, "[", "]")
 
 
-def extended_format_BUILD_SET(opc, instructions: list):
+def extended_format_BUILD_SET(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     if instructions[0].argval == 0:
         # Degenerate case
         return "set()", instructions[0].start_offset
@@ -437,7 +449,14 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> tuple:
 
 def extended_format_IMPORT_FROM(opc, instructions: list) -> tuple:
     assert len(instructions) >= 2
-    module_name = get_instruction_arg(instructions[1])
+    i = 1
+    while instructions[i].opname == "STORE_NAME":
+        i = get_instruction_index_from_offset(
+            instructions[i].start_offset, instructions, 1
+        )
+        if i is None:
+            return "", None
+    module_name = get_instruction_arg(instructions[i])
     if module_name.startswith("import_module("):
         module_name = module_name[len("import_module(") : -1]
     return (
@@ -446,7 +465,14 @@ def extended_format_IMPORT_FROM(opc, instructions: list) -> tuple:
     )
 
 
-def extended_format_IMPORT_NAME(opc, instructions: list):
+        f"from {module_name} import {instructions[0].argval}",
+        instructions[1].start_offset,
+    )
+
+
+def extended_format_IMPORT_NAME(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     inst = instructions[0]
     return "import_module(%s)" % inst.argval, inst.offset
 
@@ -499,7 +525,14 @@ def extended_format_INPLACE_XOR(opc, instructions: list):
     return extended_format_infix_binary_op(opc, instructions, " ^= ")
 
 
-def extended_format_IS_OP(opc, instructions: list):
+def extended_format_INPLACE_LSHIFT(
+    opc, instructions: list):
+    return extended_format_infix_binary_op(opc, instructions, " <<= ")
+
+
+def extended_format_IS_OP(
+    opc, instructions: list
+):
     return extended_format_infix_binary_op(
         opc, instructions, "%%s %s %%s" % format_IS_OP(instructions[0].arg)
     )
@@ -510,6 +543,17 @@ def extended_format_LOAD_BUILD_CLASS(opc, instructions: list):
 
 
 def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list):
+=======
+def extended_format_LOAD_BUILD_CLASS(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
+    return "class", instructions[0].start_offset
+
+
+def extended_format_MAKE_FUNCTION_10_27(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, int]:
+>>>>>>> python-3.6-to-3.10
     """
     instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
@@ -570,7 +614,7 @@ def extended_format_CALL_METHOD(opc, instructions) -> tuple:
     return "", None
 
 
-def extended_format_RAISE_VARARGS_older(opc, instructions: list):
+def extended_format_RAISE_VARARGS_older(opc, instructions: list) -> tuple:
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
     argc = raise_inst.argval
@@ -612,7 +656,7 @@ def extended_function_signature(code) -> str:
     """
     # FIXME: we can probably much better than this.
     # But this is a start.
-    return "..."
+    return "" if code.co_argcount == 0 else "..."
 
 
 def get_arglist(instructions: list, i: int, arg_count: int):
@@ -669,6 +713,15 @@ def get_instruction_arg(inst, argval=None):
     return inst.tos_str if inst.tos_str is not None else argval
 
 
+def get_instruction_index_from_offset(
+    target_offset: int, instructions: list, start_index: int = 1
+):
+    for i in range(start_index, len(instructions)):
+        if instructions[i].offset == target_offset:
+            return i
+    return None
+
+
 def resolved_attrs(instructions: list):
     """ """
     # we can probably speed up using the "tos_str" field.
@@ -711,7 +764,7 @@ def short_code_repr(code) -> str:
         return "<code object code>" % code
 
 
-def skip_cache(instructions: list, i: int) -> int:
+def skip_cache(instructions: List[Instruction], i: int) -> int:
     """Python 3.11+ has CACHE instructions.
     Skip over those starting at index i and return
     the index of the first instruction that is not CACHE
