@@ -193,7 +193,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions):
     return s, start_offset
 
 
-def format_MAKE_FUNCTION(flags):
+def format_MAKE_FUNCTION_36(flags):
     if flags == 0:
         return "No arguments"
     pattr = ""
