@@ -16,13 +16,14 @@
 """
 Routines for formatting opcodes.
 """
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
+from xdis.instruction import Instruction
 from xdis.opcodes.format.basic import format_IS_OP, format_RAISE_VARARGS_older
 
 
 def extended_format_binary_op(
-    opc, instructions: list, fmt_str: str
+    opc, instructions: List[Instruction], fmt_str: str
 ) -> Tuple[str, Optional[int]]:
     """
     General routine for formatting binary operations.
@@ -51,9 +52,11 @@ def extended_format_binary_op(
                 arg1 = stack_inst1.argrepr
             arg1_start_offset = stack_inst1.start_offset
             if arg1_start_offset is not None:
-                for i in range(1, len(instructions)):
-                    if instructions[i].offset == arg1_start_offset:
-                        break
+                i = get_instruction_index_from_offset(
+                    arg1_start_offset, instructions, 1
+                )
+                if i is None:
+                    return "", None
             j = skip_cache(instructions, i + 1)
             stack_inst2 = instructions[j]
             if (
@@ -94,9 +97,9 @@ def extended_format_infix_binary_op(
             arg1 = f"({arg1})"
         arg1_start_offset = instructions[1].start_offset
         if arg1_start_offset is not None:
-            for i in range(1, len(instructions)):
-                if instructions[i].offset == arg1_start_offset:
-                    break
+            i = get_instruction_index_from_offset(arg1_start_offset, instructions, 1)
+            if i is None:
+                return "", None
         j = i + 1
         # 3.11+ has CACHE instructions
         while instructions[j].opname == "CACHE":
@@ -129,7 +132,9 @@ def extended_format_infix_binary_op(
     return "", None
 
 
-def extended_format_store_op(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_store_op(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     inst = instructions[0]
 
     # If the store instruction is a jump target, then
@@ -191,9 +196,9 @@ def extended_format_ternary_op(
             arg1 = stack_inst1.argrepr
         arg1_start_offset = stack_inst1.start_offset
         if arg1_start_offset is not None:
-            for i in range(1, len(instructions)):
-                if instructions[i].offset == arg1_start_offset:
-                    break
+            i = get_instruction_index_from_offset(arg1_start_offset, instructions, 1)
+            if i is None:
+                return "", None
         j = skip_cache(instructions, i + 1)
         stack_inst2 = instructions[j]
         if (
@@ -227,7 +232,9 @@ def extended_format_ternary_op(
     return "", None
 
 
-def extended_format_STORE_SUBSCR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_STORE_SUBSCR(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_ternary_op(
         opc,
         instructions,
@@ -247,7 +254,9 @@ def extended_format_unary_op(
     return "", None
 
 
-def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_ATTR(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     """
     Handles both LOAD_ATTR and STORE_ATTR
     """
@@ -265,47 +274,63 @@ def extended_format_ATTR(opc, instructions: list) -> Tuple[str, Optional[int]]:
     return "", None
 
 
-def extended_format_BINARY_ADD(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_ADD(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " + ")
 
 
-def extended_format_BINARY_AND(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_AND(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " & ")
 
 
 def extended_format_BINARY_FLOOR_DIVIDE(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " // ")
 
 
-def extended_format_BINARY_LSHIFT(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_LSHIFT(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " << ")
 
 
-def extended_format_BINARY_MODULO(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_MODULO(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " % ")
 
 
 def extended_format_BINARY_MULTIPLY(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " * ")
 
 
-def extended_format_BINARY_OR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_OR(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " | ")
 
 
-def extended_format_BINARY_POWER(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_POWER(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " ** ")
 
 
-def extended_format_BINARY_RSHIFT(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_RSHIFT(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " >> ")
 
 
-def extended_format_BINARY_SUBSCR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_SUBSCR(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_binary_op(
         opc,
         instructions,
@@ -314,23 +339,25 @@ def extended_format_BINARY_SUBSCR(opc, instructions: list) -> Tuple[str, Optiona
 
 
 def extended_format_BINARY_SUBTRACT(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " - ")
 
 
 def extended_format_BINARY_TRUE_DIVIDE(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " / ")
 
 
-def extended_format_BINARY_XOR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_XOR(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " ^ ")
 
 
 def extended_format_build_tuple_or_list(
-    opc, instructions: list, left_delim: str, right_delim: str
+    opc, instructions: List[Instruction], left_delim: str, right_delim: str
 ) -> Tuple[str, Optional[int]]:
     arg_count = instructions[0].argval
     is_tuple = left_delim == "("
@@ -369,18 +396,24 @@ def extended_format_BUILD_CONST_KEY_MAP(opc, instructions):
     return "", None
 
 
-def extended_format_BUILD_LIST(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_LIST(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_build_tuple_or_list(opc, instructions, "[", "]")
 
 
-def extended_format_BUILD_SET(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_SET(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     if instructions[0].argval == 0:
         # Degenerate case
         return "set()", instructions[0].start_offset
     return extended_format_build_tuple_or_list(opc, instructions, "{", "}")
 
 
-def extended_format_BUILD_SLICE(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_SLICE(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     argc = instructions[0].argval
 
     assert argc in (2, 3)
@@ -396,14 +429,18 @@ def extended_format_BUILD_SLICE(opc, instructions: list) -> Tuple[str, Optional[
     return "", None
 
 
-def extended_format_BUILD_TUPLE(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_BUILD_TUPLE(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     arg_count = instructions[0].argval
     if arg_count == 0:
         return "tuple()", instructions[0].start_offset
     return extended_format_build_tuple_or_list(opc, instructions, "(", ")")
 
 
-def extended_format_COMPARE_OP(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_COMPARE_OP(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(
         opc,
         instructions,
@@ -446,27 +483,42 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]
     return "", None
 
 
-def extended_format_IMPORT_FROM(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_IMPORT_FROM(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     assert len(instructions) >= 2
-    module_name = get_instruction_arg(instructions[1])
+    i = 1
+    while instructions[i].opname == "STORE_NAME":
+        i = get_instruction_index_from_offset(
+            instructions[i].start_offset, instructions, 1
+        )
+        if i is None:
+            return "", None
+    module_name = get_instruction_arg(instructions[i])
     if module_name.startswith("import_module("):
         module_name = module_name[len("import_module(") : -1]
     return (
         f"from {module_name} import {instructions[0].argval}",
-        instructions[-1].start_offset,
+        instructions[1].start_offset,
     )
 
 
-def extended_format_IMPORT_NAME(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_IMPORT_NAME(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     inst = instructions[0]
     return f"import_module({inst.argval})", inst.offset
 
 
-def extended_format_INPLACE_ADD(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_ADD(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " += ")
 
 
-def extended_format_INPLACE_AND(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_AND(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " &= ")
 
 
@@ -477,54 +529,62 @@ def extended_format_INPLACE_FLOOR_DIVIDE(
 
 
 def extended_format_INPLACE_LSHIFT(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " <<= ")
 
 
 def extended_format_INPLACE_MODULO(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " %%= ")
 
 
 def extended_format_INPLACE_MULTIPLY(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " *= ")
 
 
-def extended_format_INPLACE_OR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_OR(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " |= ")
 
 
-def extended_format_INPLACE_POWER(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_POWER(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " **= ")
 
 
 def extended_format_INPLACE_TRUE_DIVIDE(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " /= ")
 
 
 def extended_format_INPLACE_RSHIFT(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " >>= ")
 
 
 def extended_format_INPLACE_SUBTRACT(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " -= ")
 
 
-def extended_format_INPLACE_XOR(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_INPLACE_XOR(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(opc, instructions, " ^= ")
 
 
-def extended_format_IS_OP(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_IS_OP(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_infix_binary_op(
         opc,
         instructions,
@@ -533,12 +593,14 @@ def extended_format_IS_OP(opc, instructions: list) -> Tuple[str, Optional[int]]:
 
 
 def extended_format_LOAD_BUILD_CLASS(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return "class", instructions[0].start_offset
 
 
-def extended_format_MAKE_FUNCTION_10_27(opc, instructions: list) -> Tuple[str, int]:
+def extended_format_MAKE_FUNCTION_10_27(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, int]:
     """
     instructions[0] should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
@@ -600,7 +662,7 @@ def extended_format_CALL_METHOD(opc, instructions) -> Tuple[str, Optional[int]]:
 
 
 def extended_format_RAISE_VARARGS_older(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[Optional[str], int]:
     raise_inst = instructions[0]
     assert raise_inst.opname == "RAISE_VARARGS"
@@ -621,21 +683,27 @@ def extended_format_RAISE_VARARGS_older(
     return format_RAISE_VARARGS_older(raise_inst.argval), start_offset
 
 
-def extended_format_RETURN_VALUE(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_RETURN_VALUE(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "return %s")
 
 
-def extended_format_UNARY_INVERT(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_UNARY_INVERT(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "~(%s)")
 
 
 def extended_format_UNARY_NEGATIVE(
-    opc, instructions: list
+    opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "-(%s)")
 
 
-def extended_format_UNARY_NOT(opc, instructions: list) -> Tuple[str, Optional[int]]:
+def extended_format_UNARY_NOT(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
     return extended_format_unary_op(opc, instructions, "not (%s)")
 
 
@@ -645,11 +713,11 @@ def extended_function_signature(code) -> str:
     """
     # FIXME: we can probably much better than this.
     # But this is a start.
-    return "..."
+    return "" if code.co_argcount == 0 else "..."
 
 
 def get_arglist(
-    instructions: list, i: int, arg_count: int
+    instructions: List[Instruction], i: int, arg_count: int
 ) -> Tuple[Optional[list], int, Optional[int]]:
     """
     For a variable-length instruction like BUILD_TUPLE, or
@@ -699,12 +767,21 @@ def get_arglist(
     return arglist, arg_count - to_do, i
 
 
-def get_instruction_arg(inst, argval=None) -> str:
+def get_instruction_arg(inst: Instruction, argval=None) -> str:
     argval = inst.argrepr if argval is None else argval
     return inst.tos_str if inst.tos_str is not None else argval
 
 
-def resolved_attrs(instructions: list) -> Tuple[str, int]:
+def get_instruction_index_from_offset(
+    target_offset: int, instructions: List[Instruction], start_index: int = 1
+) -> Optional[int]:
+    for i in range(start_index, len(instructions)):
+        if instructions[i].offset == target_offset:
+            return i
+    return None
+
+
+def resolved_attrs(instructions: List[Instruction]) -> Tuple[str, int]:
     """ """
     # we can probably speed up using the "tos_str" field.
     resolved = []
@@ -746,7 +823,7 @@ def short_code_repr(code) -> str:
         return f"<code object {code}>"
 
 
-def skip_cache(instructions: list, i: int) -> int:
+def skip_cache(instructions: List[Instruction], i: int) -> int:
     """Python 3.11+ has CACHE instructions.
     Skip over those starting at index i and return
     the index of the first instruction that is not CACHE
