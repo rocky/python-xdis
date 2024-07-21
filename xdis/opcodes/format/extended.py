@@ -442,7 +442,7 @@ def extended_format_CALL_FUNCTION(opc, instructions):
     return "", None
 
 
-def extended_format_IMPORT_FROM(opc, instructions: list) -> tuple:
+def extended_format_IMPORT_FROM(opc, instructions):
     assert len(instructions) >= 2
     module_name = get_instruction_arg(instructions[1])
     if module_name.startswith("import_module("):
@@ -454,7 +454,6 @@ def extended_format_IMPORT_FROM(opc, instructions: list) -> tuple:
 
 
 def extended_format_IMPORT_NAME(opc, instructions):
->>>>>>> python-3.0-to-3.2
     inst = instructions[0]
     return "import_module(%s)" % inst.argval, inst.offset
 
