@@ -88,7 +88,7 @@ class Instruction(_Instruction):
     def disassemble(
         self,
         opc,
-        line_starts: Optional[Dict[int, int]] = None,
+        line_starts=None,
         lineno_width=3,
         mark_as_current=False,
         asm_format="classic",
@@ -209,14 +209,14 @@ class Instruction(_Instruction):
                         # This the last field in instruction.
                         new_instruction = list(self)
                         new_instruction[-1] = start_offset
-                        new_instruction[-2] = new_repr
+                        new_instruction[9] = new_repr
                         del instructions[-1]
                         self = Instruction(*new_instruction)
                         instructions.append(self)
                         argrepr = new_repr
                 elif self.opcode in opc.nullaryloadop:
                     new_instruction = list(self)
-                    new_instruction[-2] = self.argrepr
+                    new_instruction[9] = self.argrepr
                     start_offset = new_instruction[-1] = self.offset
                     del instructions[-1]
                     self = Instruction(*new_instruction)

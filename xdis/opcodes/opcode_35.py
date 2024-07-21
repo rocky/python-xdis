@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -110,26 +110,6 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
 opcode_arg_fmt35 = opcode_arg_fmt34.copy()
 opcode_arg_fmt35.update(
     {
-def extended_format_BUILD_MAP_35(opc, instructions: list) -> Tuple[str, Optional[int]]:
-    arg_count = instructions[0].argval
-    if arg_count == 0:
-        # Note: caller generally handles this when the below isn't right.
-        return "{}", instructions[0].offset
-    arglist, _, i = get_arglist(instructions, 0, 2 * arg_count)
-    if arglist is not None:
-        assert isinstance(i, int)
-        arg_pairs = [
-            f"{arglist[i]}:{arglist[i+1]}" for i in range(0, len(arglist) - 1, 2)
-        ]
-        args_str = ", ".join(arg_pairs)
-        return "{" + args_str + "}", instructions[i].start_offset
-    return "", None
-
-
-opcode_arg_fmt = opcode_arg_fmt35 = {
-    **opcode_arg_fmt34,
-    **{
->>>>>>> python-3.6-to-3.10
         "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     }
 )

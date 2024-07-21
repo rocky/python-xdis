@@ -441,14 +441,14 @@ def extended_format_IMPORT_FROM(opc, instructions: list) -> tuple:
     if module_name.startswith("import_module("):
         module_name = module_name[len("import_module(") : -1]
     return (
-        f"from {module_name} import {instructions[0].argval}",
+        "from %s import %s" % (module_name, instructions[0].argval),
         instructions[-1].start_offset,
     )
 
 
 def extended_format_IMPORT_NAME(opc, instructions: list):
     inst = instructions[0]
-    return f"import_module({inst.argval})", inst.offset
+    return "import_module(%s)" % inst.argval, inst.offset
 
 
 def extended_format_INPLACE_ADD(opc, instructions: list):
