@@ -15,7 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 # Here, we are more closely modeling Python's ``dis`` module organization.
-# However, it appears that Python names and code has copied a bit heavily from
+# However, it appears that Python's names and code have been copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
 from typing import List
@@ -116,7 +116,7 @@ def findlabels_pre_310(code, opc):
     return offsets
 
 
-# For the `co_lines` attribute we want to emit the full form, omitting
+# For the `co_lines` attribute, we want to emit the full form, omitting
 # the (350, 360, No line number) and empty entries.
 
 NO_LINE_NUMBER = -128
@@ -188,9 +188,9 @@ def instruction_size(op, opc):
     """For a given opcode, `op`, in opcode module `opc`,
     return the size, in bytes, of an `op` instruction.
 
-    This is the size of the opcode (1 byte) and any operand it has. In
-    Python before version 3.6 this will be either 1 or 3 bytes.  In
-    Python 3.6 or later, it is 2 bytes or a "word"."""
+    This is the size of the opcode (one byte) and any operand it has.
+    In Python before version 3.6, this will be either 1 or 3 bytes.
+    In Python 3.6 or later, it is 2 bytes: a "word"."""
     if op < opc.HAVE_ARGUMENT:
         return 2 if opc.version_tuple >= (3, 6) else 1
     else:

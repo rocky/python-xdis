@@ -156,7 +156,7 @@ def disco(
         is_graal=is_graal,
     )
 
-    # store final output stream for case of error
+    # Store final output stream when there is an error.
     real_out = out or sys.stdout
 
     if co.co_filename and asm_format != "xasm":
@@ -195,7 +195,7 @@ def disco_loop(
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
-    is in the order of first encountered which is not amenable for
+    is in the order of first encountered that is not amenable for
     the format used by a disassembler where code objects should
     be defined before using them in other functions.
     However, this is not recursive and will overall lead to less
@@ -282,8 +282,8 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
             mapped_name = code_uniquify(basename, co.co_code)
             co_name = mapped_name
             if mapped_name in fn_name_map:
-                # We can have two lambda's created that are the same
-                # but have different line numbers
+                # We can have two lambdas created that are the same
+                # but have different line numbers.
                 mapped_name += f"_{str(co.co_firstlineno)}"
         fn_name_map[mapped_name] = basename
         co.co_name = mapped_name
@@ -314,12 +314,12 @@ def disassemble_file(
     show_source=False,
 ):
     """
-    disassemble Python byte-code file (.pyc)
+    Disassemble Python byte-code file (.pyc).
 
     If given a Python source file (".py") file, we'll
     try to find the corresponding compiled object.
 
-    If that fails we'll compile internally for the Python version currently running
+    If that fails, we'll compile internally for the Python version currently running.
     """
     pyc_filename = None
     try:
@@ -400,11 +400,9 @@ def _test():
     argc = len(sys.argv)
     if argc == 1:
         if xdis.PYTHON3:
-            fn = __file__
+            disassemble_file(__file__)
         else:
-            sys.stderr.write(
-                "usage: %s [-|CPython compiled file [format]]\n" % __file__
-            )
+            sys.stderr.write(f"usage: {__file__} [-|CPython compiled file [format]]\n")
             sys.exit(2)
     elif argc == 3:
         fn, asm_format = sys.argv[1:3]
