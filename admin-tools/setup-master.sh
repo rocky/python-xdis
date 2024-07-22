@@ -8,8 +8,4 @@ fi
 PYTHON_VERSION=3.12
 pyenv local $PYTHON_VERSION
 
-for file in */.python; do
-    rm -v $file || true
-done
-
 git checkout master && git pull && pyenv local $PYTHON_VERSION
