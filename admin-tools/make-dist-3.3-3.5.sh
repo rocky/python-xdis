@@ -6,10 +6,10 @@ function finish {
   cd $make_dist_33_owd
 }
 
+cd $(dirname ${BASH_SOURCE[0]})
 make_dist_33_owd=$(pwd)
 trap finish EXIT
 
-cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-3.3-3.5-versions ; then
     exit $?
 fi
@@ -21,6 +21,7 @@ cd ..
 source $PACKAGE/version.py
 if [[ ! -n $__version__ ]]; then
     echo "You need to set __version__ first"
+    exit 1
 fi
 echo $__version__
 
@@ -31,7 +32,7 @@ for pyversion in $PYVERSIONS; do
 	continue
     fi
     if ! pyenv local $pyversion ; then
-	exit $?
+  	    exit $?
     fi
     # pip bdist_egg create too-general wheels. So
     # we narrow that by moving the generated wheel.
