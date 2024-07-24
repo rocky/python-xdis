@@ -6,8 +6,8 @@ function finish {
   cd $make_dist_33_owd
 }
 
-cd $(dirname ${BASH_SOURCE[0]})
 make_dist_33_owd=$(pwd)
+cd $(dirname ${BASH_SOURCE[0]})
 trap finish EXIT
 
 if ! source ./pyenv-3.3-3.5-versions ; then
