@@ -19,6 +19,10 @@ fi
 
 cd ..
 source $PACKAGE/version.py
+if [[ ! -n $__version__ ]]; then
+    echo "You need to set __version__ first"
+    exit 1
+fi
 echo $__version__
 
 for pyversion in $PYVERSIONS; do
