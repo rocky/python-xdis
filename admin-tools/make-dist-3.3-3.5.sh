@@ -21,6 +21,7 @@ cd ..
 source $PACKAGE/version.py
 if [[ ! -n $__version__ ]]; then
     echo "You need to set __version__ first"
+    exit 1
 fi
 echo $__version__
 
@@ -31,7 +32,7 @@ for pyversion in $PYVERSIONS; do
 	continue
     fi
     if ! pyenv local $pyversion ; then
-	exit $?
+  	    exit $?
     fi
     # pip bdist_egg create too-general wheels. So
     # we narrow that by moving the generated wheel.
