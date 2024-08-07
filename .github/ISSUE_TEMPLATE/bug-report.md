@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Tell us about decompyle3 bugs
+about: Tell us about xdis bugs
 
 ---
 
