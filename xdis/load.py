@@ -357,6 +357,8 @@ def write_bytecode_file(
             fp.write(pack("<I", int(compilation_ts.timestamp())))
         elif isinstance(compilation_ts, int):
             fp.write(pack("<I", compilation_ts))
+        else:
+            raise TypeError("Timestamp must be a datetime, int or None") 
     else:
         fp.write(pack("<I", int(datetime.now().timestamp())))
 
