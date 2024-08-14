@@ -1,6 +1,5 @@
 # std
 import os
-import shutil
 import sys
 import tempfile
 from contextlib import closing
@@ -14,11 +13,16 @@ import pytest
 
 # local
 import xdis.std as dis
-from xdis import IS_GRAAL, IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
-from xdis import Code3
-from xdis import list2bytecode
-from xdis import opcodes
-from xdis import write_bytecode_file
+from xdis import (
+    IS_GRAAL,
+    IS_PYPY,
+    PYTHON3,
+    PYTHON_VERSION_TRIPLE,
+    Code3,
+    list2bytecode,
+    opcodes,
+    write_bytecode_file,
+)
 
 if PYTHON_VERSION_TRIPLE >= (3, 2):
     if pytest.__version__ >= "3.2.0":
@@ -217,21 +221,19 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         )
 
     def test_write_bytecode_file():
-        temp_dir = tempfile.mkdtemp()
-        target_path = os.path.join(temp_dir, "test1.pyc")
         code_object = _create_python3_code_object()
-        write_bytecode_file(target_path, code_object, 3394, 10)
-        shutil.rmtree(temp_dir)
+        with tempfile.NamedTemporaryFile(mode="w+b", suffix=".pyc") as pyc_fd:
+            filename = pyc_fd.name
+            write_bytecode_file(filename, code_object, 3394, 10)
 
     def test_write_bytecode_bad_timestamp_type():
-        temp_dir = tempfile.mkdtemp()
-        target_path = os.path.join(temp_dir, "test2.pyc")
         code_object = _create_python3_code_object()
-        with pytest.raises(TypeError):
-            write_bytecode_file(
-                target_path, code_object, 3394, datetime.now().timestamp()
-            )
-        shutil.rmtree(temp_dir)
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".pyc") as pyc_fd:
+            with pytest.raises(TypeError):
+                filename = pyc_fd.name
+                write_bytecode_file(
+                    filename, code_object, 3394, datetime.now().timestamp()
+                )
 
 
 if __name__ == "__main__":
