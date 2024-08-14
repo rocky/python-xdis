@@ -1,0 +1,26 @@
+# Source code size mod 2**32: 36 bytes
+
+# Method Name:       <module>
+# Filename:          03_annotations.py
+# Argument count:    0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        2
+# Flags:             0x00100040 (FUTURE_ANNOTATIONS | NOFREE)
+# First Line:        1
+# Constants:
+#    0: 0
+#    1: ('annotations',)
+#    2: None
+# Names:
+#    0: __future__
+#    1: annotations
+  1:
+            LOAD_CONST           0 (0)
+            LOAD_CONST           1 (('annotations',))
+            IMPORT_NAME          0 (__future__)
+            IMPORT_FROM          1 (annotations)
+            STORE_NAME           1 (annotations)
+            POP_TOP
+            LOAD_CONST           2 (None)
+            RETURN_VALUE
