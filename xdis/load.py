@@ -20,6 +20,7 @@ import sys
 import tempfile
 import types
 from datetime import datetime
+from os import close
 from struct import pack, unpack
 
 import xdis.marsh
@@ -84,7 +85,8 @@ def check_object_path(path):
             spath = path
         else:
             spath = path.decode("utf-8")
-        path = tempfile.mkstemp(prefix=basename + "-", suffix=".pyc", text=False)[1]
+        fd, path = tempfile.mkstemp(prefix=basename + "-", suffix=".pyc", text=False)
+        close(fd)
         py_compile.compile(spath, cfile=path, doraise=True)
 
     if not is_bytecode_extension(path):
