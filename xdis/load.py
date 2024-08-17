@@ -50,21 +50,26 @@ def is_python_source(path):
                 pass
             else:
                 break
-    except:
+    except Exception:
         return False
 
     try:
         compile(data, path, "exec")
-    except:
+    except Exception:
         return False
     return True
 
 
-def is_bytecode_extension(path: str):
+def is_bytecode_extension(path: str) -> bool:
+    """
+    Return True if filename ``path`` is named like a bytecode file,
+    that is,  has extension ".pyc" or ".pyo"
+    """
     return path.endswith(".pyc") or path.endswith(".pyo")
 
 
-def check_object_path(path):
+# FIXME: the function name is weird. This checks and returns the path.
+def check_object_path(path) -> str:
     if not is_bytecode_extension(path) and is_python_source(path):
         try:
             import importlib
@@ -72,12 +77,12 @@ def check_object_path(path):
             bytecode_path = importlib.util.cache_from_source(path, optimization="")
             if osp.exists(bytecode_path):
                 return bytecode_path
-        except:
+        except Exception:
             try:
                 import imp
 
                 imp.cache_from_source(path, debug_override=False)
-            except:
+            except Exception:
                 pass
             pass
         basename = osp.basename(path)[0:-3]
@@ -85,14 +90,17 @@ def check_object_path(path):
             spath = path
         else:
             spath = path.decode("utf-8")
+
+        # It would be better to use a context manager function like WithNamedTemporary.
+        # However we are seeing write errors when this is done in Windows.
+        # So until this is resolved, we'll use mkstemp and explicitly do a close.
         fd, path = tempfile.mkstemp(prefix=basename + "-", suffix=".pyc", text=False)
         close(fd)
         py_compile.compile(spath, cfile=path, doraise=True)
 
     if not is_bytecode_extension(path):
         raise ValueError(
-            "path %s must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
-            % path
+            f"path {path} must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
         )
     return path
 
@@ -122,7 +130,7 @@ def load_file(filename, out=sys.stdout):
             else:
                 co = compile(source, filename, "exec", dont_inherit=True)
         except SyntaxError:
-            out.write(">>Syntax error in %s\n" % filename)
+            out.write(f">>Syntax error in {filename}\n")
             raise
     finally:
         fp.close()
@@ -164,9 +172,9 @@ def load_module(filename, code_objects=None, fast_load=False, get_code=True):
 
     # Some sanity checks
     if not osp.exists(filename):
-        raise ImportError("File name: '%s' doesn't exist" % filename)
+        raise ImportError(f"File name: '{filename}' doesn't exist")
     elif not osp.isfile(filename):
-        raise ImportError("File name: '%s' isn't a file" % filename)
+        raise ImportError(f"File name: '{filename}' isn't a file")
     elif osp.getsize(filename) < 50:
         raise ImportError(
             "File name: '%s (%d bytes)' is too short to be a valid pyc file"
@@ -217,7 +225,7 @@ def load_module_from_file_object(
                     % (ord(magic[0:1]) + 256 * ord(magic[1:2]), filename)
                 )
             else:
-                raise ImportError("Bad magic number: '%s'" % magic)
+                raise ImportError(f"Bad magic number: '{magic}'")
 
         if magic_int in (
             3010,
@@ -321,9 +329,7 @@ def load_module_from_file_object(
             import traceback
 
             traceback.print_exc()
-            raise ImportError(
-                "Ill-formed bytecode file %s\n%s; %s" % (filename, kind, msg)
-            )
+            raise ImportError(f"Ill-formed bytecode file {filename}\n{kind}; {msg}")
 
     finally:
         fp.close()
@@ -360,7 +366,7 @@ def write_bytecode_file(
         elif isinstance(compilation_ts, int):
             fp.write(pack("<I", compilation_ts))
         else:
-            raise TypeError("Timestamp must be a datetime, int or None") 
+            raise TypeError("Timestamp must be a datetime, int or None")
     else:
         fp.write(pack("<I", int(datetime.now().timestamp())))
 
@@ -389,5 +395,5 @@ if __name__ == "__main__":
     if source_size is not None:
         print("source size mod 2**32: %d" % source_size)
     if sip_hash is not None:
-        print("Sip Hash: 0x%x" % sip_hash)
+        print(f"Sip Hash: 0x{sip_hash:x}")
     assert co == co2
