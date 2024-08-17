@@ -8,6 +8,8 @@ GIT2CL ?= git2cl
 PYTHON ?= python
 RM      ?= rm
 LINT    = flake8
+# effectively required only under Windows
+export PYTHONUTF8=1
 
 #EXTRA_DIST=ipython/ipy_trepan.py trepan
 PHONY= \
