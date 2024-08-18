@@ -69,7 +69,7 @@ def is_bytecode_extension(path):
 
 
 # FIXME: the function name is weird. This checks and returns the path.
-def check_object_path(path) -> str:
+def check_object_path(path):
     if not is_bytecode_extension(path) and is_python_source(path):
         try:
             import importlib
