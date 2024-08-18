@@ -100,7 +100,8 @@ def check_object_path(path) -> str:
 
     if not is_bytecode_extension(path):
         raise ValueError(
-            f"path {path} must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
+            "path %s must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
+            % path
         )
     return path
 
@@ -130,7 +131,7 @@ def load_file(filename, out=sys.stdout):
             else:
                 co = compile(source, filename, "exec", dont_inherit=True)
         except SyntaxError:
-            out.write(f">>Syntax error in {filename}\n")
+            out.write(">>Syntax error in %s\n" % filename)
             raise
     finally:
         fp.close()
@@ -172,9 +173,9 @@ def load_module(filename, code_objects=None, fast_load=False, get_code=True):
 
     # Some sanity checks
     if not osp.exists(filename):
-        raise ImportError(f"File name: '{filename}' doesn't exist")
+        raise ImportError("File name: '%s' doesn't exist" % filename)
     elif not osp.isfile(filename):
-        raise ImportError(f"File name: '{filename}' isn't a file")
+        raise ImportError("File name: '%s' isn't a file" % filename)
     elif osp.getsize(filename) < 50:
         raise ImportError(
             "File name: '%s (%d bytes)' is too short to be a valid pyc file"
@@ -225,7 +226,7 @@ def load_module_from_file_object(
                     % (ord(magic[0:1]) + 256 * ord(magic[1:2]), filename)
                 )
             else:
-                raise ImportError(f"Bad magic number: '{magic}'")
+                raise ImportError("Bad magic number: '%s'" % magic)
 
         if magic_int in (
             3010,
@@ -329,7 +330,9 @@ def load_module_from_file_object(
             import traceback
 
             traceback.print_exc()
-            raise ImportError(f"Ill-formed bytecode file {filename}\n{kind}; {msg}")
+            raise ImportError(
+                "Ill-formed bytecode file %s\n%s; %s" % (filename, kind, msg)
+            )
 
     finally:
         fp.close()
@@ -388,12 +391,9 @@ if __name__ == "__main__":
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:
-        if PYTHON_VERSION_TRIPLE < (3, 10):
-            print(datetime.datetime.fromtimestamp(timestamp))
-        else:
-            print(datetime.fromtimestamp(timestamp))
+        print(datetime.fromtimestamp(timestamp))
     if source_size is not None:
         print("source size mod 2**32: %d" % source_size)
     if sip_hash is not None:
-        print(f"Sip Hash: 0x{sip_hash:x}")
+        print("Sip Hash: 0x%x" % sip_hash)
     assert co == co2
