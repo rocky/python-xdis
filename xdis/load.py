@@ -20,6 +20,7 @@ import sys
 import tempfile
 import types
 from datetime import datetime
+from os import close
 from struct import pack, unpack
 
 import xdis.marsh
@@ -49,21 +50,26 @@ def is_python_source(path):
                 pass
             else:
                 break
-    except:
+    except Exception:
         return False
 
     try:
         compile(data, path, "exec")
-    except:
+    except Exception:
         return False
     return True
 
 
-def is_bytecode_extension(path: str):
+def is_bytecode_extension(path: str) -> bool:
+    """
+    Return True if filename ``path`` is named like a bytecode file,
+    that is,  has extension ".pyc" or ".pyo"
+    """
     return path.endswith(".pyc") or path.endswith(".pyo")
 
 
-def check_object_path(path):
+# FIXME: the function name is weird. This checks and returns the path.
+def check_object_path(path) -> str:
     if not is_bytecode_extension(path) and is_python_source(path):
         try:
             import importlib
@@ -71,12 +77,12 @@ def check_object_path(path):
             bytecode_path = importlib.util.cache_from_source(path, optimization="")
             if osp.exists(bytecode_path):
                 return bytecode_path
-        except:
+        except Exception:
             try:
                 import imp
 
                 imp.cache_from_source(path, debug_override=False)
-            except:
+            except Exception:
                 pass
             pass
         basename = osp.basename(path)[0:-3]
@@ -84,7 +90,12 @@ def check_object_path(path):
             spath = path
         else:
             spath = path.decode("utf-8")
-        path = tempfile.mkstemp(prefix=basename + "-", suffix=".pyc", text=False)[1]
+
+        # It would be better to use a context manager function like WithNamedTemporary.
+        # However we are seeing write errors when this is done in Windows.
+        # So until this is resolved, we'll use mkstemp and explicitly do a close.
+        fd, path = tempfile.mkstemp(prefix=basename + "-", suffix=".pyc", text=False)
+        close(fd)
         py_compile.compile(spath, cfile=path, doraise=True)
 
     if not is_bytecode_extension(path):
@@ -357,6 +368,8 @@ def write_bytecode_file(
             fp.write(pack("<I", int(compilation_ts.timestamp())))
         elif isinstance(compilation_ts, int):
             fp.write(pack("<I", compilation_ts))
+        else:
+            raise TypeError("Timestamp must be a datetime, int or None")
     else:
         fp.write(pack("<I", int(datetime.now().timestamp())))
 
@@ -378,10 +391,7 @@ if __name__ == "__main__":
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:
-        if PYTHON_VERSION_TRIPLE < (3, 10):
-            print(datetime.datetime.fromtimestamp(timestamp))
-        else:
-            print(datetime.fromtimestamp(timestamp))
+        print(datetime.fromtimestamp(timestamp))
     if source_size is not None:
         print("source size mod 2**32: %d" % source_size)
     if sip_hash is not None:

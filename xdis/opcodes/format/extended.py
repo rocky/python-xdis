@@ -564,8 +564,7 @@ def extended_format_CALL_METHOD(opc, instructions) -> tuple:
 
     arglist, arg_count, first_arg = get_arglist(instructions, 0, arg_count)
 
-    assert first_arg is not None
-    if first_arg >= len(instructions) - 1:
+    if first_arg is None or first_arg >= len(instructions) - 1:
         return "", None
 
     fn_inst = instructions[first_arg + 1]

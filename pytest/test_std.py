@@ -1,6 +1,10 @@
 # std
+import os
+import shutil
 import sys
+import tempfile
 from contextlib import closing
+from datetime import datetime
 
 # compat
 import six
@@ -11,6 +15,10 @@ import pytest
 # local
 import xdis.std as dis
 from xdis import IS_GRAAL, IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
+from xdis import Code3
+from xdis import list2bytecode
+from xdis import opcodes
+from xdis import write_bytecode_file
 
 if PYTHON_VERSION_TRIPLE >= (3, 2):
     if pytest.__version__ >= "3.2.0":
@@ -174,6 +182,56 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         actual = list(dis.findlabels(test_code))
         actual_len = len(actual)
         assert actual_len > 0
+
+    def _create_python3_code_object():
+        consts = (None, 2)
+        varnames = ("a",)
+        instructions = [
+            ("LOAD_CONST", 2),
+            ("STORE_FAST", "a"),
+            ("LOAD_FAST", "a"),
+            ("RETURN_VALUE",),
+        ]
+
+        text = "def fact():\n\ta = 8\n\ta = 0\n"
+
+        code = list2bytecode(instructions, opcodes.opcode_34, varnames, consts)
+        fn_code = compile(text, "<string>", "exec")
+        return Code3(
+            fn_code.co_argcount,
+            fn_code.co_kwonlyargcount,  # Add this in Python3
+            fn_code.co_nlocals,
+            fn_code.co_stacksize,
+            fn_code.co_flags,
+            # These are changed
+            code,
+            consts,
+            fn_code.co_names,
+            varnames,
+            fn_code.co_filename,
+            fn_code.co_name,
+            fn_code.co_firstlineno,
+            fn_code.co_lnotab,  # In general, You should adjust this
+            fn_code.co_freevars,
+            fn_code.co_cellvars,
+        )
+
+    def test_write_bytecode_file():
+        temp_dir = tempfile.mkdtemp()
+        target_path = os.path.join(temp_dir, "test1.pyc")
+        code_object = _create_python3_code_object()
+        write_bytecode_file(target_path, code_object, 3394, 10)
+        shutil.rmtree(temp_dir)
+
+    def test_write_bytecode_bad_timestamp_type():
+        temp_dir = tempfile.mkdtemp()
+        target_path = os.path.join(temp_dir, "test2.pyc")
+        code_object = _create_python3_code_object()
+        with pytest.raises(TypeError):
+            write_bytecode_file(
+                target_path, code_object, 3394, datetime.now().timestamp()
+            )
+        shutil.rmtree(temp_dir)
 
 
 if __name__ == "__main__":

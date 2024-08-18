@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Tell us about decompyle3 bugs
+about: Tell us about xdis bugs
 
 ---
 
@@ -54,7 +54,7 @@ output you got in describing how to reproduce the bug:
 or give a complete console log with input and output
 
 ```console
-$ decompyle3 <command-line-options>
+$ pydisasm <command-line-options>
 ...
 $
 ```
@@ -85,7 +85,7 @@ If this is too long, then try narrowing the problem to something short.
 
 Please modify for your setup
 
-- Decompyle3 version: output from  `decompyle3 --version` or `pip show decompyle3`
+- xdis version: output from  `pydisasm --version` or `pip show xdis`
 - Python version for the version of Python the byte-compiled the file: `python -c "import sys; print(sys.version)"` where `python` is the correct CPython or PyPy binary.
 - OS and Version: [e.g. Ubuntu bionic]
 
