@@ -110,5 +110,6 @@ if os.name != "nt":
             )
             run_check_disasm(test_tuple, disassemble_file_xasm)
 
+
 if __name__ == "__main__":
     test_funcoutput()
