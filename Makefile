@@ -8,8 +8,6 @@ GIT2CL ?= git2cl
 PYTHON ?= python
 RM      ?= rm
 LINT    = flake8
-# effectively required only under Windows
-export PYTHONUTF8=1
 
 #EXTRA_DIST=ipython/ipy_trepan.py trepan
 PHONY= \
@@ -37,6 +35,7 @@ all: check
 #: Run all tests, exluding those that need pyenv
 check: unittest
 	@PYTHON_VERSION=`$(PYTHON) -V 2>&1 | cut -d ' ' -f 2 | cut -d'.' -f1,2`; \
+	PYTHONUTF8=1 \
 	$(MAKE) -C test check
 
 check-ci: unittest
