@@ -244,6 +244,7 @@ class Instruction(NamedTuple):
         """
         fields = []
         indexed_operand = frozenset(["name", "local", "compare", "free"])
+        opcode = self.opcode
 
         # Column: Source code line number
         if lineno_width:
@@ -283,7 +284,7 @@ class Instruction(NamedTuple):
 
         # Column: Instruction bytes
         if asm_format in ("extended-bytes", "bytes"):
-            hex_bytecode = "|%02x" % self.opcode
+            hex_bytecode = "|%02x" % opcode
             if self.inst_size == 1:
                 # Not 3.6 or later
                 hex_bytecode += " " * (2 * 3)
@@ -329,7 +330,6 @@ class Instruction(NamedTuple):
                 else:
                     fields.append(repr(self.arg))
             elif asm_format in ("extended", "extended-bytes"):
-                op = self.opcode
                 if (
                     self.is_jump()
                     and line_starts is not None
@@ -342,9 +342,9 @@ class Instruction(NamedTuple):
                     instructions.append(self)
                 elif (
                     hasattr(opc, "opcode_extended_fmt")
-                    and opc.opname[op] in opc.opcode_extended_fmt
+                    and opc.opname[opcode] in opc.opcode_extended_fmt
                 ):
-                    new_repr = opc.opcode_extended_fmt[opc.opname[op]](
+                    new_repr = opc.opcode_extended_fmt[opc.opname[opcode]](
                         opc, list(reversed(instructions))
                     )
                     start_offset = None
@@ -360,7 +360,7 @@ class Instruction(NamedTuple):
                         self = Instruction(*new_instruction)
                         instructions.append(self)
                         argrepr = new_repr
-                elif self.opcode in opc.nullaryloadop:
+                elif opcode in opc.nullaryloadop:
                     new_instruction = list(self)
                     new_instruction[-2] = self.argrepr
                     start_offset = new_instruction[-1] = self.offset
@@ -385,7 +385,7 @@ class Instruction(NamedTuple):
                             prefix = ""
                         else:
                             prefix = f"({self.argrepr}) ; "
-                        if self.opcode in opc.operator_set | opc.callop:
+                        if opcode in opc.operator_set | opc.callop:
                             prefix += "TOS = "
                         fields.append(f"{prefix}{self.tos_str}")
                     pass
@@ -394,12 +394,11 @@ class Instruction(NamedTuple):
                 pass
             pass
         elif asm_format in ("extended", "extended-bytes"):
-            op = self.opcode
             if (
                 hasattr(opc, "opcode_extended_fmt")
-                and opc.opname[op] in opc.opcode_extended_fmt
+                and opc.opname[opcode] in opc.opcode_extended_fmt
             ):
-                new_repr, start_offset = opc.opcode_extended_fmt[opc.opname[op]](
+                new_repr, start_offset = opc.opcode_extended_fmt[opc.opname[opcode]](
                     opc, list(reversed(instructions))
                 )
                 if new_repr:
@@ -415,7 +414,8 @@ class Instruction(NamedTuple):
                     fields.append(f"{prefix}{new_repr}")
                 pass
             elif (
-                hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt
+                hasattr(opc, "opcode_arg_fmt")
+                and opc.opname[opcode] in opc.opcode_arg_fmt
             ) and self.argrepr is not None:
                 fields.append(self.argrepr)
                 pass
