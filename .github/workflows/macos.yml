@@ -1,4 +1,4 @@
-name: xdis (osx)
+name: xdis (macos)
 
 on:
   push:
