@@ -355,11 +355,13 @@ def get_instructions_bytes(
                 else:
                     argval, argrepr = _get_name_info(arg, cells)
             elif op in opc.COMPARE_OPS:
-                argval = (
-                    opc.cmp_op[arg >> 4]
-                    if opc.python_version >= (3, 12)
-                    else opc.cmp_op[arg]
-                )
+                if opc.python_version >= (3,13):
+                    # The fifth-lowest bit of the oparg now indicates a forced conversion to bool.
+                    argval = (opc.cmp_op[arg >> 5])
+                elif opc.python_version >= (3,12):
+                    argval = (opc.cmp_op[arg >> 4])
+                else:
+                    argval = (opc.cmp_op[arg])
                 argrepr = argval
             elif op in opc.NARGS_OPS:
                 opname = opc.opname[op]
