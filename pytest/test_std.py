@@ -14,11 +14,16 @@ import pytest
 
 # local
 import xdis.std as dis
-from xdis import IS_GRAAL, IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
-from xdis import Code3
-from xdis import list2bytecode
-from xdis import opcodes
-from xdis import write_bytecode_file
+from xdis import (
+    IS_GRAAL,
+    IS_PYPY,
+    PYTHON3,
+    PYTHON_VERSION_TRIPLE,
+    Code3,
+    list2bytecode,
+    opcodes,
+    write_bytecode_file,
+)
 
 if PYTHON_VERSION_TRIPLE >= (3, 2):
     if pytest.__version__ >= "3.2.0":
@@ -227,7 +232,10 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         temp_dir = tempfile.mkdtemp()
         target_path = os.path.join(temp_dir, "test2.pyc")
         code_object = _create_python3_code_object()
-        with pytest.raises(TypeError):
+        error_kind = (
+            AttributeError if PYTHON_VERSION_TRIPLE[:2] == (3, 2) else TypeError
+        )
+        with pytest.raises(error_kind):
             write_bytecode_file(
                 target_path, code_object, 3394, datetime.now().timestamp()
             )
