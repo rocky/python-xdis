@@ -227,7 +227,8 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         temp_dir = tempfile.mkdtemp()
         target_path = os.path.join(temp_dir, "test2.pyc")
         code_object = _create_python3_code_object()
-        with pytest.raises(TypeError):
+        error_kind = AttributeError if PYTHON_VERSION_TRIPLE[:2] == (3, 2) else TypeError
+        with pytest.raises(error_kind):
             write_bytecode_file(
                 target_path, code_object, 3394, datetime.now().timestamp()
             )
