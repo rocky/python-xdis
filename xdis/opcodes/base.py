@@ -479,6 +479,11 @@ def update_sets(loc):
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
     loc["VARGS_OPS"] = frozenset(loc["hasvargs"])
     loc["STORE_OPS"] = frozenset(loc["hasstore"])
+    if python_version and python_version >= (3,12):
+        loc["ARG_OPS"] = frozenset(loc["hasarg"])
+        loc["EXC_OPS"] = frozenset(loc["hasarg"])
+    if python_version and python_version >= (3,13):
+        loc["JUMP_OPS"] = frozenset(loc["hasjump"])
 
 
 def dump_opcodes(opmap):
