@@ -441,7 +441,7 @@ add_magic_from_int(3567, "3.13a1e")
 add_magic_from_int(3568, "3.13a1s")
 add_magic_from_int(3569, "3.13a5")
 add_magic_from_int(3570, "3.13a6")
-add_magic_from_int(3570, "3.13.0rc3")
+add_magic_from_int(3571, "3.13.0rc3")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
