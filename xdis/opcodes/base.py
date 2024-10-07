@@ -100,6 +100,9 @@ hasname hasnargs hasstore hasvargs oppop oppush
 nofollow nullaryop nullaryloadop ternaryop unaryop
 """.split()
 
+# additional fields needed to copy in versions >= 3.13
+fields2copy_313 = "hasarg hasexc".split()  # added in 3.12
+fields2copy_314 = "hasjump".split()  # added in 3.13
 
 def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     """Sets up a number of the structures found in Python's
@@ -126,6 +129,11 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     if from_mod is not None:
         loc["opmap"] = deepcopy(from_mod.opmap)
         loc["opname"] = deepcopy(from_mod.opname)
+        if version_tuple is not None:
+            if version_tuple >= (3,13):
+                fields2copy.extend(fields2copy_313)
+            if version_tuple >= (3,14):
+                fields2copy.extend(fields2copy_314)
         for field in fields2copy:
             loc[field] = getattr(from_mod, field).copy()
         pass
