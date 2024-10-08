@@ -45,6 +45,7 @@ loc["hascompare"] = [58]
 loc["hasconst"] = [83, 103, 240]
 loc["haslocal"] = [65, 85, 86, 87, 88, 110, 111, 112, 258, 267]
 loc["hasname"] = [63, 66, 67, 74, 75, 82, 90, 91, 92, 93, 108, 113, 114, 259, 260, 261, 262]
+loc["hasfree"] = [64, 84, 89, 94, 109]
 # add new table "hasjump"
 loc.update({"hasjump": [72, 77, 78, 79, 97, 98, 99, 100, 104, 256, 257]})
 loc["hasjrel"] = loc["hasjump"]
