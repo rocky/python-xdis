@@ -234,7 +234,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         code_object = _create_python3_code_object()
         error_kind = (
             AttributeError if PYTHON_VERSION_TRIPLE[:2] == (3, 2) else TypeError
->>>>>>> python-3.3-to-3.5
+        )
         with pytest.raises(error_kind):
             write_bytecode_file(
                 target_path, code_object, 3394, datetime.now().timestamp()
@@ -242,6 +242,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         shutil.rmtree(temp_dir)
 
 
-if __name__ == "__main__":
-    test_findlabels()
-    # test_find_linestarts()
+
+    if __name__ == "__main__":
+        test_findlabels()
+        # test_find_linestarts()
