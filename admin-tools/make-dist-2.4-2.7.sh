@@ -44,6 +44,9 @@ pyenv local 2.7.18
 python setup.py bdist_wheel
 echo === $pyversion ===
 
+# PyPI can only have one source tarball.
+# Tarballs can get created from the above setup, so make sure to remove them since we want
+# the tarball from master.
 
 python ./setup.py sdist
 tarball=dist/${PACKAGE}-${__version__}.tar.gz
