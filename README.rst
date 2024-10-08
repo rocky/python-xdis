@@ -209,7 +209,7 @@ for usage help.
 As a drop-in replacement for dis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`xdis` also provides some support as a drop in replacement for the
+``xdis`` also provides some support as a drop in replacement for the
 the Python library `dis <https://docs.python.org/3/library/dis.html>`_
 module. This is may be desirable when you want to use the improved API
 from Python 3.4 or later from an earlier Python version.
