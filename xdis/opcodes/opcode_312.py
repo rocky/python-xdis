@@ -58,6 +58,9 @@ rm_op(loc, "POP_JUMP_BACKWARD_IF_NONE"    , 174)
 rm_op(loc, "POP_JUMP_BACKWARD_IF_FALSE"   , 175)
 rm_op(loc, "POP_JUMP_BACKWARD_IF_TRUE"    , 176)
 
+rm_op(loc, "YIELD_VALUE"                  , 86)
+rm_op(loc, "LOAD_METHOD"                  , 160)
+
 ## These are new since 3.11...
 #            OP NAME                              OPCODE POP PUSH
 #---------------------------------------------------------------
