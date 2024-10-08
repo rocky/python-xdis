@@ -32,13 +32,11 @@ rm_op(loc, "LOAD_CLOSURE", 136)  # now a psuedo-instruction, replaced with LOAD_
 # ---------------------------------------------------------------
 def_op(loc, "TO_BOOL", 40, 0, 0)
 def_op(loc, "CALL_KW", 57, 2, 1)  # will pop more depending on arg, pushes ret val
-def_op(loc, "SET_FUNCTION_ATTRIBUTE",106, 2, 1)  # pops func and attr val then pushes func back on stack
-def_op(loc, "CONVERT_VALUE", 1, 1)
-def_op(loc, "FORMAT_SIMPLE", 1, 1)
-def_op(loc, "FORMAT_SPEC", 2, 1)
+def_op(loc, "SET_FUNCTION_ATTRIBUTE", 106, 2, 1)  # pops func and attr val then pushes func back on stack
+def_op(loc, "CONVERT_VALUE", 60, 1, 1)
+def_op(loc, "FORMAT_SIMPLE", 14, 1, 1)
 
 def_op(loc, "LOAD_CLOSURE", 258)  # psuedo-instruction
-
 
 ### update opinfo tables
 # completely redefined tables
