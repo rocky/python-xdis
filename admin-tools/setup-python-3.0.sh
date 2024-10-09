@@ -13,7 +13,7 @@ mydir=$(dirname $bs)
 mydir=$(dirname $bs)
 cd $mydir
 
-cd $pytracer_owd
-rm -v */.python-version 2>&/dev/null || true
+cd $xdis_owd
+rm -v */.python-version 2>/dev/null || true
 
 git checkout python-3.0-to-3.2  && git pull && pyenv local $PYTHON_VERSION
