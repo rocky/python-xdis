@@ -312,11 +312,11 @@ def_op(loc, "STORE_FAST_MAYBE_NULL"            , 267 , 1 , 0)
 ## These are new since 3.12...
 #            OP NAME                              OPCODE POP PUSH
 # ---------------------------------------------------------------
+def_op(loc, "FORMAT_SIMPLE"         , 14 , 1 , 1)
 def_op(loc, "TO_BOOL"               , 40 , 0 , 0)
 def_op(loc, "CALL_KW"               , 57 , 4,  2)
-def_op(loc, "SET_FUNCTION_ATTRIBUTE", 106, 2 , 1)
 def_op(loc, "CONVERT_VALUE"         , 60 , 1 , 1)
-def_op(loc, "FORMAT_SIMPLE"         , 14 , 1 , 1)
+def_op(loc, "SET_FUNCTION_ATTRIBUTE", 106, 2 , 1)
 
 ### update opinfo tables
 # completely redefined tables
@@ -329,8 +329,6 @@ loc["hasfree"] = [64, 84, 89, 94, 109]
 # add new table "hasjump"
 loc.update({"hasjump": [72, 77, 78, 79, 97, 98, 99, 100, 104, 256, 257]})
 loc["hasjrel"] = loc["hasjump"]
-
-# TODO continue updating tables
 
 ### update formatting
 opcode_arg_fmt313 = opcode_312.opcode_arg_fmt12
