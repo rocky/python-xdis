@@ -333,6 +333,9 @@ loc["hasjrel"] = loc["hasjump"]
 ### update formatting
 opcode_arg_fmt313 = opcode_312.opcode_arg_fmt12
 opcode_extended_fmt = opcode_extended_fmt313 = opcode_312.opcode_extended_fmt312.copy()
+for fmt_table in (opcode_arg_fmt313, opcode_extended_fmt):
+    fmt_table.pop("MAKE_FUNCTION")  # MAKE_FUNCTION formatting not in 3.13
+
 from xdis.opcodes.opcode_312 import findlinestarts, parse_location_entries, format_CALL_INTRINSIC_1, format_CALL_INTRINSIC_2
 opcode_arg_fmt = opcode_arg_fmt13 = opcode_312.opcode_arg_fmt312.copy()
 
