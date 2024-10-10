@@ -26,6 +26,9 @@ loc["opname"].extend([f"<{len(loc['opname'])}>"])
 loc["oppop"].extend([0])
 loc["oppush"].extend([0])
 
+# have argument changed in 3.13
+HAVE_ARGUMENT = 44
+
 ## Lots of ops changed opcodes in 3.13 so this is long...
 ## These are removed or replaced since 3.12...
 #           OP NAME                      OPCODE
