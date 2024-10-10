@@ -70,6 +70,31 @@ def get_code_object(x):
     raise TypeError("don't know how to disassemble %s objects" % type(x).__name__)
 
 
+def _get_cache_size_313(opname: str) -> int:
+    _inline_cache_entries = {
+        "LOAD_GLOBAL": 4,
+        "BINARY_OP": 1,
+        "UNPACK_SEQUENCE": 1,
+        "COMPARE_OP": 1,
+        "CONTAINS_OP": 1,
+        "BINARY_SUBSCR": 1,
+        "FOR_ITER": 1,
+        "LOAD_SUPER_ATTR": 1,
+        "LOAD_ATTR": 9,
+        "STORE_ATTR": 4,
+        "CALL": 3,
+        "STORE_SUBSCR": 1,
+        "SEND": 1,
+        "JUMP_BACKWARD": 1,
+        "TO_BOOL": 3,
+        "POP_JUMP_IF_TRUE": 1,
+        "POP_JUMP_IF_FALSE": 1,
+        "POP_JUMP_IF_NONE": 1,
+        "POP_JUMP_IF_NOT_NONE": 1,
+    }
+    return _inline_cache_entries.get(opname, 0)
+
+
 def findlabels(code, opc):
     if opc.version_tuple < (3, 10):
         return findlabels_pre_310(code, opc)
@@ -85,9 +110,13 @@ def findlabels_310(code: bytes, opc):
     for offset, op, arg in unpack_opargs_bytecode_310(code, opc):
         if arg is not None:
             if op in opc.JREL_OPS:
-                if opc.version_tuple >= (3, 11) and "JUMP_BACKWARD" in opc.opname[op]:
+                if opc.version_tuple >= (3, 11) and opc.opname[op] in ("JUMP_BACKWARD", "JUMP_BACKWARD_NO_INTERRUPT"):
                     arg = -arg
                 label = offset + 2 + arg * 2
+                # in 3.13 we have to add total cache offsets to label
+                if opc.version_tuple >= (3, 13):
+                    cachesize = _get_cache_size_313(opc.opname[op])
+                    label += 2 * cachesize
             elif op in opc.JABS_OPS:
                 label = arg * 2
             else:

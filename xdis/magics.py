@@ -383,7 +383,65 @@ add_magic_from_int(3492, "3.11a7b")
 add_magic_from_int(3493, "3.11a7c")
 add_magic_from_int(3494, "3.11a7d")
 add_magic_from_int(3495, "3.11a7e")
+
+# 3.12
+add_magic_from_int(3500, "3.12a1a")
+add_magic_from_int(3501, "3.12a1b")
+add_magic_from_int(3502, "3.12a1c")
+add_magic_from_int(3503, "3.12a1d")
+add_magic_from_int(3504, "3.12a1e")
+add_magic_from_int(3505, "3.12a1f")
+add_magic_from_int(3506, "3.12a1g")
+add_magic_from_int(3507, "3.12a1h")
+add_magic_from_int(3508, "3.12a1i")
+add_magic_from_int(3509, "3.12a1j")
+add_magic_from_int(3510, "3.12a2a")
+add_magic_from_int(3511, "3.12a2b")
+add_magic_from_int(3512, "3.12a2c")
+add_magic_from_int(3513, "3.12a4a")
+add_magic_from_int(3514, "3.12a4b")
+add_magic_from_int(3515, "3.12a5a")
+add_magic_from_int(3516, "3.12a5b")
+add_magic_from_int(3517, "3.12a5c")
+add_magic_from_int(3518, "3.12a6a")
+add_magic_from_int(3519, "3.12a6b")
+add_magic_from_int(3520, "3.12a6c")
+add_magic_from_int(3521, "3.12a7a")
+add_magic_from_int(3522, "3.12a7b")
+add_magic_from_int(3523, "3.12a7c")
+add_magic_from_int(3524, "3.12a7d")
+add_magic_from_int(3525, "3.12b1a")
+add_magic_from_int(3526, "3.12b1b")
+add_magic_from_int(3527, "3.12b1c")
+add_magic_from_int(3528, "3.12b1d")
+add_magic_from_int(3529, "3.12b1e")
+add_magic_from_int(3530, "3.12b1f")
+add_magic_from_int(3531, "3.12b1g")
 add_magic_from_int(3531, "3.12.0rc2")
+
+# 3.13
+add_magic_from_int(3550, "3.13a1a")
+add_magic_from_int(3551, "3.13a1b")
+add_magic_from_int(3552, "3.13a1c")
+add_magic_from_int(3553, "3.13a1d")
+add_magic_from_int(3554, "3.13a1e")
+add_magic_from_int(3555, "3.13a1f")
+add_magic_from_int(3556, "3.13a1g")
+add_magic_from_int(3557, "3.13a1h")
+add_magic_from_int(3558, "3.13a1i")
+add_magic_from_int(3559, "3.13a1j")
+add_magic_from_int(3560, "3.13a1k")
+add_magic_from_int(3561, "3.13a1l")
+add_magic_from_int(3562, "3.13a1m")
+add_magic_from_int(3563, "3.13a1n")
+add_magic_from_int(3564, "3.13a1o")
+add_magic_from_int(3565, "3.13a1p")
+add_magic_from_int(3566, "3.13a1q")
+add_magic_from_int(3567, "3.13a1e")
+add_magic_from_int(3568, "3.13a1s")
+add_magic_from_int(3569, "3.13a5")
+add_magic_from_int(3570, "3.13a6")
+add_magic_from_int(3571, "3.13.0rc3")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
@@ -506,6 +564,8 @@ add_canonic_versions(
     "3.10.0rc2",
 )
 
+add_canonic_versions("3.10.13Graal", "3.10.8Graal")
+
 add_canonic_versions(
     "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4 3.11.5 3.11.6 3.11.7 3.11.8 3.11.9 3.11.10",
     "3.11a7e",
@@ -516,7 +576,10 @@ add_canonic_versions(
     "3.12.0rc2",
 )
 
-add_canonic_versions("3.10.13Graal", "3.10.8Graal")
+add_canonic_versions(
+    "3.13 3.13.0",
+    "3.13.0rc3",
+)
 
 # The canonic version for a canonic version is itself
 for v in versions.values():
