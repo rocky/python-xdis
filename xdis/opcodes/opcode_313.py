@@ -317,7 +317,7 @@ def_op(loc, "STORE_FAST_MAYBE_NULL"            , 267 , 1 , 0)
 # ---------------------------------------------------------------
 def_op(loc, "FORMAT_SIMPLE"         , 14 , 1 , 1)
 def_op(loc, "TO_BOOL"               , 40 , 0 , 0)
-def_op(loc, "CALL_KW"               , 57 , 4,  2)
+def_op(loc, "CALL_KW"               , 57 , -2, 1)
 def_op(loc, "CONVERT_VALUE"         , 60 , 1 , 1)
 def_op(loc, "SET_FUNCTION_ATTRIBUTE", 106, 2 , 1)
 
