@@ -457,6 +457,8 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
                 return None
     elif opname == "CALL" and version_tuple >= (3, 12):
         return -oparg - 1
+    elif opname == "CALL_KW":
+        return -2 - oparg
     elif opname == "CALL_FUNCTION_EX":
         if (3, 5) <= version_tuple < (3, 11):
             return -2 if oparg & 1 else -1
