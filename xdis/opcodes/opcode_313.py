@@ -341,7 +341,15 @@ for fmt_table in (opcode_arg_fmt, opcode_extended_fmt):
 opcode_arg_fmt13 = opcode_arg_fmt
 opcode_extended_fmt13 = opcode_extended_fmt
 
-from xdis.opcodes.opcode_312 import findlinestarts, parse_location_entries, format_CALL_INTRINSIC_1, format_CALL_INTRINSIC_2
+from xdis.opcodes.opcode_312 import findlinestarts as findlinestarts_312, parse_location_entries, format_CALL_INTRINSIC_1, format_CALL_INTRINSIC_2
+
+# update any calls to findlinestarts to include the version tuple
+def findlinestarts_313(*args, **kwargs):
+    # add version tuple to call
+    kwargs.update({"version_tuple": version_tuple})
+    return findlinestarts_312(*args, **kwargs)
+
+findlinestarts = findlinestarts_313
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

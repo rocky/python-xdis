@@ -151,19 +151,26 @@ def findlabels_pre_310(code, opc):
 NO_LINE_NUMBER = -128
 
 
-def findlinestarts(code, dup_lines=False):
+def findlinestarts(code, dup_lines=False, version_tuple: tuple | None = None):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
     """
 
     if hasattr(code, "co_lines"):
-        # Taken from 3.10 findlinestarts
-        lastline = None
-        for start, _, line in code.co_lines():
-            if line is not None and line != lastline:
-                lastline = line
-                yield start, line
+        if version_tuple is not None and version_tuple >= (3,13):
+            lastline = False # None is a valid line number
+            for start, _, line in code.co_lines():
+                if line is not lastline:
+                    lastline = line
+                    yield start, line
+        else:
+            # Taken from 3.10 findlinestarts
+            lastline = None
+            for start, _, line in code.co_lines():
+                if line is not None and line != lastline:
+                    lastline = line
+                    yield start, line
 
     else:
         lineno_table = code.co_lnotab
