@@ -22,7 +22,7 @@ loc = locals()
 init_opdata(loc, opcode_312, version_tuple)
 
 # extend op tables for new psuedo ops
-loc["opname"].extend([f"<{len(loc['opname'])}>"])
+loc["opname"].extend([f"<267>"])
 loc["oppop"].extend([0])
 loc["oppush"].extend([0])
 
