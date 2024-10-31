@@ -344,10 +344,12 @@ opcode_extended_fmt13 = opcode_extended_fmt
 from xdis.opcodes.opcode_312 import findlinestarts as findlinestarts_312, parse_location_entries, format_CALL_INTRINSIC_1, format_CALL_INTRINSIC_2
 
 # update any calls to findlinestarts to include the version tuple
-def findlinestarts_313(*args, **kwargs):
-    # add version tuple to call
-    kwargs.update({"version_tuple": version_tuple})
-    return findlinestarts_312(*args, **kwargs)
+def findlinestarts_313(code, dup_lines=False):
+    lastline = False # None is a valid line number
+    for start, _, line in code.co_lines():
+        if line is not lastline:
+            lastline = line
+            yield start, line
 
 findlinestarts = findlinestarts_313
 
