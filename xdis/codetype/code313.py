@@ -45,7 +45,7 @@ def _get_line_delta(code_byte: int, remaining_linetable: Iterable[int]):
     line_delta_code = (code_byte >> 3) & 15
     if line_delta_code == PY_CODE_LOCATION_INFO_NONE:
         return 0
-    if line_delta_code == PY_CODE_LOCATION_INFO_NO_COLUMNS or line_delta_code == PY_CODE_LOCATION_INFO_LONG:
+    if line_delta_code in (PY_CODE_LOCATION_INFO_NO_COLUMNS, PY_CODE_LOCATION_INFO_LONG):
         return _scan_signed_varint(remaining_linetable)
     if line_delta_code == PY_CODE_LOCATION_INFO_ONE_LINE0:
         return 0
@@ -64,7 +64,7 @@ def _next_code_delta(linetable_code_byte: int):
 def _test_check_bit(linetable_code_byte: int):
     return bool(linetable_code_byte & 128)
 
-def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> int | None:
+def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> int:
     try:
         while not _test_check_bit((code_byte := next(remaining_linetable))):
             pass
@@ -80,7 +80,7 @@ def decode_linetable_entry(code_byte: int, remaining_linetable: Iterable[int]) -
         no_line_flag=_is_no_line_marker(linetable_code_byte=code_byte)
     )
 
-def parse_linetable(linetable: bytes, first_lineno: int) -> Generator[tuple[int, int, int | None], None, None]:
+def parse_linetable(linetable: bytes, first_lineno: int) -> Generator[tuple[int, int, int], None, None]:
     
     linetable_entries: list[LineTableEntry] = []
     
@@ -89,7 +89,7 @@ def parse_linetable(linetable: bytes, first_lineno: int) -> Generator[tuple[int,
     while (code_byte := _go_to_next_code_byte(iter_linetable)) is not None:
         linetable_entries.append(decode_linetable_entry(code_byte=code_byte, remaining_linetable=iter_linetable))
 
-    if len(linetable_entries) == 0:
+    if not linetable_entries:
         return
 
     first_entry, *remaining_entries = linetable_entries
@@ -160,7 +160,7 @@ def decode_position_entry(code_byte: int, remaining_linetable: Iterator[int]) ->
         no_line_flag=no_line_flag
     )
 
-def parse_positions(linetable: bytes, first_lineno: int) -> Generator[tuple[int, int, int, int] | tuple[None, None, None, None], None, None]:
+def parse_positions(linetable: bytes, first_lineno: int) -> Generator[tuple[int, int, int, int], None, None]:
     position_entries: list[PositionEntry] = []
     
     # decode linetable entries
