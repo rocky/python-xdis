@@ -80,7 +80,7 @@ def decode_linetable_entry(code_byte: int, remaining_linetable: Iterable[int]) -
         no_line_flag=_is_no_line_marker(linetable_code_byte=code_byte)
     )
 
-def parse_linetable(linetable: bytes, first_lineno: int) -> Generator[tuple[int, int, int], None, None]:
+def parse_linetable(linetable: bytes, first_lineno: int):
     
     linetable_entries: list[LineTableEntry] = []
     
@@ -160,7 +160,7 @@ def decode_position_entry(code_byte: int, remaining_linetable: Iterator[int]) ->
         no_line_flag=no_line_flag
     )
 
-def parse_positions(linetable: bytes, first_lineno: int) -> Generator[tuple[int, int, int, int], None, None]:
+def parse_positions(linetable: bytes, first_lineno: int):
     position_entries: list[PositionEntry] = []
     
     # decode linetable entries
@@ -270,5 +270,5 @@ class Code313(Code311):
             code.co_cellvars,
         )
 
-    def co_lines(self) -> Generator[tuple[int,int,int], None, None]:
+    def co_lines(self):
         return parse_linetable(self.co_linetable, self.co_firstlineno)
