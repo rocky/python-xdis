@@ -101,7 +101,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
             )
-        elif version_tuple[:2] < (3,13):  # version tuple >= 3, 11
+        elif version_tuple[:2] < (3,13):
             return Code311(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
@@ -122,7 +122,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_linetable=line_table,
                 co_exceptiontable=code.co_exceptiontable,
             )
-        else:
+        else:  # version tuple >= 3, 13
             return Code313(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
