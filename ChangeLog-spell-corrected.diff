@@ -1,0 +1,809 @@
+--- ChangeLog	2024-11-08 12:59:15.056958486 -0500
++++ ChangeLog-spell-corrected	2024-11-08 16:33:52.268746927 -0500
+@@ -1,4 +1,4 @@
+-2024-11-08  rocky <rocky@dusytfeet.com>
++i2024-11-08  rocky <rocky@dusytfeet.com>
+ 
+ 	* xdis/version.py: Get ready for release 6.1.2
+ 
+@@ -104,7 +104,7 @@
+ 	admin-tools/pyenv-3.1-3.2-versions,
+ 	admin-tools/pyenv-3.3-3.5-versions,
+ 	admin-tools/pyenv-3.6-3.10-versions,
+-	admin-tools/setup-python-3.0.sh, admin-tools/setup-python-3.1.sh: 
++	admin-tools/setup-python-3.0.sh, admin-tools/setup-python-3.1.sh:
+ 	Administrivia
+ 
+ 2024-10-08  elliot <elliot@utdallas.edu>
+@@ -339,12 +339,12 @@
+ 	* admin-tools/make-dist-3.0-3.2.sh,
+ 	admin-tools/make-dist-3.3-3.5.sh,
+ 	admin-tools/make-dist-3.6-3.10.sh, admin-tools/setup-master.sh,
+-	admin-tools/setup-python-3.0.sh, admin-tools/setup-python-3.6.sh: 
++	admin-tools/setup-python-3.0.sh, admin-tools/setup-python-3.6.sh:
+ 	Administrivia
+ 
+ 2024-07-22  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/setup-master.sh, admin-tools/setup-python-3.6.sh: 
++	* admin-tools/setup-master.sh, admin-tools/setup-python-3.6.sh:
+ 	Administrivia
+ 
+ 2024-07-21  rocky <rocky@dusytfeet.com>
+@@ -372,7 +372,7 @@
+ 
+ 2024-07-21  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/magics.py: Note 3.12.4's existance
++	* xdis/magics.py: Note 3.12.4's existence
+ 
+ 2024-07-21  rocky <rocky@dusytfeet.com>
+ 
+@@ -437,7 +437,7 @@
+ 2024-07-11  rocky <rocky@dusytfeet.com>
+ 
+ 	* xdis/opcodes/format/extended.py, xdis/opcodes/opcode_2x.py,
+-	xdis/opcodes/opcode_35.py: Need to split BUILD_MAP ...  From pre 3.5 version with older 2.x vesion
++	xdis/opcodes/opcode_35.py: Need to split BUILD_MAP ...  From pre 3.5 version with older 2.x version
+ 
+ 2024-07-11  rocky <rocky@dusytfeet.com>
+ 
+@@ -599,7 +599,7 @@
+ 
+ 2024-06-27  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/codetype/code310.py: explit yield instead of yield via return
++	* xdis/codetype/code310.py: explicit yield instead of yield via return
+ 
+ 2024-06-27  rocky <rocky@dusytfeet.com>
+ 
+@@ -777,7 +777,7 @@
+ 	xdis/opcodes/opcode_36pypy.py, xdis/opcodes/opcode_37.py,
+ 	xdis/opcodes/opcode_37pypy.py, xdis/opcodes/opcode_38pypy.py,
+ 	xdis/opcodes/opcode_39pypy.py, xdis/opcodes/opcode_3x.py: Add a
+-	"call_op", improve formatting of CALL_METHOD CALL_METHOD is simliar to CALL_FUNCTION tag opcodes that are
++	"call_op", improve formatting of CALL_METHOD CALL_METHOD is similar to CALL_FUNCTION tag opcodes that are
+ 	call_ops that perform some sort of call
+ 
+ 2024-05-27  R. Bernstein <rocky@users.noreply.github.com>
+@@ -861,7 +861,7 @@
+ 
+ 2024-03-31  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/opcodes/opcode_36.py: Simplfy "Neither x, nor y, nor" to "No
++	* xdis/opcodes/opcode_36.py: Simplify "Neither x, nor y, nor" to "No
+ 	arguments'
+ 
+ 2024-03-29  rocky <rocky@dusytfeet.com>
+@@ -888,12 +888,12 @@
+ 2024-03-16  rocky <rocky@dusytfeet.com>
+ 
+ 	* pyproject.toml, xdis/version.py: Remove unused dependencies; bump
+-	verison
++	version
+ 
+ 2024-03-15  rocky <rocky@dusytfeet.com>
+ 
+ 	* admin-tools/make-dist-2.4-2.7.sh,
+-	admin-tools/make-dist-3.0-3.2.sh, admin-tools/make-dist-newest.sh: 
++	admin-tools/make-dist-3.0-3.2.sh, admin-tools/make-dist-newest.sh:
+ 	Administrivia
+ 
+ 2024-03-15  rocky <rocky@dusytfeet.com>
+@@ -1104,7 +1104,7 @@
+ 2024-02-12  rocky <rocky@dusytfeet.com>
+ 
+ 	* admin-tools/merge-for-2.4.sh, admin-tools/merge-for-3.0.sh,
+-	admin-tools/merge-for-3.3.sh, admin-tools/merge-for-3.6.sh: 
++	admin-tools/merge-for-3.3.sh, admin-tools/merge-for-3.6.sh:
+ 	Administrivia: merge should leave us back in the directory we started
+ 
+ 2024-02-12  rocky <rocky@dusytfeet.com>
+@@ -1566,7 +1566,7 @@
+ 
+ 2023-08-31  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/opcodes/format.py, xdis/opcodes/opcode_36.py: imporve CALL
++	* xdis/opcodes/format.py, xdis/opcodes/opcode_36.py: improve CALL
+ 	argument detection...  merge CALL_FUNCTION36 and CALL_FUNCTION
+ 
+ 2023-08-31  rocky <rocky@dusytfeet.com>
+@@ -1585,7 +1585,7 @@
+ 
+ 2023-08-30  R. Bernstein <rocky@users.noreply.github.com>
+ 
+-	* : Merge pull request #116 from rocky/format-with-TOS Revise extended format incorprating TOS
++	* : Merge pull request #116 from rocky/format-with-TOS Revise extended format incorporating TOS
+ 
+ 2023-08-28  rocky <rocky@dusytfeet.com>
+ 
+@@ -1725,7 +1725,7 @@
+ 2023-08-20  rocky <rocky@dusytfeet.com>
+ 
+ 	* xdis/magics.py, xdis/op_imports.py,
+-	xdis/opcodes/opcode_310pypy.py, xdis/opcodes/opcode_39pypy.py: 
++	xdis/opcodes/opcode_310pypy.py, xdis/opcodes/opcode_39pypy.py:
+ 	Minimal PyPy 3.10 support
+ 
+ 2023-08-20  rocky <rocky@dusytfeet.com>
+@@ -1741,7 +1741,7 @@
+ 2023-08-20  rocky <rocky@dusytfeet.com>
+ 
+ 	* xdis/opcodes/base.py, xdis/opcodes/opcode_311.py: 3.11 LOAD_ATTR
+-	extended formatting...  ignore CACHE instructions.  And remove BINARY_xxx rutines. 3.11 uses
++	extended formatting...  ignore CACHE instructions.  And remove BINARY_xxx routines. 3.11 uses
+ 	BINARY_OP
+ 
+ 2023-08-20  rocky <rocky@dusytfeet.com>
+@@ -1848,7 +1848,7 @@
+ 
+ 2023-06-16  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/op_imports.py: stdlib use major minor when opcode lookup..  and we cant find major/minor release
++	* xdis/op_imports.py: stdlib use major minor when opcode lookup..  and we can't find major/minor release
+ 
+ 2023-06-14  rocky <rocky@dusytfeet.com>
+ 
+@@ -1882,7 +1882,7 @@
+ 
+ 2023-06-01  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/magics.py, xdis/opcodes/base.py, xdis/opcodes/opcode_311.py: 
++	* xdis/magics.py, xdis/opcodes/base.py, xdis/opcodes/opcode_311.py:
+ 	3.11 first working cut
+ 
+ 2023-06-01  rocky <rocky@dusytfeet.com>
+@@ -2067,7 +2067,7 @@
+ 2022-12-07  rocky <rocky@dusytfeet.com>
+ 
+ 	* .github/workflows/osx.yml, .github/workflows/ubuntu.yml,
+-	.github/workflows/windows.yml: CI workflows woes - No Pyton 3.6
++	.github/workflows/windows.yml: CI workflows woes - No Python 3.6
+ 
+ 2022-12-07  rocky <rb@dustyfeet.com>
+ 
+@@ -2164,7 +2164,7 @@
+ 
+ 2022-06-16  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/pyenv-newest-versions, xdis/instruction.py: 
++	* admin-tools/pyenv-newest-versions, xdis/instruction.py:
+ 	Administrivia
+ 
+ 2022-06-16  rocky <rocky@dusytfeet.com>
+@@ -2192,7 +2192,7 @@
+ 2022-05-19  rocky <rocky@dusytfeet.com>
+ 
+ 	* NEWS.md, admin-tools/pyenv-newest-versions, xdis/magics.py,
+-	xdis/op_imports.py, xdis/opcodes/opcode_39pypy.py, xdis/version.py: 
++	xdis/op_imports.py, xdis/opcodes/opcode_39pypy.py, xdis/version.py:
+ 	Add 3.9.13 PyPy 3.9 & get ready for release 6.0.4
+ 
+ 2022-05-14  rocky <rocky@dusytfeet.com>
+@@ -2244,7 +2244,7 @@
+ 2022-03-16  rocky <rocky@dusytfeet.com>
+ 
+ 	* .github/workflows/osx.yml, .github/workflows/ubuntu.yml,
+-	.github/workflows/windows.yml, admin-tools/pyenv-newest-versions: 
++	.github/workflows/windows.yml, admin-tools/pyenv-newest-versions:
+ 	Use v3 checkout on workflows CI
+ 
+ 2022-03-11  rocky <rocky@dusytfeet.com>
+@@ -2253,7 +2253,7 @@
+ 
+ 2022-03-10  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/check-3.3-3.5-versions.sh, xdis/opcodes/opcode_37.py: 
++	* admin-tools/check-3.3-3.5-versions.sh, xdis/opcodes/opcode_37.py:
+ 	Misc small tweaks
+ 
+ 2022-03-09  rocky <rocky@dusytfeet.com>
+@@ -2300,7 +2300,7 @@
+ 
+ 2021-11-27  rocky <rocky@dusytfeet.com>
+ 
+-	* appveyor.yml, appveyor/install.ps1, appveyor/run_with_env.cmd: 
++	* appveyor.yml, appveyor/install.ps1, appveyor/run_with_env.cmd:
+ 	Remove appveyor
+ 
+ 2021-11-27  R. Bernstein <rocky@users.noreply.github.com>
+@@ -2322,7 +2322,7 @@
+ 
+ 2021-11-24  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/opcodes/opcode_37pypy.py, xdis/opcodes/opcode_38pypy.py: 
++	* xdis/opcodes/opcode_37pypy.py, xdis/opcodes/opcode_38pypy.py:
+ 	Include PyPy 3.8 CALL_METHOD{,_KW} formatting
+ 
+ 2021-11-24  rocky <rocky@dusytfeet.com>
+@@ -2555,7 +2555,7 @@
+ 
+ 2021-10-12  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/pyenv-newest-versions, pytest/test_instructions.py: 
++	* admin-tools/pyenv-newest-versions, pytest/test_instructions.py:
+ 	Last 3.10.0 test adjusted
+ 
+ 2021-10-11  rocky <rocky@dusytfeet.com>
+@@ -2660,7 +2660,7 @@
+ 
+ 	* xdis/bin/pydisasm.py, xdis/load.py, xdis/magics.py,
+ 	xdis/op_imports.py, xdis/opcodes/base.py,
+-	xdis/opcodes/opcode_310.py: Start adjusting for Pyton 3.10 Major mess ensuse because 3.10 can't be used as a floating-point
++	xdis/opcodes/opcode_310.py: Start adjusting for Python 3.10 Major mess ensuse because 3.10 can't be used as a floating-point
+ 	number.
+ 
+ 2021-09-30  rocky <rocky@dusytfeet.com>
+@@ -2678,7 +2678,7 @@
+ 
+ 2021-09-21  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/make-dist-3.3-3.5.sh, admin-tools/make-dist-newer.sh: 
++	* admin-tools/make-dist-3.3-3.5.sh, admin-tools/make-dist-newer.sh:
+ 	Fix wheel packaging
+ 
+ 2021-09-21  rocky <rocky@dusytfeet.com>
+@@ -2732,7 +2732,7 @@
+ 	* admin-tools/{check-older-versions.sh =>
+ 	check-2.4-2.7-versions.sh}, admin-tools/{pyenv-oldest-versions =>
+ 	pyenv-2.1-2.3-versions}, admin-tools/{pyenv-older-versions =>
+-	pyenv-2.4-2.7-versions}, admin-tools/setup-python-2.4.sh: 
++	pyenv-2.4-2.7-versions}, admin-tools/setup-python-2.4.sh:
+ 	Adminsitrivia More version setup renaming
+ 
+ 2021-09-11  rocky <rocky@dusytfeet.com>
+@@ -2815,7 +2815,7 @@
+ 
+ 2021-09-08  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/unmarshal.py: Remove duplcate method in unmarshal Note string_as_bytes weirdness...
++	* xdis/unmarshal.py: Remove duplicate method in unmarshal Note string_as_bytes weirdness...
+ 
+ 2021-09-01  rocky <rocky@dusytfeet.com>
+ 
+@@ -2937,7 +2937,7 @@
+ 
+ 2021-02-27  rocky <rocky@dusytfeet.com>
+ 
+-	* : Python 3.1.5 compatiability
++	* : Python 3.1.5 compatibility
+ 
+ 2021-02-27  rocky <rocky@dusytfeet.com>
+ 
+@@ -2946,11 +2946,11 @@
+ 
+ 2021-02-27  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/op_imports.py: Python 2.6 compatability
++	* xdis/op_imports.py: Python 2.6 compatibility
+ 
+ 2021-02-27  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/pyenv-newer-versions, xdis/magics.py, xdis/version.py: 
++	* admin-tools/pyenv-newer-versions, xdis/magics.py, xdis/version.py:
+ 	Add 3.8.8 3.9.2...  Bump version number into dev. Test using newer versions
+ 
+ 2021-02-27  rocky <rocky@dusytfeet.com>
+@@ -2972,7 +2972,7 @@
+ 
+ 2021-01-11  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/magics.py, xdis/op_imports.py, xdis/opcodes/opcode_37pypy.py: 
++	* xdis/magics.py, xdis/op_imports.py, xdis/opcodes/opcode_37pypy.py:
+ 	Add pypy3.7
+ 
+ 2021-01-11  rocky <rocky@dusytfeet.com>
+@@ -2986,7 +2986,7 @@
+ 
+ 2021-01-09  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/magics.py: Add Python veresion 3.8.7
++	* xdis/magics.py: Add Python version 3.8.7
+ 
+ 2020-12-16  rocky <rocky@dusytfeet.com>
+ 
+@@ -3040,7 +3040,7 @@
+ 
+ 2020-08-30  rocky <rocky@dusytfeet.com>
+ 
+-	* NEWS.md, admin-tools/how-to-make-a-release.md, xdis/version.py: 
++	* NEWS.md, admin-tools/how-to-make-a-release.md, xdis/version.py:
+ 	Get ready for release 5.0.4
+ 
+ 2020-08-30  rocky <rocky@dusytfeet.com>
+@@ -3099,7 +3099,7 @@
+ 
+ 2020-07-25  rocky <rocky@dusytfeet.com>
+ 
+-	* NEWS.md, admin-tools/how-to-make-a-release.md, xdis/version.py: 
++	* NEWS.md, admin-tools/how-to-make-a-release.md, xdis/version.py:
+ 	Get ready for release 5.0.2
+ 
+ 2020-07-22  rocky <rb@dustyfeet.com>
+@@ -3149,7 +3149,7 @@
+ 
+ 2020-06-28  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/make-dist-newer.sh, admin-tools/make-dist-older.sh: 
++	* admin-tools/make-dist-newer.sh, admin-tools/make-dist-older.sh:
+ 	Administrivia
+ 
+ 2020-06-28  rocky <rocky@dusytfeet.com>
+@@ -3162,7 +3162,7 @@
+ 
+ 2020-06-28  rocky <rocky@dusytfeet.com>
+ 
+-	* NEWS.md, xdis/__init__.py, xdis/load.py, xdis/version.py: 
++	* NEWS.md, xdis/__init__.py, xdis/load.py, xdis/version.py:
+ 	check_load(): better python source detection...  check_load() previously we relied on the extension being ".py" to
+ 	detect if a file was Python source. There are many valid Python
+ 	programs that don't have a ".py" extension.  With this change we compile the passed file and that determines if
+@@ -3291,8 +3291,8 @@
+ 2020-06-21  rocky <rocky@dusytfeet.com>
+ 
+ 	* xdis/__init__.py, xdis/bin/pydisasm.py, xdis/bytecode.py,
+-	xdis/instruction.py, xdis/main.py, xdis/std.py, xdis/version.py: 
+-	Redo disasembler options handling -- * --show-bytes and --asm options removed. Use --asm-format -F
++	xdis/instruction.py, xdis/main.py, xdis/std.py, xdis/version.py:
++	Redo disassembler options handling -- * --show-bytes and --asm options removed. Use --asm-format -F
+ 	instead.  * asm_fmt is now a string choice.  * Don't show integer arg value when there is something more useful
+ 	  to show. Note that -F=bytes will show this separately
+ 
+@@ -3393,7 +3393,7 @@
+ 
+ 	* xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+ 	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py: Fill out
+-	CALL_FUNCITON_xx formating on 2.x
++	CALL_FUNCITON_xx formatting on 2.x
+ 
+ 2020-05-28  rocky <rocky@dusytfeet.com>
+ 
+@@ -3513,7 +3513,7 @@
+ 
+ 2020-05-12  rocky <rb@dustyfeet.com>
+ 
+-	* xdis/bin/pydisasm.py, xdis/main.py, xdis/opcodes/opcode_36.py: 
++	* xdis/bin/pydisasm.py, xdis/main.py, xdis/opcodes/opcode_36.py:
+ 	pydisasm disassembles more Python source now
+ 
+ 2020-05-09  rocky <rocky@dusytfeet.com>
+@@ -3560,14 +3560,14 @@
+ 	pytest/test_bytecode.py, pytest/test_disasm.py,
+ 	pytest/test_opcode.py, pytest/test_stack_effect.py, setup.py,
+ 	test/test_pyenvlib.py, test/test_pythonlib.py,
+-	test_unit/test_disasm.py, xdis/__init__.py, xdis/bin/pydisasm.py: 
++	test_unit/test_disasm.py, xdis/__init__.py, xdis/bin/pydisasm.py:
+ 	xdis.main -> xdis
+ 
+ 2020-04-28  rocky <rocky@dusytfeet.com>
+ 
+ 	* xdis/__init__.py, xdis/codetype/__init__.py,
+ 	xdis/codetype/code30.py, xdis/marsh.py, xdis/op_imports.py: Misc
+-	fixes and tweaks...  * export get_opcode_module from xdis * Allow float and string for version and convert where needed.  * Error when unmarshaling a code type on the wrong intepreter
++	fixes and tweaks...  * export get_opcode_module from xdis * Allow float and string for version and convert where needed.  * Error when unmarshaling a code type on the wrong interpreter
+ 
+ 2020-04-26  rocky <rocky@dusytfeet.com>
+ 
+@@ -3744,7 +3744,7 @@
+ 	* pytest/test_opcode.py, xdis/cross_dis.py,
+ 	xdis/opcodes/opcode_2x.py, xdis/opcodes/opcode_36.py,
+ 	xdis/opcodes/opcode_37.py, xdis/opcodes/opcode_38.py,
+-	xdis/opcodes/opcode_39.py, xdis/opcodes/opcode_3x.py, xdis/std.py: 
++	xdis/opcodes/opcode_39.py, xdis/opcodes/opcode_3x.py, xdis/std.py:
+ 	Finish stack-effect; test against dis.stack_effect
+ 
+ 2020-04-22  rocky <rocky@dusytfeet.com>
+@@ -3809,7 +3809,7 @@
+ 
+ 2020-04-20  rocky <rocky@dusytfeet.com>
+ 
+-	* NEWS.md, admin-tools/how-to-make-a-release.md, xdis/version.py: 
++	* NEWS.md, admin-tools/how-to-make-a-release.md, xdis/version.py:
+ 	Get ready for release 4.4.0
+ 
+ 2020-04-19  rocky <rocky@dusytfeet.com>
+@@ -3842,7 +3842,7 @@
+ 
+ 2020-04-17  rocky <rb@dustyfeet.com>
+ 
+-	* xdis/codetype/__init__.py, xdis/codetype/code13.py, xdis/main.py: 
++	* xdis/codetype/__init__.py, xdis/codetype/code13.py, xdis/main.py:
+ 	--asm option fixes
+ 
+ 2020-04-17  rocky <rb@dustyfeet.com>
+@@ -3852,7 +3852,7 @@
+ 	pytest/testdata/pypy_lambda.right, pytest/testdata/raise-3.0.right,
+ 	xdis/codetype/.gitignore, xdis/codetype/__init__.py,
+ 	xdis/codetype/base.py, xdis/codetype/code38.py: report Code object
+-	information better...  Also some lint chainges
++	information better...  Also some lint changes
+ 
+ 2020-04-17  rocky <rocky@dusytfeet.com>
+ 
+@@ -3896,7 +3896,7 @@
+ 
+ 	* NEWS.md, xdis/codetype/code13.py, xdis/codetype/code15.py,
+ 	xdis/codetype/code20.py, xdis/codetype/code30.py,
+-	xdis/codetype/code38.py, xdis/dropbox/decrypt25.py, xdis/marsh.py: 
++	xdis/codetype/code38.py, xdis/dropbox/decrypt25.py, xdis/marsh.py:
+ 	Check code types for sanity
+ 
+ 2020-04-15  R. Bernstein <rocky@users.noreply.github.com>
+@@ -3934,7 +3934,7 @@
+ 	* pytest/test_codetype.py, xdis/__init__.py, xdis/bytecode.py,
+ 	xdis/codetype/__init__.py, xdis/codetype/code15.py,
+ 	xdis/codetype/code20.py, xdis/codetype/code30.py,
+-	xdis/codetype/code38.py, xdis/unmarshal.py, xdis/wordcode.py: 
++	xdis/codetype/code38.py, xdis/unmarshal.py, xdis/wordcode.py:
+ 	Convert code to use the Portable code type...  to_portable() is the main interface.  The bulk of the hard stuff I think is done. unmarshal.py
+ 	load_code_type is a lot cleaner now.  There is still a bit of residual work, but this commit is large
+ 	enough as it is.
+@@ -4016,7 +4016,7 @@
+ 
+ 2020-03-25  rocky <rb@dustyfeet.com>
+ 
+-	* admin-tools/setup-master.sh: Bump master default verison
++	* admin-tools/setup-master.sh: Bump master default version
+ 
+ 2020-03-24  rocky <rocky@dusytfeet.com>
+ 
+@@ -4104,7 +4104,7 @@
+ 	xdis/magics.py, xdis/opcodes/base.py, xdis/opcodes/opcode_36.py,
+ 	xdis/opcodes/opcode_37.py, xdis/opcodes/opcode_38.py,
+ 	xdis/opcodes/opcode_39.py, xdis/util.py: Big changes; update
+-	versions, FUNCTION_CALL_xx and more...  * Python versions: 3.6.10, 3.7.6. 3.8.1 * Add interpolation of FUNCTION_CALL_{KW,EX} argument for 3.7-3.9 * Fix better_repr() for singleton tuples and lists * Add type info in listing contants
++	versions, FUNCTION_CALL_xx and more...  * Python versions: 3.6.10, 3.7.6. 3.8.1 * Add interpolation of FUNCTION_CALL_{KW,EX} argument for 3.7-3.9 * Fix better_repr() for singleton tuples and lists * Add type info in listing constants
+ 
+ 2019-12-22  rocky <rocky@dusytfeet.com>
+ 
+@@ -4220,7 +4220,7 @@
+ 2019-11-17  rocky <rocky@dusytfeet.com>
+ 
+ 	* pytest/test_disasm.py, pytest/test_load_file.py,
+-	pytest/test_std.py, requirements-dev.txt, xdis/verify.py: 
++	pytest/test_std.py, requirements-dev.txt, xdis/verify.py:
+ 	Compatibility for testing from Python 3.1 to 3.4
+ 
+ 2019-11-17  rocky <rocky@dusytfeet.com>
+@@ -4234,7 +4234,7 @@
+ 
+ 2019-11-16  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/pyenv-newer-versions, admin-tools/setup-master.sh: 
++	* admin-tools/pyenv-newer-versions, admin-tools/setup-master.sh:
+ 	Administriva - bump testing versions
+ 
+ 2019-11-16  rocky <rocky@dusytfeet.com>
+@@ -4249,7 +4249,7 @@
+ 2019-11-12  rocky <rocky@dusytfeet.com>
+ 
+ 	* pytest/test_opcode.py, xdis/magics.py,
+-	xdis/opcodes/opcode_36pypy.py, xdis/unmarshal.py, xdis/verify.py: 
++	xdis/opcodes/opcode_36pypy.py, xdis/unmarshal.py, xdis/verify.py:
+ 	PyPy 3.6.9 tolerance
+ 
+ 2019-11-12  rocky <rocky@dusytfeet.com>
+@@ -4446,7 +4446,7 @@
+ 2019-10-10  rocky <rocky@dusytfeet.com>
+ 
+ 	* pytest/test_disasm.py,
+-	pytest/testdata/01_hexstring-2.7-for3x.right, xdis/util.py: 
++	pytest/testdata/01_hexstring-2.7-for3x.right, xdis/util.py:
+ 	Customize bytecode 1.0-1.2 asm output
+ 
+ 2019-10-10  rocky <rocky@dusytfeet.com>
+@@ -4511,7 +4511,7 @@
+ 2019-08-20  rocky <rocky@dusytfeet.com>
+ 
+ 	* test_unit/test_dis27.py, test_unit/test_dis33.py,
+-	test_unit/test_dis34.py: "keyward pair" -> "named" in unit tests Fixes #51
++	test_unit/test_dis34.py: "keyword pair" -> "named" in unit tests Fixes #51
+ 
+ 2019-08-19  rocky <rocky@dusytfeet.com>
+ 
+@@ -4555,7 +4555,7 @@
+ 
+ 2019-07-21  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/code.py, xdis/load.py, xdis/magics.py, xdis/unmarshal.py: 
++	* xdis/code.py, xdis/load.py, xdis/magics.py, xdis/unmarshal.py:
+ 	Adjust for Python 3.8 It add a posonlyargcount position to the code type.  Therefore we
+ 	need now a new Code38 code type.
+ 
+@@ -4615,7 +4615,7 @@
+ 
+ 2019-06-11  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/opcodes/base.py, xdis/opcodes/opcode_36.py: 
++	* xdis/opcodes/base.py, xdis/opcodes/opcode_36.py:
+ 	BUILD_TUPLE_UNPACK_WITH_CALL is a vararg
+ 
+ 2019-05-27  R. Bernstein <rocky@users.noreply.github.com>
+@@ -4745,7 +4745,7 @@
+ 2019-01-13  rocky <rb@dustyfeet.com>
+ 
+ 	* bin/pydisasm.py, xdis/load.py, xdis/magics.py,
+-	xdis/op_imports.py, xdis/opcodes/base.py, xdis/opcodes/opcode_38.py: 
++	xdis/op_imports.py, xdis/opcodes/base.py, xdis/opcodes/opcode_38.py:
+ 	More 3.8 opcode support
+ 
+ 2019-01-13  rocky <rb@dustyfeet.com>
+@@ -5021,7 +5021,7 @@
+ 2018-04-15  rocky <rb@dustyfeet.com>
+ 
+ 	* xdis/opcodes/opcode_26pypy.py, xdis/opcodes/opcode_27pypy.py,
+-	xdis/opcodes/opcode_32pypy.py, xdis/opcodes/opcode_35pypy.py: 
++	xdis/opcodes/opcode_32pypy.py, xdis/opcodes/opcode_35pypy.py:
+ 	Correct classification of CALL_METHOD
+ 
+ 2018-04-13  rocky <rb@dustyfeet.com>
+@@ -5130,7 +5130,7 @@
+ 
+ 2018-02-04  rocky <rb@dustyfeet.com>
+ 
+-	* xdis/bytecode.py: Don't use depcrecated call
++	* xdis/bytecode.py: Don't use deprecated call
+ 
+ 2018-02-03  rocky <rb@dustyfeet.com>
+ 
+@@ -5146,7 +5146,7 @@
+ 
+ 2018-02-03  rocky <rb@dustyfeet.com>
+ 
+-	* xdis/magics.py: Python 2.4 compatiablity
++	* xdis/magics.py: Python 2.4 compatibility
+ 
+ 2018-02-01  rocky <rb@dustyfeet.com>
+ 
+@@ -5204,7 +5204,7 @@
+ 
+ 2018-01-22  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/setup-master.sh, admin-tools/setup-python-2.4.sh: 
++	* admin-tools/setup-master.sh, admin-tools/setup-python-2.4.sh:
+ 	Administrivia
+ 
+ 2018-01-22  rocky <rocky@dusytfeet.com>
+@@ -5355,7 +5355,7 @@
+ 
+ 2017-12-09  rocky <rb@dustyfeet.com>
+ 
+-	* xdis/main.py: Python 2.4 compatability
++	* xdis/main.py: Python 2.4 compatibility
+ 
+ 2017-12-09  rocky <rb@dustyfeet.com>
+ 
+@@ -5386,7 +5386,7 @@
+ 
+ 2017-12-02  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/make-dist-newer.sh, admin-tools/make-dist-older.sh: 
++	* admin-tools/make-dist-newer.sh, admin-tools/make-dist-older.sh:
+ 	Get ready for release 3.6.2
+ 
+ 2017-12-02  rocky <rocky@dusytfeet.com>
+@@ -5492,7 +5492,7 @@
+ 	* NEWS, xdis/opcodes/opcode_pypy26.py,
+ 	xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py,
+ 	xdis/opcodes/opcode_pypy35.py, xdis/version.py: Get ready for
+-	release 3.6.0 Add opcode_pypyXX compatability Update NEWS
++	release 3.6.0 Add opcode_pypyXX compatibility Update NEWS
+ 
+ 2017-09-21  rocky <rocky@dusytfeet.com>
+ 
+@@ -5576,7 +5576,7 @@
+ 2017-09-04  rocky <rocky@dusytfeet.com>
+ 
+ 	* pytest/test_bytecode.py, xdis/bytecode.py, xdis/opcodes/base.py,
+-	xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_37.py, xdis/util.py: 
++	xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_37.py, xdis/util.py:
+ 	bytcode decoding a la 3.6. Add EXTENDED_ARG_SHIFT There are some big and important structural changes here.
+ 	unpack_opargs_bytecode is similar to unpack_opargs_wordcode of 3.6.  It probably fixes a long-standing but little-noticed bug in how
+ 	Python 2.x disassembles code; it also modularizes and simplifies
+@@ -5648,7 +5648,7 @@
+ 
+ 2017-08-15  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/magics.py, xdis/op_imports.py, xdis/opcodes/opcode_37.py: 
++	* xdis/magics.py, xdis/op_imports.py, xdis/opcodes/opcode_37.py:
+ 	Python 3.7.0-dev support
+ 
+ 2017-08-15  rocky <rocky@dusytfeet.com>
+@@ -5697,11 +5697,11 @@
+ 
+ 2017-08-12  rocky <rocky@dusytfeet.com>
+ 
+-	* ChangeLog, NEWS, xdis/bytecode.py, xdis/main.py, xdis/wordcode.py: 
++	* ChangeLog, NEWS, xdis/bytecode.py, xdis/main.py, xdis/wordcode.py:
+ 	Add switch to allow showing dup line numbers Python's disassembly doesn't show line numbers other than the first
+ 	one when there is more entry for a given line. (That's probably a
+ 	bug that should be reported?) Right now we show the full deal in pydisasm for asm format.  Here it
+-	is imporant since we recreate the line number table based on
++	is important since we recreate the line number table based on
+ 	information given in the instructions.  We could and probably should allow showing all of the line number in
+ 	the default format as well.  Underneath this commit adds the parameter to control that.
+ 
+@@ -5820,7 +5820,7 @@
+ 
+ 	* xdis/bytecode.py, xdis/wordcode.py: Python 3.6 bytecode/wordcode
+ 	handling...  Correct JREL offset in findlabels for wordcode instructions Simplify
+-	findlabels. I think this is right, but not totally sure.  bytecode.py: distiguish names bytecode (string) from code (object)
++	findlabels. I think this is right, but not totally sure.  bytecode.py: distinguish names bytecode (string) from code (object)
+ 	better
+ 
+ 2017-07-10  rocky <rb@dustyfeet.com>
+@@ -5907,7 +5907,7 @@
+ 
+ 2017-07-06  rocky <rb@dustyfeet.com>
+ 
+-	* xdis/code.py, xdis/marsh.py: Python cross-version compatable
++	* xdis/code.py, xdis/marsh.py: Python cross-version compatible
+ 	marshalling
+ 
+ 2017-07-05  rocky <rb@dustyfeet.com>
+@@ -5933,7 +5933,7 @@
+ 2017-07-03  rocky <rb@dustyfeet.com>
+ 
+ 	* test_unit/test_dis34.py, xdis/bytecode.py: in asm mode turn
+-	relative jumps into labels Each instruction now has an intruction size field: inst_size
++	relative jumps into labels Each instruction now has an instruction size field: inst_size
+ 
+ 2017-07-02  rocky <rb@dustyfeet.com>
+ 
+@@ -6045,7 +6045,7 @@
+ 	xdis/opcodes/opcode_32.py, xdis/opcodes/opcode_33.py,
+ 	xdis/opcodes/opcode_34.py, xdis/opcodes/opcode_35.py,
+ 	xdis/opcodes/opcode_36.py, xdis/opcodes/opcode_3x.py: Start adding
+-	formating of EXTENDED_ARG argument
++	formatting of EXTENDED_ARG argument
+ 
+ 2017-05-18  rocky <rocky@dusytfeet.com>
+ 
+@@ -6142,9 +6142,9 @@
+ 
+ 	* Makefile, pytest/test_opcode.py, test/Makefile,
+ 	test_unit/Makefile, test_unit/test_opcode.py,
+-	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py: 
++	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_3x.py:
+ 	SETUP_ASYNC_WITH is jrel ...  found by pytest/test_opcode.py opcode_35.py: correct SETUP_ASYNC_WITH Makefile: add clean target
+-	opcode_3x.py: small formating change
++	opcode_3x.py: small formatting change
+ 
+ 2017-03-15  R. Bernstein <rocky@users.noreply.github.com>
+ 
+@@ -6171,7 +6171,7 @@
+ 
+ 	* Makefile: Change `make unittest` to run `setup.py test`.  That will make the way tests are run by robots (e.g. by TravisCI)
+ 	similar to way they are run by humans.  Also it seems that currently most tests in `test_unit/` and all
+-	tests in `pytest/` are not run by continious integration.  This
++	tests in `pytest/` are not run by continuous integration.  This
+ 	commit fixes that.
+ 
+ 2017-03-08  Kirill Spitsyn <ksp@google.com>
+@@ -6188,7 +6188,7 @@
+ 2017-03-08  Kirill Spitsyn <ksp@google.com>
+ 
+ 	* pytest/{test_load.py => test_load_file.py}: Rename test file to
+-	avoid confusing `py.test`.  The similary named files in `pytest` and `test_unit` directory were
++	avoid confusing `py.test`.  The similarly named files in `pytest` and `test_unit` directory were
+ 	causing `py.test` to fail with: % py.test ============================ test session starts
+ 	============================= platform linux2 -- Python 2.7.6,
+ 	pytest-3.0.6, py-1.4.32, pluggy-0.4.0 rootdir:
+@@ -9699,7 +9699,7 @@
+ 	xdis/opcodes/opcode_23.py, xdis/opcodes/opcode_24.py,
+ 	xdis/opcodes/opcode_25.py, xdis/opcodes/opcode_26.py,
+ 	xdis/opcodes/opcode_27.py, xdis/opcodes/opcode_33.py,
+-	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py: 
++	xdis/opcodes/opcode_pypy26.py, xdis/opcodes/opcode_pypy27.py:
+ 	Another round of DRYing code
+ 
+ 2017-01-14  rocky <rocky@dusytfeet.com>
+@@ -9888,7 +9888,7 @@
+ 
+ 2016-10-27  rocky <rb@dustyfeet.com>
+ 
+-	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py: 
++	* xdis/opcodes/opcode_30.py, xdis/opcodes/opcode_31.py:
+ 	Clarification of EXTENDED_ARG in 3.0 and 3.1
+ 
+ 2016-10-25  rocky <rb@dustyfeet.com>
+@@ -10135,7 +10135,7 @@
+ 	* Makefile, test/test_pyenvlib.py,
+ 	test_unit/2.7/test_dis.py-notyet, test_unit/{test_dis.py-notyet =>
+ 	test-dis.py}, test_unit/{test_disasm.py-nottyet =>
+-	test_disasm.py-notyet}, xdis/dropbox/decrypt25.py, xdis/marsh.py: 
++	test_disasm.py-notyet}, xdis/dropbox/decrypt25.py, xdis/marsh.py:
+ 	Python 3 compliance and tests Python 3 compliance in marsh.py and decrypt25.py, but more work is
+ 	needed.  Add more tests, however fragmented
+ 
+@@ -10178,7 +10178,7 @@
+ 
+ 2016-08-26  rocky <rocky@dusytfeet.com>
+ 
+-	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py: 
++	* test/test_pyenvlib.py, xdis/opcodes/opcode_31.py, xdis/verify.py:
+ 	Python 3.1 opcode bugs ...  verify assert statement.  test_pyenvlib.py: Allow 3.1 testing
+ 
+ 2016-08-26  rocky <rocky@dusytfeet.com>
+@@ -10311,7 +10311,7 @@
+ 
+ 2016-07-25  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py: 
++	* xdis/opcodes/opcode_pypy27.py, xdis/opcodes/opcode_pypy32.py:
+ 	Document PyPY opts better And fix a bog in JUMP_IF_NOT_DEBUG jrel_op call
+ 
+ 2016-07-24  rocky <rocky@dusytfeet.com>
+@@ -10381,7 +10381,7 @@
+ 	xdis/opcodes/opcode_33.py, xdis/opcodes/opcode_34.py,
+ 	xdis/opcodes/opcode_35.py, xdis/opcodes/opcode_36.py,
+ 	xdis/opcodes/opcode_3x.py, xdis/opcodes/opcode_pypy26.py,
+-	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py: 
++	xdis/opcodes/opcode_pypy27.py, xdis/util.py, xdis/wordcode.py:
+ 	Moagstar's Python 3.6 support With some small changes - fix some of my typos - handle a merge conflict in xdis/byteocde
+ 
+ 2016-07-20  rocky <rocky@dusytfeet.com>
+@@ -10485,7 +10485,7 @@
+ 
+ 2016-05-31  rocky <rocky@dusytfeet.com>
+ 
+-	* xdis/main.py: Reduce uneccesary imports of unused opcodes
++	* xdis/main.py: Reduce unnecessary imports of unused opcodes
+ 
+ 2016-05-31  rocky <rocky@dusytfeet.com>
+ 
+@@ -10541,7 +10541,7 @@
+ 2016-05-26  rocky <rocky@dusytfeet.com>
+ 
+ 	* ChangeLog, NEWS, test/Makefile, test/test_pyenvlib.py: Get ready
+-	for relase 1.00 test/test_pyenv.lib: Python 2.5 tolerance.
++	for release 1.00 test/test_pyenv.lib: Python 2.5 tolerance.
+ 
+ 2016-05-26  rocky <rocky@dusytfeet.com>
+ 
+@@ -10642,12 +10642,12 @@
+ 
+ 	* .gitignore, pyxdis/main.py, pyxdis/opcodes/opcode_26.py,
+ 	pyxdis/opcodes/opcode_27.py, pyxdis/opcodes/opcode_pypy27.py,
+-	test/simple_source/05_24_float.py, test_unit/test_opcode.py: 
++	test/simple_source/05_24_float.py, test_unit/test_opcode.py:
+ 	Separate PYPY 2.7 from 2.7; DRY 27
+ 
+ 2016-05-22  rocky <rocky@dusytfeet.com>
+ 
+-	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py: 
++	* README.rst, pyxdis/opcodes/opcode_32.py, test_unit/test_load.py:
+ 	Some tolerance for pypy
+ 
+ 2016-05-22  rocky <rocky@dusytfeet.com>
+@@ -10670,14 +10670,14 @@
+ 	* pyxdis/__init__.py, pyxdis/load.py, pyxdis/main.py,
+ 	pyxdis/marsh.py, pyxdis/opcodes/opcode_23.py,
+ 	pyxdis/opcodes/opcode_24.py, pyxdis/opcodes/opcode_25.py,
+-	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py: 
++	pyxdis/opcodes/opcode_26.py, pyxdis/util.py, test/test_pyenvlib.py:
+ 	Allow bytecodes back to 2.3 or so. and...  Add timestamps when disassembly Rewrite to allow some tolerance to
+ 	older Pythons
+ 
+ 2016-05-22  rocky <rocky@dusytfeet.com>
+ 
+ 	* README.rst, pyxdis/load.py, pyxdis/main.py, pyxdis/util.py,
+-	test/test_pyenvlib.py: Correct command-line invocation and...  Improve function infomation: * Split out positional argument names and local variables * Remove duplicate <modle> info.  * comment *all* meta fields * add timestamp info
++	test/test_pyenvlib.py: Correct command-line invocation and...  Improve function information: * Split out positional argument names and local variables * Remove duplicate <module> info.  * comment *all* meta fields * add timestamp info
+ 
+ 2016-05-22  rocky <rocky@dusytfeet.com>
+ 
+@@ -10753,7 +10753,7 @@
+ 
+ 2016-05-19  rocky <rb@dustyfeet.com>
+ 
+-	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py: 
++	* .travis.yml, test_unit/test_load.py, test_unit/test_opcode.py:
+ 	More opcodes, more travis testing.
+ 
+ 2016-05-19  rocky <rb@dustyfeet.com>
+@@ -10774,4 +10774,3 @@
+ 2016-05-19  rocky <rocky@dusytfeet.com>
+ 
+ 	* Start Python cross disasemble/marshal project For older history see uncompyle6
+-
