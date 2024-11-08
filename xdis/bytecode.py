@@ -339,7 +339,14 @@ def get_instructions_bytes(
                 argval = get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
             elif op in opc.LOCAL_OPS:
-                if opc.version_tuple >= (3, 11):
+                if opc.version_tuple >= (3, 13) and opc.opname[op] in ("LOAD_FAST_LOAD_FAST", "STORE_FAST_LOAD_FAST", "STORE_FAST_STORE_FAST"):
+                    arg1 = arg >> 4
+                    arg2 = arg & 15
+                    argval1, argrepr1 = _get_name_info(arg1, (varnames or tuple()) + (cells or tuple()))
+                    argval2, argrepr2 = _get_name_info(arg2, (varnames or tuple()) + (cells or tuple()))
+                    argval = argval1, argval2
+                    argrepr = argrepr1 + ", " + argrepr2
+                elif opc.version_tuple >= (3, 11):
                     argval, argrepr = _get_name_info(
                         arg, (varnames or tuple()) + (cells or tuple())
                     )
@@ -353,11 +360,13 @@ def get_instructions_bytes(
                 else:
                     argval, argrepr = _get_name_info(arg, cells)
             elif op in opc.COMPARE_OPS:
-                argval = (
-                    opc.cmp_op[arg >> 4]
-                    if opc.python_version >= (3, 12)
-                    else opc.cmp_op[arg]
-                )
+                if opc.python_version >= (3,13):
+                    # The fifth-lowest bit of the oparg now indicates a forced conversion to bool.
+                    argval = (opc.cmp_op[arg >> 5])
+                elif opc.python_version >= (3,12):
+                    argval = (opc.cmp_op[arg >> 4])
+                else:
+                    argval = (opc.cmp_op[arg])
                 argrepr = argval
             elif op in opc.NARGS_OPS:
                 opname = opc.opname[op]

@@ -17,6 +17,7 @@
 """Python disassembly functions specific to wordcode from Python 3.6+
 """
 from xdis.bytecode import op_has_argument
+from xdis.cross_dis import unpack_opargs_bytecode_310, _get_cache_size_313
 
 
 def unpack_opargs_wordcode(code, opc):
@@ -52,12 +53,18 @@ def findlabels(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
     which are the targets of jump instruction.
     """
+    unpack_opargs = unpack_opargs_wordcode if opc.version_tuple < (3, 10) else unpack_opargs_bytecode_310
+
     offsets = []
-    for offset, op, arg in unpack_opargs_wordcode(code, opc):
+    for offset, op, arg in unpack_opargs(code, opc):
         if arg is not None:
             arg2 = arg * 2 if opc.version_tuple >= (3, 10) else arg
             if op in opc.JREL_OPS:
+                if opc.version_tuple >= (3, 11) and opc.opname[op] in ("JUMP_BACKWARD", "JUMP_BACKWARD_NO_INTERRUPT"):
+                    arg = -arg
                 jump_offset = offset + 2 + arg2
+                if opc.version_tuple >= (3,13):
+                    jump_offset += 2 * _get_cache_size_313(opc.opname[op])
             elif op in opc.JABS_OPS:
                 jump_offset = arg2
             else:
