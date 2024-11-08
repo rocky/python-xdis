@@ -28,8 +28,10 @@ from xdis.codetype.code30 import Code3
 from xdis.codetype.code38 import Code38
 from xdis.codetype.code310 import Code310
 from xdis.codetype.code311 import Code311, Code311FieldNames
-from xdis.codetype.code313 import Code313
 from xdis.version_info import PYTHON_VERSION_TRIPLE
+
+if PYTHON_VERSION_TRIPLE >= (3, 8):
+    from xdis.codetype.code313 import Code313
 
 
 def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
@@ -101,7 +103,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
             )
-        elif version_tuple[:2] < (3,13):
+        elif version_tuple[:2] < (3, 13):
             return Code311(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
@@ -122,7 +124,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_linetable=line_table,
                 co_exceptiontable=code.co_exceptiontable,
             )
-        else:  # version tuple >= 3, 13
+        elif PYTHON_VERSION_TRIPLE >= (3, 7):  # version tuple >= 3, 13
             return Code313(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
@@ -142,6 +144,12 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
                 co_exceptiontable=code.co_exceptiontable,
+            )
+        else:
+            import sys
+
+            raise RuntimeError(
+                "3.13 and greater is not supported from %s" % sys.version
             )
     elif version_tuple > (2, 0):
         # 2.0 .. 2.7
@@ -209,7 +217,7 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
         elif version_tuple[:2] == (3, 10):
             # 3.10
             return Code310
-        elif version_tuple[:2] < (3,13):
+        elif version_tuple[:2] < (3, 13):
             # 3.11 ...
             return Code311
         else:
