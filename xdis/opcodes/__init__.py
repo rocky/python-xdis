@@ -16,5 +16,5 @@
 """
 Bytecode opcode modules with some classification
 of stack usage and information for formatting instructions.
-This covers infortationni the Python stdlib opcodes.py.
+This covers information from the Python stdlib opcodes.py.
 """

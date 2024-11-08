@@ -3,16 +3,7 @@ CPython 3.13 bytecode opcodes
 """
 
 import xdis.opcodes.opcode_312 as opcode_312
-from xdis.opcodes.base import (
-    binary_op,
-    def_op,
-    finalize_opcodes,
-    init_opdata,
-    jrel_op,
-    name_op,
-    rm_op,
-    update_pj3,
-)
+from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
 
 version_tuple = (3, 13)
 python_implementation = "CPython"
@@ -29,6 +20,7 @@ loc["oppush"].extend([0])
 # have argument changed in 3.13
 HAVE_ARGUMENT = 44
 
+# fmt: off
 ## Lots of ops changed opcodes in 3.13 so this is long...
 ## These are removed or replaced since 3.12...
 #           OP NAME                      OPCODE
@@ -321,6 +313,8 @@ def_op(loc, "CALL_KW", 57, -2, 1)
 def_op(loc, "CONVERT_VALUE", 60, 1, 1)
 def_op(loc, "SET_FUNCTION_ATTRIBUTE", 106, 2, 1)
 
+# fmt: on
+
 ### update opinfo tables
 # completely redefined tables
 loc["hasarg"] = [
@@ -458,13 +452,6 @@ for fmt_table in (opcode_arg_fmt, opcode_extended_fmt):
     fmt_table.pop("MAKE_FUNCTION")  # MAKE_FUNCTION formatting not in 3.13
 opcode_arg_fmt13 = opcode_arg_fmt
 opcode_extended_fmt13 = opcode_extended_fmt
-
-from xdis.opcodes.opcode_312 import (
-    findlinestarts as findlinestarts_312,
-    format_CALL_INTRINSIC_1,
-    format_CALL_INTRINSIC_2,
-    parse_location_entries,
-)
 
 
 # update any calls to findlinestarts to include the version tuple
