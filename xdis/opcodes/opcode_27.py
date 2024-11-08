@@ -43,6 +43,7 @@ init_opdata(l, opcode_26, version_tuple)
 
 # fmt: off
 # Below are opcode changes since Python 2.6
+rm_op(l, "LIST_APPEND",    18)
 rm_op(l, "BUILD_MAP",     104)
 rm_op(l, "LOAD_ATTR",     105)
 rm_op(l, "COMPARE_OP",    106)
