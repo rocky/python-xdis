@@ -12,17 +12,18 @@ class TestModules(unittest.TestCase):
             print("Testing Python Version : %s" % version_tuple_to_str())
         try:
             self.assertEqual(dis.opname, xdis.opname)
-        except AssertionError(ae):
+        except AssertionError:
             if len(dis.opname) != len(xdis.opname):
                 print("Opname table length mismatch between dis and xdis")
-                ae.add_note("OPNAME TABLE LENGTH MISMATCH, LONGER TABLE WILL BE TRUNCATED")
+                print("OPNAME TABLE LENGTH MISMATCH, LONGER TABLE WILL BE TRUNCATED")
+                raise AssertionError
             for index, (dop, xop) in enumerate(zip(dis.opname, xdis.opname)):
                 if dop != xop:
                     print("-"*20)
                     print("Mismatch at op %s" % index)
                     print("dis opname  : %s" % dop)
                     print("xdis opname : %s" % xop)
-            raise ae
+            raise AssertionError
 
         # test "has.." tables
         xmod = xdis.get_opcode_module()
@@ -30,9 +31,9 @@ class TestModules(unittest.TestCase):
         for attr in attrs:
             try:
                 self.assertEqual(sorted(getattr(dis, attr)), sorted(getattr(xmod, attr)))
-            except AssertionError(ae):
-                ae.add_note("Mismatch 'has' table : %s" % attr)
-                raise ae
+            except AssertionError:
+                print("Mismatch 'has' table : %s" % attr)
+                raise AssertionError
 
 if __name__ == "__main__":
     unittest.main()
