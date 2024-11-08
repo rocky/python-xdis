@@ -28,6 +28,7 @@ from xdis.codetype.code30 import Code3
 from xdis.codetype.code38 import Code38
 from xdis.codetype.code310 import Code310
 from xdis.codetype.code311 import Code311, Code311FieldNames
+from xdis.codetype.code313 import Code313
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
@@ -100,8 +101,29 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
             )
-        else:  # version tuple >= 3, 11
+        elif version_tuple[:2] < (3,13):
             return Code311(
+                co_argcount=code.co_argcount,
+                co_posonlyargcount=code.co_posonlyargcount,
+                co_kwonlyargcount=code.co_kwonlyargcount,
+                co_nlocals=code.co_nlocals,
+                co_stacksize=code.co_stacksize,
+                co_flags=code.co_flags,
+                co_consts=code.co_consts,
+                co_code=code.co_code,
+                co_names=code.co_names,
+                co_varnames=code.co_varnames,
+                co_freevars=code.co_freevars,
+                co_cellvars=code.co_cellvars,
+                co_filename=code.co_filename,
+                co_name=code.co_name,
+                co_qualname=code.co_qualname,
+                co_firstlineno=code.co_firstlineno,
+                co_linetable=line_table,
+                co_exceptiontable=code.co_exceptiontable,
+            )
+        else:  # version tuple >= 3, 13
+            return Code313(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
                 co_kwonlyargcount=code.co_kwonlyargcount,
@@ -187,9 +209,11 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
         elif version_tuple[:2] == (3, 10):
             # 3.10
             return Code310
-        else:
+        elif version_tuple[:2] < (3,13):
             # 3.11 ...
             return Code311
+        else:
+            return Code313
     elif version_tuple > (2, 0):
         # 2.0 .. 2.7
         return Code2

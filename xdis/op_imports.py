@@ -58,6 +58,7 @@ from xdis.opcodes import (
     opcode_310pypy,
     opcode_311,
     opcode_312,
+    opcode_313,
 )
 from xdis.version_info import IS_PYPY, version_tuple_to_str
 
@@ -145,6 +146,7 @@ op_imports = {
     "3.11a7e": opcode_311,
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
+    "3.13.0rc3": opcode_313,
     "2.6pypy": opcode_26pypy,
     "2.7pypy": opcode_27pypy,
     "2.7.12pypy": opcode_27pypy,
