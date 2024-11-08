@@ -1,3 +1,11 @@
+6.1.2 2024-11-08
+================
+
+* Support for Python 3.12 and 3.12 added courtesy of Elliot Tarbet 2elli
+* Fixes issues: #137, #138, #146, and #147
+* Include Python 3.12.5
+* Raise exception on invalid timestamp
+
 6.1.1 2024-07-21
 =================
 
