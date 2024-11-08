@@ -3,16 +3,7 @@ CPython 3.13 bytecode opcodes
 """
 
 import xdis.opcodes.opcode_312 as opcode_312
-from xdis.opcodes.base import (
-    binary_op,
-    def_op,
-    finalize_opcodes,
-    init_opdata,
-    jrel_op,
-    name_op,
-    rm_op,
-    update_pj3,
-)
+from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
 
 version_tuple = (3, 13)
 python_implementation = "CPython"
@@ -21,14 +12,15 @@ loc = locals()
 
 init_opdata(loc, opcode_312, version_tuple)
 
-# extend op tables for new psuedo ops
-loc["opname"].extend([f"<267>"])
+# extend op tables for new pseudo ops
+loc["opname"].extend(["<267>"])
 loc["oppop"].extend([0])
 loc["oppush"].extend([0])
 
 # have argument changed in 3.13
 HAVE_ARGUMENT = 44
 
+# fmt: off
 ## Lots of ops changed opcodes in 3.13 so this is long...
 ## These are removed or replaced since 3.12...
 #           OP NAME                      OPCODE
@@ -321,35 +313,155 @@ def_op(loc, "CALL_KW"               , 57 , -2, 1)
 def_op(loc, "CONVERT_VALUE"         , 60 , 1 , 1)
 def_op(loc, "SET_FUNCTION_ATTRIBUTE", 106, 2 , 1)
 
+# fmt: on
+
 ### update opinfo tables
 # completely redefined tables
-loc["hasarg"] = [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 149, 236, 240, 241, 242, 243, 244, 245, 248, 249, 250, 251, 252, 253, 256, 257, 258, 259, 260, 261, 262, 264, 265, 266, 267]
+loc["hasarg"] = [
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    149,
+    236,
+    240,
+    241,
+    242,
+    243,
+    244,
+    245,
+    248,
+    249,
+    250,
+    251,
+    252,
+    253,
+    256,
+    257,
+    258,
+    259,
+    260,
+    261,
+    262,
+    264,
+    265,
+    266,
+    267,
+]
 loc["hascompare"] = [58]
 loc["hasconst"] = [83, 103, 240]
 loc["haslocal"] = [65, 85, 86, 87, 88, 110, 111, 112, 258, 267]
-loc["hasname"] = [63, 66, 67, 74, 75, 82, 90, 91, 92, 93, 108, 113, 114, 259, 260, 261, 262]
+loc["hasname"] = [
+    63,
+    66,
+    67,
+    74,
+    75,
+    82,
+    90,
+    91,
+    92,
+    93,
+    108,
+    113,
+    114,
+    259,
+    260,
+    261,
+    262,
+]
 loc["hasfree"] = [64, 84, 89, 94, 109]
 # add new table "hasjump"
 loc.update({"hasjump": [72, 77, 78, 79, 97, 98, 99, 100, 104, 256, 257]})
 loc["hasjrel"] = loc["hasjump"]
 
 ### update formatting
-opcode_arg_fmt =  opcode_312.opcode_arg_fmt312.copy()
-opcode_extended_fmt =  opcode_312.opcode_extended_fmt312.copy()
+opcode_arg_fmt = opcode_312.opcode_arg_fmt312.copy()
+opcode_extended_fmt = opcode_312.opcode_extended_fmt312.copy()
 for fmt_table in (opcode_arg_fmt, opcode_extended_fmt):
     fmt_table.pop("MAKE_FUNCTION")  # MAKE_FUNCTION formatting not in 3.13
 opcode_arg_fmt13 = opcode_arg_fmt
 opcode_extended_fmt13 = opcode_extended_fmt
 
-from xdis.opcodes.opcode_312 import findlinestarts as findlinestarts_312, parse_location_entries, format_CALL_INTRINSIC_1, format_CALL_INTRINSIC_2
 
 # update any calls to findlinestarts to include the version tuple
 def findlinestarts_313(code, dup_lines=False):
-    lastline = False # None is a valid line number
+    lastline = False  # None is a valid line number
     for start, _, line in code.co_lines():
         if line is not lastline:
             lastline = line
             yield start, line
+
 
 findlinestarts = findlinestarts_313
 
