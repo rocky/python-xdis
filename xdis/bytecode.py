@@ -179,11 +179,11 @@ def offset2line(offset, linestarts):
 
 
 def _parse_varint(iterator):
-    b = next(iterator)
+    b = iterator.next()
     val = b & 63
     while b & 64:
         val <<= 6
-        b = next(iterator)
+        b = iterator.next()
         val |= b & 63
     return val
 
@@ -475,10 +475,12 @@ class Bytecode:
         self.opnames = opc.opname
         self.current_offset = current_offset
 
-        if opc.version_tuple >= (3, 11) and hasattr(co, "co_exceptiontable"):
-            self.exception_entries = parse_exception_table(co.co_exceptiontable)
-        else:
-            self.exception_entries = None
+        # FIXME
+        self.exception_entries = None
+        # if opc.version_tuple >= (3, 11) and hasattr(co, "co_exceptiontable"):
+        #     self.exception_entries = parse_exception_table(co.co_exceptiontable)
+        # else:
+        #     self.exception_entries = None
 
     def __iter__(self):
         co = self.codeobj

@@ -81,7 +81,7 @@ Type -h for for full help.""" % program
         opts, files = getopt.getopt(sys.argv[1:], 'hVUHF:S',
                                     ['help', 'version', 'header', 'format',
                                      'show-source'])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError(e):
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
 

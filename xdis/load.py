@@ -141,7 +141,7 @@ def load_file(filename, out=sys.stdout):
 
 
 def load_module(
-    filename: str, code_objects=None, fast_load: bool = False, get_code: bool = True
+    filename, code_objects=None, fast_load = False, get_code = True
 ):
     """load a module without importing it.
     Parameters:

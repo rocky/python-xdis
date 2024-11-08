@@ -237,8 +237,9 @@ See Also
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
 .. _remake: http://bashdb.sf.net/remake
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xdis.svg
-.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg  :target: https://badge.fury.io/py/xdis
-.. |PyPI Installs| image:: https://pepy.tech/badge/xdis/month
+.. |Latest Version| image:: https://badge.fury.io/py/xdis.svg
+		 :target: https://badge.fury.io/py/xdis
+.. |PyPI Installs| image:: https://static.pepy.tech/badge/xdis
 .. |packagestatus| image:: https://repology.org/badge/vertical-allrepos/python:xdis.svg
 		 :target: https://repology.org/project/python:xdis/versions
 		 :alt: Packaging Status

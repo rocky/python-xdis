@@ -62,7 +62,10 @@ def findlabels(code, opc):
     """Returns a list of instruction offsets in the supplied bytecode
     which are the targets of jump instruction.
     """
-    unpack_opargs = unpack_opargs_wordcode if opc.version_tuple < (3, 10) else unpack_opargs_bytecode_310
+    if opc.version_tuple < (3, 10):
+        unpack_opargs = unpack_opargs_wordcode
+    else:
+        unpack_opargs = unpack_opargs_bytecode_310
 
     offsets = []
     for offset, op, arg in unpack_opargs(code, opc):

@@ -531,6 +531,8 @@ class _VersionIndependentUnmarshaller:
             CO_FAST_FREE = 0x80
 
             for name, kind in zip(co_localsplusnames, co_localspluskinds):
+                if isinstance(kind, str):
+                    continue
                 if kind & CO_FAST_LOCAL:
                     co_varnames += (name,)
                     if kind & CO_FAST_CELL:
