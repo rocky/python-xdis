@@ -52,6 +52,8 @@ rm_op(l, "IMPORT_FROM",   108)
 rm_op(l, "JUMP_IF_FALSE", 111)
 rm_op(l, "EXTENDED_ARG",  143)
 rm_op(l, "JUMP_IF_TRUE",  112)
+rm_op(l, "SETUP_EXCEPT",  121)
+rm_op(l, "SETUP_FINALLY", 122)
 
 # These have changed since 2.6 in stack effects.
 #          OP NAME            OPCODE   POP PUSH

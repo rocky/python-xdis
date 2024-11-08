@@ -33,6 +33,8 @@ class TestModules(unittest.TestCase):
                 self.assertEqual(sorted(getattr(dis, attr)), sorted(getattr(xmod, attr)))
             except AssertionError:
                 print("Mismatch 'has' table : %s" % attr)
+                print(sorted(getattr(dis, attr)))
+                print(sorted(getattr(xmod, attr)))
                 raise AssertionError
 
 if __name__ == "__main__":
