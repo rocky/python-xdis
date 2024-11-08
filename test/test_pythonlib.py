@@ -105,6 +105,8 @@ for vers in (
     3.8,
     "3.9",
     "3.10",
+    "3.11",
+    "3.12"
 ):
     bytecode = "bytecode_%s" % vers
     key = "bytecode-%s" % vers

@@ -140,7 +140,9 @@ def load_file(filename, out=sys.stdout):
     return co
 
 
-def load_module(filename, code_objects=None, fast_load=False, get_code=True):
+def load_module(
+    filename: str, code_objects=None, fast_load: bool = False, get_code: bool = True
+):
     """load a module without importing it.
     Parameters:
        filename:    name of file containing Python byte-code object
@@ -149,9 +151,12 @@ def load_module(filename, code_objects=None, fast_load=False, get_code=True):
        code_objects: list of additional code_object from this
                      file. This might be a types.CodeType or one of
                      the portable xdis code types, e.g. Code38, Code3,
-                     Code2, etc. This can be empty
+                     Code2, etc. This can be empty.
 
-       get_code:     bool. Parsing the code object takes a bit of
+       fast_load:    If True, then use Python's builtin loader. This can be done only if
+                     the bytecode version matches the current bytecode interpreter.
+
+       get_code:     Parsing the code object takes a bit of
                      parsing time, but sometimes all you want is the
                      module info, time string, code size, python
                      version, etc. For that, set `get_code` to

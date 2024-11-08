@@ -98,6 +98,9 @@ hasname hasnargs hasstore hasvargs oppop oppush
 nofollow nullaryop nullaryloadop ternaryop unaryop
 """.split()
 
+# additional fields needed to copy in versions >= 3.13
+fields2copy_313 = "hasarg hasexc".split()  # added in 3.12
+fields2copy_314 = "hasjump".split()  # added in 3.13
 
 def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     """Sets up a number of the structures found in Python's
@@ -465,6 +468,11 @@ def update_sets(loc):
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
     loc["VARGS_OPS"] = frozenset(loc["hasvargs"])
     loc["STORE_OPS"] = frozenset(loc["hasstore"])
+    if python_version and python_version >= (3,12):
+        loc["ARG_OPS"] = frozenset(loc["hasarg"])
+        loc["EXC_OPS"] = frozenset(loc["hasarg"])
+    if python_version and python_version >= (3,13):
+        loc["JUMP_OPS"] = frozenset(loc["hasjump"])
 
 
 def dump_opcodes(opmap):
