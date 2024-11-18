@@ -177,7 +177,6 @@ class Instruction(_Instruction):
         # Column: Opcode argument
         argrepr = self.argrepr
         if self.arg is not None:
->>>>>>> python-3.0-to-3.2
             # The ``argrepr`` value when the instruction was created
             # generally has all the information we require.  However,
             # for "asm" format, want additional explicit information
