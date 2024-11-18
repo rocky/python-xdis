@@ -209,10 +209,7 @@ class Instruction(_Instruction):
                     # so that other kinds of compatible namedtuple Instructions
                     # can be used. In particular, the control-flow project
                     # defines such an ExtendedInstruction namedtuple
-                    self = Instruction(*new_instruction)
-=======
                     self = self.__class__(*new_instruction)
->>>>>>> python-3.6-to-3.10
                     del instructions[-1]
                     instructions.append(self)
                 elif (
