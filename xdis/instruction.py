@@ -60,11 +60,8 @@ class Instruction(_Instruction):
       arg:     Optional numeric argument to operation (if any). Otherwise, None.
 
       argval:  resolved arg value (if known). Otherwise, the same as ``arg``.
-      argrepr: human-readable description of operation argument.
 
-      tos_str:      If not None, a string representation of the top of the stack (TOS).
-                    This is obtained by scanning previous instructions and
-                    using information there and in their ``tos_str`` fields.
+      argrepr: human-readable description of operation argument.
 
       positions: Optional dis.Positions object holding the start and end locations that
                  are covered by this instruction. This not implemented yet.
@@ -81,6 +78,14 @@ class Instruction(_Instruction):
       fallthrough:  True if the instruction can (not must) fall through to the next
                     instruction. Note conditionals are in this category, but
                     returns, raise, and unconditional jumps are not.
+
+      Note: the following fields have to appear in the order below and be at the end.
+      disassembly may replace (delete and insert) an instruction, and it assumes
+      the ending fields are as follows:
+
+      tos_str:      If not None, a string representation of the top of the stack (TOS).
+                    This is obtained by scanning previous instructions and
+                    using information there and in their ``tos_str`` fields.
 
       start_offset: if not None the instruction with the lowest offset that
                     pushes a stack entry that is consume by this opcode
@@ -172,6 +177,7 @@ class Instruction(_Instruction):
         # Column: Opcode argument
         argrepr = self.argrepr
         if self.arg is not None:
+>>>>>>> python-3.0-to-3.2
             # The ``argrepr`` value when the instruction was created
             # generally has all the information we require.  However,
             # for "asm" format, want additional explicit information
@@ -202,15 +208,19 @@ class Instruction(_Instruction):
                     and line_starts.get(self.argval) is not None
                 ):
                     new_instruction = list(self)
-                    new_instruction[9] = "To line %s" % line_starts[self.argval]
-                    self = Instruction(*new_instruction)
+                    new_instruction[-2] = "To line %s" % line_starts[self.argval]
+                    # Here and below we use self.__class__ instead of Instruction
+                    # so that other kinds of compatible namedtuple Instructions
+                    # can be used. In particular, the control-flow project
+                    # defines such an ExtendedInstruction namedtuple
+                    self = self.__class__(*new_instruction)
                     del instructions[-1]
                     instructions.append(self)
                 elif (
                     hasattr(opc, "opcode_extended_fmt")
-                    and opc.opname[opcode] in opc.opcode_extended_fmt
+                    and self.opname in opc.opcode_extended_fmt
                 ):
-                    new_repr = opc.opcode_extended_fmt[opc.opname[opcode]](
+                    new_repr = opc.opcode_extended_fmt.get(self.opname, lambda opc, instr: None)(
                         opc, list(reversed(instructions))
                     )
                     start_offset = None
@@ -223,7 +233,8 @@ class Instruction(_Instruction):
                         new_instruction[-1] = start_offset
                         new_instruction[9] = new_repr
                         del instructions[-1]
-                        self = Instruction(*new_instruction)
+                        # See comment above abut the use of self.__class__
+                        self = self.__class__(*new_instruction)
                         instructions.append(self)
                         argrepr = new_repr
                 elif opcode in opc.nullaryloadop:
@@ -231,7 +242,8 @@ class Instruction(_Instruction):
                     new_instruction[9] = self.argrepr
                     start_offset = new_instruction[-1] = self.offset
                     del instructions[-1]
-                    self = Instruction(*new_instruction)
+                    # See comment above abut the use of self.__class__
+                    self = self.__class__(*new_instruction)
                     instructions.append(self)
                 pass
             if not argrepr:
@@ -262,9 +274,9 @@ class Instruction(_Instruction):
         elif asm_format in ("extended", "extended-bytes"):
             if (
                 hasattr(opc, "opcode_extended_fmt")
-                and opc.opname[opcode] in opc.opcode_extended_fmt
+                and self.opname in opc.opcode_extended_fmt
             ):
-                new_repr, start_offset = opc.opcode_extended_fmt[opc.opname[opcode]](
+                new_repr, start_offset = opc.opcode_extended_fmt.get(self.opname, (None, 0))(
                     opc, list(reversed(instructions))
                 )
                 if new_repr:
@@ -324,7 +336,8 @@ class Instruction(_Instruction):
                     new_instruction[9] = new_repr
                     new_instruction[-1] = start_offset
                     del instructions[-1]
-                    instructions.append(Instruction(*new_instruction))
+                    # See comment above abut the use of self.__class__
+                    instructions.append(self.__class__(*new_instruction))
                     argval = self.argval
                     if argval is None:
                         prefix = ""
@@ -337,7 +350,7 @@ class Instruction(_Instruction):
                 pass
             elif (
                 hasattr(opc, "opcode_arg_fmt")
-                and opc.opname[opcode] in opc.opcode_arg_fmt
+                and self.opname in opc.opcode_arg_fmt
             ) and self.argrepr is not None:
                 fields.append(self.argrepr)
                 pass
