@@ -333,6 +333,14 @@ def get_instructions_bytes(
             elif op in opc.JREL_OPS:
                 signed_arg = -arg if "JUMP_BACKWARD" in opc.opname[op] else arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
+                
+                #check cache instructions for python 3.13   
+                if opc.version_tuple >= (3, 13):
+                    if opc.opname[op] in ["POP_JUMP_IF_TRUE", "POP_JUMP_IF_FALSE", "POP_JUMP_IF_NONE", "POP_JUMP_IF_NOT_NONE"]:
+                        argval += 2
+                    elif opc.opname[op] == 'JUMP_BACKWARD':
+                        argval -= 2
+
                 # FOR_ITER has a cache instruction in 3.12
                 if opc.version_tuple >= (3, 12) and opc.opname[op] == "FOR_ITER":
                     argval += 2
