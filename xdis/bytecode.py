@@ -201,7 +201,8 @@ def parse_exception_table(exception_table: bytes):
             dl = _parse_varint(iterator)
             depth = dl >> 1
             lasti = bool(dl & 1)
-            entries.append(_ExceptionTableEntry(start, end, target, depth, lasti))
+            entries.append(_ExceptionTableEntry(
+                start, end, target, depth, lasti))
     except StopIteration:
         return entries
 
@@ -323,7 +324,8 @@ def get_instructions_bytes(
                     if arg & 1:
                         argrepr = "NULL|self + " + argrepr
                 elif (
-                    opc.version_tuple >= (3, 12) and opc.opname[op] == "LOAD_SUPER_ATTR"
+                    opc.version_tuple >= (
+                        3, 12) and opc.opname[op] == "LOAD_SUPER_ATTR"
                 ):
                     argval, argrepr = _get_name_info(arg >> 2, names)
                     if arg & 1:
@@ -333,6 +335,12 @@ def get_instructions_bytes(
             elif op in opc.JREL_OPS:
                 signed_arg = -arg if "JUMP_BACKWARD" in opc.opname[op] else arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
+                # deal with cache instructions in python 3.13
+                if opc.version_tuple >= (3, 13):
+                    if opc.opname[op] in ["POP_JUMP_IF_TRUE", "POP_JUMP_IF_FALSE", "POP_JUMP_IF_NONE", "POP_JUMP_IF_NOT_NONE"]:
+                        argval += 2
+                    elif opc.opname[op] == 'JUMP_BACKWARD':  # might be sus
+                        argval -= 2
                 # FOR_ITER has a cache instruction in 3.12
                 if opc.version_tuple >= (3, 12) and opc.opname[op] == "FOR_ITER":
                     argval += 2
@@ -344,8 +352,10 @@ def get_instructions_bytes(
                 if opc.version_tuple >= (3, 13) and opc.opname[op] in ("LOAD_FAST_LOAD_FAST", "STORE_FAST_LOAD_FAST", "STORE_FAST_STORE_FAST"):
                     arg1 = arg >> 4
                     arg2 = arg & 15
-                    argval1, argrepr1 = _get_name_info(arg1, (varnames or tuple()) + (cells or tuple()))
-                    argval2, argrepr2 = _get_name_info(arg2, (varnames or tuple()) + (cells or tuple()))
+                    argval1, argrepr1 = _get_name_info(
+                        arg1, (varnames or tuple()) + (cells or tuple()))
+                    argval2, argrepr2 = _get_name_info(
+                        arg2, (varnames or tuple()) + (cells or tuple()))
                     argval = argval1, argval2
                     argrepr = argrepr1 + ", " + argrepr2
                 elif opc.version_tuple >= (3, 11):
@@ -362,10 +372,10 @@ def get_instructions_bytes(
                 else:
                     argval, argrepr = _get_name_info(arg, cells)
             elif op in opc.COMPARE_OPS:
-                if opc.python_version >= (3,13):
+                if opc.python_version >= (3, 13):
                     # The fifth-lowest bit of the oparg now indicates a forced conversion to bool.
                     argval = (opc.cmp_op[arg >> 5])
-                elif opc.python_version >= (3,12):
+                elif opc.python_version >= (3, 12):
                     argval = (opc.cmp_op[arg >> 4])
                 else:
                     argval = (opc.cmp_op[arg])
@@ -374,10 +384,12 @@ def get_instructions_bytes(
                 opname = opc.opname[op]
                 if python_36 and opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX"):
                     if opname == "CALL_FUNCTION":
-                        argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
+                        argrepr = format_CALL_FUNCTION(
+                            code2num(bytecode, i - 1))
                     else:
                         assert opname == "CALL_FUNCTION_EX"
-                        argrepr = format_CALL_FUNCTION_EX(code2num(bytecode, i - 1))
+                        argrepr = format_CALL_FUNCTION_EX(
+                            code2num(bytecode, i - 1))
                 else:
                     if not (
                         python_36
@@ -396,7 +408,8 @@ def get_instructions_bytes(
                 argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
 
         opname = opc.opname[op]
-        inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
+        inst_size = instruction_size(
+            op, opc) + (extended_arg_count * extended_arg_size)
         # fallthrough = op not in opc.nofollow
         start_offset = offset if opc.oppop[op] == 0 else None
 
@@ -465,7 +478,8 @@ class Bytecode:
         self.current_offset = current_offset
 
         if opc.version_tuple >= (3, 11) and hasattr(co, "co_exceptiontable"):
-            self.exception_entries = parse_exception_table(co.co_exceptiontable)
+            self.exception_entries = parse_exception_table(
+                co.co_exceptiontable)
         else:
             self.exception_entries = None
 
@@ -517,7 +531,8 @@ class Bytecode:
             cells = None
             line_starts = None
 
-        first_line_number = co.co_firstlineno if hasattr(co, "co_firstlineno") else None
+        first_line_number = co.co_firstlineno if hasattr(
+            co, "co_firstlineno") else None
 
         if inspect.iscode(co):
             filename = inspect.getfile(co)
@@ -573,7 +588,8 @@ class Bytecode:
         exception_entries=None,
     ) -> list:
         # Omit the line number column entirely if we have no line number info
-        show_lineno = line_starts is not None or self.opc.version_tuple < (2, 3)
+        show_lineno = line_starts is not None or self.opc.version_tuple < (
+            2, 3)
         show_source = show_source and show_lineno and first_line_number and filename
 
         def show_source_text(line_number: Optional[int]):
@@ -777,7 +793,8 @@ def list2bytecode(inst_list: Iterable, opc, varnames, consts):
         operands = opcodes[1:]
         if opname not in opc.opname:
             raise TypeError(
-                "error at item %d [%s, %s], opcode not valid" % (i, opname, operands)
+                "error at item %d [%s, %s], opcode not valid" % (
+                    i, opname, operands)
             )
         opcode = opc.opmap[opname]
         bc.append(opcode)
