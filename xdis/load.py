@@ -74,8 +74,7 @@ def check_object_path(path) -> str:
         try:
             import importlib
 
-            bytecode_path = importlib.util.cache_from_source(
-                path, optimization="")
+            bytecode_path = importlib.util.cache_from_source(path, optimization="")
             if osp.exists(bytecode_path):
                 return bytecode_path
         except Exception:
@@ -95,8 +94,7 @@ def check_object_path(path) -> str:
         # It would be better to use a context manager function like WithNamedTemporary.
         # However we are seeing write errors when this is done in Windows.
         # So until this is resolved, we'll use mkstemp and explicitly do a close.
-        fd, path = tempfile.mkstemp(
-            prefix=basename + "-", suffix=".pyc", text=False)
+        fd, path = tempfile.mkstemp(prefix=basename + "-", suffix=".pyc", text=False)
         close(fd)
         py_compile.compile(spath, cfile=path, doraise=True)
 
@@ -219,8 +217,7 @@ def load_module_from_file_object(
             tuple_version = magic_int2tuple(magic_int)
         except KeyError:
             if magic_int in (2657, 22138):
-                raise ImportError(
-                    "This smells like Pyston which is not supported.")
+                raise ImportError("This smells like Pyston which is not supported.")
 
             if len(magic) >= 2:
                 raise ImportError(
@@ -332,8 +329,7 @@ def load_module_from_file_object(
             import traceback
 
             traceback.print_exc()
-            raise ImportError(
-                f"Ill-formed bytecode file {filename}\n{kind}; {msg}")
+            raise ImportError(f"Ill-formed bytecode file {filename}\n{kind}; {msg}")
 
     finally:
         fp.close()
