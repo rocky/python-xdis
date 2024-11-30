@@ -229,7 +229,7 @@ def prefer_double_quote(string):
 
 def get_logical_instruction_at_offset(
     bytecode,
-    offset: int,
+    offset,
     opc,
     varnames=None,
     names=None,
@@ -437,16 +437,15 @@ def get_logical_instruction_at_offset(
             start_offset=start_offset,
         )
         # fallthrough)
-        last_op_was_extended_arg = True if opname == "EXTENDED_ARG" else False
+        if opname == "EXTENDED_ARG":
+            last_op_was_extended_arg = True
+        else:
+            last_op_was_extended_arg = False
+
         if op == opc.EXTENDED_ARG:
             extended_arg_count = extended_arg_count + 1
         else:
             extended_arg_count = 0
-=======
-        # fallthrough
-        extended_arg_count = extended_arg_count + 1 if last_op_was_extended_arg else 0
-        # end loop
->>>>>>> python-3.0-to-3.2
 
 
 def next_offset(op, opc, offset):
