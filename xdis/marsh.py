@@ -326,7 +326,12 @@ class _Marshaller:
         for name in x.co_names:
             self.dump_string(name)
 
-        self.dump(x.co_varnames)
+        # The tuple "varnames" in Python2 also must have string entries
+        self._write(TYPE_TUPLE)
+        self.w_long(len(x.co_varnames))
+        for name in x.co_varnames:
+            self.dump_string(name)
+
         self.dump(x.co_freevars)
         self.dump(x.co_cellvars)
         self.dump_string(x.co_filename)
