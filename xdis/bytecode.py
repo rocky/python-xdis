@@ -223,8 +223,9 @@ def prefer_double_quote(string: str) -> str:
     return string
 
 
-def get_instructions_bytes(
+def get_logical_instruction_at_offset(
     bytecode,
+    offset: int,
     opc,
     varnames=None,
     names=None,
@@ -233,16 +234,17 @@ def get_instructions_bytes(
     linestarts=None,
     line_offset=0,
     exception_entries=None,
+    labels = None
 ):
-    """Iterate over the instructions in a bytecode string.
-
-    Generates a sequence of Instruction namedtuples giving the details of each
-    opcode.  Additional information about the code's runtime environment
-    e.g., variable names, constants, can be specified using optional
-    arguments.
-
     """
-    labels = opc.findlabels(bytecode, opc)
+    Return a single logical instruction for `bytecode` at offset `offset`.
+    if the opcode at offset is EXTENDED_ARG, then instructions are returned
+    until we no longer have an EXTENDED_ARG instruction. Note that the
+    last non-EXTENDED_ARG instruction will have its argument value adjusted
+    to note the increased size of the argument.
+    """
+    if labels is None:
+        labels = opc.findlabels(bytecode, opc)
 
     if exception_entries is not None:
         for start, end, target, _, _ in exception_entries:
@@ -256,40 +258,45 @@ def get_instructions_bytes(
     python_36 = True if opc.python_version >= (3, 6) else False
 
     starts_line = None
-    # enumerate() is not an option, since we sometimes process
-    # multiple elements on a single pass through the loop
+
     n = len(bytecode)
-    i = 0
+
     extended_arg_count = 0
     extended_arg = 0
+
     if hasattr(opc, "EXTENDED_ARG"):
         extended_arg_size = instruction_size(opc.EXTENDED_ARG, opc)
     else:
         extended_arg_size = 0
 
-    while i < n:
+    # This is not necessarily true initially, but it gets us through the
+    # loop below.
+
+    last_op_was_extended_arg = True
+    i = offset
+
+    while i < n and last_op_was_extended_arg:
         op = code2num(bytecode, i)
+        opname = opc.opname[op]
+        optype = get_optype(op, opc)
 
         offset = i
         if linestarts is not None:
             starts_line = linestarts.get(i, None)
             if starts_line is not None:
                 starts_line += line_offset
-        if i in labels:
-            is_jump_target = True
-        else:
-            is_jump_target = False
+
+        is_jump_target = i in labels
 
         i += 1
         arg = None
         argval = None
         argrepr = ""
         has_arg = op_has_argument(op, opc)
-        optype = get_optype(op, opc)
         if has_arg:
             if python_36:
                 arg = code2num(bytecode, i) | extended_arg
-                extended_arg = (arg << 8) if op == opc.EXTENDED_ARG else 0
+                extended_arg = (arg << 8) if opname == "EXTENDED_ARG" else 0
                 # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
                 i += 1
             else:
@@ -301,7 +308,7 @@ def get_instructions_bytes(
                 i += 2
                 extended_arg = (
                     arg * 0x10000
-                    if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                    if opname == "EXTENDED_ARG"
                     else 0
                 )
 
@@ -314,16 +321,16 @@ def get_instructions_bytes(
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
             elif op in opc.NAME_OPS:
-                if opc.version_tuple >= (3, 11) and opc.opname[op] == "LOAD_GLOBAL":
+                if opc.version_tuple >= (3, 11) and opname == "LOAD_GLOBAL":
                     argval, argrepr = _get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL + " + argrepr
-                elif opc.version_tuple >= (3, 12) and opc.opname[op] == "LOAD_ATTR":
+                elif opc.version_tuple >= (3, 12) and opname == "LOAD_ATTR":
                     argval, argrepr = _get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL|self + " + argrepr
                 elif (
-                    opc.version_tuple >= (3, 12) and opc.opname[op] == "LOAD_SUPER_ATTR"
+                    opc.version_tuple >= (3, 12) and opname == "LOAD_SUPER_ATTR"
                 ):
                     argval, argrepr = _get_name_info(arg >> 2, names)
                     if arg & 1:
@@ -331,7 +338,7 @@ def get_instructions_bytes(
                 else:
                     argval, argrepr = _get_name_info(arg, names)
             elif op in opc.JREL_OPS:
-                signed_arg = -arg if "JUMP_BACKWARD" in opc.opname[op] else arg
+                signed_arg = -arg if "JUMP_BACKWARD" in opname else arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
                 
                 #check cache instructions for python 3.13   
@@ -342,14 +349,14 @@ def get_instructions_bytes(
                         argval -= 2
 
                 # FOR_ITER has a cache instruction in 3.12
-                if opc.version_tuple >= (3, 12) and opc.opname[op] == "FOR_ITER":
+                if opc.version_tuple >= (3, 12) and opname == "FOR_ITER":
                     argval += 2
                 argrepr = "to " + repr(argval)
             elif op in opc.JABS_OPS:
                 argval = get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
             elif op in opc.LOCAL_OPS:
-                if opc.version_tuple >= (3, 13) and opc.opname[op] in ("LOAD_FAST_LOAD_FAST", "STORE_FAST_LOAD_FAST", "STORE_FAST_STORE_FAST"):
+                if opc.version_tuple >= (3, 13) and opname in ("LOAD_FAST_LOAD_FAST", "STORE_FAST_LOAD_FAST", "STORE_FAST_STORE_FAST"):
                     arg1 = arg >> 4
                     arg2 = arg & 15
                     argval1, argrepr1 = _get_name_info(arg1, (varnames or tuple()) + (cells or tuple()))
@@ -379,7 +386,7 @@ def get_instructions_bytes(
                     argval = (opc.cmp_op[arg])
                 argrepr = argval
             elif op in opc.NARGS_OPS:
-                opname = opc.opname[op]
+                opname = opname
                 if python_36 and opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX"):
                     if opname == "CALL_FUNCTION":
                         argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
@@ -395,17 +402,15 @@ def get_instructions_bytes(
                             code2num(bytecode, i - 2),
                             code2num(bytecode, i - 1),
                         )
-            if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
-                argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
+            if hasattr(opc, "opcode_arg_fmt") and opname in opc.opcode_arg_fmt:
+                argrepr = opc.opcode_arg_fmt[opname](arg)
         else:
             if python_36:
                 i += 1
-            if hasattr(opc, "opcode_arg_fmt") and opc.opname[op] in opc.opcode_arg_fmt:
-                argrepr = opc.opcode_arg_fmt[opc.opname[op]](arg)
+            if hasattr(opc, "opcode_arg_fmt") and opname in opc.opcode_arg_fmt:
+                argrepr = opc.opcode_arg_fmt[opname](arg)
 
-        opname = opc.opname[op]
         inst_size = instruction_size(op, opc) + (extended_arg_count * extended_arg_size)
-        # fallthrough = op not in opc.nofollow
         start_offset = offset if opc.oppop[op] == 0 else None
 
         yield Instruction(
@@ -427,11 +432,9 @@ def get_instructions_bytes(
             start_offset=start_offset,
         )
         # fallthrough
-        extended_arg_count = (
-            extended_arg_count + 1
-            if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
-            else 0
-        )
+        last_op_was_extended_arg = True if opname == "EXTENDED_ARG" else False
+        extended_arg_count = extended_arg_count + 1 if last_op_was_extended_arg else 0
+        # end loop
 
 
 def next_offset(op: int, opc, offset: int) -> int:
@@ -440,6 +443,56 @@ def next_offset(op: int, opc, offset: int) -> int:
     bytecode version of that we should be using.
     """
     return offset + instruction_size(op, opc)
+
+
+def get_instructions_bytes(
+    bytecode,
+    opc,
+    varnames=None,
+    names=None,
+    constants=None,
+    cells=None,
+    linestarts=None,
+    line_offset=0,
+    exception_entries=None,
+):
+    """
+    Iterate over the instructions in a bytecode string.
+
+    Generates a sequence of Instruction namedtuples giving the details of each
+    opcode.  Additional information about the code's runtime environment
+    e.g., variable names, constants, can be specified using optional
+    arguments.
+    """
+    labels = opc.findlabels(bytecode, opc)
+
+    if exception_entries is not None:
+        for start, end, target, _, _ in exception_entries:
+            for i in range(start, end):
+                labels.append(target)
+
+    n = len(bytecode)
+    offset = 0
+
+    while offset < n:
+        instructions = list(get_logical_instruction_at_offset(
+            bytecode,
+            offset,
+            opc,
+            varnames=varnames,
+            names=names,
+            constants=constants,
+            cells=cells,
+            linestarts=linestarts,
+            line_offset=0,
+            exception_entries=exception_entries,
+            )
+        )
+
+        for instruction in instructions:
+            yield instruction
+        offset = next_offset(instruction.opcode, opc, instruction.offset)
+
 
 
 class Bytecode:
