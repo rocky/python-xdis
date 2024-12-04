@@ -318,6 +318,10 @@ def get_logical_instruction_at_offset(
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
 
             argval = arg
+
+            # create a localsplusnames table that resolves duplicates.
+            localsplusnames = (varnames or tuple()) + tuple(name for name in (cells or tuple()) if name not in varnames)
+
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
             elif op in opc.NAME_OPS:
@@ -340,8 +344,8 @@ def get_logical_instruction_at_offset(
             elif op in opc.JREL_OPS:
                 signed_arg = -arg if "JUMP_BACKWARD" in opname else arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
-                
-                #check cache instructions for python 3.13   
+
+                # check cache instructions for python 3.13
                 if opc.version_tuple >= (3, 13):
                     if opc.opname[op] in ["POP_JUMP_IF_TRUE", "POP_JUMP_IF_FALSE", "POP_JUMP_IF_NONE", "POP_JUMP_IF_NOT_NONE"]:
                         argval += 2
@@ -359,28 +363,24 @@ def get_logical_instruction_at_offset(
                 if opc.version_tuple >= (3, 13) and opname in ("LOAD_FAST_LOAD_FAST", "STORE_FAST_LOAD_FAST", "STORE_FAST_STORE_FAST"):
                     arg1 = arg >> 4
                     arg2 = arg & 15
-                    argval1, argrepr1 = _get_name_info(arg1, (varnames or tuple()) + (cells or tuple()))
-                    argval2, argrepr2 = _get_name_info(arg2, (varnames or tuple()) + (cells or tuple()))
+                    argval1, argrepr1 = _get_name_info(arg1, localsplusnames)
+                    argval2, argrepr2 = _get_name_info(arg2, localsplusnames)
                     argval = argval1, argval2
                     argrepr = argrepr1 + ", " + argrepr2
                 elif opc.version_tuple >= (3, 11):
-                    argval, argrepr = _get_name_info(
-                        arg, (varnames or tuple()) + (cells or tuple())
-                    )
+                    argval, argrepr = _get_name_info(arg, localsplusnames)
                 else:
                     argval, argrepr = _get_name_info(arg, varnames)
             elif op in opc.FREE_OPS:
                 if opc.version_tuple >= (3, 11):
-                    argval, argrepr = _get_name_info(
-                        arg, (varnames or tuple()) + (cells or tuple())
-                    )
+                    argval, argrepr = _get_name_info(arg, localsplusnames)
                 else:
                     argval, argrepr = _get_name_info(arg, cells)
             elif op in opc.COMPARE_OPS:
-                if opc.python_version >= (3,13):
+                if opc.python_version >= (3, 13):
                     # The fifth-lowest bit of the oparg now indicates a forced conversion to bool.
                     argval = (opc.cmp_op[arg >> 5])
-                elif opc.python_version >= (3,12):
+                elif opc.python_version >= (3, 12):
                     argval = (opc.cmp_op[arg >> 4])
                 else:
                     argval = (opc.cmp_op[arg])
