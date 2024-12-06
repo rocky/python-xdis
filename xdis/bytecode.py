@@ -347,10 +347,8 @@ def get_logical_instruction_at_offset(
 
                 # check cache instructions for python 3.13
                 if opc.version_tuple >= (3, 13):
-                    if opc.opname[op] in ["POP_JUMP_IF_TRUE", "POP_JUMP_IF_FALSE", "POP_JUMP_IF_NONE", "POP_JUMP_IF_NOT_NONE"]:
+                    if opc.opname[op] in ["POP_JUMP_IF_TRUE", "POP_JUMP_IF_FALSE", "POP_JUMP_IF_NONE", "POP_JUMP_IF_NOT_NONE", "JUMP_BACKWARD"]:
                         argval += 2
-                    elif opc.opname[op] == 'JUMP_BACKWARD':
-                        argval -= 2
 
                 # FOR_ITER has a cache instruction in 3.12
                 if opc.version_tuple >= (3, 12) and opname == "FOR_ITER":
