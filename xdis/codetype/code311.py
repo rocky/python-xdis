@@ -16,7 +16,6 @@
 
 import types
 from copy import deepcopy
-from dataclasses import dataclass
 from typing import Iterable, Iterator, Optional
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
