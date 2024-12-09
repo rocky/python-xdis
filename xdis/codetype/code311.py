@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,7 +16,6 @@
 
 import types
 from copy import deepcopy
-from dataclasses import dataclass
 from typing import Generator, Iterable, Iterator
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
@@ -173,11 +172,16 @@ PY_CODE_LOCATION_INFO_LONG = 14
 PY_CODE_LOCATION_INFO_NONE = 15
 
 
-@dataclass(frozen=True)
+# FIXME: add:
+#  __repr__()
+#  __eq__()
+#  __hash__()
 class LineTableEntry:
-    line_delta: int
-    code_delta: int
-    no_line_flag: bool
+
+    def __init__(self, line_delta: int, code_delta: int, no_line_flag: bool):
+        self.line_delta = line_delta
+        self.code_delta = code_delta
+        self.no_line_flag = no_line_flag
 
 
 def _scan_varint(remaining_linetable: Iterable[int]) -> int:
@@ -290,7 +294,12 @@ def parse_linetable(linetable: bytes, first_lineno: int):
     yield (code_start, code_end, None if no_line_flag else line)
 
 
-@dataclass(frozen=True)
+# FIXME: add:
+#  __repr__()
+#  __eq__()
+#  __hash__()
+# and possibly __init__()
+# methods
 class PositionEntry:
     line_delta: int
     num_lines: int
