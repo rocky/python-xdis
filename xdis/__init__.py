@@ -138,10 +138,6 @@ from xdis.util import (
     co_flags_is_async,
     code2num,
 )
-from xdis.version_info import PYTHON_VERSION_TRIPLE
-
-if PYTHON_VERSION_TRIPLE >= (3, 8):
-    from xdis.codetype import Code313
 
 # This ensures __version__ will appear in pydoc
 from xdis.version import __version__  # noqa
@@ -187,7 +183,6 @@ __all__ = [
     "Code3",
     "Code310",
     "Code311",
-    "Code313",
     "Code38",
     "code_has_star_star_arg",
     "code_has_star_arg",
