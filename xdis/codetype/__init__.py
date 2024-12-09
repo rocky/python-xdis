@@ -31,9 +31,6 @@ from xdis.codetype.code311 import Code311, Code311FieldNames
 from xdis.codetype.code312 import Code312
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
-if PYTHON_VERSION_TRIPLE >= (3, 8):
-    from xdis.codetype.code313 import Code313
-
 
 def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
     """Converts a native types.CodeType code object into a

@@ -16,12 +16,11 @@
 
 import types
 from copy import deepcopy
+from dataclasses import dataclass
+from typing import Generator, Iterable, Iterator
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
-
-from dataclasses import dataclass
-from typing import Iterable, Iterator, Generator
 
 
 def parse_location_entries(location_bytes, first_line):
@@ -229,8 +228,9 @@ def _test_check_bit(linetable_code_byte: int):
 
 def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> int:
     try:
-        while not _test_check_bit((code_byte := next(remaining_linetable))):
-            pass
+        code_byte = next(remaining_linetable)
+        while not _test_check_bit(code_byte):
+            code_byte = next(remaining_linetable)
     except StopIteration:
         return None
     return code_byte
@@ -255,12 +255,14 @@ def parse_linetable(linetable: bytes, first_lineno: int):
 
     # decode linetable entries
     iter_linetable = iter(linetable)
-    while (code_byte := _go_to_next_code_byte(iter_linetable)) is not None:
+    code_byte = _go_to_next_code_byte(iter_linetable)
+    while (code_byte) is not None:
         linetable_entries.append(
             decode_linetable_entry(
                 code_byte=code_byte, remaining_linetable=iter_linetable
             )
         )
+        code_byte = _go_to_next_code_byte(iter_linetable)
 
     if not linetable_entries:
         return
@@ -351,12 +353,14 @@ def parse_positions(linetable: bytes, first_lineno: int):
     # decode linetable entries
     iter_linetable = iter(linetable)
     try:
-        while (code_byte := next(iter_linetable)) is not None:
+        code_byte = next(iter_linetable)
+        while code_byte is not None:
             position_entries.append(
                 decode_position_entry(
                     code_byte=code_byte, remaining_linetable=iter_linetable
                 )
             )
+            code_byte = next(iter_linetable)
     except StopIteration:
         pass
 
