@@ -16,7 +16,8 @@
 
 import types
 from copy import deepcopy
-from typing import Generator, Iterable, Iterator
+from dataclasses import dataclass
+from typing import Iterable, Iterator, Optional
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -230,7 +231,7 @@ def _test_check_bit(linetable_code_byte: int):
     return bool(linetable_code_byte & 128)
 
 
-def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> int:
+def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> Optional[int]:
     try:
         code_byte = next(remaining_linetable)
         while not _test_check_bit(code_byte):
