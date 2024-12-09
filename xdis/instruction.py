@@ -204,9 +204,7 @@ class Instruction(_Instruction):
                     and line_starts.get(self.argval) is not None
                 ):
                     new_instruction = list(self)
-                    new_instruction[9] = "To line %s" % line_starts[self.argval]
-                    self = Instruction(*new_instruction)
-                    new_instruction[-2] = f"To line {line_starts[self.argval]}"
+                    new_instruction[-2] = "To line %s" % line_starts[self.argval]
                     # Here and below we use self.__class__ instead of Instruction
                     # so that other kinds of compatible namedtuple Instructions
                     # can be used. In particular, the control-flow project

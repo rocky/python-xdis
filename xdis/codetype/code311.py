@@ -16,7 +16,6 @@
 
 import types
 from copy import deepcopy
-from typing import Iterable, Iterator, Optional
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -59,7 +58,7 @@ def parse_location_entries(location_bytes, first_line):
             return []
 
         def has_next_byte(b):
-            return bool(b & 0b0100_0000)  # has bit 6 set
+            return bool(b & 0b01000000)  # has bit 6 set
 
         def get_value(b):
             return b & 0b00111111  # extracts bits 0-5
@@ -184,7 +183,7 @@ class LineTableEntry:
         self.no_line_flag = no_line_flag
 
 
-def _scan_varint(remaining_linetable: Iterable[int]) -> int:
+def _scan_varint(remaining_linetable) -> int:
     value = 0
     for shift, read in enumerate(remaining_linetable):
         value |= (read & 63) << (shift * 6)
@@ -193,14 +192,14 @@ def _scan_varint(remaining_linetable: Iterable[int]) -> int:
     return value
 
 
-def _scan_signed_varint(remaining_linetable: Iterable[int]) -> int:
+def _scan_signed_varint(remaining_linetable) -> int:
     value = _scan_varint(remaining_linetable)
     if value & 1:
         return -(value >> 1)
     return value >> 1
 
 
-def _get_line_delta(code_byte: int, remaining_linetable: Iterable[int]):
+def _get_line_delta(code_byte: int, remaining_linetable):
     line_delta_code = (code_byte >> 3) & 15
     if line_delta_code == PY_CODE_LOCATION_INFO_NONE:
         return 0
@@ -230,7 +229,7 @@ def _test_check_bit(linetable_code_byte: int):
     return bool(linetable_code_byte & 128)
 
 
-def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> Optional[int]:
+def _go_to_next_code_byte(remaining_linetable):
     try:
         code_byte = next(remaining_linetable)
         while not _test_check_bit(code_byte):
@@ -241,8 +240,8 @@ def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> Optional[int]:
 
 
 def decode_linetable_entry(
-    code_byte: int, remaining_linetable: Iterable[int]
-) -> LineTableEntry:
+    code_byte: int, remaining_linetable
+):
     assert _test_check_bit(code_byte), "malformed linetable"
     return LineTableEntry(
         line_delta=_get_line_delta(
@@ -255,7 +254,7 @@ def decode_linetable_entry(
 
 def parse_linetable(linetable: bytes, first_lineno: int):
 
-    linetable_entries: list[LineTableEntry] = []
+    linetable_entries = []
 
     # decode linetable entries
     iter_linetable = iter(linetable)
@@ -274,9 +273,9 @@ def parse_linetable(linetable: bytes, first_lineno: int):
     first_entry, *remaining_entries = linetable_entries
 
     # compute co_lines()
-    code_start: int = 0
-    code_end: int = first_entry.code_delta
-    line: int = first_lineno + first_entry.line_delta
+    code_start = 0
+    code_end = first_entry.code_delta
+    line = first_lineno + first_entry.line_delta
     no_line_flag = first_entry.no_line_flag
     for linetable_entry in remaining_entries:
         if (
@@ -300,18 +299,20 @@ def parse_linetable(linetable: bytes, first_lineno: int):
 #  __hash__()
 # and possibly __init__()
 # methods
+
 class PositionEntry:
-    line_delta: int
-    num_lines: int
-    code_delta: int
-    column: int
-    endcolumn: int
-    no_line_flag: bool
+    def __init__(self, line_delta, num_lines, code_delta, column, endcolumn, no_line_flag):
+        self.line_delta = line_delta
+        self.num_lines = num_lines
+        self.code_delta = code_delta
+        self.column = column
+        self.endcolumn = endcolumn
+        self.no_line_flag = no_line_flag
 
 
 def decode_position_entry(
-    code_byte: int, remaining_linetable: Iterator[int]
-) -> PositionEntry:
+        code_byte: int, remaining_linetable,
+    ):
     assert _test_check_bit(code_byte), "malformed linetable"
 
     code_delta = _next_code_delta(code_byte)
@@ -357,7 +358,7 @@ def decode_position_entry(
 
 
 def parse_positions(linetable: bytes, first_lineno: int):
-    position_entries: list[PositionEntry] = []
+    position_entries = []
 
     # decode linetable entries
     iter_linetable = iter(linetable)

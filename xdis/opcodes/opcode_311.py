@@ -298,7 +298,7 @@ del opcode_extended_fmt311["INPLACE_XOR"]
 
 opcode_extended_fmt = opcode_extended_fmt311
 
-opcode_arg_fmt = opcode_arg_fmt11 = opcode_arg_fmt310.copy()
+opcode_arg_fmt = opcode_arg_fmt311 = opcode_arg_fmt310.copy()
 
 from xdis.cross_dis import findlinestarts  # noqa
 
