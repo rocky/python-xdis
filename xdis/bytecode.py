@@ -654,7 +654,7 @@ class Bytecode:
     def disassemble_bytes(
         self,
         bytecode,
-        lasti = -1,
+        lasti=-1,
         varnames=None,
         names=None,
         constants=None,

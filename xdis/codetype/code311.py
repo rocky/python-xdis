@@ -29,13 +29,13 @@ def parse_location_entries(location_bytes, first_line):
     """
 
     def starts_new_entry(b):
-        return bool(b & 0b10000000)  # bit 7 is set
+        return bool(b & 0x80)  # bit 7 is set
 
     def extract_code(b):
-        return (b & 0b01111000) >> 3  # extracts bits 3-6
+        return (b & 0x78) >> 3  # extracts bits 3-6
 
     def extract_length(b):
-        return (b & 0b00000111) + 1  # extracts bit 0-2
+        return (b & 0x7) + 1  # extracts bit 0-2
 
     def iter_location_codes(loc_bytes):
         if len(loc_bytes) == 0:
@@ -59,10 +59,10 @@ def parse_location_entries(location_bytes, first_line):
             return
 
         def has_next_byte(b):
-            return bool(b & 0b01000000)  # has bit 6 set
+            return bool(b & 0x40)  # has bit 6 set
 
         def get_value(b):
-            return b & 0b00111111  # extracts bits 0-5
+            return b & 0x3f  # extracts bits 0-5
 
         iter_varint_bytes = iter(varint_bytes)
 
@@ -79,7 +79,10 @@ def parse_location_entries(location_bytes, first_line):
                 shift_amt = 0
 
     def decode_signed_varint(s):
-        return -(s >> 1) if s & 1 else (s >> 1)
+        if s & 1:
+            return -(s >> 1)
+        else:
+            return (s >> 1)
 
     entries = (
         []
@@ -125,7 +128,10 @@ def parse_location_entries(location_bytes, first_line):
             (location_length, start_line, end_line, start_column, end_column)
         )
 
-        last_line = start_line if start_line is not None else last_line
+        if start_line is not None:
+            last_line = start_line
+        else:
+            last_line = last_line
 
     return entries
 
@@ -184,16 +190,16 @@ class LineTableEntry:
         self.no_line_flag = no_line_flag
 
 
-def _scan_varint(remaining_linetable) -> int:
+def _scan_varint(remaining_linetable):
     value = 0
     for shift, read in enumerate(remaining_linetable):
-        value |= (read & 63) << (shift * 6)
-        if not (read & 64):
+        value |= (ord(read) & 63) << (shift * 6)
+        if not (ord(read) & 64):
             break
     return value
 
 
-def _scan_signed_varint(remaining_linetable) -> int:
+def _scan_signed_varint(remaining_linetable):
     value = _scan_varint(remaining_linetable)
     if value & 1:
         return -(value >> 1)
@@ -201,7 +207,7 @@ def _scan_signed_varint(remaining_linetable) -> int:
 
 
 def _get_line_delta(code_byte, remaining_linetable):
-    line_delta_code = (code_byte >> 3) & 15
+    line_delta_code = (ord(code_byte) >> 3) & 15
     if line_delta_code == PY_CODE_LOCATION_INFO_NONE:
         return 0
     if line_delta_code in (
@@ -218,30 +224,30 @@ def _get_line_delta(code_byte, remaining_linetable):
     return 0
 
 
-def _is_no_line_marker(linetable_code_byte: int):
-    return (linetable_code_byte >> 3) == 0x1F
+def _is_no_line_marker(linetable_code_byte):
+    return (ord(linetable_code_byte) >> 3) == 0x1F
 
 
-def _next_code_delta(linetable_code_byte: int):
-    return ((linetable_code_byte & 7) + 1) * 2
+def _next_code_delta(linetable_code_byte):
+    return ((ord(linetable_code_byte) & 7) + 1) * 2
 
 
-def _test_check_bit(linetable_code_byte: int):
-    return bool(linetable_code_byte & 128)
+def _test_check_bit(linetable_code_byte):
+    return bool(ord(linetable_code_byte) & 128)
 
 
 def _go_to_next_code_byte(remaining_linetable):
     try:
-        code_byte = next(remaining_linetable)
+        code_byte = remaining_linetable.next()
         while not _test_check_bit(code_byte):
-            code_byte = next(remaining_linetable)
+            code_byte = remaining_linetable.next()
     except StopIteration:
         return None
     return code_byte
 
 
 def decode_linetable_entry(
-    code_byte: int, remaining_linetable
+    code_byte, remaining_linetable
 ):
     assert _test_check_bit(code_byte), "malformed linetable"
     return LineTableEntry(
@@ -253,7 +259,7 @@ def decode_linetable_entry(
     )
 
 
-def parse_linetable(linetable: bytes, first_lineno: int):
+def parse_linetable(linetable, first_lineno):
 
     linetable_entries = []
 
@@ -271,7 +277,8 @@ def parse_linetable(linetable: bytes, first_lineno: int):
     if not linetable_entries:
         return
 
-    first_entry, *remaining_entries = linetable_entries
+    first_entry = linetable_entries[0]
+    remaining_entries = linetable_entries[1:]
 
     # compute co_lines()
     code_start = 0
@@ -284,14 +291,20 @@ def parse_linetable(linetable: bytes, first_lineno: int):
             or linetable_entry.no_line_flag != no_line_flag
         ):
             # if the line changes, emit the current entry
-            yield (code_start, code_end, None if no_line_flag else line)
+            if no_line_flag:
+                yield code_start, code_end, None
+            else:
+                yield code_start, code_end, line
 
             line += linetable_entry.line_delta
             no_line_flag = linetable_entry.no_line_flag
             code_start = code_end
         code_end += linetable_entry.code_delta
 
-    yield (code_start, code_end, None if no_line_flag else line)
+    if no_line_flag:
+        yield code_start, code_end, None
+    else:
+        yield code_start, code_end, line
 
 
 # FIXME: add:
@@ -312,7 +325,7 @@ class PositionEntry:
 
 
 def decode_position_entry(
-        code_byte: int, remaining_linetable,
+        code_byte, remaining_linetable,
     ):
     assert _test_check_bit(code_byte), "malformed linetable"
 
@@ -324,7 +337,7 @@ def decode_position_entry(
     line_delta = 0
     num_lines = 0
 
-    location_flags = (code_byte >> 3) & 15
+    location_flags = (ord(code_byte) >> 3) & 15
     if location_flags == PY_CODE_LOCATION_INFO_NONE:
         no_line_flag = True
     elif location_flags == PY_CODE_LOCATION_INFO_LONG:
@@ -358,7 +371,7 @@ def decode_position_entry(
     )
 
 
-def parse_positions(linetable: bytes, first_lineno: int):
+def parse_positions(linetable, first_lineno):
     position_entries = []
 
     # decode linetable entries

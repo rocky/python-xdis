@@ -72,7 +72,7 @@ class Code312(Code311):
         code.freeze()
         try:
             code.check()
-        except AssertionError as e:
+        except AssertionError(e):
             raise TypeError(e)
 
         return types.CodeType(
