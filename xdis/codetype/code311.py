@@ -38,7 +38,7 @@ def parse_location_entries(location_bytes, first_line):
 
     def iter_location_codes(loc_bytes):
         if len(loc_bytes) == 0:
-            return []
+            return
 
         iter_locs = iter(loc_bytes)
         entry_codes = [next(iter_locs)]
@@ -55,7 +55,7 @@ def parse_location_entries(location_bytes, first_line):
 
     def iter_varints(varint_bytes):
         if len(varint_bytes) == 0:
-            return []
+            return
 
         def has_next_byte(b):
             return bool(b & 0b01000000)  # has bit 6 set
@@ -177,7 +177,7 @@ PY_CODE_LOCATION_INFO_NONE = 15
 #  __hash__()
 class LineTableEntry:
 
-    def __init__(self, line_delta: int, code_delta: int, no_line_flag: bool):
+    def __init__(self, line_delta, code_delta, no_line_flag):
         self.line_delta = line_delta
         self.code_delta = code_delta
         self.no_line_flag = no_line_flag
@@ -199,7 +199,7 @@ def _scan_signed_varint(remaining_linetable) -> int:
     return value >> 1
 
 
-def _get_line_delta(code_byte: int, remaining_linetable):
+def _get_line_delta(code_byte, remaining_linetable):
     line_delta_code = (code_byte >> 3) & 15
     if line_delta_code == PY_CODE_LOCATION_INFO_NONE:
         return 0

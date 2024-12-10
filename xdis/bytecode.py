@@ -43,7 +43,7 @@ from xdis.version_info import IS_PYPY
 VARIANT = "pypy" if IS_PYPY else None
 
 
-def get_docstring(filename: str, line_number: int, doc_str: str) -> str:
+def get_docstring(filename, line_number, doc_str):
     while len(doc_str) < 80:
         next_line = getline(filename, line_number).strip()
         doc_str += "\\n" + next_line
@@ -111,7 +111,7 @@ def get_name_info(name_index, name_list):
     return argval, argrepr
 
 
-def get_optype(opcode: int, opc) -> str:
+def get_optype(opcode, opc):
     """Helper to determine what class of instructions ``opcode`` is in.
     Return is a string in:
        compare, const, free, jabs, jrel, local, name, nargs, or ??
@@ -145,7 +145,7 @@ def get_optype(opcode: int, opc) -> str:
 _get_name_info = get_name_info
 
 
-def offset2line(offset: int, linestarts):
+def offset2line(offset, linestarts):
     """linestarts is expected to be a *list of (offset, line number)
     where both offset and line number are in increasing order.
     Return the closest line number at or below the offset.
@@ -187,7 +187,7 @@ _ExceptionTableEntry = collections.namedtuple(
 )
 
 
-def parse_exception_table(exception_table: bytes):
+def parse_exception_table(exception_table):
     iterator = iter(exception_table)
     entries = []
     try:
@@ -204,7 +204,7 @@ def parse_exception_table(exception_table: bytes):
         return entries
 
 
-def prefer_double_quote(string: str) -> str:
+def prefer_double_quote(string):
     """
     Prefer a double-quoted string over a single-quoted string when
     possible. ``string`` is expected to already be a repr()-like
@@ -223,7 +223,7 @@ def prefer_double_quote(string: str) -> str:
 
 def get_logical_instruction_at_offset(
     bytecode,
-    offset: int,
+    offset,
     opc,
     varnames=None,
     names=None,
@@ -625,7 +625,7 @@ class Bytecode:
     def disassemble_bytes(
         self,
         bytecode,
-        lasti: int = -1,
+        lasti = -1,
         varnames=None,
         names=None,
         constants=None,
@@ -638,7 +638,7 @@ class Bytecode:
         show_source=True,
         first_line_number=None,
         exception_entries=None,
-    ) -> list:
+    ):
         # Omit the line number column entirely if we have no line number info
         show_lineno = line_starts is not None or self.opc.version_tuple < (2, 3)
         show_source = show_source and show_lineno and first_line_number and filename
