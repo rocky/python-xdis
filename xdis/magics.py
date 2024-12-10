@@ -528,7 +528,7 @@ add_canonic_versions("3.8.10Graal", "3.8.0rc1+")
 add_canonic_versions("3.2.5pypy", "3.2pypy")
 add_canonic_versions("3.3.5pypy", "3.3pypy")
 add_canonic_versions("3.5.3pypy", "3.5pypy")
-add_canonic_versions("3.6.9pypy", "3.6pypy")
+add_canonic_versions("3.6.9pypy 3.6.12pypy", "3.6pypy")
 add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.7pypy")
 add_canonic_versions("3.8.0pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy", "3.8.12pypy")
 add_canonic_versions("3.8.16pypy", "3.8pypy")
@@ -559,24 +559,24 @@ add_canonic_versions(
 
 add_canonic_versions(
     "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8 3.10.9 "
-    "3.10.10 3.10.11 3.10.12 3.10.13 3.10.14 3.10.15",
+    "3.10.10 3.10.11 3.10.12 3.10.13 3.10.14 3.10.15 3.10.16",
     "3.10.0rc2",
 )
 
 add_canonic_versions("3.10.13Graal", "3.10.8Graal")
 
 add_canonic_versions(
-    "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4 3.11.5 3.11.6 3.11.7 3.11.8 3.11.9 3.11.10",
+    "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4 3.11.5 3.11.6 3.11.7 3.11.8 3.11.9 3.11.10 3.11.11",
     "3.11a7e",
 )
 
 add_canonic_versions(
-    "3.12 3.12.0 3.12.1 3.12.2 3.12.3 3.12.4 3.12.5 3.12.6 3.12.7",
+    "3.12 3.12.0 3.12.1 3.12.2 3.12.3 3.12.4 3.12.5 3.12.6 3.12.7 3.12.8",
     "3.12.0rc2",
 )
 
 add_canonic_versions(
-    "3.13 3.13.0",
+    "3.13 3.13.0 3.13.1",
     "3.13.0rc3",
 )
 
