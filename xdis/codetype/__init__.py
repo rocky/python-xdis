@@ -27,10 +27,8 @@ from xdis.codetype.code38 import Code38
 from xdis.codetype.code310 import Code310
 from xdis.codetype.code311 import Code311, Code311FieldNames
 from xdis.namedtuple24 import namedtuple
+from xdis.codetype.code312 import Code312
 from xdis.version_info import PYTHON_VERSION_TRIPLE
-
-if PYTHON_VERSION_TRIPLE >= (3, 8):
-    from xdis.codetype.code313 import Code313
 
 
 def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
@@ -107,7 +105,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
             )
-        elif version_tuple[:2] < (3, 13):
+        elif version_tuple[:2] == (3,11):
             return Code311(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
@@ -128,8 +126,8 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_linetable=line_table,
                 co_exceptiontable=code.co_exceptiontable,
             )
-        elif PYTHON_VERSION_TRIPLE >= (3, 7):  # version tuple >= 3, 13
-            return Code313(
+        elif version_tuple[:2] >= (3,12):
+            return Code312(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
                 co_kwonlyargcount=code.co_kwonlyargcount,
@@ -221,11 +219,11 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
         elif version_tuple[:2] == (3, 10):
             # 3.10
             return Code310
-        elif version_tuple[:2] < (3, 13):
+        elif version_tuple[:2] == (3,11):
             # 3.11 ...
             return Code311
-        else:
-            return Code313
+        elif version_tuple[:2] >= (3,12):
+            return Code312
     elif version_tuple > (2, 0):
         # 2.0 .. 2.7
         return Code2

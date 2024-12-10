@@ -178,18 +178,16 @@ def format_CALL_INTRINSIC_2(arg):
     return _intrinsic_2_descs[arg]
 
 ### update arg formatting
-opcode_arg_fmt312 = opcode_arg_fmt311.copy()
+opcode_arg_fmt = opcode_arg_fmt312 = opcode_arg_fmt311.copy()
 opcode_arg_fmt312.update(
     {
         "CALL_INTRINSIC_1": format_CALL_INTRINSIC_1,
         "CALL_INTRINSIC_2": format_CALL_INTRINSIC_2,
-    },
-)
-opcode_extended_fmt = opcode_arg_extended_fmt312 = opcode_arg_fmt312
+    })
+opcode_extended_fmt = opcode_arg_extended_fmt312 = opcode_extended_fmt311.copy()
 
-from xdis.opcodes.opcode_311 import findlinestarts, parse_location_entries  # noqa
 
-opcode_arg_fmt = opcode_arg_fmt12 = opcode_arg_fmt311.copy()
+from xdis.opcodes.opcode_311 import findlinestarts
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
