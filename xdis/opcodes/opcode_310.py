@@ -49,15 +49,10 @@ def_op(loc, "ROT_N",                    99,   0, 0)
 def_op(loc, "RERAISE",                 119,   3, 0)
 def_op(loc, "GEN_START",               129,   1, 0)
 def_op(loc, "MATCH_CLASS",             152,   2, 1)
+
 # fmt: on
-
-
 opcode_arg_fmt = opcode_arg_fmt310 = opcode_arg_fmt39.copy()
 opcode_extended_fmt = opcode_extended_fmt310 = opcode_extended_fmt39.copy()
-
-# fmt: on
-
-opcode_arg_fmt = opcode_arg_fmt10 = opcode_arg_fmt39.copy()
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

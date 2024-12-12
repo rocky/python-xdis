@@ -9,7 +9,7 @@ Code312FieldTypes = deepcopy(Code311FieldTypes)
 
 
 class Code312(Code311):
-    """Class for a Python 3.13+ code object
+    """Class for a Python 3.12+ code object
     New CPython "undocumented" changes make this necessary to parse the co_linetable with co_lines().
     See: https://github.com/python/cpython/blob/aaed91cabcedc16c089c4b1c9abb1114659a83d3/Objects/codeobject.c#L1245C1-L1245C17
     """
