@@ -1,3 +1,11 @@
+6.1.3 2024-12-19
+================
+
+* Support for Python 3.13 added courtesy of Elliot Tarbet 2elli
+* Add get_logical_instruction_at_offset() This disassembles a single instruction at a given offset
+* Update Python magics for 3.13.1, 3.10.16, pypy3.6.12, 3.12.8
+
+
 6.1.2 2024-11-08
 ================
 
