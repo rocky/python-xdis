@@ -297,10 +297,6 @@ del opcode_extended_fmt311["INPLACE_SUBTRACT"]
 del opcode_extended_fmt311["INPLACE_TRUE_DIVIDE"]
 del opcode_extended_fmt311["INPLACE_XOR"]
 
-opcode_extended_fmt = opcode_extended_fmt311
-
-opcode_arg_fmt = opcode_arg_fmt11 = opcode_arg_fmt310.copy()
-
 from xdis.opcodes.opcode_310 import findlinestarts
 
 update_pj3(globals(), loc)
