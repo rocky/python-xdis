@@ -64,15 +64,7 @@ clean: clean_pyc
 
 #: Create source (tarball) and wheel distribution
 dist: clean
-	$(PYTHON) ./setup.py sdist bdist_wheel
-
-#: Create older distributions
-dist-older:
-	bash ./admin-tools/make-dist-older.sh
-
-#: Create newer distributions
-dist-newer:
-	bash ./admin-tools/make-dist-newer.sh
+	$(PYTHON) ./setup.py sdist bdist_egg bdist_wheel
 
 #: Remove .pyc files
 clean_pyc:
