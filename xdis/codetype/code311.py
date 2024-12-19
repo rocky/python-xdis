@@ -261,6 +261,7 @@ def decode_linetable_entry(
 
 def parse_linetable(linetable, first_lineno):
 
+
     linetable_entries = []
 
     # decode linetable entries
