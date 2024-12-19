@@ -14,10 +14,9 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import struct
 import types
 from copy import deepcopy
-
-import struct
 
 from xdis.codetype.code38 import Code38
 from xdis.cross_types import UnicodeForPython3
@@ -162,25 +161,41 @@ class Code310(Code38):
                      equal to the size of the bytecode.  line will
                      either be a positive integer, or None
 
-        Parsing implementation adapted from: https://github.com/python/cpython/blob/3.10/Objects/lnotab_notes.txt
         """
-        line = self.co_firstlineno
-        end_offset = 0
-        # co_linetable is pairs of (offset_delta: unsigned byte, line_delta: signed byte)
-        for offset_delta, line_delta in struct.iter_unpack('=Bb', self.co_linetable):
+        line_number = self.co_firstlineno
+        start_offset = 0
+        byte_increments = [c for c in tuple(self.co_linetable[0::2])]
+        line_deltas = [c for c in tuple(self.co_linetable[1::2])]
+
+        if len(byte_increments) == 0:
+            yield start_offset, len(self.co_code), line_number
+            return
+
+        byte_incr = byte_increments[0]
+        line_delta = line_deltas[0]
+        assert line_delta != -128, "the first line delta can't logically be -128"
+        assert isinstance(line_delta, int)
+        if line_delta > 127:
+            line_delta = 256 - line_delta
+        else:
+            line_number += line_delta
+
+        for byte_incr, line_delta in zip(byte_increments[1:], line_deltas[1:]):
             assert isinstance(line_delta, int)
-            assert isinstance(offset_delta, int)
-            if line_delta == 0: # No change to line number, just accumulate changes to end
-                end_offset += offset_delta
-                continue
+            assert isinstance(byte_incr, int)
+            end_offset = start_offset + byte_incr
+            if line_delta > 127:
+                line_delta = 256 - line_delta
+
+            if line_delta == -128:
+                line_delta = 0
+            yield start_offset, end_offset, line_number
+            line_number += line_delta
             start_offset = end_offset
-            end_offset = start_offset + offset_delta
-            if line_delta == -128: # No valid line number -- skip entry
-                continue
-            line += line_delta
-            if end_offset == start_offset: # Empty range, omit.
-                continue
-            yield start_offset, end_offset, line
+
+        end_offset = len(self.co_code)
+        yield start_offset, end_offset, line_number
+        return
 
     def encode_lineno_tab(self):
         """

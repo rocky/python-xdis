@@ -27,7 +27,6 @@ from xdis.codetype.code30 import Code3
 from xdis.codetype.code38 import Code38
 from xdis.codetype.code310 import Code310
 from xdis.codetype.code311 import Code311, Code311FieldNames
-from xdis.codetype.code312 import Code312
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 

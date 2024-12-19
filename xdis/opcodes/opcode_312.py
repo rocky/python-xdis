@@ -191,7 +191,7 @@ opcode_arg_fmt312.update(
 opcode_extended_fmt = opcode_arg_extended_fmt312 = opcode_extended_fmt311.copy()
 
 
-from xdis.opcodes.opcode_311 import findlinestarts
+from xdis.opcodes.opcode_311 import findlinestarts  # noqa
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
