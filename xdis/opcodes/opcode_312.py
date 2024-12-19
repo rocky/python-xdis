@@ -177,6 +177,10 @@ def format_CALL_INTRINSIC_1(arg):
 def format_CALL_INTRINSIC_2(arg):
     return _intrinsic_2_descs[arg]
 
+
+opcode_extended_fmt = opcode_extended_fmt312 = opcode_extended_fmt311.copy()
+opcode_arg_fmt = opcode_arg_fmt12 = opcode_arg_fmt311.copy()
+
 ### update arg formatting
 opcode_arg_fmt = opcode_arg_fmt312 = opcode_arg_fmt311.copy()
 opcode_arg_fmt312.update(
@@ -187,7 +191,7 @@ opcode_arg_fmt312.update(
 opcode_extended_fmt = opcode_arg_extended_fmt312 = opcode_extended_fmt311.copy()
 
 
-from xdis.opcodes.opcode_311 import findlinestarts
+from xdis.opcodes.opcode_311 import findlinestarts  # noqa
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

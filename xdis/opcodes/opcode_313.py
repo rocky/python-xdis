@@ -450,8 +450,8 @@ opcode_arg_fmt = opcode_312.opcode_arg_fmt312.copy()
 opcode_extended_fmt = opcode_312.opcode_extended_fmt312.copy()
 for fmt_table in (opcode_arg_fmt, opcode_extended_fmt):
     fmt_table.pop("MAKE_FUNCTION")  # MAKE_FUNCTION formatting not in 3.13
-opcode_arg_fmt13 = opcode_arg_fmt
-opcode_extended_fmt13 = opcode_extended_fmt
+opcode_arg_fmt313 = opcode_arg_fmt
+opcode_extended_fmt313 = opcode_extended_fmt
 
 
 # update any calls to findlinestarts to include the version tuple
