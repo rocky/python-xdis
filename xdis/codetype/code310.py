@@ -18,8 +18,6 @@ import struct
 import types
 from copy import deepcopy
 
-import struct
-
 from xdis.codetype.code38 import Code38
 from xdis.cross_types import UnicodeForPython3
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
