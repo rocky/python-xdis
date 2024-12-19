@@ -8,6 +8,10 @@ xdis
 A Cross-Python bytecode disassembler, bytecode/wordcode and magic-number manipulation library/package.
 
 
+.. contents:: Table of Contents
+    :depth: 3
+
+
 Introduction
 ------------
 
@@ -21,8 +25,8 @@ bytecodes from different versions of Python. The command-line routine
 disassembly conventions in a variety of user-specified formats.  Some
 of these formats like ``extended`` and ``extended-format`` are the most
 advanced of any Python disassembler I know of because they can show
-expression-tree on operators. See the [Disassembler
-Example][#disassembler-example] below.
+expression-tree on operators. See the `Disassembler
+Example`_ below.
 
 Also, if you need to modify and write bytecode, the routines here can
 be of help. There are routines to pack and unpack the read-only tuples
@@ -42,8 +46,8 @@ the kinds of instruction categorization that ``dis`` offers, we have
 additional categories for things that would be useful in such a
 bytecode assembler, optimizer, or decompiler.
 
-The programs here accept bytecodes from Python version 1.0 to 3.11 or
-so. The code requires Python 2.4 or later and has been tested on
+The programs here accept bytecodes from Python version 1.0 to
+3.13. The code requires Python 2.4 or later and has been tested on
 Python running lots of Python versions.
 
 When installing, except for the most recent versions of Python, use
@@ -63,8 +67,7 @@ The standard Python routine:
 
 ::
 
-    $ pip install -e .
-    $ pip install -r requirements-dev.txt
+   $ pip install -e .  # or pip install -e .[dev] to include testing package
 
 A GNU makefile is also provided so ``make install`` (possibly as root or
 sudo) will do the steps above.

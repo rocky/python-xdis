@@ -159,6 +159,115 @@ Code311FieldTypes = deepcopy(Code310FieldTypes)
 Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
 
 
+##### Parse location table #####
+def parse_location_entries(location_bytes, first_line):
+    """
+    Parses the locations table described in: https://github.com/python/cpython/blob/3.11/Objects/locations.md
+    The locations table replaced the line number table starting in 3.11
+    """
+
+    def starts_new_entry(b):
+        return bool(b & 0b10000000)  # bit 7 is set
+
+    def extract_code(b):
+        return (b & 0b01111000) >> 3  # extracts bits 3-6
+
+    def extract_length(b):
+        return (b & 0b00000111) + 1  # extracts bit 0-2
+
+    def iter_location_codes(loc_bytes):
+        if len(loc_bytes) == 0:
+            return []
+
+        iter_locs = iter(loc_bytes)
+        entry_codes = [next(iter_locs)]
+
+        for b in iter_locs:
+            if starts_new_entry(b):
+                yield entry_codes
+                entry_codes = [b]
+            else:
+                entry_codes.append(b)
+
+        if entry_codes:
+            yield entry_codes
+
+    def iter_varints(varint_bytes):
+        if len(varint_bytes) == 0:
+            return []
+
+        def has_next_byte(b):
+            return bool(b & 0b01000000)  # has bit 6 set
+
+        def get_value(b):
+            return b & 0b00111111  # extracts bits 0-5
+
+        iter_varint_bytes = iter(varint_bytes)
+
+        current_value = 0
+        shift_amt = 0
+
+        for b in iter_varint_bytes:
+            current_value += get_value(b) << shift_amt
+            if has_next_byte(b):
+                shift_amt += 6
+            else:
+                yield current_value
+                current_value = 0
+                shift_amt = 0
+
+    def decode_signed_varint(s):
+        return -(s >> 1) if s & 1 else (s >> 1)
+
+    entries = (
+        []
+    )  # tuples of (code units, start line, end line, start column, end column)
+
+    last_line = first_line
+
+    for location_codes in iter_location_codes(location_bytes):
+        first_byte = location_codes[0]
+        location_length = extract_length(first_byte)
+        code = extract_code(first_byte)
+
+        if code <= 9:  # short form
+            start_line = last_line
+            end_line = start_line
+            second_byte = location_codes[1]
+            start_column = (code * 8) + ((second_byte >> 4) & 7)
+            end_column = start_column + (second_byte & 15)
+        elif code <= 12:  # one line form
+            start_line = last_line + code - 10
+            end_line = start_line
+            start_column = location_codes[1]
+            end_column = location_codes[2]
+        elif code == 13:  # no column info
+            (start_line_delta,) = iter_varints(location_codes[1:])
+            start_line = last_line + decode_signed_varint(start_line_delta)
+            end_line = start_line
+            start_column = None
+            end_column = None
+        elif code == 14:  # long form
+            (start_line_delta, end_line_delta, start_column, end_column) = iter_varints(
+                location_codes[1:]
+            )
+            start_line = last_line + decode_signed_varint(start_line_delta)
+            end_line = start_line + end_line_delta
+        else:  # code == 15, no location
+            start_line = None
+            end_line = None
+            start_column = None
+            end_column = None
+
+        entries.append(
+            (location_length, start_line, end_line, start_column, end_column)
+        )
+
+        last_line = start_line if start_line is not None else last_line
+
+    return entries
+
+
 ##### NEW "OPAQUE" LINE TABLE PARSING #####
 # See: https://github.com/python/cpython/blob/aaed91cabcedc16c089c4b1c9abb1114659a83d3/Objects/codeobject.c#L1245C1-L1245C17
 PY_CODE_LOCATION_INFO_SHORT0 = 0
@@ -253,6 +362,7 @@ def decode_linetable_entry(
 
 
 def parse_linetable(linetable: bytes, first_lineno: int):
+
 
     linetable_entries = []
 
