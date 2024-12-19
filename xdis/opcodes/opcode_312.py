@@ -177,6 +177,10 @@ def format_CALL_INTRINSIC_1(arg) -> str:
 def format_CALL_INTRINSIC_2(arg) -> str:
     return _intrinsic_2_descs[arg]
 
+
+opcode_extended_fmt = opcode_extended_fmt312 = opcode_extended_fmt311.copy()
+opcode_arg_fmt = opcode_arg_fmt12 = opcode_arg_fmt311.copy()
+
 ### update arg formatting
 opcode_arg_fmt = opcode_arg_fmt312 = opcode_arg_fmt311.copy()
 opcode_arg_fmt312.update(
