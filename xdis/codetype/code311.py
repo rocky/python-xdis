@@ -21,7 +21,6 @@ from typing import Iterable, Iterator, Optional
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
-
 # Note: order is the positional order given in the Python docs for
 # 3.11 types.Codetype.
 # "posonlyargcount" is not used, but it is in other Python versions, so it
