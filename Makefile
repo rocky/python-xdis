@@ -64,7 +64,7 @@ clean: clean_pyc
 
 #: Create source (tarball) and wheel distribution
 dist: clean
-	$(PYTHON) ./setup.py sdist bdist_egg
+	$(PYTHON) ./setup.py sdist bdist_wheel
 
 #: Create older distributions
 dist-older:
