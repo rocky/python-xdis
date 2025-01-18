@@ -3,6 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Iterable
 
+import pytest
+
 from config import SYS_VERSION, TEMPLATE_COMPILED_DIR, TEMPLATE_SERIALIZED_DIR
 from serialize_bytecode import serialize_pyc
 
@@ -50,13 +52,11 @@ def get_versions() -> Iterable[str]:
             yield dir.name
 
 
-def test_all_versions():
+pytest_versions = list(get_versions())
+
+
+@pytest.mark.parametrize("version", pytest_versions)
+def test_version(version):
     """Test each version in compiled template folder."""
-    for v in get_versions():
-        print(f"=== {SYS_VERSION}: Testing version {v} ===")
-        for case in get_tests_by_version(v):
-            assert case.serialized_dis.splitlines() == case.serialized_xdis.splitlines()
-
-
-if __name__ == "__main__":
-    test_all_versions()
+    for case in get_tests_by_version(version):
+        assert case.serialized_dis.splitlines() == case.serialized_xdis.splitlines()
