@@ -23,6 +23,37 @@ from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 
+# Note: order is the positional order given in the Python docs for
+# 3.11 types.Codetype.
+# "posonlyargcount" is not used, but it is in other Python versions, so it
+# has to be included since this structure is used as the Union type
+# for all code types.
+Code311FieldNames = """
+        co_argcount
+        co_posonlyargcount
+        co_kwonlyargcount
+        co_nlocals
+        co_stacksize
+        co_flags
+        co_consts
+        co_code
+        co_names
+        co_varnames
+        co_freevars
+        co_cellvars
+        co_filename
+        co_name
+        co_qualname
+        co_firstlineno
+        co_linetable
+        co_exceptiontable
+"""
+
+Code311FieldTypes = deepcopy(Code310FieldTypes)
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
+
+
+##### Parse location table #####
 def parse_location_entries(location_bytes, first_line):
     """
     Parses the locations table described in: https://github.com/python/cpython/blob/3.11/Objects/locations.md
@@ -129,36 +160,6 @@ def parse_location_entries(location_bytes, first_line):
         last_line = start_line if start_line is not None else last_line
 
     return entries
-
-
-# Note: order is the positional order given in the Python docs for
-# 3.11 types.Codetype.
-# "posonlyargcount" is not used, but it is in other Python versions, so it
-# has to be included since this structure is used as the Union type
-# for all code types.
-Code311FieldNames = """
-        co_argcount
-        co_posonlyargcount
-        co_kwonlyargcount
-        co_nlocals
-        co_stacksize
-        co_flags
-        co_consts
-        co_code
-        co_names
-        co_varnames
-        co_freevars
-        co_cellvars
-        co_filename
-        co_name
-        co_qualname
-        co_firstlineno
-        co_linetable
-        co_exceptiontable
-"""
-
-Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
 
 
 ##### NEW "OPAQUE" LINE TABLE PARSING #####
