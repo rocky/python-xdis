@@ -11,6 +11,6 @@ Most tests should be ran using the makefile.
 
 # Usage
 ## Makefile
-Run `make` or `make help` to show the help menu for running and preparing tests.
+Run `make` or `make help` to show the help menu for running and preparing tests, or with `remake`, `remake --tasks`.
 
 To simply run tests, `make test` will copy some sources, prepare template files, and run tests.
