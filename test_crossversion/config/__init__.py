@@ -7,6 +7,7 @@ _test_path = Path(__file__).parent.parent
 
 # system version of python
 SYS_VERSION = f"{version_info.major}.{version_info.minor}"
+SYS_VERSION_TUPLE = (version_info.major, version_info.minor, version_info.micro)
 
 # template dirs
 TEMPLATE_DIR = _test_path / "templates"

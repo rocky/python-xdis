@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Iterable
 
 import pytest
-from config import TEMPLATE_COMPILED_DIR, TEMPLATE_SERIALIZED_DIR
+from config import SYS_VERSION, TEMPLATE_COMPILED_DIR, TEMPLATE_SERIALIZED_DIR
 from serialize_bytecode import serialize_pyc
 
 
@@ -29,9 +29,7 @@ class SerializedTestCase:
         self.serialized_dis = serialized_txt.read_text()
         self.serialized_xdis = serialize_pyc(pyc, use_xdis=True, output_file=None)
         # debug message
-        self.message = (
-            f"Checking equivalence: {self.pyc_path} <---> {self.serialized_txt_path}"
-        )
+        self.message = f"{SYS_VERSION}: Checking equivalence: {self.pyc_path} <---> {self.serialized_txt_path}"
 
     def __str__(self) -> str:
         return self.message

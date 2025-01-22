@@ -6,6 +6,9 @@ from pathlib import Path
 from typing import Callable, TextIO
 
 import xdis
+
+from config import SYS_VERSION_TUPLE
+
 from xdis import disassemble_file, iscode
 
 # Util to format shorthand code obj name
@@ -28,13 +31,7 @@ def _iter_nested_bytecodes(bytecode, bytecode_constructor: Callable):
         yield bc
 
 
-def _format_headers(bytecode) -> str:
-    """Format important headers (attrs) of bytecode."""
-
-    # TODO add an automated way to filter attrs not used in dis that may be present in xdis
-    # simple solution may just be a header in a serialized pyc stating what is being saved
-
-    # headers of the codeobj to serialize
+def _get_headers_to_serialize(bytecode_version: tuple):
     headers_to_serialize = [
         "co_argcount",
         "co_cellvars",
@@ -44,8 +41,6 @@ def _format_headers(bytecode) -> str:
         "co_flags",
         "co_freevars",
         "co_kwonlyargcount",
-        "co_linetable",
-        # "co_lnotab",  # not in dis >3.11, see todo above
         "co_name",
         "co_names",
         "co_nlocals",
@@ -53,28 +48,50 @@ def _format_headers(bytecode) -> str:
         "co_stacksize",
         "co_varnames",
     ]
+
+    if bytecode_version >= (3, 10):
+        headers_to_serialize.append("co_lines")
+    if bytecode_version >= (3, 11):
+        headers_to_serialize.append("co_qualname")
+        headers_to_serialize.append("co_positions")
+    return headers_to_serialize
+
+
+def _format_headers(bytecode, bytecode_version: tuple) -> str:
+    """Format important headers (attrs) of bytecode."""
+
     # default format for each attr
     header_fmt = "{name} : {val}"
 
     # format headers
     formatted_headers = []
-    for attr in headers_to_serialize:
-        if not hasattr(bytecode.codeobj, attr):
-            print(f"Warning: Codeobj missing test_attr {attr}")
+    for attr_name in _get_headers_to_serialize(bytecode_version):
+        # check for missing attrs
+        if not hasattr(bytecode.codeobj, attr_name):
+            print(f"Warning: Codeobj missing test_attr {attr_name}")
             continue
-        val = getattr(bytecode.codeobj, attr)
-        # filter code objects in co_consts
-        if attr == "co_consts":
+
+        attr_val = getattr(bytecode.codeobj, attr_name)
+
+        # handle const attrs and some callables
+        if attr_name == "co_consts":
+            # filter code objects in co_consts
             val = [
-                f"<codeobj {const.co_name}" if iscode(const) else const for const in val
+                f"<codeobj {const.co_name}" if iscode(const) else const
+                for const in attr_val
             ]
+        elif attr_name in ("co_lines", "co_positions"):
+            val = list(attr_val())
+        else:
+            val = attr_val
+
         # format header string
-        formatted_headers.append(header_fmt.format(name=attr[3:], val=val))
+        formatted_headers.append(header_fmt.format(name=attr_name[3:], val=val))
 
     return "\n".join(formatted_headers)
 
 
-def _format_insts(bytecode) -> str:
+def _format_insts(bytecode, bytecode_version: tuple) -> str:
     """Format all instructions in given bytecode."""
     # TODO revisit ignoring argrepr and argvals in tests
     # we are ignoring argrepr and val for now, as xdis will sometimes include additional info there
@@ -86,23 +103,25 @@ def _format_insts(bytecode) -> str:
         # skip cache
         if inst.opname == "CACHE":
             continue
+
         # filter and format argvals
         if iscode(inst.argval):
             argval = _fmt_codeobj(inst.argval)
-            insts.append(inst_fmt.format(inst=inst, argval=argval))
         else:
-            insts.append(inst_fmt.format(inst=inst, argval=inst.argval))
+            argval = inst.argval
+
+        insts.append(inst_fmt.format(inst=inst, argval=argval))
 
     return "\n".join(insts)
 
 
-def format_bytecode(bytecode) -> str:
+def format_bytecode(bytecode, bytecode_version: tuple) -> str:
     """Create complete formatted string of bytecode."""
     outstr = f"BYTECODE {bytecode.codeobj.co_name}\n"
     outstr += "ATTRS:\n"
-    outstr += _format_headers(bytecode) + "\n"
+    outstr += _format_headers(bytecode, bytecode_version) + "\n"
     outstr += "INSTS:\n"
-    outstr += _format_insts(bytecode) + "\n"
+    outstr += _format_insts(bytecode, bytecode_version) + "\n"
     return outstr
 
 
@@ -113,19 +132,22 @@ def serialize_pyc(
 
     # create a code object in xdis or dis, and a constructor to make bytecodes with
     if use_xdis:
-        # write to null so no disassembly output
+        # using xdis
         from os import devnull
 
+        # write to null so no disassembly output
         with open(devnull, "w") as fnull:
             # create xdis code obj
             (_, code_object, version_tuple, _, _, is_pypy, _, _) = disassemble_file(
-                str(pyc), fnull
+                str(pyc), fnull, asm_format="classic"
             )
         # get corresponding opcode class
         opc = xdis.get_opcode(version_tuple, is_pypy, None)
         # create xdis bytecode constructor
         bytecode_constructor = lambda codeobj: xdis.Bytecode(codeobj, opc)
+        bytecode_version = version_tuple
     else:
+        # using dis
         import dis
         import marshal
 
@@ -133,12 +155,13 @@ def serialize_pyc(
         code_object = marshal.loads(pyc.read_bytes()[16:])
         # create dis bytecode constructor
         bytecode_constructor = lambda codeobj: dis.Bytecode(codeobj)
+        bytecode_version = SYS_VERSION_TUPLE
 
-    # iter bytecodes
+    # iter bytecodes and create list of formatted bytecodes strings
     formatted_bytecodes = []
     init_bytecode = bytecode_constructor(code_object)
     for bc in _iter_nested_bytecodes(init_bytecode, bytecode_constructor):
-        formatted_bytecodes.append(format_bytecode(bc))
+        formatted_bytecodes.append(format_bytecode(bc, bytecode_version))
 
     # write formatted bytecodes
     full_formatted_bytecode = "\n".join(formatted_bytecodes)
