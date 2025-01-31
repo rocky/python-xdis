@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 from pathlib import Path
 from typing import Callable, TextIO
 
-import xdis
-
 from config import SYS_VERSION_TUPLE
 
+import xdis
 from xdis import disassemble_file, iscode
 
 # Util to format shorthand code obj name
@@ -68,7 +68,7 @@ def _format_headers(bytecode, bytecode_version: tuple) -> str:
     for attr_name in _get_headers_to_serialize(bytecode_version):
         # check for missing attrs
         if not hasattr(bytecode.codeobj, attr_name):
-            print(f"Warning: Codeobj missing test_attr {attr_name}")
+            logging.warning(f"Codeobj missing test_attr {attr_name}")
             continue
 
         attr_val = getattr(bytecode.codeobj, attr_name)
@@ -182,7 +182,11 @@ if __name__ == "__main__":
     parser.add_argument("pyc", help="PYC file to serialize.")
     args = parser.parse_args()
 
+    # verify pyc path
     pyc_path = Path(args.pyc)
     assert pyc_path.exists(), "PYC does not exist"
+
+    # setup logger
+    logging.basicConfig(format="%(levelname)s: %(message)s")
 
     serialize_pyc(pyc_path, args.use_xdis)

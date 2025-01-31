@@ -1,3 +1,5 @@
+import argparse
+import logging
 from py_compile import compile
 
 from config import (
@@ -25,23 +27,35 @@ def prepare_templates():
     # compile and serialize template files
     num_source = 0
     for source in TEMPLATE_SOURCE_DIR.glob("*.py"):
-
         # create paths
         pyc_file = compiled_dir / f"{source.stem}_{SYS_VERSION}.pyc"
         serialized_file = serialized_dir / f"{source.stem}_{SYS_VERSION}.txt"
 
         # compile pyc
         compile(str(source), str(pyc_file))
-        print(f"Compiled {str(source)} -> {str(pyc_file)}")
+        logging.info(f"Compiled {str(source)} -> {str(pyc_file)}")
 
         # serialize pyc
         with serialized_file.open("w") as f:
             serialize_pyc(pyc_file, False, f)
-        print(f"Serialized {str(pyc_file)} -> {str(serialized_file)}")
+        logging.info(f"Serialized {str(pyc_file)} -> {str(serialized_file)}")
         num_source += 1
 
     print(f"{num_source} files compiled and serialized")
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(prog="prepare_templates")
+    parser.add_argument(
+        "-V", "--verbose", action="store_true", help="Use verbose output"
+    )
+    args = parser.parse_args()
+
+    # setup logger
+    logging.basicConfig(
+        format="%(levelname)s: %(message)s",
+        level=logging.DEBUG if args.verbose else None,
+    )
+
+    # compile and serialize templates
     prepare_templates()
