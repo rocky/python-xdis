@@ -53,7 +53,7 @@ def _get_headers_to_serialize(bytecode_version: tuple):
         headers_to_serialize.append("co_lines")
     if bytecode_version >= (3, 11):
         headers_to_serialize.append("co_qualname")
-        headers_to_serialize.append("co_positions")
+        # headers_to_serialize.append("co_positions"), not fully supported in xdis
     return headers_to_serialize
 
 

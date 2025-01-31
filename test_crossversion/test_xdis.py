@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from itertools import chain
-
 from pathlib import Path
 from typing import Iterable
 
-import pytest
 from config import SYS_VERSION, TEMPLATE_COMPILED_DIR, TEMPLATE_SERIALIZED_DIR
 from serialize_bytecode import serialize_pyc
+
+import pytest
 
 
 class SerializedTestCase:
