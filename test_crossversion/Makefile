@@ -39,11 +39,11 @@ setup_pyenv: .python-version
 
 #: with each tox env, compile all sources in ./templates/source/ to ./templates/compiled/, then serialize with dis to ./templates/serialized/
 compile:
-	tox -c ./tox_prepare.ini
+	tox p -c ./tox_prepare.ini
 
 #: fully prepare tests
 prepare: clean get_sources setup_pyenv compile
 
 #: prepare and run tests. with each tox env, serialize pyc's in ./templates/compiled/<version> with xdis, then check against corresponding dis serialized pyc in ./templates/serialized/<version>
 test: prepare
-	tox
+	tox r -c ./tox.ini
