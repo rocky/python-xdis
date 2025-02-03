@@ -2,13 +2,8 @@ import argparse
 import logging
 from py_compile import compile
 
-from config import (
-    SYS_VERSION,
-    TEMPLATE_COMPILED_DIR,
-    TEMPLATE_SERIALIZED_DIR,
-    TEMPLATE_SOURCE_DIR,
-)
 from serialize_bytecode import serialize_pyc
+from config import SYS_VERSION, TEMPLATE_COMPILED_DIR, TEMPLATE_SERIALIZED_DIR, TEMPLATE_SOURCE_DIR
 
 
 def prepare_templates():
@@ -46,16 +41,11 @@ def prepare_templates():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="prepare_templates")
-    parser.add_argument(
-        "-V", "--verbose", action="store_true", help="Use verbose output"
-    )
+    parser.add_argument("-V", "--verbose", action="store_true", help="Use verbose output")
     args = parser.parse_args()
 
     # setup logger
-    logging.basicConfig(
-        format="%(levelname)s: %(message)s",
-        level=logging.DEBUG if args.verbose else None,
-    )
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG if args.verbose else None)
 
     # compile and serialize templates
     prepare_templates()

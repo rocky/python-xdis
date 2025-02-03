@@ -11,23 +11,24 @@ from config import SYS_VERSION_TUPLE
 import xdis
 from xdis import disassemble_file, iscode
 
+
 # Util to format shorthand code obj name
 # Used so we do not compare memory addrs
-_fmt_codeobj = lambda co: f"<codeobj {co.co_name}>"
+def _fmt_codeobj(co):
+    return f"<codeobj {co.co_name}>"
 
 
 def _iter_nested_bytecodes(bytecode, bytecode_constructor: Callable):
     """
     iterate over a bytecode and its child bytecodes
-    bytecode: bytecode object to iterate, will be yielded on first call
-    bytecode_constructor: constructor to create child bytecodes with
+
+    :param bytecode: bytecode object to iterate, will be yielded on first call
+    :param bytecode_constructor: constructor to create child bytecodes with
     """
     bc_stack = [bytecode]
     while bc_stack:
         bc = bc_stack.pop()
-        bc_stack.extend(
-            bytecode_constructor(obj) for obj in bc.codeobj.co_consts if iscode(obj)
-        )
+        bc_stack.extend(bytecode_constructor(obj) for obj in bc.codeobj.co_consts if iscode(obj))
         yield bc
 
 
@@ -57,15 +58,22 @@ def _get_headers_to_serialize(bytecode_version: tuple):
     return headers_to_serialize
 
 
-def _format_headers(bytecode, bytecode_version: tuple) -> str:
-    """Format important headers (attrs) of bytecode."""
+def _format_headers(bytecode, bytecode_version: tuple, headers_to_serialize: list[str] | None) -> str:
+    """
+    Format important headers (attrs) of bytecode.
+
+    :param bytecode: bytecode object
+    :param bytecode_version: bytecode version tuple to track version specific headers
+    :param headers: list bytecode headers that we want to specifically format, excluding the other headers. By default, tests all params.
+    """
 
     # default format for each attr
     header_fmt = "{name} : {val}"
 
     # format headers
     formatted_headers = []
-    for attr_name in _get_headers_to_serialize(bytecode_version):
+    headers = headers_to_serialize if headers_to_serialize is not None else _get_headers_to_serialize(bytecode_version)
+    for attr_name in headers:
         # check for missing attrs
         if not hasattr(bytecode.codeobj, attr_name):
             logging.warning(f"Codeobj missing test_attr {attr_name}")
@@ -76,10 +84,7 @@ def _format_headers(bytecode, bytecode_version: tuple) -> str:
         # handle const attrs and some callables
         if attr_name == "co_consts":
             # filter code objects in co_consts
-            val = [
-                f"<codeobj {const.co_name}" if iscode(const) else const
-                for const in attr_val
-            ]
+            val = [f"<codeobj {const.co_name}" if iscode(const) else const for const in attr_val]
         elif attr_name in ("co_lines", "co_positions"):
             val = list(attr_val())
         else:
@@ -115,20 +120,35 @@ def _format_insts(bytecode, bytecode_version: tuple) -> str:
     return "\n".join(insts)
 
 
-def format_bytecode(bytecode, bytecode_version: tuple) -> str:
-    """Create complete formatted string of bytecode."""
+def format_bytecode(bytecode, bytecode_version: tuple, headers_to_serialize: list[str] | None = None, serialize_insts: bool = True) -> str:
+    """
+    Create complete formatted string of bytecode.
+
+    :param bytecode: bytecode object
+    :param bytecode_version: tuple of bytecode version to track version specific formatting
+    :param headers: list of bytecode headers we want to format in output. If None or not defined, we format all params by default.
+    :param serialize_insts: bool to determine if we serialize instructions or ignore them and dont output.
+    """
+
     outstr = f"BYTECODE {bytecode.codeobj.co_name}\n"
     outstr += "ATTRS:\n"
-    outstr += _format_headers(bytecode, bytecode_version) + "\n"
-    outstr += "INSTS:\n"
-    outstr += _format_insts(bytecode, bytecode_version) + "\n"
+    outstr += _format_headers(bytecode, bytecode_version, headers_to_serialize) + "\n"
+    if serialize_insts:
+        outstr += "INSTS:\n"
+        outstr += _format_insts(bytecode, bytecode_version) + "\n"
     return outstr
 
 
-def serialize_pyc(
-    pyc: Path, use_xdis: bool = False, output_file: TextIO | None = sys.stdout
-) -> str:
-    """Serialize a pyc to text for testing, using dis or xdis."""
+def serialize_pyc(pyc: Path, use_xdis: bool = False, output_file: TextIO | None = sys.stdout, headers: list[str] | None = None, serialize_insts: bool = True) -> str:
+    """
+    Serialize a pyc to text for testing, using dis or xdis.
+
+    :param pyc: path of pyc file
+    :param use_xdis: boolean if we serialize with xdis, default use dis (meaning pyc must be same version as running python)
+    :param output_file: file to write output to
+    :param headers: list of bytecode headers we want to format in output. Default is None, where we format all params.
+    :param serialize_insts: bool to determine if we format instructions or ignore them and dont output save.
+    """
 
     # create a code object in xdis or dis, and a constructor to make bytecodes with
     if use_xdis:
@@ -138,9 +158,7 @@ def serialize_pyc(
         # write to null so no disassembly output
         with open(devnull, "w") as fnull:
             # create xdis code obj
-            (_, code_object, version_tuple, _, _, is_pypy, _, _) = disassemble_file(
-                str(pyc), fnull, asm_format="classic"
-            )
+            (_, code_object, version_tuple, _, _, is_pypy, _, _) = disassemble_file(str(pyc), fnull, asm_format="classic")
         # get corresponding opcode class
         opc = xdis.get_opcode(version_tuple, is_pypy, None)
         # create xdis bytecode constructor
@@ -161,7 +179,7 @@ def serialize_pyc(
     formatted_bytecodes = []
     init_bytecode = bytecode_constructor(code_object)
     for bc in _iter_nested_bytecodes(init_bytecode, bytecode_constructor):
-        formatted_bytecodes.append(format_bytecode(bc, bytecode_version))
+        formatted_bytecodes.append(format_bytecode(bc, bytecode_version, headers, serialize_insts))
 
     # write formatted bytecodes
     full_formatted_bytecode = "\n".join(formatted_bytecodes)
@@ -179,6 +197,16 @@ if __name__ == "__main__":
         help="Use xdis to serialize bytecode",
         action="store_true",
     )
+    parser.add_argument(
+        "--headers",
+        help="List of specific code object params to test, defaults to all parameters. Should be 'co_*', for example, 'co_lines'",
+        nargs="*",
+    )
+    parser.add_argument(
+        "--skip_insts",
+        help="Do not test accuracy of instructions",
+        action="store_false",
+    )
     parser.add_argument("pyc", help="PYC file to serialize.")
     args = parser.parse_args()
 
@@ -189,4 +217,4 @@ if __name__ == "__main__":
     # setup logger
     logging.basicConfig(format="%(levelname)s: %(message)s")
 
-    serialize_pyc(pyc_path, args.use_xdis)
+    serialize_pyc(pyc_path, args.use_xdis, headers=args.headers if args.headers else None, serialize_insts=args.skip_insts)
