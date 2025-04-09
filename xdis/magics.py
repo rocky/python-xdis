@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2024 by Rocky Bernstein
+# (C) Copyright 2018-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -572,7 +572,7 @@ add_canonic_versions(
 )
 
 add_canonic_versions(
-    "3.12 3.12.0 3.12.1 3.12.2 3.12.3 3.12.4 3.12.5 3.12.6 3.12.7 3.12.8",
+    "3.12 3.12.0 3.12.1 3.12.2 3.12.3 3.12.4 3.12.5 3.12.6 3.12.7 3.12.8 3.12.9",
     "3.12.0rc2",
 )
 

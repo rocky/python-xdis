@@ -17,7 +17,7 @@
 """Python disassembly functions specific to wordcode from Python 3.6+
 """
 from xdis.bytecode import op_has_argument
-from xdis.cross_dis import unpack_opargs_bytecode_310, _get_cache_size_313
+from xdis.cross_dis import _get_cache_size_313, unpack_opargs_bytecode_310
 
 
 def unpack_opargs_wordcode(code, opc):
@@ -68,6 +68,7 @@ def findlabels(code, opc):
             elif op in opc.JABS_OPS:
                 jump_offset = arg2
             else:
+                print("XXX", offset, op)
                 continue
             if jump_offset not in offsets:
                 offsets.append(jump_offset)
