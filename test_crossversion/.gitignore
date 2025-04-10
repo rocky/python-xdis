@@ -1,0 +1,4 @@
+templates/
+**/__pycache__/
+*.pyc
+.python-version
