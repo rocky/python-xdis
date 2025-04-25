@@ -68,7 +68,6 @@ def findlabels(code, opc):
             elif op in opc.JABS_OPS:
                 jump_offset = arg2
             else:
-                print("XXX", offset, op)
                 continue
             if jump_offset not in offsets:
                 offsets.append(jump_offset)
