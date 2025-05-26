@@ -29,6 +29,7 @@
 /.tox
 /.venv*/*
 /ChangeLog
+/ChangeLog-spell-corrected
 /PKG-INFO
 /README
 /README.html
