@@ -1,3 +1,10 @@
+6.1.4 2025-05-26
+================
+
+* Add another cross-python testing mechanism courtesy of Elliot Tarbet 2elli
+* Update Python magics for 3.10.7, 3.11,12, 3.12.9, 3.12.10, 3.13.2, 3.13.3
+
+
 6.1.3 2024-12-19
 ================
 
