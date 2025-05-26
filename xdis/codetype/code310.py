@@ -14,7 +14,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import struct
 import types
 from copy import deepcopy
 
@@ -162,36 +161,41 @@ class Code310(Code38):
                      equal to the size of the bytecode.  line will
                      either be a positive integer, or None
 
-        Parsing implementation adapted from: https://github.com/python/cpython/blob/3.10/Objects/lnotab_notes.txt
-        The algorithm presented in the lnotab_notes.txt file is slightly inaccurate. The first linetable entry will have a line delta of 0, and should be yielded instead of skipped.
-        This implementation follows the `lineiter_next` definition in https://github.com/python/cpython/blob/10a2a9b3bcf237fd6183f84941632cda59395319/Objects/codeobject.c#L1029C1-L1062C2,
-        and the `advance` function in https://github.com/python/cpython/blob/10a2a9b3bcf237fd6183f84941632cda59395319/Objects/codeobject.c#L1140-L1155.
         """
+        line_number = self.co_firstlineno
+        start_offset = 0
+        byte_increments = [c for c in tuple(self.co_linetable[0::2])]
+        line_deltas = [c for c in tuple(self.co_linetable[1::2])]
 
-        end_offset = 0
-        line = self.co_firstlineno
+        if len(byte_increments) == 0:
+            yield start_offset, len(self.co_code), line_number
+            return
 
-        # co_linetable is pairs of (offset_delta: unsigned byte, line_delta: signed byte)
-        for offset_delta, line_delta in struct.iter_unpack("=Bb", self.co_linetable):
+        byte_incr = byte_increments[0]
+        line_delta = line_deltas[0]
+        assert line_delta != -128, "the first line delta can't logically be -128"
+        assert isinstance(line_delta, int)
+        if line_delta > 127:
+            line_delta = 256 - line_delta
+        else:
+            line_number += line_delta
+
+        for byte_incr, line_delta in zip(byte_increments[1:], line_deltas[1:]):
             assert isinstance(line_delta, int)
-            assert isinstance(offset_delta, int)
+            assert isinstance(byte_incr, int)
+            end_offset = start_offset + byte_incr
+            if line_delta > 127:
+                line_delta = 256 - line_delta
 
+            if line_delta == -128:
+                line_delta = 0
+            yield start_offset, end_offset, line_number
+            line_number += line_delta
             start_offset = end_offset
-            end_offset += offset_delta
 
-            # line_delta of -128 signifies an instruction range that is not associated with any line
-            if line_delta != -128:
-                line += line_delta
-                display_line = line
-            else:
-                display_line = None
-
-            # omit empty ranges
-            if start_offset == end_offset:
-                continue
-
-            yield start_offset, end_offset, display_line
->>>>>>> python-3.6-to-3.10
+        end_offset = len(self.co_code)
+        yield start_offset, end_offset, line_number
+        return
 
     def encode_lineno_tab(self):
         """
