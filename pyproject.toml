@@ -54,6 +54,7 @@ Downloads = "https://github.com/rocky/python-xdis/releases"
 dev = [
     "pre-commit",
     "pytest",
+    "tox",
 ]
 
 [project.scripts]
