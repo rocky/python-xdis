@@ -17,7 +17,7 @@
 """Python disassembly functions specific to wordcode from Python 3.6+
 """
 from xdis.bytecode import op_has_argument
-from xdis.cross_dis import unpack_opargs_bytecode_310, _get_cache_size_313
+from xdis.cross_dis import _get_cache_size_313, unpack_opargs_bytecode_310
 
 
 def unpack_opargs_wordcode(code, opc):

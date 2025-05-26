@@ -1,4 +1,4 @@
-# (C) Copyright 2024 by Rocky Bernstein
+# (C) Copyright 2024-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,7 +14,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import struct
 import types
 from copy import deepcopy
 
@@ -123,17 +122,18 @@ class Code310(Code38):
         for field, fieldtype in self.fieldtypes.items():
             val = getattr(self, field)
             if isinstance(fieldtype, tuple):
-                assert (
-                    type(val) in fieldtype
-                ), "%s should be one of the types %s; is type %s" % (
-                    field,
-                    fieldtype,
-                    type(val),
+                assert type(val) in fieldtype, (
+                    "%s should be one of the types %s; is type %s"
+                    % (
+                        field,
+                        fieldtype,
+                        type(val),
+                    )
                 )
             else:
-                assert isinstance(
-                    val, fieldtype
-                ), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
+                assert isinstance(val, fieldtype), (
+                    "%s should have type %s; is type %s" % (field, fieldtype, type(val))
+                )
                 pass
             pass
 
