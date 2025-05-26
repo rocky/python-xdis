@@ -14,10 +14,9 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import struct
 import types
 from copy import deepcopy
-
-import struct
 
 from xdis.codetype.code38 import Code38
 from xdis.cross_types import UnicodeForPython3
@@ -124,17 +123,18 @@ class Code310(Code38):
         for field, fieldtype in self.fieldtypes.items():
             val = getattr(self, field)
             if isinstance(fieldtype, tuple):
-                assert (
-                    type(val) in fieldtype
-                ), "%s should be one of the types %s; is type %s" % (
-                    field,
-                    fieldtype,
-                    type(val),
+                assert type(val) in fieldtype, (
+                    "%s should be one of the types %s; is type %s"
+                    % (
+                        field,
+                        fieldtype,
+                        type(val),
+                    )
                 )
             else:
-                assert isinstance(
-                    val, fieldtype
-                ), "%s should have type %s; is type %s" % (field, fieldtype, type(val))
+                assert isinstance(val, fieldtype), (
+                    "%s should have type %s; is type %s" % (field, fieldtype, type(val))
+                )
                 pass
             pass
 
@@ -163,24 +163,34 @@ class Code310(Code38):
                      either be a positive integer, or None
 
         Parsing implementation adapted from: https://github.com/python/cpython/blob/3.10/Objects/lnotab_notes.txt
+        The algorithm presented in the lnotab_notes.txt file is slightly inaccurate. The first linetable entry will have a line delta of 0, and should be yielded instead of skipped.
+        This implementation follows the `lineiter_next` definition in https://github.com/python/cpython/blob/10a2a9b3bcf237fd6183f84941632cda59395319/Objects/codeobject.c#L1029C1-L1062C2,
+        and the `advance` function in https://github.com/python/cpython/blob/10a2a9b3bcf237fd6183f84941632cda59395319/Objects/codeobject.c#L1140-L1155.
         """
-        line = self.co_firstlineno
+
         end_offset = 0
+        line = self.co_firstlineno
+
         # co_linetable is pairs of (offset_delta: unsigned byte, line_delta: signed byte)
-        for offset_delta, line_delta in struct.iter_unpack('=Bb', self.co_linetable):
+        for offset_delta, line_delta in struct.iter_unpack("=Bb", self.co_linetable):
             assert isinstance(line_delta, int)
             assert isinstance(offset_delta, int)
-            if line_delta == 0: # No change to line number, just accumulate changes to end
-                end_offset += offset_delta
-                continue
+
             start_offset = end_offset
-            end_offset = start_offset + offset_delta
-            if line_delta == -128: # No valid line number -- skip entry
+            end_offset += offset_delta
+
+            # line_delta of -128 signifies an instruction range that is not associated with any line
+            if line_delta != -128:
+                line += line_delta
+                display_line = line
+            else:
+                display_line = None
+
+            # omit empty ranges
+            if start_offset == end_offset:
                 continue
-            line += line_delta
-            if end_offset == start_offset: # Empty range, omit.
-                continue
-            yield start_offset, end_offset, line
+
+            yield start_offset, end_offset, display_line
 
     def encode_lineno_tab(self):
         """
