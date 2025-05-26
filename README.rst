@@ -58,7 +58,8 @@ To install older versions for from source in git use the branch
 ``python-2.4-to-2.7`` for Python versions from 2.4 to 2.7,
 ``python-3.1-to-3.2`` for Python versions from 3.1 to 3.2,
 ``python-3.3-to-3.5`` for Python versions from 3.3 to 3.5. The master
-branch handles Python 3.6 and later.
+``python-3.6-to-3.10`` for Python versions from 3.6 to 3.10 . The master
+branch handles Python 3.11 and later.
 
 Installation
 ------------
