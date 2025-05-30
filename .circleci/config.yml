@@ -23,9 +23,7 @@ jobs:
     # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
     # This is based on your 1.0 configuration file or project settings
-    - run:
-        working_directory: ~/rocky/python-xdis
-        command: sudo pip install nose && sudo pip install pep8
+    - run: sudo /usr/local/bin/python -m pip install --upgrade pip
     - run: sudo pip install -e .
     - run: sudo pip install -r requirements-dev.txt
 
