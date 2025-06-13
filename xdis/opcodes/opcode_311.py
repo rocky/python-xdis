@@ -1,4 +1,4 @@
-# (C) Copyright 2024
+# (C) Copyright 2024-2025
 # by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
@@ -57,7 +57,7 @@ _nb_ops = [
     ("NB_LSHIFT", "<<"),
     ("NB_MATRIX_MULTIPLY", "@"),
     ("NB_MULTIPLY", "*"),
-    ("NB_REMAINDER", "%"),
+    ("NB_MODULO", "%"),
     ("NB_OR", "|"),
     ("NB_POWER", "**"),
     ("NB_RSHIFT", ">>"),
@@ -70,7 +70,7 @@ _nb_ops = [
     ("NB_INPLACE_LSHIFT", "<<="),
     ("NB_INPLACE_MATRIX_MULTIPLY", "@="),
     ("NB_INPLACE_MULTIPLY", "*="),
-    ("NB_INPLACE_REMAINDER", "%="),
+    ("NB_INPLACE_MODULO", "%="),
     ("NB_INPLACE_OR", "|="),
     ("NB_INPLACE_POWER", "**="),
     ("NB_INPLACE_RSHIFT", ">>="),
