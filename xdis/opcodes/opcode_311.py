@@ -260,7 +260,7 @@ opcode_arg_fmt = opcode_arg_fmt311 = {
     },
 }
 
-opcode_extended_fmt311 = {
+opcode_extended_fmt = opcode_extended_fmt311 = {
     **opcode_extended_fmt310,
     **{
         "BINARY_OP": extended_format_BINARY_OP,
