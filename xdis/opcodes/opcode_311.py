@@ -259,10 +259,9 @@ opcode_arg_fmt311 = opcode_arg_fmt311.update(
 )
 opcode_arg_fmt = opcode_arg_fmt311
 
-opcode_extended_fmt = opcode_extended_fmt311 = {
-    **opcode_extended_fmt310,
-    **{
->>>>>>> python-3.6-to-3.10
+opcode_extended_fmt311 = opcode_extended_fmt310.copy()
+opcode_extended_fmt311.update(
+    {
         "BINARY_OP": extended_format_BINARY_OP,
     }
 )
