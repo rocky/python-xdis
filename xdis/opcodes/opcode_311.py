@@ -24,6 +24,7 @@ of stack usage and information for formatting instructions.
 from typing import Dict, List, Optional, Tuple
 
 import xdis.opcodes.opcode_310 as opcode_310
+from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     binary_op,
     def_op,
@@ -244,8 +245,36 @@ def extended_format_BINARY_OP(opc, instructions) -> Tuple[str, Optional[int]]:
     return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
 
 
-def format_BINARY_OP(arg) -> str:
+def extended_format_SWAP(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
+    """call_function_inst should be a "SWAP" instruction. See if
+    `we can find the two instructions to be swapped.  If not we'll
+    return None.
+
+    """
+    # From opcode description: argc indicates the total number of
+    # positional and keyword arguments.  Sometimes the function name
+    # is in the stack arg positions back.
+    # From opcode description: arg_count indicates the total number of
+    # positional and keyword arguments.
+
+    swap_instr = instructions[0]
+    i = swap_instr.argval
+    # s = ""
+
+    if (i is None or not (0 < i < len(instructions))):
+        return "", None
+
+    # To be continued
+    return "", None
+
+def format_BINARY_OP(arg: int) -> str:
     return _nb_ops[arg][1]
+
+
+def format_SWAP_OP(arg: int) -> str:
+    return f"TOS <-> TOS{arg-1}"
 
 
 opcode_arg_fmt311 = opcode_arg_fmt310.copy()
@@ -257,6 +286,7 @@ opcode_arg_fmt = opcode_arg_fmt311 = {
     **opcode_arg_fmt310,
     **{
         "BINARY_OP": format_BINARY_OP,
+        "SWAP": format_SWAP_OP,
     },
 }
 

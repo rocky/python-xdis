@@ -1,4 +1,4 @@
-# (C) Copyright 2023-2024 by Rocky Bernstein
+# (C) Copyright 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,10 +16,14 @@
 """
 Routines for formatting opcodes.
 """
+
+import re
 from typing import List, Optional, Tuple
 
 from xdis.instruction import Instruction
 from xdis.opcodes.format.basic import format_IS_OP, format_RAISE_VARARGS_older
+
+NULL_EXTENDED_OP = "", None
 
 
 def extended_format_binary_op(
@@ -108,11 +112,7 @@ def extended_format_infix_binary_op(
             instructions[j].opcode in opc.operator_set
             and instructions[i].opcode in opc.operator_set
         ):
-            arg2 = (
-                instructions[j].tos_str
-                if instructions[j].tos_str is not None
-                else instructions[j].argrepr
-            )
+            arg2 = get_instruction_tos_str(instructions[j])
             start_offset = instructions[j].start_offset
             return f"{arg2}{op_str}{arg1}", start_offset
         elif instructions[j].start_offset is not None:
@@ -265,7 +265,7 @@ def extended_format_ATTR(
         instr1.tos_str
         or instr1.opcode in opc.NAME_OPS | opc.CONST_OPS | opc.LOCAL_OPS | opc.FREE_OPS
     ):
-        base = get_instruction_arg(instr1)
+        base = get_instruction_tos_str(instr1)
 
         return (
             f"{base}.{instructions[0].argrepr}",
@@ -448,6 +448,21 @@ def extended_format_COMPARE_OP(
     )
 
 
+def extended_format_DUP_TOP(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, Optional[int]]:
+    """Try to extract TOS value and show that surrounded in a "push() ".
+      The trailing space at the used as a sentinal for `get_instruction_tos_str()`
+      which tries to remove the push() part when the operand value string is needed.
+    """
+
+    # We add a space at the end as a sentinal to use in get_instruction_tos_str()
+    if instructions[1].optype not in ['jrel', 'jabs']:
+        return extended_format_unary_op(opc, instructions, "push(%s) ")
+    else:
+        return NULL_EXTENDED_OP
+
+
 def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]]:
     """call_function_inst should be a "CALL_FUNCTION" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
@@ -468,7 +483,7 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]
 
     assert i is not None
     if i >= len(instructions) - 1:
-        return "", None
+        return NULL_EXTENDED_OP
 
     fn_inst = instructions[i + 1]
     if fn_inst.opcode in opc.operator_set:
@@ -480,7 +495,7 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]
         arglist.reverse()
         s = f'{fn_name}({", ".join(arglist)})'
         return s, start_offset
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_IMPORT_FROM(
@@ -493,7 +508,8 @@ def extended_format_IMPORT_FROM(
             instructions[i].start_offset, instructions, 1
         )
         if i is None:
-            return "", None
+            return NULL_EXTENDED_OP
+
     module_name = get_instruction_arg(instructions[i])
     if module_name.startswith("import_module("):
         module_name = module_name[len("import_module(") : -1]
@@ -647,7 +663,7 @@ def extended_format_CALL_METHOD(opc, instructions) -> Tuple[str, Optional[int]]:
     arglist, arg_count, first_arg = get_arglist(instructions, 0, arg_count)
 
     if first_arg is None or first_arg >= len(instructions) - 1:
-        return "", None
+        return NULL_EXTENDED_OP
 
     fn_inst = instructions[first_arg + 1]
     if fn_inst.opcode in opc.operator_set and arglist is not None:
@@ -657,7 +673,8 @@ def extended_format_CALL_METHOD(opc, instructions) -> Tuple[str, Optional[int]]:
             arglist.reverse()
             s = f'{fn_name}({", ".join(arglist)})'
             return s, start_offset
-    return "", None
+    return NULL_EXTENDED_OP
+
 
 
 def extended_format_RAISE_VARARGS_older(
@@ -771,6 +788,18 @@ def get_instruction_arg(inst: Instruction, argval=None) -> str:
     return inst.tos_str if inst.tos_str is not None else argval
 
 
+def get_instruction_tos_str(inst: Instruction) -> str:
+    if inst.tos_str is not None:
+        argval = inst.tos_str
+        argval_without_push = re.match(r"^push\((.+)\) ", argval)
+        if argval_without_push:
+            # remove surrounding "push(...)" string
+            argval = argval_without_push.group(1)
+    else:
+        argval = inst.argrepr
+    return argval
+
+
 def get_instruction_index_from_offset(
     target_offset: int, instructions: List[Instruction], start_index: int = 1
 ) -> Optional[int]:
@@ -858,6 +887,7 @@ opcode_extended_fmt_base = {
     "BUILD_TUPLE":           extended_format_BUILD_TUPLE,
     "CALL_FUNCTION":         extended_format_CALL_FUNCTION,
     "COMPARE_OP":            extended_format_COMPARE_OP,
+    "DUP_TOP":               extended_format_DUP_TOP,
     "IMPORT_FROM":           extended_format_IMPORT_FROM,
     "IMPORT_NAME":           extended_format_IMPORT_NAME,
     "INPLACE_ADD":           extended_format_INPLACE_ADD,
