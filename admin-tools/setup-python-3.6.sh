@@ -1,4 +1,6 @@
 #!/bin/bash
+# Check out python-3.6-to-3.10 and dependent development branches.
+
 if [[ $0 == $${BASH_SOURCE[0]} ]] ; then
     echo "This script should be *sourced* rather than run directly through bash"
     exit 1
