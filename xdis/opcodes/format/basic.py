@@ -58,6 +58,14 @@ def format_RAISE_VARARGS_older(argc) -> str:
         return "exception, parameter, traceback"
     return ""
 
+def format_ROT_FOUR(_: int) -> str:
+    return "TOS, TOS1, TOS2, TOS3 = TOS1, TOS2, TOS3, TOS"
+
+
+def format_ROT_THREE(_: int) -> str:
+    return "TOS, TOS1, TOS2 = TOS1, TOS2, TOS"
+
+
 def format_ROT_TWO(_: int) -> str:
     # We add a space at the end as a sentinal to use in get_instruction_tos_str()
     return "TOS, TOS1 = TOS1, TOS"
@@ -70,5 +78,7 @@ opcode_arg_fmt_base = opcode_arg_fmt34 = {
     "CALL_FUNCTION_VAR_KW": format_CALL_FUNCTION_pos_name_encoded,
     "EXTENDED_ARG": format_extended_arg,
     "RAISE_VARARGS": format_RAISE_VARARGS_older,
+    "ROT_FOUR": format_ROT_FOUR,
+    "ROT_THREE": format_ROT_THREE,
     "ROT_TWO": format_ROT_TWO,
 }

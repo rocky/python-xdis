@@ -60,7 +60,7 @@ def extended_format_binary_op(
                     arg1_start_offset, instructions, 1
                 )
                 if i is None:
-                    return "", None
+                    return NULL_EXTENDED_OP
             j = skip_cache(instructions, i + 1)
             stack_inst2 = instructions[j]
             if (
@@ -79,7 +79,7 @@ def extended_format_binary_op(
                 return fmt_str % (arg2, arg1), start_offset
             else:
                 return fmt_str % ("...", arg1), None
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_infix_binary_op(
@@ -103,7 +103,7 @@ def extended_format_infix_binary_op(
         if arg1_start_offset is not None:
             i = get_instruction_index_from_offset(arg1_start_offset, instructions, 1)
             if i is None:
-                return "", None
+                return NULL_EXTENDED_OP
         j = i + 1
         # 3.11+ has CACHE instructions
         while instructions[j].opname == "CACHE":
@@ -129,7 +129,7 @@ def extended_format_infix_binary_op(
             return f"{arg2}{op_str}{arg1}", start_offset
         else:
             return f"...{op_str}{arg1}", None
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_store_op(
@@ -142,7 +142,7 @@ def extended_format_store_op(
     # are more complicated, so let's not try to figure this out.
     # This kind of things is best left for a decompiler.
     if inst.is_jump_target:
-        return "", None
+        return NULL_EXTENDED_OP
 
     prev_inst = instructions[1]
     start_offset = prev_inst.offset
@@ -198,7 +198,7 @@ def extended_format_ternary_op(
         if arg1_start_offset is not None:
             i = get_instruction_index_from_offset(arg1_start_offset, instructions, 1)
             if i is None:
-                return "", None
+                return NULL_EXTENDED_OP
         j = skip_cache(instructions, i + 1)
         stack_inst2 = instructions[j]
         if (
@@ -229,7 +229,7 @@ def extended_format_ternary_op(
             return fmt_str % (arg2, arg1, arg3), start_offset
         else:
             return fmt_str % ("...", "...", "..."), None
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_STORE_SUBSCR(
@@ -251,7 +251,7 @@ def extended_format_unary_op(
         return fmt_str % stack_arg.tos_str, start_offset
     if stack_arg.opcode in opc.operator_set:
         return fmt_str % stack_arg.argrepr, start_offset
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_ATTR(
@@ -271,7 +271,7 @@ def extended_format_ATTR(
             f"{base}.{instructions[0].argrepr}",
             instr1.start_offset,
         )
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_BINARY_ADD(
@@ -372,7 +372,7 @@ def extended_format_build_tuple_or_list(
             return f"{left_delim}{args_str},{right_delim}", instructions[i].start_offset
         else:
             return f"{left_delim}{args_str}{right_delim}", instructions[i].start_offset
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_BUILD_CONST_KEY_MAP(opc, instructions):
@@ -393,7 +393,7 @@ def extended_format_BUILD_CONST_KEY_MAP(opc, instructions):
                 arg_pairs.append(f"{key_values[i]}: {arglist[i]}")
             args_str = ", ".join(arg_pairs)
             return "{" + args_str + "}", instructions[i].start_offset
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_BUILD_LIST(
@@ -426,7 +426,7 @@ def extended_format_BUILD_SLICE(
     if instructions[0].argval == 0:
         # Degenerate case
         return "set()", instructions[0].start_offset
-    return "", None
+    return NULL_EXTENDED_OP
 
 
 def extended_format_BUILD_TUPLE(
@@ -479,7 +479,7 @@ def extended_format_CALL_FUNCTION(opc, instructions) -> Tuple[str, Optional[int]
     arglist, arg_count, i = get_arglist(instructions, 0, arg_count)
 
     if arglist is None:
-        return "", None
+        return NULL_EXTENDED_OP
 
     assert i is not None
     if i >= len(instructions) - 1:
@@ -791,9 +791,9 @@ def get_instruction_arg(inst: Instruction, argval=None) -> str:
 def get_instruction_tos_str(inst: Instruction) -> str:
     if inst.tos_str is not None:
         argval = inst.tos_str
-        argval_without_push = re.match(r"^push\((.+)\) ", argval)
+        argval_without_push = re.match(r"^(?:push|copy)\((.+)\) ", argval)
         if argval_without_push:
-            # remove surrounding "push(...)" string
+            # remove surrounding "push(...) or copy(...)" string
             argval = argval_without_push.group(1)
     else:
         argval = inst.argrepr
