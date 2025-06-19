@@ -41,6 +41,10 @@ from xdis.version_info import IS_GRAAL, IS_PYPY, version_tuple_to_str
 
 PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384)
 GRAAL3_MAGICS = (21150, 21280)
+RUSTPYTHON_MAGICS = (
+    12641, # RustPython 3.13
+    12897  # RustPython 3.12
+)
 
 
 def add_magic_from_int(magic_int, version):
@@ -456,6 +460,9 @@ add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(256, "3.8pypy")  # PyPy 3.8.15
 add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15, PyPy 3.9.17
 add_magic_from_int(384, "3.10pypy")  # PyPy 3.10.12
+
+add_magic_from_int(12897, "3.12.0rust")  # RustPython 3.12.0
+add_magic_from_int(12641, "3.13.0rust")  # RustPython 3.13.0
 
 # NOTE: This is JVM bytecode not Python bytecode
 add_magic_from_int(21150, "3.8.5Graal")
