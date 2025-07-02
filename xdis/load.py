@@ -330,6 +330,8 @@ def load_module_from_file_object(
                 pass
             else:
                 co = None
+        except NotImplementedError:
+            raise
         except Exception:
             kind, msg = sys.exc_info()[0:2]
             import traceback

@@ -32,7 +32,7 @@ from struct import unpack
 
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
-from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, magic_int2tuple
+from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
 
 if PYTHON3:
@@ -140,6 +140,8 @@ class _VersionIndependentUnmarshaller:
 
         In Python 3, a ``bytes`` type is used for strings.
         """
+        if magic_int in RUSTPYTHON_MAGICS:
+            raise NotImplementedError("RustPython not supported yet")
         self.fp = fp
         self.magic_int = magic_int
         self.code_objects = code_objects
@@ -161,8 +163,8 @@ class _VersionIndependentUnmarshaller:
         self.internStrings = []
         self.internObjects = []
         self.version_tuple = tuple()
-        self.is_graal = False
-        self.is_pypy = False
+        self.is_graal = magic_int in GRAAL3_MAGICS
+        self.is_pypy = magic_int in PYPY3_MAGICS
 
     def load(self):
         """
