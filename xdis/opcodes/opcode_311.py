@@ -252,9 +252,7 @@ def format_BINARY_OP(arg):
     return _nb_ops[arg][1]
 
 
-def extended_format_COPY_OP(
-    opc, instructions: list
-) -> tuple:
+def extended_format_COPY_OP(opc, instructions):
     """Try to extract TOS value and show that surrounded in a "push() ".
     The trailing space at the used as a sentinal for `get_instruction_tos_str()`
     which tries to remove the push() part when the operand value string is needed.
@@ -267,9 +265,7 @@ def extended_format_COPY_OP(
         return NULL_EXTENDED_OP
 
 
-def extended_format_SWAP(
-    opc, instructions: list
-) -> tuple:
+def extended_format_SWAP(opc, instructions):
     """call_function_inst should be a "SWAP" instruction. See if
     `we can find the two instructions to be swapped.  If not we'll
     return None.
@@ -292,7 +288,7 @@ def extended_format_SWAP(
     return "", None
 
 
-def format_SWAP_OP(arg: int) -> str:
+def format_SWAP_OP(arg):
     return "TOS <-> TOS%s" % (arg-1)
 
 opcode_arg_fmt311 = copy(opcode_arg_fmt310)

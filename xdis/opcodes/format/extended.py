@@ -407,9 +407,7 @@ def extended_format_COMPARE_OP(opc, instructions):
     )
 
 
-def extended_format_DUP_TOP(
-    opc, instructions: list
-) -> tuple:
+def extended_format_DUP_TOP(opc, instructions):
     """Try to extract TOS value and show that surrounded in a "push() ".
       The trailing space at the used as a sentinal for `get_instruction_tos_str()`
       which tries to remove the push() part when the operand value string is needed.
@@ -720,7 +718,7 @@ def get_instruction_arg(inst, argval=None):
         return argval
 
 
-def get_instruction_tos_str(inst: Instruction) -> str:
+def get_instruction_tos_str(inst):
     if inst.tos_str is not None:
         argval = inst.tos_str
         argval_without_push = re.match(r"^(?:push|copy)\((.+)\) ", argval)

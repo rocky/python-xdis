@@ -49,7 +49,7 @@ def format_MAKE_FUNCTION_10_27(argc):
 
 
 # Up until 3.7
-def format_RAISE_VARARGS_older(argc) -> str:
+def format_RAISE_VARARGS_older(argc):
     assert 0 <= argc <= 3
     if argc == 0:
         return "reraise"
@@ -61,15 +61,19 @@ def format_RAISE_VARARGS_older(argc) -> str:
         return "exception, parameter, traceback"
     return ""
 
-def format_ROT_FOUR(_: int) -> str:
+
     return "TOS, TOS1, TOS2, TOS3 = TOS1, TOS2, TOS3, TOS"
 
 
-def format_ROT_THREE(_: int) -> str:
+def format_ROT_FOUR(_):
+    return "TOS, TOS1, TOS2, TOS3 = TOS1, TOS2, TOS3, TOS"
+
+
+def format_ROT_THREE(_):
     return "TOS, TOS1, TOS2 = TOS1, TOS2, TOS"
 
 
-def format_ROT_TWO(_: int) -> str:
+def format_ROT_TWO(_):
     # We add a space at the end as a sentinal to use in get_instruction_tos_str()
     return "TOS, TOS1 = TOS1, TOS"
 
