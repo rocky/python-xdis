@@ -24,6 +24,7 @@ of stack usage and information for formatting instructions.
 from copy import copy
 
 import xdis.opcodes.opcode_310 as opcode_310
+from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     binary_op,
     def_op,
@@ -35,7 +36,11 @@ from xdis.opcodes.base import (
     store_op,
     update_pj3,
 )
-from xdis.opcodes.format.extended import extended_format_binary_op
+from xdis.opcodes.format.extended import (
+    NULL_EXTENDED_OP,
+    extended_format_binary_op,
+    extended_format_unary_op,
+)
 from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 
 version_tuple = (3, 11)
@@ -247,7 +252,51 @@ def format_BINARY_OP(arg):
     return _nb_ops[arg][1]
 
 
+def extended_format_COPY_OP(
+    opc, instructions: list
+) -> tuple:
+    """Try to extract TOS value and show that surrounded in a "push() ".
+    The trailing space at the used as a sentinal for `get_instruction_tos_str()`
+    which tries to remove the push() part when the operand value string is needed.
+    """
+
+    # We add a space at the end as a sentinal to use in get_instruction_tos_str()
+    if instructions[1].optype not in ["jrel", "jabs"]:
+        return extended_format_unary_op(opc, instructions, "copy(%s) ")
+    else:
+        return NULL_EXTENDED_OP
+
+
+def extended_format_SWAP(
+    opc, instructions: list
+) -> tuple:
+    """call_function_inst should be a "SWAP" instruction. See if
+    `we can find the two instructions to be swapped.  If not we'll
+    return None.
+
+    """
+    # From opcode description: argc indicates the total number of
+    # positional and keyword arguments.  Sometimes the function name
+    # is in the stack arg positions back.
+    # From opcode description: arg_count indicates the total number of
+    # positional and keyword arguments.
+
+    swap_instr = instructions[0]
+    i = swap_instr.argval
+    # s = ""
+
+    if i is None or not (0 < i < len(instructions)):
+        return "", None
+
+    # To be continued
+    return "", None
+
+
+def format_SWAP_OP(arg: int) -> str:
+    return "TOS <-> TOS%s" % (arg-1)
+
 opcode_arg_fmt311 = copy(opcode_arg_fmt310)
+
 del opcode_arg_fmt311["CALL_FUNCTION"]
 del opcode_arg_fmt311["CALL_FUNCTION_KW"]
 del opcode_arg_fmt311["CALL_METHOD"]
@@ -256,6 +305,7 @@ opcode_arg_fmt = opcode_arg_fmt311 = copy(opcode_arg_fmt310)
 opcode_arg_fmt.update(
     {
         "BINARY_OP": format_BINARY_OP,
+        "SWAP": format_SWAP_OP,
     }
 )
 
@@ -263,6 +313,7 @@ opcode_extended_fmt311 = copy(opcode_extended_fmt310)
 opcode_extended_fmt311.update(
     {
         "BINARY_OP": extended_format_BINARY_OP,
+        "COPY": extended_format_COPY_OP,
     },
 )
 
