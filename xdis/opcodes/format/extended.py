@@ -404,8 +404,8 @@ def extended_format_COMPARE_OP(opc, instructions: list):
 
 
 def extended_format_DUP_TOP(
-    opc, instructions: List[Instruction]
-) -> Tuple[str, Optional[int]]:
+    opc, instructions: list
+) -> tuple:
     """Try to extract TOS value and show that surrounded in a "push() ".
       The trailing space at the used as a sentinal for `get_instruction_tos_str()`
       which tries to remove the push() part when the operand value string is needed.
