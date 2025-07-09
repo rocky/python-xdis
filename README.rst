@@ -7,6 +7,7 @@ xdis
 
 A Cross-Python bytecode disassembler, bytecode/wordcode and magic-number manipulation library/package.
 
+I gave a talk that mentions using this at `BlackHat Asia 2024 <https://youtu.be/H-7ZNrpsV50?si=nOaixgYHr7RbILVS>`_.
 
 .. contents:: Table of Contents
     :depth: 3
