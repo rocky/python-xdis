@@ -23,7 +23,6 @@ of stack usage and information for formatting instructions.
 
 
 import xdis.opcodes.opcode_310 as opcode_310
-from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     binary_op,
     def_op,
@@ -244,6 +243,8 @@ def extended_format_BINARY_OP(opc, instructions) -> tuple:
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
+    elif opname == "%=":
+        opname = "%%="
     return extended_format_binary_op(opc, instructions, "%%s %s %%s" % opname)
 
 
