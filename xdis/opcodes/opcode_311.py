@@ -23,7 +23,6 @@ of stack usage and information for formatting instructions.
 
 
 import xdis.opcodes.opcode_310 as opcode_310
-from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     binary_op,
     def_op,
