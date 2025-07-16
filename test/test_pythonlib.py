@@ -203,8 +203,8 @@ def do_tests(src_dir, obj_patterns, target_dir, opts):
 
     output = open(os.devnull, "w")
     # output = sys.stdout
-    print (time.ctime())
-    print ("Source directory: ", src_dir)
+    print time.ctime()
+    print "Source directory: ", src_dir
     cwd = os.getcwd()
     os.chdir(src_dir)
     try:
