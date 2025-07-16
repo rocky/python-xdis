@@ -246,6 +246,8 @@ def extended_format_BINARY_OP(opc, instructions) -> Tuple[str, Optional[int]]:
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
+    elif opname == "%=":
+        opname = "%%="
     return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
 
 
