@@ -2,7 +2,7 @@
 """
 PYPY 3.10 opcodes
 
-This is a like PyPy 3.10's opcode.py  with some classification
+This is a like Python 3.10's opcode.py  with some classification
 of stack usage and information for formatting instructions.
 """
 
@@ -12,7 +12,6 @@ from xdis.opcodes.base import (
     finalize_opcodes,
     init_opdata,
     jrel_op,
-    name_op,
     nargs_op,
     rm_op,
     update_pj3,
