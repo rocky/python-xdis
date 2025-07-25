@@ -106,7 +106,7 @@ for vers in (
     "3.9",
     "3.10",
     "3.11",
-    "3.12"
+    "3.12",
 ):
     bytecode = "bytecode_%s" % vers
     key = "bytecode-%s" % vers
@@ -117,9 +117,15 @@ for vers in (
         pythonlib = os.path.join(src_dir, pythonlib, "__pycache__")
     test_options[key] = (os.path.join(lib_prefix, pythonlib), PYOC, pythonlib, vers)
 
-# -----
-
-for vers, vers_dot in ((35, 3.5), (36, 3.6), (37, 3.7), (38, 3.8)):
+for vers, vers_dot in (
+    (35, 3.5),
+    (36, 3.6),
+    (37, 3.7),
+    (38, 3.8),
+    (39, 3.9),
+    (310, 3.10),
+    (311, 3.11),
+):
     bytecode = "bytecode_pypy%s" % vers
     key = "bytecode-pypy%s" % vers
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
