@@ -80,7 +80,6 @@ Disassembler Example
 The cross-version disassembler that is packaged here can produce
 assembly listings that are superior to those typically found in
 Python's dis module. Here is an example::
->>>>>>> python-3.0-to-3.2
 
 :: text
     pydisasm -S -F extended bytecode_3.8/pydisasm-example.pyc
