@@ -24,9 +24,9 @@ That's what this package is for. It can "marshal load" Python
 bytecodes from different versions of Python. The command-line routine
 *pydisasm* will show disassembly output using the most modern Python
 disassembly conventions in a variety of user-specified formats.  Some
-of these formats like ``extended`` and ``extended-format`` are the most
+of these formats, like ``extended`` and ``extended-format`` are the most
 advanced of any Python disassembler I know of because they can show
-expression-tree on operators. See the `Disassembler
+an expression tree for operators. See the `Disassembler
 Example`_ below.
 
 Also, if you need to modify and write bytecode, the routines here can
@@ -42,24 +42,24 @@ numbers, including PyPy and others, and how to translate from
 magic value.
 
 So if you want to write a cross-version assembler, bytecode-level
-analyzer, or optimizer this package may also be useful. In addition to
+analyzer or optimizer, this package may also be useful. In addition to
 the kinds of instruction categorization that ``dis`` offers, we have
 additional categories for things that would be useful in such a
 bytecode assembler, optimizer, or decompiler.
 
 The programs here accept bytecodes from Python version 1.0 to
 3.13. The code requires Python 2.4 or later and has been tested on
-Python running lots of Python versions.
+Python running on many versions.
 
 When installing, except for the most recent versions of Python, use
-the Python egg or wheel that matches that version, e.g. ``xdis-6.0.2-py3.3.egg``, ``xdis-6.0.2-py33-none-any.whl``.
-Of course for versions that pre-date wheel's, like Python 2.6, you will have to use eggs.
+the Python egg or wheel that matches that version, e.g., ``xdis-6.0.2-py3.3.egg``, ``xdis-6.0.2-py33-none-any.whl``.
+Of course, for versions that predate wheels, like Python 2.6, you will have to use eggs.
 
-To install older versions for from source in git use the branch
+To install older versions from source in git, use the branch
 ``python-2.4-to-2.7`` for Python versions from 2.4 to 2.7,
 ``python-3.1-to-3.2`` for Python versions from 3.1 to 3.2,
 ``python-3.3-to-3.5`` for Python versions from 3.3 to 3.5. The master
-``python-3.6-to-3.10`` for Python versions from 3.6 to 3.10 . The master
+``python-3.6-to-3.10`` for Python versions from 3.6 to 3.10. The master
 branch handles Python 3.11 and later.
 
 Installation
@@ -77,8 +77,8 @@ sudo) will do the steps above.
 Disassembler Example
 --------------------
 
-The cross-version disassembler that is packaged here, can produce
-assembly listing that are superior to those typically found in
+The cross-version disassembler that is packaged here can produce
+assembly listings that are superior to those typically found in
 Python's dis module. Here is an example::
 
     pydisasm -S -F extended bytecode_3.8/pydisasm-example.pyc
@@ -169,19 +169,19 @@ Python's dis module. Here is an example::
              >>   80 LOAD_CONST           (None) ; TOS = None
                   82 RETURN_VALUE         return None
 
-Note in the above that some operand interpretation is done on items that are in the stack.
-For example in ::
+Note that some operand interpretation is performed on items in the stack as shown above.
+For example, in ::
 
               24 LOAD_ATTR            (version) | sys.version
 
-from the instruction see that ``sys.version`` is the resolved attribute that is loaded.
+from the instruction, see that ``sys.version`` is the resolved attribute that is loaded.
 
 Similarly in::
 
               68 COMPARE_OP           (in) | power_of_two in (2, 4)
 
 we see that we can resolve the two arguments of the ``in`` operation.
-Finally in some ``CALL_FUNCTIONS`` we can figure out the name of the function and arguments passed to it.
+Finally, in some' CALL_FUNCTIONS', we can determine the name of the function and the arguments passed to it.
 
 
 
@@ -214,9 +214,9 @@ for usage help.
 As a drop-in replacement for dis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`xdis` also provides some support as a drop in replacement for the
-the Python library `dis <https://docs.python.org/3/library/dis.html>`_
-module. This is may be desirable when you want to use the improved API
+`xdis` also provides some support as a drop-in replacement for the
+Python library `dis <https://docs.python.org/3/library/dis.html>`_
+module. This may be desirable when you want to use the improved API
 from Python 3.4 or later from an earlier Python version.
 
 For example:
@@ -226,9 +226,9 @@ For example:
 >>> [x.opname for x in dis.Bytecode('a = 10')]
 ['LOAD_CONST', 'STORE_NAME', 'LOAD_CONST', 'RETURN_VALUE']
 
-There may some small differences in output produced for formatted
+There may be some small differences in output produced for formatted
 disassembly or how we show compiler flags. We expect you'll
-find the ``xdis`` output more informative though.
+find the ``xdis`` output more informative, though.
 
 See Also
 --------
