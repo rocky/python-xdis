@@ -1,3 +1,12 @@
+6.1.5 2025-07-25
+================
+
+* Start extended formatting for stack maipulation opcodes: SWAP, COPY, DUP_TUP, ROT_XXX
+* Add magics: RustPython 3.12 & 3.13, Graal 3.11.7, PyPy 3.11.3
+* Note that Python versions 3.9.21-3.9.24, 3.10,18, 3.11.13, 3.12.11, 3.13.4-5 now exist
+* Add PyPy 3.9 and 3.10 bytecode for regular testing
+* Fix #163: extended formatting for %=
+
 6.1.4 2025-05-26
 ================
 
