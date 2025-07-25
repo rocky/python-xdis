@@ -20,7 +20,7 @@ from copy import deepcopy
 from xdis.codetype.code13 import Bytes
 from xdis.codetype.code38 import Code38
 from xdis.cross_types import UnicodeForPython3
-from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
+from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order. It is important to match this
 # with the 3.8 order.
@@ -116,7 +116,7 @@ class Code310(Code38):
         self.co_cellvars = co_cellvars
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code310FieldTypes
-        if type(self) == Code310:
+        if type(self) is Code310:
             self.check()
 
     def check(self):
@@ -246,6 +246,7 @@ class Code310(Code38):
 
     def to_native(self):
         if (3, 10) != PYTHON_VERSION_TRIPLE[:2]:
+        if (3, 10) != PYTHON_VERSION_TRIPLE[:2] or IS_PYPY and version_tuple[:2] == (3, 11):
             raise TypeError(
                 "Python Interpreter needs to be 3.10; is %s" % version_tuple_to_str()
             )

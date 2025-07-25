@@ -414,20 +414,20 @@ def fix_opcode_names(opmap):
     return dict([(k.replace("+", "_"), v) for (k, v) in opmap.items()])
 
 
-def update_pj3(g, loc):
+def update_pj3(g, loc, is_pypy=False):
     if loc["version_tuple"] < (3, 11):
         g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
         g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
-    update_sets(loc)
+    update_sets(loc, is_pypy)
 
 
-def update_pj2(g, loc):
+def update_pj2(g, loc, is_pypy=False):
     g.update({"PJIF": loc["opmap"]["JUMP_IF_FALSE"]})
     g.update({"PJIT": loc["opmap"]["JUMP_IF_TRUE"]})
-    update_sets(loc)
+    update_sets(loc, is_pypy)
 
 
-def update_sets(loc):
+def update_sets(loc, is_pypy):
     """
     Updates various category sets all opcode have been defined.
     """
@@ -441,20 +441,21 @@ def update_sets(loc):
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
 
     python_version = loc.get("python_version")
-    if python_version and python_version < (3, 11):
-        loc["JUMP_UNCONDITONAL"] = frozenset(
+    if python_version and python_version < (3, 11) or (is_pypy and python_version == (3, 11)):
+        loc["JUMP_UNCONDITIONAL"] = frozenset(
             [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
         )
     elif python_version:
-        loc["JUMP_UNCONDITONAL"] = frozenset(
-            [
-                loc["opmap"]["JUMP_FORWARD"],
-                loc["opmap"]["JUMP_BACKWARD"],
-                loc["opmap"]["JUMP_BACKWARD_NO_INTERRUPT"],
-            ]
-        )
+        if not is_pypy:
+            loc["JUMP_UNCONDITIONAL"] = frozenset(
+                [
+                    loc["opmap"]["JUMP_FORWARD"],
+                    loc["opmap"]["JUMP_BACKWARD"],
+                    loc["opmap"]["JUMP_BACKWARD_NO_INTERRUPT"],
+                ]
+            )
     else:
-        loc["JUMP_UNCONDITONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
+        loc["JUMP_UNCONDITIONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
     if PYTHON_VERSION_TRIPLE < (3, 8, 0) and python_version and python_version < (3, 8):
         loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
@@ -462,7 +463,7 @@ def update_sets(loc):
 
     loc["LOCAL_OPS"] = frozenset(loc["haslocal"])
     loc["JUMP_OPS"] = (
-        loc["JABS_OPS"] | loc["JREL_OPS"] | loc["LOOP_OPS"] | loc["JUMP_UNCONDITONAL"]
+        loc["JABS_OPS"] | loc["JREL_OPS"] | loc["LOOP_OPS"] | loc["JUMP_UNCONDITIONAL"]
     )
     loc["NAME_OPS"] = frozenset(loc["hasname"])
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])

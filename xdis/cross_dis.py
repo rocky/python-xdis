@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@ from xdis.util import (
     better_repr,
     code2num,
 )
+from xdis.version_info import IS_GRAAL
 
 
 def _try_compile(source, name):
@@ -94,10 +95,10 @@ def _get_cache_size_313(opname):
 
 
 def findlabels(code, opc):
-    if opc.version_tuple < (3, 10):
+    if opc.version_tuple < (3, 10) or IS_GRAAL:
         return findlabels_pre_310(code, opc)
-    else:
-        return findlabels_310(code, opc)
+
+    return findlabels_310(code, opc)
 
 
 def findlabels_310(code, opc):

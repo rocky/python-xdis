@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ from xdis.codetype.code38 import Code38
 from xdis.codetype.code310 import Code310
 from xdis.codetype.code311 import Code311, Code311FieldNames
 from xdis.namedtuple24 import namedtuple
-from xdis.version_info import PYTHON_VERSION_TRIPLE
+from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
 
 def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
@@ -85,7 +85,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_firstlineno=code.co_firstlineno,
                 co_lnotab=line_table,
             )
-        elif version_tuple[:2] == (3, 10):
+        elif version_tuple[:2] == (3, 10) or IS_PYPY and version_tuple[:2] == (3, 11):
             return Code310(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
@@ -188,7 +188,7 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
         elif version_tuple < (3, 10):
             # 3.8 ... 3.9
             return Code38
-        elif version_tuple[:2] == (3, 10):
+        elif version_tuple[:2] == (3, 10) or IS_PYPY and version_tuple[:2] == (3, 11):
             # 3.10
             return Code310
         elif version_tuple[:2] >= (3, 11):
