@@ -14,11 +14,16 @@ import pytest
 
 # local
 import xdis.std as dis
-from xdis import IS_GRAAL, IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
-from xdis import Code3
-from xdis import list2bytecode
-from xdis import opcodes
-from xdis import write_bytecode_file
+from xdis import (
+    IS_GRAAL,
+    IS_PYPY,
+    PYTHON3,
+    PYTHON_VERSION_TRIPLE,
+    Code3,
+    list2bytecode,
+    opcodes,
+    write_bytecode_file,
+)
 
 if PYTHON_VERSION_TRIPLE >= (3, 2):
     if pytest.__version__ >= "3.2.0":
@@ -58,7 +63,7 @@ EXPECTED_CODE_INFO = (
 #    0: a"""
 ).format(
     flags="0x00000000 (0x0)"
-    if PYTHON_VERSION_TRIPLE >= (3, 11) or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
+    if (PYTHON_VERSION_TRIPLE >= (3, 11) and not IS_PYPY) or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
     else "0x00000040 (NOFREE)"
 )
 

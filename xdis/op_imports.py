@@ -57,6 +57,7 @@ from xdis.opcodes import (
     opcode_310,
     opcode_310pypy,
     opcode_311,
+    opcode_311pypy,
     opcode_312,
     opcode_313,
 )
@@ -171,7 +172,7 @@ op_imports = {
     "3.9.18pypy": opcode_39pypy,
     "3.10pypy": opcode_310pypy,
     "3.10.12pypy": opcode_310pypy,
-    "3.11pypy": opcode_310pypy,
+    "3.11.13pypy": opcode_311pypy,
 }
 
 for k, v in canonic_python_version.items():
