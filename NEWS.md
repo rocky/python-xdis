@@ -9,7 +9,7 @@
 ================
 
 * Support for Python 3.13 added courtesy of Elliot Tarbet 2elli
-* Add get_logical_instruction_at_offset() This disassembles a single instruction at a given offset
+* Add `get_logical_instruction_at_offset()`. This disassembles a single instruction at a given offset
 * Update Python magics for 3.13.1, 3.10.16, pypy3.6.12, 3.12.8
 
 
@@ -19,42 +19,41 @@
 * Support for Python 3.12 and 3.12 added courtesy of Elliot Tarbet 2elli
 * Fixes issues: #137, #138, #146, and #147
 * Include Python 3.12.5
-* Raise exception on invalid timestamp
+* Raise an exception on an invalid timestamp
 
 6.1.1 2024-07-21
 =================
 
-* Greatly improve extended-format output. (More could be done though)
-* Update Python versions recognize, e.g. 3.12.4
+* Greatly improve extended-format output. (More could be done, though)
+* Update Python versions recognized, e.g., 3.12.4
 * Add nullaryloadop for nullary load opcodes
-* More code linting and type annotation
+* More code linting and type annotations
 
 
 6.1.0 2024-03-15
 =================
 
-Lots of changes major changes. API has changed.
+Lots of major changes. API has changed.
 We now support many disassembly options:
   * classic:  disasm-like output
   * bytes: disasm-like output with bytecode
-  * extended: simple interpretation of previous sequence of instructions
+  * extended: simple interpretation of the previous sequence of instructions
   * extended-bytes: same as above, but with "bytes" bytecode output
   * header: show header/metadata information only
 
 This is reflected in the `--format` (`-F`) options on `pydisasm`.
-Option `--show-source` (`-S`) gives add the source text line (or part of it) before assembly instructions that implement the line.
+Option `--show-source` (`-S`) adds the source text line (or part of it) before assembly instructions that implement the line.
 
 Released Python magic numbers have been updated as of this release (up to Python 3.12.2, including PyPy magic numbers.
 
-Some support for the [GraalVM](https://www.graalvm.org/python/)
-implementation of Python started.
+Some support for the [GraalVM](https://www.graalvm.org/python/) implementation of Python started.
 
 Many bugs fixed.
 
 A lot of Linting and coding style modernization.
 
-typing.NameTuple used for Python versions that support this.
-Additional fields "start_offset" and "tos_str" added to instruction.
+typing.NameTuple is used for Python versions that support this.
+Additional fields "start_offset" and "tos_str" added to the instruction.
 
 Elliot Tarbet (2elli) largely provided support for Python 3.11 and 3.12 bytecode
 
@@ -76,8 +75,8 @@ Elliot Tarbet (2elli) largely provided support for Python 3.11 and 3.12 bytecode
 
 * Detect 3.7.[7-13], 3.9.[8-13], 3.10.[1-4], PyPy 2.7.12, 3.[8-9]pypy
 * Correct line-number detection on Python 1.0-1.4
-* Handle SET_LINENO in older pythons
-* Warn about wrong names in after RESERVE_FAST in older Pythons
+* Handle SET_LINENO in older Python versions
+* Warn about wrong names after RESERVE_FAST in older Pythons
 * Some PyPy x-3.9.7 tolerance
 * Add Pypy 3.8 support
 * Better PyPy 3.6 formatting
@@ -93,7 +92,7 @@ Elliot Tarbet (2elli) largely provided support for Python 3.11 and 3.12 bytecode
 6.0.2 2021-10-29
 =================
 
-* Remove str2float, sysinfo2float and magic_int2float. With Python 3.10 this is no
+* Remove str2float, sysinfo2float and magic_int2float. With Python 3.10, this is no
   longer tenable
 * Reduce PYTHON_VERSION usage in xdis.
 * Allow optional delimiter and start length in `version_tuple_to_str()`
@@ -105,15 +104,15 @@ Elliot Tarbet (2elli) largely provided support for Python 3.11 and 3.12 bytecode
 
 * Add PyPy 3.8 opcodes and disassembly
 * Accept Python 3.8.12
-* Fix some small lingering bugs introduced converting Python version number floats to tuples
+* Fix some small lingering bugs introduced by converting Python version number floats to tuples
 
 6.0.0 2021-10-15
 =================
 
 Reworked for Python 3.10.
 
-We had been internally using floating point numbers for version testing.
-Clearly this doesn't work to distinguish 3.1 from 3.10.
+We had been internally using floating-point numbers for version testing.
+Clearly, this doesn't work to distinguish 3.1 from 3.10.
 (This was a flaw known about for a while that we had been avoiding).
 
 * Add 3.10 opcodes.
@@ -133,7 +132,7 @@ of the 3 different branches or dialects of Python 2.4-2.7, 3.1-3.2, 3.3-3.5, and
 
 Restrict wheel packaging for Python 3 only.
 
-Use the wheel for only the 3.x and newer version of Python.
+Use the wheel for only the 3.x and newer versions of Python.
 Use eggs for 2.x versions (and others as well).
 
 
@@ -144,13 +143,13 @@ Use eggs for 2.x versions (and others as well).
 * Document unmarshal better
 * Correct stack information for `IMPORT_NAME`
 * Fix bug in code type handling where bytes were showing up as strings
-* More type annotations in master branch. Create older variations without annotations
+* More type annotations in the master branch. Create older variations without annotations
 
 5.0.11 2021-07-05
 ================
 
 * Add Python versions 3.9.6, 3.7.11, 3.8.11, and 3.6.14
-* Format Python various files using black. (Not completely done yet though)
+* Format Python various files using black. (Not completely done yet, though)
 
 5.0.10 2021-06-16
 ================
@@ -172,10 +171,10 @@ In general, better Python 3.9 support.
 ================
 
 - PR #73 from mitre:
-  Allow an alternate opmap - adds the capability to disassemble python bytecode that has
+  Allow an alternate opmap - adds the capability to disassemble Python bytecode that has
   been frozen with a custom opcode mapping. This is particularly useful for disassembling
   malware that uses custom opcode mappings in an attempt to hinder disassembly with standard
-  tools. The updates in this pull request are used by pydecipher, a tool to unfreeze and deobfuscate frozen python code.
+  tools. The updates in this pull request are used by pydecipher, a tool to unfreeze and deobfuscate frozen Python code.
 
 - Add Python versions 3.8.8 and 3.9.2
 
@@ -194,7 +193,7 @@ In general, better Python 3.9 support.
 
 * Add support for Python2.7 on Ubuntu 20.04
 * Bump versions for Python 3.8.6 and 3.5.10
-* Release instructions moved to wiki
+* Release instructions moved to the wiki
 * `VERSION` -> `__version__` because Python prefers it that way
 
 5.0.4 2020-08-30
@@ -222,7 +221,7 @@ In general, better Python 3.9 support.
 
 Two small improvements that are useful in the forthcoming [trepan3k](https://pypi.org/project/trepan3k) release:
 
-* interpret `RAISE_VARARGS`'s `argc` parameter. Some other formatting was extended too
+* interpret `RAISE_VARARGS`'s `argc` parameter. Some other formatting was extended, too
 * `check_object_path()` is more lenient in the path name (it doesn't have to end in `.py` anymore), but it is
    more stringent about what constitutes Python source (it compiles the text to determine validity)
 * In the above `is_python_source()` and `is_bytecode_extension()` are used. They are also exported.
@@ -231,12 +230,12 @@ Two small improvements that are useful in the forthcoming [trepan3k](https://pyp
 5.0.0 2020-06-27
 ================
 
-Disassembly format and options have simplified and improved.
+Disassembly format and options have been simplified and improved.
 
 I had this "Aha!" moment working on the cross-version interpreter x-python. It can show a better disassembly because it has materialized stack entries.
-So for example when a `COMPARE_OP` instruction is run it can show what operands are getting compared.
+So, for example, when a `COMPARE_OP` instruction is run, it can show what operands are getting compared.
 
-It was then that I realized that this is also true much of the time statically. For example, you'll often find a `LOAD_CONST` instruction before a `RETURN_VALUE` and when you do can show exactly what is getting returned. Although cute, the place where something like this is most appreciated and needed is in calling functions such as via `CALL_FUNCTION`. The situation here is that the name of the function is on the stack, and it can be several instructions back depending on the number of parameters. However, in a large number of cases, by tracking use of stack effects (added in a previous release), we can often location the `LOAD_CONST` of that function name.
+It was then that I realized that this is also true much of the time statically. For example, you'll often find a `LOAD_CONST` instruction before a `RETURN_VALUE`, and when you do can show exactly what is getting returned. Although cute, the place where something like this is most appreciated and needed is in calling functions such as via `CALL_FUNCTION`. The situation here is that the name of the function is on the stack, and it can be several instructions back depending on the number of parameters. However, in a large number of cases, by tracking use of stack effects (added in a previous release), we can often location the `LOAD_CONST` of that function name.
 
 Note though that we don't attempt work across basic blocks to track down information. Nor do we even attempt to recreate expression trees. We don't track across call which has a parameter return value which is the return from another call. Still, I find this all very useful.
 
@@ -307,11 +306,9 @@ The major impetus for this release is expanding the Python in Python interpreter
 * Reformat a number of files using blacken, and lint using flymake
 * Update `__init__.py` exports based on what is used in projects `uncompyle6`, `decompyle3`, `trepan3k`,
   `xasm` and `x-python`
-* Remove duplicate `findlinestarts()` code. Remove testing on the Python version and simplify
-  this where possible.
-* get_opcode_module allows either a float and string datatype for the version, and converts
-  the bytecode datatype when needed
-* Fix a bugs in marshal and unmarshal
+* Remove duplicate `findlinestarts()` code. Remove testing on the Python version and simplify this where possible.
+* get_opcode_module allows either a float or string datatype for the version, and it converts the bytecode datatype when needed
+* Fix bugs in marshal and unmarshal
 
 See the commit history or ChangeLog file for a full list of changes
 
@@ -320,7 +317,7 @@ See the commit history or ChangeLog file for a full list of changes
 ====================================
 
 * Fix bug in marshal for 3.8+ (include posonlyargcount)
-* Go over stack effects from 2.5 to 3.4 using and idea from Maynard
+* Go over stack effects from 2.5 to 3.4 using an idea from Maynard
 * Expand stack-effect testing
 
 4.5.0 2020-04-20 stack_effects
@@ -330,20 +327,20 @@ See the commit history or ChangeLog file for a full list of changes
 * Added `stack_effects()` function to `std.py` since this is part of the API
 * `cross_xdis.py` file/module now has `dis.py` functions split off from `bytecode.py`
 * `Instructions` class is in its own module too.
-* Python 2.7.18 added into magics.
+* Python 2.7.18 added to magics.
 
 Incompatibility with earlier versions:
 
 Note: as a result of the reorganization, exported functions from
 bytecode are now in cross_dis.  However, functions are exported from
-the top-level so use that and there will be no disruption in the
-future. For example `from xdis import iscode, instruction_size,
+the top-level, so use that and there will be no disruption in the
+future. For example, `from xdis import iscode, instruction_size,
 code_info`.
 
 4.4.0 2020-04-20 modern-pitch A
 ===============================
 
-Incompatibility: `load_module()` and `load_module_from_file_object()` now return a couple more parameters: is_pypy, and the sip_hash value when that is available. The timestamp and file_size returned on these functions is now None when they aren't available. Previously timestamp had been 0.
+Incompatibility: `load_module()` and `load_module_from_file_object()` now return a couple more parameters: `is_pypy`, and the sip_hash value when that is available. The timestamp and file_size returned by these functions are now None when they aren't available. Previously timestamp had been 0.
 
 * --asm option fixes
 * Show sip hash in 3.7+ when that is used
@@ -360,7 +357,7 @@ Incompatibility: `load_module()` and `load_module_from_file_object()` now return
 
 Fix a few more bugs caused by the recent portability refactoring
 
-* back off line-number table decompression for Python < 3.0 for now. This breaks decomplation.
+* back off line-number table decompression for Python < 3.0 for now. This breaks decompilation.
 * bytecode fix for cell_names now that code types are more stringent.
 
 
@@ -386,16 +383,16 @@ A portable version of types.CodeType was rewritten, to make it
 * easier to use
 * and catch more errors
 * more complete in tracking Python `types.CodeType` changes
-* simpler in implementation by using type inheretence
+* simpler in implementation by using type inheritance
 * more general
 
-Previously getting bytecode read from a bytecode file or from a code object requiring knowing a lot about the Python version of the code type and of the currently running interpreter. That is gone now.
+Previously, getting bytecode read from a bytecode file or from a code object required knowing a lot about the Python version of the code type and of the currently running interpreter. That is gone now.
 
 Use `codeType2Portable()` to turn a native `types.CodeType` or a structure read in from a bytecode file into a portable code type. The portable code type allows fields to be mutated, and is more flexible in the kinds of datatypes it allows.
 
-For example lists of thing like `co_consts`, or `varnames` can be Python lists as well as tuples. The line number table is stored as a dictionary mapping of address to bytecode offset rather than as a compressed structure. Bytecode can either be a string (which is advantageous if you are running Python before 3.x) or a sequence of bytes which is the datatype of a code object for 3.x.
+For example, lists of things like `co_consts`, or `varnames` can be Python lists as well as tuples. The line number table is stored as a dictionary mapping of address to bytecode offset rather than as a compressed structure. Bytecode can either be a string (which is advantageous if you are running Python before 3.x) or a sequence of bytes, which is the datatype of a code object for 3.x.
 
-However, when you need a `type.CodeType` that can be `eval()`'d by the Python interpreter you are running, use the `to_native()` method on the portable code type returned. It will compress and encode the line number table, and turn lists into tuples and convert other datatypes to the right type as needed.
+However, when you need a `type.CodeType` that can be `eval()`'d by the Python interpreter you are running, use the `to_native()` method on the portable code type returned. It will compress and encode the line number table, and turn lists into tuples, and convert other datatypes to the right type as needed.
 
 If you have a *complete* `types.Codetype` structure for a particular Python version whether, it is the one the current Python interpreter is using or not, use the `to_portable()` function, and it will figure out based on the version parameter supplied (or use the current Python interpreter version if none supplieed), which particular portable code type is the right one.
 
@@ -414,7 +411,7 @@ Internally, we use OO inheritance to reduce the amount of duplicate code. The `l
 Incompatibility
 ---------------
 
-The module `xdis.code` has been remamed to `xdis.codetype` and with that the function `iscode()` moved as well. In previous versions to use `iscode()` you might import it from `xdis.code`; now simply import it from `xdis`. In general function that had been imported from a module under `xdis` can now be imported simply from `xdis`.
+The module `xdis.code` has been renamed to `xdis.codetype`, and with that the function `iscode()` moved as well. In previous versions, to use `iscode()` you might import it from `xdis.code`; now simply import it from `xdis`. In general function that had been imported from a module under `xdis` can now be imported simply from `xdis`.
 
 The classes `Compat3Code` and function `code2compat()` and `code3compat()` have been removed. `Compat2Code` is still around for dropbox 2.5, but that is deprecated and will be removed when I can figure out how to remove it from dropbox 2.5.
 
@@ -821,9 +818,9 @@ Python 3.6 bugs/features
 =====================
 
 - add magic for 3.6rc
-- Fix Python 3.6 disaseembly of CALL_FUNCTION_EX
+- Fix Python 3.6 disassembly of CALL_FUNCTION_EX
 - Make magic string values unique
-- Note we can now handle Python 2.4 and 2.5
+- Note, we can now handle Python 2.4 and 2.5
 
 3.2.3 2016-11-6
 =====================
@@ -839,7 +836,7 @@ Python 3.6 bugs/features
 - Correct pypy 3.2 bytecode
 - Start adding stack use on opcodes for Python 3.x
 
-- add stack use for Python 2 and Python3 opcodes (incomplete)
+- add stack use for Python 2 and Python 3 opcodes (incomplete)
 
 3.2.1 2016-10-30
 =====================
@@ -901,8 +898,8 @@ Python 3.6 bugs/features
 =====================
 
 - Start adding Python 1.5 and 2.0, and 2.1 opcodes
-- Disassemble dropbox 2.5
-- correct pydisasm name in --help
+- Disassemble Dropbox 2.5
+- correct pydisasm name in `--help`
 
 2.3.1 2016-09-11
 =====================
@@ -997,7 +994,7 @@ Python 3.6 bugs/features
 1.1.4 2016-07-07
 =====================
 
--  Correct bad python 3.3 magic number
+-  Correct bad Python 3.3 magic number
 
 1.1.3 2016-06-27
 =====================
@@ -1019,12 +1016,12 @@ Python 3.6 bugs/features
 =====================
 
 - Expose needed opcode values and bug fixes
-- drop support for running on Python 2.5
+- Drop support for running on Python 2.5
 
 1.0.5 2016-05-29
 =====================
 
-For Python 2.3-2.5 add pseudo opcodes PJIF PJIT JA
+For Python 2.3-2.5, add pseudo opcodes PJIF PJIT JA
 This simplifies code in cross-version tools like uncompyle6
 
 1.0.4 2016-05-28
@@ -1032,10 +1029,10 @@ This simplifies code in cross-version tools like uncompyle6
 
 Small omissions found by uncompyle6
 
-- export findlinestarts
-- correct pydisassemble.py imports
-- add 2.4, 2.5 hasArgumentExtended
-- add hasjrel, and hasjabs
+- Export findlinestarts
+- Correct pydisassemble.py imports
+- Add 2.4, 2.5 hasArgumentExtended
+- Add hasjrel, and hasjabs
 - Add JUMP_OPs and JPIF, JPIT, JA, JF
 
 1.0.1-1.0.3 2016-05-27
@@ -1043,7 +1040,7 @@ Small omissions found by uncompyle6
 
 Minor fixes
 
-- small bugs and make more usable in uncompyle6
+- small bugs and make it more usable in uncompyle6
 
 1.0.0 2016-05-26 First release
 =====================
