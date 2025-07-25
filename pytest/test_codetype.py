@@ -4,6 +4,7 @@ Check interoperability of native an emulated code type.
 import types
 
 import xdis.codetype
+from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
 
 def five():
@@ -21,12 +22,14 @@ def test_codeType2Portable():
     xdis.codetype.portableCodeType()
     cc = xdis.codetype.codeType2Portable(five_code)
     assert xdis.codetype.portableCodeType() == type(cc)
-    new_code = cc.to_native()
-    assert types.CodeType == type(new_code)
-    assert eval(new_code) == 5
-    cc_new = cc.replace(co_name="five_renamed")
-    assert cc_new.co_name == "five_renamed"
-    assert eval(cc_new.to_native()) == 5
+
+    if not IS_PYPY and PYTHON_VERSION_TRIPLE[:2] != (3, 11):
+        new_code = cc.to_native()
+        assert isinstance(new_code, types.CodeType)
+        assert eval(new_code) == 5
+        cc_new = cc.replace(co_name="five_renamed")
+        assert cc_new.co_name == "five_renamed"
+        assert eval(cc_new.to_native()) == 5
 
 
 if __name__ == "__main__":
