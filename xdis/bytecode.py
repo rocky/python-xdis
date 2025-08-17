@@ -491,6 +491,7 @@ def get_instructions_bytes(
                 linestarts=linestarts,
                 line_offset=0,
                 exception_entries=exception_entries,
+                labels=labels
             )
         )
 
