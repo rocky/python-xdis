@@ -256,7 +256,7 @@ class Code310(Code38):
         return self
 
     def to_native(self) -> types.CodeType:
-        if (3, 10) != PYTHON_VERSION_TRIPLE[:2] or IS_PYPY and version_tuple[:2] == (3, 11):
+        if (3, 10) != PYTHON_VERSION_TRIPLE[:2] or IS_PYPY and PYTHON_VERSION_TRIPLE[:2] == (3, 11):
             raise TypeError(
                 f"Python Interpreter needs to be 3.10; is {version_tuple_to_str()}"
             )
