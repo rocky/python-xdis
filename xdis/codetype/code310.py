@@ -245,33 +245,6 @@ class Code310(Code38):
         return self
 
     def to_native(self):
-        if (3, 10) != PYTHON_VERSION_TRIPLE[:2] or IS_PYPY and version_tuple[:2] == (3, 11):
             raise TypeError(
                 "Python Interpreter needs to be 3.10; is %s" % version_tuple_to_str()
             )
-
-        code = deepcopy(self)
-        code.freeze()
-        try:
-            code.check()
-        except AssertionError(e):
-            raise TypeError(e)
-
-        return types.CodeType(
-            code.co_argcount,
-            code.co_posonlyargcount,
-            code.co_kwonlyargcount,
-            code.co_nlocals,
-            code.co_stacksize,
-            code.co_flags,
-            code.co_code,
-            code.co_consts,
-            code.co_names,
-            code.co_varnames,
-            code.co_filename,
-            code.co_name,
-            code.co_firstlineno,
-            code.co_linetable,
-            code.co_freevars,
-            code.co_cellvars,
-        )
