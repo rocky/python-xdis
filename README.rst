@@ -80,6 +80,7 @@ assembly listings that are superior to those typically found in
 Python's dis module. Here is an example::
 
 :: text
+
     pydisasm -S -F extended bytecode_3.8/pydisasm-example.pyc
     # pydisasm version 6.1.1.dev0
     # Python bytecode 3.8.0 (3413)
