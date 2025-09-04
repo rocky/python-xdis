@@ -48,8 +48,7 @@ additional categories for things that would be useful in such a
 bytecode assembler, optimizer, or decompiler.
 
 The programs here accept bytecodes from Python version 1.0 to
-3.13. The code requires Python 2.4 or later and has been tested on
-Python running on many versions.
+3.13. The code requires Python 2.4 or later and has been tested on Python running on many versions.
 
 When installing, except for the most recent versions of Python, use
 the Python egg or wheel that matches that version, e.g., ``xdis-6.0.2-py3.3.egg``, ``xdis-6.0.2-py33-none-any.whl``.
@@ -71,8 +70,7 @@ The standard Python routine:
 
    $ pip install -e .  # or pip install -e .[dev] to include testing package
 
-A GNU makefile is also provided so ``make install`` (possibly as root or
-sudo) will do the steps above.
+A GNU makefile is also provided so ``make install`` (possibly as root or sudo) will do the steps above.
 
 Disassembler Example
 --------------------
