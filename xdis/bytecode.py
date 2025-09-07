@@ -556,12 +556,10 @@ class Bytecode:
         self.opnames = opc.opname
         self.current_offset = current_offset
 
-        # FIXME
-        self.exception_entries = None
-        # if opc.version_tuple >= (3, 11) and hasattr(co, "co_exceptiontable"):
-        #     self.exception_entries = parse_exception_table(co.co_exceptiontable)
-        # else:
-        #     self.exception_entries = None
+        if opc.version_tuple >= (3, 11) and not opc.is_pypy and hasattr(co, "co_exceptiontable"):
+            self.exception_entries = parse_exception_table(co.co_exceptiontable)
+        else:
+            self.exception_entries = None
 
     def __iter__(self):
         co = self.codeobj

@@ -2,7 +2,7 @@
 ================
 
 * Note existence of 3.13.{6,7}
-* bugfix from Andrey that caused a slowdown when disassemblying massive amounts of bytecode
+* bugfix from Andrey that caused a slowdown when disassembling massive amounts of bytecode
 
 6.1.5 2025-07-25
 ================

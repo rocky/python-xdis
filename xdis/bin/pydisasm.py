@@ -127,8 +127,12 @@ Type -h for for full help.""" % program
             )
             continue
 
-        disassemble_file(path, sys.stdout, format, show_source=show_source)
-    return
+        try:
+            disassemble_file(path, sys.stdout, format, show_source=show_source)
+        except ImportError as e:
+            print(e)
+            rc = 3
+    sys.exit(rc)
 
 if __name__ == '__main__':
     main()
