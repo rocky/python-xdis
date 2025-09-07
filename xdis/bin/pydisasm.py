@@ -63,6 +63,7 @@ def main(format, show_source: bool, files):
         sys.stderr.write(mess % PYTHON_VERSION_STR)
         sys.exit(2)
 
+    rc = 0
     for path in files:
         # Some sanity checks
         if not osp.exists(path):
@@ -78,8 +79,12 @@ def main(format, show_source: bool, files):
             )
             continue
 
-        disassemble_file(path, sys.stdout, format, show_source=show_source)
-    return
+        try:
+            disassemble_file(path, sys.stdout, format, show_source=show_source)
+        except ImportError as e:
+            print(e)
+            rc = 3
+    sys.exit(rc)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -472,7 +472,7 @@ class _VersionIndependentUnmarshaller:
             kwonlyargcount = 0
 
         co_nlocals = 0
-        if self.version_tuple < (3, 11):
+        if self.version_tuple < (3, 11) or (self.version_tuple[:2] == (3, 11) and self.is_pypy):
             if self.version_tuple >= (2, 3):
                 co_nlocals = unpack("<i", self.fp.read(4))[0]
             elif self.version_tuple >= (1, 3):
@@ -493,9 +493,6 @@ class _VersionIndependentUnmarshaller:
             co_flags = 0
 
         co_code = self.r_object(bytes_for_s=True)
-
-        self.is_graal = self.magic_int in GRAAL3_MAGICS
-        self.is_pypy = self.magic_int in PYPY3_MAGICS
 
         # FIXME: Check/verify that is true:
         bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (self.version_tuple > (3, 0))
@@ -533,7 +530,7 @@ class _VersionIndependentUnmarshaller:
         co_freevars = tuple()
         co_cellvars = tuple()
 
-        if self.version_tuple >= (3, 11):
+        if self.version_tuple >= (3, 11) and not self.is_pypy:
             # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
             co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
             co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
@@ -572,7 +569,19 @@ class _VersionIndependentUnmarshaller:
             co_name = self.r_object(bytes_for_s=bytes_for_s)
 
         co_exceptiontable = None
-        if self.version_tuple >= (1, 5):
+        if self.version_tuple >= (3, 11) and self.is_pypy:
+
+            # FIXME: code has an object reference, but I don't
+            # see this in _marshal.py code for 3.11. I am missing
+            # something. Also, I don't know that it is indeed qualname.
+            # qualname which is a CPython 3.11 thing, isn't
+            # available in PyPy 3.11.
+            co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+
+            co_firstlineno = unpack("<L", self.fp.read(4))[0]
+            co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
+
+        elif self.version_tuple >= (1, 5):
             if self.version_tuple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
             else:
