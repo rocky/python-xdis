@@ -3,7 +3,6 @@
 
 * Note existence of 3.13.{6,7}
 * bugfix from Andrey that caused a slowdown when disassembling massive amounts of bytecode
->>>>>>> master
 
 6.1.5 2025-07-25
 ================
