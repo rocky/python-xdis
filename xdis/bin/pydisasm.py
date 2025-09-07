@@ -107,6 +107,8 @@ Type -h for for full help.""" % program
             sys.stderr.write(Usage_short)
             sys.exit(1)
 
+=======
+>>>>>>> python-3.0-to-3.2
     rc = 0
     for path in files:
         # Some sanity checks
