@@ -30,6 +30,7 @@
 /.venv*/*
 /ChangeLog
 /ChangeLog-spell-corrected
+/ChangeLog.orig
 /PKG-INFO
 /README
 /README.html
