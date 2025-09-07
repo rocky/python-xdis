@@ -131,6 +131,11 @@ class Code310(Code38):
                     )
                 )
             else:
+                if field == "co_exceptiontable":
+                    # This happens in PyPy 3.11. It doesn't have a co_exceptiontable
+                    # field, although CPython 3.11 does. And magically this code
+                    # gets called in creating the PyPy code object.
+                    continue
                 assert isinstance(val, fieldtype), (
                     "%s should have type %s; is type %s" % (field, fieldtype, type(val))
                 )
