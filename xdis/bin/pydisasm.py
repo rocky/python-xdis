@@ -37,12 +37,11 @@ Options:
   -V | --version     Show version and stop
   -S | --show-source Show source code when it is available
   -h | --help        show this message
-  --header           Show only the module header information
 
 Examples:
   pydisasm foo.pyc
   pydisasm foo.py           # same thing as above but find the file
-  pydisasm -F xasm foo.py    # produce xasm assembler-friendly output
+  pydisasm -F xasm foo.py   # produce xasm assembler-friendly output
   pydisasm foo.pyc bar.pyc  # disassemble foo.pyc and bar.pyc
 
 """
@@ -78,15 +77,15 @@ Type -h for for full help.""" % program
         sys.exit(1)
 
     try:
-        opts, files = getopt.getopt(sys.argv[1:], 'hVUHF:S',
-                                    ['help', 'version', 'header', 'format',
-                                     'show-source'])
+        opts, files = getopt.getopt(sys.argv[1:], 'hVF:S',
+                                    ["help", "version", "format",
+                                     "show-source"])
     except getopt.GetoptError(e):
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
 
     format = "classic"
-    asm, header, show_source = False, False, False
+    show_source = False
     for opt, val in opts:
         if opt in ('-h', '--help'):
             print(__doc__)
@@ -94,10 +93,6 @@ Type -h for for full help.""" % program
         elif opt in ('-V', '--version'):
             print("%s %s" % (program, __version__))
             sys.exit(0)
-        elif opt in ('-H', '--header'):
-            header = True
-        elif opt in ('--no-header'):
-            header = False
         elif opt in ('-F', '--format'):
             if val not in FORMATS:
                 sys.stderr.write(("Invalid format option %s\n" +
@@ -112,6 +107,7 @@ Type -h for for full help.""" % program
             sys.stderr.write(Usage_short)
             sys.exit(1)
 
+    rc = 0
     for path in files:
         # Some sanity checks
         if not osp.exists(path):

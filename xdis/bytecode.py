@@ -179,11 +179,11 @@ def offset2line(offset, linestarts):
 
 
 def _parse_varint(iterator):
-    b = iterator.next()
+    b = ord(iterator.next())
     val = b & 63
     while b & 64:
         val <<= 6
-        b = iterator.next()
+        b = ord(iterator.next())
         val |= b & 63
     return val
 
