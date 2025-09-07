@@ -22,6 +22,7 @@ fi
 cd ..
 source $PACKAGE/version.py
 echo $__version__
+pyenv local 3.13
 
 rm -fr build
 pip wheel --wheel-dir=dist .
