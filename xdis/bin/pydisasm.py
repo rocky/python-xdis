@@ -35,14 +35,17 @@ else:
         ["xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header"],
         **case_sensitive
     ),
-    help="Select disassembly style",
+    help="Select disassembly style.",
 )
 @click.option(
     "--method",
     "-m",
+    metavar="FUNCTION-OR-METHOD",
     multiple=True,
     type=str,
-    help="Specify a method name to filter disassembly by. Can be given multiple times.",
+    help=("Specify which specific methods or functions to show. "
+          "If omitted all, functions are shown. "
+          "Can be given multiple times.")
 )
 
 @click.option(
