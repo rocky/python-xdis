@@ -91,6 +91,7 @@ op_imports = {
     2.4: opcode_24,
     "2.5c2": opcode_25,
     2.5: opcode_25,
+    "2.5.0dropbox": opcode_25,
     "2.6a1": opcode_26,
     2.6: opcode_26,
     "2.7": opcode_27,

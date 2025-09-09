@@ -287,19 +287,19 @@ def loads(s):
     return um.load()
 
 
-def fix_dropbox_pyc(fp, fixed_pyc="/tmp/test.pyc"):
+def fix_dropbox_pyc(fp):
     source_size = struct.unpack("I", fp.read(4))[0]  # size mod 2**32
     ts = fp.read(4)
     timestamp = struct.unpack("I", ts)[0]
     b = fp.read()
     co = loads(b)
-    return (2, 5), timestamp, 62131, co, False, source_size, None
+    return (2, 5, "0dropbox"), timestamp, 62131, co, False, source_size, None
 
 
 def fix_dir(path):
     import os
 
-    for root, dirs, files in os.walk(path):
+    for root, _, files in os.walk(path):
         for name in files:
             if not name.endswith("pyc"):
                 continue

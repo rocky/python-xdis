@@ -29,14 +29,10 @@ there). Details of the format may change between Python versions.
 
 import struct
 import types
+from sys import intern
 
 from xdis.codetype import Code2, Code3
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
-
-try:
-    intern
-except NameError:
-    from sys import intern
 
 try:
     from __pypy__ import builtinify

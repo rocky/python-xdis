@@ -35,8 +35,19 @@ else:
         ["xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header"],
         **case_sensitive
     ),
-    help="Select disassembly style",
+    help="Select disassembly style.",
 )
+@click.option(
+    "--method",
+    "-m",
+    metavar="FUNCTION-OR-METHOD",
+    multiple=True,
+    type=str,
+    help=("Specify which specific methods or functions to show. "
+          "If omitted all, functions are shown. "
+          "Can be given multiple times.")
+)
+
 @click.option(
     "--show-source/--no-show-source",
     "-S",
@@ -44,7 +55,7 @@ else:
 )
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format, show_source: bool, files):
+def main(format, method: tuple, show_source: bool, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -80,7 +91,7 @@ def main(format, show_source: bool, files):
             continue
 
         try:
-            disassemble_file(path, sys.stdout, format, show_source=show_source)
+            disassemble_file(path, sys.stdout, format, show_source=show_source, methods=method)
         except ImportError as e:
             print(e)
             rc = 3
