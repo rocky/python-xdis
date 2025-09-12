@@ -77,11 +77,11 @@ jrel_op(loc, "SETUP_ASYNC_WITH",          154,  0,  6)
 # fmt: on
 
 
-def extended_format_BINARY_MATRIX_MULTIPLY(opc, instructions) -> tuple[str, int | None]:
+def extended_format_BINARY_MATRIX_MULTIPLY(opc, instructions) -> Optional[tuple]:
     return extended_format_binary_op(opc, instructions, "%s @ %s")
 
 
-def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions) -> tuple[str, int | None]:
+def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions) -> Optional[tuple]:
     return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 

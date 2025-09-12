@@ -9,6 +9,7 @@ at valid locations.
 """
 
 from collections import namedtuple
+from typing import Optional, Tuple
 
 from xdis.bytecode import get_instructions_bytes
 from xdis.codetype.base import iscode
@@ -110,7 +111,7 @@ class LineOffsetInfo(object):
     pass
 
 
-def lineoffsets_in_file(filename: str, toplevel_only=False) -> LineOffsetInfo | None:
+def lineoffsets_in_file(filename: str, toplevel_only=False) -> Optional[LineOffsetInfo]:
     obj_path = check_object_path(filename)
     version, timestamp, magic_int, code, pypy, source_size, sip_hash = load_module(
         obj_path
@@ -124,13 +125,13 @@ def lineoffsets_in_file(filename: str, toplevel_only=False) -> LineOffsetInfo | 
     pass
 
 
-def lineoffsets_in_module(module, toplevel_only: bool=False) -> LineOffsetInfo | None:
+def lineoffsets_in_module(module, toplevel_only: bool=False) -> Optional[LineOffsetInfo]:
     return lineoffsets_in_file(module.__file__, toplevel_only)
 
 
 if __name__ == "__main__":
 
-    def multi_line() -> tuple[int, int]:
+    def multi_line() -> Tuple[int, int]:
         # We have two statements on the same line
         x = 1
         y = 2
@@ -142,7 +143,7 @@ if __name__ == "__main__":
 
         return bar()
 
-    def print_code_info(code_info: LineOffsetInfo | None) -> None:
+    def print_code_info(code_info: Optional[LineOffsetInfo]) -> None:
         children = code_info.children.keys()
         if len(children):
             print("%s has %d children" % (code_info.name, len(children)))

@@ -15,8 +15,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from types import EllipsisType
-
 """CPython magic- and version-independent Python object
 deserialization (unmarshal).
 
@@ -31,7 +29,7 @@ object.
 import io
 import sys
 from struct import unpack
-from typing import Union
+from typing import Optional, Union
 
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
@@ -116,7 +114,7 @@ def compat_str(s: Union[str, bytes]) -> Union[str, bytes]:
         return s
 
 
-def compat_u2s(u) -> bytes | str:
+def compat_u2s(u):
     if PYTHON_VERSION_TRIPLE < (3, 0):
         # See also ``unaccent.py`` which can be found using Google. I
         # found it and this code via
@@ -195,7 +193,7 @@ class _VersionIndependentUnmarshaller:
             self.internObjects.append(obj)
         return obj, i
 
-    def r_ref_insert(self, obj, i: int | None):
+    def r_ref_insert(self, obj, i: Optional[int]):
         if i is not None:
             self.internObjects[i] = obj
         return obj
@@ -250,10 +248,10 @@ class _VersionIndependentUnmarshaller:
     def t_None(self, save_ref, bytes_for_s: bool=False) -> None:
         return None
 
-    def t_stopIteration(self, save_ref, bytes_for_s: bool=False) -> type[StopIteration]:
+    def t_stopIteration(self, save_ref, bytes_for_s: bool=False):
         return StopIteration
 
-    def t_Ellipsis(self, save_ref, bytes_for_s: bool=False) -> EllipsisType:
+    def t_Ellipsis(self, save_ref, bytes_for_s: bool=False):
         return Ellipsis
 
     def t_False(self, save_ref, bytes_for_s: bool=False) -> bool:

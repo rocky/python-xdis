@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2024 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -381,7 +381,7 @@ def varargs_op(loc, op_name, op_code, pop: int=-1, push: int=1) -> None:
 # many Python idiocies over the years.
 
 
-def finalize_opcodes(loc: list[str]) -> None:
+def finalize_opcodes(loc) -> None:
     """
     Things done to Python codes after all opcode have been defined.
     """
@@ -416,7 +416,7 @@ def finalize_opcodes(loc: list[str]) -> None:
     return
 
 
-def fix_opcode_names(opmap: dict[str, int]):
+def fix_opcode_names(opmap: Dict[str, int]):
     """
     Python stupidly named some OPCODES with a + which prevents using opcode name
     directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3, so we

@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2024 by Rocky Bernstein
+# (C) Copyright 2018-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,10 +14,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from types import CodeType, EllipsisType
-
-from xdis.unmarshal import long
-
 """Internal Python object serialization
 
 This module contains functions that can read and write Python values
@@ -28,15 +24,19 @@ there). Details of the format may change between Python versions.
 
 """
 
-# NOTE: This module is used in the Python3 interpreter, but also by
-# the "sandboxed" process.  It must work for Python2 as well.
-
 import struct
 import types
 from sys import intern
+from types import CodeType
 
 from xdis.codetype import Code2, Code3
+from xdis.unmarshal import long
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
+
+# NOTE: This module is used in the Python3 interpreter, but also by
+# the "sandboxed" process.  It must work for Python2 as well.
+
+
 
 try:
     from __pypy__ import builtinify
@@ -492,7 +492,7 @@ class _Unmarshaller:
             x = -((1 << 64) - x)
         return x
 
-    def load_null(self) -> type[_NULL]:
+    def load_null(self):
         return _NULL
 
     dispatch[TYPE_NULL] = load_null
@@ -517,12 +517,12 @@ class _Unmarshaller:
 
     dispatch[TYPE_ASCII] = load_null
 
-    def load_stopiter(self) -> type[StopIteration]:
+    def load_stopiter(self):
         return StopIteration
 
     dispatch[TYPE_STOPITER] = load_stopiter
 
-    def load_ellipsis(self) -> EllipsisType:
+    def load_ellipsis(self):
         return Ellipsis
 
     dispatch[TYPE_ELLIPSIS] = load_ellipsis
@@ -621,7 +621,7 @@ class _Unmarshaller:
 
     dispatch[TYPE_DICT] = load_dict
 
-    def load_code(self) -> Code2 | Code3 | CodeType:
+    def load_code(self):
         argcount = self.r_long()
         if self.python_version and self.python_version >= "3.0":
             is_python3 = True
@@ -821,7 +821,7 @@ class _FastUnmarshaller:
             exception = EOFError
         raise exception
 
-    def load_null(self) -> type[_NULL]:
+    def load_null(self):
         return _NULL
 
     dispatch[TYPE_NULL] = load_null
@@ -841,12 +841,12 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_FALSE] = load_false
 
-    def load_stopiter(self) -> type[StopIteration]:
+    def load_stopiter(self):
         return StopIteration
 
     dispatch[TYPE_STOPITER] = load_stopiter
 
-    def load_ellipsis(self) -> EllipsisType:
+    def load_ellipsis(self):
         return Ellipsis
 
     dispatch[TYPE_ELLIPSIS] = load_ellipsis
@@ -950,7 +950,7 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_DICT] = load_dict
 
-    def load_code(self) -> Code2 | CodeType:
+    def load_code(self):
         argcount = _r_long(self)
         nlocals = _r_long(self)
         stacksize = _r_long(self)
@@ -1042,7 +1042,7 @@ def load(f, python_version=None):
 
 
 @builtinify
-def dumps(x, version: int=version, python_version: tuple[int, ...]=PYTHON_VERSION_TRIPLE) -> bytes | str:
+def dumps(x, version: int=version, python_version: tuple=PYTHON_VERSION_TRIPLE):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version)

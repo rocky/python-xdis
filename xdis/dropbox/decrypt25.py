@@ -9,7 +9,7 @@
 import struct
 import types
 from types import CodeType
-from typing import Dict
+from typing import Dict, Tuple
 
 import xdis.marsh as xmarshal
 
@@ -27,7 +27,7 @@ def rng(a: int, b: int) -> int:
 
 
 # This is replaced by Mersenne in newer versions.
-def get_keys(a, b) -> tuple[int, int, int, int]:
+def get_keys(a, b) -> Tuple[int, int, int, int]:
     ka = rng(a, b)
     kb = rng(ka, a)
     kc = rng(kb, ka)
@@ -42,7 +42,7 @@ def MX(z, y, sum: int, key, p: int, e: int):
     )
 
 
-def tea_decipher(v, key: tuple[int, int, int, int]):
+def tea_decipher(v, key: Tuple[int, int, int, int]):
     """
     Tiny Decryption Algorithm description (TEA)
     See https://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm
@@ -62,7 +62,7 @@ def tea_decipher(v, key: tuple[int, int, int, int]):
     return v
 
 
-def load_code(self) -> Code2Compat | CodeType:
+def load_code(self):
     """
     Returns a Python code object like xdis.unmarshal.load_code(),
     but in we decrypt the data in self.bufstr.

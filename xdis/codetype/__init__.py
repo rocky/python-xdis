@@ -226,8 +226,8 @@ def to_portable(
     co_firstlineno: int=-1,
     co_lnotab: str="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
     # In 3.11 it is different
-    co_freevars: tuple[None]=(None,),  # 2.0+
-    co_cellvars: tuple[None]=(None,),  # 2.0+
+    co_freevars: tuple=(None,),  # 2.0+
+    co_cellvars: tuple=(None,),  # 2.0+
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
 ):
