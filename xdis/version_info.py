@@ -29,7 +29,7 @@ IS_GRAAL = "Graal" in platform.python_implementation()
 
 
 def version_tuple_to_str(
-    version_tuple=PYTHON_VERSION_TRIPLE, start=0, end=3, delimiter="."
+    version_tuple: tuple[int, ...]=PYTHON_VERSION_TRIPLE, start: int=0, end: int=3, delimiter: str="."
 ) -> str:
     """
     Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6".
@@ -45,5 +45,5 @@ def version_tuple_to_str(
     return delimiter.join([str(v) for v in version_tuple[start:end]])
 
 
-def version_str_to_tuple(python_version: str, length=2) -> tuple:
+def version_str_to_tuple(python_version: str, length: int=2) -> tuple:
     return tuple([int(v) for v in python_version.split(".")[:length]])

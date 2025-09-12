@@ -218,7 +218,7 @@ def format_MAKE_FUNCTION_36(flags: int) -> str:
     return pattr
 
 
-def format_value_flags(flags):
+def format_value_flags(flags) -> str | None:
     if (flags & 0x03) == 0x00:
         return ""
     elif (flags & 0x03) == 0x01:
@@ -233,11 +233,11 @@ def format_value_flags(flags):
         return ""
 
 
-def format_extended_arg36(arg):
+def format_extended_arg36(arg) -> str:
     return str(arg * (1 << 8))
 
 
-def format_CALL_FUNCTION(argc):
+def format_CALL_FUNCTION(argc) -> str:
     """argc indicates the number of positional arguments"""
     if argc == 1:
         plural = ""
@@ -246,7 +246,7 @@ def format_CALL_FUNCTION(argc):
     return "%d positional argument%s" % (argc, plural)
 
 
-def format_CALL_FUNCTION_EX(flags):
+def format_CALL_FUNCTION_EX(flags) -> str:
     str = ""
     if flags & 0x01:
         str = "keyword and positional arguments"

@@ -77,15 +77,15 @@ jrel_op(loc, "SETUP_ASYNC_WITH",          154,  0,  6)
 # fmt: on
 
 
-def extended_format_BINARY_MATRIX_MULTIPLY(opc, instructions):
+def extended_format_BINARY_MATRIX_MULTIPLY(opc, instructions) -> tuple[str, int | None]:
     return extended_format_binary_op(opc, instructions, "%s @ %s")
 
 
-def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions):
+def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions) -> tuple[str, int | None]:
     return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 
-def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
+def format_BUILD_MAP_UNPACK_WITH_CALL(oparg) -> str:
     """The lowest byte of oparg is the count of mappings, the relative
     position of the corresponding callable f is encoded in the second byte
     of oparg."""

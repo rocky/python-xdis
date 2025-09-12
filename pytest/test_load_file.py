@@ -7,7 +7,7 @@ from xdis.codetype import CodeTypeUnionFields
 from xdis.load import check_object_path, load_file, load_module
 
 
-def get_srcdir():
+def get_srcdir() -> str:
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
     return osp.realpath(filename)
 
@@ -15,7 +15,7 @@ def get_srcdir():
 @pytest.mark.skipif(
     os.name == "nt", reason="Windows differences in output need going over"
 )
-def test_load_file():
+def test_load_file() -> None:
     srcdir = get_srcdir()
     load_py = osp.realpath(osp.join(srcdir, "..", "xdis", "load.py"))
 

@@ -20,7 +20,7 @@ class SerializedTestCase:
     serialized_xdis: str
     message: str
 
-    def __init__(self, pyc: Path, serialized_txt: Path):
+    def __init__(self, pyc: Path, serialized_txt: Path) -> None:
         # check test case pair exist
         assert pyc.exists() and serialized_txt.exists()
         self.pyc_path = pyc
@@ -69,5 +69,5 @@ def get_tests_by_version(v: str) -> Iterable[SerializedTestCase]:
 @pytest.mark.parametrize(
     "case", chain.from_iterable(get_tests_by_version(v) for v in get_versions())
 )
-def test_case(case: SerializedTestCase):
+def test_case(case: SerializedTestCase) -> None:
     assert case.serialized_dis.splitlines() == case.serialized_xdis.splitlines()

@@ -19,7 +19,7 @@ def def_graal_op(
     push: int = -2,
     unknown: int = 0,
     fallthrough: bool = True,
-):
+) -> None:
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
     loc["oppush"][opcode] = push

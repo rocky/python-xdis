@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -22,6 +22,7 @@ import types
 from datetime import datetime
 from os import close
 from struct import pack, unpack
+from types import CodeType
 
 import xdis.marsh
 import xdis.unmarshal
@@ -39,7 +40,7 @@ from xdis.magics import (
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
 
 
-def is_python_source(path):
+def is_python_source(path) -> bool:
     try:
         data = open(path, "r").read()
     except UnicodeDecodeError:
@@ -69,7 +70,7 @@ def is_bytecode_extension(path: str) -> bool:
 
 
 # FIXME: the function name is weird. This checks and returns the path.
-def check_object_path(path) -> str:
+def check_object_path(path: str) -> str:
     if not is_bytecode_extension(path) and is_python_source(path):
         try:
             import importlib
@@ -105,14 +106,14 @@ def check_object_path(path) -> str:
     return path
 
 
-def is_pypy(magic_int, filename):
+def is_pypy(magic_int: int, filename) -> bool:
     # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
     if magic_int in (3413, 3414) and filename.endswith("pypy38.pyc"):
         return True
     return magic_int in ((62211 + 7, 3180 + 7) + PYPY3_MAGICS)
 
 
-def load_file(filename, out=sys.stdout):
+def load_file(filename: str, out=sys.stdout) -> CodeType:
     """
     load a Python source file and compile it to byte-code
     _load_file(filename: string): code_object
@@ -353,8 +354,8 @@ def load_module_from_file_object(
 
 
 def write_bytecode_file(
-    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize=0
-):
+    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize: int=0
+) -> None:
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
     """
