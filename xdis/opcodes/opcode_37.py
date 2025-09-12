@@ -148,7 +148,7 @@ def extended_format_RAISE_VARARGS(opc, instructions) -> Tuple[Optional[str], int
     return format_RAISE_VARARGS(raise_inst.argval), start_offset
 
 
-def format_RAISE_VARARGS(argc):
+def format_RAISE_VARARGS(argc) -> str | None:
     assert 0 <= argc <= 2
     if argc == 0:
         return "reraise"

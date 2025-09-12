@@ -57,7 +57,7 @@ varargs_op(loc, "RESERVE_FAST",  123)  # Number of local variables
 # fmt: on
 
 
-def findlinestarts(co, dup_lines=False):
+def findlinestarts(co, dup_lines: bool=False):
     code = co.co_code
     n = len(code)
     offset = 0

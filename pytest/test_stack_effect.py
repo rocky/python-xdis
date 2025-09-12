@@ -7,7 +7,7 @@ from xdis.cross_dis import op_has_argument, xstack_effect
 from xdis.op_imports import get_opcode_module
 
 
-def get_srcdir():
+def get_srcdir() -> str:
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
     return osp.realpath(filename)
 
@@ -16,7 +16,7 @@ srcdir = get_srcdir()
 opcode_stack_effect = [-100] * 256
 
 
-def test_stack_effect_fixed():
+def test_stack_effect_fixed() -> None:
     """Check stack effect of opcodes that don't vary in the stack effect.
     This we get from tables that are derived the Python Interpreter C source.
     Thanks to the Maynard project for this idea.
@@ -89,10 +89,10 @@ def test_stack_effect_fixed():
     xdis.PYTHON_VERSION_TRIPLE < (3, 4) or xdis.IS_PYPY or xdis.IS_GRAAL,
     reason="Python version is before 3.4. Can't test",
 )
-def test_stack_effect_vs_dis():
+def test_stack_effect_vs_dis() -> None:
     import dis
 
-    def test_one(xdis_args, dis_args, has_arg):
+    def test_one(xdis_args, dis_args, has_arg: bool) -> None:
         effect = xstack_effect(*xdis_args)
         try:
             check_effect = dis.stack_effect(*dis_args[:2])

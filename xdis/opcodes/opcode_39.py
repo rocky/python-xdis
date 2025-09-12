@@ -94,11 +94,11 @@ def extended_format_IS_OP(opc, instructions) -> Tuple[Optional[str], Optional[in
     )
 
 
-def format_CONTAINS_OP(arg):
+def format_CONTAINS_OP(arg) -> str:
     return "in" if arg == 0 else "not in"
 
 
-def format_IS_OP(arg):
+def format_IS_OP(arg) -> str:
     return "is" if arg == 0 else "is not"
 
 

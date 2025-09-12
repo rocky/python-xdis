@@ -232,11 +232,11 @@ class Instruction(NamedTuple):
         self,
         opc,
         line_starts: Optional[Dict[int, int]] = None,
-        lineno_width=3,
-        mark_as_current=False,
-        asm_format="classic",
+        lineno_width: int=3,
+        mark_as_current: bool=False,
+        asm_format: str="classic",
         instructions=[],
-    ):
+    ) -> str:
         """
         Format instruction details for inclusion in disassembly output.
 
@@ -458,13 +458,13 @@ class Instruction(NamedTuple):
             self.tos_str,
         )
 
-    def is_jump(self):
+    def is_jump(self) -> bool:
         """
         Return True if instruction is some sort of jump.
         """
         return self.optype in ("jabs", "jrel")
 
-    def jumps_forward(self):
+    def jumps_forward(self) -> bool:
         """
         Return True if instruction is jump backwards
         """

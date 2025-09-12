@@ -104,7 +104,7 @@ nofollow nullaryop nullaryloadop ternaryop unaryop
 fields2copy_313 = "hasarg hasexc".split()  # added in 3.12
 fields2copy_314 = "hasjump".split()  # added in 3.13
 
-def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
+def init_opdata(loc, from_mod, version_tuple=None, is_pypy: bool=False) -> None:
     """Sets up a number of the structures found in Python's
     opcode.py. Python opcode.py routines assign attributes to modules.
     In order to do this in a modular way here, the local dictionary
@@ -166,7 +166,7 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
         loc["unaryop"] = set([])
 
 
-def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1) -> None:
     """
     Put opcode in the class of instructions that are binary operations.
     """
@@ -175,8 +175,8 @@ def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
 
 
 def call_op(
-    loc: dict, name: str, opcode: int, pop: int = -2, push: int = 1, fallthrough=True
-):
+    loc: dict, name: str, opcode: int, pop: int = -2, push: int = 1, fallthrough: bool=True
+) -> None:
     """
     Put opcode in the class of instructions that perform calls.
     """
@@ -184,17 +184,17 @@ def call_op(
     nargs_op(loc, name, opcode, pop, push, fallthrough)
 
 
-def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1):
+def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1) -> None:
     def_op(loc, name, opcode, pop, push)
     loc["hascompare"].append(opcode)
     loc["binaryop"].add(opcode)
 
 
-def conditional_op(loc: dict, name: str, opcode: int):
+def conditional_op(loc: dict, name: str, opcode: int) -> None:
     loc["hascompare"].append(opcode)
 
 
-def const_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+def const_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1) -> None:
     def_op(loc, name, opcode, pop, push)
     loc["hasconst"].append(opcode)
     loc["nullaryop"].add(opcode)
@@ -207,7 +207,7 @@ def def_op(
     pop: int = -2,
     push: int = -2,
     fallthrough: bool = True,
-):
+) -> None:
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
     loc["oppush"][opcode] = push
@@ -216,7 +216,7 @@ def def_op(
         loc["nofollow"].append(opcode)
 
 
-def free_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1):
+def free_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1) -> None:
     def_op(loc, name, opcode, pop, push)
     loc["hasfree"].append(opcode)
 
@@ -229,7 +229,7 @@ def jabs_op(
     push: int = 0,
     conditional: bool = False,
     fallthrough: bool = True,
-):
+) -> None:
     """
     Put opcode in the class of instructions that can perform an absolute jump.
     """
@@ -239,7 +239,7 @@ def jabs_op(
         loc["hascondition"].append(opcode)
 
 
-def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=True):
+def jrel_op(loc, name: str, opcode: int, pop: int=0, push: int=0, conditional=False, fallthrough=True) -> None:
     """
     Put opcode in the class of instructions that can perform a relative jump.
     """
@@ -249,13 +249,13 @@ def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=Tru
         loc["hascondition"].append(opcode)
 
 
-def local_op(loc, name, opcode: int, pop=0, push=1):
+def local_op(loc, name, opcode: int, pop=0, push=1) -> None:
     def_op(loc, name, opcode, pop, push)
     loc["haslocal"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
-def name_op(loc, op_name, opcode: int, pop=-2, push=-2):
+def name_op(loc: int, op_name, opcode: int, pop=-2, push=-2) -> None:
     """
     Put opcode in the class of instructions that index into the "name" table.
     """
@@ -266,7 +266,7 @@ def name_op(loc, op_name, opcode: int, pop=-2, push=-2):
 
 def nargs_op(
     loc, name: str, opcode: int, pop: int = -2, push: int = -1, fallthrough=True
-):
+) -> None:
     """
     Put opcode in the class of instructions that have a variable number of (or *n*) arguments
     """
@@ -274,7 +274,7 @@ def nargs_op(
     loc["hasnargs"].append(opcode)
 
 
-def opcode_check(loc):
+def opcode_check(loc) -> None:
     """When the version of Python we are running happens
     to have the same opcode set as the opcode we are
     importing, we perform checks to make sure our opcode
@@ -296,7 +296,7 @@ def opcode_check(loc):
             pass
 
 
-def rm_op(loc, name, op):
+def rm_op(loc, name, op) -> None:
     """Remove an opcode. This is used when basing a new Python release off
     of another one, and there is an opcode that is in the old release
     that was removed in the new release.
@@ -341,7 +341,7 @@ def rm_op(loc, name, op):
     del loc["opmap"][name]
 
 
-def store_op(loc, name, op, pop=0, push=1, is_type="def"):
+def store_op(loc: int, name, op, pop=0, push=1, is_type="def") -> None:
     if is_type == "name":
         name_op(loc, name, op, pop, push)
         loc["nullaryop"].remove(op)
@@ -356,7 +356,7 @@ def store_op(loc, name, op, pop=0, push=1, is_type="def"):
     loc["hasstore"].append(op)
 
 
-def ternary_op(loc: dict, name: str, opcode: int, pop: int = 3, push: int = 1):
+def ternary_op(loc: dict, name: str, opcode: int, pop: int = 3, push: int = 1) -> None:
     """
     Put opcode in the class of instructions that are ternary operations.
     """
@@ -364,7 +364,7 @@ def ternary_op(loc: dict, name: str, opcode: int, pop: int = 3, push: int = 1):
     def_op(loc, name, opcode, pop, push)
 
 
-def unary_op(loc, name: str, op, pop=1, push=1):
+def unary_op(loc, name: str, op, pop: int=1, push: int=1) -> None:
     loc["unaryop"].add(op)
     def_op(loc, name, op, pop, push)
 
@@ -372,7 +372,7 @@ def unary_op(loc, name: str, op, pop=1, push=1):
 # This is not in Python. The operand indicates how
 # items on the pop from the stack. BUILD_TUPLE_UNPACK
 # is line this.
-def varargs_op(loc, op_name, op_code, pop=-1, push=1):
+def varargs_op(loc, op_name, op_code, pop: int=-1, push: int=1) -> None:
     def_op(loc, op_name, op_code, pop, push)
     loc["hasvargs"].append(op_code)
 
@@ -381,7 +381,7 @@ def varargs_op(loc, op_name, op_code, pop=-1, push=1):
 # many Python idiocies over the years.
 
 
-def finalize_opcodes(loc):
+def finalize_opcodes(loc: list[str]) -> None:
     """
     Things done to Python codes after all opcode have been defined.
     """
@@ -416,7 +416,7 @@ def finalize_opcodes(loc):
     return
 
 
-def fix_opcode_names(opmap):
+def fix_opcode_names(opmap: dict[str, int]):
     """
     Python stupidly named some OPCODES with a + which prevents using opcode name
     directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3, so we
@@ -425,20 +425,20 @@ def fix_opcode_names(opmap):
     return dict([(k.replace("+", "_"), v) for (k, v) in opmap.items()])
 
 
-def update_pj3(g, loc, is_pypy=False):
+def update_pj3(g, loc, is_pypy: bool=False) -> None:
     if loc["version_tuple"] < (3, 11):
         g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
         g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
     update_sets(loc, is_pypy)
 
 
-def update_pj2(g, loc, is_pypy=False):
+def update_pj2(g, loc, is_pypy: bool=False) -> None:
     g.update({"PJIF": loc["opmap"]["JUMP_IF_FALSE"]})
     g.update({"PJIT": loc["opmap"]["JUMP_IF_TRUE"]})
     update_sets(loc, is_pypy)
 
 
-def update_sets(loc, is_pypy):
+def update_sets(loc, is_pypy) -> None:
     """
     Updates various category sets all opcode have been defined.
     """
@@ -487,7 +487,7 @@ def update_sets(loc, is_pypy):
         loc["JUMP_OPS"] = frozenset(loc["hasjump"])
 
 
-def dump_opcodes(opmap):
+def dump_opcodes(opmap) -> None:
     """Utility for dumping opcodes"""
     op2name = {}
     for k in opmap.keys():

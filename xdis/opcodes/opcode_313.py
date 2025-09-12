@@ -455,7 +455,7 @@ opcode_extended_fmt313 = opcode_extended_fmt
 
 
 # update any calls to findlinestarts to include the version tuple
-def findlinestarts_313(code, dup_lines=False):
+def findlinestarts_313(code, dup_lines: bool=False):
     lastline = False  # None is a valid line number
     for start, _, line in code.co_lines():
         if line is not lastline:

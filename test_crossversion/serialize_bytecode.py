@@ -14,11 +14,11 @@ from xdis import disassemble_file, iscode
 
 # Util to format shorthand code obj name
 # Used so we do not compare memory addrs
-def _fmt_codeobj(co):
+def _fmt_codeobj(co) -> str:
     return f"<codeobj {co.co_name}>"
 
 
-def _iter_nested_bytecodes(bytecode, bytecode_constructor: Callable):
+def _iter_nested_bytecodes(bytecode: dis.Bytecode | xdis.bytecode.Bytecode, bytecode_constructor: Callable):
     """
     iterate over a bytecode and its child bytecodes
 
@@ -32,7 +32,7 @@ def _iter_nested_bytecodes(bytecode, bytecode_constructor: Callable):
         yield bc
 
 
-def _get_headers_to_serialize(bytecode_version: tuple):
+def _get_headers_to_serialize(bytecode_version: tuple) -> list[str]:
     headers_to_serialize = [
         "co_argcount",
         "co_cellvars",

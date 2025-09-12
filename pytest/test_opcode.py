@@ -3,7 +3,7 @@ import dis
 from xdis import IS_PYPY, PYTHON_VERSION_TRIPLE, get_opcode
 
 
-def test_opcode():
+def test_opcode() -> None:
     opc = get_opcode(PYTHON_VERSION_TRIPLE, IS_PYPY)
     opmap = dict([(k.replace("+", "_"), v) for (k, v) in dis.opmap.items()])
     #        (2, 7),

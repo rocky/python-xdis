@@ -72,7 +72,7 @@ if sys.version_info[:3] >= (3, 6, 1):
     def_op(loc, "LOAD_REVDB_VAR", 205)
 
 
-def extended_format_CALL_METHOD(opc, instructions):
+def extended_format_CALL_METHOD(opc, instructions) -> str:
     """argc has the number of positional arguments.
     TOS starts the positional arguments
     values for each keyword argument.
@@ -115,7 +115,7 @@ def extended_format_CALL_METHOD(opc, instructions):
     return s
 
 
-def extended_format_CALL_METHOD_KW(opc, instructions):
+def extended_format_CALL_METHOD_KW(opc, instructions) -> str:
     """argc has the number of positional plus keyword arguments.
     TOS is a tuple of keyword argument names and below that are
     values for each keyword argument.
@@ -184,7 +184,7 @@ def format_CALL_METHOD(argc):
     return "%d positional" % (argc)
 
 
-def format_CALL_METHOD_KW(argc, kwarg_count=None):
+def format_CALL_METHOD_KW(argc, kwarg_count: int | None=None):
     """argc has the number of positional plus keyword arguments.
     TOS is a tuple of keyword argument names and below that are
     values for each keyword argument.

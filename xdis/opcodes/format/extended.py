@@ -27,7 +27,7 @@ NULL_EXTENDED_OP = "", None
 
 
 def extended_format_binary_op(
-    opc, instructions: List[Instruction], fmt_str: str
+    opc: Instruction, instructions: List[Instruction], fmt_str: str
 ) -> Tuple[str, Optional[int]]:
     """
     General routine for formatting binary operations.
@@ -83,7 +83,7 @@ def extended_format_binary_op(
 
 
 def extended_format_infix_binary_op(
-    opc, instructions, op_str: str
+    opc, instructions: list[Instruction], op_str: str
 ) -> Tuple[str, Optional[int]]:
     """ """
     i = 1
@@ -171,7 +171,7 @@ def extended_format_store_op(
 
 
 def extended_format_ternary_op(
-    opc, instructions, fmt_str: str
+    opc, instructions: list[Instruction], fmt_str: str
 ) -> Tuple[str, Optional[int]]:
     """
     General routine for formatting ternary operations.
@@ -243,7 +243,7 @@ def extended_format_STORE_SUBSCR(
 
 
 def extended_format_unary_op(
-    opc, instructions, fmt_str: str
+    opc, instructions: list[Instruction], fmt_str: str
 ) -> Tuple[str, Optional[int]]:
     stack_arg = instructions[1]
     start_offset = instructions[1].start_offset

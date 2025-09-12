@@ -2,16 +2,17 @@
 Check interoperability of native an emulated code type.
 """
 import types
-import xdis.codetype
 import unittest
 
+import xdis.codetype
 
-def five():
+
+def five() -> int:
     return 5
 
 class Offset2LineTests(unittest.TestCase):
 
-    def test_codeType2Portable(self):
+    def test_codeType2Portable(self) -> None:
         if hasattr(five, "__code__"):
             # Python 2.6+
             five_code = five.__code__

@@ -56,7 +56,7 @@ class Code13(CodeBase):
         co_varnames,
         co_filename,
         co_name,
-    ):
+    ) -> None:
         self.co_argcount = co_argcount
         self.co_nlocals = co_nlocals
         self.co_flags = co_flags
@@ -71,7 +71,7 @@ class Code13(CodeBase):
             self.check()
         return
 
-    def check(self):
+    def check(self) -> None:
         for field, fieldtype in self.fieldtypes.items():
             val = getattr(self, field)
             if isinstance(fieldtype, tuple):

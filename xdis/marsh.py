@@ -14,6 +14,10 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from types import CodeType, EllipsisType
+
+from xdis.unmarshal import long
+
 """Internal Python object serialization
 
 This module contains functions that can read and write Python values
@@ -89,11 +93,11 @@ class _Marshaller:
 
     dispatch = {}
 
-    def __init__(self, writefunc, python_version=None):
+    def __init__(self, writefunc, python_version=None) -> None:
         self._write = writefunc
         self.python_version = python_version
 
-    def dump(self, x):
+    def dump(self, x) -> None:
         if (
             isinstance(x, types.CodeType)
             and PYTHON_VERSION_TRIPLE[:2] != self.python_version[:2]
@@ -120,11 +124,11 @@ class _Marshaller:
                     raise ValueError("unmarshallable object")
             func(self, x)
 
-    def w_long64(self, x):
+    def w_long64(self, x) -> None:
         self.w_long(x)
         self.w_long(x >> 32)
 
-    def w_long(self, x):
+    def w_long(self, x: int) -> None:
         a = chr(x & 0xFF)
         x >>= 8
         b = chr(x & 0xFF)
@@ -134,16 +138,16 @@ class _Marshaller:
         d = chr(x & 0xFF)
         self._write(a + b + c + d)
 
-    def w_short(self, x):
+    def w_short(self, x: int) -> None:
         self._write(chr(x & 0xFF))
         self._write(chr((x >> 8) & 0xFF))
 
-    def dump_none(self, x):
+    def dump_none(self, x) -> None:
         self._write(TYPE_NONE)
 
     dispatch[type(None)] = dump_none
 
-    def dump_bool(self, x):
+    def dump_bool(self, x) -> None:
         if x:
             self._write(TYPE_TRUE)
         else:
@@ -151,14 +155,14 @@ class _Marshaller:
 
     dispatch[bool] = dump_bool
 
-    def dump_stopiter(self, x):
+    def dump_stopiter(self, x) -> None:
         if x is not StopIteration:
             raise ValueError("unmarshallable object")
         self._write(TYPE_STOPITER)
 
     dispatch[type(StopIteration)] = dump_stopiter
 
-    def dump_ellipsis(self, x):
+    def dump_ellipsis(self, x) -> None:
         self._write(TYPE_ELLIPSIS)
 
     try:
@@ -167,7 +171,7 @@ class _Marshaller:
         pass
 
     # In Python3, this function is not used; see dump_long() below.
-    def dump_int(self, x):
+    def dump_int(self, x) -> None:
         y = x >> 31
         if y and y != -1:
             self._write(TYPE_INT64)
@@ -178,7 +182,7 @@ class _Marshaller:
 
     dispatch[int] = dump_int
 
-    def dump_long(self, x):
+    def dump_long(self, x) -> None:
         self._write(TYPE_LONG)
         sign = 1
         if x < 0:
@@ -199,7 +203,7 @@ class _Marshaller:
     else:
         dispatch[long] = dump_long  # noqa
 
-    def dump_float(self, x):
+    def dump_float(self, x) -> None:
         write = self._write
         write(TYPE_FLOAT)
         s = repr(x)
@@ -208,14 +212,14 @@ class _Marshaller:
 
     dispatch[float] = dump_float
 
-    def dump_binary_float(self, x):
+    def dump_binary_float(self, x) -> None:
         write = self._write
         write(TYPE_BINARY_FLOAT)
         write(struct.pack("<d", x))
 
     dispatch[TYPE_BINARY_FLOAT] = dump_float
 
-    def dump_complex(self, x):
+    def dump_complex(self, x) -> None:
         write = self._write
         write(TYPE_COMPLEX)
         s = repr(x.real)
@@ -230,7 +234,7 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_binary_complex(self, x):
+    def dump_binary_complex(self, x) -> None:
         write = self._write
         write(TYPE_BINARY_COMPLEX)
         write(struct.pack("<d", x.real))
@@ -238,7 +242,7 @@ class _Marshaller:
 
     dispatch[TYPE_BINARY_COMPLEX] = dump_binary_complex
 
-    def dump_string(self, x):
+    def dump_string(self, x) -> None:
         # XXX we can't check for interned strings, yet,
         # so we (for now) never create TYPE_INTERNED or TYPE_STRINGREF
         self._write(TYPE_STRING)
@@ -249,7 +253,7 @@ class _Marshaller:
         dispatch[bytes] = dump_string
         dispatch[bytearray] = dump_string
 
-    def dump_unicode(self, x):
+    def dump_unicode(self, x) -> None:
         self._write(TYPE_UNICODE)
         if not PYTHON3 and self.python_version < (3, 0):
             s = x.encode("utf8")
@@ -265,7 +269,7 @@ class _Marshaller:
     else:
         dispatch[unicode] = dump_unicode  # noqa
 
-    def dump_tuple(self, x):
+    def dump_tuple(self, x) -> None:
         self._write(TYPE_TUPLE)
         self.w_long(len(x))
         for item in x:
@@ -274,7 +278,7 @@ class _Marshaller:
     dispatch[tuple] = dump_tuple
     dispatch[TYPE_TUPLE] = dump_tuple
 
-    def dump_small_tuple(self, x):
+    def dump_small_tuple(self, x) -> None:
         self._write(TYPE_SMALL_TUPLE)
         self.w_short(len(x))
         for item in x:
@@ -282,7 +286,7 @@ class _Marshaller:
 
     dispatch[TYPE_SMALL_TUPLE] = dump_small_tuple
 
-    def dump_list(self, x):
+    def dump_list(self, x) -> None:
         self._write(TYPE_LIST)
         self.w_long(len(x))
         for item in x:
@@ -291,7 +295,7 @@ class _Marshaller:
     dispatch[list] = dump_list
     dispatch[TYPE_LIST] = dump_tuple
 
-    def dump_dict(self, x):
+    def dump_dict(self, x) -> None:
         self._write(TYPE_DICT)
         for key, value in x.items():
             self.dump(key)
@@ -300,7 +304,7 @@ class _Marshaller:
 
     dispatch[dict] = dump_dict
 
-    def dump_code2(self, x):
+    def dump_code2(self, x) -> None:
         # Careful here: many Python 2 code objects are strings,
         # but Python 3 marshaling, by default, will dump strings as
         # unicode. Force marsaling this type as string.
@@ -341,7 +345,7 @@ class _Marshaller:
 
     # FIXME: will probably have to adjust similar to how we
     # adjusted dump_code2
-    def dump_code3(self, x):
+    def dump_code3(self, x) -> None:
         self._write(TYPE_CODE)
         self.w_long(x.co_argcount)
         if hasattr(x, "co_posonlyargcount"):
@@ -374,7 +378,7 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_set(self, x):
+    def dump_set(self, x) -> None:
         self._write(TYPE_SET)
         self.w_long(len(x))
         for each in x:
@@ -385,7 +389,7 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_frozenset(self, x):
+    def dump_frozenset(self, x) -> None:
         self._write(TYPE_FROZENSET)
         self.w_long(len(x))
         for each in x:
@@ -397,14 +401,14 @@ class _Marshaller:
         pass
 
     # FIXME: dump_ascii, dump_short_ascii are just guesses
-    def dump_ascii(self, x):
+    def dump_ascii(self, x) -> None:
         self._write(TYPE_ASCII)
         self.w_long(len(x))
         self._write(x)
 
     dispatch[TYPE_ASCII] = dump_ascii
 
-    def dump_short_ascii(self, x):
+    def dump_short_ascii(self, x) -> None:
         self._write(TYPE_SHORT_ASCII)
         # FIXME: check len(x)?
         self.w_short(len(x))
@@ -420,7 +424,7 @@ class _NULL:
 
 
 class _StringBuffer:
-    def __init__(self, value):
+    def __init__(self, value) -> None:
         self.bufstr = value
         self.bufpos = 0
 
@@ -435,7 +439,7 @@ class _StringBuffer:
 class _Unmarshaller:
     dispatch = {}
 
-    def __init__(self, readfunc, python_version=None):
+    def __init__(self, readfunc, python_version=None) -> None:
         self._read = readfunc
         self._stringtable = []
         self.python_version = python_version
@@ -488,22 +492,22 @@ class _Unmarshaller:
             x = -((1 << 64) - x)
         return x
 
-    def load_null(self):
+    def load_null(self) -> type[_NULL]:
         return _NULL
 
     dispatch[TYPE_NULL] = load_null
 
-    def load_none(self):
+    def load_none(self) -> None:
         return None
 
     dispatch[TYPE_NONE] = load_none
 
-    def load_true(self):
+    def load_true(self) -> bool:
         return True
 
     dispatch[TYPE_TRUE] = load_true
 
-    def load_false(self):
+    def load_false(self) -> bool:
         return False
 
     dispatch[TYPE_FALSE] = load_false
@@ -513,12 +517,12 @@ class _Unmarshaller:
 
     dispatch[TYPE_ASCII] = load_null
 
-    def load_stopiter(self):
+    def load_stopiter(self) -> type[StopIteration]:
         return StopIteration
 
     dispatch[TYPE_STOPITER] = load_stopiter
 
-    def load_ellipsis(self):
+    def load_ellipsis(self) -> EllipsisType:
         return Ellipsis
 
     dispatch[TYPE_ELLIPSIS] = load_ellipsis
@@ -541,20 +545,20 @@ class _Unmarshaller:
 
     dispatch[TYPE_LONG] = load_long
 
-    def load_float(self):
+    def load_float(self) -> float:
         n = Ord(self._read(1))
         s = self._read(n)
         return float(s)
 
     dispatch[TYPE_FLOAT] = load_float
 
-    def load_binary_float(self):
+    def load_binary_float(self) -> float:
         f = self._read(8)
         return float(struct.unpack("<d", f)[0])
 
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
 
-    def load_complex(self):
+    def load_complex(self) -> complex:
         n = Ord(self._read(1))
         s = self._read(n)
         real = float(s)
@@ -571,7 +575,7 @@ class _Unmarshaller:
 
     dispatch[TYPE_STRING] = load_string
 
-    def load_interned(self):
+    def load_interned(self) -> str:
         n = self.r_long()
         ret = intern(self._read(n))
         self._stringtable.append(ret)
@@ -617,7 +621,7 @@ class _Unmarshaller:
 
     dispatch[TYPE_DICT] = load_dict
 
-    def load_code(self):
+    def load_code(self) -> Code2 | Code3 | CodeType:
         argcount = self.r_long()
         if self.python_version and self.python_version >= "3.0":
             is_python3 = True
@@ -794,7 +798,7 @@ _load_dispatch = {}
 class _FastUnmarshaller:
     dispatch = {}
 
-    def __init__(self, buffer, python_version=None):
+    def __init__(self, buffer, python_version=None) -> None:
         self.bufstr = buffer
         self.bufpos = 0
         self._stringtable = []
@@ -817,32 +821,32 @@ class _FastUnmarshaller:
             exception = EOFError
         raise exception
 
-    def load_null(self):
+    def load_null(self) -> type[_NULL]:
         return _NULL
 
     dispatch[TYPE_NULL] = load_null
 
-    def load_none(self):
+    def load_none(self) -> None:
         return None
 
     dispatch[TYPE_NONE] = load_none
 
-    def load_true(self):
+    def load_true(self) -> bool:
         return True
 
     dispatch[TYPE_TRUE] = load_true
 
-    def load_false(self):
+    def load_false(self) -> bool:
         return False
 
     dispatch[TYPE_FALSE] = load_false
 
-    def load_stopiter(self):
+    def load_stopiter(self) -> type[StopIteration]:
         return StopIteration
 
     dispatch[TYPE_STOPITER] = load_stopiter
 
-    def load_ellipsis(self):
+    def load_ellipsis(self) -> EllipsisType:
         return Ellipsis
 
     dispatch[TYPE_ELLIPSIS] = load_ellipsis
@@ -871,14 +875,14 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_LONG] = load_long
 
-    def load_float(self):
+    def load_float(self) -> float:
         n = Ord(_read1(self))
         s = _read(self, n)
         return float(s)
 
     dispatch[TYPE_FLOAT] = load_float
 
-    def load_complex(self):
+    def load_complex(self) -> complex:
         n = Ord(_read1(self))
         s = _read(self, n)
         real = float(s)
@@ -895,7 +899,7 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_STRING] = load_string
 
-    def load_interned(self):
+    def load_interned(self) -> str:
         n = _r_long(self)
         s = _read(self, n)
         if PYTHON3:
@@ -946,7 +950,7 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_DICT] = load_dict
 
-    def load_code(self):
+    def load_code(self) -> Code2 | CodeType:
         argcount = _r_long(self)
         nlocals = _r_long(self)
         stacksize = _r_long(self)
@@ -1025,7 +1029,7 @@ version = 1
 
 
 @builtinify
-def dump(x, f, version=version, python_version=None):
+def dump(x, f, version: int=version, python_version=None) -> None:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version)
     m.dump(x)
@@ -1038,7 +1042,7 @@ def load(f, python_version=None):
 
 
 @builtinify
-def dumps(x, version=version, python_version=PYTHON_VERSION_TRIPLE):
+def dumps(x, version: int=version, python_version: tuple[int, ...]=PYTHON_VERSION_TRIPLE) -> bytes | str:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version)

@@ -9,7 +9,7 @@ def fact():
 """
 
 
-def test_write_bytecode_file():
+def test_write_bytecode_file() -> None:
     import xdis.opcodes.opcode_27 as opcode_27
 
     # import xdis.opcodes.opcode_34  as opcode_34

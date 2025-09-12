@@ -1,9 +1,10 @@
 import os.path
-import pytest
 
+import pytest
 from xdis import disassemble_file
 
-def get_srcdir():
+
+def get_srcdir() -> str:
     filename = os.path.normcase(os.path.dirname(__file__))
     return os.path.realpath(filename)
 
@@ -21,7 +22,7 @@ os.chdir(src_dir)
         disassemble_file
     ),
 ])
-def test_funcoutput(capfd, test_tuple, function_to_test):
+def test_funcoutput(capfd, test_tuple, function_to_test) -> None:
 
     in_file , filename_expected = test_tuple
     function_to_test(in_file)

@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2024 by Rocky Bernstein
+#  Copyright (c) 2018-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ import sys
 from io import StringIO
 from linecache import getline
 from types import CodeType
-from typing import Iterable, Optional, Union
+from typing import Iterable, Iterator, Optional, Tuple, Union
 
 from xdis.cross_dis import (
     format_code_info,
@@ -174,7 +174,7 @@ def offset2line(offset: int, linestarts):
     return linestarts[high][1]
 
 
-def _parse_varint(iterator):
+def _parse_varint(iterator: Iterator[int]) -> int:
     b = next(iterator)
     val = b & 63
     while b & 64:
@@ -509,7 +509,7 @@ class Bytecode:
     Iterating over these yields the bytecode operations as Instruction instances.
     """
 
-    def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines=True):
+    def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines: bool=True) -> None:
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
         self._cell_names = ()
@@ -549,7 +549,7 @@ class Bytecode:
             exception_entries=self.exception_entries,
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._original_object!r})"
 
     @classmethod
@@ -563,11 +563,11 @@ class Bytecode:
             tb.tb_frame.f_code, opc=opc, first_line=None, current_offset=tb.tb_lasti
         )
 
-    def info(self):
+    def info(self) -> str:
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version_tuple)
 
-    def dis(self, asm_format="classic", show_source=False):
+    def dis(self, asm_format: str="classic", show_source: bool=False) -> str:
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         filename = co.co_filename
@@ -609,7 +609,7 @@ class Bytecode:
         )
         return output.getvalue()
 
-    def distb(self, tb=None):
+    def distb(self, tb=None) -> None:
         """Disassemble a traceback (default: last traceback)."""
         if tb is None:
             try:
@@ -642,7 +642,7 @@ class Bytecode:
         show_lineno = line_starts is not None or self.opc.version_tuple < (2, 3)
         show_source = show_source and show_lineno and first_line_number and filename
 
-        def show_source_text(line_number: Optional[int]):
+        def show_source_text(line_number: Optional[int]) -> None:
             """
             Show the Python source text if all conditions are right:
               * source text was requested - this implies other checks
@@ -833,7 +833,7 @@ class Bytecode:
         )
 
 
-def list2bytecode(inst_list: Iterable, opc, varnames, consts):
+def list2bytecode(inst_list: Iterable, opc, varnames: str, consts: Tuple[None, int]) -> bytes:
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """
@@ -879,7 +879,7 @@ if __name__ == "__main__":
         ("RETURN_VALUE",),
     ]
 
-    def f():
+    def f() -> int:
         a = 2
         return a
 
