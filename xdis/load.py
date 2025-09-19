@@ -165,8 +165,8 @@ def load_module(
                        e.g. (2, 7) or (3, 4)
         timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
                         if no timestamp was stored
-        magic_int: int, a more specific than version number. The actual byte code version of the
-                   code object
+        magic_int: int, a bytecode-specific version number. This is related to the Python version
+                     number, the two aren't quite the same thing.
         co         : code object
         ispypy     : True if this was a PyPy code object
         source_size: The size of the source code mod 2**32, if that was stored in the bytecode.
