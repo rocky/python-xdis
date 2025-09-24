@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2017-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -32,6 +32,9 @@ Code2FieldTypes.update(
 )
 # co_firstlineno added since 1.x
 
+# Early pyston 2.7 Code objects seem to be a subset of 2.0 code.
+# The fields it has are:
+#   co_argcount, co_filename, co_firstline, co_flag, co_name, co_varnames
 
 class Code2(Code15):
     """Class for a Python2 code object used when a Python 3 interpreter is
