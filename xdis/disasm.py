@@ -341,7 +341,7 @@ def disassemble_file(
             source_size,
             sip_hash,
         ) = load_module(pyc_filename)
-    except (ImportError, NotImplementedError):
+    except (ImportError, NotImplementedError, ValueError):
         raise
     except Exception:
         # Hack alert: we're using pyc_filename set as a proxy for whether the filename exists.

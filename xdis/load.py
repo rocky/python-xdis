@@ -101,7 +101,7 @@ def check_object_path(path: str) -> str:
 
     if not is_bytecode_extension(path):
         raise ValueError(
-            f"path {path} must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
+            f"Path {path} must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
         )
     return path
 
