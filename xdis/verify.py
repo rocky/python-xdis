@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020, 2023 by Rocky Bernstein
+# (C) Copyright 2018, 2020, 2023 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,30 +17,21 @@
 import marshal
 import os
 import tempfile
-from types import CodeType
-
-from _io import BufferedWriter
 
 from xdis.load import load_module
 from xdis.magics import MAGIC, PYTHON_MAGIC_INT, int2magic
 from xdis.version_info import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 
-def wr_long(f: BufferedWriter, x) -> None:
+def wr_long(f, x):
     """Internal; write a 32-bit int to a file in little-endian order."""
-    if PYTHON3:
-        f.write(bytes([x & 0xFF]))
-        f.write(bytes([(x >> 8) & 0xFF]))
-        f.write(bytes([(x >> 16) & 0xFF]))
-        f.write(bytes([(x >> 24) & 0xFF]))
-    else:
-        f.write(chr(x & 0xFF))
-        f.write(chr((x >> 8) & 0xFF))
-        f.write(chr((x >> 16) & 0xFF))
-        f.write(chr((x >> 24) & 0xFF))
+    f.write(bytes([x & 0xFF]))
+    f.write(bytes([(x >> 8) & 0xFF]))
+    f.write(bytes([(x >> 16) & 0xFF]))
+    f.write(bytes([(x >> 24) & 0xFF]))
 
 
-def dump_compile(codeobject: CodeType, filename: str, timestamp, magic: bytes) -> None:
+def dump_compile(codeobject, filename: str, timestamp, magic: bytes) -> None:
     """Write ``codeobject`` as a byte-compiled file.
 
     Arguments:
