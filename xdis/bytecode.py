@@ -535,7 +535,7 @@ class Bytecode:
     Iterating over these yields the bytecode operations as Instruction instances.
     """
 
-    def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines: bool=True) -> None:
+    def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines=True):
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
         self._cell_names = ()
@@ -589,11 +589,11 @@ class Bytecode:
             tb.tb_frame.f_code, opc=opc, first_line=None, current_offset=tb.tb_lasti
         )
 
-    def info(self) -> str:
+    def info(self):
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version_tuple)
 
-    def dis(self, asm_format: str="classic", show_source: bool=False) -> str:
+    def dis(self, asm_format="classic", show_source=False):
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         filename = co.co_filename
@@ -638,7 +638,7 @@ class Bytecode:
         )
         return output.getvalue()
 
-    def distb(self, tb=None) -> None:
+    def distb(self, tb=None):
         """Disassemble a traceback (default: last traceback)."""
         if tb is None:
             try:
@@ -916,7 +916,7 @@ if __name__ == "__main__":
         ("RETURN_VALUE",),
     ]
 
-    def f() -> int:
+    def f():
         a = 2
         return a
 

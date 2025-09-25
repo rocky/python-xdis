@@ -135,7 +135,7 @@ class Instruction(_Instruction):
         mark_as_current=False,
         asm_format="classic",
         instructions=[],
-    ) -> str:
+    ):
         """
         Format instruction details for inclusion in disassembly output.
 
@@ -415,13 +415,13 @@ class Instruction(_Instruction):
             self.tos_str,
         )
 
-    def is_jump(self) -> bool:
+    def is_jump(self):
         """
         Return True if instruction is some sort of jump.
         """
         return self.optype in ("jabs", "jrel")
 
-    def jumps_forward(self) -> bool:
+    def jumps_forward(self):
         """
         Return True if instruction is jump backwards
         """

@@ -597,7 +597,7 @@ for v in versions.values():
 python_versions = set(canonic_python_version.keys())
 
 
-def __show(text, magic) -> None:
+def __show(text, magic):
     print(text, struct.unpack("BBBB", magic), struct.unpack("<HBB", magic))
 
 
@@ -612,7 +612,7 @@ def magic_int2tuple(magic_int):
     return py_str2tuple(magicint2version[magic_int])
 
 
-def py_str2tuple(orig_version: str) -> tuple:
+def py_str2tuple(orig_version):
     """Convert a Python version into a tuple number,
     e.g. (2, 5), (3, 6).
 
@@ -670,7 +670,7 @@ def sysinfo2magic(version_info=sys.version_info):
     return magics[vers_str]
 
 
-def test() -> None:
+def test():
     magic_20 = magics["2.0"]
     magic_current = by_magic[MAGIC]
     print(type(magic_20), len(magic_20), repr(magic_20))

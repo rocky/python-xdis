@@ -227,11 +227,11 @@ def to_portable(
     co_filename=None,
     co_name=None,
     co_qualname=None,
-    co_firstlineno: int=-1,
-    co_lnotab: str="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
+    co_firstlineno=-1,
+    co_lnotab="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
     # In 3.11 it is different
-    co_freevars: tuple=(None,),  # 2.0+
-    co_cellvars: tuple=(None,),  # 2.0+
+    co_freevars=(None,),  # 2.0+
+    co_cellvars=(None,),  # 2.0+
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
 ):

@@ -26,12 +26,9 @@ there). Details of the format may change between Python versions.
 
 import struct
 import types
-from sys import intern
-from types import CodeType
 
 from xdis.codetype import Code2, Code3
-from xdis.unmarshal import long
-from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # NOTE: This module is used in the Python3 interpreter, but also by
 # the "sandboxed" process.  It must work for Python2 as well.
@@ -294,7 +291,7 @@ class _Marshaller:
     dispatch[list] = dump_list
     dispatch[TYPE_LIST] = dump_tuple
 
-    def dump_dict(self, x) -> None:
+    def dump_dict(self, x):
         self._write(TYPE_DICT)
         for key, value in x.items():
             self.dump(key)
@@ -500,12 +497,12 @@ class _Unmarshaller:
 
     dispatch[TYPE_NONE] = load_none
 
-    def load_true(self) -> bool:
+    def load_true(self):
         return True
 
     dispatch[TYPE_TRUE] = load_true
 
-    def load_false(self) -> bool:
+    def load_false(self):
         return False
 
     dispatch[TYPE_FALSE] = load_false
@@ -543,20 +540,20 @@ class _Unmarshaller:
 
     dispatch[TYPE_LONG] = load_long
 
-    def load_float(self) -> float:
+    def load_float(self):
         n = Ord(self._read(1))
         s = self._read(n)
         return float(s)
 
     dispatch[TYPE_FLOAT] = load_float
 
-    def load_binary_float(self) -> float:
+    def load_binary_float(self):
         f = self._read(8)
         return float(struct.unpack("<d", f)[0])
 
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
 
-    def load_complex(self) -> complex:
+    def load_complex(self):
         n = Ord(self._read(1))
         s = self._read(n)
         real = float(s)
@@ -573,7 +570,7 @@ class _Unmarshaller:
 
     dispatch[TYPE_STRING] = load_string
 
-    def load_interned(self) -> str:
+    def load_interned(self):
         n = self.r_long()
         ret = intern(self._read(n))
         self._stringtable.append(ret)
@@ -790,12 +787,12 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_NONE] = load_none
 
-    def load_true(self) -> bool:
+    def load_true(self):
         return True
 
     dispatch[TYPE_TRUE] = load_true
 
-    def load_false(self) -> bool:
+    def load_false(self):
         return False
 
     dispatch[TYPE_FALSE] = load_false
@@ -834,14 +831,14 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_LONG] = load_long
 
-    def load_float(self) -> float:
+    def load_float(self):
         n = Ord(_read1(self))
         s = _read(self, n)
         return float(s)
 
     dispatch[TYPE_FLOAT] = load_float
 
-    def load_complex(self) -> complex:
+    def load_complex(self):
         n = Ord(_read1(self))
         s = _read(self, n)
         real = float(s)
@@ -858,7 +855,7 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_STRING] = load_string
 
-    def load_interned(self) -> str:
+    def load_interned(self):
         n = _r_long(self)
         s = _read(self, n)
         ret = intern(s)
@@ -978,7 +975,7 @@ def load(f, python_version=None):
 
 
 @builtinify
-def dumps(x, version: int=version, python_version: tuple=PYTHON_VERSION_TRIPLE):
+def dumps(x, version=version, python_version=PYTHON_VERSION_TRIPLE):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version)

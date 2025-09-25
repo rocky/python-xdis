@@ -45,16 +45,16 @@ class CodeBase(object):
     # co_firstlineno: int
 
     # Mimic Python 3 code access functions
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self.co_code)
 
-    def __getitem__(self, i) -> int:
+    def __getitem__(self, i):
         op = self.co_code[i]
         if isinstance(op, str):
             op = ord(op)
         return op
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         msg = (
             "<%s code object %s" % (self.__class__.__name__, self.co_name)
         ) + " at %s, file %s>" % (hex(id(self)), self.co_filename)

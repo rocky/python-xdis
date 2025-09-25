@@ -1,4 +1,4 @@
-# (C) 2024 by Rocky Bernstein
+# (C) 2024-2025 by Rocky Bernstein
 """
 Python Graal 3.10 bytecode opcodes
 

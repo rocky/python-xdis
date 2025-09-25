@@ -7,12 +7,12 @@ import unittest
 import xdis.codetype
 
 
-def five() -> int:
+def five():
     return 5
 
 class Offset2LineTests(unittest.TestCase):
 
-    def test_codeType2Portable(self) -> None:
+    def test_codeType2Portable(self):
         if hasattr(five, "__code__"):
             # Python 2.6+
             five_code = five.__code__

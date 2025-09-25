@@ -447,7 +447,7 @@ loc["hasfree"] = [64, 84, 89, 94, 109]
 loc.update({"hasjump": [72, 77, 78, 79, 97, 98, 99, 100, 104, 256, 257]})
 loc["hasjrel"] = loc["hasjump"]
 
-def extended_format_CALL(opc, instructions) -> tuple:
+def extended_format_CALL(opc, instructions):
     """call_method should be a "CALL_METHOD" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -475,7 +475,10 @@ def extended_format_CALL(opc, instructions) -> tuple:
         fn_inst = instructions[first_arg + 2]
         if fn_inst.opname in ("LOAD_NAME",):
             start_offset = fn_inst.offset
-            fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+            if fn_inst.tos_str:
+                fn_name = fn_inst.tos_str
+            else:
+                fn_name = fn_inst.argrepr
             arglist.reverse()
             s = '%s(%s)' % (fn_name, ", ".join(arglist))
             return s, start_offset
@@ -503,7 +506,7 @@ for fmt_table in (opcode_arg_fmt313, opcode_extended_fmt313):
 
 
 # update any calls to findlinestarts to include the version tuple
-def findlinestarts_313(code, dup_lines: bool=False):
+def findlinestarts_313(code, dup_lines=False):
     lastline = False  # None is a valid line number
     for start, _, line in code.co_lines():
         if line is not lastline:

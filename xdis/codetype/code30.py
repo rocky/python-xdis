@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -142,7 +142,7 @@ class Code3(Code2):
         code.freeze()
         try:
             code.check()
-        except AssertionError as e:
+        except AssertionError(e):
             raise TypeError(e)
 
         return types.CodeType(
@@ -161,5 +161,4 @@ class Code3(Code2):
             code.co_lnotab,
             code.co_freevars,
             code.co_cellvars,
->>>>>>> python-3.0-to-3.2
         )

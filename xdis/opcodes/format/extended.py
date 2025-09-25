@@ -680,7 +680,9 @@ def get_arglist(instructions, i, arg_count):
             arg = inst.argrepr
         if inst.opname == "CACHE":
             continue
+
         to_do -= 1
+
         if arg is not None:
             arglist.append(arg)
         elif not arg:

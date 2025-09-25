@@ -108,7 +108,7 @@ def check_object_path(path):
     return path
 
 
-def is_pypy(magic_int: int, filename) -> bool:
+def is_pypy(magic_int, filename):
     # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
     if magic_int in (3413, 3414) and filename.endswith("pypy38.pyc"):
         return True
@@ -366,7 +366,7 @@ def load_module_from_file_object(
 
 
 def write_bytecode_file(
-    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize: int=0
+    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize=0
 ):
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)

@@ -83,7 +83,7 @@ def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 
-def format_BUILD_MAP_UNPACK_WITH_CALL(oparg) -> str:
+def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
     """The lowest byte of oparg is the count of mappings, the relative
     position of the corresponding callable f is encoded in the second byte
     of oparg."""
@@ -91,7 +91,7 @@ def format_BUILD_MAP_UNPACK_WITH_CALL(oparg) -> str:
     return "%d mappings, function at %d" % (count, count + rel_func_pos)
 
 
-def extended_format_BUILD_MAP_35(opc, instructions: list) -> tuple:
+def extended_format_BUILD_MAP_35(opc, instructions):
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Note: caller generally handles this when the below isn't right.

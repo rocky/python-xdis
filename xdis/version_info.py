@@ -32,8 +32,8 @@ else:
 
 
 def version_tuple_to_str(
-    version_tuple=PYTHON_VERSION_TRIPLE, start: int=0, end: int=3, delimiter: str="."
-) -> str:
+    version_tuple=PYTHON_VERSION_TRIPLE, start=0, end=3, delimiter="."
+):
     """
     Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6".
 

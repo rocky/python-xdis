@@ -86,7 +86,7 @@ def show_module_header(
     header=True,
     show_filename=True,
     is_graal=False,
-) -> None:
+):
     bytecode_version = ".".join((str(i) for i in version_tuple))
     real_out = out or sys.stdout
     if is_pypy:
@@ -142,16 +142,16 @@ def disco(
     co,
     timestamp,
     out=sys.stdout,
-    is_pypy: bool=False,
+    is_pypy=False,
     magic_int=None,
     source_size=None,
     sip_hash=None,
-    asm_format: str="classic",
+    asm_format="classic",
     alternate_opmap=None,
-    show_source: bool=False,
-    is_graal: bool=False,
+    show_source=False,
+    is_graal=False,
     methods=tuple(),
-) -> None:
+):
     """
     disassembles and deparses a given code block 'co'
     """
@@ -210,7 +210,7 @@ def disco_loop(
     asm_format="classic",
     show_source=False,
     methods=tuple(),
-) -> None:
+):
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
@@ -252,12 +252,12 @@ def disco_loop(
         pass
 
 
-def code_uniquify(basename, co_code) -> str:
+def code_uniquify(basename, co_code):
     # FIXME: better would be a hash of the co_code
     return "%s_0x%x" % (basename, id(co_code))
 
 
-def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns) -> None:
+def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns):
     """Produces disassembly in a format more conducive to
     automatic assembly by producing inner modules before they are
     used by outer ones. Since this is recursive, we'll
@@ -421,10 +421,10 @@ def disassemble_file(
         sip_hash,
     )
 
-def not_filtered(co: types.CodeType, methods: tuple) -> bool:
+def not_filtered(co, methods):
     return len(methods) == 0 or co.co_name in methods
 
-def _test() -> None:
+def _test():
     """Simple test program to disassemble a file."""
     argc = len(sys.argv)
     if argc == 1:

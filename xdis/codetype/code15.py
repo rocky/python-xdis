@@ -78,7 +78,7 @@ class Code15(Code13):
             self.check()
         return
 
-    def decode_lineno_tab(self) -> None:
+    def decode_lineno_tab(self):
         line_number, line_number_diff = self.co_firstlineno, 0
         offset, offset_diff = 0, 0
         uncompressed_lnotab = {offset: line_number}
@@ -108,7 +108,7 @@ class Code15(Code13):
 
         self.co_lnotab = uncompressed_lnotab
 
-    def encode_lineno_tab(self) -> None:
+    def encode_lineno_tab(self):
         co_lnotab = ""
 
         prev_line_number = self.co_firstlineno

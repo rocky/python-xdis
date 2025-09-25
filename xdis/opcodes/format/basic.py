@@ -17,11 +17,11 @@
 Routines for formatting opcodes.
 """
 
-def format_extended_arg(arg) -> str:
+def format_extended_arg(arg):
     return str(arg * (1 << 16))
 
 
-def format_CALL_FUNCTION_pos_name_encoded(argc) -> str:
+def format_CALL_FUNCTION_pos_name_encoded(argc):
     """Encoded positional and named args. Used to
     up to about 3.6 where wordcodes are used and
     a different encoding occurs. Pypy36 though

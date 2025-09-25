@@ -25,7 +25,7 @@ def rng(a, b):
 
 
 # This is replaced by Mersenne in newer versions.
-def get_keys(a, b) -> tuple:
+def get_keys(a, b):
     ka = rng(a, b)
     kb = rng(ka, a)
     kc = rng(kb, ka)
@@ -34,13 +34,13 @@ def get_keys(a, b) -> tuple:
     return (kb, kc, kd, ke)
 
 
-def MX(z, y, sum: int, key, p: int, e: int):
+def MX(z, y, sum, key, p, e):
     return ((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ (
         (sum ^ y) + (key[(p & 3) ^ e] ^ z)
     )
 
 
-def tea_decipher(v, key: tuple):
+def tea_decipher(v, key):
     """
     Tiny Decryption Algorithm description (TEA)
     See https://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm
@@ -124,19 +124,19 @@ try:
 except:
 
     class bytearray(object):
-        def __init__(self, s) -> None:
+        def __init__(self, s):
             self.l = map(ord, s)
 
-        def __setitem__(self, idx, val) -> None:
+        def __setitem__(self, idx, val):
             self.l[idx] = val
 
         def __getitem__(self, idx):
             return self.l[idx]
 
-        def __str__(self) -> str:
+        def __str__(self):
             return "".join(map(chr, self.l))
 
-        def __len__(self) -> int:
+        def __len__(self):
             return len(self.l)
 
 
@@ -253,7 +253,7 @@ table[58] = 76
 misses = {}
 
 
-def patch(code: bytes):
+def patch(code):
     code = bytearray(code)
     i = 0
     n = len(code)
@@ -294,7 +294,7 @@ def fix_dropbox_pyc(fp):
     return (2, 5, "0dropbox"), timestamp, 62131, co, False, source_size, None
 
 
-def fix_dir(path) -> None:
+def fix_dir(path):
     import os
 
     for root, _, files in os.walk(path):

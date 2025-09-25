@@ -50,7 +50,7 @@ Code311FieldNames = """
 """
 
 Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": chr})
 
 
 ##### Parse location table #####
@@ -469,7 +469,7 @@ class Code311(Code310):
         co_firstlineno,
         co_linetable,
         co_exceptiontable,
-    ) -> None:
+    ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code311, self).__init__(
@@ -496,7 +496,7 @@ class Code311(Code310):
         if type(self) == Code311:
             self.check()
 
-    def to_native(self) -> CodeType:
+    def to_native(self):
         if not (PYTHON_VERSION_TRIPLE >= (3, 11)):
             raise TypeError(
                 "Python Interpreter needs to be in 3.11 or greater; is %s"

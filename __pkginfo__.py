@@ -22,7 +22,7 @@ import os.path as osp
 
 # Things that change more often go here.
 copyright = """
-Copyright (C) 2015-2020, 2023-204 Rocky Bernstein <rb@dustyfeet.com>.
+Copyright (C) 2015-2020, 2023-2025 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
 classifiers = [
@@ -84,7 +84,7 @@ web = "https://github.com/rocky/python-xdis/"
 zip_safe = True
 
 
-def get_srcdir() -> str:
+def get_srcdir():
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
     return osp.realpath(filename)
 
@@ -92,7 +92,7 @@ def get_srcdir() -> str:
 srcdir = get_srcdir()
 
 
-def read(*rnames) -> str:
+def read(*rnames):
     return open(osp.join(srcdir, *rnames)).read()
 
 
