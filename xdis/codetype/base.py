@@ -1,4 +1,4 @@
-# (C) Copyright 2020, 2024 by Rocky Bernstein
+# (C) Copyright 2020, 2024-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -45,16 +45,16 @@ class CodeBase:
     # co_firstlineno: int
 
     # Mimic Python 3 code access functions
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.co_code)
 
-    def __getitem__(self, i):
+    def __getitem__(self, i) -> int:
         op = self.co_code[i]
         if isinstance(op, str):
             op = ord(op)
         return op
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         msg = (
             "<%s code object %s" % (self.__class__.__name__, self.co_name)
         ) + " at %s, file %s>" % (hex(id(self)), self.co_filename)

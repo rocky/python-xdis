@@ -14,6 +14,8 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from ast import Module
+
 """Facilitates for importing Python opcode maps for a given Python version"""
 import copy
 import sys
@@ -91,6 +93,7 @@ op_imports = {
     2.4: opcode_24,
     "2.5c2": opcode_25,
     2.5: opcode_25,
+    "2.5.0dropbox": opcode_25,
     "2.6a1": opcode_26,
     2.6: opcode_26,
     "2.7": opcode_27,

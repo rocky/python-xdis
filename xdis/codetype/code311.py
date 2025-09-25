@@ -16,6 +16,8 @@
 
 import types
 from copy import deepcopy
+from types import CodeType
+from typing import Iterable, Iterator, Optional
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -160,13 +162,13 @@ Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
 
 
 ##### Parse location table #####
-def parse_location_entries(location_bytes, first_line):
+def parse_location_entries(location_bytes, first_line: int):
     """
     Parses the locations table described in: https://github.com/python/cpython/blob/3.11/Objects/locations.md
     The locations table replaced the line number table starting in 3.11
     """
 
-    def starts_new_entry(b):
+    def starts_new_entry(b) -> bool:
         return bool(b & 0b10000000)  # bit 7 is set
 
     def extract_code(b):
@@ -196,7 +198,7 @@ def parse_location_entries(location_bytes, first_line):
         if len(varint_bytes) == 0:
             return []
 
-        def has_next_byte(b):
+        def has_next_byte(b) -> bool:
             return bool(b & 0b01000000)  # has bit 6 set
 
         def get_value(b):
@@ -216,7 +218,7 @@ def parse_location_entries(location_bytes, first_line):
                 current_value = 0
                 shift_amt = 0
 
-    def decode_signed_varint(s):
+    def decode_signed_varint(s: int):
         return -(s >> 1) if s & 1 else (s >> 1)
 
     entries = (
@@ -308,7 +310,10 @@ def _scan_signed_varint(remaining_linetable) -> int:
     return value >> 1
 
 
-def _get_line_delta(code_byte: int, remaining_linetable):
+def _get_line_delta(code_byte: int, remaining_linetable) -> int:
+=======
+def _get_line_delta(code_byte: int, remaining_linetable: Iterable[int]) -> int:
+>>>>>>> python-3.6-to-3.10
     line_delta_code = (code_byte >> 3) & 15
     if line_delta_code == PY_CODE_LOCATION_INFO_NONE:
         return 0
@@ -326,15 +331,15 @@ def _get_line_delta(code_byte: int, remaining_linetable):
     return 0
 
 
-def _is_no_line_marker(linetable_code_byte: int):
+def _is_no_line_marker(linetable_code_byte: int) -> bool:
     return (linetable_code_byte >> 3) == 0x1F
 
 
-def _next_code_delta(linetable_code_byte: int):
+def _next_code_delta(linetable_code_byte: int) -> int:
     return ((linetable_code_byte & 7) + 1) * 2
 
 
-def _test_check_bit(linetable_code_byte: int):
+def _test_check_bit(linetable_code_byte: int) -> bool:
     return bool(linetable_code_byte & 128)
 
 
@@ -532,7 +537,7 @@ class Code311(Code310):
         co_firstlineno,
         co_linetable,
         co_exceptiontable,
-    ):
+    ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code311, self).__init__(
@@ -559,7 +564,7 @@ class Code311(Code310):
         if type(self) == Code311:
             self.check()
 
-    def to_native(self):
+    def to_native(self) -> CodeType:
         if not (PYTHON_VERSION_TRIPLE >= (3, 11)):
             raise TypeError(
                 "Python Interpreter needs to be in 3.11 or greater; is %s"

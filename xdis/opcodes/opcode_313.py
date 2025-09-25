@@ -2,8 +2,12 @@
 CPython 3.13 bytecode opcodes
 """
 
+from typing import Optional, Tuple
+
 import xdis.opcodes.opcode_312 as opcode_312
 from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
+from xdis.opcodes.format.extended import NULL_EXTENDED_OP, get_arglist
+from xdis.opcodes.opcode_36pypy import format_CALL_METHOD
 
 version_tuple = (3, 13)
 python_implementation = "CPython"
@@ -445,17 +449,65 @@ loc["hasfree"] = [64, 84, 89, 94, 109]
 loc.update({"hasjump": [72, 77, 78, 79, 97, 98, 99, 100, 104, 256, 257]})
 loc["hasjrel"] = loc["hasjump"]
 
+def extended_format_CALL(opc, instructions) -> Tuple[str, Optional[int]]:
+    """call_method should be a "CALL_METHOD" instruction. Look in
+    `instructions` to see if we can find a method name.  If not we'll
+    return None.
+
+    """
+    # From opcode description: arg_count indicates the total number of
+    # positional and keyword arguments.
+
+    call_method_inst = instructions[0]
+    arg_count = call_method_inst.argval
+    s = ""
+
+    arglist, arg_count, first_arg = get_arglist(instructions, 0, arg_count)
+    if arglist is None:
+        arglist = []
+
+    if first_arg is None or first_arg >= len(instructions) - 1:
+        return NULL_EXTENDED_OP
+
+    fn_inst = instructions[first_arg + 1]
+    if fn_inst.opcode in opc.operator_set and arglist is not None:
+        start_offset = fn_inst.offset
+
+    if fn_inst.opname == "PUSH_NULL":
+        fn_inst = instructions[first_arg + 2]
+        if fn_inst.opname in ("LOAD_NAME",):
+            start_offset = fn_inst.offset
+            fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+            arglist.reverse()
+            s = f'{fn_name}({", ".join(arglist)})'
+            return s, start_offset
+
+    return NULL_EXTENDED_OP
+
+
+
+
 ### update formatting
-opcode_arg_fmt = opcode_312.opcode_arg_fmt312.copy()
-opcode_extended_fmt = opcode_312.opcode_extended_fmt312.copy()
-for fmt_table in (opcode_arg_fmt, opcode_extended_fmt):
+opcode_arg_fmt = opcode_arg_fmt313 = {
+    ** opcode_312.opcode_arg_fmt312,
+    **{
+        "CALL": format_CALL_METHOD
+    },
+}
+
+opcode_extended_fmt = opcode_extended_fmt313 = {
+    ** opcode_312.opcode_extended_fmt312,
+    **{
+        "CALL": extended_format_CALL
+    },
+}
+
+for fmt_table in (opcode_arg_fmt313, opcode_extended_fmt313):
     fmt_table.pop("MAKE_FUNCTION")  # MAKE_FUNCTION formatting not in 3.13
-opcode_arg_fmt313 = opcode_arg_fmt
-opcode_extended_fmt313 = opcode_extended_fmt
 
 
 # update any calls to findlinestarts to include the version tuple
-def findlinestarts_313(code, dup_lines=False):
+def findlinestarts_313(code, dup_lines: bool=False):
     lastline = False  # None is a valid line number
     for start, _, line in code.co_lines():
         if line is not lastline:

@@ -9,6 +9,7 @@ at valid locations.
 """
 
 from collections import namedtuple
+from typing import Optional, Tuple
 
 from xdis.bytecode import get_instructions_bytes
 from xdis.codetype.base import iscode
@@ -29,7 +30,7 @@ LineOffsetsCompact = namedtuple("LineOffsetsCompact", ["name", "offsets"])
 
 
 class LineOffsetInfo(object):
-    def __init__(self, opc, code, include_children=False):
+    def __init__(self, opc, code, include_children: bool=False) -> None:
         if not iscode(code):
             raise TypeError(
                 "code parameter %s needs to be a code type; is %s" % (code, type(code))
@@ -47,7 +48,7 @@ class LineOffsetInfo(object):
         self._populate_lines()
         return
 
-    def _populate_lines(self):
+    def _populate_lines(self) -> None:
         code = self.code
         code_map = {code.co_name: code}
         last_line_info = None
@@ -86,10 +87,10 @@ class LineOffsetInfo(object):
             pass
         self.code_map = code_map
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.line_numbers())
 
-    def line_numbers(self, include_dups=True, include_offsets=False):
+    def line_numbers(self, include_dups: bool=True, include_offsets: bool=False):
         """Return all of the valid lines for a given piece of code"""
         if include_offsets:
             lines = {}
@@ -110,7 +111,7 @@ class LineOffsetInfo(object):
     pass
 
 
-def lineoffsets_in_file(filename, toplevel_only=False):
+def lineoffsets_in_file(filename: str, toplevel_only=False) -> Optional[LineOffsetInfo]:
     obj_path = check_object_path(filename)
     version, timestamp, magic_int, code, pypy, source_size, sip_hash = load_module(
         obj_path
@@ -124,25 +125,25 @@ def lineoffsets_in_file(filename, toplevel_only=False):
     pass
 
 
-def lineoffsets_in_module(module, toplevel_only=False):
+def lineoffsets_in_module(module, toplevel_only: bool=False) -> Optional[LineOffsetInfo]:
     return lineoffsets_in_file(module.__file__, toplevel_only)
 
 
 if __name__ == "__main__":
 
-    def multi_line():
+    def multi_line() -> Tuple[int, int]:
         # We have two statements on the same line
         x = 1
         y = 2
         return x, y
 
-    def foo():
-        def bar():
+    def foo() -> int:
+        def bar() -> int:
             return 5
 
         return bar()
 
-    def print_code_info(code_info):
+    def print_code_info(code_info: Optional[LineOffsetInfo]) -> None:
         children = code_info.children.keys()
         if len(children):
             print("%s has %d children" % (code_info.name, len(children)))

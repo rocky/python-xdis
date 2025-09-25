@@ -17,13 +17,16 @@
 import marshal
 import os
 import tempfile
+from types import CodeType
+
+from _io import BufferedWriter
 
 from xdis.load import load_module
 from xdis.magics import MAGIC, PYTHON_MAGIC_INT, int2magic
 from xdis.version_info import IS_PYPY, PYTHON3, PYTHON_VERSION_TRIPLE
 
 
-def wr_long(f, x):
+def wr_long(f: BufferedWriter, x) -> None:
     """Internal; write a 32-bit int to a file in little-endian order."""
     if PYTHON3:
         f.write(bytes([x & 0xFF]))
@@ -37,7 +40,7 @@ def wr_long(f, x):
         f.write(chr((x >> 24) & 0xFF))
 
 
-def dump_compile(codeobject, filename, timestamp, magic):
+def dump_compile(codeobject: CodeType, filename: str, timestamp, magic: bytes) -> None:
     """Write ``codeobject`` as a byte-compiled file.
 
     Arguments:
@@ -74,7 +77,7 @@ def dump_compile(codeobject, filename, timestamp, magic):
             fc.close()
 
 
-def compare_code(c1, c2):
+def compare_code(c1, c2) -> None:
     assert c1.co_code == c2.co_code, "code %s vs. %s" % (c1.co_code, c2.co_code)
     assert c1.co_argcount == c2.co_argcount
     assert c1.co_consts == c1.co_consts
@@ -93,7 +96,7 @@ def compare_code(c1, c2):
     assert c1.co_varnames == c2.co_varnames
 
 
-def compare_bytecode_files(bc_file1, bc_file2):
+def compare_bytecode_files(bc_file1: str, bc_file2: str) -> None:
     # Now compare bytes in bytecode files
     f = open(bc_file1, "rb")
     bytes1 = f.read()
@@ -112,7 +115,7 @@ def compare_bytecode_files(bc_file1, bc_file2):
         assert bytes1 == bytes2, "bytecode:\n%s\nvs\n%s" % (bytes1, bytes2)
 
 
-def verify_file(real_source_filename, real_bytecode_filename):
+def verify_file(real_source_filename, real_bytecode_filename) -> None:
     """Compile *real_source_filename* using
     the running Python interpreter. Then
     write bytecode out to a new place again using

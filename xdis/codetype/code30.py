@@ -16,6 +16,7 @@
 
 import types
 from copy import deepcopy
+from types import CodeType
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -60,7 +61,7 @@ class Code3(Code2):
         co_lnotab,
         co_freevars,
         co_cellvars,
-    ):
+    ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code3, self).__init__(
@@ -86,7 +87,7 @@ class Code3(Code2):
             self.check()
         return
 
-    def encode_lineno_tab(self):
+    def encode_lineno_tab(self) -> None:
         co_lnotab = b""
 
         prev_line_number = self.co_firstlineno
@@ -134,7 +135,7 @@ class Code3(Code2):
 
         return self
 
-    def to_native(self):
+    def to_native(self) -> CodeType:
         if not (3, 0) <= PYTHON_VERSION_TRIPLE < (3, 8):
             raise TypeError(
                 "Python Interpreter needs to be in range 3.0..3.7; is %s"

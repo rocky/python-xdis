@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2024 by Rocky Bernstein
+#  Copyright (c) 2018-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -172,7 +172,7 @@ def offset2line(offset: int, linestarts):
     return linestarts[high][1]
 
 
-def _parse_varint(iterator):
+def _parse_varint(iterator: Iterator[int]) -> int:
     b = next(iterator)
     val = b & 63
     while b & 64:
@@ -507,7 +507,7 @@ class Bytecode:
     Iterating over these yields the bytecode operations as Instruction instances.
     """
 
-    def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines=True):
+    def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines: bool=True) -> None:
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
         self._cell_names = ()
@@ -561,11 +561,11 @@ class Bytecode:
             tb.tb_frame.f_code, opc=opc, first_line=None, current_offset=tb.tb_lasti
         )
 
-    def info(self):
+    def info(self) -> str:
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version_tuple)
 
-    def dis(self, asm_format="classic", show_source=False):
+    def dis(self, asm_format: str="classic", show_source: bool=False) -> str:
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         filename = co.co_filename
@@ -607,7 +607,7 @@ class Bytecode:
         )
         return output.getvalue()
 
-    def distb(self, tb=None):
+    def distb(self, tb=None) -> None:
         """Disassemble a traceback (default: last traceback)."""
         if tb is None:
             try:
@@ -878,7 +878,7 @@ if __name__ == "__main__":
         ("RETURN_VALUE",),
     ]
 
-    def f():
+    def f() -> int:
         a = 2
         return a
 

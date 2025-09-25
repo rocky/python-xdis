@@ -85,12 +85,12 @@ def code_has_star_star_arg(code):
     return (code.co_flags & 8) != 0
 
 
-def is_negative_zero(n) -> bool:
+def is_negative_zero(n: float) -> bool:
     """Returns true if n is -0.0"""
     return n == 0.0 and copysign(1, n) == -1
 
 
-def better_repr(v) -> str:
+def better_repr(v: float) -> str:
     """Work around Python's not orthogonal and unhelpful repr() for primitive float
     and complex."""
     if isinstance(v, float):

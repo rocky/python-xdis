@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2024 by Rocky Bernstein
+#  Copyright (c) 2018-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -98,7 +98,7 @@ class Instruction(_Instruction):
         mark_as_current=False,
         asm_format="classic",
         instructions=[],
-    ):
+    ) -> str:
         """
         Format instruction details for inclusion in disassembly output.
 
@@ -299,13 +299,35 @@ class Instruction(_Instruction):
 
         return " ".join(fields).rstrip()
 
-    def is_jump(self):
+    def format_to_assembly_line(
+        self,
+        current_instruction_line,
+    ):
+        """
+        Format instruction into a structure that can be easily
+        turned a structure contains the essential information
+        that would be shown as a line in an assembly listing
+        """
+        return AssembleFormat(
+            self.is_jump_target,
+            current_instruction_line == self.starts_line,
+            self.starts_line,
+            self.offset,
+            self.opname,
+            self.opcode,
+            self.has_arg,
+            self.arg,
+            self.argrepr,
+            self.tos_str,
+        )
+
+    def is_jump(self) -> bool:
         """
         Return True if instruction is some sort of jump.
         """
         return self.optype in ("jabs", "jrel")
 
-    def jumps_forward(self):
+    def jumps_forward(self) -> bool:
         """
         Return True if instruction is jump backwards
         """

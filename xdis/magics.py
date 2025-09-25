@@ -46,12 +46,12 @@ RUSTPYTHON_MAGICS = (
 )
 
 
-def add_magic_from_int(magic_int, version):
+def add_magic_from_int(magic_int: int, version: str) -> None:
     magicint2version[magic_int] = version
     versions[int2magic(magic_int)] = version
 
 
-def int2magic(magic_int):
+def int2magic(magic_int: int) -> bytes:
     """Given a magic int like 62211, compute the corresponding magic byte string
      b'\x03\xf3\r\n' using the conversion method that does this.
 
@@ -485,7 +485,7 @@ magics["3.9.16pypy"] = magics["3.9.0alpha1"]
 canonic_python_version = {}
 
 
-def add_canonic_versions(release_versions: str, canonic):
+def add_canonic_versions(release_versions: str, canonic: str) -> None:
     for version in release_versions.split():
         canonic_python_version[version] = canonic
         magics[version] = magics[canonic]
@@ -597,7 +597,7 @@ for v in versions.values():
 python_versions = set(canonic_python_version.keys())
 
 
-def __show(text, magic):
+def __show(text, magic) -> None:
     print(text, struct.unpack("BBBB", magic), struct.unpack("<HBB", magic))
 
 
@@ -612,7 +612,7 @@ def magic_int2tuple(magic_int):
     return py_str2tuple(magicint2version[magic_int])
 
 
-def py_str2tuple(orig_version):
+def py_str2tuple(orig_version: str) -> tuple:
     """Convert a Python version into a tuple number,
     e.g. (2, 5), (3, 6).
 
@@ -669,7 +669,7 @@ def sysinfo2magic(version_info=sys.version_info) -> bytes:
     return magics[vers_str]
 
 
-def test():
+def test() -> None:
     magic_20 = magics["2.0"]
     magic_current = by_magic[MAGIC]
     print(type(magic_20), len(magic_20), repr(magic_20))
