@@ -101,7 +101,7 @@ def check_object_path(path: str) -> str:
 
     if not is_bytecode_extension(path):
         raise ValueError(
-            f"path {path} must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
+            f"Path {path} must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
         )
     return path
 
@@ -165,8 +165,8 @@ def load_module(
                        e.g. (2, 7) or (3, 4)
         timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
                         if no timestamp was stored
-        magic_int: int, a more specific than version number. The actual byte code version of the
-                   code object
+        magic_int: int, a bytecode-specific version number. This is related to the Python version
+                     number, the two aren't quite the same thing.
         co         : code object
         ispypy     : True if this was a PyPy code object
         source_size: The size of the source code mod 2**32, if that was stored in the bytecode.
@@ -222,9 +222,6 @@ def load_module_from_file_object(
             # FIXME: use the internal routine below
             tuple_version = magic_int2tuple(magic_int)
         except KeyError:
-            if magic_int in (2657, 22138):
-                raise ImportError("This smells like Pyston which is not supported.")
-
             if len(magic) >= 2:
                 raise ImportError(
                     "Unknown magic number %s in %s"
@@ -232,6 +229,10 @@ def load_module_from_file_object(
                 )
             else:
                 raise ImportError(f"Bad magic number: '{magic}'")
+
+        if magic_int in (2657, 22138):
+            version = magicint2version.get(magic_int, "")
+            raise ImportError(f"Magic int {magic_int} ({version}) is not supported.")
 
         if magic_int in (
             3010,
@@ -300,7 +301,11 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
                     pass
             else:
-                timestamp = unpack("<I", ts)[0]
+
+                # Early Pyston targeting 2.7 doesn't seem to have a timestamp!
+                if magic_int not in (2657,):
+                    timestamp = unpack("<I", ts)[0]
+
                 # Note: a higher magic number doesn't necessarily mean a later
                 # release.  At Python 3.0 the magic number decreased
                 # significantly. Hence, the range below. Also note inclusion of
@@ -310,7 +315,7 @@ def load_module_from_file_object(
                 if (
                     (3200 <= magic_int < 20121)
                     and version >= (1, 5)
-                    or magic_int in PYPY3_MAGICS
+                    or magic_int in list(PYPY3_MAGICS) + [2657]
                 ):
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 

@@ -92,7 +92,7 @@ def main(format: list[str], method: tuple, show_source: bool, files):
 
         try:
             disassemble_file(path, sys.stdout, format, show_source=show_source, methods=method)
-        except ImportError as e:
+        except (ImportError, NotImplementedError, ValueError) as e:
             print(e)
             rc = 3
     sys.exit(rc)
