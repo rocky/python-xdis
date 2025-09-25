@@ -1,5 +1,5 @@
 # (C) Copyright 2018 by Daniel Bradburn
-# (C) Copyright 2018, 2020-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2018, 2020, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -74,7 +74,7 @@ else:
 
 
 class _StdApi:
-    def __init__(self, python_version=sys.version_info, variant=VARIANT):
+    def __init__(self, python_version=sys.version_info, variant=VARIANT) -> None:
         if python_version >= (3, 6):
             import xdis.wordcode as xcode
         else:
@@ -101,7 +101,7 @@ class _StdApi:
             Iterating over these yields a bytecode operation as Instruction instances.
             """
 
-            def __init__(self, x, first_line=None, current_offset=None, opc=None):
+            def __init__(self, x, first_line=None, current_offset=None, opc=None) -> None:
                 if opc is None:
                     opc = _std_api.opc
                 _Bytecode.__init__(
@@ -143,7 +143,7 @@ class _StdApi:
                 is_jump_target,
                 positions=None,
                 **kwargs
-            ):
+            ) -> None:
                 has_args = op_has_argument(opcode, self.opc)
                 if "has_args" in kwargs:
                     assert has_args == kwargs.pop("has_args")
@@ -169,17 +169,17 @@ class _StdApi:
 
         self.Instruction = Instruction
 
-    def _print(self, x, file=None):
+    def _print(self, x: str, file=None) -> None:
         if file is None:
             print(x)
         else:
             file.write(str(x) + "\n")
 
-    def code_info(self, x):
+    def code_info(self, x) -> str:
         """Formatted details of methods, functions, or code."""
         return _code_info(x, self.python_version_tuple)
 
-    def show_code(self, x, file=None):
+    def show_code(self, x, file=None) -> None:
         """Print details of methods, functions, or code to *file*.
 
         If *file* is not provided, the output is printed on stdout.
@@ -190,11 +190,11 @@ class _StdApi:
         """Compute the stack effect of *opcode* with argument *oparg*."""
         return _stack_effect(opcode, self.opc, oparg, jump)
 
-    def pretty_flags(self, flags):
+    def pretty_flags(self, flags) -> str:
         """Return pretty representation of code flags."""
         return _pretty_flags(flags)
 
-    def dis(self, x=None, file=None):
+    def dis(self, x=None, file=None) -> None:
         """Disassemble classes, methods, functions, generators, or code.
 
         With no argument, disassemble the last traceback.
@@ -202,7 +202,7 @@ class _StdApi:
         """
         self._print(self.Bytecode(x).dis(), file)
 
-    def distb(self, tb=None, file=None):
+    def distb(self, tb=None, file=None) -> None:
         """Disassemble a traceback (default: last traceback)."""
         if tb is None:
             try:
@@ -213,11 +213,11 @@ class _StdApi:
                 tb = tb.tb_next
         self.disassemble(tb.tb_frame.f_code, tb.tb_lasti, file=file)
 
-    def disassemble(self, code, lasti=-1, file=None):
+    def disassemble(self, code, lasti: int=-1, file=None) -> None:
         """Disassemble a code object."""
         return self.disco(code, lasti, file)
 
-    def disco(self, code, lasti=-1, file=None):
+    def disco(self, code, lasti=-1, file=None) -> None:
         """Disassemble a code object."""
         return _disco(
             self.python_version_tuple,

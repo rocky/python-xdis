@@ -14,8 +14,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-__docformat__ = "restructuredtext"
-
 import types
 
 from xdis.codetype.base import CodeBase
@@ -29,6 +27,7 @@ from xdis.codetype.code311 import Code311, Code311FieldNames
 from xdis.namedtuple24 import namedtuple
 from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
+__docformat__ = "restructuredtext"
 
 def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
     """Converts a native types.CodeType code object into a
@@ -228,11 +227,11 @@ def to_portable(
     co_filename=None,
     co_name=None,
     co_qualname=None,
-    co_firstlineno=-1,
-    co_lnotab="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
+    co_firstlineno: int=-1,
+    co_lnotab: str="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
     # In 3.11 it is different
-    co_freevars=(None,),  # 2.0+
-    co_cellvars=(None,),  # 2.0+
+    co_freevars: tuple=(None,),  # 2.0+
+    co_cellvars: tuple=(None,),  # 2.0+
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
 ):

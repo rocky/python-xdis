@@ -370,7 +370,7 @@ def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
 
 
-def unpack_opargs_bytecode_310(code, opc):
+def unpack_opargs_bytecode_310(code: bytes, opc):
     extended_arg = 0
     try:
         n = len(code)

@@ -19,7 +19,6 @@ Routines for formatting opcodes.
 
 import re
 
-from xdis.instruction import Instruction
 from xdis.opcodes.format.basic import format_IS_OP, format_RAISE_VARARGS_older
 
 NULL_EXTENDED_OP = "", None
@@ -675,11 +674,13 @@ def get_arglist(instructions, i, arg_count):
         if inst.is_jump_target:
             return None, -1, None
 
-        to_do -= 1
         if inst.tos_str:
             arg = inst.tos_str
         else:
             arg = inst.argrepr
+        if inst.opname == "CACHE":
+            continue
+        to_do -= 1
         if arg is not None:
             arglist.append(arg)
         elif not arg:

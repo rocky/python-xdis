@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020, 2023 by Rocky Bernstein
+# (C) Copyright 2018, 2020, 2023 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -30,7 +30,7 @@ def wr_long(f, x):
     f.write(chr((x >> 24) & 0xFF))
 
 
-def dump_compile(codeobject, filename, timestamp, magic):
+def dump_compile(codeobject, filename: str, timestamp, magic: bytes) -> None:
     """Write ``codeobject`` as a byte-compiled file.
 
     Arguments:
@@ -63,7 +63,7 @@ def dump_compile(codeobject, filename, timestamp, magic):
         fc.close()
 
 
-def compare_code(c1, c2):
+def compare_code(c1, c2) -> None:
     assert c1.co_code == c2.co_code, "code %s vs. %s" % (c1.co_code, c2.co_code)
     assert c1.co_argcount == c2.co_argcount
     assert c1.co_consts == c1.co_consts
@@ -82,7 +82,7 @@ def compare_code(c1, c2):
     assert c1.co_varnames == c2.co_varnames
 
 
-def compare_bytecode_files(bc_file1, bc_file2):
+def compare_bytecode_files(bc_file1: str, bc_file2: str) -> None:
     # Now compare bytes in bytecode files
     f = open(bc_file1, "rb")
     bytes1 = f.read()
@@ -95,7 +95,7 @@ def compare_bytecode_files(bc_file1, bc_file2):
     assert bytes1 == bytes2, "bytecode:\n%s\nvs\n%s" % (bytes1, bytes2)
 
 
-def verify_file(real_source_filename, real_bytecode_filename):
+def verify_file(real_source_filename, real_bytecode_filename) -> None:
     """Compile *real_source_filename* using
     the running Python interpreter. Then
     write bytecode out to a new place again using

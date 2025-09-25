@@ -4,7 +4,7 @@ from xdis import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
 
 
-def get_srcdir():
+def get_srcdir() -> str:
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
     return osp.realpath(filename)
 
@@ -13,7 +13,7 @@ srcdir = get_srcdir()
 opcode_stack_effect = [-100] * 256
 
 
-def test_stack_effect_fixed():
+def test_stack_effect_fixed() -> None:
     """Check stack effect of opcodes that don't vary in the stack effect.
     This we get from tables that are derived the Python Interpreter C source.
     Thanks to the Maynard project for this idea.

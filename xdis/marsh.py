@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2024 by Rocky Bernstein
+# (C) Copyright 2018-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,19 +24,19 @@ there). Details of the format may change between Python versions.
 
 """
 
+import struct
+import types
+from sys import intern
+from types import CodeType
+
+from xdis.codetype import Code2, Code3
+from xdis.unmarshal import long
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
+
 # NOTE: This module is used in the Python3 interpreter, but also by
 # the "sandboxed" process.  It must work for Python2 as well.
 
-import struct
-import types
 
-from xdis.codetype import Code2, Code3
-from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
-
-try:
-    intern
-except NameError:
-    from sys import intern
 
 try:
     from __pypy__ import builtinify
@@ -294,7 +294,7 @@ class _Marshaller:
     dispatch[list] = dump_list
     dispatch[TYPE_LIST] = dump_tuple
 
-    def dump_dict(self, x):
+    def dump_dict(self, x) -> None:
         self._write(TYPE_DICT)
         for key, value in x.items():
             self.dump(key)
@@ -500,12 +500,12 @@ class _Unmarshaller:
 
     dispatch[TYPE_NONE] = load_none
 
-    def load_true(self):
+    def load_true(self) -> bool:
         return True
 
     dispatch[TYPE_TRUE] = load_true
 
-    def load_false(self):
+    def load_false(self) -> bool:
         return False
 
     dispatch[TYPE_FALSE] = load_false
@@ -543,20 +543,20 @@ class _Unmarshaller:
 
     dispatch[TYPE_LONG] = load_long
 
-    def load_float(self):
+    def load_float(self) -> float:
         n = Ord(self._read(1))
         s = self._read(n)
         return float(s)
 
     dispatch[TYPE_FLOAT] = load_float
 
-    def load_binary_float(self):
+    def load_binary_float(self) -> float:
         f = self._read(8)
         return float(struct.unpack("<d", f)[0])
 
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
 
-    def load_complex(self):
+    def load_complex(self) -> complex:
         n = Ord(self._read(1))
         s = self._read(n)
         real = float(s)
@@ -573,7 +573,7 @@ class _Unmarshaller:
 
     dispatch[TYPE_STRING] = load_string
 
-    def load_interned(self):
+    def load_interned(self) -> str:
         n = self.r_long()
         ret = intern(self._read(n))
         self._stringtable.append(ret)
@@ -790,12 +790,12 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_NONE] = load_none
 
-    def load_true(self):
+    def load_true(self) -> bool:
         return True
 
     dispatch[TYPE_TRUE] = load_true
 
-    def load_false(self):
+    def load_false(self) -> bool:
         return False
 
     dispatch[TYPE_FALSE] = load_false
@@ -834,14 +834,14 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_LONG] = load_long
 
-    def load_float(self):
+    def load_float(self) -> float:
         n = Ord(_read1(self))
         s = _read(self, n)
         return float(s)
 
     dispatch[TYPE_FLOAT] = load_float
 
-    def load_complex(self):
+    def load_complex(self) -> complex:
         n = Ord(_read1(self))
         s = _read(self, n)
         real = float(s)
@@ -858,7 +858,7 @@ class _FastUnmarshaller:
 
     dispatch[TYPE_STRING] = load_string
 
-    def load_interned(self):
+    def load_interned(self) -> str:
         n = _r_long(self)
         s = _read(self, n)
         ret = intern(s)
@@ -965,6 +965,7 @@ _load_dispatch = _FastUnmarshaller.dispatch
 version = 1
 
 
+@builtinify
 def dump(x, f, version=version, python_version=None):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version)
@@ -977,7 +978,7 @@ def load(f, python_version=None):
 
 
 @builtinify
-def dumps(x, version=version, python_version=PYTHON_VERSION_TRIPLE):
+def dumps(x, version: int=version, python_version: tuple=PYTHON_VERSION_TRIPLE):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version)

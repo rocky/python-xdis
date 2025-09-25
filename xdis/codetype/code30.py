@@ -16,6 +16,7 @@
 
 import types
 from copy import deepcopy
+from types import CodeType
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE
@@ -132,7 +133,33 @@ class Code3(Code2):
         return self
 
     def to_native(self):
-        raise TypeError(
-            "Python Interpreter needs to be in range 3.0..3.7; is %s"
-            % ".".join([str(v) for v in PYTHON_VERSION_TRIPLE])
+        if not (3, 0) <= PYTHON_VERSION_TRIPLE < (3, 8):
+            raise TypeError(
+                "Python Interpreter needs to be in range 3.0..3.7; is %s"
+                % version_tuple_to_str()
+            )
+        code = deepcopy(self)
+        code.freeze()
+        try:
+            code.check()
+        except AssertionError as e:
+            raise TypeError(e)
+
+        return types.CodeType(
+            code.co_argcount,
+            code.co_kwonlyargcount,
+            code.co_nlocals,
+            code.co_stacksize,
+            code.co_flags,
+            code.co_code,
+            code.co_consts,
+            code.co_names,
+            code.co_varnames,
+            code.co_filename,
+            code.co_name,
+            code.co_firstlineno,
+            code.co_lnotab,
+            code.co_freevars,
+            code.co_cellvars,
+>>>>>>> python-3.0-to-3.2
         )

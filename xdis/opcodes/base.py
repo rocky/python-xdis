@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2024 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -213,14 +213,14 @@ def free_op(loc, name, opcode, pop=0, push=1):
 
 
 def jabs_op(
-    loc,
-    name,
-    opcode,
-    pop=0,
-    push=0,
-    conditional=False,
-    fallthrough=True,
-):
+    loc: dict,
+    name: str,
+    opcode: int,
+    pop: int = 0,
+    push: int = 0,
+    conditional: bool = False,
+    fallthrough: bool = True,
+) -> None:
     """
     Put opcode in the class of instructions that can perform an absolute jump.
     """
@@ -230,7 +230,7 @@ def jabs_op(
         loc["hascondition"].append(opcode)
 
 
-def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=True):
+def jrel_op(loc, name: str, opcode: int, pop: int=0, push: int=0, conditional=False, fallthrough=True) -> None:
     """
     Put opcode in the class of instructions that can perform a relative jump.
     """
@@ -263,7 +263,7 @@ def nargs_op(loc, name, opcode, pop=-2, push=-1, fallthrough=True):
     loc["hasnargs"].append(opcode)
 
 
-def opcode_check(loc):
+def opcode_check(loc) -> None:
     """When the version of Python we are running happens
     to have the same opcode set as the opcode we are
     importing, we perform checks to make sure our opcode
@@ -285,7 +285,7 @@ def opcode_check(loc):
             pass
 
 
-def rm_op(loc, name, op):
+def rm_op(loc, name, op) -> None:
     """Remove an opcode. This is used when basing a new Python release off
     of another one, and there is an opcode that is in the old release
     that was removed in the new release.
@@ -330,7 +330,7 @@ def rm_op(loc, name, op):
     del loc["opmap"][name]
 
 
-def store_op(loc, name, op, pop=0, push=1, is_type="def"):
+def store_op(loc: int, name, op, pop=0, push=1, is_type="def") -> None:
     if is_type == "name":
         name_op(loc, name, op, pop, push)
         loc["nullaryop"].remove(op)
@@ -361,7 +361,7 @@ def unary_op(loc, name, op, pop=1, push=1):
 # This is not in Python. The operand indicates how
 # items on the pop from the stack. BUILD_TUPLE_UNPACK
 # is line this.
-def varargs_op(loc, op_name, op_code, pop=-1, push=1):
+def varargs_op(loc, op_name, op_code, pop: int=-1, push: int=1) -> None:
     def_op(loc, op_name, op_code, pop, push)
     loc["hasvargs"].append(op_code)
 
@@ -370,7 +370,7 @@ def varargs_op(loc, op_name, op_code, pop=-1, push=1):
 # many Python idiocies over the years.
 
 
-def finalize_opcodes(loc):
+def finalize_opcodes(loc) -> None:
     """
     Things done to Python codes after all opcode have been defined.
     """
@@ -405,7 +405,7 @@ def finalize_opcodes(loc):
     return
 
 
-def fix_opcode_names(opmap):
+def fix_opcode_names(opmap: dict):
     """
     Python stupidly named some OPCODES with a + which prevents using opcode name
     directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3, so we
@@ -414,20 +414,20 @@ def fix_opcode_names(opmap):
     return dict([(k.replace("+", "_"), v) for (k, v) in opmap.items()])
 
 
-def update_pj3(g, loc, is_pypy=False):
+def update_pj3(g, loc, is_pypy: bool=False) -> None:
     if loc["version_tuple"] < (3, 11):
         g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
         g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
     update_sets(loc, is_pypy)
 
 
-def update_pj2(g, loc, is_pypy=False):
+def update_pj2(g, loc, is_pypy: bool=False) -> None:
     g.update({"PJIF": loc["opmap"]["JUMP_IF_FALSE"]})
     g.update({"PJIT": loc["opmap"]["JUMP_IF_TRUE"]})
     update_sets(loc, is_pypy)
 
 
-def update_sets(loc, is_pypy):
+def update_sets(loc, is_pypy) -> None:
     """
     Updates various category sets all opcode have been defined.
     """
@@ -476,7 +476,7 @@ def update_sets(loc, is_pypy):
         loc["JUMP_OPS"] = frozenset(loc["hasjump"])
 
 
-def dump_opcodes(opmap):
+def dump_opcodes(opmap) -> None:
     """Utility for dumping opcodes"""
     op2name = {}
     for k in opmap.keys():

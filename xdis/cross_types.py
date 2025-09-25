@@ -32,7 +32,7 @@ class LongTypeForPython3(int):
     Python 2 but does not exist in Python 3.
     """
 
-    def __init__(self, value):
+    def __init__(self, value) -> None:
         self.value = value
 
     def __repr__(self):
@@ -49,7 +49,7 @@ class UnicodeForPython3(str):
     Python 2 but does not exist in Python 3.
     """
 
-    def __init__(self, value):
+    def __init__(self, value) -> None:
         self.value = value
 
     def __eq__(self, other):

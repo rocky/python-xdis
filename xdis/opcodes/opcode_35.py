@@ -21,7 +21,6 @@ of stack usage and information for formatting instructions.
 of stack usage.
 """
 
-from copy import copy
 import xdis.opcodes.opcode_34 as opcode_34
 from xdis.opcodes.base import (
     def_op,
@@ -84,7 +83,15 @@ def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions):
     return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 
-def extended_format_BUILD_MAP_35(opc, instructions):
+def format_BUILD_MAP_UNPACK_WITH_CALL(oparg) -> str:
+    """The lowest byte of oparg is the count of mappings, the relative
+    position of the corresponding callable f is encoded in the second byte
+    of oparg."""
+    rel_func_pos, count = divmod(oparg, 256)
+    return "%d mappings, function at %d" % (count, count + rel_func_pos)
+
+
+def extended_format_BUILD_MAP_35(opc, instructions: list) -> tuple:
     arg_count = instructions[0].argval
     if arg_count == 0:
         # Note: caller generally handles this when the below isn't right.
@@ -100,29 +107,23 @@ def extended_format_BUILD_MAP_35(opc, instructions):
     return "", None
 
 
-def format_BUILD_MAP_UNPACK_WITH_CALL(oparg):
-    """The lowest byte of oparg is the count of mappings, the relative
-    position of the corresponding callable f is encoded in the second byte
-    of oparg."""
-    rel_func_pos, count = divmod(oparg, 256)
-    return "%d mappings, function at %d" % (count, count + rel_func_pos)
-
-
-opcode_arg_fmt = opcode_arg_fmt35 = copy(opcode_arg_fmt34)
-opcode_arg_fmt.update(
+opcode_arg_fmt35 = opcode_arg_fmt34.copy()
+opcode_arg_fmt35.update(
     {
-     "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
+        "BUILD_MAP_UNPACK_WITH_CALL": format_BUILD_MAP_UNPACK_WITH_CALL,
     }
 )
+opcode_arg_fmt = opcode_arg_fmt35
 
-opcode_extended_fmt = opcode_extended_fmt35 = copy(opcode_extended_fmt34)
-opcode_extended_fmt.update(
+opcode_extended_fmt35 = opcode_extended_fmt34.copy()
+opcode_extended_fmt35.update(
     {
         "BINARY_MATRIX_MULTIPLY": extended_format_BINARY_MATRIX_MULTIPLY,
         "BUILD_MAP": extended_format_BUILD_MAP_35,
         "INPLACE_MATRIX_MULTIPLY": extended_format_INPLACE_MATRIX_MULTIPLY,
-    },
+    }
 )
+opcode_extended_fmt = opcode_extended_fmt35
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

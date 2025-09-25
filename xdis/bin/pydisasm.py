@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Mode: -*- python -*-
-# Copyright (c) 2015-2021, 2023-2024 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2021, 2023-2025 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -33,10 +33,13 @@ bytecode from Python 2.7.13 and vice versa.
 
 Options:
   -F | --format {xasm | bytes | classic | dis | extended | extended-bytes | header}
-                     specifiy assembly output format
+                     Specifiy assembly output format
   -V | --version     Show version and stop
   -S | --show-source Show source code when it is available
-  -h | --help        show this message
+  -h | --help        Show this message
+  -m | --method      Specify which specific methods or functions to show.
+                     If omitted all, functions are shown.
+                     Can be given multiple times.
 
 Examples:
   pydisasm foo.pyc
@@ -77,8 +80,8 @@ Type -h for for full help.""" % program
         sys.exit(1)
 
     try:
-        opts, files = getopt.getopt(sys.argv[1:], 'hVF:S',
-                                    ["help", "version", "format",
+        opts, files = getopt.getopt(sys.argv[1:], 'hVF:m:S',
+                                    ["help", "version", "format", "method",
                                      "show-source"])
     except getopt.GetoptError(e):
         sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
@@ -86,6 +89,7 @@ Type -h for for full help.""" % program
 
     format = "classic"
     show_source = False
+    methods = None
     for opt, val in opts:
         if opt in ('-h', '--help'):
             print(__doc__)
@@ -100,6 +104,11 @@ Type -h for for full help.""" % program
                                  (val, ", ".join(FORMATS)))
                 sys.exit(2)
             format = val
+        elif opt in ('-m', '--method'):
+            if methods is None:
+                methods = [val]
+            else:
+                methods.append(val)
         elif opt in ('-S', '--show-source'):
             show_source = True
         else:
@@ -124,8 +133,8 @@ Type -h for for full help.""" % program
             continue
 
         try:
-            disassemble_file(path, sys.stdout, format, show_source=show_source)
-        except ImportError as e:
+            disassemble_file(path, sys.stdout, format, show_source=show_source, methods=method)
+        except (ImportError, NotImplementedError, ValueError) as e:
             print(e)
             rc = 3
     sys.exit(rc)

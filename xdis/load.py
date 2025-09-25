@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -102,13 +102,13 @@ def check_object_path(path):
 
     if not is_bytecode_extension(path):
         raise ValueError(
-            "path %s must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
+            "Path %s must point to a Python source that can be compiled, or Python bytecode (.pyc, .pyo)\n"
             % path
         )
     return path
 
 
-def is_pypy(magic_int, filename):
+def is_pypy(magic_int: int, filename) -> bool:
     # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
     if magic_int in (3413, 3414) and filename.endswith("pypy38.pyc"):
         return True
@@ -167,8 +167,8 @@ def load_module(
                        e.g. (2, 7) or (3, 4)
         timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
                         if no timestamp was stored
-        magic_int: int, a more specific than version number. The actual byte code version of the
-                   code object
+        magic_int: int, a bytecode-specific version number. This is related to the Python version
+                     number, the two aren't quite the same thing.
         co         : code object
         ispypy     : True if this was a PyPy code object
         source_size: The size of the source code mod 2**32, if that was stored in the bytecode.
@@ -227,9 +227,6 @@ def load_module_from_file_object(
             # FIXME: use the internal routine below
             tuple_version = magic_int2tuple(magic_int)
         except KeyError:
-            if magic_int in (2657, 22138):
-                raise ImportError("This smells like Pyston which is not supported.")
-
             if len(magic) >= 2:
                 raise ImportError(
                     "Unknown magic number %s in %s"
@@ -237,6 +234,10 @@ def load_module_from_file_object(
                 )
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
+
+        if magic_int in (2657, 22138):
+            version = magicint2version.get(magic_int, "")
+            raise ImportError("Magic int %s (%s) is not supported." % (magic_int, version))
 
         if magic_int in (
             3010,
@@ -305,7 +306,11 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
                     pass
             else:
-                timestamp = unpack("<I", ts)[0]
+
+                # Early Pyston targeting 2.7 doesn't seem to have a timestamp!
+                if magic_int not in (2657,):
+                    timestamp = unpack("<I", ts)[0]
+
                 # Note: a higher magic number doesn't necessarily mean a later
                 # release.  At Python 3.0 the magic number decreased
                 # significantly. Hence, the range below. Also note inclusion of
@@ -315,7 +320,7 @@ def load_module_from_file_object(
                 if (
                     (3200 <= magic_int < 20121)
                     and version >= (1, 5)
-                    or magic_int in PYPY3_MAGICS
+                    or magic_int in list(PYPY3_MAGICS) + [2657]
                 ):
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
@@ -361,7 +366,7 @@ def load_module_from_file_object(
 
 
 def write_bytecode_file(
-    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize=0
+    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize: int=0
 ):
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
