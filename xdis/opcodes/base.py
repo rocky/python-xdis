@@ -414,7 +414,7 @@ def finalize_opcodes(loc) -> None:
     return
 
 
-def fix_opcode_names(opmap: Dict[str, int]):
+def fix_opcode_names(opmap: dict):
     """
     Python stupidly named some OPCODES with a + which prevents using opcode name
     directly as an attribute, e.g. SLICE+3. So we turn that into SLICE_3, so we

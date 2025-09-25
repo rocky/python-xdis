@@ -28,7 +28,6 @@ import re
 import sys
 import types
 from collections import deque
-from typing import Tuple
 
 import xdis
 from xdis.bytecode import Bytecode
@@ -225,10 +224,10 @@ def disco_loop(
                 bytecode.dis(asm_format=asm_format, show_source=show_source) + "\n"
             )
 
-                if version_tuple >= (3, 11):
-                    if bytecode.exception_entries not in (None, []):
-                        exception_table = format_exception_table(bytecode, version_tuple)
-                        real_out.write(exception_table + "\n")
+            if version_tuple >= (3, 11):
+                if bytecode.exception_entries not in (None, []):
+                    exception_table = format_exception_table(bytecode, version_tuple)
+                    real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):
@@ -318,7 +317,7 @@ def disassemble_file(
     asm_format="classic",
     alternate_opmap=None,
     show_source=False,
-    methods: Tuple[str] = tuple()
+    methods=tuple()
 ):
     """
     Disassemble Python byte-code file (.pyc).

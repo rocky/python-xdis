@@ -209,7 +209,7 @@ def format_MAKE_FUNCTION_36(flags: int) -> str:
     return pattr
 
 
-def format_value_flags(flags) -> Optional[str]:
+def format_value_flags(flags):
     if (flags & 0x03) == 0x00:
         return ""
     elif (flags & 0x03) == 0x01:

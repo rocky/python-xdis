@@ -22,7 +22,6 @@ import types
 from datetime import datetime
 from os import close
 from struct import pack, unpack
-from types import CodeType
 
 import xdis.marsh
 import xdis.unmarshal
@@ -114,7 +113,7 @@ def is_pypy(magic_int: int, filename) -> bool:
     return magic_int in ((62211 + 7, 3180 + 7) + PYPY3_MAGICS)
 
 
-def load_file(filename: str, out=sys.stdout) -> CodeType:
+def load_file(filename, out=sys.stdout):
     """
     load a Python source file and compile it to byte-code
     _load_file(filename: string): code_object
@@ -233,7 +232,7 @@ def load_module_from_file_object(
 
         if magic_int in (2657, 22138):
             version = magicint2version.get(magic_int, "")
-            raise ImportError(f"Magic int {magic_int} ({version}) is not supported.")
+            raise ImportError("Magic int %s (%s) is not supported." % (magic_int, version))
 
         if magic_int in (
             3010,
@@ -363,7 +362,7 @@ def load_module_from_file_object(
 
 def write_bytecode_file(
     bytecode_path, code_obj, magic_int, compilation_ts=None, filesize: int=0
-) -> None:
+):
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
     """

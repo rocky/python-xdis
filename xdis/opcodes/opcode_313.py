@@ -2,8 +2,6 @@
 CPython 3.13 bytecode opcodes
 """
 
-from typing import Optional, Tuple
-
 import xdis.opcodes.opcode_312 as opcode_312
 from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
 from xdis.opcodes.format.extended import NULL_EXTENDED_OP, get_arglist
@@ -449,7 +447,7 @@ loc["hasfree"] = [64, 84, 89, 94, 109]
 loc.update({"hasjump": [72, 77, 78, 79, 97, 98, 99, 100, 104, 256, 257]})
 loc["hasjrel"] = loc["hasjump"]
 
-def extended_format_CALL(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_CALL(opc, instructions) -> tuple:
     """call_method should be a "CALL_METHOD" instruction. Look in
     `instructions` to see if we can find a method name.  If not we'll
     return None.
@@ -479,7 +477,7 @@ def extended_format_CALL(opc, instructions) -> Tuple[str, Optional[int]]:
             start_offset = fn_inst.offset
             fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
             arglist.reverse()
-            s = f'{fn_name}({", ".join(arglist)})'
+            s = '%s(%s)' % (fn_name, ", ".join(arglist))
             return s, start_offset
 
     return NULL_EXTENDED_OP
@@ -488,19 +486,17 @@ def extended_format_CALL(opc, instructions) -> Tuple[str, Optional[int]]:
 
 
 ### update formatting
-opcode_arg_fmt = opcode_arg_fmt313 = {
-    ** opcode_312.opcode_arg_fmt312,
-    **{
+opcode_arg_fmt = opcode_arg_fmt313 = opcode_312.opcode_arg_fmt312.copy()
+opcode_arg_fmt313.update(
+    {
         "CALL": format_CALL_METHOD
-    },
-}
+    })
 
-opcode_extended_fmt = opcode_extended_fmt313 = {
-    ** opcode_312.opcode_extended_fmt312,
-    **{
+opcode_extended_fmt = opcode_extended_fmt313 = opcode_312.opcode_extended_fmt312.copy()
+opcode_extended_fmt313.update(
+    {
         "CALL": extended_format_CALL
-    },
-}
+    })
 
 for fmt_table in (opcode_arg_fmt313, opcode_extended_fmt313):
     fmt_table.pop("MAKE_FUNCTION")  # MAKE_FUNCTION formatting not in 3.13

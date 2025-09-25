@@ -25,7 +25,7 @@ def rng(a: int, b: int) -> int:
 
 
 # This is replaced by Mersenne in newer versions.
-def get_keys(a, b) -> Tuple[int, int, int, int]:
+def get_keys(a, b) -> tuple:
     ka = rng(a, b)
     kb = rng(ka, a)
     kc = rng(kb, ka)
@@ -40,7 +40,7 @@ def MX(z, y, sum: int, key, p: int, e: int):
     )
 
 
-def tea_decipher(v, key: Tuple[int, int, int, int]):
+def tea_decipher(v, key: tuple):
     """
     Tiny Decryption Algorithm description (TEA)
     See https://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm

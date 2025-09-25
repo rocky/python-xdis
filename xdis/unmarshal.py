@@ -192,7 +192,7 @@ class _VersionIndependentUnmarshaller:
             self.internObjects.append(obj)
         return obj, i
 
-    def r_ref_insert(self, obj, i: Optional[int]):
+    def r_ref_insert(self, obj, i):
         if i is not None:
             self.internObjects[i] = obj
         return obj

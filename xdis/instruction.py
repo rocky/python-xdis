@@ -32,6 +32,42 @@ _Instruction = namedtuple(
 )
 _OPNAME_WIDTH = 20
 
+_AssembleFormat = namedtuple(
+    "_Instruction",
+    (
+        "is_jump_target is_current_isntruction starts_line offset opname opcode has_arg arg argrepr tos_str"
+    ),
+)
+
+class AssembleFormat(_AssembleFormat):
+    """
+    A structure to hold the essential information
+    that would be shown in a line of assembly under any
+    formatting option, e.g. extended-bytes, or classic.
+
+    Fields in the order they in which they are defined in constructing an object:
+
+      is_jump_target: True if other code jumps to here,
+                      'loop' if this is a loop beginning, which
+                      in Python can be determined jump to an earlier offset.
+                      Otherwise, False.
+      is_current_instruction: True if we are stopped at this instruction.
+      starts_line: Optional Line started by this opcode (if any). Otherwise None.
+      offset:  Start index of operation within bytecode sequence.
+      opname:  human-readable name for operation.
+      opcode:  numeric code for operation.
+      has_arg:   True if opcode takes an argument. In that case,
+                 ``argepr`` will have that value. False
+                 if this opcode doesn't take an argument. When False,
+                 don't look at ``argval`` or ``argrepr``.
+      arg:     Optional numeric argument to operation (if any). Otherwise, None.
+
+      argrepr: human-readable description of operation argument.
+
+      tos_str:      If not None, a string representation of the top of the stack (TOS).
+                    This is obtained by scanning previous instructions and
+                    using information there and in their ``tos_str`` fields.
+    """
 
 class Instruction(_Instruction):
     """Details for a bytecode operation

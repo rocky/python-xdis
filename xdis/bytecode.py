@@ -172,7 +172,7 @@ def offset2line(offset: int, linestarts):
     return linestarts[high][1]
 
 
-def _parse_varint(iterator: Iterator[int]) -> int:
+def _parse_varint(iterator) -> int:
     b = next(iterator)
     val = b & 63
     while b & 64:

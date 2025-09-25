@@ -184,7 +184,7 @@ def format_CALL_METHOD(argc):
     return "%d positional" % (argc)
 
 
-def format_CALL_METHOD_KW(argc, kwarg_count: Optional[int]=None):
+def format_CALL_METHOD_KW(argc, kwarg_count=None):
     """argc has the number of positional plus keyword arguments.
     TOS is a tuple of keyword argument names and below that are
     values for each keyword argument.

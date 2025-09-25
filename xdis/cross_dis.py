@@ -27,7 +27,7 @@ from xdis.util import (
 from xdis.version_info import IS_GRAAL
 
 
-def _try_compile(source: str, name: str) -> CodeType:
+def _try_compile(source: str, name: str):
     """Attempts to compile the given source, first as an expression and
     then as a statement if the first approach fails.
 
