@@ -1,4 +1,4 @@
-# (C) Copyright 2017-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2017-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,6 +16,7 @@
 
 import types
 from copy import deepcopy
+from types import CodeType
 
 from xdis.codetype.code15 import Code15, Code15FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -31,6 +32,9 @@ Code2FieldTypes.update(
 )
 # co_firstlineno added since 1.x
 
+# Early pyston 2.7 Code objects seem to be a subset of 2.0 code.
+# The fields it has are:
+#   co_argcount, co_filename, co_firstline, co_flag, co_name, co_varnames
 
 class Code2(Code15):
     """Class for a Python2 code object used when a Python 3 interpreter is
@@ -60,7 +64,7 @@ class Code2(Code15):
         co_lnotab,
         co_freevars,
         co_cellvars,
-    ):
+    ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code2, self).__init__(
@@ -84,7 +88,7 @@ class Code2(Code15):
             self.check()
         return
 
-    def to_native(self, opts={}):
+    def to_native(self, opts={}) -> CodeType:
         if not (2, 0) <= PYTHON_VERSION_TRIPLE < (2, 8):
             raise TypeError(
                 "Python Interpreter needs to be in range 2.0..2.7; is %s"
@@ -125,21 +129,21 @@ class Code2Compat(Code2):
 
     def __init__(
         self,
-        co_argcount=0,
-        co_nlocals=0,
-        co_stacksize=0,
+        co_argcount: int=0,
+        co_nlocals: int=0,
+        co_stacksize: int=0,
         co_flags=[],
         co_code=[],
         co_consts=[],
         co_names=[],
         co_varnames=[],
-        co_filename="unknown",
-        co_name="unknown",
-        co_firstlineno=1,
-        co_lnotab="",
+        co_filename: str="unknown",
+        co_name: str="unknown",
+        co_firstlineno: int=1,
+        co_lnotab: str="",
         co_freevars=[],
         co_cellvars=[],
-    ):
+    ) -> None:
         self.co_argcount = co_argcount
         self.co_nlocals = co_nlocals
         self.co_stacksize = co_stacksize
@@ -155,7 +159,7 @@ class Code2Compat(Code2):
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<code2 object %s at 0x%0x, file "%s", line %d>' % (
             self.co_name,
             id(self),

@@ -25,7 +25,7 @@ from xdis.opcodes.format.basic import format_IS_OP, format_RAISE_VARARGS_older
 NULL_EXTENDED_OP = "", None
 
 
-def extended_format_binary_op(opc, instructions: list, fmt_str: str):
+def extended_format_binary_op(opc, instructions: list, fmt_str: str) -> tuple:
     """
     General routine for formatting binary operations.
     A binary operations pops a two arguments off of the evaluation stack and
@@ -79,7 +79,7 @@ def extended_format_binary_op(opc, instructions: list, fmt_str: str):
     return NULL_EXTENDED_OP
 
 
-def extended_format_infix_binary_op(opc, instructions, op_str: str):
+def extended_format_infix_binary_op(opc, instructions: list, op_str: str) -> tuple:
     """ """
     i = 1
     # 3.11+ has CACHE instructions
@@ -163,7 +163,7 @@ def extended_format_store_op(opc, instructions: list):
     return "", start_offset
 
 
-def extended_format_ternary_op(opc, instructions, fmt_str: str):
+def extended_format_ternary_op(opc, instructions: list, fmt_str: str) -> tuple:
     """
     General routine for formatting ternary operations.
     A ternary operations pops a three arguments off of the evaluation stack and
@@ -231,7 +231,7 @@ def extended_format_STORE_SUBSCR(opc, instructions: list):
     )
 
 
-def extended_format_unary_op(opc, instructions, fmt_str: str):
+def extended_format_unary_op(opc, instructions: list, fmt_str: str) -> tuple:
     stack_arg = instructions[1]
     start_offset = instructions[1].start_offset
     if stack_arg.tos_str is not None and not stack_arg.is_jump_target:
@@ -662,8 +662,10 @@ def get_arglist(instructions: list, i: int, arg_count: int):
         if inst.is_jump_target:
             return None, -1, None
 
-        to_do -= 1
         arg = inst.tos_str if inst.tos_str else inst.argrepr
+        if inst.opname == "CACHE":
+            continue
+        to_do -= 1
         if arg is not None:
             arglist.append(arg)
         elif not arg:

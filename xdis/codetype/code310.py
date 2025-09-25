@@ -95,7 +95,7 @@ class Code310(Code38):
         co_linetable,
         co_freevars,
         co_cellvars,
-    ):
+    ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         self.co_argcount = co_argcount
@@ -118,7 +118,7 @@ class Code310(Code38):
         if type(self) is Code310:
             self.check()
 
-    def check(self):
+    def check(self) -> None:
         for field, fieldtype in self.fieldtypes.items():
             val = getattr(self, field)
             if isinstance(fieldtype, tuple):
@@ -202,7 +202,7 @@ class Code310(Code38):
         yield start_offset, end_offset, line_number
         return
 
-    def encode_lineno_tab(self):
+    def encode_lineno_tab(self) -> None:
         """
         Convert a list of (offset, line_number) encoding of
         co_linetable into the compacted 3.10-encoded format described

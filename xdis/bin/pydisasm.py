@@ -1,5 +1,5 @@
 # Mode: -*- python -*-
-# Copyright (c) 2015-2021 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2021, 2025 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -35,8 +35,19 @@ else:
         ["xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header"],
         **case_sensitive
     ),
-    help="Select disassembly style",
+    help="Select disassembly style.",
 )
+@click.option(
+    "--method",
+    "-m",
+    metavar="FUNCTION-OR-METHOD",
+    multiple=True,
+    type=str,
+    help=("Specify which specific methods or functions to show. "
+          "If omitted all, functions are shown. "
+          "Can be given multiple times.")
+)
+
 @click.option(
     "--show-source/--no-show-source",
     "-S",
@@ -44,7 +55,7 @@ else:
 )
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format, show_source: bool, files):
+def main(format: list, method: tuple, show_source: bool, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -80,8 +91,8 @@ def main(format, show_source: bool, files):
             continue
 
         try:
-            disassemble_file(path, sys.stdout, format, show_source=show_source)
-        except ImportError as e:
+            disassemble_file(path, sys.stdout, format, show_source=show_source, methods=method)
+        except (ImportError, NotImplementedError, ValueError) as e:
             print(e)
             rc = 3
     sys.exit(rc)

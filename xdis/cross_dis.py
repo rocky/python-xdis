@@ -27,7 +27,7 @@ from xdis.util import (
 from xdis.version_info import IS_GRAAL
 
 
-def _try_compile(source, name):
+def _try_compile(source: str, name: str):
     """Attempts to compile the given source, first as an expression and
     then as a statement if the first approach fails.
 
@@ -41,7 +41,7 @@ def _try_compile(source, name):
     return c
 
 
-def code_info(x, version_tuple, is_pypy=False):
+def code_info(x, version_tuple, is_pypy=False) -> str:
     """Formatted details of methods, functions, or code."""
     return format_code_info(get_code_object(x), version_tuple, is_pypy=is_pypy)
 
@@ -94,7 +94,7 @@ def _get_cache_size_313(opname: str) -> int:
     return _inline_cache_entries.get(opname, 0)
 
 
-def findlabels(code, opc):
+def findlabels(code: bytes, opc):
     if opc.version_tuple < (3, 10) or IS_GRAAL:
         return findlabels_pre_310(code, opc)
 
@@ -150,7 +150,7 @@ def findlabels_pre_310(code, opc):
 NO_LINE_NUMBER = -128
 
 
-def findlinestarts(code, dup_lines=False):
+def findlinestarts(code, dup_lines: bool=False):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
@@ -212,7 +212,7 @@ def findlinestarts(code, dup_lines=False):
     return
 
 
-def instruction_size(op, opc):
+def instruction_size(op, opc) -> int:
     """For a given opcode, `op`, in opcode module `opc`,
     return the size, in bytes, of an `op` instruction.
 
@@ -229,7 +229,7 @@ def instruction_size(op, opc):
 op_size = instruction_size
 
 
-def show_code(co, version_tuple, file=None, is_pypy=False):
+def show_code(co, version_tuple, file=None, is_pypy: bool=False) -> None:
     """Print details of methods, functions, or code to *file*.
 
     If *file* is not provided, the output is printed on stdout.
@@ -247,7 +247,7 @@ def op_has_argument(opcode: int, opc) -> bool:
     return opcode >= opc.HAVE_ARGUMENT
 
 
-def pretty_flags(flags, is_pypy=False):
+def pretty_flags(flags, is_pypy=False) -> str:
     """Return pretty representation of code flags."""
     names = []
     result = "0x%08x" % flags
@@ -268,7 +268,7 @@ def pretty_flags(flags, is_pypy=False):
 
 def format_code_info(
     co, version_tuple: tuple, name=None, is_pypy=False, is_graal=False
-):
+) -> str:
     if not name:
         name = co.co_name
     lines = []
@@ -363,7 +363,7 @@ def extended_arg_val(opc, val):
     return val << opc.EXTENDED_ARG_SHIFT
 
 
-def unpack_opargs_bytecode_310(code, opc):
+def unpack_opargs_bytecode_310(code: bytes, opc):
     extended_arg = 0
     try:
         n = len(code)

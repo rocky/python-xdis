@@ -6,7 +6,7 @@ from xdis.codetype import CodeTypeUnionFields
 from xdis.load import check_object_path, load_file, load_module
 
 
-def get_srcdir():
+def get_srcdir() -> str:
     filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
     return osp.realpath(filename)
 

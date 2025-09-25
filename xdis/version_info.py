@@ -1,5 +1,5 @@
 """
-  Copyright (c) 2020-2024 by Rocky Bernstein
+  Copyright (c) 2020-2025 by Rocky Bernstein
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -29,8 +29,8 @@ IS_GRAAL = "Graal" in platform.python_implementation()
 
 
 def version_tuple_to_str(
-    version_tuple=PYTHON_VERSION_TRIPLE, start=0, end=3, delimiter="."
-):
+    version_tuple=PYTHON_VERSION_TRIPLE, start: int=0, end: int=3, delimiter: str="."
+) -> str:
     """
     Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6".
 

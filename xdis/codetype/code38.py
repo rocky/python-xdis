@@ -83,7 +83,7 @@ class Code38(Code3):
         co_lnotab,
         co_freevars,
         co_cellvars,
-    ):
+    ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code38, self).__init__(

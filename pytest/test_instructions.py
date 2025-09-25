@@ -8,7 +8,7 @@ from xdis.op_imports import get_opcode_module
 from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
-def extended_arg_fn36():
+def extended_arg_fn36() -> int:
     if __file__:
         return (
             0
@@ -79,7 +79,7 @@ def extended_arg_fn36():
 
 
 #  Bytecode that has a single conditional jump forward and an unconditional jump backwards
-def loop():
+def loop() -> bool:
     x = False
     while x:
         x = True
@@ -92,7 +92,7 @@ pytest.mark.skipif(
 )
 
 
-def test_inst_size():
+def test_inst_size() -> None:
     if (PYTHON_VERSION_TRIPLE[:2] == (3, 6)) and not IS_PYPY:
         opc = get_opcode_module(sys.version_info)
         bytecode_obj = Bytecode(extended_arg_fn36, opc)
@@ -118,7 +118,7 @@ pytest.mark.skipif(
 )
 
 
-def test_inst_jumps():
+def test_inst_jumps() -> None:
     if (3, 1) <= sys.version_info < (3, 11) and not IS_GRAAL:
         variant = "pypy" if IS_PYPY else None
         opc = get_opcode_module(sys.version_info, variant)
