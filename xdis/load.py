@@ -230,7 +230,7 @@ def load_module_from_file_object(
             else:
                 raise ImportError(f"Bad magic number: '{magic}'")
 
-        if magic_int in (2657, 22138):
+        if magic_int in (2657, 65226, 22138):
             version = magicint2version.get(magic_int, "")
             raise ImportError(f"Magic int {magic_int} ({version}) is not supported.")
 

@@ -465,7 +465,7 @@ add_magic_from_int(416, "3.11.13pypy")  # PyPy 3.11.13
 add_magic_from_int(12897, "3.12.0rust")  # RustPython 3.12.0
 add_magic_from_int(12641, "3.13.0rust")  # RustPython 3.13.0
 
-# NOTE: This is JVM bytecode not Python bytecode
+# Graal uses JVM bytecode, not Python bytecode
 add_magic_from_int(21150, "3.8.5Graal")
 
 # Graal Java 21.0.2
@@ -473,7 +473,11 @@ add_magic_from_int(21280, "3.10.8Graal")
 add_magic_from_int(21290, "3.11.7Graal")
 
 
-add_magic_from_int(1011, "2.7.1b3Jython")  # jython
+# Jython uses JVM bytecode, not Python bytecode.
+add_magic_from_int(1011, "2.7.1b3Jython")  # Jython 2.7.2b3
+add_magic_from_int(65226, "2.7.4Jython")  # Jython 2.7.4
+
+# Pyston
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
 magics = __by_version(versions)
