@@ -754,8 +754,10 @@ def get_arglist(
         if inst.is_jump_target:
             return None, -1, None
 
-        to_do -= 1
         arg = inst.tos_str if inst.tos_str else inst.argrepr
+        if inst.opname == "CACHE":
+            continue
+        to_do -= 1
         if arg is not None:
             arglist.append(arg)
         elif not arg:
