@@ -70,7 +70,7 @@ def parse_location_entries(location_bytes, first_line: int):
 
     def iter_location_codes(loc_bytes):
         if len(loc_bytes) == 0:
-            return []
+            return
 
         iter_locs = iter(loc_bytes)
         entry_codes = [next(iter_locs)]
@@ -87,9 +87,9 @@ def parse_location_entries(location_bytes, first_line: int):
 
     def iter_varints(varint_bytes):
         if len(varint_bytes) == 0:
-            return []
+            return
 
-        def has_next_byte(b) -> bool:
+        def has_next_byte(b):
             return bool(b & 0b01000000)  # has bit 6 set
 
         def get_value(b):
@@ -161,7 +161,6 @@ def parse_location_entries(location_bytes, first_line: int):
     return entries
 
 
->>>>>>> python-3.3-to-3.5
 ##### NEW "OPAQUE" LINE TABLE PARSING #####
 # See: https://github.com/python/cpython/blob/aaed91cabcedc16c089c4b1c9abb1114659a83d3/Objects/codeobject.c#L1245C1-L1245C17
 PY_CODE_LOCATION_INFO_SHORT0 = 0
