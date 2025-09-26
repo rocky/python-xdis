@@ -35,6 +35,7 @@ PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 import re
 import struct
 import sys
+from importlib.util import MAGIC_NUMBER as MAGIC
 from typing import Dict, Set
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, version_tuple_to_str
@@ -62,12 +63,9 @@ def int2magic(magic_int: int) -> bytes:
 
     if magic_int in (39170, 39171):
         return struct.pack("<H", magic_int) + b"\x99\x00"
-    if sys.version_info >= (3, 0):
-        return struct.pack(
-            "<Hcc", magic_int, bytes("\r", "utf-8"), bytes("\n", "utf-8")
-        )
-    else:
-        return struct.pack("<Hcc", magic_int, "\r", "\n")
+    return struct.pack(
+        "<Hcc", magic_int, bytes("\r", "utf-8"), bytes("\n", "utf-8")
+    )
 
 
 def magic2int(magic: bytes) -> int:
@@ -97,8 +95,6 @@ by_magic: Dict[bytes, Set] = {}
 by_version: Dict[str, bytes] = {}
 magicint2version: Dict[int, str] = {}
 versions: Dict[bytes, str] = {}
-
-from importlib.util import MAGIC_NUMBER as MAGIC
 
 PYTHON_MAGIC_INT = magic2int(MAGIC)
 
@@ -154,7 +150,10 @@ add_magic_from_int(62041, "2.4a0")
 add_magic_from_int(62051, "2.4a3")
 add_magic_from_int(62061, "2.4b1")
 add_magic_from_int(62071, "2.5a0")
-add_magic_from_int(62081, "2.5a0")  # ast-branch
+
+# ast-branch
+add_magic_from_int(62081, "2.5a0")
+
 add_magic_from_int(62091, "2.5a0")  # with
 add_magic_from_int(62092, "2.5a0")  # changed WITH_CLEANUP opcode
 add_magic_from_int(62101, "2.5b3")  # fix wrong code: for x, in ...
@@ -170,8 +169,11 @@ add_magic_from_int(62131, "2.5c2")
 # Dropbox-modified Python 2.5 used in versions 1.1x and before of Dropbox
 add_magic_from_int(62135, "2.5dropbox")
 
-add_magic_from_int(62151, "2.6a0")  # peephole optimizations & STORE_MAP
-add_magic_from_int(62161, "2.6a1")  # WITH_CLEANUP optimization
+# peephole optimizations & STORE_MAP
+add_magic_from_int(62151, "2.6a0")
+
+# WITH_CLEANUP optimization
+add_magic_from_int(62161, "2.6a1")
 
 # Optimize list comprehensions/change LIST_APPEND
 add_magic_from_int(62171, "2.7a0")
@@ -252,14 +254,18 @@ add_magic_from_int(
     3372, "3.6a1+2"
 )  # MAKE_FUNCTION simplification, remove MAKE_CLOSURE #27095
 add_magic_from_int(3373, "3.6b1")  # add BUILD_STRING opcode #27078
-add_magic_from_int(
-    3375, "3.6b1+1"
-)  # add SETUP_ANNOTATIONS and STORE_ANNOTATION opcodes #27985
-add_magic_from_int(
-    3376, "3.6b1+2"
-)  # simplify CALL_FUNCTION* & BUILD_MAP_UNPACK_WITH_CALL
-add_magic_from_int(3377, "3.6b1+3")  # set __class__ cell from type.__new__ #23722
-add_magic_from_int(3378, "3.6b2")  # add BUILD_TUPLE_UNPACK_WITH_CALL #28257
+
+# add SETUP_ANNOTATIONS and STORE_ANNOTATION opcodes #27985
+add_magic_from_int(3375, "3.6b1+1")
+
+# simplify CALL_FUNCTION* & BUILD_MAP_UNPACK_WITH_CALL
+add_magic_from_int(3376, "3.6b1+2")
+
+# set __class__ cell from type.__new__ #23722
+add_magic_from_int(3377, "3.6b1+3")
+
+# add BUILD_TUPLE_UNPACK_WITH_CALL #28257
+add_magic_from_int(3378, "3.6b2")
 
 # more thorough __class__ validation #23722
 add_magic_from_int(3379, "3.6rc1")
@@ -291,8 +297,7 @@ add_magic_from_int(3401, "3.8.0a3+")
 # PEP570 Python Positional-Only Parameters #36540
 add_magic_from_int(3410, "3.8.0a1+")
 
-# Reverse evaluation order of key: value in dict comprehensions
-# #35224
+# Reverse evaluation order of key: value in dict comprehensions #35224
 add_magic_from_int(3411, "3.8.0b2+")
 
 # Swap the position of positional args and positional only args in
@@ -331,27 +336,80 @@ add_magic_from_int(3432, "3.10a2")
 
 # RERAISE restores f_lasti if oparg != 0
 add_magic_from_int(3433, "3.10a2")
-add_magic_from_int(3434, "3.10a6")
-add_magic_from_int(3435, "3.10a7")
-add_magic_from_int(3438, "3.10b1")
-add_magic_from_int(3439, "3.10.0rc2")
 
+# PEP 634: Structural Pattern Matching
+add_magic_from_int(3434, "3.10a6")
+
+# Use instruction offsets (as opposed to byte offsets)
+add_magic_from_int(3435, "3.10a7")
+
+# Add GEN_START bytecode #43683
+add_magic_from_int(3436, "3.10b1a")
+
+# Undo making 'annotations' future by default - We like to dance among core devs!
+add_magic_from_int(3437, "3.10b1b")
+
+# Safer line number table handling.
+add_magic_from_int(3438, "3.10b1c")
+
+# Add ROT_N
+add_magic_from_int(3439, "3.10.b1")
+
+# Use exception table for unwinding ("zero cost" exception handling)
 add_magic_from_int(3450, "3.11a1a")
+
+# Add CALL_METHOD_KW
 add_magic_from_int(3451, "3.11a1b")
+
+# drop nlocals from marshaled code objects
 add_magic_from_int(3452, "3.11a1c")
+
+# add co_fastlocalnames and co_fastlocalkinds
 add_magic_from_int(3453, "3.11a1d")
+
+# compute cell offsets relative to locals bpo-43693
 add_magic_from_int(3454, "3.11a1e")
+
+# add MAKE_CELL bpo-43693
 add_magic_from_int(3455, "3.11a1f")
-add_magic_from_int(3457, "3.11a1g")
-add_magic_from_int(3458, "3.11a1h")
-add_magic_from_int(3459, "3.11a1i")
-add_magic_from_int(3460, "3.11a1j")
-add_magic_from_int(3461, "3.11a1k")
+
+# interleave cell args bpo-43693
+add_magic_from_int(3456, "3.11a1g")
+
+# Change localsplus to a bytes object bpo-43693
+add_magic_from_int(3457, "3.11a1h")
+
+# imported objects now don't use LOAD_METHOD/CALL_METHOD
+add_magic_from_int(3458, "3.11a1i")
+
+# PEP 657: add end line numbers and column offsets for instructions
+add_magic_from_int(3459, "3.11a1j")
+
+# Add co_qualname field to PyCodeObject bpo-44530
+add_magic_from_int(3460, "3.11a1k")
+
+# JUMP_ABSOLUTE must jump backwards
+add_magic_from_int(3461, "3.11a1l")
+
+# bpo-44511: remove COPY_DICT_WITHOUT_KEYS, change
+# MATCH_CLASS and MATCH_KEYS, and add COPY
 add_magic_from_int(3462, "3.11a2")
+
+# bpo-45711: JUMP_IF_NOT_EXC_MATCH no longer pops the
+# active exception)
 add_magic_from_int(3463, "3.11a3a")
+
+# bpo-45636: Merge numeric BINARY_*/INPLACE_* into
+# BINARY_OP
 add_magic_from_int(3464, "3.11a3b")
+
+# Add COPY_FREE_VARS opcode
 add_magic_from_int(3465, "3.11a4a")
+
+# bpo-45292: PEP-654 except*
 add_magic_from_int(3466, "3.11a4b")
+
+# Change CALL_xxx opcodes
 add_magic_from_int(3466, "3.11a4c")
 add_magic_from_int(3467, "3.11a4d")
 add_magic_from_int(3468, "3.11a4e")
@@ -384,15 +442,33 @@ add_magic_from_int(3494, "3.11a7d")
 add_magic_from_int(3495, "3.11a7e")
 
 # 3.12
+# Remove PRECALL opcode)
 add_magic_from_int(3500, "3.12a1a")
+
+# YIELD_VALUE oparg == stack_depth
 add_magic_from_int(3501, "3.12a1b")
+
+# LOAD_FAST_CHECK, no NULL-check in LOAD_FAST
 add_magic_from_int(3502, "3.12a1c")
+
+# Shrink LOAD_METHOD cache
 add_magic_from_int(3503, "3.12a1d")
+
+# Merge LOAD_METHOD back into LOAD_ATTR
 add_magic_from_int(3504, "3.12a1e")
+
+# Specialization/Cache for FOR_ITER
 add_magic_from_int(3505, "3.12a1f")
+
+# Add BINARY_SLICE and STORE_SLICE instructions
 add_magic_from_int(3506, "3.12a1g")
+
+# Set lineno of module's RESUME to 0
 add_magic_from_int(3507, "3.12a1h")
+
+# Add CLEANUP_THROW
 add_magic_from_int(3508, "3.12a1i")
+
 add_magic_from_int(3509, "3.12a1j")
 add_magic_from_int(3510, "3.12a2a")
 add_magic_from_int(3511, "3.12a2b")
@@ -530,6 +606,10 @@ add_magic_from_int(3624, "3.14b1")
 # Fix handling of opcodes that may leave operands on the stack when optimizing LOAD_FAST
 add_magic_from_int(3625, "3.14b3")
 
+# add_magic_from_int(3655, "3.15.0a0")
+# NOTE: this will change on release!
+add_magic_from_int(3655, "3.15.0")
+
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
 
@@ -657,7 +737,7 @@ add_canonic_versions(
 add_canonic_versions(
     "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8 3.10.9 "
     "3.10.10 3.10.11 3.10.12 3.10.13 3.10.14 3.10.15 3.10.16 3.10.17 3.10.18",
-    "3.10.0rc2",
+    "3.10.b1",
 )
 
 add_canonic_versions("3.10.13Graal", "3.10.8Graal")
@@ -681,6 +761,11 @@ add_canonic_versions(
 add_canonic_versions(
     "3.14 3.14-dev",
     "3.14b3",
+)
+
+add_canonic_versions(
+    "3.15 3.15-dev 3.15.0a0",
+    "3.15.0",
 )
 
 # The canonic version for a canonic version is itself
@@ -732,7 +817,7 @@ def py_str2tuple(orig_version: str) -> tuple[int, int] | tuple[int, int, int]:
     )
 
 
-def sysinfo2magic(version_info=sys.version_info) -> bytes:
+def sysinfo2magic(version_info: tuple=tuple(sys.version_info)) -> bytes:
     """Convert a list sys.versions_info compatible list into a 'canonic'
     The magic bytes value found at the beginning of a bytecode file.
     b'?!\r\n' is returned if we can't find a version.

@@ -159,6 +159,7 @@ op_imports = {
     "3.9.18pypy": opcode_39pypy,
     3.9: opcode_39,
     "3.10.0rc2": opcode_310,
+    "3.10.b1": opcode_310,
     "3.10": opcode_310,
     "3.10pypy": opcode_310pypy,
     "3.10.12pypy": opcode_310pypy,
