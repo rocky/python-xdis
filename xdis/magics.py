@@ -98,12 +98,7 @@ by_version: Dict[str, bytes] = {}
 magicint2version: Dict[int, str] = {}
 versions: Dict[bytes, str] = {}
 
-try:
-    from importlib.util import MAGIC_NUMBER as MAGIC
-except ImportError:
-    import imp
-
-    MAGIC = imp.get_magic()
+from importlib.util import MAGIC_NUMBER as MAGIC
 
 PYTHON_MAGIC_INT = magic2int(MAGIC)
 
@@ -424,12 +419,25 @@ add_magic_from_int(3531, "3.12b1g")
 add_magic_from_int(3531, "3.12.0rc2")
 
 # 3.13
+# Plugin optimizer support
 add_magic_from_int(3550, "3.13a1a")
+
+# Compact superinstructions
 add_magic_from_int(3551, "3.13a1b")
+
+# Remove LOAD_FAST__LOAD_CONST and LOAD_CONST__LOAD_FAST
 add_magic_from_int(3552, "3.13a1c")
+
+# Add SET_FUNCTION_ATTRIBUTE
 add_magic_from_int(3553, "3.13a1d")
+
+# more efficient bytecodes for f-strings
 add_magic_from_int(3554, "3.13a1e")
+
+# generate specialized opcodes metadata from bytecodes.c
 add_magic_from_int(3555, "3.13a1f")
+
+# Convert LOAD_CLOSURE to a pseudo-op
 add_magic_from_int(3556, "3.13a1g")
 add_magic_from_int(3557, "3.13a1h")
 add_magic_from_int(3558, "3.13a1i")
@@ -446,6 +454,81 @@ add_magic_from_int(3568, "3.13a1s")
 add_magic_from_int(3569, "3.13a5")
 add_magic_from_int(3570, "3.13a6")
 add_magic_from_int(3571, "3.13.0rc3")
+
+# Add LOAD_COMMON_CONSTANT
+add_magic_from_int(3600, "3.14a1a")
+
+# Fix miscompilation of private names in generic classes
+add_magic_from_int(3601, "3.14a1b")
+
+# Add LOAD_SPECIAL. Remove BEFORE_WITH and BEFORE_ASYNC_WITH
+add_magic_from_int(3602, "3.14a1c")
+
+# Remove BUILD_CONST_KEY_MAP
+add_magic_from_int(3603, "3.14a1d")
+
+# Do not duplicate test at end of while statements
+add_magic_from_int(3604, "3.14a1e")
+
+# Move ENTER_EXECUTOR to opcode 255
+add_magic_from_int(3605, "3.14a1f")
+
+# Specialize CALL_KW
+add_magic_from_int(3606, "3.14a1g")
+
+# Add pseudo instructions JUMP_IF_TRUE/FALSE
+add_magic_from_int(3607, "3.14a1h")
+
+# Add support for slices
+add_magic_from_int(3608, "3.14a1i")
+
+# Add LOAD_SMALL_INT and LOAD_CONST_IMMORTAL instructions, remove RETURN_CONST
+add_magic_from_int(3608, "3.14a2")
+
+# Add VALUE_WITH_FAKE_GLOBALS format to annotationlib
+add_magic_from_int(3610, "3.14a4a")
+
+# Add NOT_TAKEN instruction
+add_magic_from_int(3611, "3.14a4b")
+
+#Add LOAD_CONST_MORTAL instruction
+add_magic_from_int(3613, "3.14a4c")
+
+#Add BINARY_OP_EXTEND
+add_magic_from_int(3614, "3.14a4d")
+
+#Add BINARY_OP_EXTEND
+add_magic_from_int(3615, "3.14a5a")
+
+#Add BINARY_OP_EXTEND
+add_magic_from_int(3616, "3.14a5a")
+
+#Branch monitoring for async for loops
+add_magic_from_int(3617, "3.14a6a")
+
+#Add oparg to END_ASYNC_FOR
+add_magic_from_int(3618, "3.14a6b")
+
+#Renumber RESUME opcode from 149 to 128
+add_magic_from_int(3619, "3.14a6c")
+
+#Optimize bytecode for all/any/tuple called on a genexp
+add_magic_from_int(3620, "3.14a7a")
+
+#Optimize LOAD_FAST opcodes into LOAD_FAST_BORROW
+add_magic_from_int(3621, "3.14a7b")
+
+#Store annotations in different class dict keys
+add_magic_from_int(3622, "3.14a7c")
+
+#Add BUILD_INTERPOLATION & BUILD_TEMPLATE opcodes
+add_magic_from_int(3623, "3.14a7d")
+
+#Don't optimize LOAD_FAST when local is killed by DELETE_FAST
+add_magic_from_int(3624, "3.14b1")
+
+# Fix handling of opcodes that may leave operands on the stack when optimizing LOAD_FAST
+add_magic_from_int(3625, "3.14b3")
 
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
@@ -595,6 +678,11 @@ add_canonic_versions(
     "3.13.0rc3",
 )
 
+add_canonic_versions(
+    "3.14 3.14-dev",
+    "3.14b3",
+)
+
 # The canonic version for a canonic version is itself
 for v in versions.values():
     canonic_python_version[v] = v
@@ -646,8 +734,8 @@ def py_str2tuple(orig_version: str) -> tuple[int, int] | tuple[int, int, int]:
 
 def sysinfo2magic(version_info=sys.version_info) -> bytes:
     """Convert a list sys.versions_info compatible list into a 'canonic'
-    floating-point number which that can then be used to look up a
-    magic number.  Note that this can raise an exception.
+    The magic bytes value found at the beginning of a bytecode file.
+    b'?!\r\n' is returned if we can't find a version.
     """
 
     vers_str = version_tuple_to_str(version_info)
@@ -671,7 +759,7 @@ def sysinfo2magic(version_info=sys.version_info) -> bytes:
             # just not have platform
             pass
 
-    return magics[vers_str]
+    return magics.get(vers_str, b"?!\r\n")
 
 
 def test() -> None:
