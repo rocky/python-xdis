@@ -255,7 +255,7 @@ def local_op(loc, name, opcode: int, pop=0, push=1) -> None:
     loc["nullaryop"].add(opcode)
 
 
-def name_op(loc: int, op_name, opcode: int, pop=-2, push=-2) -> None:
+def name_op(loc: dict, op_name, opcode: int, pop=-2, push=-2) -> None:
     """
     Put opcode in the class of instructions that index into the "name" table.
     """
@@ -341,7 +341,7 @@ def rm_op(loc, name, op) -> None:
     del loc["opmap"][name]
 
 
-def store_op(loc: int, name, op, pop=0, push=1, is_type="def") -> None:
+def store_op(loc: dict, name: str, op, pop=0, push=1, is_type="def") -> None:
     if is_type == "name":
         name_op(loc, name, op, pop, push)
         loc["nullaryop"].remove(op)
