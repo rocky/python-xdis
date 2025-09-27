@@ -89,6 +89,10 @@ def test_stack_effect_fixed() -> None:
     xdis.PYTHON_VERSION_TRIPLE < (3, 4) or xdis.IS_PYPY or xdis.IS_GRAAL,
     reason="Python version is before 3.4. Can't test",
 )
+@pytest.mark.skipif(
+    xdis.PYTHON_VERSION_TRIPLE >= (3, 14),
+    reason="Python >= 3.14 is not complete.",
+)
 def test_stack_effect_vs_dis() -> None:
     import dis
 

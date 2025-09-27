@@ -10,6 +10,7 @@ from __future__ import print_function
 import os
 import os.path as osp
 import sys
+from typing import List
 
 import click
 
@@ -55,7 +56,7 @@ else:
 )
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format: list, method: tuple, show_source: bool, files):
+def main(format: List[str], method: tuple, show_source: bool, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -63,8 +64,8 @@ def main(format: list, method: tuple, show_source: bool, files):
     the Python interpreter used to run this program. For example, you can disassemble Python 3.6.9
     bytecode from Python 2.7.15 and vice versa.
     """
-    if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 14)):
-        mess = "This code works on 3.6 to 3.13; you have %s."
+    if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 16)):
+        mess = "This code works on 3.6 to 3.15; you have %s."
         if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 7):
             mess += " Code that works for %s can be found in the python-2.4 branch\n"
         elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
