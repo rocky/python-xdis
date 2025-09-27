@@ -27,8 +27,10 @@ PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 IS_PYPY = "__pypy__" in sys.builtin_module_names
 if hasattr(platform, "python_implementation"):
     IS_GRAAL = "Graal" in platform.python_implementation()
+    IS_RUST = "RustPython" in platform.python_implementation()
 else:
     IS_GRAAL = False
+    IS_RUST = "RustPython" in platform.python_implementation()
 
 
 def version_tuple_to_str(

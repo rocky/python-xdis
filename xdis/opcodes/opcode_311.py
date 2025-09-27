@@ -171,7 +171,7 @@ loc["nullaryop"].add(137)
 loc["nullaryloadop"].add(137)
 
 store_op(loc, "STORE_DEREF",                  138,   1, 0, is_type="free")
-def_op(loc, "DELETE_DEREF",                   139,   0, 0)
+free_op(loc, "DELETE_DEREF",                  139,   0, 0)
 
 # These are added since 3.10...
 #          OP NAME                         OPCODE  POP PUSH
@@ -214,11 +214,11 @@ def_op(loc,  "COPY_FREE_VARS",                 149,  0, 0)
 # new jump
 jrel_op(loc, "JUMP_BACKWARD_NO_INTERRUPT",    134,   0, 0)
 # new create cells op
-jrel_op(loc, "MAKE_CELL",                     135,   0, 0)
+free_op(loc, "MAKE_CELL",                     135,   0, 0)
 # new exception handling
+jrel_op(loc, "PUSH_EXC_INFO",                  35,   0, 1)
 jrel_op(loc, "CHECK_EG_MATCH",                 37,   0, 0)
 jrel_op(loc, "PREP_RERAISE_STAR",              88,   1, 0)
-jrel_op(loc, "PUSH_EXC_INFO",                  35,   0, 1)
 # resume, acts like a nop
 def_op(loc, "RESUME",                         151,   0, 0)
 

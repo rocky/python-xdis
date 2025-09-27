@@ -29,11 +29,16 @@ Code2FieldTypes.update(
         "co_cellvars": (tuple, list),
     }
 )
-# co_firstlineno added since 1.x
 
-# Early pyston 2.7 Code objects seem to be a subset of 2.0 code.
-# The fields it has are:
-#   co_argcount, co_filename, co_firstline, co_flag, co_name, co_varnames
+# Byte code that is JVM, e.g. Pyston and Jython do provide a subset
+# of Pythons code fields.
+# For pyston, the fields it has are:
+#   co_argcount, co_filename, co_firstline, co_flags, co_name, co_varnames
+#
+# For Jython the fields it has are:
+#   co_argcount, co_cellvars, co_filename, co_firstline, co_flags, co_freevars,
+#   co_name, co_nlocals, co_varnames
+#
 
 class Code2(Code15):
     """Class for a Python2 code object used when a Python 3 interpreter is

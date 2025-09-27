@@ -32,8 +32,8 @@ from struct import unpack
 
 from xdis.codetype.code13 import Bytes
 from xdis.codetype import to_portable
-from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS,  magic_int2tuple
-from xdis.version_info import PYTHON_VERSION_TRIPLE
+from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 if PYTHON_VERSION_TRIPLE < (2, 4):
     from sets import Set as set
@@ -130,8 +130,6 @@ class _VersionIndependentUnmarshaller:
 
         In Python 3, a ``bytes`` type is used for strings.
         """
-        if magic_int in RUSTPYTHON_MAGICS:
-            raise NotImplementedError("RustPython not supported yet")
         self.fp = fp
         self.magic_int = magic_int
         self.code_objects = code_objects
@@ -156,6 +154,12 @@ class _VersionIndependentUnmarshaller:
         self.version_tuple = tuple()
         self.is_graal = magic_int in GRAAL3_MAGICS
         self.is_pypy = magic_int in PYPY3_MAGICS
+        self.is_rust = magic_int in RUSTPYTHON_MAGICS
+
+        if magic_int in RUSTPYTHON_MAGICS:
+            raise NotImplementedError(
+                "RustPython %s is not supported yet." % version_tuple_to_str(version)
+            )
 
     def load(self):
         """
@@ -400,7 +404,7 @@ class _VersionIndependentUnmarshaller:
             n -= 1
         return ret
 
-    def t_frozenset(self, save_ref, bytes_for_s=False):
+    def t_frozenset(self, save_ref, bytes_for_s: bool = False):
         setsize = unpack("<i", self.fp.read(4))[0]
         ret, i = self.r_ref_reserve(tuple(), save_ref)
         while setsize > 0:
@@ -462,7 +466,9 @@ class _VersionIndependentUnmarshaller:
             kwonlyargcount = 0
 
         co_nlocals = 0
-        if self.version_tuple < (3, 11) or (self.version_tuple[:2] == (3, 11) and self.is_pypy):
+        if self.version_tuple < (3, 11) or (
+            self.version_tuple[:2] == (3, 11) and self.is_pypy
+        ):
             if self.version_tuple >= (2, 3):
                 co_nlocals = unpack("<i", self.fp.read(4))[0]
             elif self.version_tuple >= (1, 3):

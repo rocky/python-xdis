@@ -65,8 +65,14 @@ Type -h for for full help.""" % program
 
     if not ((2, 4) <= PYTHON_VERSION_TRIPLE < (2, 8)):
         mess = "This code works on 2.4 to 2.17."
-        if (3, 6) <= PYTHON_VERSION_TRIPLE < (3, 13):
+        if (3, 6) <= PYTHON_VERSION_TRIPLE < (3, 16):
             mess += " Code that works for %s can be found in the master.4 branch\n"
+=======
+    if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 16)):
+        mess = "This code works on 3.6 to 3.15; you have %s."
+        if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 7):
+            mess += " Code that works for %s can be found in the python-2.4 branch\n"
+>>>>>>> python-3.0-to-3.2
         elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
             mess += " Code that works for %s can be found in the python-3.1 branch\n"
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
