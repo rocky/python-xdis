@@ -10,7 +10,6 @@ from __future__ import print_function
 import os
 import os.path as osp
 import sys
-from typing import List
 
 import click
 
@@ -56,7 +55,7 @@ else:
 )
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format: List[str], method: tuple, show_source: bool, files):
+def main(format: list, method: tuple, show_source: bool, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.

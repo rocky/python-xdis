@@ -32,14 +32,14 @@ and the value is its canonic versions string, e.g. '2.7'
 PYTHON_MAGIC_INT: The magic integer for the current running Python interpreter
 """
 
+import imp
 import re
 import struct
 import sys
-from importlib.util import MAGIC_NUMBER as MAGIC
-from typing import Dict, Set
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
 
+MAGIC = imp.get_magic()
 PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384, 416)
 GRAAL3_MAGICS = (21150, 21280, 21290)
 RUSTPYTHON_MAGICS = (

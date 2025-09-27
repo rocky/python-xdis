@@ -167,7 +167,7 @@ class _VersionIndependentUnmarshaller:
 
         if magic_int in RUSTPYTHON_MAGICS:
             raise NotImplementedError(
-                f"RustPython {version_tuple_to_str(version)} is not supported yet."
+                "RustPython %s is not supported yet." % version_tuple_to_str(version)
             )
 
     def load(self):
@@ -251,10 +251,10 @@ class _VersionIndependentUnmarshaller:
     def t_None(self, save_ref, bytes_for_s: bool = False) -> None:
         return None
 
-    def t_stopIteration(self, save_ref, bytes_for_s: bool=False):
+    def t_stopIteration(self, save_ref, bytes_for_s: bool = False):
         return StopIteration
 
-    def t_Ellipsis(self, save_ref, bytes_for_s: bool=False):
+    def t_Ellipsis(self, save_ref, bytes_for_s: bool = False):
         return Ellipsis
 
     def t_False(self, save_ref, bytes_for_s: bool = False) -> bool:
