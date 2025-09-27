@@ -404,7 +404,7 @@ class _VersionIndependentUnmarshaller:
             n -= 1
         return ret
 
-    def t_frozenset(self, save_ref, bytes_for_s: bool = False):
+    def t_frozenset(self, save_ref, bytes_for_s=False):
         setsize = unpack("<i", self.fp.read(4))[0]
         ret, i = self.r_ref_reserve(tuple(), save_ref)
         while setsize > 0:

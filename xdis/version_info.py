@@ -30,7 +30,7 @@ if hasattr(platform, "python_implementation"):
     IS_RUST = "RustPython" in platform.python_implementation()
 else:
     IS_GRAAL = False
-    IS_RUST = "RustPython" in platform.python_implementation()
+    IS_RUST = False
 
 
 def version_tuple_to_str(

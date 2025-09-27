@@ -67,12 +67,6 @@ Type -h for for full help.""" % program
         mess = "This code works on 2.4 to 2.17."
         if (3, 6) <= PYTHON_VERSION_TRIPLE < (3, 16):
             mess += " Code that works for %s can be found in the master.4 branch\n"
-=======
-    if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 16)):
-        mess = "This code works on 3.6 to 3.15; you have %s."
-        if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 7):
-            mess += " Code that works for %s can be found in the python-2.4 branch\n"
->>>>>>> python-3.0-to-3.2
         elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
             mess += " Code that works for %s can be found in the python-3.1 branch\n"
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
@@ -95,7 +89,7 @@ Type -h for for full help.""" % program
 
     format = "classic"
     show_source = False
-    methods = None
+    methods = []
     for opt, val in opts:
         if opt in ('-h', '--help'):
             print(__doc__)
@@ -111,10 +105,7 @@ Type -h for for full help.""" % program
                 sys.exit(2)
             format = val
         elif opt in ('-m', '--method'):
-            if methods is None:
-                methods = [val]
-            else:
-                methods.append(val)
+            methods.append(val)
         elif opt in ('-S', '--show-source'):
             show_source = True
         else:
@@ -139,9 +130,9 @@ Type -h for for full help.""" % program
             continue
 
         try:
-            disassemble_file(path, sys.stdout, format, show_source=show_source, methods=method)
-        except (ImportError, NotImplementedError, ValueError) as e:
-            print(e)
+            disassemble_file(path, sys.stdout, format, show_source=show_source, methods=methods)
+        except (ImportError, NotImplementedError, ValueError):
+            print(sys.exc_info()[1])
             rc = 3
     sys.exit(rc)
 

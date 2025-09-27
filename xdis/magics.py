@@ -64,9 +64,7 @@ def int2magic(magic_int):
 
     if magic_int in (39170, 39171):
         return struct.pack("<H", magic_int) + "\x99\x00"
-    return struct.pack(
-        "<Hcc", magic_int, bytes("\r", "utf-8"), bytes("\n", "utf-8")
-        )
+    return struct.pack("<Hcc", magic_int, "\r", "\n")
 
 
 def magic2int(magic):
@@ -849,7 +847,7 @@ def sysinfo2magic(version_info=sys.version_info):
             # just not have platform
             pass
 
-    return magics.get(vers_str, b"?!\r\n")
+    return magics.get(vers_str, "?!\r\n")
 
 
 def test():
