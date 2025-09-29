@@ -222,9 +222,9 @@ _MODULE_IDENTIFIER_RE = re.compile(r'^(?:\s*(\w+)\s*\.)?\s*(\w+)')
 
 # Atomic immutable types which don't require any recursive handling and for which deepcopy
 # returns the same object. We can provide a fast-path for these types in asdict and astuple.
-_ATOMIC_TYPES = frozenset({
+_ATOMIC_TYPES = frozenset([
     # Common JSON Serializable types
-    types.NoneType,
+    #types.NoneType,
     bool,
     int,
     float,
@@ -241,7 +241,7 @@ _ATOMIC_TYPES = frozenset({
     type,
     range,
     property,
-})
+])
 
 
 class InitVar:
@@ -256,7 +256,7 @@ class InitVar:
         else:
             # typing objects, e.g. List[int]
             type_name = repr(self.type)
-        return f'dataclasses.InitVar[{type_name}]'
+        return 'dataclasses.InitVar[%s]' % type_name
 
     def __class_getitem__(cls, type):
         return InitVar(type)
@@ -294,27 +294,27 @@ class Field:
         self.init = init
         self.repr = repr
         self.hash = hash
-        self.compare = compare
-        self.metadata = (_EMPTY_METADATA
-                         if metadata is None else
-                         types.MappingProxyType(metadata))
+        if metadata is None:
+            self.metadata = _EMPTY_METADATA
+        else:
+            self.metadata = types.MappingProxyType(metadata)
         self.kw_only = kw_only
         self._field_type = None
 
     @recursive_repr()
     def __repr__(self):
-        return ('Field('
-                f'name={self.name!r},'
-                f'type={self.type!r},'
-                f'default={self.default!r},'
-                f'default_factory={self.default_factory!r},'
-                f'init={self.init!r},'
-                f'repr={self.repr!r},'
-                f'hash={self.hash!r},'
-                f'compare={self.compare!r},'
-                f'metadata={self.metadata!r},'
-                f'kw_only={self.kw_only!r},'
-                f'_field_type={self._field_type}'
+        return ('Field(' +
+                ('name=%r,' % self.name) +
+                ('type=%r,' % self.type) +
+                ('default=%r,' % self.default) +
+                ('default_factory=%r,' % self.default_factory) +
+                ('init=%r,' % self.init) +
+                ('repr=%r,' % self.repr) +
+                ('hash=%r,' % self.hash) +
+                ('compare=%r,'  % self.compare) +
+                ('metadata=%r,' % self.metadata) +
+                ('kw_only=%r,' + self.kw_only) +
+                ('_field_type=%s}' % self._field_type) +
                 ')')
 
     # This is used to support the PEP 487 __set_name__ protocol in the
