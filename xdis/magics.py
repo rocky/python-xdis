@@ -40,8 +40,9 @@ from typing import Dict, Set
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
 
-PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384, 416)
 GRAAL3_MAGICS = (21150, 21280, 21290)
+JYTHON_MAGICS = (1011, 65526)
+PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384, 416)
 RUSTPYTHON_MAGICS = (
     12641, # RustPython 3.12
     12897,  # RustPython 3.12

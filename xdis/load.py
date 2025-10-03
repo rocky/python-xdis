@@ -28,8 +28,11 @@ import xdis.marsh
 import xdis.unmarshal
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 from xdis.magics import (
+    GRAAL3_MAGICS,
+    JYTHON_MAGICS,
     PYPY3_MAGICS,
     PYTHON_MAGIC_INT,
+    RUSTPYTHON_MAGICS,
     int2magic,
     magic2int,
     magic_int2tuple,
@@ -230,7 +233,7 @@ def load_module_from_file_object(
             else:
                 raise ImportError(f"Bad magic number: '{magic}'")
 
-        if magic_int in (2657, 65226, 22138):
+        if magic_int in [2657, 22138] + list(GRAAL3_MAGICS) + list(RUSTPYTHON_MAGICS) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
             raise ImportError(f"Magic int {magic_int} ({version}) is not supported.")
 
