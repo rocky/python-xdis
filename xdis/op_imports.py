@@ -141,6 +141,7 @@ op_imports = {
     "3.8.0rc1+": opcode_38,
     "3.8.0candidate1": opcode_38,
     "3.8": opcode_38,
+    "3.8pypy": opcode_38pypy,
     "3.8.0pypy": opcode_38pypy,
     "3.8.12pypy": opcode_38pypy,
     "3.8.13pypy": opcode_38pypy,
