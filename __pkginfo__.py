@@ -70,7 +70,7 @@ mailing_list = "python-debugger@googlegroups.com"
 modname = "xdis"
 
 packages = ["xdis"]
-py_modules = None
+py_modules = []
 
 python_requires = ">=2.4,<3.0"
 

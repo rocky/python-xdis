@@ -27,9 +27,14 @@ from __pkginfo__ import (
 SYS_VERSION = sys.version_info[0:2]
 if not ((2, 4) <= SYS_VERSION <= (2, 7)):
     mess = "Python Release 2.4 .. 2.7 are supported in this code branch."
-    if SYS_VERSION >= (3, 6):
+    if SYS_VERSION >= (3, 11):
         mess += (
             "\nFor your Python, version %s, use the master branch."
+            % sys.version[0:3]
+        )
+    if (3, 6) <= SYS_VERSION <= (3, 11):
+        mess += (
+            "\nFor your Python, version %s, use the python-3.3-3.6 branch."
             % sys.version[0:3]
         )
     elif (3, 3) <= SYS_VERSION < (3, 6):
