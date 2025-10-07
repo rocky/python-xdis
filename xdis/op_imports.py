@@ -180,6 +180,7 @@ op_imports = {
     "3.14b3": opcode_314,
     "3.14.0": opcode_314,
     "3.14": opcode_314,
+    "3.14rc3": opcode_314,
     3.14: opcode_314,
 }
 

@@ -6,12 +6,12 @@ repos:
     hooks:
     - id: check-merge-conflict
     - id: debug-statements
-      stages: [commit]
+      stages: [pre-commit]
     - id: end-of-file-fixer
       exclude: '^pytest/testdata'
-      stages: [commit]
+      stages: [pre-commit]
 -   repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
-        stages: [commit]
+        stages: [pre-commit]
