@@ -1,6 +1,11 @@
 #!/usr/bin/env python
-"""Setup script for the 'xdis' distribution."""
-from setuptools import find_packages, setup
+"""
+  Check that the Python version running this is compatible with this installation medium.
+  Note: that we use 2.x compatible Python code here.
+"""
+
+import sys
+>>>>>>> master
 
 from __pkginfo__ import (
     author,
@@ -18,6 +23,26 @@ from __pkginfo__ import (
     zip_safe,
 )
 from xdis.version import __version__
+
+major = sys.version_info[0]
+minor = sys.version_info[1]
+
+if major != 3 or not minor >= 11:
+    sys.stderr.write("This installation medium is only for Python 3.11 and later. You are running Python %s.%s.\n" % (major, minor))
+
+if major == 3 and 6 <= minor <= 10:
+    sys.stderr.write("Please install using xdis_36-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.exit(1)
+elif major == 3 and 3 <= minor <= 5:
+    sys.stderr.write("Please install using xdis_33-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.exit(1)
+if major == 3 and 0 <= minor <= 2:
+    sys.stderr.write("Please install using xdis_30-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.exit(1)
+elif major == 2:
+    sys.stderr.write("Please install using xdis_24-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.exit(1)
+
 
 setup(
     author=author,
