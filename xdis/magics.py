@@ -496,6 +496,7 @@ add_magic_from_int(3529, "3.12b1e")
 add_magic_from_int(3530, "3.12b1f")
 add_magic_from_int(3531, "3.12b1g")
 add_magic_from_int(3531, "3.12.0rc2")
+add_magic_from_int(3531, "3.12.0rc2")
 
 # 3.13
 # Plugin optimizer support
@@ -608,6 +609,8 @@ add_magic_from_int(3624, "3.14b1")
 
 # Fix handling of opcodes that may leave operands on the stack when optimizing LOAD_FAST
 add_magic_from_int(3625, "3.14b3")
+
+add_magic_from_int(3627, "3.14rc3")
 
 # add_magic_from_int(3655, "3.15.0a0")
 # NOTE: this will change on release!
@@ -759,14 +762,12 @@ add_canonic_versions(
 )
 
 add_canonic_versions(
-    "3.13 3.13.0 3.13.1 3.13.2 3.13.3 3.13.4 3.13.5 3.13.6 3.13.7",
+    "3.13 3.13.0 3.13.1 3.13.2 3.13.3 3.13.4 3.13.5 3.13.6 3.13.7 3.13.8",
     "3.13.0rc3",
 )
 
-add_canonic_versions(
-    "3.14 3.14-dev",
-    "3.14b3",
-)
+add_canonic_versions("3.14-dev", "3.14b3")
+add_canonic_versions("3.14 3.14.0", "3.14rc3")
 
 add_canonic_versions(
     "3.15 3.15-dev 3.15.0a0",
