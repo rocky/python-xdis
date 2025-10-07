@@ -500,7 +500,7 @@ opcode_arg_fmt313.update(
     {"CALL": format_CALL_METHOD})
 
 opcode_extended_fmt = opcode_extended_fmt313 = opcode_312.opcode_extended_fmt312.copy()
-opcode_312.opcode_extended_fmt312.update(
+opcode_extended_fmt313.update(
     {"CALL": extended_format_CALL})
 
 for fmt_table in (opcode_arg_fmt313, opcode_extended_fmt313):
