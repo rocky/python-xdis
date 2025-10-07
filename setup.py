@@ -5,7 +5,8 @@
 """
 
 import sys
->>>>>>> master
+
+from setuptools import find_packages, setup
 
 from __pkginfo__ import (
     author,
