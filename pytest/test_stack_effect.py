@@ -82,6 +82,8 @@ def test_stack_effect_fixed() -> None:
     return
 
 
+def test_stack_effect_vs_dis() -> None:
+    import dis
 
 #     def test_one(xdis_args, dis_args, has_arg):
 #         effect = xstack_effect(*xdis_args)
