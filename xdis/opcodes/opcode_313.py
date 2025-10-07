@@ -497,8 +497,19 @@ opcode_arg_fmt313.update(
     {"CALL": format_CALL_METHOD})
 
 opcode_extended_fmt = opcode_extended_fmt313 = opcode_312.opcode_extended_fmt312.copy()
-opcode_312.opcode_extended_fmt312.update(
+opcode_313.opcode_extended_fmt312.update(
     {"CALL": extended_format_CALL})
+=======
+    {
+        "CALL": format_CALL_METHOD
+    })
+
+opcode_extended_fmt = opcode_extended_fmt313 = opcode_312.opcode_extended_fmt312.copy()
+opcode_extended_fmt313.update(
+    {
+        "CALL": extended_format_CALL
+    })
+>>>>>>> python-3.3-to-3.5
 
 for fmt_table in (opcode_arg_fmt313, opcode_extended_fmt313):
     fmt_table.pop("MAKE_FUNCTION")  # MAKE_FUNCTION formatting not in 3.13
