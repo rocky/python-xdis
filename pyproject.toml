@@ -61,3 +61,6 @@ pydisasm = "xdis.bin.pydisasm:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "xdis.version.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["xdis*"]  # Include all subpackages
