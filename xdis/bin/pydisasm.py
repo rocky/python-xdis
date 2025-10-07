@@ -10,6 +10,7 @@ import getopt
 import os
 import os.path as osp
 import sys
+from typing import List
 
 from xdis import disassemble_file
 from xdis.version import __version__

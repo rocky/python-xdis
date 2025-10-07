@@ -1,8 +1,28 @@
 #!/usr/bin/env python
-"""Setup script for the 'xdis' distribution."""
+"""Setup script for the 'xdis' distribution.
+
+  Check that the Python version running this is compatible with this installation medium.
+  Note: that we use 2.x compatible Python code here.
+"""
 import sys
 from xdis.version import __version__
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
+
+from __pkginfo__ import (
+    author,
+    author_email,
+    classifiers,
+    entry_points,
+    install_requires,
+    license,
+    long_description,
+    modname,
+    py_modules,
+    short_desc,
+    tests_require,
+    web,
+    zip_safe,
+)
 
 SYS_VERSION = sys.version_info[0:2]
 if not ((2, 4) <= SYS_VERSION <= (2, 7)):
@@ -29,21 +49,6 @@ if not ((2, 4) <= SYS_VERSION <= (2, 7)):
     print(mess)
     raise Exception(mess)
 
-from __pkginfo__ import (
-    author,
-    author_email,
-    classifiers,
-    entry_points,
-    install_requires,
-    license,
-    long_description,
-    modname,
-    py_modules,
-    short_desc,
-    tests_require,
-    web,
-    zip_safe,
-)
 
 setup(
     author=author,
