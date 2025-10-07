@@ -6,7 +6,23 @@
 """
 import sys
 from xdis.version import __version__
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
+
+from __pkginfo__ import (
+    author,
+    author_email,
+    classifiers,
+    entry_points,
+    install_requires,
+    license,
+    long_description,
+    modname,
+    py_modules,
+    short_desc,
+    tests_require,
+    web,
+    zip_safe,
+)
 
 SYS_VERSION = sys.version_info[0:2]
 if not ((3, 0) <= SYS_VERSION <= (3, 2)):
@@ -33,48 +49,6 @@ if not ((3, 0) <= SYS_VERSION <= (3, 2)):
 
     print(mess)
     raise Exception(mess)
-"""
-"""
-
-import sys
-
-from setuptools import find_packages, setup
->>>>>>> python-3.3-to-3.5
-
-from __pkginfo__ import (
-    author,
-    author_email,
-    classifiers,
-    entry_points,
-    install_requires,
-    license,
-    long_description,
-    modname,
-    py_modules,
-    short_desc,
-    tests_require,
-    web,
-    zip_safe,
-)
-
-major = sys.version_info[0]
-minor = sys.version_info[1]
-
-if major != 3 or not 3 >= minor >= 6:
-    sys.stderr.write("This installation medium is only for Python 3.3 to 3.5. You are running Python %s.%s.\n" % (major, minor))
-
-if major == 3 and 6 <= minor <= 10:
-    sys.stderr.write("Please install using xdis_36-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
-    sys.exit(1)
-elif major == 3 and minor >= 11:
-    sys.stderr.write("Please install using xdis-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
-    sys.exit(1)
-if major == 3 and 0 <= minor <= 2:
-    sys.stderr.write("Please install using xdis_30-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
-    sys.exit(1)
-elif major == 2:
-    sys.stderr.write("Please install using xdis_24-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
-    sys.exit(1)
 
 
 setup(

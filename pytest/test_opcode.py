@@ -4,10 +4,6 @@ import pytest
 from xdis import IS_PYPY, PYTHON_VERSION_TRIPLE, get_opcode
 
 
-@pytest.mark.skipif(
-    PYTHON_VERSION_TRIPLE >= (3, 14),
-    reason="Python >= 3.14 is not complete.",
-)
 def test_opcode() -> None:
     opc = get_opcode(PYTHON_VERSION_TRIPLE, IS_PYPY)
     opmap = dict([(k.replace("+", "_"), v) for (k, v) in dis.opmap.items()])
