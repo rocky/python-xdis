@@ -21,7 +21,6 @@ This is like Python 3.11's opcode.py  with some classification
 of stack usage and information for formatting instructions.
 """
 
-
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
     binary_op,
@@ -265,8 +264,8 @@ def extended_format_COPY_OP(
 
 
 def extended_format_MAKE_FUNCTION_311(
-    opc, instructions: List[Instruction]
-) -> Tuple[str, int]:
+    opc, instructions: list
+) -> tuple:
     """
     Like MAKE_FUNCTION_36 but qualified name at TOS was removed.
     See: https://github.com/python/cpython/issues/93270
@@ -281,7 +280,7 @@ def extended_format_MAKE_FUNCTION_311(
         arg_flags = instructions[0].argval
         param_elision_str = extended_function_signature(code_inst.argval) if arg_flags != 0 else ""
         s += (
-            f"def {code_inst.argval.co_name}({param_elision_str}): ..."
+            "def %s(%s): ..."  % (code_inst.argval.co_name, param_elision_str)
         )
         return s, start_offset
     return s, start_offset
@@ -341,7 +340,7 @@ opcode_extended_fmt311.update(
         "COPY": extended_format_COPY_OP,
         "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_311,
     },
-}
+)
 
 del opcode_extended_fmt311["BINARY_ADD"]
 del opcode_extended_fmt311["BINARY_AND"]

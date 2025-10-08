@@ -186,7 +186,7 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions: list):
         arg_flags = instructions[0].argval
         param_elision_str = extended_function_signature(code_inst.argval) if arg_flags != 0 else ""
         s += "def %s(%s): ..." % (
-            name_inst.argval,
+            code_inst.argval.co_name,
             param_elision_str,
         )
         return s, start_offset
