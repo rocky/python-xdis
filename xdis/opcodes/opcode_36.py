@@ -177,17 +177,18 @@ def extended_format_FORMAT_VALUE(opc, instructions):
 
 # Can combine with extended_format_MAKE_FUNCTION_10_27?
 def extended_format_MAKE_FUNCTION_36(opc, instructions):
-    assert len(instructions) >= 2
+    assert len(instructions) >= 3
     inst = instructions[0]
     assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
     s = ""
-    name_inst = instructions[1]
     code_inst = instructions[2]
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
+        arg_flags = instructions[0].argval
+        param_elision_str = extended_function_signature(code_inst.argval) if arg_flags != 0 else ""
         s += "def %s(%s): ..." % (
-            name_inst.argval,
-            extended_function_signature(code_inst.argval),
+            code_inst.argval.co_name,
+            param_elision_str,
         )
         return s, start_offset
     return s, start_offset
