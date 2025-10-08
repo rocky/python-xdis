@@ -40,6 +40,7 @@ from xdis.opcodes.format.extended import (
     NULL_EXTENDED_OP,
     extended_format_binary_op,
     extended_format_unary_op,
+    extended_function_signature,
 )
 from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 
@@ -266,6 +267,29 @@ def extended_format_COPY_OP(
         return NULL_EXTENDED_OP
 
 
+def extended_format_MAKE_FUNCTION_311(
+    opc, instructions: List[Instruction]
+) -> Tuple[str, int]:
+    """
+    Like MAKE_FUNCTION_36 but qualified name at TOS was removed.
+    See: https://github.com/python/cpython/issues/93270
+    """
+    assert len(instructions) >= 2
+    inst = instructions[0]
+    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
+    s = ""
+    code_inst = instructions[1]
+    start_offset = code_inst.offset
+    if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
+        arg_flags = instructions[0].argval
+        param_elision_str = extended_function_signature(code_inst.argval) if arg_flags != 0 else ""
+        s += (
+            f"def {code_inst.argval.co_name}({param_elision_str}): ..."
+        )
+        return s, start_offset
+    return s, start_offset
+
+
 def extended_format_SWAP(
     opc, instructions: List[Instruction]
 ) -> Tuple[str, Optional[int]]:
@@ -317,6 +341,7 @@ opcode_extended_fmt = opcode_extended_fmt311 = {
     **{
         "BINARY_OP": extended_format_BINARY_OP,
         "COPY": extended_format_COPY_OP,
+        "MAKE_FUNCTION": extended_format_MAKE_FUNCTION_311,
     },
 }
 
