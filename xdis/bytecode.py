@@ -243,11 +243,12 @@ def get_logical_instruction_at_offset(
     """
     if labels is None:
         labels = opc.findlabels(bytecode, opc)
-
-    if exception_entries is not None:
-        for start, end, target, _, _ in exception_entries:
-            for i in range(start, end):
-                labels.append(target)
+        # PERFORMANCE FIX: Only add exception labels if we're building labels ourselves
+        # When called from get_instructions_bytes, labels already includes exception targets
+        if exception_entries is not None:
+            for start, end, target, _, _ in exception_entries:
+                if target not in labels:
+                    labels.append(target)
 
     # label_maps = get_jump_target_maps(bytecode, opc)
 
@@ -468,9 +469,14 @@ def get_instructions_bytes(
     """
     labels = opc.findlabels(bytecode, opc)
 
+    # PERFORMANCE FIX: Build exception labels ONCE, not on every iteration
+    # The old code was O(n^2) because it rebuilt the same list every call to
+    # get_logical_instruction_at_offset
     if exception_entries is not None:
         for start, end, target, _, _ in exception_entries:
-            for i in range(start, end):
+            # Only add the target offset, not every offset in the range
+            # This matches what get_logical_instruction_at_offset expects
+            if target not in labels:
                 labels.append(target)
 
     n = len(bytecode)
