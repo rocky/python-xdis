@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2019-2021, 2023-2024
+# (C) Copyright 2016-2017, 2019-2021, 2023-2025
 # by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
@@ -185,7 +185,10 @@ def extended_format_MAKE_FUNCTION_36(opc, instructions):
     start_offset = code_inst.offset
     if code_inst.opname == "LOAD_CONST" and hasattr(code_inst.argval, "co_name"):
         arg_flags = instructions[0].argval
-        param_elision_str = extended_function_signature(code_inst.argval) if arg_flags != 0 else ""
+        if arg_flags != 0:
+            param_elision_str = extended_function_signature(code_inst.argval)
+        else:
+            param_elision_str = ""
         s += "def %s(%s): ..." % (
             code_inst.argval.co_name,
             param_elision_str,

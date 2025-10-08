@@ -291,9 +291,7 @@ def extended_format_MAKE_FUNCTION_311(opc, instructions):
     return s, start_offset
 
 
-def extended_format_SWAP(
-    opc, instructions: list
-) -> tuple:
+def extended_format_SWAP(opc, instructions):
     """call_function_inst should be a "SWAP" instruction. See if
     `we can find the two instructions to be swapped.  If not we'll
     return None.
