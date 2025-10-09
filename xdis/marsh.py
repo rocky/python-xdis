@@ -51,6 +51,10 @@ except ImportError:
 def Ord(c):
     return c if PYTHON3 else ord(c)
 
+# Bit set on marshalType if we should
+# add obj to internObjects.
+# FLAG_REF is the marshal.c name
+FLAG_REF = 0x80
 
 TYPE_NULL = "0"
 TYPE_NONE = "N"
@@ -346,12 +350,16 @@ class _Marshaller:
     # FIXME: will probably have to adjust similar to how we
     # adjusted dump_code2
     def dump_code3(self, x) -> None:
-        self._write(TYPE_CODE)
+        if self.python_version >= (3, 4):
+            self._write(chr(ord(TYPE_CODE) | FLAG_REF))
+        else:
+            self._write(TYPE_CODE)
         self.w_long(x.co_argcount)
         if hasattr(x, "co_posonlyargcount"):
             self.w_long(x.co_posonlyargcount)
         self.w_long(x.co_kwonlyargcount)
-        self.w_long(x.co_nlocals)
+        if self.python_version < (3, 11):
+            self.w_long(x.co_nlocals)
         self.w_long(x.co_stacksize)
         self.w_long(x.co_flags)
         self.dump(x.co_code)

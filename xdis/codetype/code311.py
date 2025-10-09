@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -432,7 +432,7 @@ class Code311(Code310):
         self.co_qualname = co_qualname
         self.co_exceptiontable = co_exceptiontable
         self.fieldtypes = Code311FieldTypes
-        if type(self) == Code311:
+        if type(self) is Code311:
             self.check()
 
     def to_native(self) -> CodeType:
@@ -449,6 +449,8 @@ class Code311(Code310):
         except AssertionError as e:
             raise TypeError(e)
 
+        if code.co_exceptiontable is None:
+            code.co_exceptiontable = b""
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,
