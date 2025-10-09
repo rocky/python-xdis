@@ -247,9 +247,9 @@ class _Marshaller:
     dispatch[TYPE_BINARY_COMPLEX] = dump_binary_complex
 
     def dump_string(self, x) -> None:
-        # XXX we can't check for interned strings, yet,
-        # so we (for now) never create TYPE_INTERNED or TYPE_STRINGREF
-        self._write(TYPE_STRING)
+        # Python 3.11 seems to add the object ref flag bit for strings.
+        type_string = TYPE_STRING if self.python_version < (3, 11) else chr(ord(TYPE_STRING) | FLAG_REF)
+        self._write(type_string)
         self.w_long(len(x))
         self._write(x)
 
