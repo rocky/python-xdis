@@ -535,29 +535,42 @@ class _VersionIndependentUnmarshaller:
         co_freevars = tuple()
         co_cellvars = tuple()
 
-        if self.version_tuple >= (3, 11) and not self.is_pypy:
-            # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
-            co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
-            co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
+        if self.version_tuple >= (3, 11):
+            if self.is_pypy:
+                # FIXME: code has an object reference, but I don't
+                # see this in _marshal.py code for 3.11. I am missing
+                # something. Also, I don't know that it is indeed qualname.
+                # qualname which is a CPython 3.11 thing, isn't
+                # available in PyPy 3.11.
+                co_qualname = self.r_object(bytes_for_s=bytes_for_s)
 
-            CO_FAST_LOCAL = 0x20
-            CO_FAST_CELL = 0x40
-            CO_FAST_FREE = 0x80
+                co_firstlineno = unpack("<L", self.fp.read(4))[0]
+                co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
+            else:
+                # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
+                co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
+                co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
 
-            for name, kind in zip(co_localsplusnames, co_localspluskinds):
-                if kind & CO_FAST_LOCAL:
-                    co_varnames += (name,)
-                    if kind & CO_FAST_CELL:
+                CO_FAST_LOCAL = 0x20
+                CO_FAST_CELL = 0x40
+                CO_FAST_FREE = 0x80
+
+                for name, kind in zip(co_localsplusnames, co_localspluskinds):
+                    if kind & CO_FAST_LOCAL:
+                        co_varnames += (name,)
+                        if kind & CO_FAST_CELL:
+                            co_cellvars += (name,)
+                    elif kind & CO_FAST_CELL:
                         co_cellvars += (name,)
-                elif kind & CO_FAST_CELL:
-                    co_cellvars += (name,)
-                elif kind & CO_FAST_FREE:
-                    co_freevars += (name,)
+                    elif kind & CO_FAST_FREE:
+                        co_freevars += (name,)
 
-            co_nlocals = len(co_varnames)
-            co_filename = self.r_object(bytes_for_s=bytes_for_s)
-            co_name = self.r_object(bytes_for_s=bytes_for_s)
-            co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+                co_nlocals = len(co_varnames)
+                co_filename = self.r_object(bytes_for_s=bytes_for_s)
+                co_name = self.r_object(bytes_for_s=bytes_for_s)
+                co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+                pass
+            pass
 
         else:
             co_qualname = None
@@ -574,19 +587,8 @@ class _VersionIndependentUnmarshaller:
             co_name = self.r_object(bytes_for_s=bytes_for_s)
 
         co_exceptiontable = None
-        if self.version_tuple >= (3, 11) and self.is_pypy:
 
-            # FIXME: code has an object reference, but I don't
-            # see this in _marshal.py code for 3.11. I am missing
-            # something. Also, I don't know that it is indeed qualname.
-            # qualname which is a CPython 3.11 thing, isn't
-            # available in PyPy 3.11.
-            co_qualname = self.r_object(bytes_for_s=bytes_for_s)
-
-            co_firstlineno = unpack("<L", self.fp.read(4))[0]
-            co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
-
-        elif self.version_tuple >= (1, 5):
+        if self.version_tuple >= (1, 5):
             if self.version_tuple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
             else:

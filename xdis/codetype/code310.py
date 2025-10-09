@@ -99,21 +99,21 @@ class Code310(Code38):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         self.co_argcount = co_argcount
-        self.co_kwonlyargcount = co_kwonlyargcount
-        self.co_nlocals = co_nlocals
-        self.co_stacksize = co_stacksize
-        self.co_flags = co_flags
+        self.co_cellvars = co_cellvars
         self.co_code = co_code
         self.co_consts = co_consts
-        self.co_names = co_names
-        self.co_varnames = co_varnames
         self.co_filename = co_filename
-        self.co_name = co_name
         self.co_firstlineno = co_firstlineno
-        self.co_linetable = co_linetable
+        self.co_flags = co_flags
         self.co_freevars = co_freevars
-        self.co_cellvars = co_cellvars
+        self.co_kwonlyargcount = co_kwonlyargcount
+        self.co_linetable = co_linetable
+        self.co_name = co_name
+        self.co_names = co_names
+        self.co_nlocals = co_nlocals
         self.co_posonlyargcount = co_posonlyargcount
+        self.co_stacksize = co_stacksize
+        self.co_varnames = co_varnames
         self.fieldtypes = Code310FieldTypes
         if type(self) is Code310:
             self.check()
