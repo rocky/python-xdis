@@ -235,6 +235,8 @@ def to_portable(
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
 ):
+    if co_qualname is None:
+        co_qualname=co_name
     code = CodeTypeUnion(
         co_argcount=co_argcount,
         co_posonlyargcount=co_posonlyargcount,
@@ -248,7 +250,7 @@ def to_portable(
         co_varnames=co_varnames,
         co_filename=co_filename,
         co_name=co_name,
-        co_qualname=co_name if co_qualname is None else co_qualname,
+        co_qualname=co_qualname,
         co_firstlineno=co_firstlineno,
         co_linetable=co_lnotab,
         co_freevars=co_freevars,
@@ -259,5 +261,5 @@ def to_portable(
 
 
 if __name__ == "__main__":
-    x = codeType2Portable(to_portable.__code__)
+    x = codeType2Portable(to_portable.func_code)
     print(x)

@@ -511,7 +511,7 @@ class Code311(Code310):
             raise TypeError(e)
 
         if code.co_exceptiontable is None:
-            code.co_exceptiontable = b""
+            code.co_exceptiontable = ""
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,
