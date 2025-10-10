@@ -54,23 +54,49 @@ When installing, except for the most recent versions of Python, use
 the Python egg or wheel that matches that version, e.g., ``xdis-6.0.2-py3.3.egg``, ``xdis-6.0.2-py33-none-any.whl``.
 Of course, for versions that predate wheels, like Python 2.6, you will have to use eggs.
 
-To install older versions from source in git, use the branch
-``python-2.4-to-2.7`` for Python versions from 2.4 to 2.7,
-``python-3.1-to-3.2`` for Python versions from 3.1 to 3.2,
-``python-3.3-to-3.5`` for Python versions from 3.3 to 3.5. The master
-``python-3.6-to-3.10`` for Python versions from 3.6 to 3.10. The master
-branch handles Python 3.11 and later.
-
 Installation
 ------------
 
-The standard Python routine:
+*For recent Python releases (Python 3.11+)*, you can install from PyPI using the name ``xdis``::
 
-::
+    pip install xdis
+
+*For Python releases before 3.11*, do not install using PyPI, but instead install using a file in the [GitHub Releases section](https://github.com/rocky/python-xdis/releases). Older Python used to use `easy_install <https://python101.pythonlibrary.org/chapter29_pip.html#using-easy-install>`_. But this is no longer supported in PyPi or newer Python versions. And vice versa, *poetry* nor *pip*, (the newer ways) are not supported on older Pythons.
+
+If the Python version you are running xdis is between Python 2.4 through 2.7, use a tarball called xdis_24-*x.y.z*.tar.gz.
+
+If the Python version you are running xdis is between Python 3.0 through 3.2, use a tarball called xdis_30-*x.y.z*.tar.gz.
+
+If the Python version you are running xdis is between Python 3.3 through 3.5, use a tarball called xdis_33-*x.y.z*.tar.gz.
+
+If the Python version you are running xdis is between Python 3.6 through 3.11, use a tarball called xdis_36-*x.y.z*.tar.gz.
+
+If the Python version you are running xdis is 3.11 or later, use a called xdis-*x.y.z*.tar.gz.
+
+You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
+
+You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
+
+Similarly a tarball with without `_`*xx* works only from Python 3.11 or greater.
+
+Rationale for using Git Branches
+++++++++++++++++++++++++++++++++
+
+It is currently impossible (if not impractical) to have one Python source code of this complexity and with this many features that can run both Python 2.7 and Python 3.13+. The languages have drifted so much, and Packing is vastly different. In fact, the packaging practice for Python 3.11+ is incompatible with Python 2.7 (and before back to Python 2.4), which favored "easy_install".
+
+
+Installation from source text
+++++++++++++++++++++++++++++++
+
+To install from source code, make sure you have the right Git
+branch. See the Requirements section for the Git branch names.
+
+After setting the right branch::
 
    $ pip install -e .  # or pip install -e .[dev] to include testing package
 
 A GNU makefile is also provided so ``make install`` (possibly as root or sudo) will do the steps above.
+
 
 Disassembler Example
 --------------------
@@ -212,7 +238,7 @@ for usage help.
 As a drop-in replacement for dis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`xdis` also provides some support as a drop-in replacement for the
+``xdis`` also provides some support as a drop-in replacement for the
 Python library `dis <https://docs.python.org/3/library/dis.html>`_
 module. This may be desirable when you want to use the improved API
 from Python 3.4 or later from an earlier Python version.

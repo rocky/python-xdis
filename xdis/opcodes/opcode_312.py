@@ -12,6 +12,7 @@ from xdis.opcodes.base import (
     finalize_opcodes,
     init_opdata,
     jrel_op,
+    local_op,
     name_op,
     rm_op,
     update_pj3,
@@ -75,7 +76,7 @@ binary_op(loc , "STORE_SLICE"                      , 27 ,   4, 0)
 def_op(loc    , "CLEANUP_THROW"                    , 55 ,   2, 1)
 def_op(loc    , "LOAD_LOCALS"                      , 87 ,   0, 1)
 def_op(loc    , "RETURN_CONST"                     , 121,   0, 0)
-def_op(loc    , "LOAD_FAST_CHECK"                  , 127,   0, 1)
+local_op(loc  , "LOAD_FAST_CHECK"                  , 127,   0, 1)
 
 jrel_op(loc   , "POP_JUMP_IF_FALSE"                , 114,   1, 0)
 jrel_op(loc   , "POP_JUMP_IF_TRUE"                 , 115,   1, 0)

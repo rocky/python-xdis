@@ -63,8 +63,8 @@ def main(format: list[str], method: tuple, show_source: bool, files):
     the Python interpreter used to run this program. For example, you can disassemble Python 3.6.9
     bytecode from Python 2.7.15 and vice versa.
     """
-    if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 14)):
-        mess = "This code works on 3.6 to 3.13; you have %s."
+    if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 16)):
+        mess = "This code works on 3.6 to 3.15; you have %s."
         if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 7):
             mess += " Code that works for %s can be found in the python-2.4 branch\n"
         elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
@@ -92,7 +92,7 @@ def main(format: list[str], method: tuple, show_source: bool, files):
 
         try:
             disassemble_file(path, sys.stdout, format, show_source=show_source, methods=method)
-        except ImportError as e:
+        except (ImportError, NotImplementedError, ValueError) as e:
             print(e)
             rc = 3
     sys.exit(rc)

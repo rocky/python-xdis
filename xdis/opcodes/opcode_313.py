@@ -2,8 +2,20 @@
 CPython 3.13 bytecode opcodes
 """
 
+from typing import Optional, Tuple
+
 import xdis.opcodes.opcode_312 as opcode_312
-from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
+from xdis.opcodes.base import (
+    def_op,
+    finalize_opcodes,
+    free_op,
+    init_opdata,
+    local_op,
+    rm_op,
+    update_pj3,
+)
+from xdis.opcodes.format.extended import NULL_EXTENDED_OP, get_arglist
+from xdis.opcodes.opcode_36pypy import format_CALL_METHOD
 
 version_tuple = (3, 13)
 python_implementation = "CPython"
@@ -239,17 +251,17 @@ def_op(loc, "LIST_APPEND"                      , 80  , 2 , 1)
 def_op(loc, "LIST_EXTEND"                      , 81  , 2 , 1)
 def_op(loc, "LOAD_ATTR"                        , 82  , 1 , 1)
 def_op(loc, "LOAD_CONST"                       , 83  , 0 , 1)
-def_op(loc, "LOAD_DEREF"                       , 84  , 0 , 1)
+free_op(loc, "LOAD_DEREF"                      , 84  , 0 , 1)
 def_op(loc, "LOAD_FAST"                        , 85  , 0 , 1)
 def_op(loc, "LOAD_FAST_AND_CLEAR"              , 86  , 0 , 1)
-def_op(loc, "LOAD_FAST_CHECK"                  , 87  , 0 , 1)
+local_op(loc, "LOAD_FAST_CHECK"                , 87  , 0 , 1)
 def_op(loc, "LOAD_FAST_LOAD_FAST"              , 88  , 0 , 2)
 def_op(loc, "LOAD_FROM_DICT_OR_DEREF"          , 89  , 1 , 1)
 def_op(loc, "LOAD_FROM_DICT_OR_GLOBALS"        , 90  , 1 , 1)
 def_op(loc, "LOAD_GLOBAL"                      , 91  , 0 , 1)
 def_op(loc, "LOAD_NAME"                        , 92  , 0 , 1)
 def_op(loc, "LOAD_SUPER_ATTR"                  , 93  , 3 , 1)
-def_op(loc, "MAKE_CELL"                        , 94  , 0 , 0)
+free_op(loc, "MAKE_CELL"                       , 94  , 0 , 0)
 def_op(loc, "MAP_ADD"                          , 95  , 3 , 1)
 def_op(loc, "MATCH_CLASS"                      , 96  , 3 , 1)
 def_op(loc, "POP_JUMP_IF_FALSE"                , 97  , 1 , 0)
@@ -445,17 +457,60 @@ loc["hasfree"] = [64, 84, 89, 94, 109]
 loc.update({"hasjump": [72, 77, 78, 79, 97, 98, 99, 100, 104, 256, 257]})
 loc["hasjrel"] = loc["hasjump"]
 
+
+def extended_format_CALL(opc, instructions) -> Tuple[str, Optional[int]]:
+    """call_method should be a "CALL_METHOD" instruction. Look in
+    `instructions` to see if we can find a method name.  If not we'll
+    return None.
+
+    """
+    # From opcode description: arg_count indicates the total number of
+    # positional and keyword arguments.
+
+    call_method_inst = instructions[0]
+    arg_count = call_method_inst.argval
+    s = ""
+
+    arglist, arg_count, first_arg = get_arglist(instructions, 0, arg_count)
+    if arglist is None:
+        arglist = []
+
+    if first_arg is None or first_arg >= len(instructions) - 1:
+        return NULL_EXTENDED_OP
+
+    fn_inst = instructions[first_arg + 1]
+    if fn_inst.opcode in opc.operator_set and arglist is not None:
+        start_offset = fn_inst.offset
+
+    if fn_inst.opname == "PUSH_NULL":
+        fn_inst = instructions[first_arg + 2]
+        if fn_inst.opname in ("LOAD_NAME",):
+            start_offset = fn_inst.offset
+            fn_name = fn_inst.tos_str if fn_inst.tos_str else fn_inst.argrepr
+            arglist.reverse()
+            s = f'{fn_name}({", ".join(arglist)})'
+            return s, start_offset
+
+    return NULL_EXTENDED_OP
+
+
 ### update formatting
-opcode_arg_fmt = opcode_312.opcode_arg_fmt312.copy()
-opcode_extended_fmt = opcode_312.opcode_extended_fmt312.copy()
-for fmt_table in (opcode_arg_fmt, opcode_extended_fmt):
+opcode_arg_fmt = opcode_arg_fmt313 = {
+    **opcode_312.opcode_arg_fmt312,
+    **{"CALL": format_CALL_METHOD},
+}
+
+opcode_extended_fmt = opcode_extended_fmt313 = {
+    **opcode_312.opcode_extended_fmt312,
+    **{"CALL": extended_format_CALL},
+}
+
+for fmt_table in (opcode_arg_fmt313, opcode_extended_fmt313):
     fmt_table.pop("MAKE_FUNCTION")  # MAKE_FUNCTION formatting not in 3.13
-opcode_arg_fmt313 = opcode_arg_fmt
-opcode_extended_fmt313 = opcode_extended_fmt
 
 
 # update any calls to findlinestarts to include the version tuple
-def findlinestarts_313(code, dup_lines: bool=False):
+def findlinestarts_313(code, dup_lines: bool = False):
     lastline = False  # None is a valid line number
     for start, _, line in code.co_lines():
         if line is not lastline:

@@ -419,5 +419,12 @@ loc["hasjump"]    = [68, 70, 75, 76, 77, 100, 101, 102, 103, 106, 237, 248, 257,
 loc["haslocal"]   = [63, 83, 84, 85, 86, 87, 88, 89, 112, 113, 114, 261, 266]
 loc["hasname"]    = [61, 64, 65, 72, 73, 80, 91, 92, 93, 96, 110, 115, 116, 249]
 
+### update formatting
+opcode_arg_fmt = opcode_arg_fmt314 = opcode_313.opcode_arg_fmt313.copy()
+
+opcode_extended_fmt = opcode_extended_fmt313 = opcode_313.opcode_extended_fmt313,
+findlinestarts = opcode_313.findlinestarts_313
+
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
+

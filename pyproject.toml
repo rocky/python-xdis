@@ -42,6 +42,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dynamic = ["version"]
 
@@ -61,3 +62,6 @@ pydisasm = "xdis.bin.pydisasm:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "xdis.version.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["xdis*"]  # Include all subpackages
