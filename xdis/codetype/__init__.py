@@ -248,7 +248,7 @@ def to_portable(
         co_varnames=co_varnames,
         co_filename=co_filename,
         co_name=co_name,
-        co_qualname=co_qualname,
+        co_qualname=co_name if co_qualname is None else co_qualname,
         co_firstlineno=co_firstlineno,
         co_linetable=co_lnotab,
         co_freevars=co_freevars,
