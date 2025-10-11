@@ -5,7 +5,7 @@
 xdis
 ====
 
-A Cross-Python bytecode disassembler, bytecode/wordcode and magic-number manipulation library/package.
+A Cross-Python bytecode disassembler, bytecode/wordcode, and magic-number manipulation library/package.
 
 I gave a talk that mentions using this at `BlackHat Asia 2024 <https://youtu.be/H-7ZNrpsV50?si=nOaixgYHr7RbILVS>`_.
 
@@ -71,13 +71,13 @@ If the Python version you are running xdis is between Python 3.3 through 3.5, us
 
 If the Python version you are running xdis is between Python 3.6 through 3.11, use a tarball called xdis_36-*x.y.z*.tar.gz.
 
-If the Python version you are running xdis is 3.11 or later, use a called xdis-*x.y.z*.tar.gz.
+If the Python version you are running xdis is 3.11 or later, use a file called xdis-*x.y.z*.tar.gz.
 
 You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
 
 You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
 
-Similarly a tarball with without `_`*xx* works only from Python 3.11 or greater.
+Similarly, a tarball with or without `_`*xx* works only from Python 3.11 or greater.
 
 Rationale for using Git Branches
 ++++++++++++++++++++++++++++++++
@@ -95,7 +95,7 @@ After setting the right branch::
 
    $ pip install -e .  # or pip install -e .[dev] to include testing package
 
-A GNU makefile is also provided so ``make install`` (possibly as root or sudo) will do the steps above.
+A GNU makefile is also provided, so ``make install`` (possibly as root or sudo) will do the steps above.
 
 
 Disassembler Example
@@ -194,13 +194,13 @@ Python's dis module. Here is an example::
                   82 RETURN_VALUE         return None
 
 Note that some operand interpretation is performed on items in the stack as shown above.
-For example, in ::
+For example, in::
 
               24 LOAD_ATTR            (version) | sys.version
 
 from the instruction, see that ``sys.version`` is the resolved attribute that is loaded.
 
-Similarly in::
+Similarly, in::
 
               68 COMPARE_OP           (in) | power_of_two in (2, 4)
 
@@ -216,7 +216,7 @@ Testing
 
    $ make check
 
-A GNU makefile has been added to smooth over setting running the right
+A GNU makefile has been added to smooth over setting up running the right
 command, and running tests from fastest to slowest.
 
 If you have remake_ installed, you can see the list of all tasks
