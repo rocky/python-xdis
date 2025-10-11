@@ -75,9 +75,7 @@ If the Python version you are running xdis is 3.11 or later, use a file called x
 
 You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
 
-You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
-
-Similarly, a tarball with or without `_`*xx* works only from Python 3.11 or greater.
+Similarly, a tarball with or without the underscore *xx*,  e.g., xdis_36-*x.y.z*.tar.gz. works only from Python 3.11 or greater.
 
 Rationale for using Git Branches
 ++++++++++++++++++++++++++++++++
@@ -238,7 +236,7 @@ for usage help.
 
 
 As a drop-in replacement for dis
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 ``xdis`` also provides some support as a drop-in replacement for the
 Python library `dis <https://docs.python.org/3/library/dis.html>`_
