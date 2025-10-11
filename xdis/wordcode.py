@@ -14,10 +14,9 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Python disassembly functions specific to wordcode from Python 3.6+
-"""
+"""Python disassembly functions specific to wordcode from Python 3.6+"""
 from xdis.bytecode import op_has_argument
-from xdis.cross_dis import _get_cache_size_313, unpack_opargs_bytecode_310
+from xdis.cross_dis import get_cache_size_313, unpack_opargs_bytecode_310
 
 
 def unpack_opargs_wordcode(code, opc):
@@ -75,11 +74,14 @@ def findlabels(code, opc):
             else:
                 arg2 = arg
             if op in opc.JREL_OPS:
-                if opc.version_tuple >= (3, 11) and opc.opname[op] in ("JUMP_BACKWARD", "JUMP_BACKWARD_NO_INTERRUPT"):
+                if opc.version_tuple >= (3, 11) and opc.opname[op] in (
+                    "JUMP_BACKWARD",
+                    "JUMP_BACKWARD_NO_INTERRUPT",
+                ):
                     arg = -arg
                 jump_offset = offset + 2 + arg2
-                if opc.version_tuple >= (3,13):
-                    jump_offset += 2 * _get_cache_size_313(opc.opname[op])
+                if opc.version_tuple >= (3, 13):
+                    jump_offset += 2 * get_cache_size_313(opc.opname[op])
             elif op in opc.JABS_OPS:
                 jump_offset = arg2
             else:
