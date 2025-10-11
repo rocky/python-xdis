@@ -18,6 +18,7 @@
 # However, it appears that Python's names and code have been copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
+
 from xdis.util import (
     COMPILER_FLAG_NAMES,
     PYPY_COMPILER_FLAG_NAMES,
@@ -69,7 +70,7 @@ def get_code_object(x):
     raise TypeError("don't know how to disassemble %s objects" % type(x).__name__)
 
 
-def _get_cache_size_313(opname: str) -> int:
+def get_cache_size_313(opname: str) -> int:
     _inline_cache_entries = {
         "LOAD_GLOBAL": 4,
         "BINARY_OP": 1,
@@ -93,6 +94,8 @@ def _get_cache_size_313(opname: str) -> int:
     }
     return _inline_cache_entries.get(opname, 0)
 
+# For compatibility
+_get_cache_size_313 = get_cache_size_313
 
 def findlabels(code: bytes, opc):
     if opc.version_tuple < (3, 10) or IS_GRAAL:
