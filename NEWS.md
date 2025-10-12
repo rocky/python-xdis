@@ -1,3 +1,17 @@
+6.1.7 2025-10-12
+================
+
+* Include Python versions 3.9.24, 3.10.19, 3.11.14, and 3.12.12
+* Better code type and marshalling routines for 3.11+
+* Adjust formatting for `MAKE_FUNCTION` for 3.6 & 3.11. Python 3.11 MAKE_FUNCTION is different from 3.6.
+* Fix O(n^2) performance issue with Python 3.11+ exception. Patch submitted by ril3y.
+* Don't allow installing the wrong wheel or tarball for the Python interpreter installed.
+* Add more magics like Rust and 3.15. Python 3.14 is out, so that's another magic number too.
+* Minimal support for RustPython bytecode.
+* Improve 3.13 assembly priting
+* Handle pyston and unknown bytecodes better
+* More type annotations via pyrefly
+
 6.1.6 2025-09-04
 ================
 
