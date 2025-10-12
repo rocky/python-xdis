@@ -101,7 +101,9 @@ Disassembler Example
 
 The cross-version disassembler that is packaged here can produce
 assembly listings that are superior to those typically found in
-Python's dis module. Here is an example::
+Python's dis module. Here is an example:
+
+.. code-block:: none
 
 :: text
 
