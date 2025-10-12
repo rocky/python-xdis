@@ -59,18 +59,17 @@ def main():
     the Python interpreter used to run this program. For example, you can disassemble Python 3.6.9
     bytecode from Python 2.7.15 and vice versa.
     """
-    Usage_short = """usage:
-   %s FILE...
-Type -h for for full help.""" % program
-
-    if not ((2, 4) <= PYTHON_VERSION_TRIPLE < (2, 8)):
-        mess = "This code works on 2.4 to 2.17."
-        if (3, 6) <= PYTHON_VERSION_TRIPLE < (3, 16):
-            mess += " Code that works for %s can be found in the master.4 branch\n"
-        elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
-            mess += " Code that works for %s can be found in the python-3.1 branch\n"
+    if not ((3, 0) <= PYTHON_VERSION_TRIPLE < (3, 3)):
+        mess = "This code works on 3.0 to 3.2; you have %s."
+        if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 7):
+            mess += " Code that works for %s can be found in the python-2.4-to-2.7 branch\n"
+>>>>>>> python-3.0-to-3.2
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
-            mess += " Code that works for %s can be found in the python-3.3 branch\n"
+            mess += " Code that works for %s can be found in the python-3.3-to-3.10 branch\n"
+        elif (3, 6) <= PYTHON_VERSION_TRIPLE <= (3, 10):
+            mess += " Code that works for %s can be found in the python-3.6 branch\n"
+        elif (3, 11) <= PYTHON_VERSION_TRIPLE:
+            mess += " Code that works for %s can be found in the master branch\n"
         sys.stderr.write(mess % PYTHON_VERSION_STR)
         sys.exit(2)
 

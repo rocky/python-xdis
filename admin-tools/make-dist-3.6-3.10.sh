@@ -73,7 +73,7 @@ tarball=dist/${PACKAGE_NAME}-${__version__}.tar.gz
 if [[ -f $tarball ]]; then
     version_specific_tarball=dist/${PACKAGE_NAME}_36-${__version__}.tar.gz
     mv -v $tarball $version_specific_tarball
-    twine check $tarball
+    twine check $vesion_specific_tarbal
 fi
 
 if [[ ! -d dist/${__version__} ]] ; then
