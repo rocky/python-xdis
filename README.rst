@@ -261,6 +261,8 @@ See Also
 * https://pypi.org/project/decompyle3/ : Python Bytecode Deparsing for Python 3.7 and 3.8
 * https://pypi.org/project/xasm/ : Python Bytecode Assembler
 * https://pypi.org/project/x-python/ : Python Bytecode Interpreter written in Python
+* https://pypi.org/project/trepanxpy/ : Python Bytecode Debugger
+* https://pypi.org/project/python-control-flow/ : Python Bytecode Control-Flow analysis
 
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k
