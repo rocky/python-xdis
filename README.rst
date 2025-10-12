@@ -10,7 +10,6 @@ A Cross-Python bytecode disassembler, bytecode/wordcode, and magic-number manipu
 I gave a talk that mentions using this at `BlackHat Asia 2024 <https://youtu.be/H-7ZNrpsV50?si=nOaixgYHr7RbILVS>`_.
 
 .. contents:: Table of Contents
-    :depth: 3
 
 
 Introduction
@@ -101,11 +100,7 @@ Disassembler Example
 
 The cross-version disassembler that is packaged here can produce
 assembly listings that are superior to those typically found in
-Python's dis module. Here is an example:
-
-.. code-block:: none
-
-:: text
+Python's dis module. Here is an example::
 
     pydisasm -S -F extended bytecode_3.8/pydisasm-example.pyc
     # pydisasm version 6.1.1.dev0
