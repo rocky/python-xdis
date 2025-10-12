@@ -20,7 +20,7 @@ fi
 
 cd ../dist/
 
-install_file="xdis_33-${__version__}.tar.gz"
+install_file="xdis_30-${__version__}.tar.gz"
 install_check_command="pydisasm --version"
 for pyversion in $PYVERSIONS; do
     echo "*** Installing ${install_file} for Python ${pyversion} ***"
