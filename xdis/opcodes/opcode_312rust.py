@@ -5,9 +5,7 @@ RustPython 3.12 bytecode opcodes
 
 #FIXME: this needs a lot of going over.
 
-from typing import Dict, List, Optional, Tuple
-
-import xdis.opcodes.opcode_313 as opcode_313
+import xdis.opcodes.opcode_312 as opcode_312
 from xdis.opcodes.base import (
     binary_op,
     compare_op,
@@ -30,13 +28,13 @@ version_tuple = (3, 12)
 python_implementation = "RustPython"
 
 # oppush[op] => number of stack entries pushed
-oppush: List[int] = [0] * 256
+oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
-oppop: List[int] = [0] * 256
+oppop = [0] * 256
 
 # opmap[opcode_name] => opcode_number
-opmap: Dict[str, int] = {}
+opmap = {}
 
 ## pseudo opcodes (used in the compiler) mapped to the values
 ## they can become in the actual code.
@@ -75,7 +73,7 @@ hasexc = []
 
 loc = locals()
 
-init_opdata(loc, opcode_313, version_tuple)
+init_opdata(loc, opcode_312, version_tuple)
 
 oplists = [
     loc["hasarg"],
@@ -279,8 +277,8 @@ MAX_PSEUDO_OPCODE = MIN_PSEUDO_OPCODE + len(_pseudo_ops) - 1
 
 # extend opcodes to cover pseudo ops
 
-opname = [f"<{op!r}>" for op in range(MAX_PSEUDO_OPCODE + 1)]
-opname.extend([f"<{i}>" for i in range(256, 267)])
+opname = ["<%r>" % op for op in range(MAX_PSEUDO_OPCODE + 1)]
+opname.extend(["<%d>" % i for i in range(256, 267)])
 oppop.extend([0] * 11)
 oppush.extend([0] * 11)
 
@@ -460,27 +458,27 @@ _inline_cache_entries = [
 ]
 
 
-def extended_format_BINARY_OP(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_OP(opc, instructions) -> tuple:
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
     elif opname == "%=":
         opname = "%%="
-    return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
+    return extended_format_binary_op(opc, instructions, "%%s %s %%s" % opname)
 
 
 pcode_extended_fmt312rust = opcode_extended_fmt312.copy()
 opcode_arg_fmt = opcode_arg_fmt12rust = opcode_arg_fmt312.copy()
 
 ### update arg formatting
-opcode_extended_fmt = opcode_extended_fmt312rust = {
-    **opcode_extended_fmt312,
-    **{
+opcode_extended_fmt = opcode_extended_fmt312rust = opcode_extended_fmt312.copy()
+opcode_extended_fmt312rust.update(
+    {
         "BINARY_OP": extended_format_BINARY_OP,
     },
-}
+)
 
-from xdis.opcodes.opcode_311 import findlinestarts
+from xdis.opcodes.opcode_312 import findlinestarts  # noqa
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
