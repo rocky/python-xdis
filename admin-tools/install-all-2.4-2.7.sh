@@ -20,12 +20,13 @@ fi
 
 cd ../dist/
 
-install_file="xdis_24-${__version__}.tar.gz"
 install_check_command="pydisasm --version"
 for pyversion in $PYVERSIONS; do
     echo "*** Installing ${install_file} for Python ${pyversion} ***"
     pyenv local $pyversion
-    pip install $install_file
+    # Pick out first two numbers of version, e.g. 3.5.1 -> 35
+    first_two=$(echo $pyversion | cut -d'.' -f 1-2)
+    easy_install xdis-${__version__}-py${first_two}.egg
     $install_check_command
     echo "----"
 done
