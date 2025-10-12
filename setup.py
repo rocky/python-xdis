@@ -34,7 +34,7 @@ elif major == 3 and minor >= 11:
     sys.stderr.write("Please install using xdis-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
     sys.exit(1)
 elif major == 6 and minor < 11:
-    sys.stderr.write("Please install using xdis_33-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.stderr.write("Please install using xdis_36-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
     sys.exit(1)
 if major == 3 and 0 <= minor <= 2:
     sys.stderr.write("Please install using xdis_30-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
@@ -53,7 +53,6 @@ setup(
     install_requires=install_requires,
     license=license,
     long_description=long_description,
-    long_description_content_type="text/x-rst",
     name=modname,
     packages=find_packages(),
     python_requires=python_requires,
