@@ -3,7 +3,7 @@ RustPython 3.12 bytecode opcodes
 
 """
 
-#FIXME: this needs a lot of going over.
+# FIXME: this needs a lot of going over.
 
 import xdis.opcodes.opcode_312 as opcode_312
 from xdis.opcodes.base import (
@@ -37,7 +37,7 @@ oppop = [0] * 256
 opmap = {}
 
 ## pseudo opcodes (used in the compiler) mapped to the values
-## they can become in the actual code.
+## they can become in the actual code.
 _pseudo_ops = {}
 
 _nb_ops = [
@@ -75,20 +75,8 @@ loc = locals()
 
 init_opdata(loc, opcode_312, version_tuple)
 
-oplists = [
-    loc["hasarg"],
-    loc["hasconst"],
-    loc["hasname"],
-    loc["hasjrel"],
-    loc["hasjabs"],
-    loc["haslocal"],
-    loc["hascompare"],
-    loc["hasfree"],
-    loc["hasexc"],
-]
 
-
-def pseudo_op(name: str, op: int, real_ops: list):
+def pseudo_op(name, op, real_ops):
     def_op(loc, name, op)
     _pseudo_ops[name] = real_ops
     # add the pseudo opcode to the lists its targets are in
@@ -255,6 +243,19 @@ const_op(loc, "KW_NAMES", 172)
 
 
 loc["hasarg"].extend([op for op in opmap.values() if op >= HAVE_ARGUMENT])
+
+oplists = [
+    loc["hasarg"],
+    loc["hasconst"],
+    loc["hasname"],
+    loc["hasjrel"],
+    loc["hasjabs"],
+    loc["haslocal"],
+    loc["hascompare"],
+    loc["hasfree"],
+    loc["hasexc"],
+]
+
 
 MIN_PSEUDO_OPCODE = 256
 
@@ -458,7 +459,7 @@ _inline_cache_entries = [
 ]
 
 
-def extended_format_BINARY_OP(opc, instructions) -> tuple:
+def extended_format_BINARY_OP(opc, instructions):
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
