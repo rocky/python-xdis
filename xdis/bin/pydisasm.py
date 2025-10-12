@@ -59,11 +59,10 @@ def main():
     the Python interpreter used to run this program. For example, you can disassemble Python 3.6.9
     bytecode from Python 2.7.15 and vice versa.
     """
-    if not ((3, 0) <= PYTHON_VERSION_TRIPLE < (3, 3)):
-        mess = "This code works on 3.0 to 3.2; you have %s."
-        if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 7):
-            mess += " Code that works for %s can be found in the python-2.4-to-2.7 branch\n"
->>>>>>> python-3.0-to-3.2
+    if not ((2, 4) <= PYTHON_VERSION_TRIPLE < (3, 0)):
+        mess = "This code works on 2.4 to 2.7; you have %s."
+        if (3, 0) <= PYTHON_VERSION_TRIPLE <= (3, 2):
+            mess += " Code that works for %s can be found in the python-3.0-to-3.3 branch\n"
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
             mess += " Code that works for %s can be found in the python-3.3-to-3.10 branch\n"
         elif (3, 6) <= PYTHON_VERSION_TRIPLE <= (3, 10):
