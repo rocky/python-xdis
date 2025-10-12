@@ -5,7 +5,6 @@
   Note: that we use 2.x compatible Python code here.
 """
 import sys
-from xdis.version import __version__
 from setuptools import find_packages, setup
 
 from __pkginfo__ import (
@@ -23,36 +22,25 @@ from __pkginfo__ import (
     web,
     zip_safe,
 )
+from xdis.version import __version__
 
-SYS_VERSION = sys.version_info[0:2]
-if not ((2, 4) <= SYS_VERSION <= (2, 7)):
-    mess = "Python Release 2.4 .. 2.7 are supported in this code branch."
-    if SYS_VERSION >= (3, 11):
-        mess += (
-            "\nFor your Python, version %s, use the master branch."
-            % sys.version[0:3]
-        )
-    if (3, 6) <= SYS_VERSION <= (3, 11):
-        mess += (
-            "\nFor your Python, version %s, use the python-3.3-3.6 branch."
-            % sys.version[0:3]
-        )
-    elif (3, 3) <= SYS_VERSION < (3, 6):
-        mess += (
-            "\nFor your Python, version %s, use the python-3.3-3.5 branch."
-            % sys.version[0:3]
-        )
-    elif (3, 0) <= SYS_VERSION < (3, 3):
-        mess += (
-            "\nFor your Python, version %s, use the python-3.0-3.2 branch."
-        )
-    else:
-        mess += (
-            "\nThis package is not supported for Python version %s." % sys.version[0:3]
-        )
+major = sys.version_info[0]
+minor = sys.version_info[1]
 
-    print(mess)
-    raise Exception(mess)
+if major != 3 or not 0 <= minor < 3:
+    sys.stderr.write("This installation medium is only for Python 3.0 to 3.2. You are running Python %s.%s.\n" % (major, minor))
+elif major == 3 and minor >= 11:
+    sys.stderr.write("Please install using xdis-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.exit(1)
+elif major == 6 and minor < 11:
+    sys.stderr.write("Please install using xdis_36-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.exit(1)
+if major == 3 and 3 <= minor < 6:
+    sys.stderr.write("Please install using xdis_33-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.exit(1)
+elif major == 2:
+    sys.stderr.write("Please install using xdis_24-x.y.z.tar.gz from https://github.com/rocky/python-xdis/releases\n")
+    sys.exit(1)
 
 
 setup(
@@ -64,7 +52,6 @@ setup(
     install_requires=install_requires,
     license=license,
     long_description=long_description,
-    long_description_content_type="text/x-rst",
     name=modname,
     packages=find_packages(),
     py_modules=py_modules,

@@ -1,5 +1,14 @@
 #!/bin/bash
-PACKAGE=xdis
+# The name Python's import uses.
+# It is reflected in the directory structure.
+PACKAGE_MODULE="xdis"
+
+# The name that PyPi sees this as.
+# It is set in setup.py's name.
+PACKAGE_NAME="xdis"
+
+# Both the name an module name agree.
+PACKAGE=$PACKAGE_NAME
 
 # FIXME put some of the below in a common routine
 function finish {
@@ -54,7 +63,8 @@ for pyversion in $PYVERSIONS; do
     # Pick out first two numbers of version, e.g. 3.5.1 -> 35
     first_two=$(echo $pyversion | cut -d'.' -f 1-2 | sed -e 's/\.//')
     rm -fr build
-    python setup.py bdist_egg bdist_wheel
+    python setup.py bdist_egg
+    python setup.py bdist_wheel
     if [[ $first_two =~ py* ]]; then
 	if [[ $first_two =~ pypy* ]]; then
 	    # For PyPy, remove the what is after the dash, e.g. pypy37-none-any.whl instead of pypy37-7-none-any.whl
@@ -71,6 +81,7 @@ python ./setup.py sdist
 
 tarball=dist/${PACKAGE}-${__version__}.tar.gz
 if [[ -f $tarball ]]; then
-    mv -v $tarball dist/${PACKAGE}_31-${__version__}.tar.gz
+    version_specific_tarball=dist/${PACKAGE_NAME}_30-${__version__}.tar.gz
+    mv -v $tarball $version_specific_tarball
 fi
 finish

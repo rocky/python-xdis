@@ -25,6 +25,7 @@
 /.coverage
 /.eggs
 /.hypothesis
+/.jython_cache
 /.pytest_cache
 /.python-version
 /.tox
