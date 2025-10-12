@@ -1,5 +1,14 @@
 #!/bin/bash
-PACKAGE=xdis
+# The name Python's import uses.
+# It is reflected in the directory structure.
+PACKAGE_MODULE="xdis"
+
+# The name that PyPi sees this as.
+# It is set in setup.py's name.
+PACKAGE_NAME="xdis"
+
+# Both the name an module name agree.
+PACKAGE=$PACKAGE_NAME
 
 # FIXME put some of the below in a common routine
 function finish {
@@ -71,6 +80,7 @@ python ./setup.py sdist
 
 tarball=dist/${PACKAGE}-${__version__}.tar.gz
 if [[ -f $tarball ]]; then
-    mv -v $tarball dist/${PACKAGE}_31-${__version__}.tar.gz
+    version_specific_tarball=dist/${PACKAGE_NAME}_30-${__version__}.tar.gz
+    mv -v $tarball $version_specific_tarball
 fi
 finish
