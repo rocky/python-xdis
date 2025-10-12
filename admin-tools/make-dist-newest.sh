@@ -36,10 +36,24 @@ if [[ ! $__version__ ]] ; then
 fi
 
 for pyversion in $PYVERSIONS; do
-    if [[ ${pyversion:0:4} == "pypy" ]] ; then
-	echo "$pyversion - PyPy does not get special packaging"
-	continue
-    fi
+    case ${pyversion:0:4} in
+	"graal" )
+	    echo "$pyversion - Graal does not get special packaging"
+	    continue
+	    ;;
+	"jyth" )
+	    echo "$pyversion - Jython does not get special packaging"
+	    continue
+	    ;;
+	"pypy" )
+	    echo "$pyversion - PyPy does not get special packaging"
+	    continue
+	    ;;
+	"pyst" )
+	    echo "$pyversion - Pyston does not get special packaging"
+	    continue
+	    ;;
+    esac
     echo "*** Packaging ${PACKAGE_NAME} for version ${__version__} on Python ${pyversion} ***"
     if ! pyenv local $pyversion ; then
 	exit $?
@@ -60,8 +74,8 @@ if [[ -f $tarball ]]; then
     twine check $tarball
 fi
 
-if [[ ! -d dist/${__version__} ]] ; then
-    mkdir -v dist/${__version__}
+if [[ ! -d dist/uploaded/${__version__} ]] ; then
+    mkdir -v dist/uploaded/${__version__}
 fi
 
 twine check dist/${PACKAGE}-${__version__}-py3*.whl
