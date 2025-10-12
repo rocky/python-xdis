@@ -12,7 +12,7 @@ if [[ ! $__version__ ]] ; then
     exit 1
 fi
 
-pyenv_file="pyenv-3.3-3.6-versions"
+pyenv_file="pyenv-3.3-3.5-versions"
 if ! source $pyenv_file ; then
     echo "Having trouble reading ${pyenv_file} version $(pwd)"
     exit 1
