@@ -15,7 +15,6 @@ function finish {
   if [[ -n "$make_dist_xdis_36_owd" ]] then
      cd $make_dist_xdis_36_owd
   fi
-  cd $make_dist_xdis_36_owd
 }
 
 make_dist_xdis_36_owd=$(pwd)
@@ -38,6 +37,14 @@ fi
 
 for pyversion in $PYVERSIONS; do
     case ${pyversion:0:4} in
+	"graal" )
+	    echo "$pyversion - Graal does not get special packaging"
+	    continue
+	    ;;
+	"jyth" )
+	    echo "$pyversion - Jython does not get special packaging"
+	    continue
+	    ;;
 	"pypy" )
 	    echo "$pyversion - PyPy does not get special packaging"
 	    continue
