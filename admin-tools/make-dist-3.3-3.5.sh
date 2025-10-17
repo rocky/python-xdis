@@ -38,7 +38,7 @@ echo $__version__
 
 for pyversion in $PYVERSIONS; do
     case ${pyversion:0:4} in
-	"graal" )
+	"graa" )
 	    echo "$pyversion - Graal does not get special packaging"
 	    continue
 	    ;;

@@ -57,7 +57,7 @@ Of course, for versions that predate wheels, like Python 2.6, you will have to u
 Installation
 ------------
 
-*For recent Python releases (Python 3.11+)*, you can install from PyPI using the name ``xdis``::
+*If you are using Python 3.11 or later*, you can install from PyPI using the name ``xdis``::
 
     pip install xdis
 
@@ -80,7 +80,7 @@ Similarly, a tarball with or without the underscore *xx*,  e.g., xdis_36-*x.y.z*
 Rationale for using Git Branches
 ++++++++++++++++++++++++++++++++
 
-It is currently impossible (if not impractical) to have one Python source code of this complexity and with this many features that can run both Python 2.7 and Python 3.13+. The languages have drifted so much, and Packing is vastly different. In fact, the packaging practice for Python 3.11+ is incompatible with Python 2.7 (and before back to Python 2.4), which favored "easy_install".
+It is currently impossible (if not impractical) to have one Python source code of this complexity and with this many features that can run both Python 2.7 and Python 3.13+. The languages have drifted so much, and packaging is vastly different. In fact, the packaging practice for Python 3.11+ is incompatible with Python 2.7 (and before back to Python 2.4), which favored "easy_install".
 
 
 Installation from source text
