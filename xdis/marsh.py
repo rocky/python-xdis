@@ -973,7 +973,6 @@ _load_dispatch = _FastUnmarshaller.dispatch
 
 version = 1
 
-
 @builtinify
 def dump(x, f, version=version, python_version=PYTHON_VERSION_TRIPLE, is_pypy=None):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
