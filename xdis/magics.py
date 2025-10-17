@@ -629,7 +629,7 @@ add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(256, "3.8pypy")  # PyPy 3.8.15
 add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15, PyPy 3.9.17
 add_magic_from_int(384, "3.10pypy")  # PyPy 3.10.12
-add_magic_from_int(416, "3.11.13pypy")  # PyPy 3.11.13
+add_magic_from_int(416, "3.11.13pypy")  # PyPy 3.11.13 or pypy3.11-7.3.20
 
 add_magic_from_int(12641, "3.12.0a.rust")  # RustPython 3.12.0
 add_magic_from_int(12897, "3.13.0b.rust")  # RustPython 3.12.0
@@ -770,7 +770,7 @@ add_canonic_versions("3.14-dev", "3.14b3")
 add_canonic_versions("3.14 3.14.0", "3.14rc3")
 
 add_canonic_versions(
-    "3.15 3.15-dev 3.15.0a0",
+    "3.15 3.15.0a1 3.15-dev 3.15.0a0",
     "3.15.0",
 )
 
