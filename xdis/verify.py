@@ -177,7 +177,6 @@ def verify_file(real_source_filename, real_bytecode_filename) -> None:
     return
 
 if __name__ == "__main__":
-    import platform
     import py_compile
     import os.path as osp
     import sys
@@ -210,4 +209,3 @@ if __name__ == "__main__":
 
     print("Verifying", pyc_path)
     verify_file(__file__, pyc_path)
->>>>>>> python-3.3-to-3.5
