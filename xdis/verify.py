@@ -187,7 +187,35 @@ def verify_file(real_source_filename, real_bytecode_filename) -> None:
 
 
 if __name__ == "__main__":
-    import importlib
-    pyc_path = importlib.util.cache_from_source(__file__)
+    import py_compile
+    import os.path as osp
+    import sys
+
+    source_file_path = osp.abspath(__file__)
+
+    # Get the directory of the source file
+    source_dir = osp.dirname(source_file_path)
+
+    # Get the base name (e.g., 'my_module')
+    module_name = osp.splitext(os.path.basename(source_file_path))[0]
+
+    # Get the Python version string (e.g., 'cpython-30')
+    python_version_tag = "cpython-%s%s" % (
+        sys.version_info.major,
+        sys.version_info.minor,
+    )
+
+    # Construct the __pycache__ directory path
+    pycache_dir = osp.join(source_dir, "__pycache__")
+
+    # Construct the full bytecode file path
+
+    pyc_path = osp.join(
+        pycache_dir,
+        "%s.%s.pyc"
+        % (module_name, python_version_tag),
+    )
+    py_compile.compile(source_file_path, pyc_path)
+
     print("Verifying", pyc_path)
     verify_file(__file__, pyc_path)
