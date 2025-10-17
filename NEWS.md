@@ -8,7 +8,7 @@
 * Don't allow installing the wrong wheel or tarball for the Python interpreter installed.
 * Add more magics like Rust and 3.15. Python 3.14 is out, so that's another magic number too.
 * Minimal support for RustPython bytecode.
-* Improve 3.13 assembly priting
+* Improve 3.13 assembly printing
 * Handle pyston and unknown bytecodes better
 * More type annotations via pyrefly
 
