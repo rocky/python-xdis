@@ -42,9 +42,12 @@ from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
 
 GRAAL3_MAGICS = (21150, 21280, 21290)
 JYTHON_MAGICS = (1011, 65526)
-PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384, 416)
+
+# See below for mappting to version numbers
+PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 320, 336, 384, 416)
+
 RUSTPYTHON_MAGICS = (
-    12641, # RustPython 3.12
+    12641,  # RustPython 3.12
     12897,  # RustPython 3.12
     13413,  # RustPython 3.13
     24881,  # RustPython 3.13
@@ -66,9 +69,7 @@ def int2magic(magic_int: int) -> bytes:
 
     if magic_int in (39170, 39171):
         return struct.pack("<H", magic_int) + b"\x99\x00"
-    return struct.pack(
-        "<Hcc", magic_int, bytes("\r", "utf-8"), bytes("\n", "utf-8")
-    )
+    return struct.pack("<Hcc", magic_int, bytes("\r", "utf-8"), bytes("\n", "utf-8"))
 
 
 def magic2int(magic: bytes) -> int:
@@ -571,40 +572,40 @@ add_magic_from_int(3610, "3.14a4a")
 # Add NOT_TAKEN instruction
 add_magic_from_int(3611, "3.14a4b")
 
-#Add LOAD_CONST_MORTAL instruction
+# Add LOAD_CONST_MORTAL instruction
 add_magic_from_int(3613, "3.14a4c")
 
-#Add BINARY_OP_EXTEND
+# Add BINARY_OP_EXTEND
 add_magic_from_int(3614, "3.14a4d")
 
-#Add BINARY_OP_EXTEND
+# Add BINARY_OP_EXTEND
 add_magic_from_int(3615, "3.14a5a")
 
-#Add BINARY_OP_EXTEND
+# Add BINARY_OP_EXTEND
 add_magic_from_int(3616, "3.14a5a")
 
-#Branch monitoring for async for loops
+# Branch monitoring for async for loops
 add_magic_from_int(3617, "3.14a6a")
 
-#Add oparg to END_ASYNC_FOR
+# Add oparg to END_ASYNC_FOR
 add_magic_from_int(3618, "3.14a6b")
 
-#Renumber RESUME opcode from 149 to 128
+# Renumber RESUME opcode from 149 to 128
 add_magic_from_int(3619, "3.14a6c")
 
-#Optimize bytecode for all/any/tuple called on a genexp
+# Optimize bytecode for all/any/tuple called on a genexp
 add_magic_from_int(3620, "3.14a7a")
 
-#Optimize LOAD_FAST opcodes into LOAD_FAST_BORROW
+# Optimize LOAD_FAST opcodes into LOAD_FAST_BORROW
 add_magic_from_int(3621, "3.14a7b")
 
-#Store annotations in different class dict keys
+# Store annotations in different class dict keys
 add_magic_from_int(3622, "3.14a7c")
 
-#Add BUILD_INTERPOLATION & BUILD_TEMPLATE opcodes
+# Add BUILD_INTERPOLATION & BUILD_TEMPLATE opcodes
 add_magic_from_int(3623, "3.14a7d")
 
-#Don't optimize LOAD_FAST when local is killed by DELETE_FAST
+# Don't optimize LOAD_FAST when local is killed by DELETE_FAST
 add_magic_from_int(3624, "3.14b1")
 
 # Fix handling of opcodes that may leave operands on the stack when optimizing LOAD_FAST
@@ -619,6 +620,7 @@ add_magic_from_int(3655, "3.15.0")
 # Weird ones
 # WTF? Python 3.2.5 and PyPy have weird magic numbers
 
+# Often, PyPY increases its magic number by 16.
 add_magic_from_int(48, "3.2a2")
 add_magic_from_int(64, "3.3pypy")
 add_magic_from_int(112, "3.5pypy")  # pypy3.5-c-jit-latest
@@ -627,6 +629,7 @@ add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
 add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
 add_magic_from_int(256, "3.8pypy")  # PyPy 3.8.15
+add_magic_from_int(320, "3.9pypy")  # PyPy 3.9-v7.3.8
 add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15, PyPy 3.9.17
 add_magic_from_int(384, "3.10pypy")  # PyPy 3.10.12
 add_magic_from_int(416, "3.11.13pypy")  # PyPy 3.11.13 or pypy3.11-7.3.20
@@ -823,7 +826,7 @@ def py_str2tuple(orig_version: str) -> tuple[int, int] | tuple[int, int, int]:
     )
 
 
-def sysinfo2magic(version_info: tuple=tuple(sys.version_info)) -> bytes:
+def sysinfo2magic(version_info: tuple = tuple(sys.version_info)) -> bytes:
     """Convert a list sys.versions_info compatible list into a 'canonic'
     The magic bytes value found at the beginning of a bytecode file.
     b'?!\r\n' is returned if we can't find a version.
