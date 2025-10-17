@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020, 2023 by Rocky Bernstein
+# (C) Copyright 2018, 2020, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -186,5 +186,8 @@ def verify_file(real_source_filename, real_bytecode_filename) -> None:
     return
 
 
-# if __name__ == "__main__":
-#     verify_file(__file__, __file__ + "c")
+if __name__ == "__main__":
+    import importlib
+    pyc_path = importlib.util.cache_from_source(__file__)
+    print("Verifying", pyc_path)
+    verify_file(__file__, pyc_path)
