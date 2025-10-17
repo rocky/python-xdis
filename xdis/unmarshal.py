@@ -534,29 +534,19 @@ class _VersionIndependentUnmarshaller:
             co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
             co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
 
-                CO_FAST_LOCAL = 0x20
-                CO_FAST_CELL = 0x40
-                CO_FAST_FREE = 0x80
+            CO_FAST_LOCAL = 0x20
+            CO_FAST_CELL = 0x40
+            CO_FAST_FREE = 0x80
 
-                for name, kind in zip(co_localsplusnames, co_localspluskinds):
-                    if isinstance(kind, str):
-                        continue
-                    if kind & CO_FAST_LOCAL:
-                        co_varnames += (name,)
-                        if kind & CO_FAST_CELL:
-                            co_cellvars += (name,)
-                    elif kind & CO_FAST_CELL:
-=======
             for name, kind in zip(co_localsplusnames, co_localspluskinds):
+                if isinstance(kind, str):
+                    continue
                 if kind & CO_FAST_LOCAL:
                     co_varnames += (name,)
                     if kind & CO_FAST_CELL:
->>>>>>> python-3.0-to-3.2
                         co_cellvars += (name,)
                 elif kind & CO_FAST_CELL:
                     co_cellvars += (name,)
-                elif kind & CO_FAST_FREE:
-                    co_freevars += (name,)
 
             co_nlocals = len(co_varnames)
             co_filename = self.r_object(bytes_for_s=bytes_for_s)
