@@ -14,10 +14,6 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from typing import Optional
-
-from xdis.unmarshal import long
-
 """Internal Python object serialization
 
 This module contains functions that can read and write Python values
@@ -32,6 +28,7 @@ import struct
 import types
 from sys import intern
 from types import CodeType
+from typing import Optional
 
 from xdis.codetype import Code2, Code3
 from xdis.unmarshal import long
@@ -39,8 +36,6 @@ from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_s
 
 # NOTE: This module is used in the Python3 interpreter, but also by
 # the "sandboxed" process.  It must work for Python2 as well.
-
-
 
 try:
     from __pypy__ import builtinify
@@ -1064,7 +1059,7 @@ def dumps(
     version: int = version,
     python_version: tuple = PYTHON_VERSION_TRIPLE,
     is_pypy: Optional[bool] = None,
-) -> bytes | str:
+):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version, is_pypy=is_pypy)
