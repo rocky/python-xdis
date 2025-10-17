@@ -14,6 +14,10 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from typing import Optional
+
+from xdis.unmarshal import long
+
 """Internal Python object serialization
 
 This module contains functions that can read and write Python values
@@ -50,6 +54,7 @@ except ImportError:
 @builtinify
 def Ord(c):
     return c if PYTHON3 else ord(c)
+
 
 # Bit set on marshalType if we should
 # add obj to internObjects.
@@ -97,9 +102,12 @@ class _Marshaller:
 
     dispatch = {}
 
-    def __init__(self, writefunc, python_version=None) -> None:
+    def __init__(
+        self, writefunc, python_version: tuple, is_pypy: Optional[bool] = None
+    ) -> None:
         self._write = writefunc
         self.python_version = python_version
+        self.is_pypy = is_pypy
 
     def dump(self, x) -> None:
         if (
@@ -350,7 +358,7 @@ class _Marshaller:
     # FIXME: will probably have to adjust similar to how we
     # adjusted dump_code2
     def dump_code3(self, x) -> None:
-        if self.python_version >= (3, 4):
+        if self.python_version >= (3, 4) and not self.is_pypy:
             self._write(chr(ord(TYPE_CODE) | FLAG_REF))
         else:
             self._write(TYPE_CODE)
@@ -447,9 +455,10 @@ class _StringBuffer:
 class _Unmarshaller:
     dispatch = {}
 
-    def __init__(self, readfunc, python_version=None) -> None:
+    def __init__(self, readfunc, python_version: bool, is_pypy: bool) -> None:
         self._read = readfunc
         self._stringtable = []
+        self.is_pypy = is_pypy
         self.python_version = python_version
 
     def load(self):
@@ -1037,23 +1046,28 @@ version = 1
 
 
 @builtinify
-def dump(x, f, version: int=version, python_version=None) -> None:
+def dump(x, f, version: int = version, python_version: tuple=PYTHON_VERSION_TRIPLE, is_pypy: Optional[bool]=None) -> None:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
-    m = _Marshaller(f.write, python_version)
+    m = _Marshaller(f.write, python_version, is_pypy)
     m.dump(x)
 
 
 @builtinify
-def load(f, python_version=None):
-    um = _Unmarshaller(f.read, python_version)
+def load(f, python_version: tuple=PYTHON_VERSION_TRIPLE, is_pypy=None):
+    um = _Unmarshaller(f.read, python_version, is_pypy)
     return um.load()
 
 
 @builtinify
-def dumps(x, version: int=version, python_version: tuple=PYTHON_VERSION_TRIPLE):
+def dumps(
+    x,
+    version: int = version,
+    python_version: tuple = PYTHON_VERSION_TRIPLE,
+    is_pypy: Optional[bool] = None,
+) -> bytes | str:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
-    m = _Marshaller(buffer.append, python_version=python_version)
+    m = _Marshaller(buffer.append, python_version=python_version, is_pypy=is_pypy)
     m.dump(x)
     if python_version:
         is_python3 = python_version >= (3, 0)
