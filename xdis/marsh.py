@@ -635,7 +635,7 @@ class _Unmarshaller:
 
     def load_code(self):
         argcount = self.r_long()
-        if self.python_version and self.python_version >= "3.0":
+        if self.python_version and self.python_version >= (3, 0):
             is_python3 = True
             kwonlyargcount = self.r_long()
         else:
@@ -1038,7 +1038,6 @@ _load_dispatch = _FastUnmarshaller.dispatch
 # user interface
 
 version = 1
-
 
 @builtinify
 def dump(x, f, version: int = version, python_version: tuple=PYTHON_VERSION_TRIPLE, is_pypy: Optional[bool]=None) -> None:

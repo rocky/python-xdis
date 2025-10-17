@@ -448,6 +448,9 @@ class _VersionIndependentUnmarshaller:
         return self.internStrings[refnum]
 
     def t_code(self, save_ref, bytes_for_s: bool = False):
+        """
+          Python code type in all of its horrific variations.
+        """
         # FIXME: use tables to simplify this?
         # FIXME: Python 1.0 .. 1.3 isn't well known
 
@@ -536,43 +539,30 @@ class _VersionIndependentUnmarshaller:
         co_freevars = tuple()
         co_cellvars = tuple()
 
-        if self.version_tuple >= (3, 11):
-            if self.is_pypy:
-                # FIXME: code has an object reference, but I don't
-                # see this in _marshal.py code for 3.11. I am missing
-                # something. Also, I don't know that it is indeed qualname.
-                # qualname which is a CPython 3.11 thing, isn't
-                # available in PyPy 3.11.
-                co_qualname = self.r_object(bytes_for_s=bytes_for_s)
+        if self.version_tuple >= (3, 11) and not self.is_pypy:
+            # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
+            co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
+            co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
 
-                co_firstlineno = unpack("<L", self.fp.read(4))[0]
-                co_lnotab = self.r_object(bytes_for_s=bytes_for_s)
-            else:
-                # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
-                co_localsplusnames = self.r_object(bytes_for_s=bytes_for_s)
-                co_localspluskinds = self.r_object(bytes_for_s=bytes_for_s)
+            CO_FAST_LOCAL = 0x20
+            CO_FAST_CELL = 0x40
+            CO_FAST_FREE = 0x80
 
-                CO_FAST_LOCAL = 0x20
-                CO_FAST_CELL = 0x40
-                CO_FAST_FREE = 0x80
-
-                for name, kind in zip(co_localsplusnames, co_localspluskinds):
-                    if kind & CO_FAST_LOCAL:
-                        co_varnames += (name,)
-                        if kind & CO_FAST_CELL:
-                            co_cellvars += (name,)
-                    elif kind & CO_FAST_CELL:
+            for name, kind in zip(co_localsplusnames, co_localspluskinds):
+                if kind & CO_FAST_LOCAL:
+                    co_varnames += (name,)
+                    if kind & CO_FAST_CELL:
                         co_cellvars += (name,)
-                    elif kind & CO_FAST_FREE:
-                        co_freevars += (name,)
+                elif kind & CO_FAST_CELL:
+                    co_cellvars += (name,)
+                elif kind & CO_FAST_FREE:
+                    co_freevars += (name,)
 
-                co_nlocals = len(co_varnames)
-                co_filename = self.r_object(bytes_for_s=bytes_for_s)
-                co_name = self.r_object(bytes_for_s=bytes_for_s)
-                co_qualname = self.r_object(bytes_for_s=bytes_for_s)
-                pass
+            co_nlocals = len(co_varnames)
+            co_filename = self.r_object(bytes_for_s=bytes_for_s)
+            co_name = self.r_object(bytes_for_s=bytes_for_s)
+            co_qualname = self.r_object(bytes_for_s=bytes_for_s)
             pass
-
         else:
             co_qualname = None
             if self.version_tuple >= (1, 3):
@@ -586,8 +576,11 @@ class _VersionIndependentUnmarshaller:
 
             co_filename = self.r_object(bytes_for_s=bytes_for_s)
             co_name = self.r_object(bytes_for_s=bytes_for_s)
+            if self.version_tuple >= (3, 11) and self.is_pypy:
+                co_qualname = self.r_object(bytes_for_s=bytes_for_s)
 
         co_exceptiontable = None
+
 
         if self.version_tuple >= (1, 5):
             if self.version_tuple >= (2, 3):
@@ -595,7 +588,7 @@ class _VersionIndependentUnmarshaller:
             else:
                 co_firstlineno = unpack("<h", self.fp.read(2))[0]
 
-            if self.version_tuple >= (3, 11):
+            if self.version_tuple >= (3, 11) and not self.is_pypy:
                 co_linetable = self.r_object(bytes_for_s=bytes_for_s)
                 co_lnotab = (
                     co_linetable  # will be parsed later in opcode.findlinestarts
