@@ -175,10 +175,3 @@ def verify_file(real_source_filename, real_bytecode_filename) -> None:
 
     compare_bytecode_files(bytecode_filename1, bytecode_filename2)
     return
-
-
-if __name__ == "__main__":
-    import importlib
-    pyc_path = importlib.util.cache_from_source(__file__)
-    print("Verifying", pyc_path)
-    verify_file(__file__, pyc_path)
