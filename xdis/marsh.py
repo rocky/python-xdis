@@ -27,8 +27,6 @@ there). Details of the format may change between Python versions.
 import struct
 import types
 from sys import intern
-from types import CodeType
-from typing import Optional
 
 from xdis.codetype import Code2, Code3
 from xdis.unmarshal import long
@@ -98,7 +96,7 @@ class _Marshaller:
     dispatch = {}
 
     def __init__(
-        self, writefunc, python_version: tuple, is_pypy: Optional[bool] = None
+        self, writefunc, python_version: tuple, is_pypy=None
     ) -> None:
         self._write = writefunc
         self.python_version = python_version
@@ -1041,7 +1039,7 @@ version = 1
 
 
 @builtinify
-def dump(x, f, version: int = version, python_version: tuple=PYTHON_VERSION_TRIPLE, is_pypy: Optional[bool]=None) -> None:
+def dump(x, f, version: int = version, python_version: tuple=PYTHON_VERSION_TRIPLE, is_pypy=None) -> None:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version, is_pypy)
     m.dump(x)
@@ -1058,7 +1056,7 @@ def dumps(
     x,
     version: int = version,
     python_version: tuple = PYTHON_VERSION_TRIPLE,
-    is_pypy: Optional[bool] = None,
+    is_pypy=None,
 ):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
