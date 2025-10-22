@@ -23,12 +23,13 @@ def test_load_file() -> None:
     obj_path = check_object_path(load_py)
     (
         version_tuple,
-        timestamp,
-        magic_int,
+        _timestamp,
+        _magic_int,
         co_module,
         pypy,
         source_size,
         sip_hash,
+        _file_offsets,
     ) = load_module(obj_path)
     if (3, 3) <= version_tuple <= (3, 7):
         statinfo = os.stat(load_py)

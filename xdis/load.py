@@ -142,7 +142,11 @@ def load_file(filename: str, out=sys.stdout) -> CodeType:
 
 
 def load_module(
-    filename: str, code_objects=None, fast_load: bool = False, get_code: bool = True
+    filename: str,
+    code_objects=None,
+    fast_load: bool = False,
+    get_code: bool = True,
+    save_file_offsets: bool = False,
 ):
     """load a module without importing it.
     Parameters:
@@ -197,11 +201,17 @@ def load_module(
             code_objects=code_objects,
             fast_load=fast_load,
             get_code=get_code,
+            save_file_offsets=save_file_offsets,
         )
 
 
 def load_module_from_file_object(
-    fp, filename="<unknown>", code_objects=None, fast_load=False, get_code=True
+    fp,
+    filename="<unknown>",
+    code_objects=None,
+    fast_load=False,
+    get_code=True,
+    save_file_offsets=False,
 ):
     """load a module from a file object without importing it.
 
@@ -212,6 +222,7 @@ def load_module_from_file_object(
         code_objects = {}
 
     timestamp = 0
+    file_offsets = {}
     try:
         magic = fp.read(4)
         magic_int = magic2int(magic)
@@ -233,7 +244,9 @@ def load_module_from_file_object(
             else:
                 raise ImportError(f"Bad magic number: '{magic}'")
 
-        if magic_int in [2657, 22138] + list(GRAAL3_MAGICS) + list(RUSTPYTHON_MAGICS) + list(JYTHON_MAGICS):
+        if magic_int in [2657, 22138] + list(GRAAL3_MAGICS) + list(
+            RUSTPYTHON_MAGICS
+        ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
             raise ImportError(f"Magic int {magic_int} ({version}) is not supported.")
 
@@ -323,14 +336,18 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
             if get_code:
-                if my_magic_int == magic_int:
+                if save_file_offsets:
+                    co, file_offsets = xdis.unmarshal.load_code_and_get_file_offsets(
+                        fp, magic_int, code_objects
+                    )
+
+                elif my_magic_int == magic_int:
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                     # Python 3.10 returns a tuple here?
                     if isinstance(co, tuple):
                         co = co[0]
                         assert isinstance(co, types.CodeType)
-
                 elif fast_load:
                     co = xdis.marsh.load(fp, magicint2version[magic_int])
                 else:
@@ -358,11 +375,12 @@ def load_module_from_file_object(
         is_pypy(magic_int, filename),
         source_size,
         sip_hash,
+        file_offsets,
     )
 
 
 def write_bytecode_file(
-    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize: int=0
+    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize: int = 0
 ) -> None:
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
@@ -399,7 +417,7 @@ def write_bytecode_file(
 if __name__ == "__main__":
     co = load_file(__file__)
     obj_path = check_object_path(__file__)
-    version, timestamp, magic_int, co2, pypy, source_size, sip_hash = load_module(
+    version, timestamp, magic_int, co2, pypy, source_size, sip_hash, file_offsets = load_module(
         obj_path
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)

@@ -146,6 +146,10 @@ class _VersionIndependentUnmarshaller:
         self.magic_int = magic_int
         self.code_objects = code_objects
 
+        # Save a list of offsets in the bytecode file where code
+        # objects starts.
+        self.code_to_file_offsets = {}
+
         self.bytes_for_s = bytes_for_s
         version = magic_int2tuple(self.magic_int)
         if version >= (3, 4):
@@ -457,6 +461,10 @@ class _VersionIndependentUnmarshaller:
         # FIXME: use tables to simplify this?
         # FIXME: Python 1.0 .. 1.3 isn't well known
 
+        # Go back one byte to TYPE_CODE "c" or "c" with the FLAG_REF
+        # set.
+        code_offset_in_file = self.fp.tell() - 1
+
         ret, i = self.r_ref_reserve(None, save_ref)
         self.version_tuple = magic_int2tuple(self.magic_int)
 
@@ -627,8 +635,11 @@ class _VersionIndependentUnmarshaller:
             version_triple=self.version_tuple,
         )
 
+        self.code_to_file_offsets[code] = code_offset_in_file
+
         self.code_objects[str(code)] = code
         ret = code
+
         return self.r_ref_insert(ret, i)
 
     # Since Python 3.4
@@ -653,3 +664,11 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
         fp, magic_int, bytes_for_s, code_objects=code_objects
     )
     return um_gen.load()
+
+def load_code_and_get_file_offsets(fp, magic_int, bytes_for_s: bool = False, code_objects={}) -> tuple:
+    if isinstance(fp, bytes):
+        fp = io.BytesIO(fp)
+    um_gen = _VersionIndependentUnmarshaller(
+        fp, magic_int, bytes_for_s, code_objects=code_objects
+    )
+    return um_gen.load(), um_gen.code_to_file_offsets
