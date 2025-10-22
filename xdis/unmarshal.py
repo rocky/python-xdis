@@ -512,6 +512,11 @@ class _VersionIndependentUnmarshaller:
         else:
             co_flags = 0
 
+        # In recording the address of co_code_offset_in file, skip
+        # the type code indicator, e.g. "bytes" in 3.x and the size
+        # of the string.
+        co_code_offset_in_file = self.fp.tell() + 5
+
         co_code = self.r_object(bytes_for_s=True)
 
         # FIXME: Check/verify that is true:
@@ -635,7 +640,7 @@ class _VersionIndependentUnmarshaller:
             version_triple=self.version_tuple,
         )
 
-        self.code_to_file_offsets[code] = code_offset_in_file
+        self.code_to_file_offsets[code] = (code_offset_in_file, co_code_offset_in_file)
 
         self.code_objects[str(code)] = code
         ret = code
