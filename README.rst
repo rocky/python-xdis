@@ -5,7 +5,7 @@
 xdis
 ====
 
-A Cross-Python bytecode disassembler, bytecode/wordcode and magic-number manipulation library/package.
+A Cross-Python bytecode disassembler, bytecode/wordcode, and magic-number manipulation library/package.
 
 I gave a talk that mentions using this at `BlackHat Asia 2024 <https://youtu.be/H-7ZNrpsV50?si=nOaixgYHr7RbILVS>`_.
 
@@ -57,7 +57,7 @@ Of course, for versions that predate wheels, like Python 2.6, you will have to u
 Installation
 ------------
 
-*For recent Python releases (Python 3.11+)*, you can install from PyPI using the name ``xdis``::
+*If you are using Python 3.11 or later*, you can install from PyPI using the name ``xdis``::
 
     pip install xdis
 
@@ -71,18 +71,16 @@ If the Python version you are running xdis is between Python 3.3 through 3.5, us
 
 If the Python version you are running xdis is between Python 3.6 through 3.11, use a tarball called xdis_36-*x.y.z*.tar.gz.
 
-If the Python version you are running xdis is 3.11 or later, use a called xdis-*x.y.z*.tar.gz.
+If the Python version you are running xdis is 3.11 or later, use a file called xdis-*x.y.z*.tar.gz.
 
 You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
 
-You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
-
-Similarly a tarball with without `_`*xx* works only from Python 3.11 or greater.
+Similarly, a tarball with or without the underscore *xx*,  e.g., xdis_36-*x.y.z*.tar.gz. works only from Python 3.11 or greater.
 
 Rationale for using Git Branches
 ++++++++++++++++++++++++++++++++
 
-It is currently impossible (if not impractical) to have one Python source code of this complexity and with this many features that can run both Python 2.7 and Python 3.13+. The languages have drifted so much, and Packing is vastly different. In fact, the packaging practice for Python 3.11+ is incompatible with Python 2.7 (and before back to Python 2.4), which favored "easy_install".
+It is currently impossible (if not impractical) to have one Python source code of this complexity and with this many features that can run both Python 2.7 and Python 3.13+. The languages have drifted so much, and packaging is vastly different. In fact, the packaging practice for Python 3.11+ is incompatible with Python 2.7 (and before back to Python 2.4), which favored "easy_install".
 
 
 Installation from source text
@@ -95,7 +93,7 @@ After setting the right branch::
 
    $ pip install -e .  # or pip install -e .[dev] to include testing package
 
-A GNU makefile is also provided so ``make install`` (possibly as root or sudo) will do the steps above.
+A GNU makefile is also provided, so ``make install`` (possibly as root or sudo) will do the steps above.
 
 
 Disassembler Example
@@ -103,7 +101,9 @@ Disassembler Example
 
 The cross-version disassembler that is packaged here can produce
 assembly listings that are superior to those typically found in
-Python's dis module. Here is an example::
+Python's dis module. Here is an example:
+
+.. code-block:: none
 
     pydisasm -S -F extended bytecode_3.8/pydisasm-example.pyc
     # pydisasm version 6.1.1.dev0
@@ -194,13 +194,13 @@ Python's dis module. Here is an example::
                   82 RETURN_VALUE         return None
 
 Note that some operand interpretation is performed on items in the stack as shown above.
-For example, in ::
+For example, in::
 
               24 LOAD_ATTR            (version) | sys.version
 
 from the instruction, see that ``sys.version`` is the resolved attribute that is loaded.
 
-Similarly in::
+Similarly, in::
 
               68 COMPARE_OP           (in) | power_of_two in (2, 4)
 
@@ -216,7 +216,7 @@ Testing
 
    $ make check
 
-A GNU makefile has been added to smooth over setting running the right
+A GNU makefile has been added to smooth over setting up running the right
 command, and running tests from fastest to slowest.
 
 If you have remake_ installed, you can see the list of all tasks
@@ -236,7 +236,7 @@ for usage help.
 
 
 As a drop-in replacement for dis
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 ``xdis`` also provides some support as a drop-in replacement for the
 Python library `dis <https://docs.python.org/3/library/dis.html>`_
@@ -261,6 +261,8 @@ See Also
 * https://pypi.org/project/decompyle3/ : Python Bytecode Deparsing for Python 3.7 and 3.8
 * https://pypi.org/project/xasm/ : Python Bytecode Assembler
 * https://pypi.org/project/x-python/ : Python Bytecode Interpreter written in Python
+* https://pypi.org/project/trepanxpy/ : Python Bytecode Debugger
+* https://pypi.org/project/python-control-flow/ : Python Bytecode Control-Flow analysis
 
 .. _trepan: https://pypi.python.org/pypi/trepan
 .. _debuggers: https://pypi.python.org/pypi/trepan3k

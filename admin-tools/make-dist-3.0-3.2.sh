@@ -1,5 +1,14 @@
 #!/bin/bash
-PACKAGE=xdis
+# The name Python's import uses.
+# It is reflected in the directory structure.
+PACKAGE_MODULE="xdis"
+
+# The name that PyPi sees this as.
+# It is set in setup.py's name.
+PACKAGE_NAME="xdis"
+
+# Both the name an module name agree.
+PACKAGE=$PACKAGE_NAME
 
 # FIXME put some of the below in a common routine
 function finish {
@@ -26,11 +35,25 @@ fi
 echo $__version__
 
 for pyversion in $PYVERSIONS; do
-    echo --- $pyversion ---
-    if [[ ${pyversion:0:4} == "pypy" ]] ; then
-	echo "$pyversion - PyPy does not get special packaging"
-	continue
-    fi
+    case ${pyversion:0:4} in
+	"graal" )
+	    echo "$pyversion - Graal does not get special packaging"
+	    continue
+	    ;;
+	"jyth" )
+	    echo "$pyversion - Jython does not get special packaging"
+	    continue
+	    ;;
+	"pypy" )
+	    echo "$pyversion - PyPy does not get special packaging"
+	    continue
+	    ;;
+	"pyst" )
+	    echo "$pyversion - Pyston does not get special packaging"
+	    continue
+	    ;;
+    esac
+    echo "*** Packaging ${PACKAGE_NAME} for version ${__version__} on Python ${pyversion} ***"
     if ! pyenv local $pyversion ; then
 	exit $?
     fi
@@ -57,6 +80,7 @@ python ./setup.py sdist
 
 tarball=dist/${PACKAGE}-${__version__}.tar.gz
 if [[ -f $tarball ]]; then
-    mv -v $tarball dist/${PACKAGE}_31-${__version__}.tar.gz
+    version_specific_tarball=dist/${PACKAGE_NAME}_30-${__version__}.tar.gz
+    mv -v $tarball $version_specific_tarball
 fi
 finish

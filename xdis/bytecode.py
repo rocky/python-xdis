@@ -497,7 +497,7 @@ def get_instructions_bytes(
                 linestarts=linestarts,
                 line_offset=0,
                 exception_entries=exception_entries,
-                labels=labels
+                labels=labels,
             )
         )
 
@@ -515,7 +515,9 @@ class Bytecode:
     Iterating over these yields the bytecode operations as Instruction instances.
     """
 
-    def __init__(self, x, opc, first_line=None, current_offset=None, dup_lines: bool=True) -> None:
+    def __init__(
+        self, x, opc, first_line=None, current_offset=None, dup_lines: bool = True
+    ) -> None:
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
         self._cell_names = ()
@@ -536,7 +538,11 @@ class Bytecode:
         self.opnames = opc.opname
         self.current_offset = current_offset
 
-        if opc.version_tuple >= (3, 11) and not opc.is_pypy and hasattr(co, "co_exceptiontable"):
+        if (
+            opc.version_tuple >= (3, 11)
+            and not opc.is_pypy
+            and hasattr(co, "co_exceptiontable")
+        ):
             self.exception_entries = parse_exception_table(co.co_exceptiontable)
         else:
             self.exception_entries = None
@@ -573,7 +579,11 @@ class Bytecode:
         """Return formatted information about the code object."""
         return format_code_info(self.codeobj, self.opc.version_tuple)
 
-    def dis(self, asm_format: str="classic", show_source: bool=False) -> str:
+    def dis(
+        self,
+        asm_format: str = "classic",
+        show_source: bool = False,
+    ) -> str:
         """Return a formatted view of the bytecode operations."""
         co = self.codeobj
         filename = co.co_filename
@@ -839,7 +849,9 @@ class Bytecode:
         )
 
 
-def list2bytecode(inst_list: Iterable, opc, varnames: str, consts: Tuple[None, int]) -> bytes:
+def list2bytecode(
+    inst_list: Iterable, opc, varnames: str, consts: Tuple[None, int]
+) -> bytes:
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """
