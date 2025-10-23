@@ -43,19 +43,25 @@ else:
     metavar="FUNCTION-OR-METHOD",
     multiple=True,
     type=str,
-    help=("Specify which specific methods or functions to show. "
-          "If omitted all, functions are shown. "
-          "Can be given multiple times.")
+    help=(
+        "Specify which specific methods or functions to show. "
+        "If omitted all, functions are shown. "
+        "Can be given multiple times."
+    ),
 )
-
 @click.option(
     "--show-source/--no-show-source",
     "-S",
     help="Intersperse Python source text from linecache if available.",
 )
+@click.option(
+    "--show-file-offsets/--no-show-file_offsets",
+    "-x",
+    help="Show bytecode file hex addresses for the start of each code object.",
+)
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format: list, method: tuple, show_source: bool, files):
+def main(format: list, method: tuple, show_source: bool, show_file_offsets, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -95,7 +101,14 @@ def main(format: list, method: tuple, show_source: bool, files):
             continue
 
         try:
-            disassemble_file(path, sys.stdout, format, show_source=show_source, methods=method)
+            disassemble_file(
+                path,
+                sys.stdout,
+                format,
+                show_source=show_source,
+                methods=method,
+                save_file_offsets=show_file_offsets,
+            )
         except (ImportError, NotImplementedError, ValueError) as e:
             print(e)
             rc = 3
