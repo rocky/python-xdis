@@ -40,6 +40,8 @@ Options:
   -m | --method      Specify which specific methods or functions to show.
                      If omitted all, functions are shown.
                      Can be given multiple times.
+  -x | --show-file-offsets
+                     Show bytecode file hex addresses for the start of each code object
 
 Examples:
   pydisasm foo.pyc
@@ -106,6 +108,8 @@ def main():
             methods.append(val)
         elif opt in ('-S', '--show-source'):
             show_source = True
+        elif opt in ('-x', '--show-file-offsets'):
+            show_file_offsets = True
         else:
             print(opt)
             sys.stderr.write(Usage_short)

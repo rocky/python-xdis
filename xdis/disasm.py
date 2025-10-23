@@ -86,6 +86,7 @@ def show_module_header(
     header=True,
     show_filename=True,
     is_graal=False,
+    file_offset=None,
 ):
     bytecode_version = ".".join((str(i) for i in version_tuple))
     real_out = out or sys.stdout
@@ -135,6 +136,8 @@ def show_module_header(
         real_out.write("# SipHash:           0x%x\n" % sip_hash)
     if show_filename:
         real_out.write("# Embedded file name: %s\n" % co.co_filename)
+    if file_offset:
+        real_out.write("# Position in bytecode file: 0x%x\n" % file_offset)
 
 
 def disco(
@@ -151,6 +154,7 @@ def disco(
     show_source=False,
     is_graal=False,
     methods=tuple(),
+    file_offsets={},
 ):
     """
     disassembles and deparses a given code block 'co'
@@ -177,7 +181,15 @@ def disco(
 
     if co.co_filename and asm_format != "xasm":
         if not_filtered(co, methods):
-            real_out.write(format_code_info(co, version_tuple, is_graal=is_graal) + "\n")
+            real_out.write(
+                format_code_info(
+                    co,
+                    version_tuple,
+                    is_graal=is_graal,
+                    file_offset=file_offsets.get(co),
+                )
+                + "\n"
+            )
         pass
 
     opc = get_opcode(version_tuple, is_pypy, alternate_opmap)
@@ -198,6 +210,7 @@ def disco(
             dup_lines=True,
             show_source=show_source,
             methods=methods,
+            file_offsets=file_offsets,
         )
 
 
@@ -210,6 +223,7 @@ def disco_loop(
     asm_format="classic",
     show_source=False,
     methods=tuple(),
+    file_offsets={},
 ):
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
@@ -225,7 +239,13 @@ def disco_loop(
         co = queue.popleft()
         if not_filtered(co, methods):
             if co.co_name not in ("<module>", "?"):
-                real_out.write("\n" + format_code_info(co, version_tuple) + "\n")
+                real_out.write(
+                    "\n"
+                    + format_code_info(
+                        co, version_tuple, file_offset=file_offsets.get(co)
+                    )
+                    + "\n"
+                )
 
         if asm_format == "dis":
             assert version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2], (
@@ -333,7 +353,8 @@ def disassemble_file(
     asm_format="classic",
     alternate_opmap=None,
     show_source=False,
-    methods=tuple()
+    methods=tuple(),
+    save_file_offsets: bool = False,
 ):
     """
     Disassemble Python byte-code file (.pyc).
@@ -344,6 +365,7 @@ def disassemble_file(
     If that fails, we'll compile internally for the Python version currently running.
     """
     pyc_filename = None
+    file_offsets = {}
     try:
         # FIXME: add whether we want PyPy
         pyc_filename = check_object_path(filename)
@@ -355,7 +377,8 @@ def disassemble_file(
             is_pypy,
             source_size,
             sip_hash,
-        ) = load_module(pyc_filename)
+            file_offsets,
+        ) = load_module(pyc_filename, save_file_offsets=save_file_offsets)
     except (ImportError, NotImplementedError, ValueError):
         raise
     except Exception:
@@ -408,6 +431,7 @@ def disassemble_file(
             show_source=show_source,
             is_graal=is_graal,
             methods=methods,
+            file_offsets=file_offsets,
         )
     # print co.co_filename
     return (
