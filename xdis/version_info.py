@@ -18,6 +18,7 @@
 
 import platform
 import sys
+from typing import Tuple
 
 PYTHON3 = sys.version_info >= (3, 0)
 
