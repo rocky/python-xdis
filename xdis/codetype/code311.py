@@ -35,8 +35,8 @@ Code311FieldNames = """
         co_nlocals
         co_stacksize
         co_flags
-        co_consts
         co_code
+        co_consts
         co_names
         co_varnames
         co_freevars
