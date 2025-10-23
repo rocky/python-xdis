@@ -264,6 +264,8 @@ def get_logical_instruction_at_offset(
 
     # label_maps = get_jump_target_maps(bytecode, opc)
 
+    fixed_length_instructions = is_fixed_wordsize_bytecode(opc)
+
     starts_line = None
     fixed_length_instructions = is_fixed_wordsize_bytecode(opc)
 
