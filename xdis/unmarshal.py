@@ -201,12 +201,11 @@ class _VersionIndependentUnmarshaller:
             self.internObjects.append(obj)
         return obj
 
-    # In marshal.c this is one big case statement
-    def r_object(self, bytes_for_s=False):
     # FIXME: remove bytes_fo_s parameter.
     # Now that we have git branches, isolated by Python version.
     # This is only needed in the Python 2.4 - 2.7 code branch.
->>>>>>> python-3.0-to-3.2
+    # In marshal.c this is one big case statement
+    def r_object(self, bytes_for_s=False):
         """
         Main object unmarshalling read routine.  Reads from self.fp
         the next byte which is a key in UNMARSHAL_DISPATCH_TABLE
