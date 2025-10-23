@@ -18,7 +18,6 @@
 # However, it appears that Python's names and code have been copied a bit heavily from
 # earlier versions of xdis (and without attribution).
 
-
 from xdis.util import (
     COMPILER_FLAG_NAMES,
     PYPY_COMPILER_FLAG_NAMES,
@@ -270,7 +269,7 @@ def pretty_flags(flags, is_pypy=False) -> str:
 
 
 def format_code_info(
-    co, version_tuple: tuple, name=None, is_pypy=False, is_graal=False
+    co, version_tuple: tuple, name=None, is_pypy=False, is_graal=False, file_offset=None
 ) -> str:
     if not name:
         name = co.co_name
@@ -282,6 +281,9 @@ def format_code_info(
     # Python before version 2.4 and earlier didn't store a name for the main routine.
     # Later versions use "<module>"
     lines.append("# Filename:          %s" % co.co_filename)
+
+    if file_offset:
+        lines.append("# Offset in file:    0x%x" % file_offset[0])
 
     if not is_graal:
         if version_tuple >= (1, 3):
@@ -345,6 +347,10 @@ def format_code_info(
                 lines.append("# %4d: %s" % i_n)
                 pass
             pass
+
+    if file_offset:
+        lines.append("# co_code offset in file: 0x%x" % file_offset[1])
+
     return "\n".join(lines)
 
 
