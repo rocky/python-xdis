@@ -44,7 +44,7 @@ PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384, 416)
 GRAAL3_MAGICS = (21150, 21280, 21290)
 JYTHON_MAGICS = (1011, 65526)
 
-# See below for mapping to version numbers
+# See below for mapping to version numbers.
 PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 320, 336, 384, 416)
 
 RUSTPYTHON_MAGICS = (
