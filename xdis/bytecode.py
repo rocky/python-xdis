@@ -221,6 +221,8 @@ def is_fixed_wordsize_bytecode(opc) -> bool:
     Python byte code instructions before to 3.6 was one or three bytes.
     3.6 and after, instructions were fixed at 2 bytes.
     """
+    # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
+    # See below FIXME.
     return True if opc.python_version >= (3, 6) else False
 
 def get_logical_instruction_at_offset(
@@ -254,10 +256,6 @@ def get_logical_instruction_at_offset(
 
     # label_maps = get_jump_target_maps(bytecode, opc)
 
-    # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
-    # See below FIXME.
-    # Python 3.6 starts fixed-length bytecode of 2 bytes per instruction.
-    # Before that and initially, bytecode was either 1 or 3 bytes.
     fixed_length_instructions = is_fixed_wordsize_bytecode(opc)
 
     starts_line = None
