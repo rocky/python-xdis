@@ -36,7 +36,7 @@ import re
 import struct
 import sys
 from importlib.util import MAGIC_NUMBER as MAGIC
-from typing import Dict, Set
+from typing import Dict, Set, Tuple
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
 
@@ -799,7 +799,7 @@ def magic_int2tuple(magic_int: int) -> tuple:
     return py_str2tuple(magicint2version[magic_int])
 
 
-def py_str2tuple(orig_version: str) -> tuple[int, int] | tuple[int, int, int]:
+def py_str2tuple(orig_version: str) -> Tuple[int, int] | Tuple[int, int, int]:
     """Convert a Python version into a tuple number,
     e.g. (2, 5), (3, 6).
 
