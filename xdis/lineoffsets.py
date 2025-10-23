@@ -113,7 +113,7 @@ class LineOffsetInfo(object):
 
 def lineoffsets_in_file(filename: str, toplevel_only=False) -> Optional[LineOffsetInfo]:
     obj_path = check_object_path(filename)
-    version, timestamp, magic_int, code, pypy, source_size, sip_hash = load_module(
+    version, timestamp, magic_int, code, pypy, source_size, sip_hash, _save_offsets = load_module(
         obj_path
     )
     if pypy:
