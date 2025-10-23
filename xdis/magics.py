@@ -36,7 +36,7 @@ import re
 import struct
 import sys
 from importlib.util import MAGIC_NUMBER as MAGIC
-from typing import Dict, Set
+from typing import Dict, Set, Tuple
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
 
