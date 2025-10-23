@@ -89,15 +89,16 @@ Type -h for for full help.""" % program
     try:
         opts, files = getopt.getopt(
             sys.argv[1:],
-            "hVF:m:S",
-            ["help", "version", "format", "method", "show-source"],
+            "hVF:m:xS",
+            ["help", "version", "format", "method", "show-file-offsets", "show-source"],
         )
-    except getopt.GetoptError(e):
-        sys.stderr.write("%s: %s\n" % (os.path.basename(sys.argv[0]), e))
+    except getopt.GetoptError:
+        sys.stderr.write("%s\n" % (os.path.basename(sys.argv[0])))
         sys.exit(-1)
 
     format = "classic"
     show_source = False
+    show_file_offsets=False
     methods = []
     for opt, val in opts:
         if opt in ("-h", "--help"):
@@ -148,7 +149,7 @@ Type -h for for full help.""" % program
                 format,
                 show_source=show_source,
                 methods=methods,
-                show_file_offsets=show_file_offsets,
+                save_file_offsets=show_file_offsets,
             )
         except (ImportError, NotImplementedError, ValueError):
             print(sys.exc_info()[1])
