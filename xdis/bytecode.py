@@ -92,7 +92,7 @@ def get_const_info(const_index, const_list):
 _get_const_info = get_const_info
 
 
-def get_name_info(name_index, name_list):
+def get_name_info(name_index: int, name_list) -> tuple:
     """Helper to get optional details about named references
 
     Returns the dereferenced name as both value and repr if the name
@@ -142,11 +142,6 @@ def get_optype(opcode: int, opc) -> str:
 
     return "??"
 
-
-# For compatibility
-_get_name_info = get_name_info
-
-
 def offset2line(offset: int, linestarts):
     """linestarts is expected to be a *list of (offset, line number)
     where both offset and line number are in increasing order.
@@ -189,7 +184,7 @@ _ExceptionTableEntry = collections.namedtuple(
 )
 
 
-def parse_exception_table(exception_table: bytes):
+def parse_exception_table(exception_table: bytes) -> list:
     iterator = iter(exception_table)
     entries = []
     try:
@@ -222,6 +217,13 @@ def prefer_double_quote(string: str) -> str:
         return f'"{string[1:-1]}"'
     return string
 
+def is_fixed_wordsize_bytecode(opc) -> bool:
+    """
+    Returns True if intructions in opc are fixed length (2 bytes)
+    Python byte code instructions before to 3.6 was one or three bytes.
+    3.6 and after, instructions were fixed at 2 bytes.
+    """
+    return True if opc.python_version >= (3, 6) else False
 
 def get_logical_instruction_at_offset(
     bytecode,
@@ -248,15 +250,17 @@ def get_logical_instruction_at_offset(
         # PERFORMANCE FIX: Only add exception labels if we're building labels ourselves
         # When called from get_instructions_bytes, labels already includes exception targets
         if exception_entries is not None:
-            for start, end, target, _, _ in exception_entries:
+            for _start, _end, target, _, _ in exception_entries:
                 if target not in labels:
                     labels.append(target)
 
     # label_maps = get_jump_target_maps(bytecode, opc)
 
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
-    # See below FIXME
-    python_36 = True if opc.python_version >= (3, 6) else False
+    # See below FIXME.
+    # Python 3.6 starts fixed-length bytecode of 2 bytes per instruction.
+    # Before that and initially, bytecode was either 1 or 3 bytes.
+    fixed_length_instructions = is_fixed_wordsize_bytecode(opc)
 
     starts_line = None
 
@@ -295,7 +299,7 @@ def get_logical_instruction_at_offset(
         argrepr = ""
         has_arg = op_has_argument(op, opc)
         if has_arg:
-            if python_36:
+            if fixed_length_instructions:
                 arg = code2num(bytecode, i) | extended_arg
                 extended_arg = (arg << 8) if opname == "EXTENDED_ARG" else 0
                 # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
@@ -325,19 +329,19 @@ def get_logical_instruction_at_offset(
                 argval, argrepr = _get_const_info(arg, constants)
             elif op in opc.NAME_OPS:
                 if opc.version_tuple >= (3, 11) and opname == "LOAD_GLOBAL":
-                    argval, argrepr = _get_name_info(arg >> 1, names)
+                    argval, argrepr = get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL + " + argrepr
                 elif opc.version_tuple >= (3, 12) and opname == "LOAD_ATTR":
-                    argval, argrepr = _get_name_info(arg >> 1, names)
+                    argval, argrepr = get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL|self + " + argrepr
                 elif opc.version_tuple >= (3, 12) and opname == "LOAD_SUPER_ATTR":
-                    argval, argrepr = _get_name_info(arg >> 2, names)
+                    argval, argrepr = get_name_info(arg >> 2, names)
                     if arg & 1:
                         argrepr = "NULL|self + " + argrepr
                 else:
-                    argval, argrepr = _get_name_info(arg, names)
+                    argval, argrepr = get_name_info(arg, names)
             elif op in opc.JREL_OPS:
                 signed_arg = -arg if "JUMP_BACKWARD" in opname else arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
@@ -368,19 +372,19 @@ def get_logical_instruction_at_offset(
                 ):
                     arg1 = arg >> 4
                     arg2 = arg & 15
-                    argval1, argrepr1 = _get_name_info(arg1, localsplusnames)
-                    argval2, argrepr2 = _get_name_info(arg2, localsplusnames)
+                    argval1, argrepr1 = get_name_info(arg1, localsplusnames)
+                    argval2, argrepr2 = get_name_info(arg2, localsplusnames)
                     argval = argval1, argval2
                     argrepr = argrepr1 + ", " + argrepr2
                 elif opc.version_tuple >= (3, 11):
-                    argval, argrepr = _get_name_info(arg, localsplusnames)
+                    argval, argrepr = get_name_info(arg, localsplusnames)
                 else:
-                    argval, argrepr = _get_name_info(arg, varnames)
+                    argval, argrepr = get_name_info(arg, varnames)
             elif op in opc.FREE_OPS:
                 if opc.version_tuple >= (3, 11):
-                    argval, argrepr = _get_name_info(arg, localsplusnames)
+                    argval, argrepr = get_name_info(arg, localsplusnames)
                 else:
-                    argval, argrepr = _get_name_info(arg, cells)
+                    argval, argrepr = get_name_info(arg, cells)
             elif op in opc.COMPARE_OPS:
                 if opc.python_version >= (3, 13):
                     # The fifth-lowest bit of the oparg now indicates a forced conversion to bool.
@@ -392,7 +396,10 @@ def get_logical_instruction_at_offset(
                 argrepr = argval
             elif op in opc.NARGS_OPS:
                 opname = opname
-                if python_36 and opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX"):
+                if fixed_length_instructions and opname in (
+                    "CALL_FUNCTION",
+                    "CALL_FUNCTION_EX",
+                ):
                     if opname == "CALL_FUNCTION":
                         argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
                     else:
@@ -400,7 +407,7 @@ def get_logical_instruction_at_offset(
                         argrepr = format_CALL_FUNCTION_EX(code2num(bytecode, i - 1))
                 else:
                     if not (
-                        python_36
+                        fixed_length_instructions
                         or opname in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
                     ):
                         argrepr = "%d positional, %d named" % (
@@ -410,7 +417,7 @@ def get_logical_instruction_at_offset(
             if hasattr(opc, "opcode_arg_fmt") and opname in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opname](arg)
         else:
-            if python_36:
+            if fixed_length_instructions:
                 i += 1
             if hasattr(opc, "opcode_arg_fmt") and opname in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opname](arg)
