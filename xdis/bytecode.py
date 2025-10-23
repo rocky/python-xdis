@@ -856,11 +856,6 @@ class Bytecode:
 
 
 def list2bytecode(inst_list, opc, varnames, consts: tuple):
-=======
-def list2bytecode(
-    inst_list: Iterable, opc, varnames: str, consts: Tuple[None, int]
-) -> bytes:
->>>>>>> python-3.6-to-3.10
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """

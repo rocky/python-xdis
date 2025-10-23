@@ -70,7 +70,7 @@ def show_module_header(
     header=True,
     show_filename=True,
     is_graal=False,
-    file_offset: Optional[int] = None,
+    file_offset=None,
 ) -> None:
     bytecode_version = ".".join((str(i) for i in version_tuple))
     real_out = out or sys.stdout
@@ -339,7 +339,7 @@ def disassemble_file(
     asm_format="classic",
     alternate_opmap=None,
     show_source=False,
-    methods=tuple()
+    methods=tuple(),
     save_file_offsets: bool = False,
 ):
     """
