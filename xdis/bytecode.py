@@ -96,7 +96,7 @@ def get_const_info(const_index, const_list):
 _get_const_info = get_const_info
 
 
-def get_name_info(name_index: int, name_list):
+def get_name_info(name_index, name_list):
     """Helper to get optional details about named references
 
     Returns the dereferenced name as both value and repr if the name
@@ -146,7 +146,7 @@ def get_optype(opcode, opc):
 
     return "??"
 
-def offset2line(offset: int, linestarts):
+def offset2line(offset, linestarts):
     """linestarts is expected to be a *list of (offset, line number)
     where both offset and line number are in increasing order.
     Return the closest line number at or below the offset.
@@ -227,6 +227,7 @@ def is_fixed_wordsize_bytecode(opc):
     Python byte code instructions before to 3.6 was one or three bytes.
     3.6 and after, instructions were fixed at 2 bytes.
     """
+    # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
     if opc.python_version >= (3, 6):
         return True
     else:
@@ -263,9 +264,8 @@ def get_logical_instruction_at_offset(
 
     # label_maps = get_jump_target_maps(bytecode, opc)
 
-    # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
-
     starts_line = None
+    fixed_length_instructions = is_fixed_wordsize_bytecode(opc)
 
     n = len(bytecode)
 
@@ -879,7 +879,7 @@ class Bytecode:
         )
 
 
-def list2bytecode(inst_list, opc, varnames, consts: tuple):
+def list2bytecode(inst_list, opc, varnames, consts):
     """Convert list/tuple of list/tuples to bytecode
     _names_ contains a list of name objects
     """

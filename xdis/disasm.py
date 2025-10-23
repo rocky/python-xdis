@@ -354,7 +354,7 @@ def disassemble_file(
     alternate_opmap=None,
     show_source=False,
     methods=tuple(),
-    save_file_offsets: bool = False,
+    save_file_offsets=False,
 ):
     """
     Disassemble Python byte-code file (.pyc).

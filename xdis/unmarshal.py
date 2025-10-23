@@ -655,7 +655,7 @@ def load_code(fp, magic_int, bytes_for_s=None, code_objects={}):
     )
     return um_gen.load()
 
-def load_code_and_get_file_offsets(fp, magic_int, bytes_for_s: bool = False, code_objects={}) -> tuple:
+def load_code_and_get_file_offsets(fp, magic_int, bytes_for_s=False, code_objects={}):
     if isinstance(fp, bytes):
         fp = io.BytesIO(fp)
     um_gen = _VersionIndependentUnmarshaller(

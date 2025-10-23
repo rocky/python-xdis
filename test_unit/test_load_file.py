@@ -18,8 +18,8 @@ class LoadFileTests(unittest.TestCase):
 
         co_file = load_file(load_py)
         obj_path = check_object_path(load_py)
-        (version, timestamp, magic_int, co_module, pypy,
-         source_size, sip_hash) = load_module(obj_path)
+        (version, _timestamp, _magic_int, co_module, pypy,
+         source_size, sip_hash, _) = load_module(obj_path)
         if 3.3 <= version <= 3.7:
             statinfo = os.stat(load_py)
             self.assertEqual(statinfo.st_size, source_size)

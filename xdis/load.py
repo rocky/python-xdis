@@ -144,7 +144,10 @@ def load_file(filename, out=sys.stdout):
 
 
 def load_module(
-    filename, code_objects=None, fast_load = False, get_code = True
+    filename,
+    code_objects=None,
+    fast_load=False,
+    get_code=True,
     save_file_offsets=False,
 ):
     """load a module without importing it.
@@ -250,7 +253,9 @@ def load_module_from_file_object(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
-            raise ImportError("Magic int %s (%s) is not supported." % (magic_int, version))
+            raise ImportError(
+                "Magic int %s (%s) is not supported." % (magic_int, version)
+            )
 
         if magic_int in (
             3010,
@@ -421,8 +426,8 @@ def write_bytecode_file(
 if __name__ == "__main__":
     co = load_file(__file__)
     obj_path = check_object_path(__file__)
-    version, timestamp, magic_int, co2, pypy, source_size, sip_hash, file_offsets = load_module(
-        obj_path
+    version, timestamp, magic_int, co2, pypy, source_size, sip_hash, file_offsets = (
+        load_module(obj_path)
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:

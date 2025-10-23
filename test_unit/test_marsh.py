@@ -25,16 +25,16 @@ class MarshalTest(unittest.TestCase):
         mod_file = os.path.join(get_srcdir(), '..', 'test', 'bytecode_2.5',
                             '02_complex.pyc')
 
-        (version, timestamp, magic_int, co, is_pypy,
-         source_size, sip_hash) = load_module(mod_file)
+        (version, _timestamp, _magic_int, co, _is_pypy,
+        _source_size, _sip_hash, _) = load_module(mod_file)
         self.assertEqual(version[:2], (2, 5),
                          "Should have picked up Python version properly")
         self.assertEqual(co.co_consts, (5j, None), "Code should have a complex constant")
 
         mod_file = os.path.join(get_srcdir(), '..', 'test', 'bytecode_3.3',
                             '06_frozenset.pyc')
-        (version, timestamp, magic_int, co, is_pypy,
-         source_size, sip_hash) = load_module(mod_file)
+        (version, _timestamp, _magic_int, co, _is_pypy,
+         _source_size, _sip_hash, _) = load_module(mod_file)
         expect = (0, None, 'attlist', 'linktype', 'link', 'element', 'Yep',
                       frozenset(['linktype', 'attlist', 'element', 'link']))
         self.assertEqual(co.co_consts, expect, "Should handle frozenset")

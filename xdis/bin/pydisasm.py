@@ -15,7 +15,7 @@ from xdis import disassemble_file
 from xdis.version import __version__
 from xdis.version_info import PYTHON_VERSION_STR, PYTHON_VERSION_TRIPLE
 
-FORMATS=("xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header")
+FORMATS = ("xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header")
 
 program, ext = os.path.splitext(os.path.basename(__file__))
 
@@ -51,7 +51,8 @@ Examples:
 
 """
 
-PATTERNS = ('*.pyc', '*.pyo')
+PATTERNS = ("*.pyc", "*.pyo")
+
 
 def main():
     """Disassembles a Python bytecode file.
@@ -61,10 +62,16 @@ def main():
     the Python interpreter used to run this program. For example, you can disassemble Python 3.6.9
     bytecode from Python 2.7.15 and vice versa.
     """
+    Usage_short = """usage:
+   %s FILE...
+Type -h for for full help.""" % program
+
     if not ((2, 4) <= PYTHON_VERSION_TRIPLE < (3, 0)):
         mess = "This code works on 2.4 to 2.7; you have %s."
         if (3, 0) <= PYTHON_VERSION_TRIPLE <= (3, 2):
-            mess += " Code that works for %s can be found in the python-3.0-to-3.3 branch\n"
+            mess += (
+                " Code that works for %s can be found in the python-3.0-to-3.3 branch\n"
+            )
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
             mess += " Code that works for %s can be found in the python-3.3-to-3.10 branch\n"
         elif (3, 6) <= PYTHON_VERSION_TRIPLE <= (3, 10):
@@ -80,35 +87,38 @@ def main():
         sys.exit(1)
 
     try:
-        opts, files = getopt.getopt(sys.argv[1:], 'hVF:m:S',
-                                    ["help", "version", "format", "method",
-                                     "show-source"])
+        opts, files = getopt.getopt(
+            sys.argv[1:],
+            "hVF:m:S",
+            ["help", "version", "format", "method", "show-source"],
+        )
     except getopt.GetoptError(e):
-        sys.stderr.write('%s: %s\n' % (os.path.basename(sys.argv[0]), e))
+        sys.stderr.write("%s: %s\n" % (os.path.basename(sys.argv[0]), e))
         sys.exit(-1)
 
     format = "classic"
     show_source = False
     methods = []
     for opt, val in opts:
-        if opt in ('-h', '--help'):
+        if opt in ("-h", "--help"):
             print(__doc__)
             sys.exit(1)
-        elif opt in ('-V', '--version'):
+        elif opt in ("-V", "--version"):
             print("%s %s" % (program, __version__))
             sys.exit(0)
-        elif opt in ('-F', '--format'):
+        elif opt in ("-F", "--format"):
             if val not in FORMATS:
-                sys.stderr.write(("Invalid format option %s\n" +
-                                 "Should be one of: %s\n") %
-                                 (val, ", ".join(FORMATS)))
+                sys.stderr.write(
+                    ("Invalid format option %s\n" + "Should be one of: %s\n")
+                    % (val, ", ".join(FORMATS))
+                )
                 sys.exit(2)
             format = val
-        elif opt in ('-m', '--method'):
+        elif opt in ("-m", "--method"):
             methods.append(val)
-        elif opt in ('-S', '--show-source'):
+        elif opt in ("-S", "--show-source"):
             show_source = True
-        elif opt in ('-x', '--show-file-offsets'):
+        elif opt in ("-x", "--show-file-offsets"):
             show_file_offsets = True
         else:
             print(opt)
@@ -132,11 +142,19 @@ def main():
             continue
 
         try:
-            disassemble_file(path, sys.stdout, format, show_source=show_source, methods=methods)
+            disassemble_file(
+                path,
+                sys.stdout,
+                format,
+                show_source=show_source,
+                methods=methods,
+                show_file_offsets=show_file_offsets,
+            )
         except (ImportError, NotImplementedError, ValueError):
             print(sys.exc_info()[1])
             rc = 3
     sys.exit(rc)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

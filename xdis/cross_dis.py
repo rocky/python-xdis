@@ -275,11 +275,6 @@ def pretty_flags(flags, is_pypy=False):
 
 
 def format_code_info(co, version_tuple, name=None, is_pypy=False, is_graal=False, file_offset=None):
-=======
-def format_code_info(
-    co, version_tuple: tuple, name=None, is_pypy=False, is_graal=False, file_offset=None
-) -> str:
->>>>>>> python-3.0-to-3.2
     if not name:
         name = co.co_name
     lines = []
