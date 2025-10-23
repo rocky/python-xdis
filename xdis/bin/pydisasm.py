@@ -1,5 +1,5 @@
 # Mode: -*- python -*-
-# Copyright (c) 2015-2021 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2021, 2025 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
@@ -62,7 +62,7 @@ else:
 )
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format: list[str], method: tuple, show_source: bool, show_file_offsets, files):
+def main(format: List[str], method: tuple, show_source: bool, show_file_offsets, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
