@@ -251,7 +251,11 @@ class _Marshaller:
 
     def dump_string(self, x) -> None:
         # Python 3.11 seems to add the object ref flag bit for strings.
-        type_string = TYPE_STRING if self.python_version < (3, 11) else chr(ord(TYPE_STRING) | FLAG_REF)
+        type_string = (
+            TYPE_STRING
+            if self.python_version < (3, 11)
+            else chr(ord(TYPE_STRING) | FLAG_REF)
+        )
         self._write(type_string)
         self.w_long(len(x))
         self._write(x)
@@ -1039,15 +1043,22 @@ _load_dispatch = _FastUnmarshaller.dispatch
 
 version = 1
 
+
 @builtinify
-def dump(x, f, version: int = version, python_version: tuple=PYTHON_VERSION_TRIPLE, is_pypy: Optional[bool]=None) -> None:
+def dump(
+    x,
+    f,
+    version: int = version,
+    python_version: tuple = PYTHON_VERSION_TRIPLE,
+    is_pypy: Optional[bool] = None,
+) -> None:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version, is_pypy)
     m.dump(x)
 
 
 @builtinify
-def load(f, python_version: tuple=PYTHON_VERSION_TRIPLE, is_pypy=None):
+def load(f, python_version: tuple = PYTHON_VERSION_TRIPLE, is_pypy=None):
     um = _Unmarshaller(f.read, python_version, is_pypy)
     return um.load()
 
@@ -1055,11 +1066,9 @@ def load(f, python_version: tuple=PYTHON_VERSION_TRIPLE, is_pypy=None):
 @builtinify
 def dumps(
     x,
-    version: int = version,
     python_version: tuple = PYTHON_VERSION_TRIPLE,
     is_pypy: Optional[bool] = None,
 ):
-    # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version, is_pypy=is_pypy)
     m.dump(x)

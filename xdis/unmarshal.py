@@ -34,15 +34,11 @@ from typing import Optional, Union
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
-from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
+from xdis.version_info import version_tuple_to_str
 
-if PYTHON3:
 
-    def long(n: int) -> LongTypeForPython3:
-        return LongTypeForPython3(n)
-
-else:
-    import unicodedata
+def long(n: int) -> LongTypeForPython3:
+    return LongTypeForPython3(n)
 
     # FIXME: we should write a bytes() class with a repr
     # that prints the b'' prefix so that Python2 can
@@ -114,19 +110,8 @@ def compat_str(s: Union[str, bytes]) -> Union[str, bytes]:
         return s
 
 
-def compat_u2s(u):
-    if PYTHON_VERSION_TRIPLE < (3, 0):
-        # See also ``unaccent.py`` which can be found using Google. I
-        # found it and this code via
-        # https://www.peterbe.com/plog/unicode-to-ascii where it is a
-        # dead link. That can potentially do a better job in converting accents.
-        s = unicodedata.normalize("NFKD", u)
-        try:
-            return s.encode("ascii")
-        except UnicodeEncodeError:
-            return s
-    else:
-        return str(u)
+def compat_u2s(u) -> str:
+    return str(u)
 
 
 class _VersionIndependentUnmarshaller:
@@ -389,7 +374,7 @@ class _VersionIndependentUnmarshaller:
     def t_unicode(self, save_ref, bytes_for_s: bool = False):
         strsize = unpack("<i", self.fp.read(4))[0]
         unicodestring = self.fp.read(strsize)
-        if PYTHON_VERSION_TRIPLE >= (3, 0) and self.version_tuple < (3, 0):
+        if self.version_tuple < (3, 0):
             string = UnicodeForPython3(unicodestring)
         else:
             string = unicodestring.decode()
@@ -524,7 +509,7 @@ class _VersionIndependentUnmarshaller:
         co_code = self.r_object(bytes_for_s=True)
 
         # FIXME: Check/verify that is true:
-        bytes_for_s = PYTHON_VERSION_TRIPLE >= (3, 0) and (self.version_tuple > (3, 0))
+        bytes_for_s = self.version_tuple > (3, 0)
         if self.is_graal:
             co_consts = tuple()
             co_names = tuple()
