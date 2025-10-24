@@ -1047,7 +1047,6 @@ version = 1
 def dump(
     x,
     f,
-    version: int = version,
     python_version: tuple = PYTHON_VERSION_TRIPLE,
     is_pypy: Optional[bool] = None,
 ) -> None:
