@@ -113,7 +113,6 @@ def compat_str(s: Union[str, bytes]) -> Union[str, bytes]:
 def compat_u2s(u) -> str:
     return str(u)
 
-
 class _VersionIndependentUnmarshaller:
     def __init__(self, fp, magic_int, bytes_for_s, code_objects={}) -> None:
         """
