@@ -68,7 +68,9 @@ def compare_showing_error(orig_path: str, new_path: str):
     """
     orig_bytes = open(orig_path, "rb").read()
     new_bytes = open(new_path, "rb").read()
-    if (orig_n := len(orig_bytes)) != (new_n := len(new_bytes)):
+    orig_n = len(orig_bytes)
+    new_n = len(new_bytes)
+    if orig_n != new_n:
         print(f"MISMATCH: original has {orig_n} bytes; new has {new_n} bytes", file=sys.stderr)
 
     for i, (old_byte, new_byte) in enumerate(zip(orig_bytes, new_bytes)):
