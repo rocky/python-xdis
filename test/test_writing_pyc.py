@@ -33,10 +33,7 @@ import os
 import os.path as osp
 import sys
 import tempfile
-import types
-from typing import List, Union
 
-from xdis.codetype.base import CodeBase
 from xdis.load import load_module_from_file_object, write_bytecode_file
 from xdis.version_info import version_tuple_to_str
 
@@ -48,7 +45,7 @@ from xdis.version_info import version_tuple_to_str
 # )
 
 
-def compare_consts(c1: tuple, c2: tuple) -> bool:
+def compare_consts(c1, c2):
     """Compare tuples of constants, recursing into code objects when found."""
     if len(c1) != len(c2):
         return False
@@ -62,22 +59,24 @@ def compare_consts(c1: tuple, c2: tuple) -> bool:
                 return False
     return True
 
-def compare_showing_error(orig_path: str, new_path: str):
+def compare_showing_error(orig_path, new_path):
     """
       Compare file contents sizes if those mismatch and the first hex offset that the differ.
     """
     orig_bytes = open(orig_path, "rb").read()
     new_bytes = open(new_path, "rb").read()
-    if (orig_n := len(orig_bytes)) != (new_n := len(new_bytes)):
-        print(f"MISMATCH: original has {orig_n} bytes; new has {new_n} bytes", file=sys.stderr)
+    orig_n = len(orig_bytes)
+    new_n = len(new_bytes)
+    if orig_n != new_n:
+        print("MISMATCH: original has %s bytes; new has %s bytes" % (orig_n, new_n))
 
     for i, (old_byte, new_byte) in enumerate(zip(orig_bytes, new_bytes)):
         if (old_byte != new_byte):
-            print(f"MISMATCH at {hex(i)}: old {hex(old_byte)}; new: {hex(new_byte)}", file=sys.stderr)
+            print("MISMATCH at %s: old %s; new: %s" % (hex(i), hex(old_byte), hex(new_byte)))
             return
 
 
-def get_code_attrs(co: Union[CodeBase, types.CodeType]) -> dict:
+def get_code_attrs(co):
     """
     Extract a set of attributes from a code object that are stable for comparison.
     This is defensive: only include an attribute if it exists on the object.
@@ -104,9 +103,7 @@ def get_code_attrs(co: Union[CodeBase, types.CodeType]) -> dict:
     return attrs
 
 
-def compare_code_objects(
-    a: Union[CodeBase, types.CodeType], b: Union[CodeBase, types.CodeType]
-) -> bool:
+def compare_code_objects(a, b):
     """
     Compare two code objects by a selection of attributes.
     This function attempts to be permissive across Python implementations
@@ -164,47 +161,50 @@ def compare_code_objects(
 #         raise TypeError(mess)
 #     return
 
-def load_meta_and_code_from_filename(path: str):
+def load_meta_and_code_from_filename(path):
     """
     Open path and use load_module_from_file_object to get:
     (version_tuple, timestamp, magic_int, co, is_pypy, source_size, sip_hash, file_offsets)
     """
-    with open(path, "rb") as fp:
-        return load_module_from_file_object(fp, filename=path, get_code=True)
+    fp = open(path, "rb")
+    result = load_module_from_file_object(fp, filename=path, get_code=True)
+    fp.close()
+    return result
 
 
-def main(argv: List[str]) -> int:
+def main(argv):
     # parser = argparse.ArgumentParser(
     #     description="Load a .pyc with xdis, rewrite it to a temporary file, and compare."
     # )
     # parser.add_argument("pycfile", help="Path to the .pyc (or other bytecode) file")
     # args = parser.parse_args(argv)
     if len(argv) < 2:
-        print("ERROR: you need to pass a pyc file", file=sys.stderr)
+        print("ERROR: you need to pass a pyc file")
         return 1
 
     orig_path = argv[1]
     if not osp.exists(orig_path):
-        print(f"ERROR: file does not exist: {orig_path}", file=sys.stderr)
+        print("ERROR: file does not exist: %s" % orig_path)
         return 2
     if not osp.isfile(orig_path):
-        print(f"ERROR: not a file: {orig_path}", file=sys.stderr)
+        print("ERROR: not a file: %s" % orig_path)
         return 2
 
     # Load original using the file-object loader (it will close the file for us)
+    from trepan.api import debug; debug()
     try:
         (
             orig_version,
             orig_timestamp,
             orig_magic_int,
             orig_co,
-            orig_is_pypy,
+            _orig_is_pypy,
             orig_source_size,
-            orig_sip_hash,
-            orig_file_offsets,
+            _orig_sip_hash,
+            _orig_file_offsets,
         ) = load_meta_and_code_from_filename(orig_path)
-    except Exception as e:
-        print(f"ERROR: failed to load original bytecode file: {e}", file=sys.stderr)
+    except Exception:
+        print("ERROR: failed to load original bytecode file: %s" % orig_path)
         return 3
 
     tf_name_base = osp.basename(orig_path)
@@ -214,10 +214,10 @@ def main(argv: List[str]) -> int:
         tf_name_base = tf_name_base[: -len(".pyo")]
 
     version_str = version_tuple_to_str(orig_version)
-    tf_name_base += f"-{version_str}-"
+    tf_name_base += ("-%s-" % version_str)
 
     # Write to a temporary file using write_bytecode_file
-    tf = tempfile.NamedTemporaryFile(prefix=tf_name_base, suffix=".pyc", delete=False)
+    tf = tempfile.NamedTemporaryFile(prefix=tf_name_base, suffix=".pyc")
     tf_name = tf.name
     tf.close()  # write_bytecode_file will open/write the file itself
 
@@ -235,16 +235,16 @@ def main(argv: List[str]) -> int:
             write_bytecode_file(
                 tf_name, orig_co, orig_magic_int, orig_timestamp, orig_source_size or 0
             )
-        except Exception as e:
-            print(f"ERROR: failed to write bytecode file: {e}", file=sys.stderr)
+        except Exception:
+            print("ERROR: failed to write bytecode file")
             # Cleanup
             try:
                 os.unlink(tf_name)
             except Exception:
                 pass
             return 4
-    except Exception as e:
-        print(f"ERROR: failed to write bytecode file: {e}", file=sys.stderr)
+    except Exception:
+        print("ERROR: failed to write bytecode file")
         try:
             os.unlink(tf_name)
         except Exception:
@@ -255,8 +255,8 @@ def main(argv: List[str]) -> int:
     same_bytes = False
     try:
         same_bytes = filecmp.cmp(orig_path, tf_name, shallow=False)
-    except Exception as e:
-        print(f"WARNING: could not do raw byte comparison: {e}", file=sys.stderr)
+    except Exception:
+        print("WARNING: could not do raw byte comparison")
 
     print("Original file:", orig_path)
     print("Rewritten file:", tf_name)
