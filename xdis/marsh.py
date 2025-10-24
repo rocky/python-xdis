@@ -27,7 +27,6 @@ there). Details of the format may change between Python versions.
 import struct
 import types
 from sys import intern
-from typing import Optional
 
 from xdis.codetype import Code2, Code3
 from xdis.unmarshal import long
