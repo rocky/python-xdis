@@ -176,6 +176,8 @@ def load_meta_and_code_from_filename(path: str):
 
 
 def main(argv: List[str]) -> int:
+
+    unlink_on_success = False
     # parser = argparse.ArgumentParser(
     #     description="Load a .pyc with xdis, rewrite it to a temporary file, and compare."
     # )
@@ -264,6 +266,8 @@ def main(argv: List[str]) -> int:
     print("Rewritten file:", tf_name)
     print("Raw-bytes identical:", same_bytes)
     if same_bytes:
+        if unlink_on_success:
+            os.unlink(tf_name)
         return 0
 
     compare_showing_error(orig_path, tf_name)
