@@ -973,8 +973,14 @@ _load_dispatch = _FastUnmarshaller.dispatch
 
 version = 1
 
+
 @builtinify
-def dump(x, f, version=version, python_version=PYTHON_VERSION_TRIPLE, is_pypy=None):
+def dump(
+    x,
+    f,
+    python_version = PYTHON_VERSION_TRIPLE,
+    is_pypy = None,
+):
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version, is_pypy)
     m.dump(x)
@@ -989,11 +995,9 @@ def load(f, python_versione=PYTHON_VERSION_TRIPLE, is_pypy=None):
 @builtinify
 def dumps(
     x,
-    version=version,
     python_version=PYTHON_VERSION_TRIPLE,
     is_pypy=None,
 ):
-    # XXX 'version' is ignored, we always dump in a version-0-compatible format
     buffer = []
     m = _Marshaller(buffer.append, python_version=python_version, is_pypy=is_pypy)
     m.dump(x)

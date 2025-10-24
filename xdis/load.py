@@ -395,10 +395,10 @@ def write_bytecode_file(
     magic_int (i.e. bytecode associated with some version of Python)
     """
     fp = open(bytecode_path, "wb")
-    version = py_str2tuple(magicint2version[magic_int])
-    if version >= (3, 0):
+    version_tuple = py_str2tuple(magicint2version[magic_int])
+    if version_tuple >= (3, 0):
         fp.write(pack("<Hcc", magic_int, "\r", "\n"))
-        if version >= (3, 7):  # pep552 bytes
+        if version_tuple >= (3, 7):  # pep552 bytes
             fp.write(pack("<I", 0))  # pep552 bytes
     else:
         fp.write(pack("<Hcc", magic_int, "\r", "\n"))
@@ -413,13 +413,13 @@ def write_bytecode_file(
     else:
         fp.write(pack("<I", int(datetime.now().timestamp())))
 
-    if version >= (3, 3):
+    if version_tuple >= (3, 3):
         # In Python 3.3+, these 4 bytes are the size of the source code_obj file (mod 2^32)
         fp.write(pack("<I", filesize))
     if isinstance(code_obj, types.CodeType):
         fp.write(marshal.dumps(code_obj))
     else:
-        fp.write(xdis.marsh.dumps(code_obj))
+        fp.write(xdis.marsh.dumps(code_obj, python_version=version_tuple))
     fp.close()
 
 
