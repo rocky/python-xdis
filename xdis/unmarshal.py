@@ -33,7 +33,7 @@ from struct import unpack
 from xdis.codetype.code13 import Bytes
 from xdis.codetype import to_portable
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
-from xdis.version_info import version_tuple_to_str
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 if PYTHON_VERSION_TRIPLE < (2, 4):
     from sets import Set as set
@@ -382,7 +382,7 @@ class _VersionIndependentUnmarshaller:
     def t_unicode(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
         unicodestring = self.fp.read(strsize)
-        if self.version_tuple < (3, 0):
+        if self.version_tuple < (3, 0) or PYTHON_VERSION_TRIPLE < (2, 5):
             string = unicodestring.decode("utf-8")
         else:
             string = unicodestring.decode("utf-8", errors="ignore")

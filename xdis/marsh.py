@@ -987,7 +987,7 @@ def dump(
 
 
 @builtinify
-def load(f, python_versione=PYTHON_VERSION_TRIPLE, is_pypy=None):
+def load(f, python_version=PYTHON_VERSION_TRIPLE, is_pypy=None):
     um = _Unmarshaller(f.read, python_version, is_pypy)
     return um.load()
 
