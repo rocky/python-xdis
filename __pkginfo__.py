@@ -61,6 +61,7 @@ author_email = "rb@dustyfeet.com"
 entry_points = {
     "console_scripts": [
         "pydisasm=xdis.bin.pydisasm:main",
+        "roundtrip-pyc=xdis.roundtrip_pyc:main",
     ]
 }
 ftp_url = None
