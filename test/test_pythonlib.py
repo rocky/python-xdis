@@ -109,11 +109,11 @@ for vers in (
     "3.12",
     "3.13",
 ):
-    bytecode = "bytecode_%s" % vers
-    key = "bytecode-%s" % vers
+    bytecode = f"bytecode_{vers}"
+    key = f"bytecode-{vers}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYC, bytecode, vers)
-    key = "%s" % vers
-    pythonlib = "python%s" % vers
+    key = f"{vers}"
+    pythonlib = f"python{vers}"
     if isinstance(vers, float) and vers >= 3.0:
         pythonlib = os.path.join(src_dir, pythonlib, "__pycache__")
     test_options[key] = (os.path.join(lib_prefix, pythonlib), PYOC, pythonlib, vers)
@@ -129,10 +129,10 @@ for vers, vers_dot in (
     (312, 3.12),
     (313, 3.13),
 ):
-    bytecode = "bytecode_pypy%s" % vers
-    key = "bytecode-pypy%s" % vers
+    bytecode = f"bytecode_pypy{vers}"
+    key = f"bytecode-pypy{vers}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
-    key = "bytecode-pypy%s" % vers_dot
+    key = f"bytecode-pypy{vers_dot}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
 
 
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         if os.path.isdir(src_dir):
             checked_dirs.append([src_dir, pattern, target_dir])
         else:
-            sys.stderr.write("Can't find directory %s. Skipping\n" % src_dir)
+            sys.stderr.write(f"Can't find directory {src_dir}. Skipping\n")
             continue
         last_compile_version = compiled_version
         pass
