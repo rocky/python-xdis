@@ -8,10 +8,12 @@ repos:
     - id: debug-statements
       stages: [commit]
     - id: end-of-file-fixer
+      exclude: '^pytest/testdata|^test/simple_source'
       exclude: '^pytest/testdata'
       stages: [commit]
 -   repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
+        exclude: '^pytest/testdata|^test/simple_source'
         stages: [commit]
