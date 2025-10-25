@@ -127,8 +127,11 @@ class _Marshaller:
                     raise ValueError("unmarshallable object")
             func(self, x)
 
-    def dump_linetable(self, s) -> None:
-        type_code = TYPE_STRING if self.python_version < (3, 5) else TYPE_UNICODE
+    def dump_linetable(self, s):
+        if self.python_version < (3, 5):
+            type_code = TYPE_STRING
+        else:
+            type_code = TYPE_UNICODE
         self._write(type_code)
         self.w_long(len(s))
         self._write(s)
