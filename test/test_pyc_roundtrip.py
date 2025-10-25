@@ -35,8 +35,6 @@ Step 2: Run the test:
   test_pyc_roundtrip.py --mylib --verify # decompile verify 'mylib'
 """
 
-from __future__ import print_function
-
 import getopt
 import os
 import sys
@@ -195,12 +193,16 @@ def do_tests(src_dir, obj_patterns, opts):
     except (KeyboardInterrupt, OSError):
         print()
         exit(1)
-    finally:
-        os.chdir(cwd)
+
+    os.chdir(cwd)
 
     n = len(files)
     print("Processed %d files: %d good, and %d bad." % (n, n - failure_count, failure_count))
-    sys.exit(failure_count if failure_count < 255 else 255)
+    if failure_count < 255:
+        rc = failure_count
+    else:
+        rc = 255
+    sys.exit(rc)
 
 
 if __name__ == "__main__":

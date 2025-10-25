@@ -186,10 +186,10 @@ def roundtrip_pyc(input_path, unlink_on_success):
     # parser.add_argument("pycfile", help="Path to the .pyc (or other bytecode) file")
     # args = parser.parse_args(argv)
     if not osp.exists(input_path):
-        print("ERROR: file does not exist: %s" % input_path, file=sys.stderr)
+        print("ERROR: file does not exist: %s" % input_path)
         return 2
     if not osp.isfile(input_path):
-        print("ERROR: not a file: %s" % input_path, file=sys.stderr)
+        print("ERROR: not a file: %s" % input_path)
         return 2
 
     # Load original using the file-object loader (it will close the file for us)
@@ -205,12 +205,7 @@ def roundtrip_pyc(input_path, unlink_on_success):
             _orig_file_offsets,
         ) = load_meta_and_code_from_filename(input_path)
     except Exception:
-        print("ERROR: failed to load original bytecode file: %s" % orig_path)
-=======
-        ) = load_meta_and_code_from_filename(input_path)
-    except Exception as e:
-        print("ERROR: failed to load original bytecode file: %s" % input_path, file=sys.stderr)
->>>>>>> python-3.0-to-3.2:xdis/roundtrip_pyc.py
+        print("ERROR: failed to load original bytecode file: %s" % input_path)
         return 3
 
     tf_name_base = osp.basename(input_path)
@@ -365,7 +360,7 @@ def roundtrip_pyc(input_path, unlink_on_success):
     print("Temporary rewritten file left at:", tf_name)
     return 1
 
-def main() -> int:
+def main():
     bad_count = 0
     for file in sys.argv[1:]:
         bad_count += roundtrip_pyc(file, unlink_on_success=False)
