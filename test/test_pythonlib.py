@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# emacs-mode: -*-python-*-
 
 """
 test_pythonlib.py -- disassemble Python libraries
