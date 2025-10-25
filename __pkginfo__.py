@@ -61,7 +61,12 @@ _six = "six >= 1.10.0"
 # The rest in alphabetic order
 author = "Rocky Bernstein, Hartmut Goebel and others"
 author_email = "rb@dustyfeet.com"
-entry_points = {"console_scripts": ["pydisasm=xdis.bin.pydisasm:main", "roundtrip-pyc=xdis.roundtrip_pyc:main"]}
+entry_points = {
+    "console_scripts": [
+        "pydisasm=xdis.bin.pydisasm:main",
+        "roundtrip-pyc=xdis.roundtrip_pyc:main",
+    ]
+}
 ftp_url = None
 
 # Python-version | package | last-version |
