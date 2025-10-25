@@ -97,7 +97,12 @@ def compat_str(s):
     This handles working with strings between Python2 and Python3.
     """
     if isinstance(s, bytes):
-        return s.decode("utf-8", errors="ignore")
+        try:
+            return s.decode("utf-8")
+        except UnicodeDecodeError:
+            # If not Unicode, return bytes,
+            # and it will get converted to str when needed.
+            return s
     elif not isinstance(s, str):
         return str(s)
     else:
