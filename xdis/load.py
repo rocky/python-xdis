@@ -419,7 +419,15 @@ def write_bytecode_file(
     if isinstance(code_obj, types.CodeType):
         fp.write(marshal.dumps(code_obj))
     else:
-        fp.write(xdis.marsh.dumps(code_obj, python_version=version_tuple))
+        code_sequence = xdis.marsh.dumps(code_obj, python_version=version_tuple)
+        if isinstance(code_sequence, str):
+            # Python 1.x uses code strings, not bytes. To get this into bytes needed by
+            # fp.write, encode the string using 'latin-1' and 'unicode_escape' to convert escape sequences
+            # into the raw byte values. 'latin-1' is a single-byte encoding that works well for this.
+            code_bytes = code_sequence.encode('latin-1').decode('unicode_escape').encode('latin-1')
+        else:
+            code_bytes = code_sequence
+        fp.write(code_bytes)
     fp.close()
 
 

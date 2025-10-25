@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2018-2021, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -68,6 +68,7 @@ def findlinestarts(co, dup_lines=False):
             lineno = code[offset] + code[offset + 1] * 256
             yield (offset + 2, lineno)
             pass
+
         if op >= loc["HAVE_ARGUMENT"]:
             offset += 2
             pass

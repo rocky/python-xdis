@@ -27,7 +27,7 @@ there). Details of the format may change between Python versions.
 import struct
 import types
 
-from xdis.codetype import Code2, Code3
+from xdis.codetype import Code2, Code3, Code15
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # NOTE: This module is used in the Python3 interpreter, but also by
@@ -87,7 +87,7 @@ TYPE_SHORT_ASCII_INTERNED = "Z"  # since 3.4
 
 class _Marshaller:
     """Python marshalling routine that runs in Python 2 and Python 3.
-    We also extend to allow for xdis Code2 and Code3 types and instances.
+    We also extend to allow for xdis Code15, Code2, and Code3 types and instances.
     """
 
     dispatch = {}
@@ -114,6 +114,9 @@ class _Marshaller:
                 return
             elif isinstance(x, Code2):
                 self.dispatch[Code2](self, x)
+                return
+            elif isinstance(x, Code15):
+                self.dispatch[Code15](self, x)
                 return
             else:
                 for tp in type(x).mro():
@@ -307,7 +310,45 @@ class _Marshaller:
 
     dispatch[dict] = dump_dict
 
-    def dump_code2(self, x):
+    def dump_code15(self, x) -> None:
+        # Careful here: many Python 2 code objects are strings,
+        # but Python 3 marshaling, by default, will dump strings as
+        # unicode. Force marsaling this type as string.
+
+        self._write(TYPE_CODE)
+        self.w_short(x.co_argcount)
+        self.w_short(x.co_nlocals)
+        self.w_short(x.co_stacksize)
+        self.w_short(x.co_flags)
+        self.dump_string(x.co_code)
+
+        # If running in a Python3 interpreter, some constants will get
+        # converted from string to unicode. For now, let's see if
+        # that's okay.
+        self.dump(x.co_consts)
+
+        # The tuple "names" in Python 1.x must have string entries
+        self._write(TYPE_TUPLE)
+        self.w_long(len(x.co_names))
+        for name in x.co_names:
+            self.dump_string(name)
+
+        # The tuple "varnames" in Python 1.x also must have string entries
+        self._write(TYPE_TUPLE)
+        self.w_long(len(x.co_varnames))
+        for name in x.co_varnames:
+            self.dump_string(name)
+
+        self.dump_string(x.co_filename)
+        self.dump_string(x.co_name)
+        self.w_long(x.co_firstlineno)
+        self.dump_string(x.co_lnotab)
+        return
+
+    dispatch[Code15] = dump_code15
+
+    def dump_code2(self, x) -> None:
+>>>>>>> python-3.0-to-3.2
         # Careful here: many Python 2 code objects are strings,
         # but Python 3 marshaling, by default, will dump strings as
         # unicode. Force marsaling this type as string.
