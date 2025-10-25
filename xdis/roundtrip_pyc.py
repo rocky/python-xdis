@@ -184,12 +184,11 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
     # parser.add_argument("pycfile", help="Path to the .pyc (or other bytecode) file")
     # args = parser.parse_args(argv)
 
-    orig_path = argv[1]
-    if not osp.exists(orig_path):
-        print("ERROR: file does not exist: %s" % orig_path, file=sys.stderr)
+    if not osp.exists(input_path):
+        print("ERROR: file does not exist: %s" % input_path, file=sys.stderr)
         return 2
-    if not osp.isfile(orig_path):
-        print("ERROR: not a file: %s" % orig_path, file=sys.stderr)
+    if not osp.isfile(input_path):
+        print("ERROR: not a file: %s" % input_path, file=sys.stderr)
         return 2
 
     # Load original using the file-object loader (it will close the file for us)
@@ -204,11 +203,8 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
             _orig_sip_hash,
             _orig_file_offsets,
         ) = load_meta_and_code_from_filename(input_path)
-=======
-        ) = load_meta_and_code_from_filename(input_path)
->>>>>>> python-3.6-to-3.10:xdis/roundtrip_pyc.py
     except Exception as e:
-        print("ERROR: failed to load original bytecode file: %s" % orig_path, file=sys.stderr)
+        print("ERROR: failed to load original bytecode file: %s" % input_path, file=sys.stderr)
         return 3
 
     tf_name_base = osp.basename(input_path)
@@ -240,7 +236,7 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
                 tf_name, orig_co, orig_magic_int, orig_timestamp, orig_source_size or 0
             )
         except Exception as e:
-            print("ERROR: failed to load original bytecode file %s: %s" % (orig_path, e), file=sys.stderr)
+            print("ERROR: failed to load original bytecode file %s: %s" % (input_path, e), file=sys.stderr)
             # Cleanup
             try:
                 os.unlink(tf_name)

@@ -108,10 +108,10 @@ for vers in (
     "3.12",
     "3.13",
 ):
-    bytecode = f"bytecode_{vers}/roundtrip_pyc"
-    key = f"bytecode-{vers}"
+    bytecode = "bytecode_%s/roundtrip_pyc" % vers
+    key = "bytecode-%s" % vers
     test_options[key] = (os.path.join(src_dir, bytecode), PYC, bytecode, vers)
-    key = f"{vers}"
+    key = vers
 
 for vers, vers_dot in (
     (35, 3.5),
@@ -124,10 +124,10 @@ for vers, vers_dot in (
     (312, 3.12),
     (313, 3.13),
 ):
-    bytecode = f"bytecode_pypy{vers}"
-    key = f"bytecode-pypy{vers}"
+    bytecode = "bytecode_pypy%s" % vers
+    key = "bytecode-pypy%s" % vers
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
-    key = f"bytecode-pypy{vers_dot}"
+    key = "bytecode-pypy%s" % vers_dot
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
 
 
@@ -199,7 +199,7 @@ def do_tests(src_dir, obj_patterns, opts):
         os.chdir(cwd)
 
     n = len(files)
-    print(f"Processed {n} files: {n-failure_count} good, and {failure_count} bad.")
+    print("Processed %d files: %d good, and %d bad." % (n, n - failure_count, failure_count))
     sys.exit(failure_count if failure_count < 255 else 255)
 
 
@@ -243,7 +243,7 @@ if __name__ == "__main__":
         if os.path.isdir(src_dir):
             checked_dirs.append([src_dir, pattern, target_dir])
         else:
-            sys.stderr.write(f"Can't find directory {src_dir}. Skipping\n")
+            sys.stderr.write("Can't find directory %s. Skipping\n" % src_dir)
             continue
         last_compile_version = compiled_version
         pass
