@@ -98,12 +98,7 @@ def compat_str(s: Union[str, bytes]) -> Union[str, bytes]:
     This handles working with strings between Python2 and Python3.
     """
     if isinstance(s, bytes):
-        try:
-            return s.decode("utf-8")
-        except UnicodeDecodeError:
-            # If not Unicode, return bytes,
-            # and it will get converted to str when needed.
-            return s
+        return s.decode("utf-8", errors="ignore")
     elif not isinstance(s, str):
         return str(s)
     else:
@@ -505,7 +500,9 @@ class _VersionIndependentUnmarshaller:
         # of the string.
         co_code_offset_in_file = self.fp.tell() + 5
 
-        co_code = self.r_object(bytes_for_s=True)
+        # bytes_for_code = self.version_tuple >= (2, 0)
+        bytes_for_code = True
+        co_code = self.r_object(bytes_for_s=bytes_for_code)
 
         # FIXME: Check/verify that is true:
         bytes_for_s = self.version_tuple > (3, 0)

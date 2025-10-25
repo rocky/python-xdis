@@ -29,7 +29,7 @@ import types
 from sys import intern
 from typing import Optional
 
-from xdis.codetype import Code2, Code3
+from xdis.codetype import Code2, Code3, Code15
 from xdis.unmarshal import long
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
@@ -91,7 +91,7 @@ TYPE_SHORT_ASCII_INTERNED = "Z"  # since 3.4
 
 class _Marshaller:
     """Python marshalling routine that runs in Python 2 and Python 3.
-    We also extend to allow for xdis Code2 and Code3 types and instances.
+    We also extend to allow for xdis Code15, Code2, and Code3 types and instances.
     """
 
     dispatch = {}
@@ -120,6 +120,9 @@ class _Marshaller:
                 return
             elif isinstance(x, Code2):
                 self.dispatch[Code2](self, x)
+                return
+            elif isinstance(x, Code15):
+                self.dispatch[Code15](self, x)
                 return
             else:
                 for tp in type(x).mro():
@@ -259,16 +262,12 @@ class _Marshaller:
         self.w_long(len(x))
         self._write(x)
 
-    if PYTHON_VERSION_TRIPLE > (2, 5):
-        dispatch[bytes] = dump_string
-        dispatch[bytearray] = dump_string
+    dispatch[bytes] = dump_string
+    dispatch[bytearray] = dump_string
 
-    def dump_unicode(self, x) -> None:
-        self._write(TYPE_UNICODE)
-        if not PYTHON3 and self.python_version < (3, 0):
-            s = x.encode("utf8")
-        else:
-            s = x
+    def dump_unicode(self, s) -> None:
+        type_code = TYPE_STRING if self.python_version < (2, 0) else TYPE_UNICODE
+        self._write(type_code)
         self.w_long(len(s))
         self._write(s)
 
@@ -313,6 +312,43 @@ class _Marshaller:
         self._write(TYPE_NULL)
 
     dispatch[dict] = dump_dict
+
+    def dump_code15(self, x) -> None:
+        # Careful here: many Python 2 code objects are strings,
+        # but Python 3 marshaling, by default, will dump strings as
+        # unicode. Force marsaling this type as string.
+
+        self._write(TYPE_CODE)
+        self.w_short(x.co_argcount)
+        self.w_short(x.co_nlocals)
+        self.w_short(x.co_stacksize)
+        self.w_short(x.co_flags)
+        self.dump_string(x.co_code)
+
+        # If running in a Python3 interpreter, some constants will get
+        # converted from string to unicode. For now, let's see if
+        # that's okay.
+        self.dump(x.co_consts)
+
+        # The tuple "names" in Python 1.x must have string entries
+        self._write(TYPE_TUPLE)
+        self.w_long(len(x.co_names))
+        for name in x.co_names:
+            self.dump_string(name)
+
+        # The tuple "varnames" in Python 1.x also must have string entries
+        self._write(TYPE_TUPLE)
+        self.w_long(len(x.co_varnames))
+        for name in x.co_varnames:
+            self.dump_string(name)
+
+        self.dump_string(x.co_filename)
+        self.dump_string(x.co_name)
+        self.w_long(x.co_firstlineno)
+        self.dump_string(x.co_lnotab)
+        return
+
+    dispatch[Code15] = dump_code15
 
     def dump_code2(self, x) -> None:
         # Careful here: many Python 2 code objects are strings,
@@ -1100,11 +1136,15 @@ def dumps(
         buf = []
         for b in buffer:
             if isinstance(b, str) and PYTHON3:
-                try:
-                    s2b = bytes(ord(b[j]) for j in range(len(b)))
-                except ValueError:
-                    s2b = b.encode("utf-8")
-                buf.append(s2b)
+                if python_version < (2, 0):
+                    # Python 1.x has no notion of Unicode. It uses strings.
+                    buf.append(b)
+                else:
+                    try:
+                        s2b = bytes(ord(b[j]) for j in range(len(b)))
+                    except ValueError:
+                        s2b = b.encode("utf-8")
+                    buf.append(s2b)
             elif isinstance(b, bytearray):
                 buf.append(str(b))
             else:

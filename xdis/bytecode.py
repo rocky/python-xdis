@@ -612,8 +612,13 @@ class Bytecode:
         if isinstance(filename, UnicodeForPython3):
             filename = str(filename)
 
+        if isinstance(co.co_code, str):
+            co_code = co.co_code.encode('latin-1')
+        else:
+            co_code = co.co_code
+
         self.disassemble_bytes(
-            co.co_code,
+            co_code,
             varnames=co.co_varnames,
             names=co.co_names,
             constants=co.co_consts,
