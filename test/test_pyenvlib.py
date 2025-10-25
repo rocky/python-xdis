@@ -200,7 +200,7 @@ def do_tests(
     print("Processed %d files, total" % (i + 1))
     print(time.ctime())
     elapsed_time = time.time() - start_time
-    print("%g seconds" % elapsed_time)
+    print(f"{elapsed_time:g} seconds")
     os.chdir(cwd)
 
 
@@ -273,4 +273,4 @@ if __name__ == "__main__":
                 do_compile=do_compile,
             )
         else:
-            print("### Path %s doesn't exist; skipping" % src_dir)
+            print(f"### Path {src_dir} doesn't exist; skipping")
