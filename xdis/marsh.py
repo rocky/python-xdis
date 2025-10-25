@@ -310,7 +310,7 @@ class _Marshaller:
 
     dispatch[dict] = dump_dict
 
-    def dump_code15(self, x) -> None:
+    def dump_code15(self, x):
         # Careful here: many Python 2 code objects are strings,
         # but Python 3 marshaling, by default, will dump strings as
         # unicode. Force marsaling this type as string.
@@ -347,8 +347,7 @@ class _Marshaller:
 
     dispatch[Code15] = dump_code15
 
-    def dump_code2(self, x) -> None:
->>>>>>> python-3.0-to-3.2
+    def dump_code2(self, x):
         # Careful here: many Python 2 code objects are strings,
         # but Python 3 marshaling, by default, will dump strings as
         # unicode. Force marsaling this type as string.
