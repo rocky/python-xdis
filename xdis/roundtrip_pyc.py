@@ -15,17 +15,23 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-test_writing_pyc.py
 
-Command-line tool that:
-- takes a Python bytecode file (.pyc) as an argument
-- loads it with xdis.load.load_module_from_file_object()
-- writes it back out using xdis.load.write_bytecode_file() to a temporary file
+Check that we can read in or unmarshal a Python bytecode file and
+then write it or marshal it back and the files are identical.
+
+As
+Input is a Python bytecode file. A file of this kind usually the has
+file extension ".pyc" or ".pyo".
+
+This steps taken are:
+- loads it or unmarshals it with xdis.load.load_module_from_file_object()
+- writes it or marshals back out using xdis.load.write_bytecode_file() to a temporary file
 - compares the original and written files by raw bytes and by the
   module/code-object structure they contain
 
 Usage:
-    python test_writing_pyc.py path/to/bytecode_file.pyc
+   test_writing_pyc.py path/to/bytecode_file.pyc
+
 """
 
 import filecmp
@@ -175,24 +181,19 @@ def load_meta_and_code_from_filename(path: str):
         return load_module_from_file_object(fp, filename=path, get_code=True)
 
 
-def main(argv: List[str]) -> int:
+def roundtrip_pyc(input_path: str, unlink_on_success) -> int:
 
-    unlink_on_success = False
     # parser = argparse.ArgumentParser(
     #     description="Load a .pyc with xdis, rewrite it to a temporary file, and compare."
     # )
     # parser.add_argument("pycfile", help="Path to the .pyc (or other bytecode) file")
     # args = parser.parse_args(argv)
-    if len(argv) < 2:
-        print("ERROR: you need to pass a pyc file", file=sys.stderr)
-        return 1
 
-    orig_path = argv[1]
-    if not osp.exists(orig_path):
-        print(f"ERROR: file does not exist: {orig_path}", file=sys.stderr)
+    if not osp.exists(input_path):
+        print(f"ERROR: file does not exist: {input_path}", file=sys.stderr)
         return 2
-    if not osp.isfile(orig_path):
-        print(f"ERROR: not a file: {orig_path}", file=sys.stderr)
+    if not osp.isfile(input_path):
+        print(f"ERROR: not a file: {input_path}", file=sys.stderr)
         return 2
 
     # Load original using the file-object loader (it will close the file for us)
@@ -202,16 +203,16 @@ def main(argv: List[str]) -> int:
             orig_timestamp,
             orig_magic_int,
             orig_co,
-            orig_is_pypy,
+            _orig_is_pypy,
             orig_source_size,
-            orig_sip_hash,
-            orig_file_offsets,
-        ) = load_meta_and_code_from_filename(orig_path)
+            _orig_sip_hash,
+            _orig_file_offsets,
+        ) = load_meta_and_code_from_filename(input_path)
     except Exception as e:
         print(f"ERROR: failed to load original bytecode file: {e}", file=sys.stderr)
         return 3
 
-    tf_name_base = osp.basename(orig_path)
+    tf_name_base = osp.basename(input_path)
     if tf_name_base.endswith(".pyc"):
         tf_name_base = tf_name_base[: -len(".pyc")]
     elif tf_name_base.endswith(".pyc"):
@@ -258,11 +259,11 @@ def main(argv: List[str]) -> int:
     # Compare raw bytes first
     same_bytes = False
     try:
-        same_bytes = filecmp.cmp(orig_path, tf_name, shallow=False)
+        same_bytes = filecmp.cmp(input_path, tf_name, shallow=False)
     except Exception as e:
         print(f"WARNING: could not do raw byte comparison: {e}", file=sys.stderr)
 
-    print("Original file:", orig_path)
+    print("Original file:", input_path)
     print("Rewritten file:", tf_name)
     print("Raw-bytes identical:", same_bytes)
     if same_bytes:
@@ -270,7 +271,7 @@ def main(argv: List[str]) -> int:
             os.unlink(tf_name)
         return 0
 
-    compare_showing_error(orig_path, tf_name)
+    compare_showing_error(input_path, tf_name)
 
     # # Now compare by loading both and comparing metadata and code-object structure
     # try:
@@ -363,6 +364,12 @@ def main(argv: List[str]) -> int:
     print("Temporary rewritten file left at:", tf_name)
     return 1
 
+def main() -> int:
+    bad_count = 0
+    for file in sys.argv[1:]:
+        bad_count += roundtrip_pyc(file, unlink_on_success=False)
+    return bad_count
+
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    main()

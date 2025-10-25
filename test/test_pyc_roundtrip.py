@@ -1,45 +1,50 @@
 #!/usr/bin/env python
-# emacs-mode: -*-python-*-
+# (C) Copyright 2025 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """
-test_pythonlib.py -- disassemble Python libraries
+test_pyc_roundtrip.py -- roundtrip check of bytecode_*/roundtrip/*.py{c,o} files
 
 Usage-Examples:
 
   # disassemble base set of python 2.7 byte-compiled files
-  test_pythonlib.py --base-2.7 --verify
+  test_pyc_roundtrip.py --base-2.7
 
-  # Same as above but compile the base set first
-  test_pythonlib.py --base-2.7 --verify --compile
-
-  # Same as above but use a longer set from the python 2.7 library
-  test_pythonlib.py --ok-2.7 --verify --compile
-
-  # Just decompile the longer set of files
-  test_pythonlib.py --ok-2.7
+  # Just deompile the longer set of files
+  test_pyc_roundtrip.py --ok-2.7
 
 Adding own test-trees:
 
 Step 1) Edit this file and add a new entry to 'test_options', eg.
   test_options['mylib'] = ('/usr/lib/mylib', PYOC, 'mylib')
 Step 2: Run the test:
-  test_pythonlib.py --mylib	  # decompile 'mylib'
-  test_pythonlib.py --mylib --verify # decompile verify 'mylib'
+  test_pyc_roundtrip.py --mylib	  # decompile 'mylib'
+  test_pyc_roundtrip.py --mylib --verify # decompile verify 'mylib'
 """
 
 from __future__ import print_function
 
 import getopt
 import os
-import py_compile
-import shutil
 import sys
 import tempfile
 import time
 from fnmatch import fnmatch
 
-from xdis import disassemble_file
-from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
+from xdis.roundtrip_pyc import roundtrip_pyc
 
 
 def get_srcdir():
@@ -52,9 +57,6 @@ src_dir = get_srcdir()
 
 # ----- configure this for your needs
 
-lib_prefix = "/usr/lib"
-# lib_prefix = [src_dir, '/usr/lib/', '/usr/local/lib/']
-
 target_base = tempfile.mkdtemp(prefix="py-dis-")
 
 PY = ("*.py",)
@@ -65,9 +67,6 @@ PYOC = ("*.pyc", "*.pyo")
 test_options = {
     # name:   (src_basedir, pattern, output_base_suffix, python_version)
     "test": ("test", PYC, "test"),
-    "ok-2.6": (os.path.join(src_dir, "ok_2.6"), PYOC, "ok-2.6", 2.6),
-    "ok-2.7": (os.path.join(src_dir, "ok_lib2.7"), PYOC, "ok-2.7", 2.7),
-    "ok-3.2": (os.path.join(src_dir, "ok_lib3.2"), PYOC, "ok-3.2", 3.5),
     "base-2.7": (
         os.path.join(src_dir, "base_tests", "python2.7"),
         PYOC,
@@ -109,14 +108,10 @@ for vers in (
     "3.12",
     "3.13",
 ):
-    bytecode = f"bytecode_{vers}"
+    bytecode = f"bytecode_{vers}/roundtrip_pyc"
     key = f"bytecode-{vers}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYC, bytecode, vers)
     key = f"{vers}"
-    pythonlib = f"python{vers}"
-    if isinstance(vers, float) and vers >= 3.0:
-        pythonlib = os.path.join(src_dir, pythonlib, "__pycache__")
-    test_options[key] = (os.path.join(lib_prefix, pythonlib), PYOC, pythonlib, vers)
 
 for vers, vers_dot in (
     (35, 3.5),
@@ -143,14 +138,8 @@ def help():
     print(
         """Usage-Examples:
 
-  # compile, decompile and verify short tests for Python 2.7:
-  test_pythonlib.py --bytecode-2.7 --verify --compile
-
-  # decompile all of Python's installed lib files
-  test_pythonlib.py --2.7
-
-  # decompile and verify known good python 2.7
-  test_pythonlib.py --ok-2.7 --verify
+  # roundtrip pyc check Python 2.7:
+  test_pyc_roundtrip.py --bytecode-2.7
 """
     )
     sys.exit(1)
@@ -174,24 +163,6 @@ def do_tests(src_dir, obj_patterns, opts):
     cwd = os.getcwd()
     os.chdir(src_dir)
 
-    if opts["do_compile"]:
-        compiled_version = opts["compiled_version"]
-        if compiled_version and PYTHON_VERSION_TRIPLE[:2] != compiled_version:
-            sys.stderr.write(
-                "Not compiling: desired Python version is %s "
-                "but we are running %s\n" % (compiled_version, version_tuple_to_str)
-            )
-        else:
-            for root, dirs, basenames in os.walk(src_dir):
-                file_matches(files, root, basenames, PY)
-                for sfile in files:
-                    py_compile.compile(sfile)
-                    pass
-                pass
-            files = []
-            pass
-        pass
-
     for root, _dirs, basenames in os.walk("."):
         # Turn root into a relative path
         dirname = root[2:]  # 2 = len('.') + 1
@@ -212,33 +183,24 @@ def do_tests(src_dir, obj_patterns, opts):
         except ValueError:
             pass
 
-    output = open(os.devnull, "w")
-    # output = sys.stdout
     print(time.ctime())
     print("Source directory: ", src_dir)
     cwd = os.getcwd()
     os.chdir(src_dir)
+    failure_count = 0
     try:
         for infile in files:
-            disassemble_file(infile, output)
-            if opts["do_verify"]:
-                pass
-            # print("Need to do something here to verify %s" % infile)
-            # msg = verify.verify_file(infile, outfile)
-
-        # if failed_files != 0:
-        #     exit(2)
-        # elif failed_verify != 0:
-        #     exit(3)
+            failure_count += roundtrip_pyc(infile, unlink_on_success=False)
 
     except (KeyboardInterrupt, OSError):
         print()
         exit(1)
-    os.chdir(cwd)
-    # if test_opts['rmtree']:
-    #     parent_dir = os.path.dirname(target_dir)
-    #     print("Everything good, removing %s" % parent_dir)
-    #     shutil.rmtree(parent_dir)
+    finally:
+        os.chdir(cwd)
+
+    n = len(files)
+    print(f"Processed {n} files: {n-failure_count} good, and {failure_count} bad.")
+    sys.exit(failure_count if failure_count < 255 else 255)
 
 
 if __name__ == "__main__":
@@ -251,24 +213,18 @@ if __name__ == "__main__":
     opts, args = getopt.getopt(
         sys.argv[1:],
         "",
-        ["start-with=", "verify", "all", "compile", "no-rm"] + test_options_keys,
+        ["start-with=", "all", "no-rm"] + test_options_keys,
     )
     if not opts:
         help()
 
     test_opts = {
-        "do_compile": False,
-        "do_verify": False,
         "start_with": None,
         "rmtree": True,
     }
 
     for opt, val in opts:
-        if opt == "--verify":
-            test_opts["do_verify"] = True
-        elif opt == "--compile":
-            test_opts["do_compile"] = True
-        elif opt == "--start-with":
+        if opt == "--start-with":
             test_opts["start_with"] = val
         elif opt == "--no-rm":
             test_opts["rmtree"] = False
@@ -299,7 +255,4 @@ if __name__ == "__main__":
     test_opts["compiled_version"] = last_compile_version
 
     for src_dir, pattern, target_dir in checked_dirs:
-        target_dir = os.path.join(target_base, target_dir)
-        if os.path.exists(target_dir):
-            shutil.rmtree(target_dir, ignore_errors=1)
         do_tests(src_dir, pattern, test_opts)
