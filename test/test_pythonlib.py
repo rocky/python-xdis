@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# emacs-mode: -*-python-*-
 
 """
 test_pythonlib.py -- disassemble Python libraries
@@ -112,7 +111,7 @@ for vers in (
     bytecode = f"bytecode_{vers}"
     key = f"bytecode-{vers}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYC, bytecode, vers)
-    key = f"{vers}"
+    key = vers
     pythonlib = f"python{vers}"
     if isinstance(vers, float) and vers >= 3.0:
         pythonlib = os.path.join(src_dir, pythonlib, "__pycache__")
@@ -246,7 +245,7 @@ if __name__ == "__main__":
     checked_dirs = []
     start_with = None
 
-    test_options_keys = list(test_options.keys())
+    test_options_keys = [str(k) for k in test_options.keys()]
     test_options_keys.sort()
     opts, args = getopt.getopt(
         sys.argv[1:],

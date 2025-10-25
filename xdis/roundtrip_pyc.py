@@ -181,7 +181,7 @@ def load_meta_and_code_from_filename(path: str):
         return load_module_from_file_object(fp, filename=path, get_code=True)
 
 
-def roundtrip_pyc(input_path: str, unlink_on_success) -> int:
+def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
 
     # parser = argparse.ArgumentParser(
     #     description="Load a .pyc with xdis, rewrite it to a temporary file, and compare."
