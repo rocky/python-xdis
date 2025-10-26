@@ -27,7 +27,7 @@ there). Details of the format may change between Python versions.
 import struct
 import types
 from sys import intern
-from typing import Optional
+from typing import Optional, Union
 
 from xdis.codetype import Code2, Code3, Code15
 from xdis.unmarshal import (
@@ -443,7 +443,7 @@ class _Marshaller:
         for each in collection:
             self.dump(each)
 
-    def dump_set(self, s: Set[Any]) -> None:
+    def dump_set(self, s: set) -> None:
         """
         Save marshalled version of set s.
         """
