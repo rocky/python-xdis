@@ -16,6 +16,7 @@
 
 import types
 from copy import deepcopy
+from typing import Any, Dict, Tuple, Union
 
 from xdis.codetype.code38 import Code38
 from xdis.cross_types import UnicodeForPython3
@@ -95,6 +96,7 @@ class Code310(Code38):
         co_linetable,
         co_freevars,
         co_cellvars,
+        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
@@ -115,6 +117,11 @@ class Code310(Code38):
         self.co_stacksize = co_stacksize
         self.co_varnames = co_varnames
         self.fieldtypes = Code310FieldTypes
+
+        # It is helpful to save the order in sets, frozensets and dictionary keys,
+        # so that on writing a bytecode file we can duplicate this order.
+        self.collection_order = collection_order
+
         if type(self) is Code310:
             self.check()
 
