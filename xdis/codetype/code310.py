@@ -16,7 +16,6 @@
 
 import types
 from copy import deepcopy
-from typing import Any, Dict, Tuple, Union
 
 from xdis.codetype.code38 import Code38
 from xdis.cross_types import UnicodeForPython3
@@ -96,7 +95,7 @@ class Code310(Code38):
         co_linetable,
         co_freevars,
         co_cellvars,
-        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
+        collection_order: dict = {}
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.

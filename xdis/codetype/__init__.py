@@ -233,7 +233,7 @@ def to_portable(
     co_cellvars: tuple=(None,),  # 2.0+
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
-    collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
+    collection_order: dict = {},
 ):
     code = CodeTypeUnion(
         co_argcount=co_argcount,

@@ -161,7 +161,7 @@ class _VersionIndependentUnmarshaller:
 
         # It is helpful to save the order in sets, frozensets and dictionary keys,
         # so that on writing a bytecode file we can duplicate this order.
-        self.collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
+        self.collection_order = {}
 
         self.bytes_for_s = bytes_for_s
         version = magic_int2tuple(self.magic_int)

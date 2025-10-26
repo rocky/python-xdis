@@ -89,9 +89,8 @@ class _Marshaller:
         self,
         writefunc,
         python_version: tuple,
-        is_pypy: Optional[bool] = None,
+        is_pypy = None,
         collection_order={},
->>>>>>> python-3.6-to-3.10
     ) -> None:
         self._write = writefunc
         self.python_version = python_version
