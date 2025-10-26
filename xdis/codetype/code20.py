@@ -71,7 +71,7 @@ class Code2(Code15):
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code2, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_nlocals=co_nlocals,
             co_stacksize=co_stacksize,
@@ -88,7 +88,7 @@ class Code2(Code15):
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
         self.fieldtypes = Code2FieldTypes
-        if type(self) == Code2:
+        if type(self) is Code2:
             self.check()
         return
 

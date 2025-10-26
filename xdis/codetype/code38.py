@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -82,10 +82,12 @@ class Code38(Code3):
         co_lnotab,
         co_freevars,
         co_cellvars,
+        collection_order = {}
     ):
+>>>>>>> python-3.0-to-3.2
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code38, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_kwonlyargcount=co_kwonlyargcount,
             co_nlocals=co_nlocals,
@@ -101,10 +103,11 @@ class Code38(Code3):
             co_lnotab=co_lnotab,
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
+            collection_order = collection_order,
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
-        if type(self) == Code38:
+        if type(self) is Code38:
             self.check()
 
     def to_native(self):
