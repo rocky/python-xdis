@@ -30,7 +30,7 @@ import io
 import sys
 from struct import unpack
 from types import EllipsisType
-from typing import Union
+from typing import Any, Dict, Tuple, Union
 
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
@@ -161,6 +161,10 @@ class _VersionIndependentUnmarshaller:
         # Save a list of offsets in the bytecode file where code
         # objects starts.
         self.code_to_file_offsets = {}
+
+        # It is helpful to save the order in sets, frozensets and dictionary keys,
+        # so that on writing a bytecode file we can duplicate this order.
+        self.collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
 
         self.bytes_for_s = bytes_for_s
         version = magic_int2tuple(self.magic_int)
@@ -441,11 +445,14 @@ class _VersionIndependentUnmarshaller:
 
     def t_frozenset(self, save_ref, bytes_for_s: bool = False):
         setsize = unpack("<i", self.fp.read(4))[0]
-        ret, i = self.r_ref_reserve(tuple(), save_ref)
+        collection, i = self.r_ref_reserve([], save_ref)
         while setsize > 0:
-            ret += (self.r_object(bytes_for_s=bytes_for_s),)
+            collection.append(self.r_object(bytes_for_s=bytes_for_s))
             setsize -= 1
-        return self.r_ref_insert(frozenset(ret), i)
+        final_frozenset = frozenset(collection)
+        # Note the order of the frozenset elements.
+        self.collection_order[final_frozenset] = tuple(collection)
+        return self.r_ref_insert(final_frozenset, i)
 
     def t_set(self, save_ref, bytes_for_s: bool = False):
         setsize = unpack("<i", self.fp.read(4))[0]
@@ -658,6 +665,7 @@ class _VersionIndependentUnmarshaller:
             co_cellvars=co_cellvars,
             co_exceptiontable=co_exceptiontable,
             version_triple=self.version_tuple,
+            collection_order=self.collection_order,
         )
 
         self.code_to_file_offsets[code] = (code_offset_in_file, co_code_offset_in_file)

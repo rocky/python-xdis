@@ -28,7 +28,7 @@ import struct
 import types
 from sys import intern
 from types import CodeType, EllipsisType
-from typing import Optional
+from typing import Any, Optional, Set, Union
 
 from xdis.codetype import Code2, Code3, Code15
 from xdis.unmarshal import (
@@ -88,11 +88,16 @@ class _Marshaller:
     dispatch = {}
 
     def __init__(
-        self, writefunc, python_version: tuple, is_pypy: Optional[bool] = None
+        self,
+        writefunc,
+        python_version: tuple,
+        is_pypy: Optional[bool] = None,
+        collection_order={},
     ) -> None:
         self._write = writefunc
         self.python_version = python_version
         self.is_pypy = is_pypy
+        self.collection_order = collection_order
 
     def dump(self, x) -> None:
         if (
@@ -417,6 +422,7 @@ class _Marshaller:
 
     dispatch[Code3] = dump_code3
 
+    # FIXME: this is wrong.
     try:
         if PYTHON3:
             dispatch[types.CodeType] = dump_code3
@@ -425,22 +431,32 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_set(self, x) -> None:
-        self._write(TYPE_SET)
-        self.w_long(len(x))
-        for each in x:
+    def dump_collection(self, type_code: str, bag: Union[frozenset, set, dict]) -> None:
+        """
+        Save marshalled version of frozenset fs.
+        Use self.collection_order, to ensure that the order
+        or set elements that may have appeared from unmarshalling the appears
+        the same way. This helps roundtrip checking, among possibly other things.
+        """
+        self._write(type_code)
+        self.w_long(len(bag))
+        collection = self.collection_order.get(bag, bag)
+        for each in collection:
             self.dump(each)
 
-    try:
-        dispatch[set] = dump_set
-    except NameError:
-        pass
+    def dump_set(self, s: Set[Any]) -> None:
+        """
+        Save marshalled version of set s.
+        """
+        self.dump_collection(TYPE_SET, s)
 
-    def dump_frozenset(self, x) -> None:
-        self._write(TYPE_FROZENSET)
-        self.w_long(len(x))
-        for each in x:
-            self.dump(each)
+    dispatch[set] = dump_set
+
+    def dump_frozenset(self, fs: frozenset) -> None:
+        """
+        Save marshalled version of frozenset fs.
+        """
+        self.dump_collection(TYPE_FROZENSET, fs)
 
     try:
         dispatch[frozenset] = dump_frozenset
@@ -1103,7 +1119,13 @@ def dumps(
     is_pypy: Optional[bool] = None,
 ) -> bytes | str:
     buffer = []
-    m = _Marshaller(buffer.append, python_version=python_version, is_pypy=is_pypy)
+    collection_order = x.collection_order if hasattr(x, "collection_order") else {}
+    m = _Marshaller(
+        buffer.append,
+        python_version=python_version,
+        is_pypy=is_pypy,
+        collection_order=collection_order,
+    )
     m.dump(x)
     if python_version:
         is_python3 = python_version >= (3, 0)

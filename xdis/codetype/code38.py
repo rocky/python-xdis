@@ -16,7 +16,7 @@
 
 import types
 from copy import deepcopy
-from typing import Dict, List, Union
+from typing import Any, Dict, Tuple, Union
 
 from xdis.codetype.code30 import Code3, Code3FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -84,7 +84,7 @@ class Code38(Code3):
         co_lnotab,
         co_freevars,
         co_cellvars,
-        collection_order: Dict[Union[set, frozenset, dict], List[str]] = {}
+        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
