@@ -45,11 +45,43 @@ def long(n: int) -> LongTypeForPython3:
     # that prints the b'' prefix so that Python2 can
     # print out Python3 code correctly
 
+
 # Bit set on marshalType if we should
 # add obj to internObjects.
 # FLAG_REF is the marshal.c name
 FLAG_REF = 0x80
 
+TYPE_ASCII = "a"  # since 3.4
+TYPE_ASCII_INTERNED = "A"  # since 3.4
+TYPE_BINARY_COMPLEX = "y"  # 3.x
+TYPE_BINARY_FLOAT = "g"
+TYPE_CODE = "c"
+TYPE_CODE_OLD = "C"  # used in Python 1.0 - 1.2
+TYPE_COMPLEX = "x"
+TYPE_DICT = "{"
+TYPE_ELLIPSIS = "."
+TYPE_FALSE = "F"
+TYPE_FLOAT = "f"  # Seems not in use after Python 2.4
+TYPE_FROZENSET = ">"
+TYPE_INT = "i"
+TYPE_INT64 = "I"  # Python 3.4 removed this
+TYPE_INTERNED = "t"
+TYPE_LIST = "["
+TYPE_LONG = "l"
+TYPE_NONE = "N"
+TYPE_NULL = "0"
+TYPE_REF = "r"  # Since 3.4
+TYPE_SET = "<"
+TYPE_SHORT_ASCII = "z"  # since 3.4
+TYPE_SHORT_ASCII_INTERNED = "Z"  # since 3.4
+TYPE_SMALL_TUPLE = ")"  # since 3.4
+TYPE_STOPITER = "S"
+TYPE_STRING = "s"
+TYPE_STRINGREF = "R"  # Python 2
+TYPE_TRUE = "T"
+TYPE_TUPLE = "("
+TYPE_UNICODE = "u"
+TYPE_UNKNOWN = "?"
 
 # The keys in the following dictionary are unmarshal codes, like "s",
 # "c", "<", etc. The values of the dictionary are names of routines
@@ -60,37 +92,37 @@ FLAG_REF = 0x80
 # from a functional-programming standpoint. Pick your poison.
 # EDIT: I'm choosing efficiency over functional programming.
 UNMARSHAL_DISPATCH_TABLE = {
-    "0": "C_NULL",
-    "N": "None",
-    "S": "stopIteration",
-    ".": "Ellipsis",
-    "F": "False",
-    "T": "True",
-    "i": "int32",
-    "l": "long",
-    "I": "int64",
-    "f": "float",
-    "g": "binary_float",
-    "x": "complex",
-    "y": "binary_complex",
-    "s": "string",
-    "A": "ASCII_interned",
-    "a": "ASCII",
-    "z": "short_ASCII",
-    "Z": "short_ASCII_interned",
-    "t": "interned",
-    "u": "unicode",
-    ")": "small_tuple",
-    "(": "tuple",
-    "[": "list",
-    "<": "set",
-    ">": "frozenset",
-    "{": "dict",
-    "R": "python2_string_reference",
-    "c": "code",
-    "C": "code",  # Older Python code
-    "r": "object_reference",
-    "?": "unknown",
+    TYPE_ASCII: "ASCII",
+    TYPE_ASCII_INTERNED: "ASCII_interned",
+    TYPE_BINARY_COMPLEX: "binary_complex",
+    TYPE_BINARY_FLOAT: "binary_float",
+    TYPE_CODE: "code",
+    TYPE_CODE_OLD: "code",  # Older Python code
+    TYPE_COMPLEX: "complex",
+    TYPE_DICT: "dict",
+    TYPE_ELLIPSIS: "Ellipsis",
+    TYPE_FALSE: "False",
+    TYPE_FLOAT: "float",
+    TYPE_FROZENSET: "frozenset",
+    TYPE_INT64: "int64",
+    TYPE_INT: "int32",
+    TYPE_INTERNED: "interned",
+    TYPE_LIST: "list",
+    TYPE_LONG: "long",
+    TYPE_NONE: "None",
+    TYPE_NULL: "C_NULL",
+    TYPE_REF: "object_reference",
+    TYPE_SET: "set",
+    TYPE_SHORT_ASCII: "short_ASCII",
+    TYPE_SHORT_ASCII_INTERNED: "short_ASCII_interned",
+    TYPE_SMALL_TUPLE: "small_tuple",
+    TYPE_STOPITER: "stopIteration",
+    TYPE_STRING: "string",
+    TYPE_STRINGREF: "python2_string_reference",
+    TYPE_TRUE: "True",
+    TYPE_TUPLE: "tuple",
+    TYPE_UNICODE: "unicode",
+    TYPE_UNKNOWN: "unknown",
 }
 
 
@@ -443,7 +475,7 @@ class _VersionIndependentUnmarshaller:
 
     def t_code(self, save_ref, bytes_for_s: bool = False):
         """
-          Python code type in all of its horrific variations.
+        Python code type in all of its horrific variations.
         """
         # FIXME: use tables to simplify this?
         # FIXME: Python 1.0 .. 1.3 isn't well known
@@ -586,7 +618,6 @@ class _VersionIndependentUnmarshaller:
 
         co_exceptiontable = None
 
-
         if self.version_tuple >= (1, 5):
             if self.version_tuple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
@@ -659,7 +690,10 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
     )
     return um_gen.load()
 
-def load_code_and_get_file_offsets(fp, magic_int, bytes_for_s: bool = False, code_objects={}) -> tuple:
+
+def load_code_and_get_file_offsets(
+    fp, magic_int, bytes_for_s: bool = False, code_objects={}
+) -> tuple:
     if isinstance(fp, bytes):
         fp = io.BytesIO(fp)
     um_gen = _VersionIndependentUnmarshaller(

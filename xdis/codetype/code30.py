@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,6 +17,7 @@
 import types
 from copy import deepcopy
 from types import CodeType
+from typing import Dict, List, Union
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -31,17 +32,16 @@ Code3FieldTypes.update(
 
 
 class Code3(Code2):
-    """
-    Class for a Python3 code object used when a Python not in the
-    range between 3.0 and 3.7 but is working on Python 3.0 ... 3.7
-    bytecode. It also functions as an object that can be used to
-    build or write a Python3 code object, since we allow mutable
-    structures.  When done mutating, call method freeze().
+    """Class for a cross-version Python 3.0 to 3.7 code object.  It
+    can also be used to build or write a Python3 code object, since we
+    allow mutable structures.  When done mutating, call method
+    freeze().
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
     instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
+
     """
 
     def __init__(
@@ -61,10 +61,11 @@ class Code3(Code2):
         co_lnotab,
         co_freevars,
         co_cellvars,
+        collection_order: Dict[Union[set, frozenset, dict], List[str]] = {}
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code3, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_nlocals=co_nlocals,
             co_stacksize=co_stacksize,
@@ -83,7 +84,11 @@ class Code3(Code2):
         self.co_kwonlyargcount = co_kwonlyargcount
         self.fieldtypes = Code3FieldTypes
 
-        if type(self) == Code3:
+        # It is helpful to save the order in sets, frozensets and dictionary keys,
+        # so that on writing a bytecode file we can duplicate this order.
+        self.collection_order = collection_order
+
+        if type(self) is Code3:
             self.check()
         return
 

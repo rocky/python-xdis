@@ -31,7 +31,36 @@ from types import CodeType, EllipsisType
 from typing import Optional
 
 from xdis.codetype import Code2, Code3, Code15
-from xdis.unmarshal import long
+from xdis.unmarshal import (
+    FLAG_REF,
+    TYPE_ASCII,
+    TYPE_BINARY_COMPLEX,
+    TYPE_BINARY_FLOAT,
+    TYPE_CODE,
+    TYPE_COMPLEX,
+    TYPE_DICT,
+    TYPE_ELLIPSIS,
+    TYPE_FALSE,
+    TYPE_FLOAT,
+    TYPE_FROZENSET,
+    TYPE_INT,
+    TYPE_INT64,
+    TYPE_INTERNED,
+    TYPE_LIST,
+    TYPE_LONG,
+    TYPE_NONE,
+    TYPE_NULL,
+    TYPE_SET,
+    TYPE_SHORT_ASCII,
+    TYPE_SMALL_TUPLE,
+    TYPE_STOPITER,
+    TYPE_STRING,
+    TYPE_STRINGREF,
+    TYPE_TRUE,
+    TYPE_TUPLE,
+    TYPE_UNICODE,
+    long,
+)
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # NOTE: This module is used in the Python3 interpreter, but also by
@@ -49,45 +78,6 @@ except ImportError:
 @builtinify
 def Ord(c):
     return c if PYTHON3 else ord(c)
-
-
-# Bit set on marshalType if we should
-# add obj to internObjects.
-# FLAG_REF is the marshal.c name
-FLAG_REF = 0x80
-
-TYPE_NULL = "0"
-TYPE_NONE = "N"
-TYPE_FALSE = "F"
-TYPE_TRUE = "T"
-TYPE_STOPITER = "S"
-TYPE_ELLIPSIS = "."
-TYPE_INT = "i"
-TYPE_INT64 = "I"  # Python 3.4 removed this
-TYPE_FLOAT = "f"  # Seems not in use after Python 2.4
-TYPE_BINARY_FLOAT = "g"
-TYPE_COMPLEX = "x"
-TYPE_BINARY_COMPLEX = "y"  # 3.x
-TYPE_LONG = "l"
-TYPE_STRING = "s"
-TYPE_INTERNED = "t"
-TYPE_REF = "r"  # Since 3.4
-TYPE_STRINGREF = "R"  # Python 2
-TYPE_TUPLE = "("
-TYPE_LIST = "["
-TYPE_DICT = "{"
-TYPE_CODE_OLD = "C"  # used in Python 1.0 - 1.2
-TYPE_CODE = "c"
-TYPE_UNICODE = "u"
-TYPE_UNKNOWN = "?"
-TYPE_SET = "<"
-TYPE_FROZENSET = ">"
-
-TYPE_ASCII = "a"  # since 3.4
-TYPE_ASCII_INTERNED = "A"  # since 3.4
-TYPE_SMALL_TUPLE = ")"  # since 3.4
-TYPE_SHORT_ASCII = "z"  # since 3.4
-TYPE_SHORT_ASCII_INTERNED = "Z"  # since 3.4
 
 
 class _Marshaller:
