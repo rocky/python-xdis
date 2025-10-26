@@ -56,7 +56,6 @@ from xdis.unmarshal import (
     TYPE_TRUE,
     TYPE_TUPLE,
     TYPE_UNICODE,
-    long,
 )
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
@@ -443,6 +442,7 @@ class _Marshaller:
         self.w_long(len(bag))
         collection = self.collection_order.get(bag, bag)
         for each in collection:
+            self.dump(each)
 
     def dump_set(self, s):
         """
@@ -452,12 +452,11 @@ class _Marshaller:
 
     dispatch[set] = dump_set
 
-    def dump_frozenset(self, fs: frozenset) -> None:
+    def dump_frozenset(self, fs):
         """
         Save marshalled version of frozenset fs.
         """
         self.dump_collection(TYPE_FROZENSET, fs)
->>>>>>> python-3.0-to-3.2
 
     try:
         dispatch[frozenset] = dump_frozenset
@@ -1057,7 +1056,11 @@ def dumps(
     is_pypy=None,
 ):
     buffer = []
-    collection_order = x.collection_order if hasattr(x, "collection_order") else {}
+    if hasattr(x, "collection_order"):
+        collection_order = x.collection_order
+    else:
+        collection_order = {}
+
     m = _Marshaller(
         buffer.append,
         python_version=python_version,

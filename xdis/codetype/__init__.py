@@ -48,6 +48,10 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
     line_table = getattr(code, line_table_field)
     if version_tuple >= (3, 0):
         if version_tuple < (3, 8):
+            if hasattr(code, "collection_order"):
+                collection_order = code.collection_order
+            else:
+                collection_order = {}
             return Code3(
                 code.co_argcount,
                 code.co_kwonlyargcount,
@@ -67,7 +71,7 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
 
                 # THINK ABOUT: If collection_order isn't defined, i.e. native code
                 # type, should we try to extract it?
-                code.collection_order if hasattr(code, "collection_order") else {}
+                collection_order = collection_order,
             )
         elif version_tuple < (3, 10):
             return Code38(
@@ -238,7 +242,7 @@ def to_portable(
     co_cellvars=(None,),  # 2.0+
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
-    collection_order: dict = {},
+    collection_order = {},
 ):
     if co_qualname is None:
         co_qualname=co_name

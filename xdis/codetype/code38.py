@@ -84,7 +84,6 @@ class Code38(Code3):
         co_cellvars,
         collection_order = {}
     ):
->>>>>>> python-3.0-to-3.2
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super().__init__(

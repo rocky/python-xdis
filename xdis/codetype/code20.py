@@ -71,7 +71,7 @@ class Code2(Code15):
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super().__init__(
+        super(Code2, self).__init__(
             co_argcount=co_argcount,
             co_nlocals=co_nlocals,
             co_stacksize=co_stacksize,

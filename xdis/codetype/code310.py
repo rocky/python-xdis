@@ -96,7 +96,7 @@ class Code310(Code38):
         co_linetable,
         co_freevars,
         co_cellvars,
-        collection_order: dict = {}
+        collection_order = {}
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.

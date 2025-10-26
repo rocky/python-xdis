@@ -708,9 +708,8 @@ def load_code(fp, magic_int, bytes_for_s=None, code_objects={}):
 
 def load_code_and_get_file_offsets(
     fp, magic_int, bytes_for_s = False, code_objects={}
-) -> tuple:
+):
     if isinstance(fp, bytes):
->>>>>>> python-3.0-to-3.2
         fp = io.BytesIO(fp)
     um_gen = _VersionIndependentUnmarshaller(
         fp, magic_int, bytes_for_s, code_objects=code_objects
