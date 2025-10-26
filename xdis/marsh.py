@@ -29,7 +29,36 @@ import types
 from sys import intern
 
 from xdis.codetype import Code2, Code3, Code15
-from xdis.unmarshal import long
+from xdis.unmarshal import (
+    FLAG_REF,
+    TYPE_ASCII,
+    TYPE_BINARY_COMPLEX,
+    TYPE_BINARY_FLOAT,
+    TYPE_CODE,
+    TYPE_COMPLEX,
+    TYPE_DICT,
+    TYPE_ELLIPSIS,
+    TYPE_FALSE,
+    TYPE_FLOAT,
+    TYPE_FROZENSET,
+    TYPE_INT,
+    TYPE_INT64,
+    TYPE_INTERNED,
+    TYPE_LIST,
+    TYPE_LONG,
+    TYPE_NONE,
+    TYPE_NULL,
+    TYPE_SET,
+    TYPE_SHORT_ASCII,
+    TYPE_SMALL_TUPLE,
+    TYPE_STOPITER,
+    TYPE_STRING,
+    TYPE_STRINGREF,
+    TYPE_TRUE,
+    TYPE_TUPLE,
+    TYPE_UNICODE,
+    long,
+)
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # NOTE: This module is used in the Python3 interpreter, but also by
@@ -49,45 +78,6 @@ def Ord(c):
     return c if PYTHON3 else ord(c)
 
 
-# Bit set on marshalType if we should
-# add obj to internObjects.
-# FLAG_REF is the marshal.c name
-FLAG_REF = 0x80
-
-TYPE_NULL = "0"
-TYPE_NONE = "N"
-TYPE_FALSE = "F"
-TYPE_TRUE = "T"
-TYPE_STOPITER = "S"
-TYPE_ELLIPSIS = "."
-TYPE_INT = "i"
-TYPE_INT64 = "I"  # Python 3.4 removed this
-TYPE_FLOAT = "f"  # Seems not in use after Python 2.4
-TYPE_BINARY_FLOAT = "g"
-TYPE_COMPLEX = "x"
-TYPE_BINARY_COMPLEX = "y"  # 3.x
-TYPE_LONG = "l"
-TYPE_STRING = "s"
-TYPE_INTERNED = "t"
-TYPE_REF = "r"  # Since 3.4
-TYPE_STRINGREF = "R"  # Python 2
-TYPE_TUPLE = "("
-TYPE_LIST = "["
-TYPE_DICT = "{"
-TYPE_CODE_OLD = "C"  # used in Python 1.0 - 1.2
-TYPE_CODE = "c"
-TYPE_UNICODE = "u"
-TYPE_UNKNOWN = "?"
-TYPE_SET = "<"
-TYPE_FROZENSET = ">"
-
-TYPE_ASCII = "a"  # since 3.4
-TYPE_ASCII_INTERNED = "A"  # since 3.4
-TYPE_SMALL_TUPLE = ")"  # since 3.4
-TYPE_SHORT_ASCII = "z"  # since 3.4
-TYPE_SHORT_ASCII_INTERNED = "Z"  # since 3.4
-
-
 class _Marshaller:
     """Python marshalling routine that runs in Python 2 and Python 3.
     We also extend to allow for xdis Code15, Code2, and Code3 types and instances.
@@ -96,11 +86,16 @@ class _Marshaller:
     dispatch = {}
 
     def __init__(
-        self, writefunc, python_version: tuple, is_pypy=None
+        self,
+        writefunc,
+        python_version: tuple,
+        is_pypy = None,
+        collection_order={},
     ) -> None:
         self._write = writefunc
         self.python_version = python_version
         self.is_pypy = is_pypy
+        self.collection_order = collection_order
 
     def dump(self, x) -> None:
         if (
@@ -425,6 +420,7 @@ class _Marshaller:
 
     dispatch[Code3] = dump_code3
 
+    # FIXME: this is wrong.
     try:
         if PYTHON3:
             dispatch[types.CodeType] = dump_code3
@@ -433,22 +429,32 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_set(self, x) -> None:
-        self._write(TYPE_SET)
-        self.w_long(len(x))
-        for each in x:
+    def dump_collection(self, type_code: str, bag) -> None:
+        """
+        Save marshalled version of frozenset fs.
+        Use self.collection_order, to ensure that the order
+        or set elements that may have appeared from unmarshalling the appears
+        the same way. This helps roundtrip checking, among possibly other things.
+        """
+        self._write(type_code)
+        self.w_long(len(bag))
+        collection = self.collection_order.get(bag, bag)
+        for each in collection:
             self.dump(each)
 
-    try:
-        dispatch[set] = dump_set
-    except NameError:
-        pass
+    def dump_set(self, s: set) -> None:
+        """
+        Save marshalled version of set s.
+        """
+        self.dump_collection(TYPE_SET, s)
 
-    def dump_frozenset(self, x) -> None:
-        self._write(TYPE_FROZENSET)
-        self.w_long(len(x))
-        for each in x:
-            self.dump(each)
+    dispatch[set] = dump_set
+
+    def dump_frozenset(self, fs: frozenset) -> None:
+        """
+        Save marshalled version of frozenset fs.
+        """
+        self.dump_collection(TYPE_FROZENSET, fs)
 
     try:
         dispatch[frozenset] = dump_frozenset
@@ -1109,7 +1115,13 @@ def dumps(
     is_pypy=None,
 ):
     buffer = []
-    m = _Marshaller(buffer.append, python_version=python_version, is_pypy=is_pypy)
+    collection_order = x.collection_order if hasattr(x, "collection_order") else {}
+    m = _Marshaller(
+        buffer.append,
+        python_version=python_version,
+        is_pypy=is_pypy,
+        collection_order=collection_order,
+    )
     m.dump(x)
     if python_version:
         is_python3 = python_version >= (3, 0)
