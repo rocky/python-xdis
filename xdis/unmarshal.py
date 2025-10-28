@@ -418,7 +418,7 @@ class _VersionIndependentUnmarshaller:
     def t_unicode(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
         unicodestring = self.fp.read(strsize)
-        if self.version_tuple < (3, 0) or PYTHON_VERSION_TRIPLE < (2, 5):
+        if self.version_tuple < (3, 0) or PYTHON_VERSION_TRIPLE < (2, 7):
             string = unicodestring.decode("utf-8")
         else:
             string = unicodestring.decode("utf-8", errors="ignore")

@@ -237,7 +237,7 @@ def roundtrip_pyc(input_path, unlink_on_success):
                 tf_name, orig_co, orig_magic_int, orig_timestamp, orig_source_size or 0
             )
         except Exception:
-            print("ERROR: failed to write bytecode file")
+            print "ERROR: failed to write bytecode file"
             # Cleanup
             try:
                 os.unlink(tf_name)
@@ -255,13 +255,13 @@ def roundtrip_pyc(input_path, unlink_on_success):
     # Compare raw bytes first
     same_bytes = False
     try:
-        same_bytes = filecmp.cmp(orig_path, tf_name, shallow=False)
+        same_bytes = filecmp.cmp(input_path, tf_name, shallow=False)
     except Exception:
         print("WARNING: could not do raw byte comparison")
 
-    print("Original file:", input_path)
-    print("Rewritten file:", tf_name)
-    print("Raw-bytes identical:", same_bytes)
+    print "Original file:", input_path
+    print "Rewritten file:", tf_name
+    print "Raw-bytes identical:", same_bytes
     if same_bytes:
         if unlink_on_success:
             os.unlink(tf_name)

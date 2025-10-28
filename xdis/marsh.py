@@ -269,6 +269,8 @@ class _Marshaller:
         self._write(TYPE_UNICODE)
         if self.python_version < (3, 0):
             s = x.encode("utf8")
+        elif isinstance(x, unicode):
+            s = str(x)
         else:
             s = x
         self.w_long(len(s))

@@ -86,7 +86,7 @@ class Code38(Code3):
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super().__init__(
+        super(Code38, self).__init__(
             co_argcount=co_argcount,
             co_kwonlyargcount=co_kwonlyargcount,
             co_nlocals=co_nlocals,
