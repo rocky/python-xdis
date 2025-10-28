@@ -105,7 +105,7 @@ class _Marshaller:
             )
         try:
             self.dispatch[type(x)](self, x)
-        except KeyError:
+        except (KeyError, NameError):
             if isinstance(x, Code3):
                 self.dispatch[Code3](self, x)
                 return
@@ -264,6 +264,8 @@ class _Marshaller:
     if PYTHON_VERSION_TRIPLE >= (2, 6):
         dispatch[bytes] = dump_string
         dispatch[bytearray] = dump_string
+
+    dispatch[str] = dump_string
 
     def dump_unicode(self, x):
         self._write(TYPE_UNICODE)
@@ -1078,17 +1080,24 @@ def dumps(
     if is_python3:
         buf = []
         for b in buffer:
-            if isinstance(b, bytearray):
-                buf.append(str(b))
+            if PYTHON_VERSION_TRIPLE >= (2, 6):
+                if isinstance(b, bytearray):
+                    buf.append(str(b))
+                else:
+                    buf.append(b)
             else:
                 buf.append(b)
+
         return "".join(buf)
     else:
         # Python 2 or 3 handling Python 2.x
         buf = []
         for b in buffer:
-            if isinstance(b, bytearray):
-                buf.append(str(b))
+            if PYTHON_VERSION_TRIPLE > (2, 5):
+                if isinstance(b, bytearray):
+                    buf.append(str(b))
+                else:
+                    buf.append(b)
             else:
                 buf.append(b)
 
