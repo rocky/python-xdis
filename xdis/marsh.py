@@ -129,15 +129,30 @@ class _Marshaller:
                     raise ValueError("unmarshallable object")
             func(self, x)
 
+    # FIXME: dump_ascii, dump_short_ascii are just guesses
+    def dump_ascii(self, x) -> None:
+        self._write(TYPE_ASCII)
+        self.w_long(len(x))
+        self._write(x)
+
+    dispatch[TYPE_ASCII] = dump_ascii
+
+    def dump_bool(self, x) -> None:
+        if x:
+            self._write(TYPE_TRUE)
+        else:
+            self._write(TYPE_FALSE)
+
+    dispatch[bool] = dump_bool
+
+    def w_char(self, char: chr) -> None:
+        self._write(char)
+
     def dump_linetable(self, s) -> None:
         type_code = TYPE_STRING if self.python_version < (3, 5) else TYPE_UNICODE
         self._write(type_code)
         self.w_long(len(s))
         self._write(s)
-
-    def w_long64(self, x) -> None:
-        self.w_long(x)
-        self.w_long(x >> 32)
 
     def w_long(self, x: int) -> None:
         a = chr(x & 0xFF)
@@ -149,22 +164,18 @@ class _Marshaller:
         d = chr(x & 0xFF)
         self._write(a + b + c + d)
 
-    def w_short(self, x: int) -> None:
-        self._write(chr(x & 0xFF))
-        self._write(chr((x >> 8) & 0xFF))
+    def w_long64(self, x) -> None:
+        self.w_long(x)
+        self.w_long(x >> 32)
 
     def dump_none(self, x) -> None:
         self._write(TYPE_NONE)
 
     dispatch[type(None)] = dump_none
 
-    def dump_bool(self, x) -> None:
-        if x:
-            self._write(TYPE_TRUE)
-        else:
-            self._write(TYPE_FALSE)
-
-    dispatch[bool] = dump_bool
+    def w_short(self, x: int) -> None:
+        self._write(chr(x & 0xFF))
+        self._write(chr((x >> 8) & 0xFF))
 
     def dump_stopiter(self, x) -> None:
         if x is not StopIteration:
@@ -181,7 +192,6 @@ class _Marshaller:
     except NameError:
         pass
 
-    # In Python3, this function is not used; see dump_long() below.
     def dump_int(self, x) -> None:
         y = x >> 31
         if y and y != -1:
@@ -280,10 +290,17 @@ class _Marshaller:
     else:
         dispatch[unicode] = dump_unicode  # noqa
 
-    def dump_tuple(self, x) -> None:
-        self._write(TYPE_TUPLE)
-        self.w_long(len(x))
-        for item in x:
+    def dump_tuple(self, tuple_object: tuple) -> None:
+
+        n = len(tuple_object)
+        if self.python_version >= (3, 4) and n < 256:
+            self.dump_small_tuple(tuple_object)
+            return
+
+        type_code = TYPE_TUPLE
+        self._write(type_code)
+        self.w_long(len(tuple_object))
+        for item in tuple_object:
             self.dump(item)
 
     dispatch[tuple] = dump_tuple
@@ -291,7 +308,7 @@ class _Marshaller:
 
     def dump_small_tuple(self, x) -> None:
         self._write(TYPE_SMALL_TUPLE)
-        self.w_short(len(x))
+        self.w_char(chr(len(x)))
         for item in x:
             self.dump(item)
 
@@ -462,14 +479,6 @@ class _Marshaller:
         dispatch[frozenset] = dump_frozenset
     except NameError:
         pass
-
-    # FIXME: dump_ascii, dump_short_ascii are just guesses
-    def dump_ascii(self, x) -> None:
-        self._write(TYPE_ASCII)
-        self.w_long(len(x))
-        self._write(x)
-
-    dispatch[TYPE_ASCII] = dump_ascii
 
     def dump_short_ascii(self, x) -> None:
         self._write(TYPE_SHORT_ASCII)
