@@ -60,9 +60,8 @@ class Code3(Code2):
         co_lnotab,
         co_freevars,
         co_cellvars,
-        collection_order: dict = {}
+        collection_order: dict = {},
         reference_objects = set(),
->>>>>>> python-3.6-to-3.10
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.

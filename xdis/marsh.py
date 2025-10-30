@@ -97,8 +97,8 @@ class _Marshaller:
     ) -> None:
         self._write = writefunc
         self.collection_order = collection_order
-        self.intern_objects: Dict[Any, int] = {}
-        self.intern_consts: Dict[Any, int] = {}
+        self.intern_objects = {}
+        self.intern_consts = {}
         self.is_pypy = is_pypy
         self.python_version = python_version
         self.reference_objects = reference_objects
