@@ -692,7 +692,7 @@ class _Unmarshaller:
     def load_ascii(self):
         return self.r_byte()
 
-    dispatch[TYPE_ASCII] = load_null
+    dispatch[TYPE_ASCII] = load_ascii
 
     def load_binary_float(self) -> float:
         f = self._read(8)
