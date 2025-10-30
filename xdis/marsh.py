@@ -644,14 +644,6 @@ class _Unmarshaller:
     def r_byte(self):
         return self._read(1)
 
-    def r_short(self):
-        lo = self._read(1)
-        hi = self._read(1)
-        x = lo | (hi << 8)
-        if x & 0x8000:
-            x = x - 0x10000
-        return x
-
     def r_long(self):
         s = self._read(4)
         a = s[0]
@@ -664,6 +656,8 @@ class _Unmarshaller:
             return int(x)
         else:
             return x
+
+    dispatch[TYPE_INT] = r_long
 
     def r_long64(self):
         a = self._read(1)
@@ -680,134 +674,31 @@ class _Unmarshaller:
             x = -((1 << 64) - x)
         return x
 
+    dispatch[TYPE_INT64] = r_long64
+
+    def r_short(self):
+        lo = self._read(1)
+        hi = self._read(1)
+        x = lo | (hi << 8)
+        if x & 0x8000:
+            x = x - 0x10000
+        return x
+
     def load_null(self) -> type[_NULL]:
         return _NULL
 
     dispatch[TYPE_NULL] = load_null
-
-    def load_none(self) -> None:
-        return None
-
-    dispatch[TYPE_NONE] = load_none
-
-    def load_true(self) -> bool:
-        return True
-
-    dispatch[TYPE_TRUE] = load_true
-
-    def load_false(self) -> bool:
-        return False
-
-    dispatch[TYPE_FALSE] = load_false
 
     def load_ascii(self):
         return self.r_byte()
 
     dispatch[TYPE_ASCII] = load_null
 
-    def load_stopiter(self) -> type[StopIteration]:
-        return StopIteration
-
-    dispatch[TYPE_STOPITER] = load_stopiter
-
-    def load_ellipsis(self) -> EllipsisType:
-        return Ellipsis
-
-    dispatch[TYPE_ELLIPSIS] = load_ellipsis
-
-    dispatch[TYPE_INT] = r_long
-
-    dispatch[TYPE_INT64] = r_long64
-
-    def load_long(self):
-        size = self.r_long()
-        sign = 1
-        if size < 0:
-            sign = -1
-            size = -size
-        x = 0
-        for i in range(size):
-            d = self.r_short()
-            x = x | (d << (i * 15))
-        return x * sign
-
-    dispatch[TYPE_LONG] = load_long
-
-    def load_float(self) -> float:
-        n = self._read(1)
-        s = self._read(n)
-        return float(s)
-
-    dispatch[TYPE_FLOAT] = load_float
-
     def load_binary_float(self) -> float:
         f = self._read(8)
         return float(struct.unpack("<d", f)[0])
 
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
-
-    def load_complex(self) -> complex:
-        n = self._read(1)
-        s = self._read(n)
-        real = float(s)
-        n = self._read(1)
-        s = self._read(n)
-        imag = float(s)
-        return complex(real, imag)
-
-    dispatch[TYPE_COMPLEX] = load_complex
-
-    def load_string(self):
-        n = self.r_long()
-        return self._read(n)
-
-    dispatch[TYPE_STRING] = load_string
-
-    def load_interned(self) -> str:
-        n = self.r_long()
-        ret = intern(self._read(n))
-        self._stringtable.append(ret)
-        return ret
-
-    dispatch[TYPE_INTERNED] = load_interned
-
-    def load_stringref(self):
-        n = self.r_long()
-        return self._stringtable[n]
-
-    dispatch[TYPE_STRINGREF] = load_stringref
-
-    def load_unicode(self):
-        n = self.r_long()
-        s = self._read(n)
-        ret = s.decode("utf8")
-        return ret
-
-    dispatch[TYPE_UNICODE] = load_unicode
-
-    def load_tuple(self):
-        return tuple(self.load_list())
-
-    dispatch[TYPE_TUPLE] = load_tuple
-
-    def load_list(self):
-        n = self.r_long()
-        list = [self.load() for i in range(n)]
-        return list
-
-    dispatch[TYPE_LIST] = load_list
-
-    def load_dict(self):
-        d = {}
-        while 1:
-            key = self.load()
-            if key is _NULL:
-                break
-            value = self.load()
-            d[key] = value
-        return d
-
-    dispatch[TYPE_DICT] = load_dict
 
     # FIXME: GO over fo PYPY
     def load_code(self) -> Code2 | Code3 | CodeType:
@@ -868,12 +759,45 @@ class _Unmarshaller:
 
     dispatch[TYPE_CODE] = load_code
 
-    def load_set(self):
-        n = self.r_long()
-        args = [self.load() for i in range(n)]
-        return set(args)
+    def load_complex(self) -> complex:
+        n = self._read(1)
+        s = self._read(n)
+        real = float(s)
+        n = self._read(1)
+        s = self._read(n)
+        imag = float(s)
+        return complex(real, imag)
 
-    dispatch[TYPE_SET] = load_set
+    dispatch[TYPE_COMPLEX] = load_complex
+
+    def load_dict(self):
+        d = {}
+        while 1:
+            key = self.load()
+            if key is _NULL:
+                break
+            value = self.load()
+            d[key] = value
+        return d
+
+    dispatch[TYPE_DICT] = load_dict
+
+    def load_ellipsis(self) -> EllipsisType:
+        return Ellipsis
+
+    dispatch[TYPE_ELLIPSIS] = load_ellipsis
+
+    def load_false(self) -> bool:
+        return False
+
+    dispatch[TYPE_FALSE] = load_false
+
+    def load_float(self) -> float:
+        n = self._read(1)
+        s = self._read(n)
+        return float(s)
+
+    dispatch[TYPE_FLOAT] = load_float
 
     def load_frozenset(self):
         n = self.r_long()
@@ -881,6 +805,82 @@ class _Unmarshaller:
         return frozenset(args)
 
     dispatch[TYPE_FROZENSET] = load_frozenset
+
+    def load_interned(self) -> str:
+        n = self.r_long()
+        ret = intern(self._read(n))
+        self._stringtable.append(ret)
+        return ret
+
+    dispatch[TYPE_INTERNED] = load_interned
+
+    def load_list(self):
+        n = self.r_long()
+        list = [self.load() for i in range(n)]
+        return list
+
+    dispatch[TYPE_LIST] = load_list
+
+    def load_long(self):
+        size = self.r_long()
+        sign = 1
+        if size < 0:
+            sign = -1
+            size = -size
+        x = 0
+        for i in range(size):
+            d = self.r_short()
+            x = x | (d << (i * 15))
+        return x * sign
+
+    dispatch[TYPE_LONG] = load_long
+
+    def load_none(self) -> None:
+        return None
+
+    dispatch[TYPE_NONE] = load_none
+
+    def load_set(self):
+        n = self.r_long()
+        args = [self.load() for i in range(n)]
+        return set(args)
+
+    dispatch[TYPE_SET] = load_set
+
+    def load_stopiter(self) -> type[StopIteration]:
+        return StopIteration
+
+    dispatch[TYPE_STOPITER] = load_stopiter
+
+    def load_string(self):
+        n = self.r_long()
+        return self._read(n)
+
+    dispatch[TYPE_STRING] = load_string
+
+    def load_stringref(self):
+        n = self.r_long()
+        return self._stringtable[n]
+
+    dispatch[TYPE_STRINGREF] = load_stringref
+
+    def load_true(self) -> bool:
+        return True
+
+    dispatch[TYPE_TRUE] = load_true
+
+    def load_tuple(self):
+        return tuple(self.load_list())
+
+    dispatch[TYPE_TUPLE] = load_tuple
+
+    def load_unicode(self):
+        n = self.r_long()
+        s = self._read(n)
+        ret = s.decode("utf8")
+        return ret
+
+    dispatch[TYPE_UNICODE] = load_unicode
 
 
 # ________________________________________________________________
