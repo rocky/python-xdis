@@ -47,7 +47,7 @@ FLAG_REF = 0x80
 
 
 # Bit set on marshalType if we should
-# add obj to internObjects.
+# add obj to intern_objects.
 # FLAG_REF is the marshal.c name
 FLAG_REF = 0x80
 
@@ -189,8 +189,8 @@ class _VersionIndependentUnmarshaller:
         else:
             self.marshal_version = 0
 
-        self.internStrings = []
-        self.internObjects = []
+        self.intern_strings = []
+        self.intern_objects = []
         self.version_tuple = tuple()
         self.is_graal = magic_int in GRAAL3_MAGICS
         self.is_pypy = magic_int in PYPY3_MAGICS
@@ -212,9 +212,9 @@ class _VersionIndependentUnmarshaller:
         """
 
         if self.marshal_version == 0:
-            self.internStrings = []
+            self.intern_strings = []
         if self.marshal_version < 3:
-            assert self.internObjects == []
+            assert self.intern_objects == []
 
         return self.r_object()
 
@@ -223,18 +223,18 @@ class _VersionIndependentUnmarshaller:
     def r_ref_reserve(self, obj, save_ref):
         i = None
         if save_ref:
-            i = len(self.internObjects)
-            self.internObjects.append(obj)
+            i = len(self.intern_objects)
+            self.intern_objects.append(obj)
         return obj, i
 
     def r_ref_insert(self, obj, i):
         if i is not None:
-            self.internObjects[i] = obj
+            self.intern_objects[i] = obj
         return obj
 
     def r_ref(self, obj, save_ref):
         if save_ref:
-            self.internObjects.append(obj)
+            self.intern_objects.append(obj)
         return obj
 
     # FIXME: remove bytes_fo_s parameter.
@@ -325,7 +325,7 @@ class _VersionIndependentUnmarshaller:
     def t_int64(self, save_ref, bytes_for_s=False):
         obj = unpack("<q", self.fp.read(8))[0]
         if save_ref:
-            self.internObjects.append(obj)
+            self.intern_objects.append(obj)
         return obj
 
     # float - Seems not in use after Python 2.4
@@ -381,7 +381,7 @@ class _VersionIndependentUnmarshaller:
         # FIXME: check
         strsize = unpack("<i", self.fp.read(4))[0]
         interned = compat_str(self.fp.read(strsize), False)
-        self.internStrings.append(interned)
+        self.intern_strings.append(interned)
         return self.r_ref(interned, save_ref)
 
     # Since Python 3.4
@@ -405,14 +405,18 @@ class _VersionIndependentUnmarshaller:
         # FIXME: check
         strsize = unpack("B", self.fp.read(1))[0]
         interned = compat_str(self.fp.read(strsize), False)
-        self.internStrings.append(interned)
+        self.intern_strings.append(interned)
         return self.r_ref(interned, save_ref)
 
     # Since Python 3.4
     def t_interned(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
         interned = compat_str(self.fp.read(strsize), False)
-        self.internStrings.append(interned)
+        self.intern_strings.append(interned)
+=======
+        interned = compat_str(self.fp.read(strsize))
+        self.intern_strings.append(interned)
+>>>>>>> python-3.0-to-3.2
         return self.r_ref(interned, save_ref)
 
     def t_unicode(self, save_ref, bytes_for_s=False):
@@ -488,7 +492,7 @@ class _VersionIndependentUnmarshaller:
 
     def t_python2_string_reference(self, save_ref, bytes_for_s=False):
         refnum = unpack("<i", self.fp.read(4))[0]
-        return self.internStrings[refnum]
+        return self.intern_strings[refnum]
 
     def t_code(self, save_ref, bytes_for_s=False):
         """
@@ -501,7 +505,11 @@ class _VersionIndependentUnmarshaller:
         # set.
         code_offset_in_file = self.fp.tell() - 1
 
+        # Below, the value None (slot for a code object value), will
+        # be replaced by the actual code in variable `ret` after it
+        # has been built.
         ret, i = self.r_ref_reserve(None, save_ref)
+
         self.version_tuple = magic_int2tuple(self.magic_int)
 
         if self.version_tuple >= (2, 3):
@@ -654,6 +662,8 @@ class _VersionIndependentUnmarshaller:
             co_firstlineno = -1  # Bogus sentinel value
             co_lnotab = ""
 
+        reference_objects = set(self.intern_objects + self.intern_strings)
+
         code = to_portable(
             co_argcount=co_argcount,
             co_posonlyargcount=co_posonlyargcount,
@@ -675,6 +685,7 @@ class _VersionIndependentUnmarshaller:
             co_exceptiontable=co_exceptiontable,
             version_triple=self.version_tuple,
             collection_order=self.collection_order,
+            reference_objects=reference_objects,
         )
 
         self.code_to_file_offsets[code] = (code_offset_in_file, co_code_offset_in_file)
@@ -687,7 +698,7 @@ class _VersionIndependentUnmarshaller:
     # Since Python 3.4
     def t_object_reference(self, save_ref=None, bytes_for_s=False):
         refnum = unpack("<i", self.fp.read(4))[0]
-        o = self.internObjects[refnum]
+        o = self.intern_objects[refnum]
         return o
 
     def t_unknown(self, save_ref=None, bytes_for_s=False):

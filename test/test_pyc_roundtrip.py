@@ -197,12 +197,22 @@ def do_tests(src_dir, obj_patterns, opts):
     os.chdir(cwd)
 
     n = len(files)
-    print("Processed %d files: %d good, and %d bad." % (n, n - failure_count, failure_count))
+    print(
+        "Processed %s files: %d good, and %d bad."
+        % (n, n - failure_count, failure_count)
+    )
     if failure_count < 255:
         rc = failure_count
     else:
         rc = 255
     sys.exit(rc)
+=======
+    print(
+        "Processed %s files: %d good, and %d bad."
+        % (n, n - failure_count, failure_count)
+    )
+    sys.exit(failure_count if failure_count < 255 else 255)
+>>>>>>> python-3.0-to-3.2
 
 
 if __name__ == "__main__":

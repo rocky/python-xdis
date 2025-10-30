@@ -61,7 +61,10 @@ class Code3(Code2):
         co_freevars,
         co_cellvars,
         collection_order = {}
+        reference_objects = set(),
     ):
+    ) -> None:
+>>>>>>> python-3.0-to-3.2
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code3, self).__init__(
@@ -83,9 +86,18 @@ class Code3(Code2):
         self.co_kwonlyargcount = co_kwonlyargcount
         self.fieldtypes = Code3FieldTypes
 
-        # It is helpful to save the order in sets, frozensets and dictionary keys,
-        # so that on writing a bytecode file we can duplicate this order.
+        # The following fields are mostly useful in marshaling a code object.
+        # Keeping marshal order exactly the same is useful in round-trip marshal
+        # testing; but it may also have other benefits.
+
+        # By saving the order in sets, frozensets, and dictionary keys,
+        # these collections can be written in the same order that appeared
+        # in unmarshalling (if that's how the code object was created).
         self.collection_order = collection_order
+
+        # Keeping track of which objects were referenced, allows
+        self.reference_objects = reference_objects
+
 
         if type(self) is Code3:
             self.check()
