@@ -141,6 +141,12 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
             co_lnotab=line_table,
             co_freevars=code.co_freevars,  # not in 1.x
             co_cellvars=code.co_cellvars,  # not in 1.x
+
+            # THINK ABOUT: If collection_order isn't defined, i.e. native code
+            # type, should we try to extract it?
+            collection_order=code.collection_order if hasattr(code, "collection_order") else {},
+            reference_objects=code.reference_objects if hasattr(code, "reference_objects") else set(),
+
         )
     else:
         # 1.0 .. 1.5
