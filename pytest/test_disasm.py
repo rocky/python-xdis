@@ -112,8 +112,8 @@ def run_check_disasm(test_tuple, function_to_test):
 def test_funcoutput(test_name, version, formats):
     if "classic" in formats:
         test_tuple = (
-            "../test/bytecode_%s/%s.pyc" % (version, test_name),
-            "testdata/%s-%s.right" % (test_name, version),
+            ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
+            ("testdata/%s-%s.right" % (test_name, version)),
         )
         run_check_disasm(test_tuple, disassemble_file)
     if "extended_bytes" in formats:
@@ -124,8 +124,8 @@ def test_funcoutput(test_name, version, formats):
         run_check_disasm(test_tuple, disassemble_file_extended_bytes)
     if "xasm" in formats:
         test_tuple = (
-            "../test/bytecode_%s/%s.pyc" % (version, test_name),
-            "testdata/%s-xasm-%s.right" % (test_name, version),
+            ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
+            ("testdata/%s-xasm-%s.right" % (test_name, version)),
         )
         run_check_disasm(test_tuple, disassemble_file_xasm)
 

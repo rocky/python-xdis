@@ -199,7 +199,10 @@ def do_tests(src_dir, obj_patterns, opts):
         os.chdir(cwd)
 
     n = len(files)
-    print("Processed %d files: %d good, and %d bad." % (n, n - failure_count, failure_count))
+    print(
+        "Processed %s files: %d good, and %d bad."
+        % (n, n - failure_count, failure_count)
+    )
     sys.exit(failure_count if failure_count < 255 else 255)
 
 

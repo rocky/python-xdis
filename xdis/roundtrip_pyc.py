@@ -282,7 +282,7 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
         ) = load_meta_and_code_from_filename(tf_name)
     except Exception as e:
         print(
-            f"ERROR: failed to load rewritten bytecode file {tf_name}:\n\t{e}",
+            "ERROR: failed to load rewritten bytecode file %s:\n\t%s" % (tf_name, e),
             file=sys.stderr,
         )
         return 5
