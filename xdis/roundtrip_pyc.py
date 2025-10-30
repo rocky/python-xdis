@@ -78,7 +78,7 @@ def compare_showing_error(orig_path, new_path):
 
     for i, (old_byte, new_byte) in enumerate(zip(orig_bytes, new_bytes)):
         if (old_byte != new_byte):
-            print("MISMATCH at %s: old %s; new: %s" % (hex(i), hex(old_byte), hex(new_byte)))
+            print("MISMATCH at %s: old %s; new: %s" % (hex(i), old_byte, new_byte))
             return
 
 

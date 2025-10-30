@@ -68,6 +68,8 @@ class Code2(Code15):
         co_lnotab,
         co_freevars,
         co_cellvars,
+        collection_order={},
+        reference_objects=set(),
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
@@ -88,6 +90,19 @@ class Code2(Code15):
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
         self.fieldtypes = Code2FieldTypes
+
+        # The following fields are mostly useful in marshaling a code object.
+        # Keeping marshal order exactly the same is useful in round-trip marshal
+        # testing; but it may also have other benefits.
+
+        # By saving the order in sets, frozensets, and dictionary keys,
+        # these collections can be written in the same order that appeared
+        # in unmarshalling (if that's how the code object was created).
+        self.collection_order = collection_order
+
+        # Keeping track of which objects were referenced, allows
+        self.reference_objects = reference_objects
+
         if type(self) is Code2:
             self.check()
         return
