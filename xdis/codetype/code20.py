@@ -17,7 +17,6 @@
 import types
 from copy import deepcopy
 from types import CodeType
-from typing import Any, Dict, Set, Tuple, Union
 
 from xdis.codetype.code15 import Code15, Code15FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -70,8 +69,8 @@ class Code2(Code15):
         co_lnotab,
         co_freevars,
         co_cellvars,
-        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
-        reference_objects: Set[Any] = set(),
+        collection_order={},
+        reference_objects=set(),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.

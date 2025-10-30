@@ -244,11 +244,8 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
                 pass
             return 4
     except Exception as e:
-        print("ERROR: failed to write bytecode file: '%s':\n %s" % (tf_name_path, e),
+        print("ERROR: failed to write bytecode file: '%s':\n\t%s" % (tf_name, e),
               file=sys.stderr)
-=======
-        print(f"ERROR: failed to write bytecode file '{tf_name}:\n\t{e}", file=sys.stderr)
->>>>>>> python-3.6-to-3.10
         try:
             os.unlink(tf_name)
         except Exception:
