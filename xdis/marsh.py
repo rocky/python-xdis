@@ -583,7 +583,12 @@ class _Marshaller:
     dispatch[TYPE_LIST] = dump_tuple
 
     def dump_unicode(self, s, flag_ref: int = 0) -> None:
-        type_code = TYPE_STRING if self.python_version < (2, 0) else TYPE_UNICODE
+        if self.python_version < (2, 0):
+            type_code = TYPE_STRING
+        elif (2, 0) <= self.python_version <= (3, 0):
+            type_code = TYPE_INTERNED
+        else:
+            type_code = TYPE_UNICODE
 
         if flag_ref:
             if (ref := self.intern_objects.get(s, None)) is not None:
@@ -1243,7 +1248,7 @@ def dumps(
             else:
                 buf.append(b)
 
-        return "".join(buf)
+        return b"".join(buf)
 
 
 @builtinify
