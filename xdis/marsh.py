@@ -1295,7 +1295,7 @@ def dumps(
             else:
                 buf.append(b)
 
-        return b"".join(buf)
+        return "".join(buf)
 
 
 def loads(s, python_version=None):
