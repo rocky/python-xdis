@@ -205,7 +205,8 @@ def roundtrip_pyc(input_path, unlink_on_success):
             orig_file_offsets,
         ) = load_meta_and_code_from_filename(input_path)
     except Exception:
-        print("ERROR: failed to load original bytecode file: %s" % input_path)
+        print("ERROR: failed to load original bytecode file '%s':\n\t%s" %
+              (input_path, sys.exc_info()[1]))
         return 3
 
     tf_name_base = osp.basename(input_path)
@@ -237,7 +238,7 @@ def roundtrip_pyc(input_path, unlink_on_success):
                 tf_name, orig_co, orig_magic_int, orig_timestamp, orig_source_size or 0
             )
         except Exception:
-            print "ERROR: failed to write bytecode file"
+            print("ERROR: failed to write bytecode file %s:\n\t%s" % (tf_name, sys.exc_info()[1]))
             # Cleanup
             try:
                 os.unlink(tf_name)
@@ -245,7 +246,7 @@ def roundtrip_pyc(input_path, unlink_on_success):
                 pass
             return 4
     except Exception:
-        print "ERROR: failed to write bytecode file: %s" % input_path
+        print("ERROR: failed to write bytecode file '%s':\n\t%s" % (input_path, sys.exc_info()[1]))
         try:
             os.unlink(tf_name)
         except Exception:
@@ -257,11 +258,11 @@ def roundtrip_pyc(input_path, unlink_on_success):
     try:
         same_bytes = filecmp.cmp(input_path, tf_name, shallow=False)
     except Exception:
-        print("WARNING: could not do raw byte comparison")
+        print("WARNING: could not do raw byte comparison: %s", sys.exc_info()[1])
 
-    print "Original file:", input_path
-    print "Rewritten file:", tf_name
-    print "Raw-bytes identical:", same_bytes
+    print("Original file: %s" % input_path)
+    print("Rewritten file: %s" % tf_name)
+    print("Raw-bytes identical: %s" % same_bytes)
     if same_bytes:
         if unlink_on_success:
             os.unlink(tf_name)
@@ -283,7 +284,8 @@ def roundtrip_pyc(input_path, unlink_on_success):
         ) = load_meta_and_code_from_filename(tf_name)
     except Exception:
         print(
-            "ERROR: failed to load rewritten bytecode file %s" % tf_name
+            "ERROR: failed to load rewritten bytecode file '%s'\n\t:%s" %
+            (tf_name, sys.exc_info)
         )
         return 5
 
