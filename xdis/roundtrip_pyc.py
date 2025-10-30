@@ -198,10 +198,10 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
             orig_timestamp,
             orig_magic_int,
             orig_co,
-            _orig_is_pypy,
+            orig_is_pypy,
             orig_source_size,
-            _orig_sip_hash,
-            _orig_file_offsets,
+            orig_sip_hash,
+            orig_file_offsets,
         ) = load_meta_and_code_from_filename(input_path)
     except Exception as e:
         print("ERROR: failed to load original bytecode file: %s" % input_path, file=sys.stderr)
@@ -268,45 +268,45 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
 
     compare_showing_error(input_path, tf_name)
 
-    # # Now compare by loading both and comparing metadata and code-object structure
-    # try:
-    #     (
-    #         new_version,
-    #         new_timestamp,
-    #         new_magic_int,
-    #         new_co,
-    #         new_is_pypy,
-    #         new_source_size,
-    #         new_sip_hash,
-    #         new_file_offsets,
-    #     ) = load_meta_and_code_from_filename(tf_name)
-    # except Exception as e:
-    #     print(
-    #         f"ERROR: failed to load rewritten bytecode file {tf_name}:\n\t{e}",
-    #         file=sys.stderr,
-    #     )
-    #     return 5
+    # Now compare by loading both and comparing metadata and code-object structure
+    try:
+        (
+            new_version,
+            new_timestamp,
+            new_magic_int,
+            new_co,
+            new_is_pypy,
+            new_source_size,
+            new_sip_hash,
+            new_file_offsets,
+        ) = load_meta_and_code_from_filename(tf_name)
+    except Exception as e:
+        print(
+            f"ERROR: failed to load rewritten bytecode file {tf_name}:\n\t{e}",
+            file=sys.stderr,
+        )
+        return 5
 
-    # meta_equal = (
-    #     orig_version == new_version
-    #     and orig_magic_int == new_magic_int
-    #     and (orig_timestamp == new_timestamp)
-    #     and (orig_source_size == new_source_size)
-    #     and (orig_sip_hash == new_sip_hash)
-    # )
+    meta_equal = (
+        orig_version == new_version
+        and orig_magic_int == new_magic_int
+        and (orig_timestamp == new_timestamp)
+        and (orig_source_size == new_source_size)
+        and (orig_sip_hash == new_sip_hash)
+    )
 
-    # print(
-    #     "Metadata equal (version, magic, timestamp, source_size, sip_hash):", meta_equal
-    # )
-    # print("Original is PyPy:", orig_is_pypy, "Rewritten is PyPy:", new_is_pypy)
+    print(
+        "Metadata equal (version, magic, timestamp, source_size, sip_hash):", meta_equal
+    )
+    print("Original is PyPy:", orig_is_pypy, "Rewritten is PyPy:", new_is_pypy)
 
-    # # Compare code objects
-    # codes_equal = compare_code_objects(orig_co, new_co)
-    # print("Code objects structurally equal:", codes_equal)
+    # Compare code objects
+    codes_equal = compare_code_objects(orig_co, new_co)
+    print("Code objects structurally equal:", codes_equal)
 
-    # # Compare file_offsets if present
-    # offsets_equal = orig_file_offsets == new_file_offsets
-    # print("File offsets equal:", offsets_equal)
+    # Compare file_offsets if present
+    offsets_equal = orig_file_offsets == new_file_offsets
+    print("File offsets equal:", offsets_equal)
 
     # all_identical = same_bytes and meta_equal and codes_equal and offsets_equal
     # if all_identical:
