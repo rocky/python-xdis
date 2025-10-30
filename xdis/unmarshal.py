@@ -413,10 +413,6 @@ class _VersionIndependentUnmarshaller:
         strsize = unpack("<i", self.fp.read(4))[0]
         interned = compat_str(self.fp.read(strsize), False)
         self.intern_strings.append(interned)
-=======
-        interned = compat_str(self.fp.read(strsize))
-        self.intern_strings.append(interned)
->>>>>>> python-3.0-to-3.2
         return self.r_ref(interned, save_ref)
 
     def t_unicode(self, save_ref, bytes_for_s=False):

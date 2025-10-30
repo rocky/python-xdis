@@ -245,8 +245,7 @@ def roundtrip_pyc(input_path, unlink_on_success):
                 pass
             return 4
     except Exception:
-        print("ERROR: failed to write bytecode file: %s" % input_path)
-        print("ERROR: failed to write bytecode file")
+        print "ERROR: failed to write bytecode file: %s" % input_path
         try:
             os.unlink(tf_name)
         except Exception:
@@ -282,10 +281,9 @@ def roundtrip_pyc(input_path, unlink_on_success):
             new_sip_hash,
             new_file_offsets,
         ) = load_meta_and_code_from_filename(tf_name)
-    except Exception as e:
+    except Exception:
         print(
-            "ERROR: failed to load rewritten bytecode file %s:\n\t%s" % (tf_name, e),
-            file=sys.stderr,
+            "ERROR: failed to load rewritten bytecode file %s" % tf_name
         )
         return 5
 

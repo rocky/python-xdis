@@ -16,7 +16,6 @@
 
 import types
 from copy import deepcopy
-from types import CodeType
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE
@@ -60,11 +59,9 @@ class Code3(Code2):
         co_lnotab,
         co_freevars,
         co_cellvars,
-        collection_order = {}
+        collection_order = {},
         reference_objects = set(),
     ):
-    ) -> None:
->>>>>>> python-3.0-to-3.2
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super(Code3, self).__init__(

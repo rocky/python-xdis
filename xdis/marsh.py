@@ -326,7 +326,7 @@ class _Marshaller:
 
     dispatch[dict] = dump_dict
 
-    def dump_ellipsis(self, x) -> None:
+    def dump_ellipsis(self, x):
         self._write(TYPE_ELLIPSIS)
 
     try:
@@ -334,7 +334,7 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_float(self, x) -> None:
+    def dump_float(self, x):
         write = self._write
         write(TYPE_FLOAT)
         s = repr(x)
@@ -344,7 +344,7 @@ class _Marshaller:
     dispatch[float] = dump_float
     dispatch[TYPE_BINARY_FLOAT] = dump_float
 
-    def dump_filename(self, path, flag_ref: int = 0) -> None:
+    def dump_filename(self, path, flag_ref=0):
         if flag_ref:
             # After Python 3.4 which adds the ref flag and ASCII marshal types..
             if len(path) < 256:
@@ -355,7 +355,7 @@ class _Marshaller:
             # Python 3.0 .. 3.4...
             self.dump_unicode(path)
 
-    def dump_frozenset(self, fs: frozenset, flag_ref=0):
+    def dump_frozenset(self, fs, flag_ref=0):
         """
         Save marshalled version of frozenset fs.
         """
@@ -366,7 +366,7 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_int(self, value, flag_ref = 0) -> None:
+    def dump_int(self, value, flag_ref = 0):
         if flag_ref:
             ref = self.intern_consts.get(value, None)
             if ref is not None:
@@ -412,13 +412,16 @@ class _Marshaller:
         self._write(chr(x & 0xFF))
         self._write(chr((x >> 8) & 0xFF))
 
-    def dump_linetable(self, s) -> None:
-        type_code = TYPE_STRING if self.python_version < (3, 5) else TYPE_UNICODE
+    def dump_linetable(self, s):
+        if self.python_version < (3, 5):
+            type_code = TYPE_STRING
+        else:
+            type_code = TYPE_UNICODE
         self._write(type_code)
         self.w_long(len(s))
         self._write(s)
 
-    def w_long(self, x: int) -> None:
+    def w_long(self, x):
         a = chr(x & 0xFF)
         x >>= 8
         b = chr(x & 0xFF)
@@ -428,11 +431,11 @@ class _Marshaller:
         d = chr(x & 0xFF)
         self._write(a + b + c + d)
 
-    def w_long64(self, x) -> None:
+    def w_long64(self, x):
         self.w_long(x)
         self.w_long(x >> 32)
 
-    def dump_name(self, name: str, flag_ref: int) -> None:
+    def dump_name(self, name, flag_ref):
         if flag_ref:
             if len(name) < 256:
                 self.dump_short_ascii_interned(name)
@@ -442,7 +445,7 @@ class _Marshaller:
             self.dump_unicode(name)
 
 
-    def dump_names(self, names, flag_ref: int) -> None:
+    def dump_names(self, names, flag_ref):
         n = len(names)
         if flag_ref:
 
@@ -455,11 +458,10 @@ class _Marshaller:
 
             if n < 256:
                 is_reference = names in self.reference_objects
-                type_code = (
-                    chr(ord(TYPE_SMALL_TUPLE) | FLAG_REF)
-                    if is_reference
-                    else TYPE_SMALL_TUPLE
-                )
+                if is_reference:
+                    type_code = chr(ord(TYPE_SMALL_TUPLE) | FLAG_REF)
+                else:
+                    type_code = TYPE_SMALL_TUPLE
                 self._write(type_code)
                 self._write(chr(n))
                 if is_reference:
@@ -486,7 +488,7 @@ class _Marshaller:
 
     dispatch[type(None)] = dump_none
 
-    def dump_list(self, x) -> None:
+    def dump_list(self, x):
         self._write(TYPE_LIST)
         self.w_long(len(x))
         for item in x:
@@ -494,7 +496,7 @@ class _Marshaller:
 
     dispatch[list] = dump_list
 
-    def dump_long(self, x) -> None:
+    def dump_long(self, x):
         self._write(TYPE_LONG)
         sign = 1
         if x < 0:
@@ -515,11 +517,11 @@ class _Marshaller:
     else:
         dispatch[long] = dump_long  # noqa
 
-    def dump_ref(self, ref: int) -> None:
+    def dump_ref(self, ref):
         self._write(TYPE_REF)
         self.w_long(ref)
 
-    def dump_set(self, s: set) -> None:
+    def dump_set(self, s):
         """
         Save marshalled version of set s.
         """
@@ -527,11 +529,11 @@ class _Marshaller:
 
     dispatch[set] = dump_set
 
-    def w_short(self, x: int) -> None:
+    def w_short(self, x):
         self._write(chr(x & 0xFF))
         self._write(chr((x >> 8) & 0xFF))
 
-    def dump_short_ascii(self, short_ascii: str) -> None:
+    def dump_short_ascii(self, short_ascii):
         self._write(chr(ord(TYPE_SHORT_ASCII) | FLAG_REF))
         # FIXME: check len(x)?
         self._write(chr(len(short_ascii)))
@@ -539,7 +541,7 @@ class _Marshaller:
 
     dispatch[TYPE_SHORT_ASCII] = dump_short_ascii
 
-    def dump_short_ascii_interned(self, short_ascii: str) -> None:
+    def dump_short_ascii_interned(self, short_ascii):
         """
         Used when the length of an ASCII string is less than 255
         characters. This is used in Python 3.4 and later.
@@ -557,7 +559,7 @@ class _Marshaller:
 
     dispatch[TYPE_ASCII] = dump_ascii
 
-    def dump_small_tuple(self, tuple_value, flag_ref: int) -> None:
+    def dump_small_tuple(self, tuple_value, flag_ref):
         """
         Used when the length of a tuple has is less than 255
         items. This is used in Python 3.4 and later.
@@ -577,28 +579,30 @@ class _Marshaller:
 
     dispatch[TYPE_SMALL_TUPLE] = dump_small_tuple
 
-    def dump_stopiter(self, x) -> None:
+    def dump_stopiter(self, x):
         if x is not StopIteration:
             raise ValueError("unmarshallable object")
         self._write(TYPE_STOPITER)
 
     dispatch[type(StopIteration)] = dump_stopiter
 
-    def dump_string(self, x, flag_ref: int = 0) -> None:
+    def dump_string(self, x, flag_ref=0):
         # Python 3.11 seems to add the object ref flag bit for strings.
-        type_string = (
-            TYPE_STRING
-            if self.python_version < (3, 11)
-            else chr(ord(TYPE_STRING) | flag_ref)
-        )
+        if self.python_version < (3, 11):
+            type_string = TYPE_STRING
+        else:
+            type_string = flag_ref
         self._write(type_string)
         self.w_long(len(x))
         self._write(x)
 
-    dispatch[bytes] = dump_string
-    dispatch[bytearray] = dump_string
+    if PYTHON_VERSION_TRIPLE >= (2, 6):
+        dispatch[bytes] = dump_string
+        dispatch[bytearray] = dump_string
 
-    def dump_tuple(self, tuple_object: tuple, flag_ref: int = 0) -> None:
+    dispatch[str] = dump_string
+
+    def dump_tuple(self, tuple_object, flag_ref=0):
 
         n = len(tuple_object)
         if self.python_version >= (3, 4) and n < 256:
@@ -615,8 +619,11 @@ class _Marshaller:
     dispatch[TYPE_TUPLE] = dump_tuple
     dispatch[TYPE_LIST] = dump_tuple
 
-    def dump_unicode(self, s, flag_ref: int = 0) -> None:
-        type_code = TYPE_STRING if self.python_version < (2, 0) else TYPE_UNICODE
+    def dump_unicode(self, s, flag_ref=0):
+        if self.python_version < (3, 0):
+            type_code = TYPE_STRING
+        else:
+            type_code = TYPE_UNICODE
 
         if flag_ref:
             ref = self.intern_objects.get(s, None)
@@ -1219,11 +1226,11 @@ def dumps(
     else:
         collection_order = {}
 
-=======
-    reference_objects = (
-        x.reference_objects if hasattr(x, "reference_objects") else set()
-    )
->>>>>>> python-3.0-to-3.2
+    if hasattr(x, "reference_objects"):
+        reference_objects = x.reference_objects
+    else:
+        reference_objects = set()
+
     m = _Marshaller(
         buffer.append,
         python_version=python_version,
@@ -1231,7 +1238,12 @@ def dumps(
         collection_order=collection_order,
         reference_objects=reference_objects,
     )
-    flag_ref = FLAG_REF if python_version >= (3, 4) else 0
+
+    if python_version >= (3, 4):
+        flag_ref = FLAG_REF
+    else:
+        flag_ref = 0
+
     m.dump(x, flag_ref)
     if python_version:
         is_python3 = python_version >= (3, 0)
@@ -1242,7 +1254,7 @@ def dumps(
         buf = []
         for b in buffer:
             if PYTHON_VERSION_TRIPLE >= (2, 6):
-                if isinstance(b, bytearray):
+                if isinstance(b, (bytearray, unicode)):
                     buf.append(str(b))
                 else:
                     buf.append(b)
