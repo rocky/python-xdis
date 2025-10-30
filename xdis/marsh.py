@@ -27,7 +27,6 @@ there). Details of the format may change between Python versions.
 import struct
 import types
 from sys import intern
-from typing import Optional, Union
 from typing import Any, Dict, Optional, Set, Union
 
 from xdis.codetype import Code2, Code3, Code15
@@ -315,7 +314,6 @@ class _Marshaller:
         s = repr(x.imag)
         write(chr(len(s)))
         write(s)
->>>>>>> master
 
     try:
         dispatch[complex] = dump_complex
@@ -342,7 +340,7 @@ class _Marshaller:
     def dump_float(self, x) -> None:
         write = self._write
         write(TYPE_FLOAT)
-v        s = repr(x)
+        s = repr(x)
         write(chr(len(s)))
         write(s)
 
@@ -447,7 +445,8 @@ v        s = repr(x)
 
     def dump_int(self, value: int, flag_ref: int = 0) -> None:
         if flag_ref:
-            if (ref := self.intern_consts.get(value, None)) is not None:
+            ref = self.intern_consts.get(value, None)
+            if ref is not None:
                 self.dump_ref(ref)
                 return
             n = len(self.intern_consts)
@@ -513,7 +512,8 @@ v        s = repr(x)
         Used when the length of an ASCII string is less than 255
         characters. This is used in Python 3.4 and later.
         """
-        if (ref := self.intern_consts.get(short_ascii, None)) is not None:
+        ref = self.intern_consts.get(short_ascii, None)
+        if ref is not None:
             self.dump_ref(ref)
             return
 
@@ -531,7 +531,8 @@ v        s = repr(x)
         items. This is used in Python 3.4 and later.
         """
         if flag_ref:
-            if (ref := self.intern_objects.get(tuple_value, None)) is not None:
+            ref = self.intern_objects.get(tuple_value, None)
+            if ref is not None:
                 self.dump_ref(ref)
                 return
             n = len(self.intern_objects)
@@ -586,7 +587,8 @@ v        s = repr(x)
         type_code = TYPE_STRING if self.python_version < (2, 0) else TYPE_UNICODE
 
         if flag_ref:
-            if (ref := self.intern_objects.get(s, None)) is not None:
+            ref = self.intern_objects.get(s, None)
+            if ref is not None:
                 self.dump_ref(ref)
                 return
             n = len(self.intern_objects)
