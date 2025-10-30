@@ -207,7 +207,7 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
             orig_file_offsets,
         ) = load_meta_and_code_from_filename(input_path)
     except Exception as e:
-        print(f"ERROR: failed to load original bytecode file: {e}", file=sys.stderr)
+        print(f"ERROR: failed to load original bytecode file '{input_path}:\n\t{e}", file=sys.stderr)
         return 3
 
     tf_name_base = osp.basename(input_path)
@@ -239,7 +239,7 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
                 tf_name, orig_co, orig_magic_int, orig_timestamp, orig_source_size or 0
             )
         except Exception as e:
-            print(f"ERROR: failed to write bytecode file: {e}", file=sys.stderr)
+            print(f"ERROR: failed to write bytecode file '{tf_name}':\n\t{e}", file=sys.stderr)
             # Cleanup
             try:
                 os.unlink(tf_name)
@@ -247,7 +247,7 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
                 pass
             return 4
     except Exception as e:
-        print(f"ERROR: failed to write bytecode file: {e}", file=sys.stderr)
+        print(f"ERROR: failed to write bytecode file '{tf_name}:\n\t{e}", file=sys.stderr)
         try:
             os.unlink(tf_name)
         except Exception:
