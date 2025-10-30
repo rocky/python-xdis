@@ -28,6 +28,7 @@ import struct
 import types
 from sys import intern
 from typing import Optional, Union
+from typing import Any, Dict, Optional, Set, Union
 
 from xdis.codetype import Code2, Code3, Code15
 from xdis.unmarshal import (
@@ -49,8 +50,10 @@ from xdis.unmarshal import (
     TYPE_LONG,
     TYPE_NONE,
     TYPE_NULL,
+    TYPE_REF,
     TYPE_SET,
     TYPE_SHORT_ASCII,
+    TYPE_SHORT_ASCII_INTERNED,
     TYPE_SMALL_TUPLE,
     TYPE_STOPITER,
     TYPE_STRING,
@@ -92,13 +95,17 @@ class _Marshaller:
         python_version: tuple,
         is_pypy: Optional[bool] = None,
         collection_order={},
+        reference_objects=set(),
     ) -> None:
         self._write = writefunc
-        self.python_version = python_version
-        self.is_pypy = is_pypy
         self.collection_order = collection_order
+        self.intern_objects: Dict[Any, int] = {}
+        self.intern_consts: Dict[Any, int] = {}
+        self.is_pypy = is_pypy
+        self.python_version = python_version
+        self.reference_objects = reference_objects
 
-    def dump(self, x) -> None:
+    def dump(self, x, flag_ref: int = 0) -> None:
         if (
             isinstance(x, types.CodeType)
             and PYTHON_VERSION_TRIPLE[:2] != self.python_version[:2]
@@ -108,7 +115,7 @@ class _Marshaller:
                 % (version_tuple_to_str(), self.python_version)
             )
         try:
-            self.dispatch[type(x)](self, x)
+            self.dispatch[type(x)](self, x, flag_ref)
         except KeyError:
             if isinstance(x, Code3):
                 self.dispatch[Code3](self, x)
@@ -128,121 +135,12 @@ class _Marshaller:
                     raise ValueError("unmarshallable object")
             func(self, x)
 
-    def dump_linetable(self, s) -> None:
-        type_code = TYPE_STRING if self.python_version < (3, 5) else TYPE_UNICODE
-        self._write(type_code)
-        self.w_long(len(s))
-        self._write(s)
+    def dump_ascii(self, path: str) -> None:
+        self._write(TYPE_ASCII)
+        self.w_long(len(path))
+        self._write(path)
 
-    def w_long64(self, x) -> None:
-        self.w_long(x)
-        self.w_long(x >> 32)
-
-    def w_long(self, x: int) -> None:
-        a = chr(x & 0xFF)
-        x >>= 8
-        b = chr(x & 0xFF)
-        x >>= 8
-        c = chr(x & 0xFF)
-        x >>= 8
-        d = chr(x & 0xFF)
-        self._write(a + b + c + d)
-
-    def w_short(self, x: int) -> None:
-        self._write(chr(x & 0xFF))
-        self._write(chr((x >> 8) & 0xFF))
-
-    def dump_none(self, x) -> None:
-        self._write(TYPE_NONE)
-
-    dispatch[type(None)] = dump_none
-
-    def dump_bool(self, x) -> None:
-        if x:
-            self._write(TYPE_TRUE)
-        else:
-            self._write(TYPE_FALSE)
-
-    dispatch[bool] = dump_bool
-
-    def dump_stopiter(self, x) -> None:
-        if x is not StopIteration:
-            raise ValueError("unmarshallable object")
-        self._write(TYPE_STOPITER)
-
-    dispatch[type(StopIteration)] = dump_stopiter
-
-    def dump_ellipsis(self, x) -> None:
-        self._write(TYPE_ELLIPSIS)
-
-    try:
-        dispatch[type(Ellipsis)] = dump_ellipsis
-    except NameError:
-        pass
-
-    # In Python3, this function is not used; see dump_long() below.
-    def dump_int(self, x) -> None:
-        y = x >> 31
-        if y and y != -1:
-            self._write(TYPE_INT64)
-            self.w_long64(x)
-        else:
-            self._write(TYPE_INT)
-            self.w_long(x)
-
-    dispatch[int] = dump_int
-
-    def dump_long(self, x) -> None:
-        self._write(TYPE_LONG)
-        sign = 1
-        if x < 0:
-            sign = -1
-            x = -x
-        digits = []
-        while x:
-            digits.append(x & 0x7FFF)
-            x = x >> 15
-        self.w_long(len(digits) * sign)
-        for d in digits:
-            self.w_short(d)
-
-    try:
-        long
-    except NameError:
-        dispatch[int] = dump_long
-    else:
-        dispatch[long] = dump_long  # noqa
-
-    def dump_float(self, x) -> None:
-        write = self._write
-        write(TYPE_FLOAT)
-        s = repr(x)
-        write(chr(len(s)))
-        write(s)
-
-    dispatch[float] = dump_float
-
-    def dump_binary_float(self, x) -> None:
-        write = self._write
-        write(TYPE_BINARY_FLOAT)
-        write(struct.pack("<d", x))
-
-    dispatch[TYPE_BINARY_FLOAT] = dump_float
-
-    def dump_complex(self, x) -> None:
-        write = self._write
-        write(TYPE_COMPLEX)
-        s = repr(x.real)
-        write(chr(len(s)))
-        write(s)
-        s = repr(x.imag)
-        write(chr(len(s)))
-        write(s)
-
-    try:
-        dispatch[complex] = dump_complex
-    except NameError:
-        pass
+    dispatch[TYPE_ASCII] = dump_ascii
 
     def dump_binary_complex(self, x) -> None:
         write = self._write
@@ -252,67 +150,18 @@ class _Marshaller:
 
     dispatch[TYPE_BINARY_COMPLEX] = dump_binary_complex
 
-    def dump_string(self, x) -> None:
-        # Python 3.11 seems to add the object ref flag bit for strings.
-        type_string = (
-            TYPE_STRING
-            if self.python_version < (3, 11)
-            else chr(ord(TYPE_STRING) | FLAG_REF)
-        )
-        self._write(type_string)
-        self.w_long(len(x))
-        self._write(x)
+    def dump_binary_float(self, x) -> None:
+        write = self._write
+        write(TYPE_BINARY_FLOAT)
+        write(struct.pack("<d", x))
 
-    dispatch[bytes] = dump_string
-    dispatch[bytearray] = dump_string
+    def dump_bool(self, x) -> None:
+        if x:
+            self._write(TYPE_TRUE)
+        else:
+            self._write(TYPE_FALSE)
 
-    def dump_unicode(self, s) -> None:
-        type_code = TYPE_STRING if self.python_version < (2, 0) else TYPE_UNICODE
-        self._write(type_code)
-        self.w_long(len(s))
-        self._write(s)
-
-    try:
-        unicode
-    except NameError:
-        dispatch[str] = dump_unicode
-    else:
-        dispatch[unicode] = dump_unicode  # noqa
-
-    def dump_tuple(self, x) -> None:
-        self._write(TYPE_TUPLE)
-        self.w_long(len(x))
-        for item in x:
-            self.dump(item)
-
-    dispatch[tuple] = dump_tuple
-    dispatch[TYPE_TUPLE] = dump_tuple
-
-    def dump_small_tuple(self, x) -> None:
-        self._write(TYPE_SMALL_TUPLE)
-        self.w_short(len(x))
-        for item in x:
-            self.dump(item)
-
-    dispatch[TYPE_SMALL_TUPLE] = dump_small_tuple
-
-    def dump_list(self, x) -> None:
-        self._write(TYPE_LIST)
-        self.w_long(len(x))
-        for item in x:
-            self.dump(item)
-
-    dispatch[list] = dump_list
-    dispatch[TYPE_LIST] = dump_tuple
-
-    def dump_dict(self, x) -> None:
-        self._write(TYPE_DICT)
-        for key, value in x.items():
-            self.dump(key)
-            self.dump(value)
-        self._write(TYPE_NULL)
-
-    dispatch[dict] = dump_dict
+    dispatch[bool] = dump_bool
 
     def dump_code15(self, x) -> None:
         # Careful here: many Python 2 code objects are strings,
@@ -392,11 +241,25 @@ class _Marshaller:
 
     # FIXME: will probably have to adjust similar to how we
     # adjusted dump_code2
-    def dump_code3(self, x) -> None:
-        if self.python_version >= (3, 4) and not self.is_pypy:
-            self._write(chr(ord(TYPE_CODE) | FLAG_REF))
+    def dump_code3(self, x, flag_ref: int = 0) -> None:
+        if flag_ref:
+            self._write(chr(ord(TYPE_CODE) | flag_ref))
+
+            # The way marshal works for 3.4 (up to ....?)
+            # The first object is always None. Supposedly that
+            # object is to be filled in by the code at the end,
+            # but by filling in "None" first, that gets used should
+            # there be other instances of None. Seems like a bug,
+            # but this is Python after all
+            self.intern_consts[None] = 0
+
+            # This is probably wrong. We are off by one in
+            # intern_objects.
+            self.intern_objects[x] = len(self.intern_objects)
+
         else:
             self._write(TYPE_CODE)
+
         self.w_long(x.co_argcount)
         if hasattr(x, "co_posonlyargcount"):
             self.w_long(x.co_posonlyargcount)
@@ -406,13 +269,13 @@ class _Marshaller:
         self.w_long(x.co_stacksize)
         self.w_long(x.co_flags)
         self.dump(x.co_code)
-        self.dump(x.co_consts)
-        self.dump(x.co_names)
-        self.dump(x.co_varnames)
-        self.dump(x.co_freevars)
-        self.dump(x.co_cellvars)
-        self.dump(x.co_filename)
-        self.dump(x.co_name)
+        self.dump(x.co_consts, flag_ref)
+        self.dump_names(x.co_names, flag_ref)
+        self.dump_names(x.co_varnames, flag_ref)
+        self.dump_names(x.co_freevars, flag_ref)
+        self.dump_names(x.co_cellvars, flag_ref)
+        self.dump_filename(x.co_filename, flag_ref)
+        self.dump_name(x.co_name, flag_ref)
         self.w_long(x.co_firstlineno)
 
         # 3.10 and greater uses co_linetable.
@@ -443,15 +306,61 @@ class _Marshaller:
         for each in collection:
             self.dump(each)
 
-    def dump_set(self, s: set) -> None:
-        """
-        Save marshalled version of set s.
-        """
-        self.dump_collection(TYPE_SET, s)
+    def dump_complex(self, x) -> None:
+        write = self._write
+        write(TYPE_COMPLEX)
+        s = repr(x.real)
+        write(chr(len(s)))
+        write(s)
+        s = repr(x.imag)
+        write(chr(len(s)))
+        write(s)
+>>>>>>> master
 
-    dispatch[set] = dump_set
+    try:
+        dispatch[complex] = dump_complex
+    except NameError:
+        pass
 
-    def dump_frozenset(self, fs: frozenset) -> None:
+    def dump_dict(self, x) -> None:
+        self._write(TYPE_DICT)
+        for key, value in x.items():
+            self.dump(key)
+            self.dump(value)
+        self._write(TYPE_NULL)
+
+    dispatch[dict] = dump_dict
+
+    def dump_ellipsis(self, x) -> None:
+        self._write(TYPE_ELLIPSIS)
+
+    try:
+        dispatch[type(Ellipsis)] = dump_ellipsis
+    except NameError:
+        pass
+
+    def dump_float(self, x) -> None:
+        write = self._write
+        write(TYPE_FLOAT)
+v        s = repr(x)
+        write(chr(len(s)))
+        write(s)
+
+    dispatch[float] = dump_float
+    dispatch[TYPE_BINARY_FLOAT] = dump_float
+
+    def dump_filename(self, path, flag_ref: int = 0) -> None:
+        if flag_ref:
+            # After Python 3.4 which adds the ref flag and ASCII marshal types..
+            if len(path) < 256:
+                self.dump_short_ascii(path)
+            else:
+                self.dump_ascii(path)
+        else:
+            # Python 3.0 .. 3.4...
+            self.dump_unicode(path)
+
+    def dump_frozenset(self, fs: frozenset, flag_ref: int = 0) -> None:
         """
         Save marshalled version of frozenset fs.
         """
@@ -462,21 +371,246 @@ class _Marshaller:
     except NameError:
         pass
 
-    # FIXME: dump_ascii, dump_short_ascii are just guesses
-    def dump_ascii(self, x) -> None:
-        self._write(TYPE_ASCII)
-        self.w_long(len(x))
-        self._write(x)
+    def dump_linetable(self, s) -> None:
+        type_code = TYPE_STRING if self.python_version < (3, 5) else TYPE_UNICODE
+        self._write(type_code)
+        self.w_long(len(s))
+        self._write(s)
+
+    def w_long(self, x: int) -> None:
+        a = chr(x & 0xFF)
+        x >>= 8
+        b = chr(x & 0xFF)
+        x >>= 8
+        c = chr(x & 0xFF)
+        x >>= 8
+        d = chr(x & 0xFF)
+        self._write(a + b + c + d)
+
+    def w_long64(self, x) -> None:
+        self.w_long(x)
+        self.w_long(x >> 32)
+
+    def dump_name(self, name: str, flag_ref: int) -> None:
+        if flag_ref:
+            if len(name) < 256:
+                self.dump_short_ascii_interned(name)
+            else:
+                self.dump_ascii(name)
+        else:
+            self.dump_unicode(name)
+
+
+    def dump_names(self, names, flag_ref: int) -> None:
+        n = len(names)
+        if flag_ref:
+
+            # We have reference objects. Has "names" already been seen as a reference object?
+            if names in self.intern_objects:
+                # It has, so just write the reference and return.
+                self._write(TYPE_REF)
+                self.w_long(self.intern_objects[names])
+                return
+
+            if n < 256:
+                is_reference = names in self.reference_objects
+                type_code = (
+                    chr(ord(TYPE_SMALL_TUPLE) | FLAG_REF)
+                    if is_reference
+                    else TYPE_SMALL_TUPLE
+                )
+                self._write(type_code)
+                self._write(chr(n))
+                if is_reference:
+                    self.intern_objects[names] = len(self.intern_objects)
+
+            else:
+                self._write(chr(ord(TYPE_TUPLE) | FLAG_REF))
+                self.w_long(n)
+
+            for name in names:
+                self.dump_short_ascii_interned(name)
+        else:
+            self._write(TYPE_TUPLE)
+            self.w_long(n)
+            for name in names:
+                self.dump(name)
+
+    def dump_none(self, _, flag_ref: int) -> None:
+        self._write(TYPE_NONE)
+        # In Python 3.4 .. ? None appears always as the first
+        # constant.
+        if flag_ref and self.intern_consts.get(None, -1) == -1:
+            self.intern_consts[None] = len(self.intern_consts)
+
+    dispatch[type(None)] = dump_none
+
+    def dump_int(self, value: int, flag_ref: int = 0) -> None:
+        if flag_ref:
+            if (ref := self.intern_consts.get(value, None)) is not None:
+                self.dump_ref(ref)
+                return
+            n = len(self.intern_consts)
+            self.intern_consts[value] = n
+
+        y = value >> 31
+        if y and y != -1:
+            self._write(chr(ord(TYPE_INT64) | flag_ref))
+            self.w_long64(value)
+        else:
+            self._write(chr(ord(TYPE_INT) | flag_ref))
+            self.w_long(value)
+
+    dispatch[int] = dump_int
+
+    def dump_long(self, x) -> None:
+        self._write(TYPE_LONG)
+        sign = 1
+        if x < 0:
+            sign = -1
+            x = -x
+        digits = []
+        while x:
+            digits.append(x & 0x7FFF)
+            x = x >> 15
+        self.w_long(len(digits) * sign)
+        for d in digits:
+            self.w_short(d)
+
+    try:
+        long
+    except NameError:
+        dispatch[int] = dump_long
+    else:
+        dispatch[long] = dump_long  # noqa
+
+    def dump_ref(self, ref: int) -> None:
+        self._write(TYPE_REF)
+        self.w_long(ref)
+
+    def dump_set(self, s: set) -> None:
+        """
+        Save marshalled version of set s.
+        """
+        self.dump_collection(TYPE_SET, s)
+
+    dispatch[set] = dump_set
+
+    def w_short(self, x: int) -> None:
+        self._write(chr(x & 0xFF))
+        self._write(chr((x >> 8) & 0xFF))
+
+    def dump_short_ascii(self, short_ascii: str) -> None:
+        self._write(chr(ord(TYPE_SHORT_ASCII) | FLAG_REF))
+        # FIXME: check len(x)?
+        self._write(chr(len(short_ascii)))
+        self._write(short_ascii)
+
+    dispatch[TYPE_SHORT_ASCII] = dump_short_ascii
+
+    def dump_short_ascii_interned(self, short_ascii: str) -> None:
+        """
+        Used when the length of an ASCII string is less than 255
+        characters. This is used in Python 3.4 and later.
+        """
+        if (ref := self.intern_consts.get(short_ascii, None)) is not None:
+            self.dump_ref(ref)
+            return
+
+        self._write(chr(ord(TYPE_SHORT_ASCII_INTERNED) | FLAG_REF))
+        self._write(chr(len(short_ascii)))
+        self._write(short_ascii)
+        n = len(self.intern_objects)
+        self.intern_objects[short_ascii] = n
 
     dispatch[TYPE_ASCII] = dump_ascii
 
-    def dump_short_ascii(self, x) -> None:
-        self._write(TYPE_SHORT_ASCII)
-        # FIXME: check len(x)?
-        self.w_short(len(x))
+    def dump_small_tuple(self, tuple_value, flag_ref: int) -> None:
+        """
+        Used when the length of a tuple has is less than 255
+        items. This is used in Python 3.4 and later.
+        """
+        if flag_ref:
+            if (ref := self.intern_objects.get(tuple_value, None)) is not None:
+                self.dump_ref(ref)
+                return
+            n = len(self.intern_objects)
+            self.intern_objects[tuple_value] = n
+
+        self._write(TYPE_SMALL_TUPLE)
+        self._write(chr(len(tuple_value)))
+        for item in tuple_value:
+            self.dump(item, FLAG_REF)
+
+    dispatch[TYPE_SMALL_TUPLE] = dump_small_tuple
+
+    def dump_stopiter(self, x) -> None:
+        if x is not StopIteration:
+            raise ValueError("unmarshallable object")
+        self._write(TYPE_STOPITER)
+
+    dispatch[type(StopIteration)] = dump_stopiter
+
+    def dump_string(self, x, flag_ref: int = 0) -> None:
+        # Python 3.11 seems to add the object ref flag bit for strings.
+        type_string = (
+            TYPE_STRING
+            if self.python_version < (3, 11)
+            else chr(ord(TYPE_STRING) | flag_ref)
+        )
+        self._write(type_string)
+        self.w_long(len(x))
         self._write(x)
 
-    dispatch[TYPE_SHORT_ASCII] = dump_short_ascii
+    dispatch[bytes] = dump_string
+    dispatch[bytearray] = dump_string
+
+    def dump_tuple(self, tuple_object: tuple, flag_ref: int = 0) -> None:
+
+        n = len(tuple_object)
+        if self.python_version >= (3, 4) and n < 256:
+            self.dump_small_tuple(tuple_object, flag_ref)
+            return
+
+        type_code = TYPE_TUPLE
+        self._write(type_code)
+        self.w_long(len(tuple_object))
+        for item in tuple_object:
+            self.dump(item)
+
+    dispatch[tuple] = dump_tuple
+    dispatch[TYPE_TUPLE] = dump_tuple
+    dispatch[TYPE_LIST] = dump_tuple
+
+    def dump_unicode(self, s, flag_ref: int = 0) -> None:
+        type_code = TYPE_STRING if self.python_version < (2, 0) else TYPE_UNICODE
+
+        if flag_ref:
+            if (ref := self.intern_objects.get(s, None)) is not None:
+                self.dump_ref(ref)
+                return
+            n = len(self.intern_objects)
+            self.intern_objects[s] = n
+            type_code = chr(ord(type_code) | flag_ref)
+
+        self._write(type_code)
+        self.w_long(len(s))
+        self._write(s)
+
+    try:
+        unicode
+    except NameError:
+        dispatch[str] = dump_unicode
+    else:
+        dispatch[unicode] = dump_unicode  # noqa
+
+    def dump_list(self, x) -> None:
+        self._write(TYPE_LIST)
+        self.w_long(len(x))
+        for item in x:
+            self.dump(item)
+
+    dispatch[list] = dump_list
 
     # FIXME: Handle interned versions of dump_ascii, dump_short_ascii
 
@@ -1117,13 +1251,18 @@ def dumps(
 ):
     buffer = []
     collection_order = x.collection_order if hasattr(x, "collection_order") else {}
+    reference_objects = (
+        x.reference_objects if hasattr(x, "reference_objects") else set()
+    )
     m = _Marshaller(
         buffer.append,
         python_version=python_version,
         is_pypy=is_pypy,
         collection_order=collection_order,
+        reference_objects=reference_objects,
     )
-    m.dump(x)
+    flag_ref = FLAG_REF if python_version >= (3, 4) else 0
+    m.dump(x, flag_ref)
     if python_version:
         is_python3 = python_version >= (3, 0)
     else:

@@ -16,7 +16,7 @@
 
 import types
 from collections import namedtuple
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Set, Tuple, Union
 
 from xdis.codetype.base import CodeBase
 from xdis.codetype.code13 import Code13
@@ -63,7 +63,8 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
 
                 # THINK ABOUT: If collection_order isn't defined, i.e. native code
                 # type, should we try to extract it?
-                code.collection_order if hasattr(code, "collection_order") else {}
+                code.collection_order if hasattr(code, "collection_order") else {},
+                code.reference_objects if hasattr(code, "reference_objects") else set(),
             )
         elif version_tuple < (3, 10):
             return Code38(
@@ -207,7 +208,7 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
 # In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
 # an incomplete code type, which might be converted to another code type
 # later.
-CodeTypeUnionFields = tuple(Code311FieldNames.split() + ["collection_order"])
+CodeTypeUnionFields = tuple(Code311FieldNames.split() + ["collection_order", "reference_objects"])
 CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 
 
@@ -235,6 +236,7 @@ def to_portable(
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
     collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
+    reference_objects: Set[Any] = set(),
 ):
     code = CodeTypeUnion(
         co_argcount=co_argcount,
@@ -256,6 +258,7 @@ def to_portable(
         co_cellvars=co_cellvars,
         co_exceptiontable=co_exceptiontable,
         collection_order=collection_order,
+        reference_objects=reference_objects,
     )
     return codeType2Portable(code, version_triple)
 
