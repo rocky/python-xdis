@@ -1253,11 +1253,10 @@ def dumps(
     if is_python3:
         buf = []
         for b in buffer:
-            if PYTHON_VERSION_TRIPLE >= (2, 6):
-                if isinstance(b, (bytearray, unicode)):
-                    buf.append(str(b))
-                else:
-                    buf.append(b)
+            if isinstance(b, unicode):
+                buf.append(str(b))
+            elif PYTHON_VERSION_TRIPLE >= (2, 6) and isinstance(b, bytearray):
+                buf.append(str(b))
             else:
                 buf.append(b)
 
