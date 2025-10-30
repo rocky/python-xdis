@@ -190,7 +190,7 @@ def do_tests(src_dir, obj_patterns, opts):
     failure_count = 0
     try:
         for infile in files:
-            failure_count += roundtrip_pyc(infile, unlink_on_success=False)
+            failure_count += roundtrip_pyc(infile, unlink_on_success=False, verbose=test_opts["verbose"])
 
     except (KeyboardInterrupt, OSError):
         print()
@@ -200,7 +200,7 @@ def do_tests(src_dir, obj_patterns, opts):
 
     n = len(files)
     print(f"Processed {n} files: {n-failure_count} good, and {failure_count} bad.")
-    sys.exit(failure_count if failure_count < 255 else 255)
+    return failure_count
 
 
 if __name__ == "__main__":
@@ -213,7 +213,7 @@ if __name__ == "__main__":
     opts, args = getopt.getopt(
         sys.argv[1:],
         "",
-        ["start-with=", "all", "no-rm"] + test_options_keys,
+        ["start-with=", "all", "quiet", "no-rm"] + test_options_keys,
     )
     if not opts:
         help()
@@ -223,11 +223,14 @@ if __name__ == "__main__":
         "rmtree": True,
     }
 
+    test_opts["verbose"] = True
     for opt, val in opts:
         if opt == "--start-with":
             test_opts["start_with"] = val
         elif opt == "--no-rm":
             test_opts["rmtree"] = False
+        elif opt == "--quiet":
+            test_opts["verbose"] = False
         elif opt[2:] in test_options_keys:
             test_dirs.append(test_options[opt[2:]])
         elif opt == "--all":

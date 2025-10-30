@@ -179,7 +179,7 @@ def load_meta_and_code_from_filename(path: str):
         return load_module_from_file_object(fp, filename=path, get_code=True)
 
 
-def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
+def roundtrip_pyc(input_path: str, unlink_on_success: bool, verbose: bool) -> int:
 
     # parser = argparse.ArgumentParser(
     #     description="Load a .pyc with xdis, rewrite it to a temporary file, and compare."
@@ -262,8 +262,9 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
         print(f"WARNING: could not do raw byte comparison: {e}", file=sys.stderr)
 
     print("Original file:", input_path)
-    print("Rewritten file:", tf_name)
-    print("Raw-bytes identical:", same_bytes)
+    if verbose:
+        print("Rewritten file:", tf_name)
+        print("Raw-bytes identical:", same_bytes)
     if same_bytes:
         if unlink_on_success:
             os.unlink(tf_name)
