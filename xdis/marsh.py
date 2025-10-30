@@ -299,7 +299,7 @@ class _Marshaller:
         for each in collection:
             self.dump(each)
 
-    def dump_complex(self, x) -> None:
+    def dump_complex(self, x, _) -> None:
         write = self._write
         write(TYPE_COMPLEX)
         s = repr(x.real)
@@ -551,16 +551,20 @@ class _Marshaller:
 
     dispatch[type(StopIteration)] = dump_stopiter
 
-    def dump_string(self, x, flag_ref: int = 0) -> None:
+    def dump_string(self, s, flag_ref: int = 0) -> None:
         # Python 3.11 seems to add the object ref flag bit for strings.
-        type_string = (
-            TYPE_STRING
-            if self.python_version < (3, 11)
-            else chr(ord(TYPE_STRING) | flag_ref)
-        )
-        self._write(type_string)
-        self.w_long(len(x))
-        self._write(x)
+        if self.python_version >= (3, 11):
+            type_code = chr(ord(TYPE_STRING) | flag_ref)
+        if (3, 0) <= self.python_version < (3, 11):
+            type_code = TYPE_STRING
+        else:
+            # Python 2.x.
+            # FIXME: save string somewhere if it isn't in string table.
+            type_code = TYPE_INTERNED if s in self.reference_objects else TYPE_STRING
+
+        self._write(type_code)
+        self.w_long(len(s))
+        self._write(s)
 
     dispatch[bytes] = dump_string
     dispatch[bytearray] = dump_string
@@ -585,8 +589,10 @@ class _Marshaller:
     def dump_unicode(self, s, flag_ref: int = 0) -> None:
         if self.python_version < (2, 0):
             type_code = TYPE_STRING
-        elif (2, 0) <= self.python_version <= (3, 0):
-            type_code = TYPE_INTERNED
+        elif (2, 0) <= self.python_version < (3, 0):
+            # FIXME: probably need to save string somewhere
+            # if it isn't in string table.
+            type_code = TYPE_INTERNED if s in self.reference_objects else TYPE_STRING
         else:
             type_code = TYPE_UNICODE
 
