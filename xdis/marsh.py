@@ -134,6 +134,7 @@ class _Marshaller:
                     raise ValueError("unmarshallable object")
             func(self, x)
 
+    # FIXME: Handle interned versions of dump_ascii, dump_short_ascii
     def dump_ascii(self, path: str) -> None:
         self._write(TYPE_ASCII)
         self.w_long(len(path))
@@ -462,6 +463,14 @@ class _Marshaller:
 
     dispatch[int] = dump_int
 
+    def dump_list(self, x) -> None:
+        self._write(TYPE_LIST)
+        self.w_long(len(x))
+        for item in x:
+            self.dump(item)
+
+    dispatch[list] = dump_list
+
     def dump_long(self, x) -> None:
         self._write(TYPE_LONG)
         sign = 1
@@ -606,15 +615,6 @@ class _Marshaller:
     else:
         dispatch[unicode] = dump_unicode  # noqa
 
-    def dump_list(self, x) -> None:
-        self._write(TYPE_LIST)
-        self.w_long(len(x))
-        for item in x:
-            self.dump(item)
-
-    dispatch[list] = dump_list
-
-    # FIXME: Handle interned versions of dump_ascii, dump_short_ascii
 
 
 class _NULL:
