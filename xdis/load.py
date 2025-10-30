@@ -389,7 +389,12 @@ def load_module_from_file_object(
 
 
 def write_bytecode_file(
-    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize=0
+    bytecode_path,
+    code_obj,
+    magic_int,
+    compilation_ts=None,
+    filesize=0,
+    allow_native=True,
 ):
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
@@ -416,7 +421,7 @@ def write_bytecode_file(
     if version_tuple >= (3, 3):
         # In Python 3.3+, these 4 bytes are the size of the source code_obj file (mod 2^32)
         fp.write(pack("<I", filesize))
-    if isinstance(code_obj, types.CodeType):
+    if allow_native and isinstance(code_obj, types.CodeType):
         fp.write(marshal.dumps(code_obj))
     else:
         fp.write(xdis.marsh.dumps(code_obj, python_version=version_tuple))

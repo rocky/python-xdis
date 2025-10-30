@@ -408,7 +408,6 @@ class _VersionIndependentUnmarshaller:
         self.intern_strings.append(interned)
         return self.r_ref(interned, save_ref)
 
-    # Since Python 3.4
     def t_interned(self, save_ref, bytes_for_s=False):
         strsize = unpack("<i", self.fp.read(4))[0]
         interned = compat_str(self.fp.read(strsize), False)

@@ -178,7 +178,7 @@ def load_meta_and_code_from_filename(path):
     return result
 
 
-def roundtrip_pyc(input_path, unlink_on_success):
+def roundtrip_pyc(input_path, unlink_on_success, verbose):
 
     # parser = argparse.ArgumentParser(
     #     description="Load a .pyc with xdis, rewrite it to a temporary file, and compare."
@@ -230,6 +230,7 @@ def roundtrip_pyc(input_path, unlink_on_success):
             orig_magic_int,
             compilation_ts=orig_timestamp,
             filesize=orig_source_size or 0,
+            allow_native=False,
         )
     except TypeError:
         # Older/newer signatures might name the timestamp param differently; try without names
@@ -260,9 +261,10 @@ def roundtrip_pyc(input_path, unlink_on_success):
     except Exception:
         print("WARNING: could not do raw byte comparison: %s", sys.exc_info()[1])
 
-    print("Original file: %s" % input_path)
-    print("Rewritten file: %s" % tf_name)
-    print("Raw-bytes identical: %s" % same_bytes)
+    print("Input file: %s" % input_path)
+    if verbose:
+        print("Rewritten file: %s" % tf_name)
+        print("Raw-bytes identical: %s" % same_bytes)
     if same_bytes:
         if unlink_on_success:
             os.unlink(tf_name)

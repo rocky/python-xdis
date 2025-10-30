@@ -193,7 +193,7 @@ class _Marshaller:
 
     dispatch[Code15] = dump_code15
 
-    def dump_code2(self, x):
+    def dump_code2(self, x, _):
         # Careful here: many Python 2 code objects are strings,
         # but Python 3 marshaling, by default, will dump strings as
         # unicode. Force marsaling this type as string.
@@ -299,7 +299,7 @@ class _Marshaller:
         for each in collection:
             self.dump(each)
 
-    def dump_complex(self, x):
+    def dump_complex(self, x, _):
         write = self._write
         write(TYPE_COMPLEX)
         s = repr(x.real)
@@ -1295,7 +1295,7 @@ def dumps(
             else:
                 buf.append(b)
 
-        return "".join(buf)
+        return b"".join(buf)
 
 
 def loads(s, python_version=None):

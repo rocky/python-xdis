@@ -44,10 +44,10 @@ class Code3(Code2):
 
     def __init__(
         self,
-        co_argcount,
-        co_kwonlyargcount,
-        co_nlocals,
-        co_stacksize,
+        co_argcount: int,
+        co_kwonlyargcount: int,
+        co_nlocals: int,
+        co_stacksize: int,
         co_flags,
         co_code,
         co_consts,
