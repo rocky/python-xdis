@@ -27,7 +27,7 @@ check: check-short check-roundtrip
                   --bytecode-pypy35 --bytecode-pypy36 --bytecode-pypy37 \
                   --bytecode-pypy38 --bytecode-pypy39 --bytecode-pypy310 $(COMPILE)
 
-check-roundtrip: check-roundtrip-3.0 check-roundtrip-3.1 check-roundtrip-3.3
+check-roundtrip: check-roundtrip-3.0 check-roundtrip-3.1 check-roundtrip-3.3 check-roundtrip-3.4
 
 check-roundtrip-3.0:
 	./test_pyc_roundtrip.py --bytecode-3.0
@@ -37,6 +37,9 @@ check-roundtrip-3.1:
 
 check-roundtrip-3.3:
 	./test_pyc_roundtrip.py --bytecode-3.3
+
+check-roundtrip-3.4:
+	./test_pyc_roundtrip.py --bytecode-3.4
 
 check-short:
 	$(PYTHON) test_pyenvlib.py --simple
