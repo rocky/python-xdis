@@ -40,7 +40,7 @@ import os.path as osp
 import sys
 import tempfile
 import types
-from typing import List, Union
+from typing import Union
 
 from xdis.codetype.base import CodeBase
 from xdis.load import load_module_from_file_object, write_bytecode_file
@@ -231,6 +231,7 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool, verbose: bool) -> in
             orig_magic_int,
             compilation_ts=orig_timestamp,
             filesize=orig_source_size or 0,
+            allow_native=False,
         )
     except TypeError:
         # Older/newer signatures might name the timestamp param differently; try without names
@@ -261,7 +262,7 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool, verbose: bool) -> in
     except Exception as e:
         print(f"WARNING: could not do raw byte comparison: {e}", file=sys.stderr)
 
-    print("Original file:", input_path)
+    print("Input file:", input_path)
     if verbose:
         print("Rewritten file:", tf_name)
         print("Raw-bytes identical:", same_bytes)
