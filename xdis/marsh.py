@@ -73,10 +73,6 @@ except ImportError:
         return f
 
 
-def Ord(c):
-    return ord(c)
-
-
 class _Marshaller:
     """Python marshalling routine that runs in Python 2 and Python 3.
     We also extend to allow for xdis Code15, Code2, and Code3 types and instances.
@@ -238,7 +234,7 @@ class _Marshaller:
 
     # FIXME: will probably have to adjust similar to how we
     # adjusted dump_code2
-    def dump_code3(self, x, flag_ref=0):
+    def dump_code3(self, code, flag_ref=0):
         if flag_ref:
             self._write(chr(ord(TYPE_CODE) | flag_ref))
 
@@ -252,33 +248,34 @@ class _Marshaller:
 
             # This is probably wrong. We are off by one in
             # intern_objects.
-            self.intern_objects[x] = len(self.intern_objects)
+            self.intern_objects[code] = len(self.intern_objects)
 
         else:
             self._write(TYPE_CODE)
 
-        self.w_long(x.co_argcount)
-        if hasattr(x, "co_posonlyargcount"):
-            self.w_long(x.co_posonlyargcount)
-        self.w_long(x.co_kwonlyargcount)
+        self.w_long(code.co_argcount)
+        if hasattr(code, "co_posonlyargcount"):
+            self.w_long(code.co_posonlyargcount)
+        self.w_long(code.co_kwonlyargcount)
         if self.python_version < (3, 11):
-            self.w_long(x.co_nlocals)
-        self.w_long(x.co_stacksize)
-        self.w_long(x.co_flags)
-        self.dump(x.co_code)
-        self.dump(x.co_consts, flag_ref)
-        self.dump_names(x.co_names, flag_ref)
-        self.dump_names(x.co_varnames, flag_ref)
-        self.dump_names(x.co_freevars, flag_ref)
-        self.dump_names(x.co_cellvars, flag_ref)
-        self.dump_filename(x.co_filename, flag_ref)
-        self.dump_name(x.co_name, flag_ref)
-        self.w_long(x.co_firstlineno)
-        if hasattr(x, "co_linetable"):
-            linetable = x.co_linetable
+            self.w_long(code.co_nlocals)
+
+        self.w_long(code.co_stacksize)
+        self.w_long(code.co_flags)
+        self.dump(code.co_code)
+        self.dump(code.co_consts, flag_ref)
+        self.dump_names(code.co_names, flag_ref)
+        self.dump_names(code.co_varnames, flag_ref)
+        self.dump_names(code.co_freevars, flag_ref)
+        self.dump_names(code.co_cellvars, flag_ref)
+        self.dump_filename(code.co_filename, flag_ref)
+        self.dump_name(code.co_name, flag_ref)
+        self.w_long(code.co_firstlineno)
+        if hasattr(code, "co_linetable"):
+            linetable = code.co_linetable
         else:
             # 3.10 and greater uses co_linetable.
-            linetable = x.co_lnotab
+            linetable = code.co_lnotab
         self.dump_linetable(linetable)
 
     dispatch[Code3] = dump_code3
@@ -326,7 +323,7 @@ class _Marshaller:
 
     dispatch[dict] = dump_dict
 
-    def dump_ellipsis(self, x):
+    def dump_ellipsis(self, _):
         self._write(TYPE_ELLIPSIS)
 
     try:
@@ -586,15 +583,23 @@ class _Marshaller:
 
     dispatch[type(StopIteration)] = dump_stopiter
 
-    def dump_string(self, x, flag_ref=0):
+    def dump_string(self, s, flag_ref=0):
         # Python 3.11 seems to add the object ref flag bit for strings.
-        if self.python_version < (3, 11):
-            type_string = TYPE_STRING
+        if self.python_version >= (3, 11):
+            type_code = chr(ord(TYPE_STRING) | flag_ref)
+        if (3, 0) <= self.python_version < (3, 11):
+            type_code = TYPE_STRING
         else:
-            type_string = flag_ref
-        self._write(type_string)
-        self.w_long(len(x))
-        self._write(x)
+            # Python 2.x.
+            # FIXME: save string somewhere if it isn't in string table.
+            if s in self.reference_objects:
+                type_code = TYPE_INTERNED
+            else:
+                type_code = TYPE_STRING
+
+        self._write(type_code)
+        self.w_long(len(s))
+        self._write(s)
 
     if PYTHON_VERSION_TRIPLE >= (2, 6):
         dispatch[bytes] = dump_string
@@ -620,8 +625,16 @@ class _Marshaller:
     dispatch[TYPE_LIST] = dump_tuple
 
     def dump_unicode(self, s, flag_ref=0):
-        if self.python_version < (3, 0):
+        if self.python_version < (2, 0):
             type_code = TYPE_STRING
+        elif (2, 0) <= self.python_version < (3, 0):
+            # FIXME: probably need to save string somewhere
+            # if it isn't in string table.
+            if s in self.reference_objects:
+                type_code = TYPE_INTERNED
+            else:
+                type_code = TYPE_STRING
+
         else:
             type_code = TYPE_UNICODE
 
@@ -706,6 +719,8 @@ class _Unmarshaller:
         else:
             return x
 
+    dispatch[TYPE_INT] = r_long
+
     def r_long64(self):
         a = ord(self._read(1))
         b = ord(self._read(1))
@@ -721,65 +736,25 @@ class _Unmarshaller:
             x = -((1 << 64) - x)
         return x
 
+    dispatch[TYPE_INT64] = r_long64
+
+    def r_short(self):
+        lo = self._read(1)
+        hi = self._read(1)
+        x = lo | (hi << 8)
+        if x & 0x8000:
+            x = x - 0x10000
+        return x
+
     def load_null(self):
         return _NULL
 
     dispatch[TYPE_NULL] = load_null
 
-    def load_none(self):
-        return None
-
-    dispatch[TYPE_NONE] = load_none
-
-    def load_true(self):
-        return True
-
-    dispatch[TYPE_TRUE] = load_true
-
-    def load_false(self):
-        return False
-
-    dispatch[TYPE_FALSE] = load_false
-
     def load_ascii(self):
         return self.r_byte()
 
-    dispatch[TYPE_ASCII] = load_null
-
-    def load_stopiter(self):
-        return StopIteration
-
-    dispatch[TYPE_STOPITER] = load_stopiter
-
-    def load_ellipsis(self):
-        return Ellipsis
-
-    dispatch[TYPE_ELLIPSIS] = load_ellipsis
-
-    dispatch[TYPE_INT] = r_long
-
-    dispatch[TYPE_INT64] = r_long64
-
-    def load_long(self):
-        size = self.r_long()
-        sign = 1
-        if size < 0:
-            sign = -1
-            size = -size
-        x = 0
-        for i in range(size):
-            d = self.r_short()
-            x = x | (d << (i * 15))
-        return x * sign
-
-    dispatch[TYPE_LONG] = load_long
-
-    def load_float(self):
-        n = Ord(self._read(1))
-        s = self._read(n)
-        return float(s)
-
-    dispatch[TYPE_FLOAT] = load_float
+    dispatch[TYPE_ASCII] = load_ascii
 
     def load_binary_float(self):
         f = self._read(8)
@@ -787,69 +762,7 @@ class _Unmarshaller:
 
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
 
-    def load_complex(self):
-        n = Ord(self._read(1))
-        s = self._read(n)
-        real = float(s)
-        n = Ord(self._read(1))
-        s = self._read(n)
-        imag = float(s)
-        return complex(real, imag)
-
-    dispatch[TYPE_COMPLEX] = load_complex
-
-    def load_string(self):
-        n = self.r_long()
-        return self._read(n)
-
-    dispatch[TYPE_STRING] = load_string
-
-    def load_interned(self):
-        n = self.r_long()
-        ret = intern(self._read(n))
-        self._stringtable.append(ret)
-        return ret
-
-    dispatch[TYPE_INTERNED] = load_interned
-
-    def load_stringref(self):
-        n = self.r_long()
-        return self._stringtable[n]
-
-    dispatch[TYPE_STRINGREF] = load_stringref
-
-    def load_unicode(self):
-        n = self.r_long()
-        s = self._read(n)
-        ret = s.decode("utf8")
-        return ret
-
-    dispatch[TYPE_UNICODE] = load_unicode
-
-    def load_tuple(self):
-        return tuple(self.load_list())
-
-    dispatch[TYPE_TUPLE] = load_tuple
-
-    def load_list(self):
-        n = self.r_long()
-        list = [self.load() for i in range(n)]
-        return list
-
-    dispatch[TYPE_LIST] = load_list
-
-    def load_dict(self):
-        d = {}
-        while 1:
-            key = self.load()
-            if key is _NULL:
-                break
-            value = self.load()
-            d[key] = value
-        return d
-
-    dispatch[TYPE_DICT] = load_dict
-
+    # FIXME: Go over fo PYPY
     def load_code(self):
         argcount = self.r_long()
         if self.python_version and self.python_version >= (3, 0):
@@ -908,12 +821,45 @@ class _Unmarshaller:
 
     dispatch[TYPE_CODE] = load_code
 
-    def load_set(self):
-        n = self.r_long()
-        args = [self.load() for i in range(n)]
-        return set(args)
+    def load_complex(self):
+        n = self._read(1)
+        s = self._read(n)
+        real = float(s)
+        n = self._read(1)
+        s = self._read(n)
+        imag = float(s)
+        return complex(real, imag)
 
-    dispatch[TYPE_SET] = load_set
+    dispatch[TYPE_COMPLEX] = load_complex
+
+    def load_dict(self):
+        d = {}
+        while 1:
+            key = self.load()
+            if key is _NULL:
+                break
+            value = self.load()
+            d[key] = value
+        return d
+
+    dispatch[TYPE_DICT] = load_dict
+
+    def load_ellipsis(self):
+        return Ellipsis
+
+    dispatch[TYPE_ELLIPSIS] = load_ellipsis
+
+    def load_false(self):
+        return False
+
+    dispatch[TYPE_FALSE] = load_false
+
+    def load_float(self):
+        n = ord(self._read(1))
+        s = self._read(n)
+        return float(s)
+
+    dispatch[TYPE_FLOAT] = load_float
 
     def load_frozenset(self):
         n = self.r_long()
@@ -921,6 +867,82 @@ class _Unmarshaller:
         return frozenset(args)
 
     dispatch[TYPE_FROZENSET] = load_frozenset
+
+    def load_interned(self):
+        n = self.r_long()
+        ret = intern(self._read(n))
+        self._stringtable.append(ret)
+        return ret
+
+    dispatch[TYPE_INTERNED] = load_interned
+
+    def load_list(self):
+        n = self.r_long()
+        list = [self.load() for i in range(n)]
+        return list
+
+    dispatch[TYPE_LIST] = load_list
+
+    def load_long(self):
+        size = self.r_long()
+        sign = 1
+        if size < 0:
+            sign = -1
+            size = -size
+        x = 0
+        for i in range(size):
+            d = self.r_short()
+            x = x | (d << (i * 15))
+        return x * sign
+
+    dispatch[TYPE_LONG] = load_long
+
+    def load_none(self):
+        return None
+
+    dispatch[TYPE_NONE] = load_none
+
+    def load_set(self):
+        n = self.r_long()
+        args = [self.load() for i in range(n)]
+        return set(args)
+
+    dispatch[TYPE_SET] = load_set
+
+    def load_stopiter(self):
+        return StopIteration
+
+    dispatch[TYPE_STOPITER] = load_stopiter
+
+    def load_string(self):
+        n = self.r_long()
+        return self._read(n)
+
+    dispatch[TYPE_STRING] = load_string
+
+    def load_stringref(self):
+        n = self.r_long()
+        return self._stringtable[n]
+
+    dispatch[TYPE_STRINGREF] = load_stringref
+
+    def load_true(self):
+        return True
+
+    dispatch[TYPE_TRUE] = load_true
+
+    def load_tuple(self):
+        return tuple(self.load_list())
+
+    dispatch[TYPE_TUPLE] = load_tuple
+
+    def load_unicode(self):
+        n = self.r_long()
+        s = self._read(n)
+        ret = s.decode("utf8")
+        return ret
+
+    dispatch[TYPE_UNICODE] = load_unicode
 
 
 # ________________________________________________________________
@@ -943,8 +965,8 @@ def _read1(self):
 
 
 def _r_short(self):
-    lo = Ord(_read1(self))
-    hi = Ord(_read1(self))
+    lo = ord(_read1(self))
+    hi = ord(_read1(self))
     x = lo | (hi << 8)
     if x & 0x8000:
         x = x - 0x10000
@@ -955,10 +977,10 @@ def _r_long(self):
     # inlined this most common case
     p = self.bufpos
     s = self.bufstr
-    a = Ord(s[p])
-    b = Ord(s[p + 1])
-    c = Ord(s[p + 2])
-    d = Ord(s[p + 3])
+    a = ord(s[p])
+    b = ord(s[p + 1])
+    c = ord(s[p + 2])
+    d = ord(s[p + 3])
     self.bufpos += 4
     x = a | (b << 8) | (c << 16) | (d << 24)
     if d & 0x80 and x > 0:
@@ -969,14 +991,14 @@ def _r_long(self):
 
 
 def _r_long64(self):
-    a = Ord(_read1(self))
-    b = Ord(_read1(self))
-    c = Ord(_read1(self))
-    d = Ord(_read1(self))
-    e = Ord(_read1(self))
-    f = Ord(_read1(self))
-    g = Ord(_read1(self))
-    h = Ord(_read1(self))
+    a = ord(_read1(self))
+    b = ord(_read1(self))
+    c = ord(_read1(self))
+    d = ord(_read1(self))
+    e = ord(_read1(self))
+    f = ord(_read1(self))
+    g = ord(_read1(self))
+    h = ord(_read1(self))
     x = a | (b << 8) | (c << 16) | (d << 24)
     x = x | (e << 32) | (f << 40) | (g << 48) | (h << 56)
     if h & 0x80 and x > 0:
@@ -1066,17 +1088,17 @@ class _FastUnmarshaller:
     dispatch[TYPE_LONG] = load_long
 
     def load_float(self):
-        n = Ord(_read1(self))
+        n = ord(_read1(self))
         s = _read(self, n)
         return float(s)
 
     dispatch[TYPE_FLOAT] = load_float
 
     def load_complex(self):
-        n = Ord(_read1(self))
+        n = ord(_read1(self))
         s = _read(self, n)
         real = float(s)
-        n = Ord(_read1(self))
+        n = ord(_read1(self))
         s = _read(self, n)
         imag = float(s)
         return complex(real, imag)
