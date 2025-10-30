@@ -715,7 +715,7 @@ class _Unmarshaller:
     dispatch[TYPE_BINARY_FLOAT] = load_binary_float
 
     # FIXME: GO over fo PYPY
-    def load_code(self) -> Code2 | Code3 | CodeType:
+    def load_code(self):
         argcount = self.r_long()
         if self.python_version and self.python_version >= (3, 0):
             is_python3 = True
@@ -796,7 +796,7 @@ class _Unmarshaller:
 
     dispatch[TYPE_DICT] = load_dict
 
-    def load_ellipsis(self) -> EllipsisType:
+    def load_ellipsis(self):
         return Ellipsis
 
     dispatch[TYPE_ELLIPSIS] = load_ellipsis
@@ -861,7 +861,7 @@ class _Unmarshaller:
 
     dispatch[TYPE_SET] = load_set
 
-    def load_stopiter(self) -> type[StopIteration]:
+    def load_stopiter(self):
         return StopIteration
 
     dispatch[TYPE_STOPITER] = load_stopiter
