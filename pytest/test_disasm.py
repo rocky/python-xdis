@@ -72,7 +72,7 @@ def run_check_disasm(test_tuple, function_to_test):
             got_filename = filename_expected + ".got"
             with open(got_filename, "w") as out:
                 out.write(got)
-        assert got == expected, f"see {got_filename} for diffs"
+        assert got == expected, ("see %s for diffs" % got_filename)
     else:
         assert got == expected
 
@@ -113,20 +113,20 @@ def run_check_disasm(test_tuple, function_to_test):
 def test_funcoutput(test_name, version, formats: List[str]):
     if "classic" in formats:
         test_tuple = (
-            f"../test/bytecode_{version}/{test_name}.pyc",
-            f"testdata/{test_name}-{version}.right",
+            ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
+            ("testdata/%s-%s.right" % (test_name, version)),
         )
         run_check_disasm(test_tuple, disassemble_file)
     if "extended-bytes" in formats:
         test_tuple = (
-            f"../test/bytecode_{version}/{test_name}.pyc",
-            f"testdata/{test_name}-extended-bytes-{version}.right",
+            ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
+            ("testdata/%s-extended-bytes-%s.right" % (test_name, version)),
         )
         run_check_disasm(test_tuple, disassemble_file_extended_bytes)
     if "xasm" in formats:
         test_tuple = (
-            f"../test/bytecode_{version}/{test_name}.pyc",
-            f"testdata/{test_name}-xasm-{version}.right",
+            ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
+            ("testdata/%s-xasm-%s.right" % (test_name, version)),
         )
         run_check_disasm(test_tuple, disassemble_file_xasm)
 

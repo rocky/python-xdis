@@ -185,9 +185,9 @@ def load_module(
 
     # Some sanity checks
     if not osp.exists(filename):
-        raise ImportError(f"File name: '{filename}' doesn't exist")
+        raise ImportError("File name: '%s' doesn't exist" % filename)
     elif not osp.isfile(filename):
-        raise ImportError(f"File name: '{filename}' isn't a file")
+        raise ImportError("File name: '%s' isn't a file" % filename)
     elif osp.getsize(filename) < 50:
         raise ImportError(
             "File name: '%s (%d bytes)' is too short to be a valid pyc file"
