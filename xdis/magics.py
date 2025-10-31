@@ -36,9 +36,14 @@ import imp
 import re
 import struct
 import sys
-from collections import defaultdict
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
+
+try:
+    from collections import defaultdict
+    version2magicint = defaultdict(list)
+except ImportError:
+    version2magicint = {}
 
 MAGIC = imp.get_magic()
 PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 336, 384, 416)
@@ -86,14 +91,16 @@ INTERIM_MAGIC_INTS = frozenset([
     62041, 62051, 62071, 62081, 62071, 62091, 62081, 62091, 62092, 62111,
     62121, 62121, 62151, 62171, 62181, 62191, 62201,
 ])
-# fmt: ofn
+# fmt: on
 
 def add_magic_from_int(magic_int, version):
     magicint2version[magic_int] = version
     versions[int2magic(magic_int)] = version
-    version2magicint[version].append(magic_int)
+    if version in version2magicint.keys():
+        version2magicint[version].append(magic_int)
+    else:
+        version2magicint[version] = [magic_int]
 
-version2magicint = defaultdict(list)
 
 def int2magic(magic_int):
     """Given a magic int like 62211, compute the corresponding magic byte string
@@ -846,9 +853,9 @@ python_versions = set(canonic_python_version.keys())
 
 # Python major, minor version names, e.g. 3.6, 3.11pypy, etc.
 # These are not considered interim version number.
-minor_release_names = {
+minor_release_names = [
     python_version for python_version in python_versions if re.match("^[1-3][.][0-9]+(?:pypy|Graal)?$", python_version)
-}
+]
 
 
 def __show(text, magic):
@@ -937,7 +944,7 @@ def test():
     assert sysinfo2magic() == MAGIC, (sysinfo2magic(), MAGIC)
 
     # Check that our interim version numbers are not used as release numbers.
-    interim_version_names = {magicint2version[magic_int] for magic_int in INTERIM_MAGIC_INTS}
+    interim_version_names = set([magicint2version[magic_int] for magic_int in INTERIM_MAGIC_INTS])
     incorrect_interim_names = interim_version_names.intersection(minor_release_names)
     if interim_version_names:
         for incorrect_name in incorrect_interim_names:

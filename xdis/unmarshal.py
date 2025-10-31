@@ -573,7 +573,7 @@ class _VersionIndependentUnmarshaller:
                 co_nlocals=0,
                 co_stacksize=0,
                 co_flags=0,
-                co_code=b"",
+                co_code="",
                 co_consts=tuple(),
                 co_names=tuple(),
                 co_varnames=tuple(),
@@ -590,7 +590,8 @@ class _VersionIndependentUnmarshaller:
             ret = code
             return self.r_ref_insert(ret, i)
 
-
+        # bytes_for_code = self.version_tuple >= (2, 0)
+        bytes_for_code = True
         co_code = self.r_object(bytes_for_s=bytes_for_code)
 
         co_consts = self.r_object(bytes_for_s=bytes_for_s)

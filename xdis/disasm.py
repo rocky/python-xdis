@@ -184,7 +184,7 @@ def disco(
             if not is_graal:
                 file_offset = file_offsets.get(co)
             else:
-                file_offset = {},
+                file_offset = {}
             real_out.write(
                 format_code_info(
                     co,
@@ -228,10 +228,6 @@ def disco_loop(
     file_offsets={},
     is_unusual_bytecode=False,
 ):
-=======
-    file_offsets: dict = {},
-) -> None:
->>>>>>> python-3.0-to-3.2
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
@@ -272,6 +268,7 @@ def disco_loop(
                     real_out.write("\n# Instruction disassembly not supported here.\n")
                 else:
                     real_out.write("\n# Instruction disassembly for %s not supported here.\n" % co.co_name)
+                continue
             else:
                 bytecode = Bytecode(co, opc, dup_lines=dup_lines)
                 real_out.write(
