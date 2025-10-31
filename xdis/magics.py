@@ -940,7 +940,7 @@ def test() -> None:
     incorrect_interim_names = interim_version_names.intersection(minor_release_names)
     if interim_version_names:
         for incorrect_name in incorrect_interim_names:
-            print(f"Remove {incorrect_name} {version2magicint[incorrect_name]}")
+            print("Remove %s %s" % (incorrect_name, version2magicint[incorrect_name]))
 
 if __name__ == "__main__":
     test()

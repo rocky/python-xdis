@@ -39,7 +39,6 @@ import os
 import os.path as osp
 import sys
 import tempfile
-import types
 
 from xdis.load import load_module_from_file_object, write_bytecode_file
 from xdis.version_info import version_tuple_to_str

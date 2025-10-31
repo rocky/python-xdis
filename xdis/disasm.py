@@ -247,7 +247,7 @@ def disco_loop(
                 if co.co_name == "??":
                     real_out.write("\n# Instruction disassembly not supported here.\n")
                 else:
-                    real_out.write(f"\n# Instruction disassembly for {co.co_name} not supported here.\n")
+                    real_out.write("\n# Instruction disassembly for %s not supported here.\n" % co.co_name)
             else:
                 bytecode = Bytecode(co, opc, dup_lines=dup_lines)
                 real_out.write(
@@ -257,7 +257,6 @@ def disco_loop(
                     )
                     + "\n"
                 )
->>>>>>> python-3.6-to-3.10
 
             if version_tuple >= (3, 11):
                 if bytecode.exception_entries not in (None, []):
