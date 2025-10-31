@@ -5,7 +5,6 @@
 # and change that into something that's not portable. Thank you, Python!
 #
 #
-from __future__ import print_function
 
 import os
 import os.path as osp
@@ -21,10 +20,8 @@ program, ext = os.path.splitext(os.path.basename(__file__))
 
 PATTERNS = ("*.pyc", "*.pyo")
 
-if click.__version__ >= "7.":
-    case_sensitive = {"case_sensitive": False}
-else:
-    case_sensitive = {}
+
+case_sensitive = {"case_sensitive": False}
 
 
 @click.command()
@@ -61,7 +58,7 @@ else:
 )
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format: list, method: tuple, show_source: bool, show_file_offsets, files):
+def main(format: str, method: tuple, show_source: bool, show_file_offsets, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
