@@ -29,10 +29,12 @@ import xdis.unmarshal
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 from xdis.magics import (
     GRAAL3_MAGICS,
+    INTERIM_MAGIC_INTS,
     JYTHON_MAGICS,
     PYPY3_MAGICS,
     PYTHON_MAGIC_INT,
     RUSTPYTHON_MAGICS,
+    UNSUPPORTED_GRAAL3_MAGICS,
     int2magic,
     magic2int,
     magic_int2tuple,
@@ -244,40 +246,13 @@ def load_module_from_file_object(
             else:
                 raise ImportError(f"Bad magic number: '{magic}'")
 
-        if magic_int in [2657, 22138] + list(GRAAL3_MAGICS) + list(
+        if magic_int in [2657, 22138] + list(UNSUPPORTED_GRAAL3_MAGICS) + list(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
             raise ImportError(f"Magic int {magic_int} ({version}) is not supported.")
 
-        if magic_int in (
-            3010,
-            3020,
-            3030,
-            3040,
-            3050,
-            3060,
-            3061,
-            3071,
-            3361,
-            3091,
-            3101,
-            3103,
-            3141,
-            3270,
-            3280,
-            3290,
-            3300,
-            3320,
-            3330,
-            3371,
-            62071,
-            62071,
-            62081,
-            62091,
-            62092,
-            62111,
-        ):
+        if magic_int in INTERIM_MAGIC_INTS:
             raise ImportError(
                 "%s is interim Python %s (%d) bytecode which is "
                 "not supported.\nFinal released versions are "
@@ -336,7 +311,7 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
             if get_code:
-                if save_file_offsets:
+                if save_file_offsets and magic_int not in GRAAL3_MAGICS:
                     co, file_offsets = xdis.unmarshal.load_code_and_get_file_offsets(
                         fp, magic_int, code_objects
                     )
