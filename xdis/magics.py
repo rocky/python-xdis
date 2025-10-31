@@ -702,9 +702,12 @@ add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0
 # Graal uses JVM bytecode, not Python bytecode
 add_magic_from_int(21150, "3.8.5Graal")
 
-# Graal Java 21.0.2
+# Graal Java.
+# Note: Differnet major/minor releases can have the same magic!
+# Graal for 3.11 and 3.12 are like that.
 add_magic_from_int(21280, "3.10.8Graal")
 add_magic_from_int(21290, "3.11.7Graal")
+# add_magic_from_int(21290, "3.12.8Graal")
 
 
 # Jython uses JVM bytecode, not Python bytecode.
