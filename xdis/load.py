@@ -28,10 +28,12 @@ import xdis.unmarshal
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 from xdis.magics import (
     GRAAL3_MAGICS,
+    INTERIM_MAGIC_INTS,
     JYTHON_MAGICS,
     PYPY3_MAGICS,
     PYTHON_MAGIC_INT,
     RUSTPYTHON_MAGICS,
+    UNSUPPORTED_GRAAL3_MAGICS,
     int2magic,
     magic2int,
     magic_int2tuple,
@@ -244,40 +246,13 @@ def load_module_from_file_object(
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
 
-        if magic_int in [2657, 22138] + list(GRAAL3_MAGICS) + list(
+        if magic_int in [2657, 22138] + list(UNSUPPORTED_GRAAL3_MAGICS) + list(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
             raise ImportError("Magic int %s (%s) is not supported." % (magic_int, version))
 
-        if magic_int in (
-            3010,
-            3020,
-            3030,
-            3040,
-            3050,
-            3060,
-            3061,
-            3071,
-            3361,
-            3091,
-            3101,
-            3103,
-            3141,
-            3270,
-            3280,
-            3290,
-            3300,
-            3320,
-            3330,
-            3371,
-            62071,
-            62071,
-            62081,
-            62091,
-            62092,
-            62111,
-        ):
+        if magic_int in INTERIM_MAGIC_INTS:
             raise ImportError(
                 "%s is interim Python %s (%d) bytecode which is "
                 "not supported.\nFinal released versions are "
@@ -336,7 +311,7 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
             if get_code:
-                if save_file_offsets:
+                if save_file_offsets and magic_int not in GRAAL3_MAGICS:
                     co, file_offsets = xdis.unmarshal.load_code_and_get_file_offsets(
                         fp, magic_int, code_objects
                     )
@@ -382,7 +357,12 @@ def load_module_from_file_object(
 
 
 def write_bytecode_file(
-    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize: int = 0
+    bytecode_path,
+    code_obj,
+    magic_int,
+    compilation_ts=None,
+    filesize: int = 0,
+    allow_native: bool = True,
 ) -> None:
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
@@ -409,7 +389,7 @@ def write_bytecode_file(
     if version_tuple >= (3, 3):
         # In Python 3.3+, these 4 bytes are the size of the source code_obj file (mod 2^32)
         fp.write(pack("<I", filesize))
-    if isinstance(code_obj, types.CodeType):
+    if allow_native and isinstance(code_obj, types.CodeType):
         fp.write(marshal.dumps(code_obj))
     else:
         code_sequence = xdis.marsh.dumps(code_obj, python_version=version_tuple)
@@ -417,7 +397,11 @@ def write_bytecode_file(
             # Python 1.x uses code strings, not bytes. To get this into bytes needed by
             # fp.write, encode the string using 'latin-1' and 'unicode_escape' to convert escape sequences
             # into the raw byte values. 'latin-1' is a single-byte encoding that works well for this.
-            code_bytes = code_sequence.encode('latin-1').decode('unicode_escape').encode('latin-1')
+            code_bytes = (
+                code_sequence.encode("latin-1")
+                .decode("unicode_escape")
+                .encode("latin-1")
+            )
         else:
             code_bytes = code_sequence
         fp.write(code_bytes)
@@ -427,8 +411,8 @@ def write_bytecode_file(
 if __name__ == "__main__":
     co = load_file(__file__)
     obj_path = check_object_path(__file__)
-    version, timestamp, magic_int, co2, pypy, source_size, sip_hash, file_offsets = load_module(
-        obj_path
+    version, timestamp, magic_int, co2, pypy, source_size, sip_hash, file_offsets = (
+        load_module(obj_path)
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:

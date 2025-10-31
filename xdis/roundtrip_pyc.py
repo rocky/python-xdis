@@ -39,6 +39,7 @@ import os
 import os.path as osp
 import sys
 import tempfile
+import types
 
 from xdis.load import load_module_from_file_object, write_bytecode_file
 from xdis.version_info import version_tuple_to_str
@@ -176,7 +177,7 @@ def load_meta_and_code_from_filename(path: str):
         return load_module_from_file_object(fp, filename=path, get_code=True)
 
 
-def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
+def roundtrip_pyc(input_path: str, unlink_on_success: bool, verbose: bool) -> int:
 
     # parser = argparse.ArgumentParser(
     #     description="Load a .pyc with xdis, rewrite it to a temporary file, and compare."
@@ -228,6 +229,7 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
             orig_magic_int,
             compilation_ts=orig_timestamp,
             filesize=orig_source_size or 0,
+            allow_native=False,
         )
     except TypeError:
         # Older/newer signatures might name the timestamp param differently; try without names
@@ -259,9 +261,10 @@ def roundtrip_pyc(input_path: str, unlink_on_success: bool) -> int:
     except Exception as e:
         print("WARNING: could not do raw byte comparison: %s" % e, file=sys.stderr)
 
-    print("Original file:", input_path)
-    print("Rewritten file:", tf_name)
-    print("Raw-bytes identical:", same_bytes)
+    print("Input file:", input_path)
+    if verbose:
+        print("Rewritten file:", tf_name)
+        print("Raw-bytes identical:", same_bytes)
     if same_bytes:
         if unlink_on_success:
             os.unlink(tf_name)

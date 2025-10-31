@@ -76,7 +76,7 @@ ftp_url = None
 # 3.2            | pip     | 7.1.2        |
 # 3.2            | click   | 4.0          |
 
-install_requires = [_six, "click"]
+install_requires = [_six, "click >= 7.0.0"]
 
 license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
