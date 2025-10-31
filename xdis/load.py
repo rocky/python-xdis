@@ -311,12 +311,15 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
             if get_code:
-                if save_file_offsets and magic_int not in GRAAL3_MAGICS:
+                is_graal = magic_int in GRAAL3_MAGICS
+                # Graal uses the same magic int for separate major/minor releases!
+                graal_weirdness_check = not is_graal or PYTHON_VERSION_TRIPLE == version
+                if save_file_offsets and not is_graal:
                     co, file_offsets = xdis.unmarshal.load_code_and_get_file_offsets(
                         fp, magic_int, code_objects
                     )
 
-                elif my_magic_int == magic_int:
+                elif my_magic_int == magic_int and graal_weirdness_check:
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                     # Python 3.10 returns a tuple here?
