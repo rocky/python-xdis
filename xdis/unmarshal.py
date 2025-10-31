@@ -52,34 +52,39 @@ FLAG_REF = 0x80
 FLAG_REF = 0x80
 
 TYPE_ASCII = "a"  # since 3.4
-TYPE_ASCII_INTERNED = "A"  # since 3.4
-TYPE_BINARY_COMPLEX = "y"  # 3.x
-TYPE_BINARY_FLOAT = "g"
+TYPE_ASCII_INTERNED = "A"  # Version 4. since 3.4
+TYPE_ARRAY = "]"  # Graal Python uses this
+TYPE_BIG_INTEGER = "B"  # Graal Python uses this.
+TYPE_BINARY_COMPLEX = "y"  # 3.x; Version 0 uses TYPE_COMPLEX instead
+TYPE_BINARY_FLOAT = "g"  # Version 0 uses TYPE_FLOAT instead
 TYPE_CODE = "c"
-TYPE_CODE_OLD = "C"  # used in Python 1.0 - 1.2
-TYPE_COMPLEX = "x"
+TYPE_CODE_OLD = "C"  # used in Python 1.0 - 1.2. Graal Python uses this for its
+TYPE_COMPLEX = "x"  # Version 0 only. Not in use after Python 2.4
 TYPE_DICT = "{"
 TYPE_ELLIPSIS = "."
 TYPE_FALSE = "F"
-TYPE_FLOAT = "f"  # Seems not in use after Python 2.4
-TYPE_FROZENSET = ">"
-TYPE_INT = "i"
+TYPE_FLOAT = "f"  # Version 0 only. Not in use after Python 2.4
+TYPE_FROZENSET = ">"  # Since version 2.
+TYPE_GRAALPYTHON_CODE = "C"  # Duplicate. Graal Python uses this for its code.
+TYPE_GRAALPYTHON_CODE_UNIT = "U"  # Graal Python uses this.
+TYPE_INT = "i"  # All versions. 32-bit encoding.
 TYPE_INT64 = "I"  # Python 3.4 removed this
-TYPE_INTERNED = "t"
+TYPE_INTERNED = "t"  # 1+
 TYPE_LIST = "["
 TYPE_LONG = "l"
 TYPE_NONE = "N"
 TYPE_NULL = "0"
-TYPE_REF = "r"  # Since 3.4
-TYPE_SET = "<"
-TYPE_SHORT_ASCII = "z"  # since 3.4
-TYPE_SHORT_ASCII_INTERNED = "Z"  # since 3.4
-TYPE_SMALL_TUPLE = ")"  # since 3.4
+TYPE_REF = "r"  # Version 3. Since 3.4 (and a little before?)
+TYPE_SET = "<"  # Since Version 2.
+TYPE_SHORT_ASCII = "z"  # Version 4. since 3.4
+TYPE_SHORT_ASCII_INTERNED = "Z"  # Version 3. since 3.4
+TYPE_SLICE = ":"  # Since version 5
+TYPE_SMALL_TUPLE = ")"  # Version 3. since 3.4
 TYPE_STOPITER = "S"
-TYPE_STRING = "s"
+TYPE_STRING = "s"  # String in Python 2. In Python 3 this is Bytes.
 TYPE_STRINGREF = "R"  # Python 2
 TYPE_TRUE = "T"
-TYPE_TUPLE = "("
+TYPE_TUPLE = "("  # See also TYPE_SMALL_TUPLE
 TYPE_UNICODE = "u"
 TYPE_UNKNOWN = "?"
 
@@ -359,11 +364,12 @@ class _VersionIndependentUnmarshaller:
         imag = unpack("<d", self.fp.read(8))[0]
         return self.r_ref(complex(real, imag), save_ref)
 
-    # Note: could mean bytes in Python3 processing Python2 bytecode
     def t_string(self, save_ref, bytes_for_s):
         """
+        Get a string from the bytecode file and save the string in ``save_ref``
+
         In Python3, this is a ``bytes`` type.  In Python2, it is a string type;
-        ``bytes_for_s`` distinguishes what we need.
+        ``bytes_for_s`` is True when a Python 3 interpreter is reading Python 2 bytecode.
         """
         strsize = unpack("<i", self.fp.read(4))[0]
         s = self.fp.read(strsize)
@@ -555,10 +561,6 @@ class _VersionIndependentUnmarshaller:
         # of the string.
         co_code_offset_in_file = self.fp.tell() + 5
 
-        # bytes_for_code = self.version_tuple >= (2, 0)
-        bytes_for_code = True
-        co_code = self.r_object(bytes_for_s=bytes_for_code)
-
         # FIXME: Check/verify that is true:
         bytes_for_s = self.version_tuple > (3, 0)
         if self.is_graal:
@@ -571,7 +573,7 @@ class _VersionIndependentUnmarshaller:
                 co_nlocals=0,
                 co_stacksize=0,
                 co_flags=0,
-                co_code=co_code,
+                co_code=b"",
                 co_consts=tuple(),
                 co_names=tuple(),
                 co_varnames=tuple(),
@@ -588,8 +590,11 @@ class _VersionIndependentUnmarshaller:
             ret = code
             return self.r_ref_insert(ret, i)
 
-        co_consts = self.r_object(bytes_for_s=False)
-        co_names = self.r_object(bytes_for_s=False)
+
+        co_code = self.r_object(bytes_for_s=bytes_for_code)
+
+        co_consts = self.r_object(bytes_for_s=bytes_for_s)
+        co_names = self.r_object(bytes_for_s=bytes_for_s)
 
         co_varnames = tuple()
         co_freevars = tuple()

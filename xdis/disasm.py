@@ -181,12 +181,16 @@ def disco(
 
     if co.co_filename and asm_format != "xasm":
         if not_filtered(co, methods):
+            if not is_graal:
+                file_offset = file_offsets.get(co)
+            else:
+                file_offset = {},
             real_out.write(
                 format_code_info(
                     co,
                     version_tuple,
                     is_graal=is_graal,
-                    file_offset=file_offsets.get(co),
+                    file_offset=file_offset,
                 )
                 + "\n"
             )
@@ -194,9 +198,6 @@ def disco(
 
     opc = get_opcode(version_tuple, is_pypy, alternate_opmap)
 
-    if is_graal:
-        real_out.write("# We can't decode Graal bytecode\n")
-        return
     if asm_format == "xasm":
         disco_loop_asm_format(opc, version_tuple, co, real_out, {}, set([]))
     else:
@@ -211,6 +212,7 @@ def disco(
             show_source=show_source,
             methods=methods,
             file_offsets=file_offsets,
+            is_unusual_bytecode=is_graal,
         )
 
 
@@ -224,7 +226,12 @@ def disco_loop(
     show_source=False,
     methods=tuple(),
     file_offsets={},
+    is_unusual_bytecode=False,
 ):
+=======
+    file_offsets: dict = {},
+) -> None:
+>>>>>>> python-3.0-to-3.2
     """Disassembles a queue of code objects. If we discover
     another code object which will be found in co_consts, we add
     the new code to the list. Note that the order of code discovery
@@ -247,18 +254,33 @@ def disco_loop(
                     + "\n"
                 )
 
-        if asm_format == "dis":
-            assert version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2], (
-                "dis requires disassembly from the same Python version: "
-                "Bytecode is for %s; Running: %s"
-                % (version_tuple[:2], PYTHON_VERSION_TRIPLE[:2])
-            )
-            dis.disassemble(co, lasti=-1)
-        else:
-            bytecode = Bytecode(co, opc, dup_lines=dup_lines)
-            real_out.write(
-                bytecode.dis(asm_format=asm_format, show_source=show_source) + "\n"
-            )
+            if asm_format == "dis":
+                assert version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2], (
+                    "dis requires disassembly from the same Python version: "
+                    "Bytecode is for %s; Running: %s"
+                    % (version_tuple[:2], PYTHON_VERSION_TRIPLE[:2])
+                )
+                dis.disassemble(co, lasti=-1)
+                assert version_tuple[:2] == PYTHON_VERSION_TRIPLE[:2], (
+                    "dis requires disassembly from the same Python version: "
+                    "Bytecode is for %s; Running: %s"
+                    % (version_tuple[:2], PYTHON_VERSION_TRIPLE[:2])
+                )
+                dis.disassemble(co, lasti=-1, file=real_out)
+            elif is_unusual_bytecode:
+                if co.co_name == "??":
+                    real_out.write("\n# Instruction disassembly not supported here.\n")
+                else:
+                    real_out.write("\n# Instruction disassembly for %s not supported here.\n" % co.co_name)
+            else:
+                bytecode = Bytecode(co, opc, dup_lines=dup_lines)
+                real_out.write(
+                    bytecode.dis(
+                        asm_format=asm_format,
+                        show_source=show_source,
+                    )
+                    + "\n"
+                )
 
             if version_tuple >= (3, 11):
                 if bytecode.exception_entries not in (None, []):
@@ -401,6 +423,9 @@ def disassemble_file(
         filename = pyc_filename
 
     is_graal = magic_int in GRAAL3_MAGICS
+
+    if is_graal and save_file_offsets:
+        outstream.write("\n# Option showing file hex offsets (-x) ignored; not supported in Graal bytecode.\n")
 
     if asm_format == "header":
         show_module_header(
