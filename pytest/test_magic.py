@@ -11,7 +11,6 @@ from xdis.magics import (
     version2magicint,
 )
 
-
 def test_magic():
     assert sysinfo2magic() == MAGIC, (sysinfo2magic(), MAGIC)
 
