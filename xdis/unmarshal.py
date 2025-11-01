@@ -32,8 +32,6 @@ from struct import unpack
 from types import EllipsisType
 from typing import Any, Dict, Tuple, Union
 
-from typing_extensions import Literal
-
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
@@ -92,15 +90,14 @@ TYPE_UNICODE = "u"
 TYPE_UNKNOWN = "?"
 
 # Graal Array types
-ARRAY_TYPE_BOOLEAN = Literal['B']
-ARRAY_TYPE_BYTE = 'b'
-ARRAY_TYPE_DOUBLE = 'd'
-ARRAY_TYPE_INT = 'i'
-ARRAY_TYPE_LONG = 'l'
-ARRAY_TYPE_OBJECT = 'o'
-ARRAY_TYPE_SHORT = 's'
-ARRAY_TYPE_STRING = 'S'
-
+ARRAY_TYPE_BOOLEAN = "B"
+ARRAY_TYPE_BYTE = "b"
+ARRAY_TYPE_DOUBLE = "d"
+ARRAY_TYPE_INT = "i"
+ARRAY_TYPE_LONG = "l"
+ARRAY_TYPE_OBJECT = "o"
+ARRAY_TYPE_SHORT = "s"
+ARRAY_TYPE_STRING = "S"
 
 
 # The keys in the following dictionary are unmarshal codes, like "s",
@@ -218,52 +215,46 @@ class _VersionIndependentUnmarshaller:
         """
         Python equivalent of Python Graal's readArray() from
         MarshalModuleBuiltins.java
-        """
-        """
-        Main object unmarshalling read routine.  Reads from self.fp
-        the next byte which is a key in UNMARSHAL_DISPATCH_TABLE
-        defined above when the high-order bit, FLAG_REF is not set.
-        FLAG_REF indicates whether to save the resulting object in
+
+        Array object unmarshalling read routine.  Reads from self.fp
+        the next byte which is a key in ARRAY_TYPE defined above.
+
+        Parameter save_ref indicates whether to save the resulting object in
         our internal object cache.
         """
         byte1 = ord(self.fp.read(1))
 
-        # FLAG_REF indicates whether we "intern" or
-        # save a reference to the object.
-        # byte1 without that reference is the
-        # marshal type code, an ASCII character.
-        save_ref = False
-        if byte1 & FLAG_REF:
-            # Since 3.4, "flag" is the marshal.c name
-            save_ref = True
-            byte1 = byte1 & (FLAG_REF - 1)
         marshal_type = chr(byte1)
 
         # print(marshal_type)  # debug
 
         match marshal_type:
-            case "B":
-                return tuple()
-
+            # case "B":
+            #     ret = tuple()
             # case "b":
             #     return "OK"
             case "d":
-                return self.graal_readDoubleArray()
+                ret = self.graal_readDoubleArray()
             case "i":
-                return self.graal_readIntArray()
+                ret = self.graal_readIntArray()
             case "o":
-                return self.graal_readObjectArray()
+                ret = self.graal_readObjectArray()
             # case "l":
             #     return "Internal server error"
             # case "s":
             #     return "Internal server error"
             case "S":
-                return self.graal_readStringArray()
+                ret = self.graal_readStringArray()
             case _:
                 # The underscore '_' acts as a wildcard
                 # It matches anything if no previous case did (the 'default' case)
-                print(f"XXX {marshal_type}")
-                return tuple()
+                print(f"XXX Whoah {marshal_type}")
+                ret = tuple()
+        if save_ref:
+            n = len(self.intern_objects)
+            print("appending at %d: %s" % (n, ret))
+            self.intern_objects.append(ret)
+        return ret
 
     def graal_readByte(self) -> int:
         """
@@ -377,9 +368,9 @@ class _VersionIndependentUnmarshaller:
     # This is only needed in the Python 2.4 - 2.7 code branch.
     def r_object(self, bytes_for_s: bool = False):
         """
-        Main object unmarshalling read routine.  Reads from self.fp
+        Main object unmarshaling read routine.  Reads from self.fp
         the next byte which is a key in UNMARSHAL_DISPATCH_TABLE
-        defined above when the high-order bit, FLAG_REF is not set.
+        defined above clearing the high-order bit, FLAG_REF.
         FLAG_REF indicates whether to save the resulting object in
         our internal object cache.
         """
@@ -1078,8 +1069,7 @@ class _VersionIndependentUnmarshaller:
     # Since Python 3.4
     def t_object_reference(self, save_ref=None, bytes_for_s: bool = False):
         refnum = unpack("<i", self.fp.read(4))[0]
-        o = self.intern_objects[refnum]
-        return o
+        return self.intern_objects[refnum]
 
     def t_unknown(self, save_ref=None, bytes_for_s: bool = False):
         raise KeyError("?")
