@@ -430,8 +430,8 @@ class Code311(Code310):
             co_linetable=co_linetable,
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
-            reference_objects = set(),
-            version_triple = (0, 0, 0),
+            reference_objects = reference_objects,
+            version_triple = version_triple,
         )
         self.co_qualname = co_qualname
         self.co_exceptiontable = co_exceptiontable

@@ -85,6 +85,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 co_name=code.co_name,
                 co_firstlineno=code.co_firstlineno,
                 co_lnotab=line_table,
+                version_triple=version_triple,
             )
         elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
             return Code310(
@@ -104,6 +105,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 co_name=code.co_name,
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
+                version_triple=version_triple,
             )
         elif version_triple[:2] >= (3, 11):
             return Code311(
@@ -125,6 +127,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
                 co_exceptiontable=code.co_exceptiontable,
+                version_triple=version_triple,
             )
     elif version_triple > (2, 0):
         # 2.0 .. 2.7
@@ -148,6 +151,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
             # type, should we try to extract it?
             collection_order=code.collection_order if hasattr(code, "collection_order") else {},
             reference_objects=code.reference_objects if hasattr(code, "reference_objects") else set(),
+            version_triple=version_triple,
 
         )
     else:

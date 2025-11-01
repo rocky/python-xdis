@@ -173,29 +173,28 @@ class _VersionIndependentUnmarshaller:
         self.collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
 
         self.bytes_for_s = bytes_for_s
-        version = magic_int2tuple(self.magic_int)
-        if version >= (3, 4):
+        self.version_triple = magic_int2tuple(self.magic_int)
+        if self.version_triple >= (3, 4):
             if self.magic_int in (3250, 3260, 3270):
                 self.marshal_version = 3
             else:
                 self.marshal_version = 4
-        elif (3, 4) > version >= (2, 5):
+        elif (3, 4) > self.version_triple >= (2, 5):
             self.marshal_version = 2
-        elif (2, 5) > version >= (2, 4):
+        elif (2, 5) > self.version_triple >= (2, 4):
             self.marshal_version = 1
         else:
             self.marshal_version = 0
 
         self.intern_strings = []
         self.intern_objects = []
-        self.version_triple = tuple()
         self.is_graal = magic_int in GRAAL3_MAGICS
         self.is_pypy = magic_int in PYPY3_MAGICS
         self.is_rust = magic_int in RUSTPYTHON_MAGICS
 
         if magic_int in RUSTPYTHON_MAGICS:
             raise NotImplementedError(
-                f"RustPython {version_tuple_to_str(version)} is not supported yet."
+                f"RustPython {version_tuple_to_str(self.version_triple)} is not supported yet."
             )
 
     def load(self):

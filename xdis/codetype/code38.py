@@ -107,8 +107,8 @@ class Code38(Code3):
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
             collection_order = collection_order,
-            reference_objects = set(),
-            version_triple = (0, 0, 0),
+            reference_objects = reference_objects,
+            version_triple = version_triple,
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
