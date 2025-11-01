@@ -18,7 +18,7 @@ import types
 from copy import deepcopy
 from dataclasses import dataclass
 from types import CodeType
-from typing import Iterable, Iterator, Optional
+from typing import Any, Iterable, Iterator, Optional, Set, Tuple
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -408,10 +408,12 @@ class Code311(Code310):
         co_firstlineno,
         co_linetable,
         co_exceptiontable,
+        reference_objects: Set[Any] = set(),
+        version_triple: Tuple[int, int, int] = (0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code311, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_posonlyargcount=co_posonlyargcount,
             co_kwonlyargcount=co_kwonlyargcount,
@@ -428,6 +430,8 @@ class Code311(Code310):
             co_linetable=co_linetable,
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
+            reference_objects = set(),
+            version_triple = (0, 0, 0),
         )
         self.co_qualname = co_qualname
         self.co_exceptiontable = co_exceptiontable

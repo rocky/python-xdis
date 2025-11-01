@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from copy import deepcopy
+from typing import Tuple
 
 from xdis.codetype.base import CodeBase
 from xdis.cross_types import UnicodeForPython3
@@ -47,15 +48,16 @@ class Code13(CodeBase):
 
     def __init__(
         self,
-        co_argcount,
-        co_nlocals,
-        co_flags,
+        co_argcount: int,
+        co_nlocals: int,
+        co_flags: int,
         co_code,
         co_consts,
         co_names,
         co_varnames,
         co_filename,
-        co_name,
+        co_name: str,
+        version_triple: Tuple[int, int, int] = (0, 0, 0)
     ) -> None:
         self.co_argcount = co_argcount
         self.co_nlocals = co_nlocals
@@ -67,6 +69,7 @@ class Code13(CodeBase):
         self.co_filename = co_filename
         self.co_name = co_name
         self.fieldtypes = Code13FieldTypes
+        self.version_triple = version_triple
         if type(self) is Code13:
             self.check()
         return

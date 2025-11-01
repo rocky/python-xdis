@@ -16,7 +16,7 @@
 
 import types
 from copy import deepcopy
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Set, Tuple, Union
 
 from xdis.codetype.code30 import Code3, Code3FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -84,7 +84,9 @@ class Code38(Code3):
         co_lnotab,
         co_freevars,
         co_cellvars,
-        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
+        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
+        reference_objects: Set[Any] = set(),
+        version_triple: Tuple[int, int, int] = (0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
@@ -105,6 +107,8 @@ class Code38(Code3):
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
             collection_order = collection_order,
+            reference_objects = set(),
+            version_triple = (0, 0, 0),
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
