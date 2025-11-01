@@ -236,7 +236,7 @@ def load_module_from_file_object(
 
         try:
             # FIXME: use the internal routine below
-            tuple_version = magic_int2tuple(magic_int)
+            version_triple = magic_int2tuple(magic_int)
         except KeyError:
             if len(magic) >= 2:
                 raise ImportError(
@@ -346,7 +346,7 @@ def load_module_from_file_object(
         fp.close()
 
     return (
-        tuple_version,
+        version_triple,
         timestamp,
         magic_int,
         co,

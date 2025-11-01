@@ -226,24 +226,24 @@ CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 # Note: default values of `None` indicate a required parameter.
 # default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
-    co_argcount,
+    co_argcount: int,
     co_posonlyargcount: Optional[int] = -1,  # 3.8 .. 3.10
     co_kwonlyargcount: Optional[int] = -1,  # 3.0+
-    co_nlocals=None,
+    co_nlocals: int=0,
     co_stacksize: Optional[int] = -1,  # 1.5+
-    co_flags=None,
-    co_code=None,  # 3.0+ this type changes from <str> to <bytes>
-    co_consts=None,
-    co_names=None,
-    co_varnames=None,
-    co_filename=None,
-    co_name=None,
-    co_qualname=None,
+    co_flags: int=0,
+    co_code: Union[str, bytes]="",  # 3.0+ this type changes from <str> to <bytes>
+    co_consts: tuple[str, ...]=tuple(),
+    co_names: tuple[str, ...]=tuple(),
+    co_varnames: tuple[str, ...]=tuple(),
+    co_filename: str="??",
+    co_name: str="??",
+    co_qualname: str="??",
     co_firstlineno: int=-1,
     co_lnotab: str="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
     # In 3.11 it is different
-    co_freevars: tuple[None]=(None,),  # 2.0+
-    co_cellvars: tuple[None]=(None,),  # 2.0+
+    co_freevars: tuple[str, ...]=tuple(),  # 2.0+
+    co_cellvars: tuple[str, ...]=tuple(),  # 2.0+
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
     collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
