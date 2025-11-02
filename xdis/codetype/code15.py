@@ -42,18 +42,19 @@ class Code15(Code13):
 
     def __init__(
         self,
-        co_argcount: int,
-        co_nlocals: int,
-        co_stacksize: int,
-        co_flags: int,
+        co_argcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
         co_code,
         co_consts,
         co_names,
         co_varnames,
-        co_filename: str,
-        co_name: str,
+        co_filename,
+        co_name,
         co_firstlineno,
         co_lnotab,
+        version_triple=(0, 0, 0),
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.

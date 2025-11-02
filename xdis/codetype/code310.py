@@ -14,13 +14,11 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import types
-from copy import deepcopy
 
 from xdis.codetype.code13 import Bytes
 from xdis.codetype.code38 import Code38
 from xdis.cross_types import UnicodeForPython3
-from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE, version_tuple_to_str
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order. It is important to match this
 # with the 3.8 order.
@@ -96,10 +94,9 @@ class Code310(Code38):
         co_linetable,
         co_freevars,
         co_cellvars,
-        collection_order = {}
+        collection_order = {},
         reference_objects = set(),
         version_triple=tuple(),
->>>>>>> python-3.0-to-3.2
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.

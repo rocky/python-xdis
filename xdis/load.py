@@ -171,7 +171,7 @@ def load_module(
                      `False`.
 
     Return values are as follows:
-        version_tuple: a tuple version number for the given magic_int,
+        version_triple: a tuple version number for the given magic_int,
                        e.g. (2, 7) or (3, 4)
         timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
                         if no timestamp was stored

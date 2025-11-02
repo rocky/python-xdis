@@ -55,9 +55,9 @@ class Code13(CodeBase):
 
     def __init__(
         self,
-        co_argcount: int,
-        co_nlocals: int,
-        co_flags: int,
+        co_argcount,
+        co_nlocals,
+        co_flags,
         co_code,
         co_consts,
         co_names,

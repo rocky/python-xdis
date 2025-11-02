@@ -75,7 +75,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 code.co_freevars,
                 code.co_cellvars,
                 collection_order=collection_order,
-                reference_objects=reference_objects
+                reference_objects=reference_objects,
                 version_triple=version_triple,
             )
         elif version_triple < (3, 10):
@@ -171,7 +171,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
             co_freevars=code.co_freevars,  # not in 1.x
             co_cellvars=code.co_cellvars,  # not in 1.x
             collection_order = collection_order,
-            reference_objects = reference_objects
+            reference_objects = reference_objects,
             version_triple=version_triple,
         )
     else:
@@ -260,7 +260,7 @@ def to_portable(
     co_name=None,
     co_qualname="??",
     co_firstlineno=-1,
-    co_lnotab: str="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
+    co_lnotab="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
     # In 3.11 it is different
     co_freevars=tuple(),  # 2.0+
     co_cellvars=tuple(),  # 2.0+

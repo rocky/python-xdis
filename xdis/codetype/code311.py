@@ -474,7 +474,7 @@ class Code311(Code310):
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super().__init__(
+        super(Code311, self).__init__(
             co_argcount=co_argcount,
             co_posonlyargcount=co_posonlyargcount,
             co_kwonlyargcount=co_kwonlyargcount,

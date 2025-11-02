@@ -54,7 +54,6 @@ Examples:
 PATTERNS = ("*.pyc", "*.pyo")
 
 def main():
-def main(format: str, method: tuple, show_source: bool, show_file_offsets, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
