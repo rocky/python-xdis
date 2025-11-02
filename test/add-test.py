@@ -2,6 +2,7 @@
 """ Trivial helper program to byte compile and run ``dismasm`` on the bytecode file.
 """
 import os
+import platform
 import py_compile
 import sys
 
@@ -24,9 +25,13 @@ for path in py_source:
     if short.endswith(".py"):
         short = short[:-3]
 
-    if hasattr(sys, "pypy_version_info"):
-        version = version_tuple_to_str(end=2, delimiter="")
+    python_implementation = platform.python_implementation()
+    version = version_tuple_to_str(end=2, delimiter="")
+    if python_implementation == "PyPy":
         bytecode = "bytecode_pypy%s/%s.pypy%s.pyc" % (version, short, version)
+    elif python_implementation == "GraalVM":
+        bytecode = "bytecode_graal%s/%s.graalpy%s.pyc" % (version, short, version)
+
     else:
         version = version_tuple_to_str(end=2)
         bytecode = "bytecode_%s/%s.pyc" % (version, short)
