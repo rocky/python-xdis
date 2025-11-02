@@ -205,6 +205,15 @@ class _VersionIndependentUnmarshaller:
         self.is_pypy = magic_int in PYPY3_MAGICS
         self.is_rust = magic_int in RUSTPYTHON_MAGICS
 
+        # Graal code data seems to be split in two places.
+        # The outer part is a TYPE_GRAALPYTHON_CODE,
+        # while the inner part is in TYPE_GRAALPYTHON_CODE_UNIT
+        # Save the out information so that the inner information
+        # can use this when building a code type.
+
+        # in a TYPE_GRAAL
+        self.graal_code_info = {}
+
         if magic_int in RUSTPYTHON_MAGICS:
             raise NotImplementedError(
                 f"RustPython {version_tuple_to_str(self.version_triple)} is not supported yet."
@@ -239,8 +248,8 @@ class _VersionIndependentUnmarshaller:
                 ret = self.graal_readIntArray()
             case "o":
                 ret = self.graal_readObjectArray()
-            # case "l":
-            #     return "Internal server error"
+            case "l":
+                ret = self.graal_readLongArray()
             # case "s":
             #     return "Internal server error"
             case "S":
@@ -252,7 +261,6 @@ class _VersionIndependentUnmarshaller:
                 ret = tuple()
         if save_ref:
             n = len(self.intern_objects)
-            print("appending at %d: %s" % (n, ret))
             self.intern_objects.append(ret)
         return ret
 
@@ -271,16 +279,16 @@ class _VersionIndependentUnmarshaller:
         length: int = unpack("<i", self.fp.read(4))[0]
         return bytes([self.graal_readByte() for _ in range(length)])
 
-    def graal_readDouble(self) -> int:
+    def graal_readDouble(self) -> float:
         """
         Python equivalent of Python Graal's readDouble() from
         MarshalModuleBuiltins.java
         """
-        return unpack("<q", self.fp.read(8))[0]
+        return unpack("<d", self.fp.read(8))[0]
 
-    def graal_readDoubleArray(self) -> tuple[int, ...]:
+    def graal_readDoubleArray(self) -> tuple[float, ...]:
         """
-        Python equivalent of Python Graal's readIntArray() from
+        Python equivalent of Python Graal's readDoubleArray() from
         MarshalModuleBuiltins.java
         """
         length: int = int(unpack("<i", self.fp.read(4))[0])
@@ -301,9 +309,36 @@ class _VersionIndependentUnmarshaller:
         length: int = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readInt() for _ in range(length)])
 
-    def graal_readObjectArray(self) -> tuple:
-        """ """
+    def graal_readLong(self) -> int:
+        """
+        Python equivalent of Python Graal's readLongt() from
+        MarshalModuleBuiltins.java
+        """
+        return int(unpack("<q", self.fp.read(8))[0])
+
+    def graal_readLongArray(self) -> tuple[int, ...]:
+        """
+        Python equivalent of Python Graal's readLongt() from
+        MarshalModuleBuiltins.java
+        """
         length: int = int(unpack("<i", self.fp.read(4))[0])
+        return tuple([self.graal_readLong() for _ in range(length)])
+
+    def graal_readObjectArray(self) -> tuple:
+        """
+        Python equivalent of Python Graal's readObjectArray() from
+        MarshalModuleBuiltins.java
+        """
+
+        # # Debug code
+        # length: int = int(unpack("<i", self.fp.read(4))[0])
+        # result = []
+        # for i in range(length):
+        #     try:
+        #         result.append(self.r_object(bytes_for_s=False))
+        #     except:
+        #         breakpoint()
+        # return tuple(result)
         return tuple([self.r_object(bytes_for_s=False) for _ in range(length)])
 
     def graal_readString(self) -> str:
@@ -819,33 +854,37 @@ class _VersionIndependentUnmarshaller:
         #   }
         #   writeBytes(lnotab);
 
-        co_filename = self.graal_readString()
-        co_flags = self.t_int32(False, bytes_for_s=False)
-        co_codeunit_position = self.fp.tell() + 4
-        co_codeunit_string = self.t_string(False, bytes_for_s=True)
+        self.graal_code_info["co_filename"] = self.graal_readString()
+        self.graal_code_info["co_flags"] = self.t_int32(False, bytes_for_s=False)
+        co_codeunit_position = self.graal_code_info["co_codeunit_position"] = (
+            self.fp.tell() + 4
+        )
+        co_codeunit_string = self.graal_readBytes()
         self.version_triple = (3, 12, 8)
         if chr(co_codeunit_string[0]) != TYPE_GRAALPYTHON_CODE_UNIT:
             # Version is graal 3.11 not graal 3.12
             self.version_triple = (3, 11, 7)
 
-        co_firstlineno = self.t_int32(False, bytes_for_s=False)
-        co_lnotab = self.t_string(False, bytes_for_s=True)
+        self.graal_code_info["co_firstlineno"] = self.t_int32(False, bytes_for_s=False)
+        self.graal_code_info["co_lnotab"] = self.t_string(False, bytes_for_s=True)
 
         # Go back to code position and parse CodeUnit
+        saved_position = self.fp.tell()
         self.fp.seek(co_codeunit_position)
         if self.version_triple == (3, 12, 8):
-            code_unit = self.r_object(bytes_for_s=False)
+            code = self.r_object(bytes_for_s=False)
         else:
-            code_unit = self.t_graal_CodeUnit(save_ref=False, bytes_for_s=False)
+            code = self.t_graal_CodeUnit(save_ref=False, bytes_for_s=False)
         assert co_flags == code_unit.co_flags
+        self.fp.seek(saved_position)
 
         code = to_portable(
             co_argcount=code_unit.co_argcount,
             co_posonlyargcount=code_unit.co_posonlyargcount,
             co_kwonlyargcount=code_unit.co_kwonlyargcount,
-            co_nlocals=code_unit.co_nlocals,
+            co_nlocals=0,
             co_stacksize=code_unit.co_stacksize,
-            co_flags=co_flags,  # codeunit.co_stackize?
+            co_flags=co_flags,
             co_code=code_unit.co_code,
             co_consts=code_unit.co_consts,
             co_names=code_unit.co_names,
@@ -1037,11 +1076,11 @@ class _VersionIndependentUnmarshaller:
             co_consts=co_consts,
             co_names=co_names,
             co_varnames=co_varnames,
-            co_filename="??",  # filled in by caller
+            co_filename=self.graal_code_info["co_filename"],
             co_name=co_name,
             co_qualname=co_qualname,
-            co_firstlineno=0,
-            co_lnotab="",
+            co_firstlineno=self.graal_code_info["co_firstlineno"],
+            co_lnotab=self.graal_code_info["co_lnotab"],
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
             co_exceptiontable="",
@@ -1050,7 +1089,9 @@ class _VersionIndependentUnmarshaller:
             reference_objects=set(),
         )
 
-        self.code_to_file_offsets[code] = tuple([co_code_offset_in_file])
+        self.code_to_file_offsets[code] = tuple(
+            [self.graal_code_info["co_codeunit_position"], co_code_offset_in_file]
+        )
 
         # writeLongArray(code.primitiveConstants);
         # writeIntArray(code.exceptionHandlerRanges);
@@ -1063,6 +1104,23 @@ class _VersionIndependentUnmarshaller:
         # writeBytes(code.variableShouldUnbox);
         # writeSparseTable(code.generalizeInputsMap);
         # writeSparseTable(code.generalizeVarsMap);
+
+        # The data from the below is not used, but we run the
+        # the extraction to keep the self.fp location where it should for
+        # the situation that we have code objects inside the codes' co_consts
+        # table marshaled as an ObjectArray.
+
+        primitive_constants = self.graal_readLongArray()
+        exception_handler_ranges = self.graal_readIntArray()
+        condition_profileCount = self.graal_readInt()
+        start_line = self.graal_readInt()
+        start_column = self.graal_readInt()
+        end_line = self.graal_readInt()
+        end_column = self.graal_readInt()
+        outputCanQuicken = self.graal_readBytes()
+        variableShouldUnbox = self.graal_readBytes()
+        generalizeInputsMap = self.graal_readSparseTable()
+        generalizeVarsMap = self.graal_readSparseTable()
 
         return code
 
