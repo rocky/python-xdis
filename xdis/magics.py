@@ -86,7 +86,7 @@ INTERIM_MAGIC_INTS = frozenset([
     62041, 62051, 62071, 62081, 62071, 62091, 62081, 62091, 62092, 62111,
     62121, 62121, 62151, 62171, 62181, 62191, 62201,
 ])
-# fmt: ofn
+# fmt: on
 
 def add_magic_from_int(magic_int: int, version: str) -> None:
     magicint2version[magic_int] = version
@@ -700,15 +700,23 @@ add_magic_from_int(12897, "3.13.0b.rust")  # RustPython 3.12.0
 add_magic_from_int(13413, "3.13.0a.rust")  # RustPython 3.13.0
 add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0
 
-# Graal uses JVM bytecode, not Python bytecode
+# Graal Python.  Graal uses JVM bytecode, not CPython or PyPy bytecode
+# Its magic number is
+# MAGIC_NUMBER = 21000 + Compiler.BYTECODE_VERSION * 10;
+# Note: Different major/minor releases can have the same magic!
+# Graal for 3.11 and 3.12 are like that.
+
+# 21250 = 21000 + 15 * 10
 add_magic_from_int(21150, "3.8.5Graal")
 
-# Graal Java 21.0.2
+# 21250 = 21000 + 28 * 10
 add_magic_from_int(21280, "3.10.8Graal")
+
+# 21290 = 21000 + 29 * 10
 add_magic_from_int(21290, "3.11.7Graal")
+# add_magic_from_int(21290, "3.12.8Graal")
 
-
-# Jython uses JVM bytecode, not Python bytecode.
+# Jython uses JVM bytecode, not CPython PyPy bytecode.
 add_magic_from_int(1011, "2.7.1b3Jython")  # Jython 2.7.2b3
 add_magic_from_int(65226, "2.7.4Jython")  # Jython 2.7.4
 

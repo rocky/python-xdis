@@ -71,6 +71,7 @@ class Code2(Code15):
         co_cellvars,
         collection_order={},
         reference_objects=set(),
+        version_triple=(0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
@@ -87,6 +88,7 @@ class Code2(Code15):
             co_name=co_name,
             co_firstlineno=co_firstlineno,
             co_lnotab=co_lnotab,
+            version_triple=version_triple,
         )
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars

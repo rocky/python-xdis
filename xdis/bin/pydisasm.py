@@ -20,17 +20,12 @@ program, ext = os.path.splitext(os.path.basename(__file__))
 
 PATTERNS = ("*.pyc", "*.pyo")
 
-
-case_sensitive = {"case_sensitive": False}
-
-
 @click.command()
 @click.option(
     "--format",
     "-F",
     type=click.Choice(
         ["xasm", "bytes", "classic", "dis", "extended", "extended-bytes", "header"],
-        **case_sensitive
     ),
     help="Select disassembly style.",
 )

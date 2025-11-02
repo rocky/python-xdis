@@ -62,6 +62,7 @@ class Code3(Code2):
         co_cellvars,
         collection_order: dict = {},
         reference_objects = set(),
+        version_triple = (0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
@@ -82,6 +83,7 @@ class Code3(Code2):
             co_cellvars=co_cellvars,
             collection_order=collection_order,
             reference_objects=reference_objects,
+            version_triple=version_triple,
         )
         self.co_kwonlyargcount = co_kwonlyargcount
         self.fieldtypes = Code3FieldTypes
