@@ -99,6 +99,7 @@ for vers in (
     3.5,
     "3.2pypy",
     "2.7pypy",
+    "3.12graal",
     3.6,
     3.7,
     3.8,
@@ -130,6 +131,15 @@ for vers, vers_dot in (
 ):
     bytecode = f"bytecode_pypy{vers}"
     key = f"bytecode-pypy{vers}"
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
+    key = f"bytecode-pypy{vers_dot}"
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
+
+for vers, vers_dot in (
+    (312, 3.12),
+):
+    bytecode = f"bytecode_graal{vers}"
+    key = f"bytecode-graal{vers}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
     key = f"bytecode-pypy{vers_dot}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
