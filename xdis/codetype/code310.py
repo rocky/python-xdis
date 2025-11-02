@@ -119,7 +119,7 @@ class Code310(Code38):
         self.co_varnames = co_varnames
         self.fieldtypes = Code310FieldTypes
         self.collection_order = collection_order
-        self.reference_objects: Set = reference_objects
+        self.reference_objects = reference_objects
         self.version_triple = version_triple
 
         # It is helpful to save the order in sets, frozensets and dictionary keys,

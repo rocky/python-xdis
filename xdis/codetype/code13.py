@@ -15,7 +15,6 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from copy import deepcopy
-from typing import Tuple
 
 from xdis.codetype.base import CodeBase
 from xdis.cross_types import UnicodeForPython3
@@ -57,8 +56,8 @@ class Code13(CodeBase):
         co_varnames,
         co_filename,
         co_name: str,
-        version_triple: Tuple[int, int, int] = (0, 0, 0)
-    ) -> None:
+            version_triple=(0, 0, 0),
+    ):
         self.co_argcount = co_argcount
         self.co_nlocals = co_nlocals
         self.co_flags = co_flags

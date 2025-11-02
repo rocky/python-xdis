@@ -213,10 +213,7 @@ class _VersionIndependentUnmarshaller:
 
         if magic_int in RUSTPYTHON_MAGICS:
             raise NotImplementedError(
-                "RustPython %s is not supported yet." % version_tuple_to_str(version_triple)
-=======
-                f"RustPython {version_tuple_to_str(self.version_triple)} is not supported yet."
->>>>>>> python-3.6-to-3.10
+                "RustPython %s is not supported yet." % version_tuple_to_str(self.version_triple)
             )
 
     # Python equivalents for graal unmarshal routines.
@@ -256,7 +253,7 @@ class _VersionIndependentUnmarshaller:
         else:
             # The underscore '_' acts as a wildcard
             # It matches anything if no previous case did (the 'default' case)
-            print(f"XXX Whoah {marshal_type}")
+            print("XXX Whoah %s" % marshal_type)
             ret = tuple()
         if save_ref:
             # n = len(self.intern_objects)
@@ -275,7 +272,7 @@ class _VersionIndependentUnmarshaller:
         Python equivalent of Python Graal's readBytes() from
         MarshalModuleBuiltins.java
         """
-        length: int = unpack("<i", self.fp.read(4))[0]
+        length = unpack("<i", self.fp.read(4))[0]
         return bytes([self.graal_readByte() for _ in range(length)])
 
     def graal_readDouble(self) -> float:
@@ -290,7 +287,7 @@ class _VersionIndependentUnmarshaller:
         Python equivalent of Python Graal's readDoubleArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readDouble() for _ in range(length)])
 
     def graal_readInt(self) -> int:
@@ -305,7 +302,7 @@ class _VersionIndependentUnmarshaller:
         Python equivalent of Python Graal's readIntArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readInt() for _ in range(length)])
 
     def graal_readLong(self) -> int:
@@ -320,7 +317,7 @@ class _VersionIndependentUnmarshaller:
         Python equivalent of Python Graal's readLongt() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readLong() for _ in range(length)])
 
     def graal_readObjectArray(self) -> tuple:
@@ -329,7 +326,7 @@ class _VersionIndependentUnmarshaller:
         MarshalModuleBuiltins.java
         """
 
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         # # Debug code
         # result = []
         # for i in range(length):
@@ -345,7 +342,7 @@ class _VersionIndependentUnmarshaller:
         Python equvalent of Python Graal's readString() from
         MarshalModuleBuiltins.java
         """
-        strsize: int = unpack("<i", self.fp.read(4))[0]
+        strsize = unpack("<i", self.fp.read(4))[0]
         return self.fp.read(strsize).decode("utf-8", errors="ignore")
 
     def graal_readStringArray(self) -> tuple:
@@ -353,7 +350,7 @@ class _VersionIndependentUnmarshaller:
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readString() for _ in range(length)])
 
     def graal_readSparseTable(self):

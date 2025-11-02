@@ -15,7 +15,6 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from copy import deepcopy
-from typing import Tuple
 
 from xdis.codetype.code13 import Code13, Code13FieldTypes
 
@@ -55,7 +54,7 @@ class Code15(Code13):
         co_name: str,
         co_firstlineno,
         co_lnotab,
-        version_triple: Tuple[int, int, int] = (0, 0, 0)
+        version_triple=(0, 0, 0)
     ) -> None:
         super().__init__(
             co_argcount=co_argcount,

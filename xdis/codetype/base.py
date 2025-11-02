@@ -15,7 +15,6 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import inspect
-from typing import Union
 
 
 def iscode(obj):
@@ -40,17 +39,16 @@ def code_has_star_star_arg(code):
 
 class CodeBase:
     # These mimic some of the attributes in a Python code type
-    co_argcount: int,
-    co_code,
-    co_consts: tuple
-    co_filename: str
-    co_firstlineno: int
-    co_kwposonlyargcount: int
-    co_name: str
-    co_nlocals: int
-    co_posonlyargcount: int
-    co_stacksize: int
-    co_varnames: tuple
+    # co_argcount: int
+    # co_consts: tuple
+    # co_filename: str
+    # co_firstlineno: int
+    # co_kwposonlyargcount: int
+    # co_name: str
+    # co_nlocals: int
+    # co_posonlyargcount: int
+    # co_stacksize: int
+    # co_varnames: tuple
 
     # Mimic Python 3 code access functions
     def __len__(self) -> int:

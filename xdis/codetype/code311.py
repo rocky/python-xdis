@@ -425,8 +425,8 @@ class Code311(Code310):
         co_firstlineno,
         co_linetable,
         co_exceptiontable,
-        reference_objects: Set[Any] = set(),
-        version_triple: Tuple[int, int, int] = (0, 0, 0),
+        reference_objects=set(),
+        version_triple=(0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.

@@ -245,8 +245,8 @@ def to_portable(
     co_cellvars=tuple(),  # 2.0+
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
-    collection_order: dict = {},
-    reference_objects = set(),
+    collection_order={},
+    reference_objects=set(),
 ):
     code = CodeTypeUnion(
         co_argcount=co_argcount,

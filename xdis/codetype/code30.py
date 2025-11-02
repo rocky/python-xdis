@@ -62,7 +62,7 @@ class Code3(Code2):
         co_cellvars,
         collection_order: dict = {},
         reference_objects = set(),
-        version_triple: Tuple[int, int, int] = (0, 0, 0),
+        version_triple = (0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
