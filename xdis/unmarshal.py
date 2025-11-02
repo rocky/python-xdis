@@ -235,30 +235,29 @@ class _VersionIndependentUnmarshaller:
 
         # print(marshal_type)  # debug
 
-        match marshal_type:
-            # case "B":
-            #     ret = tuple()
-            # case "b":
-            #     return "OK"
-            case "d":
-                ret = self.graal_readDoubleArray()
-            case "i":
-                ret = self.graal_readIntArray()
-            case "o":
-                ret = self.graal_readObjectArray()
-            case "l":
-                ret = self.graal_readLongArray()
-            # case "s":
-            #     return "Internal server error"
-            case "S":
-                ret = self.graal_readStringArray()
-            case _:
-                # The underscore '_' acts as a wildcard
-                # It matches anything if no previous case did (the 'default' case)
-                print(f"XXX Whoah {marshal_type}")
-                ret = tuple()
+        # case "B":
+        #     ret = tuple()
+        # case "b":
+        #     return "OK"
+        # case "s":
+        #     return "Internal server error"
+        if marshal_type == ARRAY_TYPE_DOUBLE:
+            ret = self.graal_readDoubleArray()
+        elif marshal_type == ARRAY_TYPE_INT:
+            ret = self.graal_readIntArray()
+        elif marshal_type == ARRAY_TYPE_OBJECT:
+            ret = self.graal_readObjectArray()
+        elif marshal_type == ARRAY_TYPE_LONG:
+            ret = self.graal_readLongArray()
+        elif marshal_type == ARRAY_TYPE_STRING:
+            ret = self.graal_readStringArray()
+        else:
+            # The underscore '_' acts as a wildcard
+            # It matches anything if no previous case did (the 'default' case)
+            print(f"XXX Whoah {marshal_type}")
+            ret = tuple()
         if save_ref:
-            n = len(self.intern_objects)
+            # n = len(self.intern_objects)
             self.intern_objects.append(ret)
         return ret
 
@@ -284,7 +283,7 @@ class _VersionIndependentUnmarshaller:
         """
         return unpack("<d", self.fp.read(8))[0]
 
-    def graal_readDoubleArray(self) -> tuple[float, ...]:
+    def graal_readDoubleArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readDoubleArray() from
         MarshalModuleBuiltins.java
@@ -299,7 +298,7 @@ class _VersionIndependentUnmarshaller:
         """
         return int(unpack("<i", self.fp.read(4))[0])
 
-    def graal_readIntArray(self) -> tuple[int, ...]:
+    def graal_readIntArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readIntArray() from
         MarshalModuleBuiltins.java
@@ -314,7 +313,7 @@ class _VersionIndependentUnmarshaller:
         """
         return int(unpack("<q", self.fp.read(8))[0])
 
-    def graal_readLongArray(self) -> tuple[int, ...]:
+    def graal_readLongArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readLongt() from
         MarshalModuleBuiltins.java
@@ -347,7 +346,7 @@ class _VersionIndependentUnmarshaller:
         strsize: int = unpack("<i", self.fp.read(4))[0]
         return self.fp.read(strsize).decode("utf-8", errors="ignore")
 
-    def graal_readStringArray(self) -> tuple[str, ...]:
+    def graal_readStringArray(self) -> tuple:
         """
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java

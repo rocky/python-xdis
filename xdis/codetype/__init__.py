@@ -227,15 +227,15 @@ CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 # default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
     co_argcount: int,
-    co_posonlyargcount: Optional[int] = -1,  # 3.8 .. 3.10
-    co_kwonlyargcount: Optional[int] = -1,  # 3.0+
-    co_nlocals: int=0,
+    co_posonlyargcount=-1,  # 3.8 .. 3.10
+    co_kwonlyargcount=-1,  # 3.0+
+    co_nlocals=0,
     co_stacksize: Optional[int] = -1,  # 1.5+
-    co_flags: int=0,
-    co_code: Union[str, bytes]="",  # 3.0+ this type changes from <str> to <bytes>
-    co_consts: tuple[str, ...]=tuple(),
-    co_names: tuple[str, ...]=tuple(),
-    co_varnames: tuple[str, ...]=tuple(),
+    co_flags=0,
+    co_code="",  # 3.0+ this type changes from <str> to <bytes>
+    co_consts=tuple(),
+    co_names=tuple(),
+    co_varnames=tuple(),
     co_filename: str="??",
     co_name: str="??",
     co_qualname: str="??",
@@ -244,14 +244,10 @@ def to_portable(
     # In 3.11 it is different
     co_freevars=tuple(),  # 2.0+
     co_cellvars=tuple(),  # 2.0+
-=======
-    co_freevars: tuple[str, ...]=tuple(),  # 2.0+
-    co_cellvars: tuple[str, ...]=tuple(),  # 2.0+
->>>>>>> master
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
-    collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
-    reference_objects: Set[Any] = set(),
+    collection_order={},
+    reference_objects=set(),
 ):
     code = CodeTypeUnion(
         co_argcount=co_argcount,

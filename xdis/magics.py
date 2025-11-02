@@ -706,12 +706,13 @@ add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0
 
 # 21250 = 21000 + 15 * 10
 add_magic_from_int(21150, "3.8.5Graal")
+
+# 21250 = 21000 + 28 * 10
 add_magic_from_int(21280, "3.10.8Graal")
 
 # 21290 = 21000 + 29 * 10
 add_magic_from_int(21290, "3.11.7Graal")
 # add_magic_from_int(21290, "3.12.8Graal")
-
 
 # Jython uses JVM bytecode, not CPython PyPy bytecode.
 add_magic_from_int(1011, "2.7.1b3Jython")  # Jython 2.7.2b3
