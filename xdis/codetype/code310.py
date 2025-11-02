@@ -97,6 +97,9 @@ class Code310(Code38):
         co_freevars,
         co_cellvars,
         collection_order = {}
+        reference_objects = set(),
+        version_triple=tuple(),
+>>>>>>> python-3.0-to-3.2
     ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
@@ -117,6 +120,9 @@ class Code310(Code38):
         self.co_stacksize = co_stacksize
         self.co_varnames = co_varnames
         self.fieldtypes = Code310FieldTypes
+        self.collection_order = collection_order
+        self.reference_objects = reference_objects
+        self.version_triple = version_triple
 
         # It is helpful to save the order in sets, frozensets and dictionary keys,
         # so that on writing a bytecode file we can duplicate this order.

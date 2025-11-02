@@ -81,6 +81,7 @@ class Code3(Code2):
             co_cellvars=co_cellvars,
             collection_order=collection_order,
             reference_objects=reference_objects,
+            version_triple=version_triple,
         )
         self.co_kwonlyargcount = co_kwonlyargcount
         self.fieldtypes = Code3FieldTypes
