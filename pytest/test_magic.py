@@ -2,7 +2,6 @@
 Unit test for xdis.magics
 """
 
-import pytest
 from xdis.magics import (
     INTERIM_MAGIC_INTS,
     MAGIC,

@@ -225,9 +225,8 @@ CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 # Note: default values of `None` indicate a required parameter.
 # default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
-    co_argcount,
+    co_argcount=-1,
     co_posonlyargcount=-1,  # 3.8 .. 3.10
->>>>>>> python-3.3-to-3.5
     co_kwonlyargcount=-1,  # 3.0+
     co_nlocals=None,
     co_stacksize=-1,  # 1.5+
