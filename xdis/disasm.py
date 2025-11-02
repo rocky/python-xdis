@@ -243,6 +243,8 @@ def disco_loop(
                     real_out.write("\n# Instruction disassembly not supported here.\n")
                 else:
                     real_out.write(f"\n# Instruction disassembly for {co.co_name} not supported here.\n")
+                real_out.write(f"instruction bytecode:\n{co.co_code.hex(':')}\n")
+
             else:
                 bytecode = Bytecode(co, opc, dup_lines=dup_lines)
                 real_out.write(
@@ -396,9 +398,6 @@ def disassemble_file(
         filename = pyc_filename
 
     is_graal = magic_int in GRAAL3_MAGICS
-
-    if is_graal and save_file_offsets:
-        outstream.write("\n# Option showing file hex offsets (-x) ignored; not supported in Graal bytecode.\n")
 
     if asm_format == "header":
         show_module_header(

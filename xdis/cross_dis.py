@@ -288,25 +288,21 @@ def format_code_info(
     if file_offset:
         lines.append("# Offset in file:    0x%x" % file_offset[0])
 
-    if not is_graal:
-        if version_tuple >= (1, 3):
-            lines.append("# Argument count:    %s" % co.co_argcount)
+    if version_tuple >= (1, 3):
+        lines.append("# Argument count:    %s" % co.co_argcount)
 
-        if version_tuple >= (3, 8) and hasattr(co, "co_posonlyargcount"):
-            lines.append("# Position-only argument count: %s" % co.co_posonlyargcount)
+    if version_tuple >= (3, 8) and hasattr(co, "co_posonlyargcount"):
+        lines.append("# Position-only argument count: %s" % co.co_posonlyargcount)
 
-        if version_tuple >= (3, 0) and hasattr(co, "co_kwonlyargcount"):
-            lines.append("# Keyword-only arguments: %s" % co.co_kwonlyargcount)
+    if version_tuple >= (3, 0) and hasattr(co, "co_kwonlyargcount"):
+        lines.append("# Keyword-only arguments: %s" % co.co_kwonlyargcount)
 
-        pos_argc = co.co_argcount
-        if version_tuple >= (1, 3):
-            lines.append("# Number of locals:  %s" % co.co_nlocals)
-        if version_tuple >= (1, 5):
-            lines.append("# Stack size:        %s" % co.co_stacksize)
-            pass
+    pos_argc = co.co_argcount
+    if version_tuple >= (1, 3):
+        lines.append("# Number of locals:  %s" % co.co_nlocals)
+    if version_tuple >= (1, 5):
+        lines.append("# Stack size:        %s" % co.co_stacksize)
         pass
-    else:
-        pos_argc = 0
 
     if version_tuple >= (1, 3):
         lines.append(
