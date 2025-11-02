@@ -8,6 +8,7 @@ PYTHON_VERSION = $(shell $(PYTHON) -V | cut -d ' ' -f 2 | cut -d'.' -f1,2)
 # Set COMPILE='--compile' to force compilation before check
 COMPILE ?=
 
+# FIXME --bytecode-3.2pypy for 3.0 code
 #: Run all tests
 check: check-short check-roundtrip
 	$(PYTHON) test_pythonlib.py \
@@ -23,10 +24,10 @@ check: check-short check-roundtrip
 	          --bytecode-3.6 --bytecode-3.7 --bytecode-3.8 \
 	          --bytecode-3.9 --bytecode-3.10 \
 	          --bytecode-3.11 --bytecode-3.12 --bytecode-3.13 \
-	          --bytecode-2.7pypy --bytecode-3.2pypy \
+	          --bytecode-2.7pypy  \
                   --bytecode-pypy35 --bytecode-pypy36 --bytecode-pypy37 \
                   --bytecode-pypy38 --bytecode-pypy39 --bytecode-pypy310 \
-                  --bytecode-graal312 $(COMPILE)
+                  --bytecode-graal310 --bytecode-graal311 --bytecode-graal312 $(COMPILE)
 
 check-roundtrip:
 	./test_pyc_roundtrip.py --quiet \

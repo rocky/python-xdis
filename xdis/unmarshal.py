@@ -354,7 +354,7 @@ class _VersionIndependentUnmarshaller:
         MarshalModuleBuiltins.java
         """
         strsize = unpack("<i", self.fp.read(4))[0]
-        return self.fp.read(strsize).decode("utf-8", errors="ignore")
+        return self.fp.read(strsize).decode("utf-8")
 
     def graal_readStringArray(self):
         """
