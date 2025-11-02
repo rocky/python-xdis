@@ -284,7 +284,7 @@ class _VersionIndependentUnmarshaller:
         MarshalModuleBuiltins.java
         """
         length = unpack("<i", self.fp.read(4))[0]
-        return bytes([self.graal_readByte() for _ in range(length)])
+        return "".join([chr(self.graal_readByte()) for _ in range(length)])
 
     def graal_readDouble(self):
         """
@@ -861,14 +861,14 @@ class _VersionIndependentUnmarshaller:
         #   }
         #   writeBytes(lnotab);
 
-        self.graal_code_info["co_filename"] = self.graal_readString()
+        self.graal_code_info["co_filename"] = str(self.graal_readString())
         self.graal_code_info["co_flags"] = self.t_int32(False, bytes_for_s=False)
         co_codeunit_position = self.graal_code_info["co_codeunit_position"] = (
             self.fp.tell() + 4
         )
         co_codeunit_string = self.graal_readBytes()
         self.version_triple = (3, 12, 8)
-        if chr(co_codeunit_string[0]) != TYPE_GRAALPYTHON_CODE_UNIT:
+        if co_codeunit_string[0] != TYPE_GRAALPYTHON_CODE_UNIT:
             # Version is graal 3.11 not graal 3.12
             self.version_triple = (3, 11, 7)
 
@@ -969,7 +969,7 @@ class _VersionIndependentUnmarshaller:
             co_varnames=co_varnames,
             co_filename=co_filename,
             co_name=co_name,
-            co_qualname=co_qualname,
+            co_qualname=str(co_qualname),
             co_firstlineno=co_firstlineno,
             co_lnotab=co_lnotab,
             co_freevars=co_freevars,
@@ -1016,8 +1016,8 @@ class _VersionIndependentUnmarshaller:
 
         graal_bytecode_version = self.graal_readByte()
         assert (21000 + graal_bytecode_version * 10) in GRAAL3_MAGICS
-        co_name = self.graal_readString()
-        co_qualname = self.graal_readString()
+        co_name = str(self.graal_readString())
+        co_qualname = str(self.graal_readString())
         co_argcount = self.graal_readInt()
         co_kwonlyargcount = self.graal_readInt()
         co_posonlyargcount = self.graal_readInt()
