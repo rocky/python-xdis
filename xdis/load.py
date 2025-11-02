@@ -34,7 +34,6 @@ from xdis.magics import (
     PYPY3_MAGICS,
     PYTHON_MAGIC_INT,
     RUSTPYTHON_MAGICS,
-    UNSUPPORTED_GRAAL3_MAGICS,
     int2magic,
     magic2int,
     magic_int2tuple,
@@ -246,7 +245,7 @@ def load_module_from_file_object(
             else:
                 raise ImportError(f"Bad magic number: '{magic}'")
 
-        if magic_int in [2657, 22138] + list(UNSUPPORTED_GRAAL3_MAGICS) + list(
+        if magic_int in [2657, 22138] + list(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
