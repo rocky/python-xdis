@@ -248,7 +248,8 @@ def disco_loop(
                     real_out.write("\n# Instruction disassembly not supported here.\n")
                 else:
                     real_out.write("\n# Instruction disassembly for %s not supported here.\n" % co.co_name)
-                real_out.write("instruction bytecode:\n%s\n" % co.co_code.hex(":'"))
+                real_out.write("instruction bytecode:\n%s\n" % co.co_code)
+                continue
             else:
                 bytecode = Bytecode(co, opc, dup_lines=dup_lines)
                 real_out.write(
