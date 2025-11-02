@@ -33,7 +33,6 @@ from xdis.magics import (
     PYPY3_MAGICS,
     PYTHON_MAGIC_INT,
     RUSTPYTHON_MAGICS,
-    UNSUPPORTED_GRAAL3_MAGICS,
     int2magic,
     magic2int,
     magic_int2tuple,
@@ -236,7 +235,7 @@ def load_module_from_file_object(
 
         try:
             # FIXME: use the internal routine below
-            tuple_version = magic_int2tuple(magic_int)
+            version_triple = magic_int2tuple(magic_int)
         except KeyError:
             if len(magic) >= 2:
                 raise ImportError(
@@ -246,7 +245,7 @@ def load_module_from_file_object(
             else:
                 raise ImportError("Bad magic number: '%s'" % magic)
 
-        if magic_int in [2657, 22138] + list(UNSUPPORTED_GRAAL3_MAGICS) + list(
+        if magic_int in [2657, 22138] + list(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
@@ -311,12 +310,15 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
             if get_code:
-                if save_file_offsets and magic_int not in GRAAL3_MAGICS:
+                is_graal = magic_int in GRAAL3_MAGICS
+                # Graal uses the same magic int for separate major/minor releases!
+                graal_weirdness_check = not is_graal or PYTHON_VERSION_TRIPLE == version
+                if save_file_offsets and not is_graal:
                     co, file_offsets = xdis.unmarshal.load_code_and_get_file_offsets(
                         fp, magic_int, code_objects
                     )
 
-                elif my_magic_int == magic_int:
+                elif my_magic_int == magic_int and graal_weirdness_check:
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                     # Python 3.10 returns a tuple here?
@@ -345,7 +347,7 @@ def load_module_from_file_object(
         fp.close()
 
     return (
-        tuple_version,
+        version_triple,
         timestamp,
         magic_int,
         co,

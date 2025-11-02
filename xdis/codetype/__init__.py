@@ -29,7 +29,7 @@ from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
 __docformat__ = "restructuredtext"
 
-def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
+def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
     """Converts a native types.CodeType code object into a
     corresponding more flexible xdis Code type.
     """
@@ -41,8 +41,8 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
         )
     line_table_field = "co_lnotab" if hasattr(code, "co_lnotab") else "co_linetable"
     line_table = getattr(code, line_table_field)
-    if version_tuple >= (3, 0):
-        if version_tuple < (3, 8):
+    if version_triple >= (3, 0):
+        if version_triple < (3, 8):
             return Code3(
                 code.co_argcount,
                 code.co_kwonlyargcount,
@@ -64,8 +64,9 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 # type, should we try to extract it?
                 code.collection_order if hasattr(code, "collection_order") else {},
                 code.reference_objects if hasattr(code, "reference_objects") else set(),
+                version_triple=version_triple,
             )
-        elif version_tuple < (3, 10):
+        elif version_triple < (3, 10):
             return Code38(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
@@ -83,8 +84,9 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_name=code.co_name,
                 co_firstlineno=code.co_firstlineno,
                 co_lnotab=line_table,
+                version_triple=version_triple,
             )
-        elif version_tuple[:2] == (3, 10) or IS_PYPY and version_tuple[:2] == (3, 11):
+        elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
             return Code310(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
@@ -102,8 +104,9 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_name=code.co_name,
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
+                version_triple=version_triple,
             )
-        elif version_tuple[:2] >= (3, 11):
+        elif version_triple[:2] >= (3, 11):
             return Code311(
                 co_argcount=code.co_argcount,
                 co_posonlyargcount=code.co_posonlyargcount,
@@ -123,8 +126,9 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
                 co_firstlineno=code.co_firstlineno,
                 co_linetable=line_table,
                 co_exceptiontable=code.co_exceptiontable,
+                version_triple=version_triple,
             )
-    elif version_tuple > (2, 0):
+    elif version_triple > (2, 0):
         # 2.0 .. 2.7
         return Code2(
             co_argcount=code.co_argcount,
@@ -146,11 +150,12 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
             # type, should we try to extract it?
             collection_order=code.collection_order if hasattr(code, "collection_order") else {},
             reference_objects=code.reference_objects if hasattr(code, "reference_objects") else set(),
+            version_triple=version_triple,
 
         )
     else:
         # 1.0 .. 1.5
-        if version_tuple < (1, 5):
+        if version_triple < (1, 5):
             # 1.0 .. 1.3
             return Code13(
                 code.co_argcount,
@@ -180,31 +185,31 @@ def codeType2Portable(code, version_tuple=PYTHON_VERSION_TRIPLE):
             )
 
 
-def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
+def portableCodeType(version_triple=PYTHON_VERSION_TRIPLE):
     """
     Return the portable CodeType version for the supplied Python release version.
     `version` is a floating-point number, like 2.7, or 3.9. If no version
     number is supplied we'll use the current interpreter version.
     """
-    if version_tuple >= (3, 0):
-        if version_tuple < (3, 8):
+    if version_triple >= (3, 0):
+        if version_triple < (3, 8):
             # 3.0 .. 3.7
             return Code3
-        elif version_tuple < (3, 10):
+        elif version_triple < (3, 10):
             # 3.8 ... 3.9
             return Code38
-        elif version_tuple[:2] == (3, 10) or IS_PYPY and version_tuple[:2] == (3, 11):
+        elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
             # 3.10
             return Code310
-        elif version_tuple[:2] >= (3, 11):
+        elif version_triple[:2] >= (3, 11):
             # 3.11 ...
             return Code311
-    elif version_tuple > (2, 0):
+    elif version_triple > (2, 0):
         # 2.0 .. 2.7
         return Code2
     else:
         # 1.0 .. 1.5
-        if version_tuple <= (1, 3):
+        if version_triple <= (1, 3):
             return Code13
         else:
             return Code15
@@ -213,31 +218,31 @@ def portableCodeType(version_tuple=PYTHON_VERSION_TRIPLE):
 # In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
 # an incomplete code type, which might be converted to another code type
 # later.
-CodeTypeUnionFields = tuple(Code311FieldNames.split() + ["collection_order", "reference_objects"])
+CodeTypeUnionFields = tuple(Code311FieldNames.split() + ["collection_order", "reference_objects", "version_triple"])
 CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 
 
 # Note: default values of `None` indicate a required parameter.
 # default values of -1, (None,) or "" indicate an unsupplied parameter.
 def to_portable(
-    co_argcount,
+    co_argcount=-1,
     co_posonlyargcount=-1,  # 3.8 .. 3.10
     co_kwonlyargcount=-1,  # 3.0+
     co_nlocals=None,
     co_stacksize=-1,  # 1.5+
-    co_flags=None,
-    co_code=None,  # 3.0+ this type changes from <str> to <bytes>
-    co_consts=None,
-    co_names=None,
-    co_varnames=None,
-    co_filename=None,
+    co_flags=0,
+    co_code="",  # 3.0+ this type changes from <str> to <bytes>
+    co_consts=tuple(),
+    co_names=tuple(),
+    co_varnames=tuple(),
+    co_filename="??",
     co_name=None,
-    co_qualname=None,
+    co_qualname="??",
     co_firstlineno: int=-1,
     co_lnotab: str="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
     # In 3.11 it is different
-    co_freevars: tuple=(None,),  # 2.0+
-    co_cellvars: tuple=(None,),  # 2.0+
+    co_freevars=tuple(),  # 2.0+
+    co_cellvars=tuple(),  # 2.0+
     co_exceptiontable=None,  # 3.11+
     version_triple=PYTHON_VERSION_TRIPLE,
     collection_order: dict = {},
@@ -264,6 +269,7 @@ def to_portable(
         co_exceptiontable=co_exceptiontable,
         collection_order=collection_order,
         reference_objects=reference_objects,
+        version_triple=version_triple,
     )
     return codeType2Portable(code, version_triple)
 

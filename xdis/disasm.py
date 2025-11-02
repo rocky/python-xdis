@@ -402,9 +402,6 @@ def disassemble_file(
 
     is_graal = magic_int in GRAAL3_MAGICS
 
-    if is_graal and save_file_offsets:
-        outstream.write("\n# Option showing file hex offsets (-x) ignored; not supported in Graal bytecode.\n")
-
     if asm_format == "header":
         show_module_header(
             version_tuple,

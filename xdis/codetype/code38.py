@@ -83,8 +83,10 @@ class Code38(Code3):
         co_lnotab,
         co_freevars,
         co_cellvars,
-        collection_order: dict = {}
-    ) -> None:
+        collection_order = {},
+        reference_objects = set(),
+        version_triple = (0, 0, 0),
+    ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super().__init__(
@@ -104,6 +106,8 @@ class Code38(Code3):
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
             collection_order = collection_order,
+            reference_objects = reference_objects,
+            version_triple = version_triple,
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
