@@ -43,7 +43,7 @@ from xdis.magics import (
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
 
 
-def is_python_source(path) -> bool:
+def is_python_source(path):
     try:
         data = open(path, "r").read()
     except UnicodeDecodeError:
@@ -64,7 +64,7 @@ def is_python_source(path) -> bool:
     return True
 
 
-def is_bytecode_extension(path: str) -> bool:
+def is_bytecode_extension(path):
     """
     Return True if filename ``path`` is named like a bytecode file,
     that is,  has extension ".pyc" or ".pyo"
@@ -73,10 +73,12 @@ def is_bytecode_extension(path: str) -> bool:
 
 
 # FIXME: the function name is weird. This checks and returns the path.
-def check_object_path(path: str) -> str:
+def check_object_path(path):
     if not is_bytecode_extension(path) and is_python_source(path):
         try:
             import importlib
+
+            return importlib.util.cache_from_source(path, optimization="")
 
             bytecode_path = importlib.util.cache_from_source(path, optimization="")
             if osp.exists(bytecode_path):
@@ -110,7 +112,7 @@ def check_object_path(path: str) -> str:
     return path
 
 
-def is_pypy(magic_int: int, filename) -> bool:
+def is_pypy(magic_int, filename):
     # PyPy 3.8 starts pyston's trend of using Python's magic numbers.
     if magic_int in (3413, 3414) and filename.endswith("pypy38.pyc"):
         return True
@@ -143,11 +145,11 @@ def load_file(filename, out=sys.stdout):
 
 
 def load_module(
-    filename: str,
+    filename,
     code_objects=None,
-    fast_load: bool = False,
-    get_code: bool = True,
-    save_file_offsets: bool = False,
+    fast_load=False,
+    get_code=True,
+    save_file_offsets=False,
 ):
     """load a module without importing it.
     Parameters:
@@ -169,7 +171,7 @@ def load_module(
                      `False`.
 
     Return values are as follows:
-        version_tuple: a tuple version number for the given magic_int,
+        version_triple: a tuple version number for the given magic_int,
                        e.g. (2, 7) or (3, 4)
         timestamp: int; the seconds since EPOCH of the time of the bytecode creation, or None
                         if no timestamp was stored
@@ -195,7 +197,8 @@ def load_module(
             % (filename, osp.getsize(filename))
         )
 
-    with open(filename, "rb") as fp:
+    try:
+        fp = open(filename, "rb")
         return load_module_from_file_object(
             fp,
             filename=filename,
@@ -204,6 +207,8 @@ def load_module(
             get_code=get_code,
             save_file_offsets=save_file_offsets,
         )
+    finally:
+        fp.close()
 
 
 def load_module_from_file_object(
@@ -230,7 +235,7 @@ def load_module_from_file_object(
 
         # For reasons I don't understand, PyPy 3.2 stores a magic
         # of '0'...  The two values below are for Python 2.x and 3.x respectively
-        if magic[0:1] in ["0", b"0"]:
+        if magic[0:1] in ["0", "0"]:
             magic = int2magic(3180 + 7)
 
         try:
@@ -249,7 +254,9 @@ def load_module_from_file_object(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
-            raise ImportError("Magic int %s (%s) is not supported." % (magic_int, version))
+            raise ImportError(
+                "Magic int %s (%s) is not supported." % (magic_int, version)
+            )
 
         if magic_int in INTERIM_MAGIC_INTS:
             raise ImportError(
@@ -363,25 +370,25 @@ def write_bytecode_file(
     code_obj,
     magic_int,
     compilation_ts=None,
-    filesize: int = 0,
-    allow_native: bool = True,
-) -> None:
+    filesize=0,
+    allow_native=True,
+):
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
     """
     fp = open(bytecode_path, "wb")
     version_tuple = py_str2tuple(magicint2version[magic_int])
     if version_tuple >= (3, 0):
-        fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
+        fp.write(pack("<Hcc", magic_int, "\r", "\n"))
         if version_tuple >= (3, 7):  # pep552 bytes
             fp.write(pack("<I", 0))  # pep552 bytes
     else:
-        fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
+        fp.write(pack("<Hcc", magic_int, "\r", "\n"))
 
     if compilation_ts:
         if isinstance(compilation_ts, datetime):
             fp.write(pack("<I", int(compilation_ts.timestamp())))
-        elif isinstance(compilation_ts, int):
+        elif isinstance(compilation_ts, (int, long)):
             fp.write(pack("<I", compilation_ts))
         else:
             raise TypeError("Timestamp must be a datetime, int or None")
@@ -394,19 +401,7 @@ def write_bytecode_file(
     if allow_native and isinstance(code_obj, types.CodeType):
         fp.write(marshal.dumps(code_obj))
     else:
-        code_sequence = xdis.marsh.dumps(code_obj, python_version=version_tuple)
-        if isinstance(code_sequence, str):
-            # Python 1.x uses code strings, not bytes. To get this into bytes needed by
-            # fp.write, encode the string using 'latin-1' and 'unicode_escape' to convert escape sequences
-            # into the raw byte values. 'latin-1' is a single-byte encoding that works well for this.
-            code_bytes = (
-                code_sequence.encode("latin-1")
-                .decode("unicode_escape")
-                .encode("latin-1")
-            )
-        else:
-            code_bytes = code_sequence
-        fp.write(code_bytes)
+        fp.write(xdis.marsh.dumps(code_obj, python_version=version_tuple))
     fp.close()
 
 
