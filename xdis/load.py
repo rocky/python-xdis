@@ -310,15 +310,21 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
             if get_code:
-                is_graal = magic_int in GRAAL3_MAGICS
                 # Graal uses the same magic int for separate major/minor releases!
-                graal_weirdness_check = not is_graal or PYTHON_VERSION_TRIPLE == version
+                # So we can't get the major minor number using just a magic check.
+                # Instead we'd also need to seek for a "graal number" typically
+                # lower number like 25, 29, or 85. to distinguish.
+                # Furthermore, runnin unmarshal in graal on graal, can cause the
+                # the graal python interpreter to crash!
+                # For these reasons, we are better off using our marshal routines
+                # for Graal Python.
+                is_graal = magic_int in GRAAL3_MAGICS
                 if save_file_offsets and not is_graal:
                     co, file_offsets = xdis.unmarshal.load_code_and_get_file_offsets(
                         fp, magic_int, code_objects
                     )
 
-                elif my_magic_int == magic_int and graal_weirdness_check:
+                elif my_magic_int == magic_int and not is_graal:
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                     # Python 3.10 returns a tuple here?
