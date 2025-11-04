@@ -350,12 +350,21 @@ class _VersionIndependentUnmarshaller:
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
         """
-        length = int(unpack("<i", self.fp.read(4))[0])
+        length = self.graal_readInt()
         return tuple([self.graal_readString() for _ in range(length)])
 
-    def graal_readSparseTable(self):
-        """ """
-        pass
+    def graal_readSparseTable(self) -> Dict[int, tuple]:
+        """
+        Python equvalent of Python Graal's readObjectArray() from
+        MarshalModuleBuiltins.java
+        """
+        length: int = self.graal_readInt()
+        table = {} # new int[length][];
+        while True:
+            i = self.graal_readInt()
+            if i == -1:
+                return table
+            table[i] = self.graal_readIntArray()
 
     def load(self):
         """
@@ -870,6 +879,8 @@ class _VersionIndependentUnmarshaller:
         else:
             code = self.t_graal_CodeUnit(save_ref=False, bytes_for_s=False)
         assert self.graal_code_info["co_flags"] == code.co_flags
+
+        # FIXME: add an assert self.fp.tell() has advanced to save_position?
         self.fp.seek(saved_position)
 
         self.code_to_file_offsets[code] = (
@@ -989,20 +1000,20 @@ class _VersionIndependentUnmarshaller:
         code. In particular, instructions are JVM bytecode.
         """
 
-        # This is Java code for how a CodeUnit (type "U") is dumped
-        # writeByte(Compiler.BYTECODE_VERSION);
-        # writeString(code.name);
-        # writeString(code.qualname);
-        # writeInt(code.argCount);
-        # writeInt(code.kwOnlyArgCount);
-        # writeInt(code.positionalOnlyArgCount);
-        # writeInt(code.stacksize);
-        # writeBytes(code.code);
-        # writeBytes(code.srcOffsetTable);
-        # writeInt(code.flags);
-
         graal_bytecode_version = self.graal_readByte()
         assert (21000 + graal_bytecode_version * 10) in GRAAL3_MAGICS
+
+        # This is Java code for how a CodeUnit (type "U") is read
+        # TruffleString name = readString();
+        # TruffleString qualname = readString();
+        # int argCount = readInt();
+        # int kwOnlyArgCount = readInt();
+        # int positionalOnlyArgCount = readInt();
+        # int stacksize = readInt();
+        # byte[] code = readBytes();
+        # byte[] srcOffsetTable = readBytes();
+        # int flags = readInt();
+
         co_name = self.graal_readString()
         co_qualname = self.graal_readString()
         co_argcount = self.graal_readInt()
@@ -1025,12 +1036,11 @@ class _VersionIndependentUnmarshaller:
         co_cellvars = self.graal_readStringArray()
         co_freevars = self.graal_readStringArray()
 
-        # if (code.cell2arg != null) {
-        #         writeIntArray(code.cell2arg);
-        # } else {
-        #     writeIntArray(PythonUtils.EMPTY_INT_ARRAY);
-        # }
-        # writeObjectArray(code.constants);
+        # int[] cell2arg = readIntArray();
+        # if (cell2arg.length == 0) {
+        #     cell2arg = null;
+        #     }
+        # Object[] constants = readObjectArray();
 
         cell2arg = self.graal_readIntArray()
         co_consts = self.graal_readObjectArray()
@@ -1063,22 +1073,22 @@ class _VersionIndependentUnmarshaller:
             [self.graal_code_info["co_codeunit_position"], co_code_offset_in_file]
         )
 
-        # writeLongArray(code.primitiveConstants);
-        # writeIntArray(code.exceptionHandlerRanges);
-        # writeInt(code.conditionProfileCount);
-        # writeInt(code.startLine);
-        # writeInt(code.startColumn);
-        # writeInt(code.endLine);
-        # writeInt(code.endColumn);
-        # writeBytes(code.outputCanQuicken);
-        # writeBytes(code.variableShouldUnbox);
-        # writeSparseTable(code.generalizeInputsMap);
-        # writeSparseTable(code.generalizeVarsMap);
-
         # The data from the below is not used, but we run the
         # the extraction to keep the self.fp location where it should for
         # the situation that we have code objects inside the codes' co_consts
         # table marshaled as an ObjectArray.
+
+        # long[] primitiveConstants = readLongArray();
+        # int[] exceptionHandlerRanges = readIntArray();
+        # int conditionProfileCount = readInt();
+        # int startLine = readInt();
+        # int startColumn = readInt();
+        # int endLine = readInt();
+        # int endColumn = readInt();
+        # byte[] outputCanQuicken = readBytes();
+        # byte[] variableShouldUnbox = readBytes();
+        # int[][] generalizeInputsMap = readSparseTable();
+        # int[][] generalizeVarsMap = readSparseTable();
 
         primitive_constants = self.graal_readLongArray()
         exception_handler_ranges = self.graal_readIntArray()
