@@ -5,6 +5,7 @@ import pytest
 from xdis import IS_GRAAL, IS_PYPY
 from xdis.codetype import CodeTypeUnionFields
 from xdis.load import check_object_path, load_file, load_module
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 
 def get_srcdir() -> str:
@@ -59,6 +60,8 @@ def test_load_file() -> None:
         fields = CodeTypeUnionFields
 
     for field in fields:
+        if field == "co_lnotab" and PYTHON_VERSION_TRIPLE >= (3, 11):
+            continue
         if hasattr(co_file, field):
             if field == "co_code" and (pypy or IS_PYPY):
                 continue

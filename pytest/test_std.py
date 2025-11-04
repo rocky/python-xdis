@@ -202,6 +202,13 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
 
         code = list2bytecode(instructions, opcodes.opcode_34, varnames, consts)
         fn_code = compile(text, "<string>", "exec")
+
+        line_table_value = (
+            fn_code.co_lnotab
+            if PYTHON_VERSION_TRIPLE < (3, 11) and hasattr(fn_code, "co_lnotab")
+            else fn_code.co_linetable
+        )
+
         return Code3(
             fn_code.co_argcount,
             fn_code.co_kwonlyargcount,  # Add this in Python3
@@ -216,7 +223,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
             fn_code.co_filename,
             fn_code.co_name,
             fn_code.co_firstlineno,
-            fn_code.co_lnotab,  # In general, You should adjust this
+            line_table_value,
             fn_code.co_freevars,
             fn_code.co_cellvars,
         )
