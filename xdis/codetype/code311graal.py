@@ -22,8 +22,6 @@ from typing import Any, Dict, Set, Tuple
 from xdis.codetype.code311 import (
     Code311,
     Code311FieldTypes,
-    PositionEntry,
-    decode_position_entry,
     parse_linetable,
     parse_location_entries,
 )
@@ -70,36 +68,6 @@ Code311GraalFieldNames = """
 
 Code311GraalFieldTypes = deepcopy(Code311FieldTypes)
 Code311GraalFieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
-
-
-def parse_positions(linetable: bytes, first_lineno: int):
-    position_entries: list[PositionEntry] = []
-
-    # decode linetable entries
-    iter_linetable = iter(linetable)
-    try:
-        while (code_byte := next(iter_linetable)) is not None:
-            position_entries.append(
-                decode_position_entry(
-                    code_byte=code_byte, remaining_linetable=iter_linetable
-                )
-            )
-    except StopIteration:
-        pass
-
-    computed_line = first_lineno
-    for position_entry in position_entries:
-        computed_line += position_entry.line_delta
-        for _ in range(0, position_entry.code_delta, 2):
-            if position_entry.no_line_flag:
-                yield (None, None, None, None)
-            else:
-                yield (
-                    computed_line,
-                    computed_line + position_entry.num_lines,
-                    position_entry.column,
-                    position_entry.endcolumn,
-                )
 
 
 class Code311Graal(Code311):
