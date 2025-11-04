@@ -18,9 +18,9 @@ import types
 from copy import deepcopy
 from dataclasses import dataclass
 from types import CodeType
-from typing import Any, Iterable, Iterator, Optional, Set, Tuple
+from typing import Any, Dict, Iterable, Iterator, Optional, Set, Tuple
 
-from xdis.codetype.code310 import Code310, Code310FieldTypes
+from xdis.codetype.code311 import Code311, Code311FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order given in the Python docs for
@@ -28,9 +28,7 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 # "posonlyargcount" is not used, but it is in other Python versions, so it
 # has to be included since this structure is used as the Union type
 # for all code types.
-#
-# Methods co_lines and co_positions do not get added to field names.
-Code311FieldNames = """
+Code311GraalFieldNames = """
         co_argcount
         co_cellvars
         co_code
@@ -41,7 +39,7 @@ Code311FieldNames = """
         co_flags
         co_freevars
         co_kwonlyargcount
-        co_linetable
+        co_lines
         co_lnotab
         co_name
         co_names
@@ -50,10 +48,22 @@ Code311FieldNames = """
         co_qualname
         co_stacksize
         co_varnames
+        condition_profileCount
+        endColumn
+        endLine
+        exception_handler_ranges
+        generalizeInputsMap
+        generalizeVarsMap
+        outputCanQuicken
+        primitiveConstants
+        srcOffsetTable
+        startColumn
+        startLine
+        variableShouldUnbox
 """
 
-Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes, "co_linetable": bytes})
+Code311GraalFieldTypes = deepcopy(Code311FieldTypes)
+Code311GraalFieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
 
 
 ##### Parse location table #####
@@ -113,7 +123,7 @@ def parse_location_entries(location_bytes, first_line: int):
                 current_value = 0
                 shift_amt = 0
 
-    def decode_signed_varint(s: int) -> int:
+    def decode_signed_varint(s: int):
         return -(s >> 1) if s & 1 else (s >> 1)
 
     entries = (
@@ -378,7 +388,7 @@ def parse_positions(linetable: bytes, first_lineno: int):
                 )
 
 
-class Code311(Code310):
+class Code311Graal(Code311):
     """Class for a Python 3.11+ code object used when a Python interpreter less than 3.11 is
     working on Python 3.11 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
@@ -413,33 +423,40 @@ class Code311(Code310):
         co_exceptiontable,
         reference_objects: Set[Any] = set(),
         version_triple: Tuple[int, int, int] = (0, 0, 0),
+        other_fields: Dict[str, Any] = {}
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super().__init__(
             co_argcount=co_argcount,
-            co_posonlyargcount=co_posonlyargcount,
-            co_kwonlyargcount=co_kwonlyargcount,
-            co_nlocals=co_nlocals,
-            co_stacksize=co_stacksize,
-            co_flags=co_flags,
+            co_cellvars=co_cellvars,
             co_code=co_code,
             co_consts=co_consts,
-            co_names=co_names,
-            co_varnames=co_varnames,
+            co_exceptiontable=co_exceptiontable,
             co_filename=co_filename,
-            co_name=co_name,
             co_firstlineno=co_firstlineno,
-            co_linetable=co_linetable,
+            co_flags=co_flags,
             co_freevars=co_freevars,
-            co_cellvars=co_cellvars,
+            co_kwonlyargcount=co_kwonlyargcount,
+            co_linetable=co_linetable,
+            co_name=co_name,
+            co_names=co_names,
+            co_nlocals=co_nlocals,
+            co_qualname=co_qualname,
+            co_posonlyargcount=co_posonlyargcount,
+            co_stacksize=co_stacksize,
+            co_varnames=co_varnames,
             reference_objects = reference_objects,
             version_triple = version_triple,
         )
+
+        for field_name, value in other_fields.items():
+            setattr(self, field_name, value)
+
         self.co_qualname = co_qualname
         self.co_exceptiontable = co_exceptiontable
-        self.fieldtypes = Code311FieldTypes
-        if type(self) is Code311:
+        self.fieldtypes = Code311GraalFieldTypes
+        if type(self) is Code311Graal:
             self.check()
 
     def to_native(self) -> CodeType:
@@ -456,6 +473,8 @@ class Code311(Code310):
         except AssertionError as e:
             raise TypeError(e)
 
+        if code.co_exceptiontable is None:
+            code.co_exceptiontable = b""
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,
