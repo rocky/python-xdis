@@ -27,6 +27,7 @@ object.
 """
 
 import io
+import marshal
 import sys
 from struct import unpack
 from typing import Dict, Optional, Union
@@ -34,7 +35,7 @@ from typing import Dict, Optional, Union
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
-from xdis.version_info import version_tuple_to_str
+from xdis.version_info import IS_GRAAL, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 
 def long(n: int) -> LongTypeForPython3:
@@ -867,6 +868,7 @@ class _VersionIndependentUnmarshaller:
         self.version_triple = (3, 12, 8)
         if chr(co_codeunit_string[0]) != TYPE_GRAALPYTHON_CODE_UNIT:
             # Version is graal 3.11 not graal 3.12
+            co_codeunit_string = b"U" + co_codeunit_string
             self.version_triple = (3, 11, 7)
 
         self.graal_code_info["co_firstlineno"] = self.t_int32(False, bytes_for_s=False)
@@ -883,6 +885,15 @@ class _VersionIndependentUnmarshaller:
 
         # FIXME: add an assert self.fp.tell() has advanced to save_position?
         self.fp.seek(saved_position)
+
+        code.graal_instr_str = ""
+        if IS_GRAAL and PYTHON_VERSION_TRIPLE == self.version_triple:
+            try:
+                graal_instr_str = str(marshal.loads(co_codeunit_string))
+            except Exception as e:
+                pass
+            else:
+                code.graal_instr_str = graal_instr_str
 
         self.code_to_file_offsets[code] = (
             code_offset_in_file,
@@ -1004,6 +1015,8 @@ class _VersionIndependentUnmarshaller:
         graal_bytecode_version = self.graal_readByte()
         assert (21000 + graal_bytecode_version * 10) in GRAAL3_MAGICS
 
+        other_fields: Dict = {}
+
         # This is Java code for how a CodeUnit (type "U") is read
         # TruffleString name = readString();
         # TruffleString qualname = readString();
@@ -1024,7 +1037,7 @@ class _VersionIndependentUnmarshaller:
         co_stacksize = self.graal_readInt()
         co_code_offset_in_file = self.fp.tell()
         co_code = self.graal_readBytes()
-        co_src_offset_table = self.graal_readBytes()
+        other_fields["srcOffsetTable"] = self.graal_readBytes()
         co_flags = self.graal_readInt()
 
         # writeStringArray(code.names);
@@ -1043,8 +1056,37 @@ class _VersionIndependentUnmarshaller:
         #     }
         # Object[] constants = readObjectArray();
 
-        cell2arg = self.graal_readIntArray()
+        other_fields["cell2arg"] = self.graal_readIntArray()
         co_consts = self.graal_readObjectArray()
+
+        # The data from the below is not used, but we run the
+        # the extraction to keep the self.fp location where it should for
+        # the situation that we have code objects inside the codes' co_consts
+        # table marshaled as an ObjectArray.
+
+        # long[] primitiveConstants = readLongArray();
+        # int[] exceptionHandlerRanges = readIntArray();
+        # int conditionProfileCount = readInt();
+        # int startLine = readInt();
+        # int startColumn = readInt();
+        # int endLine = readInt();
+        # int endColumn = readInt();
+        # byte[] outputCanQuicken = readBytes();
+        # byte[] variableShouldUnbox = readBytes();
+        # int[][] generalizeInputsMap = readSparseTable();
+        # int[][] generalizeVarsMap = readSparseTable();
+
+        other_fields["primitiveConstants"] = self.graal_readLongArray()
+        other_fields["exception_handler_ranges"] = self.graal_readIntArray()
+        other_fields["condition_profileCount"] = self.graal_readInt()
+        other_fields["startLine"] = self.graal_readInt()
+        other_fields["startColumn"] = self.graal_readInt()
+        other_fields["endLine"] = self.graal_readInt()
+        other_fields["endColumn"] = self.graal_readInt()
+        other_fields["outputCanQuicken"] = self.graal_readBytes()
+        other_fields["variableShouldUnbox"] = self.graal_readBytes()
+        other_fields["generalizeInputsMap"] = self.graal_readSparseTable()
+        other_fields["generalizeVarsMap"] = self.graal_readSparseTable()
 
         code = to_portable(
             co_argcount=co_argcount,
@@ -1068,40 +1110,13 @@ class _VersionIndependentUnmarshaller:
             version_triple=self.version_triple,
             collection_order=self.collection_order,
             reference_objects=set(),
+            other_fields=other_fields,
         )
 
         self.code_to_file_offsets[code] = tuple(
             [self.graal_code_info["co_codeunit_position"], co_code_offset_in_file]
         )
 
-        # The data from the below is not used, but we run the
-        # the extraction to keep the self.fp location where it should for
-        # the situation that we have code objects inside the codes' co_consts
-        # table marshaled as an ObjectArray.
-
-        # long[] primitiveConstants = readLongArray();
-        # int[] exceptionHandlerRanges = readIntArray();
-        # int conditionProfileCount = readInt();
-        # int startLine = readInt();
-        # int startColumn = readInt();
-        # int endLine = readInt();
-        # int endColumn = readInt();
-        # byte[] outputCanQuicken = readBytes();
-        # byte[] variableShouldUnbox = readBytes();
-        # int[][] generalizeInputsMap = readSparseTable();
-        # int[][] generalizeVarsMap = readSparseTable();
-
-        primitive_constants = self.graal_readLongArray()
-        exception_handler_ranges = self.graal_readIntArray()
-        condition_profileCount = self.graal_readInt()
-        start_line = self.graal_readInt()
-        start_column = self.graal_readInt()
-        end_line = self.graal_readInt()
-        end_column = self.graal_readInt()
-        outputCanQuicken = self.graal_readBytes()
-        variableShouldUnbox = self.graal_readBytes()
-        generalizeInputsMap = self.graal_readSparseTable()
-        generalizeVarsMap = self.graal_readSparseTable()
 
         return code
 
