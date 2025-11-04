@@ -865,11 +865,13 @@ class _VersionIndependentUnmarshaller:
             self.fp.tell() + 4
         )
         co_codeunit_string = self.graal_readBytes()
-        self.version_triple = (3, 12, 8)
         if chr(co_codeunit_string[0]) != TYPE_GRAALPYTHON_CODE_UNIT:
             # Version is graal 3.11 not graal 3.12
             co_codeunit_string = b"U" + co_codeunit_string
-            self.version_triple = (3, 11, 7)
+            if self.version_triple != (3, 10, 8):
+                self.version_triple = (3, 11, 7)
+        else:
+            self.version_triple = (3, 12, 8)
 
         self.graal_code_info["co_firstlineno"] = self.t_int32(False, bytes_for_s=False)
         self.graal_code_info["co_lnotab"] = self.t_string(False, bytes_for_s=True)
@@ -890,7 +892,7 @@ class _VersionIndependentUnmarshaller:
         if IS_GRAAL and PYTHON_VERSION_TRIPLE == self.version_triple:
             try:
                 graal_instr_str = str(marshal.loads(co_codeunit_string))
-            except Exception as e:
+            except Exception:
                 pass
             else:
                 code.graal_instr_str = graal_instr_str
