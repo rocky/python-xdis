@@ -353,12 +353,12 @@ class _VersionIndependentUnmarshaller:
         length = self.graal_readInt()
         return tuple([self.graal_readString() for _ in range(length)])
 
-    def graal_readSparseTable(self) -> Dict[int, tuple]:
+    def graal_readSparseTable(self) -> dict:
         """
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.graal_readInt()
+        self.graal_readInt()  # Length value is not used
         table = {} # new int[length][];
         while True:
             i = self.graal_readInt()
