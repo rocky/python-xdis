@@ -110,7 +110,7 @@ class Code310(Code38):
         self.co_freevars = co_freevars
         self.co_kwonlyargcount = co_kwonlyargcount
         self.co_linetable = co_linetable
-        self.co_name = co_name
+        self.co_name = str(co_name)
         self.co_names = co_names
         self.co_nlocals = co_nlocals
         self.co_posonlyargcount = co_posonlyargcount

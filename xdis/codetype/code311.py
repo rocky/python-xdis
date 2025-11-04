@@ -486,7 +486,7 @@ class Code311(Code310):
             co_names=co_names,
             co_varnames=co_varnames,
             co_filename=co_filename,
-            co_name=co_name,
+            co_name=str(co_name),
             co_firstlineno=co_firstlineno,
             co_linetable=co_linetable,
             co_freevars=co_freevars,
@@ -494,7 +494,7 @@ class Code311(Code310):
             reference_objects = reference_objects,
             version_triple = version_triple,
         )
-        self.co_qualname = co_qualname
+        self.co_qualname = str(co_qualname)
         self.co_exceptiontable = co_exceptiontable
         self.fieldtypes = Code311FieldTypes
         if type(self) is Code311:

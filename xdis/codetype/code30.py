@@ -101,12 +101,20 @@ class Code3(Code2):
             line_diff = line_number - prev_line_number
             prev_offset = offset
             prev_line_number = line_number
-            while offset_diff >= 256:
-                co_lnotab += bytearray([255, 0])
-                offset_diff -= 255
-            while line_diff >= 256:
-                co_lnotab += bytearray([0, 255])
-                line_diff -= 255
+            if PYTHON_VERSION_TRIPLE >= (2, 6):
+                while offset_diff >= 256:
+                    co_lnotab += bytearray([255, 0])
+                    offset_diff -= 255
+                while line_diff >= 256:
+                    co_lnotab += bytearray([0, 255])
+                    line_diff -= 255
+            else:
+                while offset_diff >= 256:
+                    co_lnotab += chr(255) + chr(0)
+                    offset_diff -= 255
+                while line_diff >= 256:
+                    co_lnotab += chr(0) + chr(255)
+                    line_diff -= 255
             if 0 <= line_diff <= 256:
                 # FIXME: should warn about dropping off a line number
                 co_lnotab += bytearray([offset_diff, line_diff])
