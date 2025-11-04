@@ -385,7 +385,10 @@ def write_bytecode_file(
     fp = open(bytecode_path, "wb")
     version_tuple = py_str2tuple(magicint2version[magic_int])
     if version_tuple >= (3, 0):
-        fp.write(pack("<Hcc", magic_int, "\r", "\n"))
+        if PYTHON_VERSION_TRIPLE[:2] == (3, 2):
+            fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
+        else:
+            fp.write(pack("<Hcc", magic_int, "\r", "\n"))
         if version_tuple >= (3, 7):  # pep552 bytes
             fp.write(pack("<I", 0))  # pep552 bytes
     else:
@@ -394,7 +397,7 @@ def write_bytecode_file(
     if compilation_ts:
         if isinstance(compilation_ts, datetime):
             fp.write(pack("<I", int(compilation_ts.timestamp())))
-        elif isinstance(compilation_ts, (int, long)):
+        elif isinstance(compilation_ts, int):
             fp.write(pack("<I", compilation_ts))
         else:
             raise TypeError("Timestamp must be a datetime, int or None")
