@@ -40,12 +40,6 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
         raise TypeError(
             "parameter expected to be a types.CodeType type; is %s instead" % type(code)
         )
-    line_table_field = (
-        "co_lnotab"
-        if PYTHON_VERSION_TRIPLE < (3, 11) and hasattr(code, "co_lnotab")
-        else "co_linetable"
-    )
-    line_table = getattr(code, line_table_field)
     if version_triple >= (3, 0):
         if version_triple < (3, 8):
             return Code3(
@@ -61,7 +55,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 code.co_filename,
                 code.co_name,
                 code.co_firstlineno,
-                line_table,
+                code.co_lnotab,
                 code.co_freevars,
                 code.co_cellvars,
                 # THINK ABOUT: If collection_order isn't defined, i.e. native code
@@ -87,7 +81,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 co_filename=code.co_filename,
                 co_name=code.co_name,
                 co_firstlineno=code.co_firstlineno,
-                co_lnotab=line_table,
+                co_lnotab=code.co_lnotab,
                 version_triple=version_triple,
             )
         elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
@@ -107,7 +101,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 co_filename=code.co_filename,
                 co_name=code.co_name,
                 co_firstlineno=code.co_firstlineno,
-                co_linetable=line_table,
+                co_linetable=code.co_lnotab,
                 version_triple=version_triple,
             )
         elif version_triple[:2] >= (3, 11):
@@ -128,7 +122,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 co_name=code.co_name,
                 co_qualname=code.co_qualname,
                 co_firstlineno=code.co_firstlineno,
-                co_linetable=line_table,
+                co_linetable=code.co_lnotab,
                 co_exceptiontable=code.co_exceptiontable,
                 version_triple=version_triple,
             )
@@ -146,7 +140,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
             co_filename=code.co_filename,
             co_name=code.co_name,
             co_firstlineno=code.co_firstlineno,
-            co_lnotab=line_table,
+            co_lnotab=code.co_lnotab,
             co_freevars=code.co_freevars,  # not in 1.x
             co_cellvars=code.co_cellvars,  # not in 1.x
             # THINK ABOUT: If collection_order isn't defined, i.e. native code
@@ -187,7 +181,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 code.co_filename,
                 code.co_name,
                 code.co_firstlineno,  # Not in 1.0..1.4
-                line_table,  # Not in 1.0..1.4
+                code.co_lnotab,  # Not in 1.0..1.4
             )
 
 

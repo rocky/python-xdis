@@ -204,8 +204,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         fn_code = compile(text, "<string>", "exec")
 
         line_table_value = (
-            fn_code.co_lnotab
-            if PYTHON_VERSION_TRIPLE < (3, 11) and hasattr(fn_code, "co_lnotab")
+            fn_code.co_lnotab if hasattr(fn_code, "co_lnotab")
             else fn_code.co_linetable
         )
 
