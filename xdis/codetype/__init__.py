@@ -41,6 +41,10 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
         raise TypeError(
             f"parameter expected to be a types.CodeType type; is {type(code)} instead"
         )
+    line_table_field = (
+        "co_lnotab" if hasattr(code, "co_lnotab") else "co_linetable"
+    )
+    line_table = getattr(code, line_table_field)
     if version_triple >= (3, 0):
         if version_triple < (3, 8):
             return Code3(
@@ -56,7 +60,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
                 code.co_filename,
                 code.co_name,
                 code.co_firstlineno,
-                code.co_lnotab,
+                line_table,
                 code.co_freevars,
                 code.co_cellvars,
                 # THINK ABOUT: If collection_order isn't defined, i.e. native code
@@ -292,7 +296,7 @@ def to_portable(
     version_triple=PYTHON_VERSION_TRIPLE,
     collection_order={},
     reference_objects=set(),
-    other_fields: dict = {},
+    other_fields: dict={},
 ):
     is_graal = "srcOffsetTable" in other_fields
     code = CodeTypeUnion(

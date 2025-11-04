@@ -16,7 +16,6 @@
 
 import types
 from copy import deepcopy
-from dataclasses import dataclass
 from types import CodeType
 from typing import Any, Dict, Iterable, Iterator, Optional, Set, Tuple
 
@@ -187,7 +186,6 @@ PY_CODE_LOCATION_INFO_LONG = 14
 PY_CODE_LOCATION_INFO_NONE = 15
 
 
-@dataclass(frozen=True)
 class LineTableEntry:
     line_delta: int
     code_delta: int
@@ -242,7 +240,8 @@ def _test_check_bit(linetable_code_byte: int) -> bool:
 
 def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> Optional[int]:
     try:
-        while not _test_check_bit((code_byte := next(remaining_linetable))):
+        code_byte = next(remaining_linetable)
+        while not _test_check_bit(code_byte):
             pass
     except StopIteration:
         return None
@@ -268,7 +267,8 @@ def parse_linetable(linetable: bytes, first_lineno: int):
 
     # decode linetable entries
     iter_linetable = iter(linetable)
-    while (code_byte := _go_to_next_code_byte(iter_linetable)) is not None:
+    code_byte = _go_to_next_code_byte(iter_linetable)
+    while code_byte is not None:
         linetable_entries.append(
             decode_linetable_entry(
                 code_byte=code_byte, remaining_linetable=iter_linetable
@@ -301,7 +301,6 @@ def parse_linetable(linetable: bytes, first_lineno: int):
     yield (code_start, code_end, None if no_line_flag else line)
 
 
-@dataclass(frozen=True)
 class PositionEntry:
     line_delta: int
     num_lines: int
@@ -364,7 +363,8 @@ def parse_positions(linetable: bytes, first_lineno: int):
     # decode linetable entries
     iter_linetable = iter(linetable)
     try:
-        while (code_byte := next(iter_linetable)) is not None:
+        code_byte = next(iter_linetable)
+        while code_byte is not None:
             position_entries.append(
                 decode_position_entry(
                     code_byte=code_byte, remaining_linetable=iter_linetable
