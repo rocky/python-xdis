@@ -5,8 +5,13 @@ We then can check a diff between a serialized xdis and dis bytecode to find if x
 Most tests should be ran using the makefile.
 
 # System Requirements
+- `uv`
+    - uv will handle everything on its own
+
+---OR---
+
 - `pyenv` and `pyenv-virtualenv`
-    - Each version needing to be tested should be installed with pyenv.
+    - Each version needing to be tested should be installed with pyenv
 - `tox`
 
 # Usage
