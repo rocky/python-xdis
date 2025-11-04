@@ -247,13 +247,14 @@ def disco_loop(
                 if hasattr(co, "graal_instr_str") and co.graal_instr_str:
                     real_out.write(co.graal_instr_str)
                 else:
-                    real_out.write("\n# Instruction disassembly for %s not supported here.\n" % co.co_name)
-                real_out.write("instruction bytecode:\n%s\n" % co.co_code)
-                    if co.co_name == "??":
-                        real_out.write("\n# Instruction disassembly not supported here.\n")
+                    if hasattr(co, "graal_instr_str") and co.graal_instr_str:
+                        real_out.write(co.graal_instr_str)
                     else:
-                        real_out.write(f"\n# Instruction disassembly for {co.co_name} not supported here.\n")
-                    real_out.write(f"instruction bytecode:\n{co.co_code.hex(':')}\n")
+                        if co.co_name == "??":
+                            real_out.write("\n# Instruction disassembly not supported here.\n")
+                        else:
+                            real_out.write("\n# Instruction disassembly for %s not supported here.\n" % co.co_name)
+                        real_out.write("instruction bytecode:\n%s\n" % co.co_code)
 
             else:
                 bytecode = Bytecode(co, opc, dup_lines=dup_lines)
@@ -265,10 +266,10 @@ def disco_loop(
                     + "\n"
                 )
 
-            if version_tuple >= (3, 11):
-                if bytecode.exception_entries not in (None, []):
-                    exception_table = format_exception_table(bytecode, version_tuple)
-                    real_out.write(exception_table + "\n")
+                if version_tuple >= (3, 11):
+                    if bytecode.exception_entries not in (None, []):
+                        exception_table = format_exception_table(bytecode, version_tuple)
+                        real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):

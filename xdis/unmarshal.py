@@ -1017,7 +1017,7 @@ class _VersionIndependentUnmarshaller:
         graal_bytecode_version = self.graal_readByte()
         assert (21000 + graal_bytecode_version * 10) in GRAAL3_MAGICS
 
-        other_fields: Dict = {}
+        other_fields = {}
 
         # This is Java code for how a CodeUnit (type "U") is read
         # TruffleString name = readString();

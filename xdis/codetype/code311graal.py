@@ -15,9 +15,9 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import types
+from collections import namedtuple
 from copy import deepcopy
 from types import CodeType
-from typing import Any, Dict, Iterable, Iterator, Optional, Set, Tuple
 
 from xdis.codetype.code311 import Code311, Code311FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -103,7 +103,7 @@ def parse_location_entries(location_bytes, first_line: int):
             return []
 
         def has_next_byte(b) -> bool:
-            return bool(b & 0b0100_0000)  # has bit 6 set
+            return bool(b & 0b01000000)  # has bit 6 set
 
         def get_value(b):
             return b & 0b00111111  # extracts bits 0-5
@@ -186,13 +186,12 @@ PY_CODE_LOCATION_INFO_LONG = 14
 PY_CODE_LOCATION_INFO_NONE = 15
 
 
-class LineTableEntry:
-    line_delta: int
-    code_delta: int
-    no_line_flag: bool
+LineTableEntry = namedtuple(
+    "LineTableEntry", ("line_delta", "code_delta", "no_line_flag")
+)
 
 
-def _scan_varint(remaining_linetable: Iterable[int]) -> int:
+def _scan_varint(remaining_linetable) -> int:
     value = 0
     for shift, read in enumerate(remaining_linetable):
         value |= (read & 63) << (shift * 6)
@@ -201,14 +200,14 @@ def _scan_varint(remaining_linetable: Iterable[int]) -> int:
     return value
 
 
-def _scan_signed_varint(remaining_linetable: Iterable[int]) -> int:
+def _scan_signed_varint(remaining_linetable) -> int:
     value = _scan_varint(remaining_linetable)
     if value & 1:
         return -(value >> 1)
     return value >> 1
 
 
-def _get_line_delta(code_byte: int, remaining_linetable: Iterable[int]) -> int:
+def _get_line_delta(code_byte: int, remaining_linetable) -> int:
     line_delta_code = (code_byte >> 3) & 15
     if line_delta_code == PY_CODE_LOCATION_INFO_NONE:
         return 0
@@ -238,7 +237,7 @@ def _test_check_bit(linetable_code_byte: int) -> bool:
     return bool(linetable_code_byte & 128)
 
 
-def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> Optional[int]:
+def _go_to_next_code_byte(remaining_linetable):
     try:
         code_byte = next(remaining_linetable)
         while not _test_check_bit(code_byte):
@@ -248,9 +247,7 @@ def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> Optional[int]:
     return code_byte
 
 
-def decode_linetable_entry(
-    code_byte: int, remaining_linetable: Iterable[int]
-) -> LineTableEntry:
+def decode_linetable_entry(code_byte: int, remaining_linetable):
     assert _test_check_bit(code_byte), "malformed linetable"
     return LineTableEntry(
         line_delta=_get_line_delta(
@@ -263,7 +260,7 @@ def decode_linetable_entry(
 
 def parse_linetable(linetable: bytes, first_lineno: int):
 
-    linetable_entries: list[LineTableEntry] = []
+    linetable_entries = []
 
     # decode linetable entries
     iter_linetable = iter(linetable)
@@ -281,9 +278,9 @@ def parse_linetable(linetable: bytes, first_lineno: int):
     first_entry, *remaining_entries = linetable_entries
 
     # compute co_lines()
-    code_start: int = 0
-    code_end: int = first_entry.code_delta
-    line: int = first_lineno + first_entry.line_delta
+    code_start = 0
+    code_end = first_entry.code_delta
+    line = first_lineno + first_entry.line_delta
     no_line_flag = first_entry.no_line_flag
     for linetable_entry in remaining_entries:
         if (
@@ -301,18 +298,13 @@ def parse_linetable(linetable: bytes, first_lineno: int):
     yield (code_start, code_end, None if no_line_flag else line)
 
 
-class PositionEntry:
-    line_delta: int
-    num_lines: int
-    code_delta: int
-    column: int
-    endcolumn: int
-    no_line_flag: bool
+PositionEntry = namedtuple(
+    "PositionEntry",
+    ("line_delta", "num_lines", "code_delta", "column", "endcolumn", "no_line_flag"),
+)
 
 
-def decode_position_entry(
-    code_byte: int, remaining_linetable: Iterator[int]
-) -> PositionEntry:
+def decode_position_entry(code_byte, remaining_linetable):
     assert _test_check_bit(code_byte), "malformed linetable"
 
     code_delta = _next_code_delta(code_byte)
@@ -358,7 +350,7 @@ def decode_position_entry(
 
 
 def parse_positions(linetable: bytes, first_lineno: int):
-    position_entries: list[PositionEntry] = []
+    position_entries = []
 
     # decode linetable entries
     iter_linetable = iter(linetable)
@@ -421,9 +413,9 @@ class Code311Graal(Code311):
         co_firstlineno,
         co_linetable,
         co_exceptiontable,
-        reference_objects: Set[Any] = set(),
-        version_triple: Tuple[int, int, int] = (0, 0, 0),
-        other_fields: Dict[str, Any] = {}
+        reference_objects=set(),
+        version_triple=(0, 0, 0),
+        other_fields={},
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
@@ -446,8 +438,8 @@ class Code311Graal(Code311):
             co_posonlyargcount=co_posonlyargcount,
             co_stacksize=co_stacksize,
             co_varnames=co_varnames,
-            reference_objects = reference_objects,
-            version_triple = version_triple,
+            reference_objects=reference_objects,
+            version_triple=version_triple,
         )
 
         for field_name, value in other_fields.items():
