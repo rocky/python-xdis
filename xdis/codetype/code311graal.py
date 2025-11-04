@@ -17,19 +17,17 @@
 import types
 from copy import deepcopy
 from types import CodeType
+from typing import Any, Dict, Iterable, Iterator, Optional, Set, Tuple
 
-from xdis.codetype.code310 import Code310, Code310FieldTypes
+from xdis.codetype.code311 import Code311, Code311FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
-
 
 # Note: order is the positional order given in the Python docs for
 # 3.11 types.Codetype.
 # "posonlyargcount" is not used, but it is in other Python versions, so it
 # has to be included since this structure is used as the Union type
 # for all code types.
-#
-# Methods co_lines and co_positions do not get added to field names.
-Code311FieldNames = """
+Code311GraalFieldNames = """
         co_argcount
         co_cellvars
         co_code
@@ -40,7 +38,7 @@ Code311FieldNames = """
         co_flags
         co_freevars
         co_kwonlyargcount
-        co_linetable
+        co_lines
         co_lnotab
         co_name
         co_names
@@ -49,10 +47,22 @@ Code311FieldNames = """
         co_qualname
         co_stacksize
         co_varnames
+        condition_profileCount
+        endColumn
+        endLine
+        exception_handler_ranges
+        generalizeInputsMap
+        generalizeVarsMap
+        outputCanQuicken
+        primitiveConstants
+        srcOffsetTable
+        startColumn
+        startLine
+        variableShouldUnbox
 """
 
-Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes, "co_linetable": bytes})
+Code311GraalFieldTypes = deepcopy(Code311FieldTypes)
+Code311GraalFieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
 
 
 ##### Parse location table #####
@@ -93,7 +103,7 @@ def parse_location_entries(location_bytes, first_line: int):
             return []
 
         def has_next_byte(b) -> bool:
-            return bool(b & 0b01000000)  # has bit 6 set
+            return bool(b & 0b0100_0000)  # has bit 6 set
 
         def get_value(b):
             return b & 0b00111111  # extracts bits 0-5
@@ -112,7 +122,7 @@ def parse_location_entries(location_bytes, first_line: int):
                 current_value = 0
                 shift_amt = 0
 
-    def decode_signed_varint(s: int) -> int:
+    def decode_signed_varint(s: int):
         return -(s >> 1) if s & 1 else (s >> 1)
 
     entries = (
@@ -176,19 +186,13 @@ PY_CODE_LOCATION_INFO_LONG = 14
 PY_CODE_LOCATION_INFO_NONE = 15
 
 
-# FIXME: add:
-#  __repr__()
-#  __eq__()
-#  __hash__()
 class LineTableEntry:
-
-    def __init__(self, line_delta: int, code_delta: int, no_line_flag: bool):
-        self.line_delta = line_delta
-        self.code_delta = code_delta
-        self.no_line_flag = no_line_flag
+    line_delta: int
+    code_delta: int
+    no_line_flag: bool
 
 
-def _scan_varint(remaining_linetable) -> int:
+def _scan_varint(remaining_linetable: Iterable[int]) -> int:
     value = 0
     for shift, read in enumerate(remaining_linetable):
         value |= (read & 63) << (shift * 6)
@@ -197,14 +201,14 @@ def _scan_varint(remaining_linetable) -> int:
     return value
 
 
-def _scan_signed_varint(remaining_linetable) -> int:
+def _scan_signed_varint(remaining_linetable: Iterable[int]) -> int:
     value = _scan_varint(remaining_linetable)
     if value & 1:
         return -(value >> 1)
     return value >> 1
 
 
-def _get_line_delta(code_byte: int, remaining_linetable) -> int:
+def _get_line_delta(code_byte: int, remaining_linetable: Iterable[int]) -> int:
     line_delta_code = (code_byte >> 3) & 15
     if line_delta_code == PY_CODE_LOCATION_INFO_NONE:
         return 0
@@ -234,19 +238,19 @@ def _test_check_bit(linetable_code_byte: int) -> bool:
     return bool(linetable_code_byte & 128)
 
 
-def _go_to_next_code_byte(remaining_linetable):
+def _go_to_next_code_byte(remaining_linetable: Iterator[int]) -> Optional[int]:
     try:
         code_byte = next(remaining_linetable)
         while not _test_check_bit(code_byte):
-            code_byte = next(remaining_linetable)
+            pass
     except StopIteration:
         return None
     return code_byte
 
 
 def decode_linetable_entry(
-    code_byte: int, remaining_linetable
-):
+    code_byte: int, remaining_linetable: Iterable[int]
+) -> LineTableEntry:
     assert _test_check_bit(code_byte), "malformed linetable"
     return LineTableEntry(
         line_delta=_get_line_delta(
@@ -259,19 +263,17 @@ def decode_linetable_entry(
 
 def parse_linetable(linetable: bytes, first_lineno: int):
 
-
-    linetable_entries = []
+    linetable_entries: list[LineTableEntry] = []
 
     # decode linetable entries
     iter_linetable = iter(linetable)
     code_byte = _go_to_next_code_byte(iter_linetable)
-    while (code_byte) is not None:
+    while code_byte is not None:
         linetable_entries.append(
             decode_linetable_entry(
                 code_byte=code_byte, remaining_linetable=iter_linetable
             )
         )
-        code_byte = _go_to_next_code_byte(iter_linetable)
 
     if not linetable_entries:
         return
@@ -279,9 +281,9 @@ def parse_linetable(linetable: bytes, first_lineno: int):
     first_entry, *remaining_entries = linetable_entries
 
     # compute co_lines()
-    code_start = 0
-    code_end = first_entry.code_delta
-    line = first_lineno + first_entry.line_delta
+    code_start: int = 0
+    code_end: int = first_entry.code_delta
+    line: int = first_lineno + first_entry.line_delta
     no_line_flag = first_entry.no_line_flag
     for linetable_entry in remaining_entries:
         if (
@@ -299,26 +301,18 @@ def parse_linetable(linetable: bytes, first_lineno: int):
     yield (code_start, code_end, None if no_line_flag else line)
 
 
-# FIXME: add:
-#  __repr__()
-#  __eq__()
-#  __hash__()
-# and possibly __init__()
-# methods
-
 class PositionEntry:
-    def __init__(self, line_delta, num_lines, code_delta, column, endcolumn, no_line_flag):
-        self.line_delta = line_delta
-        self.num_lines = num_lines
-        self.code_delta = code_delta
-        self.column = column
-        self.endcolumn = endcolumn
-        self.no_line_flag = no_line_flag
+    line_delta: int
+    num_lines: int
+    code_delta: int
+    column: int
+    endcolumn: int
+    no_line_flag: bool
 
 
 def decode_position_entry(
-        code_byte: int, remaining_linetable,
-    ):
+    code_byte: int, remaining_linetable: Iterator[int]
+) -> PositionEntry:
     assert _test_check_bit(code_byte), "malformed linetable"
 
     code_delta = _next_code_delta(code_byte)
@@ -364,7 +358,7 @@ def decode_position_entry(
 
 
 def parse_positions(linetable: bytes, first_lineno: int):
-    position_entries = []
+    position_entries: list[PositionEntry] = []
 
     # decode linetable entries
     iter_linetable = iter(linetable)
@@ -376,7 +370,6 @@ def parse_positions(linetable: bytes, first_lineno: int):
                     code_byte=code_byte, remaining_linetable=iter_linetable
                 )
             )
-            code_byte = next(iter_linetable)
     except StopIteration:
         pass
 
@@ -395,7 +388,7 @@ def parse_positions(linetable: bytes, first_lineno: int):
                 )
 
 
-class Code311(Code310):
+class Code311Graal(Code311):
     """Class for a Python 3.11+ code object used when a Python interpreter less than 3.11 is
     working on Python 3.11 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
@@ -428,35 +421,42 @@ class Code311(Code310):
         co_firstlineno,
         co_linetable,
         co_exceptiontable,
-        reference_objects=set(),
-        version_triple=(0, 0, 0),
+        reference_objects: Set[Any] = set(),
+        version_triple: Tuple[int, int, int] = (0, 0, 0),
+        other_fields: Dict[str, Any] = {}
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super().__init__(
             co_argcount=co_argcount,
-            co_posonlyargcount=co_posonlyargcount,
-            co_kwonlyargcount=co_kwonlyargcount,
-            co_nlocals=co_nlocals,
-            co_stacksize=co_stacksize,
-            co_flags=co_flags,
+            co_cellvars=co_cellvars,
             co_code=co_code,
             co_consts=co_consts,
-            co_names=co_names,
-            co_varnames=co_varnames,
+            co_exceptiontable=co_exceptiontable,
             co_filename=co_filename,
-            co_name=co_name,
             co_firstlineno=co_firstlineno,
-            co_linetable=co_linetable,
+            co_flags=co_flags,
             co_freevars=co_freevars,
-            co_cellvars=co_cellvars,
+            co_kwonlyargcount=co_kwonlyargcount,
+            co_linetable=co_linetable,
+            co_name=co_name,
+            co_names=co_names,
+            co_nlocals=co_nlocals,
+            co_qualname=co_qualname,
+            co_posonlyargcount=co_posonlyargcount,
+            co_stacksize=co_stacksize,
+            co_varnames=co_varnames,
             reference_objects = reference_objects,
             version_triple = version_triple,
         )
+
+        for field_name, value in other_fields.items():
+            setattr(self, field_name, value)
+
         self.co_qualname = co_qualname
         self.co_exceptiontable = co_exceptiontable
-        self.fieldtypes = Code311FieldTypes
-        if type(self) is Code311:
+        self.fieldtypes = Code311GraalFieldTypes
+        if type(self) is Code311Graal:
             self.check()
 
     def to_native(self) -> CodeType:
@@ -473,6 +473,8 @@ class Code311(Code310):
         except AssertionError as e:
             raise TypeError(e)
 
+        if code.co_exceptiontable is None:
+            code.co_exceptiontable = b""
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,
