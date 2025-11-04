@@ -358,7 +358,7 @@ class _VersionIndependentUnmarshaller:
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
         """
-        self.graal_readInt()  # Length value is not used
+        self.graal_readInt()  # the length return value isn't used.
         table = {} # new int[length][];
         while True:
             i = self.graal_readInt()
