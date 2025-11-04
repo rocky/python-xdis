@@ -28,6 +28,8 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 # "posonlyargcount" is not used, but it is in other Python versions, so it
 # has to be included since this structure is used as the Union type
 # for all code types.
+#
+# Methods co_lines and co_positions do not get added to field names.
 Code311FieldNames = """
         co_argcount
         co_posonlyargcount
@@ -46,11 +48,12 @@ Code311FieldNames = """
         co_qualname
         co_firstlineno
         co_linetable
+        co_lnotab
         co_exceptiontable
 """
 
 Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": chr})
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": chr, "co_linetable": chr})
 
 
 ##### Parse location table #####
