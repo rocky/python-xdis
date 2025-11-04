@@ -16,7 +16,6 @@
 
 import types
 from collections import namedtuple
-from typing import Any, Dict, Optional, Set, Tuple, Union
 
 from xdis.codetype.base import CodeBase
 from xdis.codetype.code13 import Code13
@@ -239,17 +238,17 @@ def to_portable(
     co_posonlyargcount=-1,  # 3.8 .. 3.10
     co_kwonlyargcount=-1,  # 3.0+
     co_nlocals=0,
-    co_stacksize: Optional[int] = -1,  # 1.5+
+    co_stacksize=-1,  # 1.5+
     co_flags=0,
     co_code="",  # 3.0+ this type changes from <str> to <bytes>
     co_consts=tuple(),
     co_names=tuple(),
     co_varnames=tuple(),
-    co_filename: str="??",
-    co_name: str="??",
-    co_qualname: str="??",
-    co_firstlineno: int=-1,
-    co_lnotab: str="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
+    co_filename: str = "??",
+    co_name: str = "??",
+    co_qualname: str = "??",
+    co_firstlineno: int = -1,
+    co_lnotab: str = "",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
     # In 3.11 it is different
     co_freevars=tuple(),  # 2.0+
     co_cellvars=tuple(),  # 2.0+
