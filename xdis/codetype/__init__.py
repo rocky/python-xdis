@@ -247,8 +247,8 @@ def to_portable(
     co_filename="??",
     co_name=None,
     co_qualname="??",
-    co_firstlineno: int=-1,
-    co_lnotab: str="",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
+    co_firstlineno: int = -1,
+    co_lnotab: str = "",  # 1.5+; 3.0+ this type changes from <str> to <bytes>
     # In 3.11 it is different
     co_freevars=tuple(),  # 2.0+
     co_cellvars=tuple(),  # 2.0+
