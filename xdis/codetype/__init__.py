@@ -30,6 +30,7 @@ from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
 
 __docformat__ = "restructuredtext"
 
+
 def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
     """Converts a native types.CodeType code object into a
     corresponding more flexible xdis Code type.
@@ -40,7 +41,11 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
         raise TypeError(
             f"parameter expected to be a types.CodeType type; is {type(code)} instead"
         )
-    line_table_field = "co_lnotab" if hasattr(code, "co_lnotab") else "co_linetable"
+    line_table_field = (
+        "co_lnotab"
+        if PYTHON_VERSION_TRIPLE < (3, 11) and hasattr(code, "co_lnotab")
+        else "co_linetable"
+    )
     line_table = getattr(code, line_table_field)
     if version_triple >= (3, 0):
         if version_triple < (3, 8):
@@ -60,7 +65,6 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
                 line_table,
                 code.co_freevars,
                 code.co_cellvars,
-
                 # THINK ABOUT: If collection_order isn't defined, i.e. native code
                 # type, should we try to extract it?
                 code.collection_order if hasattr(code, "collection_order") else {},
@@ -146,13 +150,15 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE):
             co_lnotab=line_table,
             co_freevars=code.co_freevars,  # not in 1.x
             co_cellvars=code.co_cellvars,  # not in 1.x
-
             # THINK ABOUT: If collection_order isn't defined, i.e. native code
             # type, should we try to extract it?
-            collection_order=code.collection_order if hasattr(code, "collection_order") else {},
-            reference_objects=code.reference_objects if hasattr(code, "reference_objects") else set(),
+            collection_order=(
+                code.collection_order if hasattr(code, "collection_order") else {}
+            ),
+            reference_objects=(
+                code.reference_objects if hasattr(code, "reference_objects") else set()
+            ),
             version_triple=version_triple,
-
         )
     else:
         # 1.0 .. 1.5
@@ -219,7 +225,10 @@ def portableCodeType(version_triple=PYTHON_VERSION_TRIPLE):
 # In contrast to Code3, Code2, etc. you can use CodeTypeUnint for building
 # an incomplete code type, which might be converted to another code type
 # later.
-CodeTypeUnionFields = tuple(Code311FieldNames.split() + ["collection_order", "reference_objects", "version_triple"])
+CodeTypeUnionFields = tuple(
+    Code311FieldNames.split()
+    + ["collection_order", "reference_objects", "version_triple"]
+)
 CodeTypeUnion = namedtuple("CodeTypeUnion", CodeTypeUnionFields)
 
 
@@ -265,6 +274,7 @@ def to_portable(
         co_qualname=co_name if co_qualname is None else co_qualname,
         co_firstlineno=co_firstlineno,
         co_linetable=co_lnotab,
+        co_lnotab=co_lnotab,
         co_freevars=co_freevars,
         co_cellvars=co_cellvars,
         co_exceptiontable=co_exceptiontable,
