@@ -16,9 +16,7 @@
 
 import types
 from copy import deepcopy
-from types import CodeType
 
-from xdis.codetype.code13 import Bytes
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
@@ -53,7 +51,7 @@ Code311FieldNames = """
 """
 
 Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": chr, "co_linetable": chr})
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": str, "co_linetable": str})
 
 
 ##### Parse location table #####
@@ -169,36 +167,6 @@ def parse_location_entries(location_bytes, first_line):
             last_line = last_line
 
     return entries
-
-
-# Note: order is the positional order given in the Python docs for
-# 3.11 types.Codetype.
-# "posonlyargcount" is not used, but it is in other Python versions, so it
-# has to be included since this structure is used as the Union type
-# for all code types.
-Code311FieldNames = """
-        co_argcount
-        co_posonlyargcount
-        co_kwonlyargcount
-        co_nlocals
-        co_stacksize
-        co_flags
-        co_consts
-        co_code
-        co_names
-        co_varnames
-        co_freevars
-        co_cellvars
-        co_filename
-        co_name
-        co_qualname
-        co_firstlineno
-        co_linetable
-        co_exceptiontable
-"""
-
-Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": Bytes})
 
 
 ##### NEW "OPAQUE" LINE TABLE PARSING #####
@@ -519,6 +487,7 @@ class Code311(Code310):
 
         if code.co_exceptiontable is None:
             code.co_exceptiontable = ""
+
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,

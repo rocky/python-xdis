@@ -269,6 +269,7 @@ def to_portable(
 ):
     if co_qualname is None:
         co_qualname=co_name
+
     code = CodeTypeUnion(
         co_argcount=co_argcount,
         co_posonlyargcount=co_posonlyargcount,
