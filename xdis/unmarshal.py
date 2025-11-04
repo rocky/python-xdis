@@ -865,8 +865,9 @@ class _VersionIndependentUnmarshaller:
             self.fp.tell() + 4
         )
         co_codeunit_string = self.graal_readBytes()
+        # Determine if we are Graal 3.10, 3.11, or 3.12 ...
         if chr(co_codeunit_string[0]) != TYPE_GRAALPYTHON_CODE_UNIT:
-            # Version is graal 3.11 not graal 3.12
+            # Determine if we are Graal 3.10, 3.11
             co_codeunit_string = b"U" + co_codeunit_string
             if self.version_triple != (3, 10, 8):
                 self.version_triple = (3, 11, 7)
