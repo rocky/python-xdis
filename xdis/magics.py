@@ -37,7 +37,7 @@ import struct
 import sys
 from collections import defaultdict
 from importlib.util import MAGIC_NUMBER as MAGIC
-from typing import Dict, Set, Tuple
+from typing import Dict, Set
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
 
@@ -705,7 +705,10 @@ add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0
 # Graal for 3.11 and 3.12 are like that.
 
 # 21250 = 21000 + 15 * 10
-add_magic_from_int(21150, "3.8.5Graal")
+add_magic_from_int(21150, "3.8.5Graal (15)")
+
+# 21250 = 21000 + 26 * 10
+add_magic_from_int(21260, "3.8.5Graal (16)")
 
 # 21250 = 21000 + 28 * 10
 add_magic_from_int(21280, "3.10.8Graal")
@@ -777,7 +780,7 @@ add_canonic_versions("3.8a1", "3.8.0beta2")
 
 add_canonic_versions("2.7.10pypy 2.7.12pypy 2.7.13pypy 2.7.18pypy", "2.7pypy")
 add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
-add_canonic_versions("3.8.5Graal", "3.8.5Graal")
+add_canonic_versions("3.8.5Graal", "3.8.5Graal (16)")
 add_canonic_versions("3.8.10Graal", "3.8.0rc1+")
 
 add_canonic_versions("3.2.5pypy", "3.2pypy")

@@ -249,7 +249,12 @@ def disco_loop(
                         real_out.write("\n# Instruction disassembly not supported here.\n")
                     else:
                         real_out.write(f"\n# Instruction disassembly for {co.co_name} not supported here.\n")
-                    real_out.write(f"instruction bytecode:\n{co.co_code.hex(':')}\n")
+                    if PYTHON_VERSION_TRIPLE[:2] < (3, 8):
+                        hex_code = co.co_code.hex()
+                    else:
+                        hex_code = co.co_code.hex(':')
+
+                    real_out.write(f"instruction bytecode:\n{hex_code}\n")
 
             else:
                 bytecode = Bytecode(co, opc, dup_lines=dup_lines)
