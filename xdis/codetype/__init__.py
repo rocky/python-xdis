@@ -15,6 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import types
+from xdis.namedtuple24 import namedtuple
 
 from xdis.codetype.base import CodeBase
 from xdis.codetype.code13 import Code13
@@ -30,7 +31,7 @@ from xdis.version_info import IS_GRAAL, IS_PYPY, PYTHON_VERSION_TRIPLE
 __docformat__ = "restructuredtext"
 
 
-def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool=False):
+def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal=False):
     """Converts a native types.CodeType code object into a
     corresponding more flexible xdis Code type.
     """
@@ -122,18 +123,64 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
         elif version_triple[:2] >= (3, 11):
             other_fields = {}
             if is_graal:
-                other_fields["condition_profileCount"]=code.condition_profileCount if hasattr(code, "condition_profileCount") else -1,
-                other_fields["endColumn"]=code.endColumn if hasattr(code, "endColumn") else -1,
-                other_fields["endLine"]=code.endLine if hasattr(code, "endLine") else -1,
-                other_fields["exception_handler_ranges"]=code.exception_handler_ranges if hasattr(code, "exception_handler_ranges") else tuple(),
-                other_fields["generalizeInputsMap"]=code.generalizeInputsMap if hasattr(code, "generalizeInputsMap") else {},
-                other_fields["generalizeVarsMap"]=code.generalizeVarsMap if hasattr(code, "generalizeVarsMap") else {},
-                other_fields["outputCanQuicken"]=code.outputCanQuicken if hasattr(code, "outputCanQuicken") else b"",
-                other_fields["primitiveConstants"]=code.primitiveConstants if hasattr(code, "primitiveConstants") else tuple(),
-                other_fields["srcOffsetTable"]=code.srcOffsetTable if hasattr(code, "srcOffsetTable") else b"",
-                other_fields["startColumn"]=code.startColumn if hasattr(code, "startColumn") else -1,
-                other_fields["startLine"]=code.startLine if hasattr(code, "startLine") else -1,
-                other_fields["variableShouldUnbox"]=code.variableShouldUnbox if hasattr(code, "variableShouldUnbox") else b"",
+                if hasattr(code, "condition_profileCount"):
+                    other_fields["condition_profileCount"] = code.condition_profileCount
+                else:
+                    other_fields["condition_profileCount"] = -1
+
+                if hasattr(code, "endColumn"):
+                    other_fields["endColumn"] = code.endColumn
+                else:
+                    other_fields["endColumn"] = -1
+
+                if hasattr(code, "endLine"):
+                    other_fields["endLine"] = code.endLine
+                else:
+                    other_fields["endLine"] = -1
+                if hasattr(code, "exception_handler_ranges"):
+                    other_fields["exception_handler_ranges"] = code.exception_handler_ranges
+                else:
+                    other_fields["exception_handler_ranges"] = tuple()
+
+                if hasattr(code, "generalizeInputsMap"):
+                    other_fields["generalizeInputsMap"] = code.generalizeInputsMap
+                else:
+                    other_fields["generalizeInputsMap"] = {}
+
+                if hasattr(code, "generalizeVarsMap"):
+                    other_fields["generalizeVarsMap"] = code.generalizeVarsMap
+                else:
+                    other_fields["generalizeVarsMap"] = {}
+
+                if hasattr(code, "outputCanQuicken"):
+                    other_fields["outputCanQuicken"] = code.outputCanQuicken
+                else:
+                    other_fields["outputCanQuicken"] = ""
+
+                if hasattr(code, "primitiveConstants"):
+                    other_fields["primitiveConstants"] = code.primitiveConstants
+                else:
+                    other_fields["primitiveConstants"] = tuple()
+
+                if hasattr(code, "srcOffsetTable"):
+                    other_fields["srcOffsetTable"] = code.srcOffsetTable
+                else:
+                    other_fields["srcOffsetTable"] = ""
+
+                if hasattr(code, "startColumn"):
+                    other_fields["startColumn"] = code.startColumn
+                else:
+                    other_fields["startColumn"] = -1
+
+                if hasattr(code, "startLine"):
+                    other_fields["startLine"] = code.startLine
+                else:
+                    other_fields["startLine"] = -1
+
+                if hasattr(code, "variableShouldUnbox"):
+                    other_fields["variableShouldUnbox"] = code.variableShouldUnbox
+                else:
+                    other_fields["variableShouldUnbox"] = ""
 
                 return Code311Graal(
                     co_argcount=code.co_argcount,
@@ -150,7 +197,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
                     co_cellvars=code.co_cellvars,
                     co_filename=code.co_filename,
                     co_name=code.co_name,
-                    co_qualname=code.co_qualname,
+                    co_qualname=str(code.co_qualname),
                     co_firstlineno=code.co_firstlineno,
                     co_linetable=line_table,
                     co_exceptiontable=code.co_exceptiontable,
@@ -313,7 +360,7 @@ def to_portable(
     version_triple=PYTHON_VERSION_TRIPLE,
     collection_order={},
     reference_objects=set(),
-    other_fields: dict={},
+    other_fields={},
 ):
     if co_qualname is None:
         co_qualname=co_name

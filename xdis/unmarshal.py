@@ -26,7 +26,6 @@ you can use Python's built-in ``marshal.loads()`` to produce a code
 object.
 """
 
-import io
 import marshal
 import sys
 import unicodedata
@@ -879,14 +878,13 @@ class _VersionIndependentUnmarshaller:
         )
         co_codeunit_string = self.graal_readBytes()
         # Determine if we are Graal 3.10, 3.11, or 3.12 ...
-        if chr(co_codeunit_string[0]) != TYPE_GRAALPYTHON_CODE_UNIT:
+        if co_codeunit_string[0] != TYPE_GRAALPYTHON_CODE_UNIT:
             # Determine if we are Graal 3.10, 3.11
-            co_codeunit_string = b"U" + co_codeunit_string
+            co_codeunit_string = "U" + co_codeunit_string
             if self.version_triple != (3, 10, 8):
                 self.version_triple = (3, 11, 7)
         else:
             self.version_triple = (3, 12, 8)
->>>>>>> python-3.0-to-3.2
 
         self.graal_code_info["co_firstlineno"] = self.t_int32(False, bytes_for_s=False)
         self.graal_code_info["co_lnotab"] = self.t_string(False, bytes_for_s=True)
@@ -1162,8 +1160,6 @@ def load_code(fp, magic_int, bytes_for_s=None, code_objects={}):
 def load_code_and_get_file_offsets(
     fp, magic_int, bytes_for_s = False, code_objects={}
 ):
-    if isinstance(fp, bytes):
-        fp = io.BytesIO(fp)
     um_gen = _VersionIndependentUnmarshaller(
         fp, magic_int, bytes_for_s, code_objects=code_objects
     )

@@ -15,9 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import types
-from collections import namedtuple
 from copy import deepcopy
-from types import CodeType
 
 from xdis.codetype.code311 import (
     Code311,
@@ -67,7 +65,7 @@ Code311GraalFieldNames = """
 """
 
 Code311GraalFieldTypes = deepcopy(Code311FieldTypes)
-Code311GraalFieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
+Code311GraalFieldTypes.update({"co_qualname": str, "co_exceptiontable": str})
 
 
 class Code311Graal(Code311):
@@ -106,10 +104,10 @@ class Code311Graal(Code311):
         reference_objects=set(),
         version_triple=(0, 0, 0),
         other_fields={},
-    ) -> None:
+    ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super().__init__(
+        super(Code311Graal, self).__init__(
             co_argcount=co_argcount,
             co_cellvars=co_cellvars,
             co_code=co_code,
@@ -141,7 +139,7 @@ class Code311Graal(Code311):
         if type(self) is Code311Graal:
             self.check()
 
-    def to_native(self) -> CodeType:
+    def to_native(self):
         if not (PYTHON_VERSION_TRIPLE >= (3, 11)):
             raise TypeError(
                 "Python Interpreter needs to be in 3.11 or greater; is %s"
@@ -152,11 +150,11 @@ class Code311Graal(Code311):
         code.freeze()
         try:
             code.check()
-        except AssertionError as e:
+        except AssertionError(e):
             raise TypeError(e)
 
         if code.co_exceptiontable is None:
-            code.co_exceptiontable = b""
+            code.co_exceptiontable = ""
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,
