@@ -41,7 +41,7 @@ from typing import Dict, Set, Tuple
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
 
-GRAAL3_MAGICS = (21150, 21280, 21290)
+GRAAL3_MAGICS = (21150, 21260, 21280, 21290)
 JYTHON_MAGICS = (1011, 65526)
 
 # See below for mapping to version numbers.
