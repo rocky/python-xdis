@@ -125,7 +125,6 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
                     co_lnotab=line_table,
                     version_triple=version_triple,
                 )
->>>>>>> master
         elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
             return Code310(
                 co_argcount=code.co_argcount,
