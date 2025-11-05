@@ -38,6 +38,7 @@ from xdis.codetype import (
     Code38,
     Code310,
     Code311,
+    Code311Graal,
     codeType2Portable,
 )
 from xdis.codetype.base import code_has_star_arg, code_has_star_star_arg, iscode
@@ -183,6 +184,7 @@ __all__ = [
     "Code3",
     "Code310",
     "Code311",
+    "Code311Graal",
     "Code38",
     "code_has_star_star_arg",
     "code_has_star_arg",

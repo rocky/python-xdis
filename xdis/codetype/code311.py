@@ -30,24 +30,24 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 # Methods co_lines and co_positions do not get added to field names.
 Code311FieldNames = """
         co_argcount
-        co_posonlyargcount
-        co_kwonlyargcount
-        co_nlocals
-        co_stacksize
-        co_flags
+        co_cellvars
         co_code
         co_consts
-        co_names
-        co_varnames
-        co_freevars
-        co_cellvars
+        co_exceptiontable
         co_filename
-        co_name
-        co_qualname
         co_firstlineno
+        co_flags
+        co_freevars
+        co_kwonlyargcount
         co_linetable
         co_lnotab
-        co_exceptiontable
+        co_name
+        co_names
+        co_nlocals
+        co_posonlyargcount
+        co_qualname
+        co_stacksize
+        co_varnames
 """
 
 Code311FieldTypes = deepcopy(Code310FieldTypes)
