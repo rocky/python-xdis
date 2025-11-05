@@ -241,6 +241,9 @@ def disco_loop(
             elif is_unusual_bytecode:
                 if hasattr(co, "graal_instr_str") and co.graal_instr_str:
                     real_out.write(co.graal_instr_str)
+                    if asm_format in ("extended_bytes", "bytes"):
+                        real_out.write("instruction bytecode:\n%s\n" % co.co_code)
+
                 else:
                     if co.co_name == "??":
                         real_out.write("\n# Instruction disassembly not supported here.\n")
