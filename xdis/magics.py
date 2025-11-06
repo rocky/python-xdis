@@ -710,9 +710,6 @@ add_magic_from_int(21150, "3.8.5Graal (15)")
 # 21250 = 21000 + 26 * 10
 add_magic_from_int(21260, "3.8.5Graal (16)")
 
-# 21250 = 21000 + 26 * 10
-add_magic_from_int(21260, "3.8.5Graal (16)")
-
 # 21250 = 21000 + 28 * 10
 add_magic_from_int(21280, "3.10.8Graal")
 
