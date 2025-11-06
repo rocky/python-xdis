@@ -112,7 +112,7 @@ class Code38(Code3):
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
-        if type(self) is Code38:
+        if isinstance(self, Code38):
             self.check()
 
     def to_native(self) -> types.CodeType:
