@@ -116,7 +116,7 @@ def_graal_op(opc, "LOAD_ASSERTION_ERROR", 17, 0, 0, 1)
 
 # Returns the value to the caller. In generators, performs generator return.
 #   Pops: return value
-def_graal_op(opc, "RETURN_VALUE", 0x12, 0, 1, 0)
+def_graal_op(opc, "RETURN_VALUE", 0x0e, 0, 1, 0)
 #
 # Reads a name from locals dict, globals or builtins determined by the
 # immediate operand which indexes the names array ({@code co_names}).
@@ -320,7 +320,7 @@ opc["nullaryloadop"].add(55)
 
 # Loads signed byte from immediate operand.
 #
-def_graal_op(opc, "LOAD_BYTE", 0x70, 1, 0, 1)
+def_graal_op(opc, "LOAD_BYTE", 95, 1, 0, 1)
 #
 # Loads {@code int} from primitiveConstants array indexed by the immediate operand.
 #

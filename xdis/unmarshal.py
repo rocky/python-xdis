@@ -1022,6 +1022,8 @@ class _VersionIndependentUnmarshaller:
 
         graal_bytecode_version = self.graal_readByte()
         assert (21000 + graal_bytecode_version * 10) in GRAAL3_MAGICS
+        if graal_bytecode_version in (26,):
+            self.version_triple = (3, 8, 5)
 
         other_fields: Dict = {}
 
@@ -1124,7 +1126,6 @@ class _VersionIndependentUnmarshaller:
         self.code_to_file_offsets[code] = tuple(
             [self.graal_code_info["co_codeunit_position"], co_code_offset_in_file]
         )
-
 
         return code
 

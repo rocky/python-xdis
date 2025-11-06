@@ -104,7 +104,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
                     co_filename=code.co_filename,
                     co_name=code.co_name,
                     co_firstlineno=code.co_firstlineno,
-                    co_lnotab=co_lnotab,
+                    co_lnotab=line_table,
                     version_triple=version_triple,
                     other_fields=other_fields,
                 )
