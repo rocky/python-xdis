@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2021, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -32,6 +32,7 @@ from xdis.opcodes.base import (
     jrel_op,
     local_op,
     name_op,
+    nargs_op,
     store_op,
     ternary_op,
     unary_op,
@@ -187,7 +188,7 @@ def_op(loc, "RAISE_VARARGS",     130, -1, 0, fallthrough=False)
 # Number of raise arguments (1, 2, or 3)
 call_op(loc, "CALL_FUNCTION",   131, -1, 1)  # #args + (#kwargs << 8)
 
-def_op(loc, "MAKE_FUNCTION",     132, -1, 1)  # Number of args with default values
+nargs_op(loc, "MAKE_FUNCTION",     132, -1, 1)  # Number of args with default values
 varargs_op(loc, "BUILD_SLICE",   133, -1, 1)  # Number of items
 
 def_op(loc, "EXTENDED_ARG",      143)
