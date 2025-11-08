@@ -1,6 +1,35 @@
-from xdis.bytecode import get_optype
+# from xdis.bytecode import get_optype
 from xdis.instruction import Instruction
 
+
+def get_optype_graal(opcode: int, opc) -> str:
+    """Helper to determine what class of instructions ``opcode`` is in.
+    Return is a string in:
+       compare, const, free, jabs, jrel, local, name, nargs, or ??
+    """
+    if opcode in opc.COMPARE_OPS:
+        return "compare"
+    elif opcode in opc.CONST_OPS:
+        return "const"
+    elif opcode in opc.FREE_OPS:
+        return "free"
+    elif opcode in opc.JABS_OPS:
+        return "jabs"
+    elif opcode in opc.JREL_OPS:
+        return "jrel"
+    # elif opcode in opc.LOCAL_OPS:
+    #     return "local"
+    elif opcode in opc.NAME_OPS:
+        return "name"
+    elif opcode in opc.NARGS_OPS:
+        return "nargs"
+    # This has to come after NARGS_OPS. Some are in both?
+    elif opcode in opc.VARGS_OPS:
+        return "vargs"
+    elif opcode in opc.ENCODED_ARG_OPS:
+        return "encoded_arg"
+
+    return "??"
 
 def get_instructions_bytes_graal(code, opc):
     """
@@ -28,8 +57,7 @@ def get_instructions_bytes_graal(code, opc):
     while i < n:
         opcode = bytecode[i]
         opname = opc.opname[opcode]
-        # optype = get_optype(op, opc)
-        optype = "??"
+        optype = get_optype_graal(opcode, opc)
 
         offset = i
         arg_count = opc.arg_counts[opcode]
@@ -62,13 +90,9 @@ def get_instructions_bytes_graal(code, opc):
                 argrepr = "%2d" % oparg
                 argval = oparg
                 break
-            elif opcode in (opc.opmap["LOAD_CONST"],
-                            opc.opmap["LOAD_BIGINT"],
-                            opc.opmap["LOAD_STRING"],
-                            opc.opmap["LOAD_BYTES"],
-                            opc.opmap["LOAD_CONST_COLLECTION"],
-                            opc.opmap["MAKE_KEYWORD"]):
-                field[5] = constants[oparg]
+            elif optype == "const":
+                arg = oparg
+                argval = constants[oparg]
             elif opcode == opc.opmap["MAKE_FUNCTION"]:
                 if following_args:
                     argrepr = "%2d" % following_args[0]
@@ -91,26 +115,15 @@ def get_instructions_bytes_graal(code, opc):
                     break
             elif opcode in (opc.opmap["LOAD_CLOSURE"], opc.opmap["LOAD_DEREF"], opc.opmap["STORE_DEREF"], opc.opmap["DELETE_DEREF"]):
                 if oparg >= len(code.co_cellvars):
-                    argrepr = freevars[oparg - cellvars.length].toJavaStringUncached()
+                    argrepr = code.co_freevars[oparg - code.co_cellvars.length].toJavaStringUncached()
                 else:
-                    argrepr = cellvars[oparg].toJavaStringUncached()
+                    argrepr = code.co_cellvars[oparg].toJavaStringUncached()
                 break
             elif opcode in (opc.opmap["LOAD_FAST"], opc.opmap["STORE_FAST"], opc.opmap["DELETE_FAST"]):
                 argval = argrepr = varnames[oparg]
                 break
 
-            elif opcode in (opc.opmap["LOAD_NAME"],
-                            opc.opmap["LOAD_METHOD"],
-                            opc.opmap["STORE_NAME"],
-                            opc.opmap["DELETE_NAME"],
-                            opc.opmap["IMPORT_NAME"],
-                            opc.opmap["IMPORT_FROM"],
-                            opc.opmap["LOAD_GLOBAL"],
-                            opc.opmap["STORE_GLOBAL"],
-                            opc.opmap["DELETE_GLOBAL"],
-                            opc.opmap["LOAD_ATTR"],
-                            opc.opmap["STORE_ATTR"],
-                            opc.opmap["DELETE_ATTR"]):
+            elif optype == "name":
                 argval = oparg
                 argrepr = names[oparg - 1]
                 i += 1
@@ -143,7 +156,7 @@ def get_instructions_bytes_graal(code, opc):
                 break
 
             elif opcode == opc.opmap["BINARY_OP"]:
-                argpepr = BinaryOps.values()[oparg].toString()
+                argrepr = BinaryOps.values()[oparg].toString()
                 break
 
             elif opcode in (opc.opmap["COLLECTION_FROM_STACK"],
@@ -202,7 +215,7 @@ def get_instructions_bytes_graal(code, opc):
             tos_str=None,
             positions=None,
             optype=optype,
-            inst_size=(i - offset),
+            inst_size=inst_size,
             has_extended_arg=extended_arg_count != 0,
             fallthrough=None,
             start_offset=start_offset,
