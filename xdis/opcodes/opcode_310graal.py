@@ -72,47 +72,49 @@ def_graal_op(opc, "BINARY_OP", 7, 1, 2, 1)
 # Performs subscript get operation - {@code a[b]}.
 #   Pops: {@code b}, then {@code a}
 #   Pushes: result
-def_graal_op(opc, "BINARY_SUBSCR", 8, 0, 2, 1)
+def_graal_op(opc, "BINARY_SUBSCR", 0x8, 0, 2, 1)
 
 # Performs subscript set operation - {@code a[b] = c}.
 #   Pops: {@code b}, then {@code a}, then {@code c}
-def_graal_op(opc, "STORE_SUBSCR", 9, 0, 3, 0)
+def_graal_op(opc, "STORE_SUBSCR", 0x9, 0, 3, 0)
 
 # Performs subscript delete operation - {@code del a[b]}.
 #   Pops: {@code b}, then {@code a}
 #
-def_graal_op(opc, "DELETE_SUBSCR", 10, 0, 2, 0)
+def_graal_op(opc, "DELETE_SUBSCR", 0xa, 0, 2, 0)
 
 # Gets an iterator of an object.
 #   Pops: object
 #   Pushes: iterator
-def_graal_op(opc, "GET_ITER", 11, 0, 1, 1)
+def_graal_op(opc, "GET_ITER", 0xb, 0, 1, 1)
 
 # Gets an iterator of an object, does nothing for a generator iterator or a coroutine.
 #   Pops: object
 #   Pushes: iterator
-def_graal_op(opc, "GET_YIELD_FROM_ITER", 12, 0, 1, 1)
+def_graal_op(opc, "GET_YIELD_FROM_ITER", 0xc, 0, 1, 1)
 
 # Gets an awaitable of an object.
 #   Pops: object
 #   Pushes: awaitable
-def_graal_op(opc, "GET_AWAITABLE", 13, 0, 1, 1)
+def_graal_op(opc, "GET_AWAITABLE", 0xd, 0, 1, 1)
 
 # Gets the async iterator of an object - error if a coroutine is returned.
 #   Pops: object
 #   Pushes: async iterator
-def_graal_op(opc, "GET_AITER", 14, 0, 1, 1)
+#  Not in 3.8
+def_graal_op(opc, "GET_AITER", 0xe, 0, 1, 1)
 
 # Get the awaitable that will return the next element of an async iterator.
 #   Pops: object
 #   Pushes: awaitable
-def_graal_op(opc, "GET_ANEXT", 15, 0, 1, 1)
+#  Not in 3.8
+def_graal_op(opc, "GET_ANEXT", 0xf, 0, 1, 1)
 
 # Pushes: {@code __build_class__} builtin
-def_graal_op(opc, "LOAD_BUILD_CLASS", 16, 0, 0, 1)
+def_graal_op(opc, "LOAD_BUILD_CLASS", 0x10, 0, 0, 1)
 
 # Pushes: {@code AssertionError} builtin exception type
-def_graal_op(opc, "LOAD_ASSERTION_ERROR", 17, 0, 0, 1)
+def_graal_op(opc, "LOAD_ASSERTION_ERROR", 0x11, 0, 0, 1)
 
 # Returns the value to the caller. In generators, performs generator return.
 #   Pops: return value
