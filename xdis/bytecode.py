@@ -40,7 +40,7 @@ from xdis.instruction import Instruction
 from xdis.op_imports import get_opcode_module
 from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
-from xdis.version_info import PYTHON_IMPLEMENTATION
+from xdis.version_info import PYTHON_IMPLEMENTATION, PythonImplementation
 
 
 def get_docstring(filename: str, line_number: int, doc_str: str) -> str:
@@ -523,7 +523,7 @@ class Bytecode:
     ) -> None:
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
-        self._cell_names = ()
+        self._cell_names = tuple()
         if opc.version_tuple >= (1, 5):
             if first_line is None:
                 self.first_line = co.co_firstlineno
@@ -697,7 +697,13 @@ class Bytecode:
         extended_arg_starts_line: Optional[int] = None
         extended_arg_jump_target_offset: Optional[int] = None
 
-        for instr in get_instructions_bytes(
+        if self.opc.python_implementation == PythonImplementation.Graal:
+            from xdis.bytecode_graal import get_instructions_bytes_graal
+            get_instructions_fn = get_instructions_bytes_graal
+        else:
+            get_instructions_fn = get_instructions_bytes
+
+        for instr in get_instructions_fn(
             bytecode,
             self.opc,
             varnames,

@@ -698,11 +698,13 @@ add_magic_from_int(12897, "3.13.0b.rust")  # RustPython 3.12.0
 add_magic_from_int(13413, "3.13.0a.rust")  # RustPython 3.13.0
 add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0
 
-# Graal Python.  Graal uses JVM bytecode, not CPython or PyPy bytecode
-# Its magic number is
+# Graal Python.  Graal uses its own JVM-ish CPython bytecode, not
+# true CPython or PyPy bytecode.
+#
+# Graal's magic number:
 # MAGIC_NUMBER = 21000 + Compiler.BYTECODE_VERSION * 10;
-# Note: Different major/minor releases can have the same magic!
-# Graal for 3.11 and 3.12 are like that.
+# Note: Different major/minor releases
+# can have the same magic!  Graal for 3.11 and 3.12 are like that.
 
 # 21250 = 21000 + 15 * 10
 add_magic_from_int(21150, "3.8.5Graal (15)")

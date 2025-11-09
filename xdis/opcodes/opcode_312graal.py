@@ -1,6 +1,6 @@
-# (C) 2024-2025 by Rocky Bernstein
+# (C) 2025 by Rocky Bernstein
 """
-Python Graal 3.10 bytecode opcodes
+Python Graal 3.12 bytecode opcodes
 
 See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
@@ -10,6 +10,7 @@ from xdis.version_info import PythonImplementation
 
 loc = opc = locals()
 python_implementation = PythonImplementation("Graal")
+version_tuple = (3, 12, 7)
 
 init_opdata(opc, None, None)
 

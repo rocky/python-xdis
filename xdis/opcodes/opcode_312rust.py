@@ -26,9 +26,10 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
 from xdis.opcodes.opcode_312 import opcode_arg_fmt312, opcode_extended_fmt312
+from xdis.version_info import PythonImplementation
 
 version_tuple = (3, 12)
-python_implementation = "RustPython"
+python_implementation = PythonImplementation("RustPython")
 
 # oppush[op] => number of stack entries pushed
 oppush: List[int] = [0] * 256
