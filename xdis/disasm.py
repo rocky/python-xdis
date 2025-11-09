@@ -35,24 +35,28 @@ from xdis.codetype import codeType2Portable
 from xdis.codetype.base import iscode
 from xdis.cross_dis import format_code_info, format_exception_table
 from xdis.load import check_object_path, load_module
-from xdis.magics import GRAAL3_MAGICS, PYTHON_MAGIC_INT
+from xdis.magics import PYTHON_MAGIC_INT
 from xdis.op_imports import op_imports, remap_opcodes
 from xdis.version import __version__
-from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
+from xdis.version_info import (
+    PYTHON_IMPLEMENTATION,
+    PYTHON_VERSION_TRIPLE,
+    PythonImplementation,
+)
 
 
-def get_opcode(version_tuple, is_pypy, alternate_opmap=None):
+def get_opcode(version_tuple, python_implementation, alternate_opmap=None):
     # Set up disassembler with the right opcodes
     lookup = ".".join((str(i) for i in version_tuple))
-    if is_pypy:
-        lookup += "pypy"
+    if python_implementation == PythonImplementation.PyPy:
+        lookup += "PyPy"
     if lookup in op_imports.keys():
         if alternate_opmap is not None:
             # TODO: change bytecode version number comment line to indicate altered
             return remap_opcodes(op_imports[lookup], alternate_opmap)
         return op_imports[lookup]
-    if is_pypy:
-        pypy_str = " for pypy"
+    if python_implementation != PythonImplementation.CPyton:
+        pypy_str = f" for {python_implementation}"
     else:
         pypy_str = ""
     raise TypeError("%s is not a Python version%s I know about" % (lookup, pypy_str))
@@ -63,28 +67,17 @@ def show_module_header(
     co,
     timestamp,
     out=sys.stdout,
-    is_pypy=False,
     magic_int=None,
     source_size=None,
     sip_hash=None,
     header=True,
     show_filename=True,
-    is_graal=False,
+    python_implementation=PYTHON_IMPLEMENTATION,
     file_offset=None,
-) -> None:
+):
     bytecode_version = ".".join((str(i) for i in version_tuple))
     real_out = out or sys.stdout
-    if is_pypy:
-        co_pypy_str = "PyPy "
-    elif is_graal:
-        co_pypy_str = "Graal "
-    else:
-        co_pypy_str = ""
-
-    if IS_PYPY:
-        run_pypy_str = "PyPy "
-    else:
-        run_pypy_str = ""
+    implementation_str = python_implementation
 
     if header:
         magic_str = ""
@@ -92,15 +85,15 @@ def show_module_header(
             magic_str = str(magic_int)
         real_out.write(
             (
-                "# pydisasm version %s\n# %sPython bytecode %s%s"
-                "\n# Disassembled from %sPython %s\n"
+                "# pydisasm version %s\n# %s Python bytecode %s%s"
+                "\n#   Disassembled from %s Python %s\n"
             )
             % (
                 __version__,
-                co_pypy_str,
+                implementation_str,
                 bytecode_version,
                 " (%s)" % magic_str,
-                run_pypy_str,
+                str(PYTHON_IMPLEMENTATION),
                 "\n# ".join(sys.version.split("\n")),
             )
         )
@@ -129,15 +122,14 @@ def disco(
     co,
     timestamp,
     out=sys.stdout,
-    is_pypy: bool = False,
     magic_int=None,
     source_size=None,
     sip_hash=None,
     asm_format: str = "classic",
     alternate_opmap=None,
     show_source: bool = False,
-    is_graal: bool = False,
     methods=tuple(),
+    python_implementation=PYTHON_IMPLEMENTATION,
     file_offsets: dict = {},
 ) -> None:
     """
@@ -151,14 +143,13 @@ def disco(
         co,
         timestamp,
         out,
-        is_pypy,
         magic_int,
         source_size,
         sip_hash,
         header=True,
         show_filename=False,
-        is_graal=is_graal,
-    )
+        python_implementation=python_implementation)
+
 
     # Store final output stream when there is an error.
     real_out = out or sys.stdout
@@ -169,14 +160,14 @@ def disco(
                 format_code_info(
                     co,
                     version_tuple,
-                    is_graal=is_graal,
-                    file_offset=file_offsets.get(co) if not is_graal else {},
+                    python_implementation=python_implementation,
+                    file_offset=file_offsets.get(co),
                 )
                 + "\n"
             )
         pass
 
-    opc = get_opcode(version_tuple, is_pypy, alternate_opmap)
+    opc = get_opcode(version_tuple, python_implementation, alternate_opmap)
 
     if asm_format == "xasm":
         disco_loop_asm_format(opc, version_tuple, co, real_out, {}, set([]))
@@ -192,7 +183,7 @@ def disco(
             show_source=show_source,
             methods=methods,
             file_offsets=file_offsets,
-            is_unusual_bytecode=is_graal,
+            is_unusual_bytecode=python_implementation == PythonImplementation.Graal,
         )
 
 
@@ -246,6 +237,9 @@ def disco_loop(
             elif is_unusual_bytecode:
                 if hasattr(co, "graal_instr_str") and co.graal_instr_str:
                     real_out.write(co.graal_instr_str)
+                    if asm_format in ("extended_bytes", "bytes"):
+                        real_out.write("instruction bytecode:\n%s\n" % co.co_code)
+
                 else:
                     if hasattr(co, "graal_instr_str") and co.graal_instr_str:
                         real_out.write(co.graal_instr_str)
@@ -375,14 +369,13 @@ def disassemble_file(
     pyc_filename = None
     file_offsets = {}
     try:
-        # FIXME: add whether we want PyPy
         pyc_filename = check_object_path(filename)
         (
             version_tuple,
             timestamp,
             magic_int,
             co,
-            is_pypy,
+            python_implementation,
             source_size,
             sip_hash,
             file_offsets,
@@ -399,7 +392,7 @@ def disassemble_file(
         stat = os.stat(filename)
         source = open(filename, "r").read()
         co = compile(source, filename, "exec")
-        is_pypy = IS_PYPY
+        python_implementation = PYTHON_IMPLEMENTATION
         magic_int = PYTHON_MAGIC_INT
         sip_hash = 0
         source_size = stat.st_size
@@ -408,21 +401,18 @@ def disassemble_file(
     else:
         filename = pyc_filename
 
-    is_graal = magic_int in GRAAL3_MAGICS
-
     if asm_format == "header":
         show_module_header(
             version_tuple,
             co,
             timestamp,
             outstream,
-            is_pypy,
             magic_int,
             source_size,
             sip_hash,
             header=True,
             show_filename=True,
-            is_graal=is_graal,
+            python_implementation=python_implementation,
         )
     else:
         disco(
@@ -430,14 +420,13 @@ def disassemble_file(
             co=co,
             timestamp=timestamp,
             out=outstream,
-            is_pypy=is_pypy,
+            python_implementation=python_implementation,
             magic_int=magic_int,
             source_size=source_size,
             sip_hash=sip_hash,
             asm_format=asm_format,
             alternate_opmap=alternate_opmap,
             show_source=show_source,
-            is_graal=is_graal,
             methods=methods,
             file_offsets=file_offsets,
         )
@@ -448,7 +437,7 @@ def disassemble_file(
         version_tuple,
         timestamp,
         magic_int,
-        is_pypy,
+        python_implementation,
         source_size,
         sip_hash,
     )

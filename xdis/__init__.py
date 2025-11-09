@@ -146,6 +146,7 @@ from xdis.version_info import (
     IS_GRAAL,
     IS_PYPY,
     PYTHON3,
+    PYTHON_IMPLEMENTATION,
     PYTHON_VERSION_STR,
     PYTHON_VERSION_TRIPLE,
 )
@@ -284,6 +285,7 @@ __all__ = [
     "IS_GRAAL",
     "IS_PYPY",
     "PYTHON3",
+    "PYTHON_IMPLEMENTATION",
     "PYTHON_VERSION_STR",
     "PYTHON_VERSION_TRIPLE",
     "__version__",

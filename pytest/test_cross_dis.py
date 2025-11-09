@@ -3,7 +3,7 @@ from dis import findlabels as findlabels_std
 import pytest
 from xdis.cross_dis import findlabels
 from xdis.op_imports import get_opcode_module
-from xdis.version_info import IS_GRAAL, PYTHON_VERSION_TRIPLE
+from xdis.version_info import IS_GRAAL, PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
 
 
 @pytest.mark.skipif(IS_GRAAL, reason="Graal label finding is wonky")
@@ -13,7 +13,7 @@ from xdis.version_info import IS_GRAAL, PYTHON_VERSION_TRIPLE
 )
 def test_findlabels():
     code = findlabels.__code__.co_code
-    opc = get_opcode_module()
+    opc = get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
 
     assert findlabels(code, opc) == findlabels_std(code)
 
