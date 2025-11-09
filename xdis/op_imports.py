@@ -16,7 +16,7 @@
 
 """Facilitates for importing Python opcode maps for a given Python version"""
 import copy
-import sys
+from typing import Tuple
 
 from xdis.magics import canonic_python_version
 from xdis.opcodes import (
@@ -62,7 +62,7 @@ from xdis.opcodes import (
     opcode_313,
     opcode_314,
 )
-from xdis.version_info import IS_PYPY, version_tuple_to_str
+from xdis.version_info import PythonImplementation, version_tuple_to_str
 
 # FIXME
 op_imports = {
@@ -94,13 +94,13 @@ op_imports = {
     2.5: opcode_25,
     "2.5.0dropbox": opcode_25,
     "2.6a1": opcode_26,
-    "2.6pypy": opcode_26pypy,
+    "2.6PyPy": opcode_26pypy,
     2.6: opcode_26,
     "2.7": opcode_27,
     2.7: opcode_27,
     "2.7.18candidate1": opcode_27,
-    "2.7pypy": opcode_27pypy,
-    "2.7.12pypy": opcode_27pypy,
+    "2.7PyPy": opcode_27pypy,
+    "2.7.12PyPy": opcode_27pypy,
     "3.0": opcode_30,
     3.0: opcode_30,
     "3.0a5": opcode_30,
@@ -110,15 +110,15 @@ op_imports = {
     "3.2": opcode_32,
     "3.2a2": opcode_32,
     3.2: opcode_32,
-    "3.2pypy": opcode_32pypy,
+    "3.2PyPy": opcode_32pypy,
     "3.3a4": opcode_33,
     3.3: opcode_33,
-    "3.3pypy": opcode_33pypy,
+    "3.3PyPy": opcode_33pypy,
     "3.4": opcode_34,
     "3.4rc2": opcode_34,
     3.4: opcode_34,
     "3.5": opcode_35,
-    "3.5pypy": opcode_35pypy,
+    "3.5PyPy": opcode_35pypy,
     "3.5.1": opcode_35,
     "3.5.2": opcode_35,
     "3.5.3": opcode_35,
@@ -126,12 +126,12 @@ op_imports = {
     3.5: opcode_35,
     "3.6rc1": opcode_36,
     3.6: opcode_36,
-    "3.6pypy": opcode_36pypy,
-    "3.6.1pypy": opcode_36pypy,
+    "3.6PyPy": opcode_36pypy,
+    "3.6.1PyPy": opcode_36pypy,
     "3.7.0beta3": opcode_37,
     "3.7.0.beta3": opcode_37,
     "3.7.0": opcode_37,
-    "3.7pypy": opcode_37pypy,
+    "3.7PyPy": opcode_37pypy,
     3.7: opcode_37,
     "3.8.0alpha0": opcode_38,
     "3.8.0a0": opcode_38,
@@ -141,29 +141,29 @@ op_imports = {
     "3.8.0rc1+": opcode_38,
     "3.8.0candidate1": opcode_38,
     "3.8": opcode_38,
-    "3.8pypy": opcode_38pypy,
-    "3.8.0pypy": opcode_38pypy,
-    "3.8.12pypy": opcode_38pypy,
-    "3.8.13pypy": opcode_38pypy,
-    "3.8.14pypy": opcode_38pypy,
-    "3.8.15pypy": opcode_38pypy,
-    "3.8.16pypy": opcode_38pypy,
-    "3.8.17pypy": opcode_38pypy,
+    "3.8PyPy": opcode_38pypy,
+    "3.8.0PyPy": opcode_38pypy,
+    "3.8.12PyPy": opcode_38pypy,
+    "3.8.13PyPy": opcode_38pypy,
+    "3.8.14PyPy": opcode_38pypy,
+    "3.8.15PyPy": opcode_38pypy,
+    "3.8.16PyPy": opcode_38pypy,
+    "3.8.17PyPy": opcode_38pypy,
     "3.9.0alpha1": opcode_39,
     "3.9.0alpha2": opcode_39,
     "3.9.0beta5": opcode_39,
     "3.9": opcode_39,
-    "3.9pypy": opcode_39pypy,
-    "3.9.15pypy": opcode_39pypy,
-    "3.9.16pypy": opcode_39pypy,
-    "3.9.17pypy": opcode_39pypy,
-    "3.9.18pypy": opcode_39pypy,
+    "3.9PyPy": opcode_39pypy,
+    "3.9.15PyPy": opcode_39pypy,
+    "3.9.16PyPy": opcode_39pypy,
+    "3.9.17PyPy": opcode_39pypy,
+    "3.9.18PyPy": opcode_39pypy,
     3.9: opcode_39,
     "3.10.0rc2": opcode_310,
     "3.10.b1": opcode_310,
     "3.10": opcode_310,
-    "3.10pypy": opcode_310pypy,
-    "3.10.12pypy": opcode_310pypy,
+    "3.10PyPy": opcode_310pypy,
+    "3.10.12PyPy": opcode_310pypy,
     "3.11": opcode_311,
     "3.11.0": opcode_311,
     "3.11.1": opcode_311,
@@ -172,7 +172,7 @@ op_imports = {
     "3.11.4": opcode_311,
     "3.11.5": opcode_311,
     "3.11a7e": opcode_311,
-    "3.11.13pypy": opcode_311pypy,
+    "3.11.13PyPy": opcode_311pypy,
     3.11: opcode_311,
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
@@ -189,17 +189,7 @@ for k, v in canonic_python_version.items():
         op_imports[k] = op_imports[v]
 
 
-def get_opcode_module(version_info=None, variant=None):
-    if version_info is None:
-        version_info = sys.version_info
-        if variant is None and IS_PYPY:
-            variant = "pypy"
-            pass
-        pass
-    elif isinstance(version_info, float):
-        int_vers = int(version_info * 10)
-        version_info = [int_vers // 10, int_vers % 10]
-
+def get_opcode_module(version_info: Tuple[int, ...], implementation: PythonImplementation):
     vers_str = version_tuple_to_str(version_info)
     if len(version_info) > 3 and version_info[3] != "final":
         vers_str += version_tuple_to_str(version_info, start=3)
@@ -207,20 +197,8 @@ def get_opcode_module(version_info=None, variant=None):
     if vers_str not in canonic_python_version:
         vers_str = version_tuple_to_str(version_info[:2])
 
-    if variant is None:
-        try:
-            import platform
-
-            variant = platform.python_implementation()
-            if platform in ("Jython", "Pyston"):
-                vers_str += variant
-                pass
-        except ImportError:
-            # Python may be too old, e.g. < 2.6 or implementation may
-            # just not have the ``platform`` attribute.
-            pass
-    elif variant != "Graal":
-        vers_str += variant
+    if implementation != PythonImplementation.CPython:
+        vers_str += str(implementation)
 
     return op_imports[canonic_python_version[vers_str]]
 
@@ -337,4 +315,5 @@ def remap_opcodes(op_obj, alternate_opmap):
 
 
 if __name__ == "__main__":
-    print(get_opcode_module())
+    from version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
+    print(get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION))
