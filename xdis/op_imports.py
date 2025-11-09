@@ -189,7 +189,7 @@ for k, v in canonic_python_version.items():
         op_imports[k] = op_imports[v]
 
 
-def get_opcode_module(version_info: Tuple[int, ...], implementation: PythonImplementation):
+def get_opcode_module(version_info: tuple, implementation: PythonImplementation):
     vers_str = version_tuple_to_str(version_info)
     if len(version_info) > 3 and version_info[3] != "final":
         vers_str += version_tuple_to_str(version_info, start=3)

@@ -45,7 +45,7 @@ def _try_compile(source: str, name: str) -> CodeType:
 
 
 def code_info(
-    x, version_tuple: Tuple[int, ...], python_implementation: PythonImplementation
+    x, version_tuple: tuple, python_implementation: PythonImplementation
 ) -> str:
     """Formatted details of methods, functions, or code."""
     return format_code_info(
@@ -245,7 +245,7 @@ op_size = instruction_size
 
 def show_code(
     co,
-    version_tuple: Tuple[int, ...],
+    version_tuple: tuple,
     file=None,
     python_implementation=PYTHON_IMPLEMENTATION,
 ) -> None:
