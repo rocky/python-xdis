@@ -41,7 +41,7 @@ from xdis.magics import (
     py_str2tuple,
     versions,
 )
-from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, PythonImplementation
 
 
 def is_python_source(path) -> bool:
@@ -176,7 +176,7 @@ def load_module(
         magic_int: int, a bytecode-specific version number. This is related to the Python version
                      number, the two aren't quite the same thing.
         co         : code object
-        ispypy     : True if this was a PyPy code object
+        python_implementation : The variant of Python the bytecode is written in, e.g. CPython, Graal, Rust, Jython, ...
         source_size: The size of the source code mod 2**32, if that was stored in the bytecode.
                      None otherwise.
         sip_hash   : the SIP Hash for the file (only in Python 3.7 or greater), if the file
@@ -224,6 +224,7 @@ def load_module_from_file_object(
 
     timestamp = 0
     file_offsets = {}
+    python_implementation = PythonImplementation.CPython
     try:
         magic = fp.read(4)
         magic_int = magic2int(magic)
@@ -318,7 +319,11 @@ def load_module_from_file_object(
                 # the graal python interpreter to crash!
                 # For these reasons, we are better off using our marshal routines
                 # for Graal Python.
-                is_graal = magic_int in GRAAL3_MAGICS
+                if magic_int in GRAAL3_MAGICS:
+                    is_graal = True
+                    python_implementation = PythonImplementation.Graal
+                else:
+                    is_graal = False
                 if save_file_offsets and not is_graal:
                     co, file_offsets = xdis.unmarshal.load_code_and_get_file_offsets(
                         fp, magic_int, code_objects
@@ -350,12 +355,15 @@ def load_module_from_file_object(
     finally:
         fp.close()
 
+    if is_pypy(magic_int, filename):
+        python_implementation = PythonImplementation.PyPy
+
     return (
         version_triple,
         timestamp,
         magic_int,
         co,
-        is_pypy(magic_int, filename),
+        python_implementation,
         source_size,
         sip_hash,
         file_offsets,

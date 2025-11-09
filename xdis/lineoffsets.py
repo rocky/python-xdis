@@ -113,14 +113,10 @@ class LineOffsetInfo(object):
 
 def lineoffsets_in_file(filename: str, toplevel_only=False) -> Optional[LineOffsetInfo]:
     obj_path = check_object_path(filename)
-    version, timestamp, magic_int, code, pypy, source_size, sip_hash, _save_offsets = load_module(
+    version, timestamp, magic_int, code, python_implementation, source_size, sip_hash, _save_offsets = load_module(
         obj_path
     )
-    if pypy:
-        variant = "pypy"
-    else:
-        variant = None
-    opc = get_opcode_module(version, variant)
+    opc = get_opcode_module(version, python_implementation)
     return LineOffsetInfo(opc, code, not toplevel_only)
     pass
 
@@ -130,6 +126,8 @@ def lineoffsets_in_module(module, toplevel_only: bool=False) -> Optional[LineOff
 
 
 if __name__ == "__main__":
+    from xdis.version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
+
 
     def multi_line() -> Tuple[int, int]:
         # We have two statements on the same line
@@ -177,6 +175,6 @@ if __name__ == "__main__":
             pass
         return
 
-    opc = get_opcode_module()
+    opc = get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
     print_code_info(lineoffsets_in_file(__file__))
     # print_code_info(LineOffsetInfo(opc, multi_line.__code__, include_children=True))
