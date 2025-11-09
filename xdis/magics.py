@@ -37,13 +37,11 @@ import re
 import struct
 import sys
 from collections import defaultdict
-from importlib.util import MAGIC_NUMBER as MAGIC
-from typing import Dict, Set
 
 from xdis.version_info import IS_GRAAL, IS_PYPY, IS_RUST, version_tuple_to_str
 
+MAGIC = imp.get_magic()
 GRAAL3_MAGICS = (21150, 21260, 21280, 21290)
->>>>>>> python-3.6-to-3.10
 JYTHON_MAGICS = (1011, 65526)
 
 # See below for mapping to version numbers.

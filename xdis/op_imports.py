@@ -16,7 +16,6 @@
 
 """Facilitates for importing Python opcode maps for a given Python version"""
 import copy
-from typing import Tuple
 
 from xdis.magics import canonic_python_version
 from xdis.opcodes import (
@@ -199,7 +198,7 @@ def get_opcode_module(version_info: tuple, implementation: PythonImplementation)
     if vers_str not in canonic_python_version:
         vers_str = version_tuple_to_str(version_info[:2])
 
-    if implementation != PythonImplementation.CPython:
+    if str(implementation) != "CPython":
         vers_str += str(implementation)
 
     return op_imports[canonic_python_version[vers_str]]

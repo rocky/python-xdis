@@ -55,8 +55,8 @@ def get_opcode(version_tuple, python_implementation, alternate_opmap=None):
             # TODO: change bytecode version number comment line to indicate altered
             return remap_opcodes(op_imports[lookup], alternate_opmap)
         return op_imports[lookup]
-    if python_implementation != PythonImplementation.CPyton:
-        pypy_str = f" for {python_implementation}"
+    if str(python_implementation) != "CPython":
+        pypy_str = " for %s" % python_implementation
     else:
         pypy_str = ""
     raise TypeError("%s is not a Python version%s I know about" % (lookup, pypy_str))

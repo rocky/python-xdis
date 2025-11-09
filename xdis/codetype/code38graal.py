@@ -17,7 +17,6 @@
 import types
 from copy import deepcopy
 from types import CodeType
-from typing import Any, Dict, Set, Tuple
 
 from xdis.codetype.code38 import Code38, Code38FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -92,9 +91,9 @@ class Code38Graal(Code38):
         co_lnotab,
         co_freevars,
         co_cellvars,
-        reference_objects: Set[Any] = set(),
-        version_triple: Tuple[int, int, int] = (0, 0, 0),
-        other_fields: Dict[str, Any] = {},
+        reference_objects = set(),
+        version_triple = (0, 0, 0),
+        other_fields = {},
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
