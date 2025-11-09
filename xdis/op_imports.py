@@ -51,6 +51,7 @@ from xdis.opcodes import (
     opcode_37,
     opcode_37pypy,
     opcode_38,
+    opcode_38graal,
     opcode_38pypy,
     opcode_39,
     opcode_39pypy,
@@ -59,6 +60,7 @@ from xdis.opcodes import (
     opcode_311,
     opcode_311pypy,
     opcode_312,
+    opcode_312graal,
     opcode_313,
     opcode_314,
 )
@@ -146,6 +148,7 @@ op_imports = {
     "3.8.12PyPy": opcode_38pypy,
     "3.8.13PyPy": opcode_38pypy,
     "3.8.14PyPy": opcode_38pypy,
+    "3.8.5Graal": opcode_38graal,
     "3.8.15PyPy": opcode_38pypy,
     "3.8.16PyPy": opcode_38pypy,
     "3.8.17PyPy": opcode_38pypy,
@@ -172,8 +175,9 @@ op_imports = {
     "3.11.4": opcode_311,
     "3.11.5": opcode_311,
     "3.11a7e": opcode_311,
-    "3.11.13PyPy": opcode_311pypy,
+    "3.11.13PyPy": opcode_311pypy, # is this right?
     3.11: opcode_311,
+    "3.12.7Graal": opcode_312graal, # this right?
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
     "3.13.0rc3": opcode_313,

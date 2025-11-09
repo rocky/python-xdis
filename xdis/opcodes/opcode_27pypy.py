@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020, 2023 by Rocky Bernstein
+# (C) Copyright 2017, 2020, 2023, 2025 by Rocky Bernstein
 """
 PYPY 2.7 opcodes
 
@@ -6,6 +6,7 @@ This is a like Python 2.7's opcode.py with some classification
 of stack usage.
 """
 import sys
+
 import xdis.opcodes.opcode_27 as opcode_27
 from xdis.opcodes.base import (
     def_op,
@@ -16,11 +17,11 @@ from xdis.opcodes.base import (
     nargs_op,
     update_pj3,
 )
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
+from xdis.version_info import PythonImplementation
 
 version_tuple = (2, 7)
-python_implementation = "PyPy"
+python_implementation = PythonImplementation("PyPy")
 
 loc = locals()
 

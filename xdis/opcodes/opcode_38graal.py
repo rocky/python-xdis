@@ -8,8 +8,12 @@ See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 from typing import Dict, Set
 
 from xdis.opcodes.base import init_opdata
+from xdis.version_info import PythonImplementation
 
-opc = locals()
+loc = opc = locals()
+python_implementation = PythonImplementation("Graal")
+version_tuple = (3, 8, 5)
+
 init_opdata(opc, None, None)
 
 arg_counts: Dict[int, int] = {}

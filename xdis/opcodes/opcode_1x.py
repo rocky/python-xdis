@@ -48,8 +48,11 @@ from xdis.opcodes.opcode_2x import (
     extended_format_SLICE_2,
     extended_format_SLICE_3,
 )
+from xdis.version_info import PythonImplementation
 
 loc = locals()
+python_implementation = PythonImplementation("CPython")
+
 init_opdata(loc, None, None)
 
 # Opcodes greater than 90 take an instruction operand or "argument"

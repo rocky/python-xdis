@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021, 2023-2025 by Rocky Bernstein
 """
 CPython 3.1 bytecode opcodes
 
@@ -7,7 +7,8 @@ of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_32 as opcode_32
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # noqa
+    cpython_implementation as python_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -20,7 +21,6 @@ from xdis.opcodes.opcode_33 import opcode_arg_fmt33, opcode_extended_fmt33
 loc = locals()
 
 version_tuple = (3, 1)
-python_implementation = "CPython"
 
 init_opdata(loc, opcode_32, version_tuple)
 
