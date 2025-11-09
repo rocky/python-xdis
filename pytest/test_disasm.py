@@ -93,7 +93,7 @@ if os.name != "nt":
         for test_name, version in [
             ("01_fstring", "3.6"),
             # ("01_fstring", "3.10"),  # FIXME
-            ("04_pypy_lambda", "2.7pypy"),
+            ("04_pypy_lambda", "2.7PyPy"),
             ("03_big_dict", "2.7"),
             ("03_big_dict", "3.3"),
             ("03_big_dict", "3.5"),

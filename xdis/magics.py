@@ -231,10 +231,10 @@ add_magic_from_int(62191, "2.7a0+2")  # introduce SETUP_WITH
 add_magic_from_int(62201, "2.7a0+3")  # introduce BUILD_SET
 add_magic_from_int(62211, "2.7")  # introduce MAP_ADD and SET_ADD
 
-add_magic_from_int(2657, "2.7pyston-0.6.1")
+add_magic_from_int(2657, "2.7Pyston-0.6.1")
 
 # PyPy including pypy-2.6.1, pypy-5.0.1 PyPy adds 7 to the corresponding CPython number
-add_magic_from_int(62211 + 7, "2.7pypy")
+add_magic_from_int(62211 + 7, "2.7PyPy")
 
 add_magic_from_int(3000, "3.000")
 add_magic_from_int(3010, "3.000+1")  # removed UNARY_CONVERT
@@ -259,7 +259,7 @@ add_magic_from_int(3180, "3.2a2")  # 3.2a2 (add DELETE_DEREF)
 
 # Python 3.2.5 - PyPy 2.3.4 PyPy adds 7 to the corresponding CPython
 # number
-add_magic_from_int(3180 + 7, "3.2pypy")
+add_magic_from_int(3180 + 7, "3.2PyPy")
 
 add_magic_from_int(3190, "3.3a0")  # __class__ super closure changed
 add_magic_from_int(3200, "3.3a0+")  # __qualname__ added
@@ -690,16 +690,16 @@ add_magic_from_int(3655, "3.15-dev")
 
 # Often, PyPY increases its magic number by 16.
 add_magic_from_int(48, "3.2a2")
-add_magic_from_int(64, "3.3pypy")
-add_magic_from_int(112, "3.5pypy")  # pypy3.5-c-jit-latest
-add_magic_from_int(160, "3.6.1pypy")  # '3.6.1 ... PyPy 7.1.0-beta0'
-add_magic_from_int(192, "3.6pypy")  # '3.6.9 ... PyPy 7.1.0-beta0'
-add_magic_from_int(224, "3.7pypy")  # PyPy 3.7.9-beta0
-add_magic_from_int(240, "3.7pypy")  # PyPy 3.7.9-beta0
-add_magic_from_int(256, "3.8pypy")  # PyPy 3.8.15
-add_magic_from_int(320, "3.9pypy")  # PyPy 3.9-v7.3.8
-add_magic_from_int(336, "3.9pypy")  # PyPy 3.9.15, PyPy 3.9.17
-add_magic_from_int(384, "3.10pypy")  # PyPy 3.10.12
+add_magic_from_int(64, "3.3PyPy")
+add_magic_from_int(112, "3.5PyPy")  # pypy3.5-c-jit-latest
+add_magic_from_int(160, "3.6.1pyPy")  # '3.6.1 ... PyPy 7.1.0-beta0'
+add_magic_from_int(192, "3.6PyPy")  # '3.6.9 ... PyPy 7.1.0-beta0'
+add_magic_from_int(224, "3.7PyPy")  # PyPy 3.7.9-beta0
+add_magic_from_int(240, "3.7PyPy")  # PyPy 3.7.9-beta0
+add_magic_from_int(256, "3.8PyPy")  # PyPy 3.8.15
+add_magic_from_int(320, "3.9PyPy")  # PyPy 3.9-v7.3.8
+add_magic_from_int(336, "3.9PyPy")  # PyPy 3.9.15, PyPy 3.9.17
+add_magic_from_int(384, "3.10PyPy")  # PyPy 3.10.12
 add_magic_from_int(416, "3.11.13pypy")  # PyPy 3.11.13 or pypy3.11-7.3.20
 
 add_magic_from_int(12641, "3.12.0a.rust")  # RustPython 3.12.0
@@ -714,7 +714,10 @@ add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0
 # Graal for 3.11 and 3.12 are like that.
 
 # 21250 = 21000 + 15 * 10
-add_magic_from_int(21150, "3.8.5Graal")
+add_magic_from_int(21150, "3.8.5Graal (15)")
+
+# 21250 = 21000 + 26 * 10
+add_magic_from_int(21260, "3.8.5Graal (16)")
 
 # 21250 = 21000 + 28 * 10
 add_magic_from_int(21280, "3.10.8Graal")
@@ -731,9 +734,9 @@ add_magic_from_int(65226, "2.7.4Jython")  # Jython 2.7.4
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
 magics = __by_version(versions)
-magics["3.8.12pypy"] = magics["3.8.0rc1+"]
-magics["3.9.15pypy"] = magics["3.9.0alpha1"]
-magics["3.9.16pypy"] = magics["3.9.0alpha1"]
+magics["3.8.12PyPy"] = magics["3.8.0rc1+"]
+magics["3.9.15PyPy"] = magics["3.9.0alpha1"]
+magics["3.9.16PyPy"] = magics["3.9.0alpha1"]
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
@@ -784,20 +787,20 @@ add_canonic_versions(
 add_canonic_versions("3.7b1", "3.7.0beta3")
 add_canonic_versions("3.8a1", "3.8.0beta2")
 
-add_canonic_versions("2.7.10pypy 2.7.12pypy 2.7.13pypy 2.7.18pypy", "2.7pypy")
+add_canonic_versions("2.7.10PyPy 2.7.12PyPy 2.7.13PyPy 2.7.18PyPy", "2.7PyPy")
 add_canonic_versions("2.7.3b0Jython", "2.7.1b3Jython")
-add_canonic_versions("3.8.5Graal", "3.8.5Graal")
+add_canonic_versions("3.8.5Graal", "3.8.5Graal (16)")
 add_canonic_versions("3.8.10Graal", "3.8.0rc1+")
 
-add_canonic_versions("3.2.5pypy", "3.2pypy")
-add_canonic_versions("3.3.5pypy", "3.3pypy")
-add_canonic_versions("3.5.3pypy", "3.5pypy")
-add_canonic_versions("3.6.9pypy 3.6.12pypy", "3.6pypy")
-add_canonic_versions("3.7.0pypy 3.7.9pypy 3.7.10pypy 3.7.12pypy 3.7.13pypy", "3.7pypy")
-add_canonic_versions("3.8.0pypy 3.8.12pypy 3.8.13pypy 3.8.15pypy", "3.8.12pypy")
-add_canonic_versions("3.8.16pypy", "3.8pypy")
-add_canonic_versions("3.9.17pypy 3.9.18pypy 3.9.19pypy", "3.9pypy")
-add_canonic_versions("3.10.12pypy 3.10.13pypy 3.10.14pypy 3.10pypy", "3.10pypy")
+add_canonic_versions("3.2.5PyPy", "3.2PyPy")
+add_canonic_versions("3.3.5PyPy", "3.3PyPy")
+add_canonic_versions("3.5.3PyPy", "3.5PyPy")
+add_canonic_versions("3.6.9PyPy 3.6.12PyPy", "3.6PyPy")
+add_canonic_versions("3.7.0PyPy 3.7.9PyPy 3.7.10PyPy 3.7.12PyPy 3.7.13PyPy", "3.7PyPy")
+add_canonic_versions("3.8.0PyPy 3.8.12PyPy 3.8.13PyPy 3.8.15PyPy", "3.8.12PyPy")
+add_canonic_versions("3.8.16PyPy", "3.8PyPy")
+add_canonic_versions("3.9.17PyPy 3.9.18PyPy 3.9.19PyPy", "3.9PyPy")
+add_canonic_versions("3.10.12PyPy 3.10.13PyPy 3.10.14PyPy 3.10PyPy", "3.10PyPy")
 add_canonic_versions("2.7.8Pyston", "2.7.7Pyston")
 add_canonic_versions("3.7.0alpha3", "3.7.0alpha3")
 add_canonic_versions(
@@ -816,8 +819,8 @@ add_canonic_versions(
 )
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 "
-    "3.9.12 3.9.13 3.9.14 3.9.14 3.9.15 3.9.16 3.9.17 3.9.18 3.9.19 3.9.10pypy 3.9.11pypy 3.9.12pypy "
-    "3.9.15pypy 3.9.16pypy 3.9.0b5+ 3.9.17 3.9.18 3.9.19 3.9.20 3.9.21 3.9.22 3.9.23 3.9.24",
+    "3.9.12 3.9.13 3.9.14 3.9.14 3.9.15 3.9.16 3.9.17 3.9.18 3.9.19 3.9.10PyPy 3.9.11PyPy 3.9.12PyPy "
+    "3.9.15PyPy 3.9.16PyPy 3.9.0b5+ 3.9.17 3.9.18 3.9.19 3.9.20 3.9.21 3.9.22 3.9.23 3.9.24",
     "3.9.0beta5",
 )
 
@@ -859,11 +862,11 @@ for v in versions.values():
 # A set of all Python versions we know about
 python_versions = set(canonic_python_version.keys())
 
-# Python major, minor version names, e.g. 3.6, 3.11pypy, etc.
+# Python major, minor version names, e.g. 3.6, 3.11PyPy, etc.
 # These are not considered interim version number.
-minor_release_names = [
-    python_version for python_version in python_versions if re.match("^[1-3][.][0-9]+(?:pypy|Graal)?$", python_version)
-]
+minor_release_names = {
+    python_version for python_version in python_versions if re.match("^[1-3][.][0-9]+(?:PyPy|Graal)?$", python_version)
+}
 
 
 def __show(text, magic):
@@ -891,7 +894,7 @@ def py_str2tuple(orig_version):
     tuple. For example 3.2a1, 3.2.0, 3.2.2, 3.2.6 among others all map
     to (3, 2).
     """
-    version = re.sub(r"(pypy|dropbox)$", "", orig_version)
+    version = re.sub(r"(PyPy|dropbox)$", "", orig_version)
     if version in magics:
         m = re.match(r"^(\d)\.(\d+)\.(\d+)", version)
         if m:
@@ -919,7 +922,7 @@ def sysinfo2magic(version_info=sys.version_info):
         vers_str += version_tuple_to_str(version_info, start=3)
 
     if IS_PYPY:
-        vers_str += "pypy"
+        vers_str += "PyPy"
     elif IS_GRAAL:
         vers_str += "Graal"
     elif IS_RUST:

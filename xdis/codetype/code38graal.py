@@ -1,4 +1,4 @@
-# (C) Copyright 2025 by Rocky Bernstein
+# (C) 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,13 +16,9 @@
 
 import types
 from copy import deepcopy
+from types import CodeType
 
-from xdis.codetype.code311 import (
-    Code311,
-    Code311FieldTypes,
-    parse_linetable,
-    parse_location_entries,
-)
+from xdis.codetype.code38 import Code38, Code38FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order given in the Python docs for
@@ -30,7 +26,7 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 # "posonlyargcount" is not used, but it is in other Python versions, so it
 # has to be included since this structure is used as the Union type
 # for all code types.
-Code311GraalFieldNames = """
+Code38GraalFieldNames = """
         co_argcount
         co_cellvars
         co_code
@@ -41,13 +37,11 @@ Code311GraalFieldNames = """
         co_flags
         co_freevars
         co_kwonlyargcount
-        co_lines
         co_lnotab
         co_name
         co_names
         co_nlocals
         co_posonlyargcount
-        co_qualname
         co_stacksize
         co_varnames
         condition_profileCount
@@ -64,11 +58,9 @@ Code311GraalFieldNames = """
         variableShouldUnbox
 """
 
-Code311GraalFieldTypes = deepcopy(Code311FieldTypes)
-Code311GraalFieldTypes.update({"co_qualname": str, "co_exceptiontable": str})
+Code38GraalFieldTypes = deepcopy(Code38FieldTypes)
 
-
-class Code311Graal(Code311):
+class Code38Graal(Code38):
     """Class for a Python 3.11+ code object used when a Python interpreter less than 3.11 is
     working on Python 3.11 bytecode. It also functions as an object that can be used
     to build or write a Python3 code object, since we allow mutable structures.
@@ -83,46 +75,42 @@ class Code311Graal(Code311):
 
     def __init__(
         self,
-        co_argcount,
-        co_posonlyargcount,
-        co_kwonlyargcount,
-        co_nlocals,
-        co_stacksize,
-        co_flags,
-        co_consts,
+        co_argcount: int,
+        co_posonlyargcount: int,
+        co_kwonlyargcount: int,
+        co_nlocals: int,
+        co_stacksize: int,
+        co_flags: int,
+        co_consts: tuple,
         co_code,
-        co_names,
-        co_varnames,
-        co_freevars,
-        co_cellvars,
+        co_names: tuple,
+        co_varnames: tuple,
         co_filename,
         co_name,
-        co_qualname,
         co_firstlineno,
-        co_linetable,
-        co_exceptiontable,
-        reference_objects=set(),
-        version_triple=(0, 0, 0),
-        other_fields={},
-    ):
+        co_lnotab,
+        co_freevars,
+        co_cellvars,
+        reference_objects = set(),
+        version_triple = (0, 0, 0),
+        other_fields = {},
+    ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code311Graal, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_cellvars=co_cellvars,
             co_code=co_code,
             co_consts=co_consts,
-            co_exceptiontable=co_exceptiontable,
             co_filename=co_filename,
             co_firstlineno=co_firstlineno,
             co_flags=co_flags,
             co_freevars=co_freevars,
             co_kwonlyargcount=co_kwonlyargcount,
-            co_linetable=co_linetable,
+            co_lnotab=co_lnotab,
             co_name=co_name,
             co_names=co_names,
             co_nlocals=co_nlocals,
-            co_qualname=co_qualname,
             co_posonlyargcount=co_posonlyargcount,
             co_stacksize=co_stacksize,
             co_varnames=co_varnames,
@@ -133,13 +121,11 @@ class Code311Graal(Code311):
         for field_name, value in other_fields.items():
             setattr(self, field_name, value)
 
-        self.co_qualname = co_qualname
-        self.co_exceptiontable = co_exceptiontable
-        self.fieldtypes = Code311GraalFieldTypes
-        if type(self) is Code311Graal:
+        self.fieldtypes = Code38GraalFieldTypes
+        if type(self) is Code38Graal:
             self.check()
 
-    def to_native(self):
+    def to_native(self) -> CodeType:
         if not (PYTHON_VERSION_TRIPLE >= (3, 11)):
             raise TypeError(
                 "Python Interpreter needs to be in 3.11 or greater; is %s"
@@ -150,11 +136,9 @@ class Code311Graal(Code311):
         code.freeze()
         try:
             code.check()
-        except AssertionError(e):
+        except AssertionError as e:
             raise TypeError(e)
 
-        if code.co_exceptiontable is None:
-            code.co_exceptiontable = ""
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,
@@ -168,16 +152,8 @@ class Code311Graal(Code311):
             code.co_varnames,
             code.co_filename,
             code.co_name,
-            code.co_qualname,
             code.co_firstlineno,
-            code.co_linetable,
-            code.co_exceptiontable,
+            code.co_lnotab,
             code.co_freevars,
             code.co_cellvars,
         )
-
-    def co_lines(self):
-        return parse_linetable(self.co_linetable, self.co_firstlineno)
-
-    def co_positions(self):
-        return parse_location_entries(self.co_linetable, self.co_firstlineno)

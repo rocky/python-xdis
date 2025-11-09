@@ -23,21 +23,21 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 # with the 3.8 order.
 Code38FieldNames = """
         co_argcount
-        co_posonlyargcount
-        co_kwonlyargcount
-        co_nlocals
-        co_stacksize
-        co_flags
+        co_cellvars
         co_code
         co_consts
-        co_names
-        co_varnames
-        co_freevars
-        co_cellvars
         co_filename
-        co_name
         co_firstlineno
+        co_flags
+        co_freevars
+        co_kwonlyargcount
         co_lnotab
+        co_name
+        co_names
+        co_nlocals
+        co_posonlyargcount
+        co_stacksize
+        co_varnames
 """
 
 Code38FieldTypes = deepcopy(Code3FieldTypes)
@@ -73,9 +73,9 @@ class Code38(Code3):
         co_stacksize,
         co_flags,
         co_code,
-        co_consts,
-        co_names,
-        co_varnames,
+        co_consts: tuple,
+        co_names: tuple,
+        co_varnames: tuple,
         co_filename,
         co_name,
         co_firstlineno,
@@ -110,7 +110,7 @@ class Code38(Code3):
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
-        if type(self) is Code38:
+        if isinstance(self, Code38):
             self.check()
 
     def to_native(self):

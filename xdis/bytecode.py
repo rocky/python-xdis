@@ -39,12 +39,7 @@ from xdis.namedtuple24 import namedtuple
 from xdis.op_imports import get_opcode_module
 from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
-from xdis.version_info import IS_PYPY
-
-if IS_PYPY:
-    VARIANT = "pypy"
-else:
-    VARIANT = None
+from xdis.version_info import PYTHON_IMPLEMENTATION
 
 
 def get_docstring(filename, line_number, doc_str):
@@ -597,7 +592,7 @@ class Bytecode:
     def from_traceback(cls, tb, opc=None):
         """Construct a Bytecode from the given traceback"""
         if opc is None:
-            opc = get_opcode_module(sys.version_info, VARIANT)
+            opc = get_opcode_module(sys.version_info, PYTHON_IMPLEMENTATION)
         while tb.tb_next:
             tb = tb.tb_next
         return cls(
