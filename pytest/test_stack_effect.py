@@ -2,6 +2,8 @@ import os.path as osp
 
 from xdis import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
+from xdis.op_imports import get_opcode_module
+from xdis.version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
 
 
 def get_srcdir() -> str:
@@ -130,6 +132,15 @@ def test_stack_effect_vs_dis() -> None:
 #             has_arg = True
 #         else:
 #             has_arg = False
+    opc = get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
+    for (
+        opname,
+        opcode,
+    ) in opc.opmap.items():
+        if opname in ("EXTENDED_ARG", "NOP"):
+            continue
+        xdis_args = [opcode, opc]
+        dis_args = [opcode]
 
 #         if (
 #             xdis.PYTHON_VERSION_TRIPLE >= (3, 7)
