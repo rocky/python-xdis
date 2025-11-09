@@ -75,16 +75,16 @@ class Code38Graal(Code38):
 
     def __init__(
         self,
-        co_argcount: int,
-        co_posonlyargcount: int,
-        co_kwonlyargcount: int,
-        co_nlocals: int,
-        co_stacksize: int,
-        co_flags: int,
-        co_consts: tuple,
+        co_argcount,
+        co_posonlyargcount,
+        co_kwonlyargcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
+        co_consts,
         co_code,
-        co_names: tuple,
-        co_varnames: tuple,
+        co_names,
+        co_varnames,
         co_filename,
         co_name,
         co_firstlineno,
@@ -94,7 +94,7 @@ class Code38Graal(Code38):
         reference_objects = set(),
         version_triple = (0, 0, 0),
         other_fields = {},
-    ) -> None:
+    ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
         super().__init__(
@@ -125,7 +125,7 @@ class Code38Graal(Code38):
         if type(self) is Code38Graal:
             self.check()
 
-    def to_native(self) -> CodeType:
+    def to_native(self):
         if not (PYTHON_VERSION_TRIPLE >= (3, 11)):
             raise TypeError(
                 "Python Interpreter needs to be in 3.11 or greater; is %s"
@@ -136,7 +136,7 @@ class Code38Graal(Code38):
         code.freeze()
         try:
             code.check()
-        except AssertionError as e:
+        except AssertionError(e):
             raise TypeError(e)
 
         return types.CodeType(

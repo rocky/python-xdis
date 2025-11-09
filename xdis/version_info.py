@@ -18,7 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import platform
 import sys
-from enum import Enum
 
 PYTHON3 = sys.version_info >= (3, 0)
 
@@ -34,11 +33,7 @@ else:
     IS_RUST = False
 
 
-def version_tuple_to_str(
-    version_tuple=PYTHON_VERSION_TRIPLE, start=0, end=3, delimiter="."
-):
-
-class PythonImplementation(Enum):
+class PythonImplementation(object):
     """
     Enumeration of Python interpreter implementations. Each member's value is the
     canonical string returned by platform.python_implementation() for that implementation.
@@ -51,35 +46,33 @@ class PythonImplementation(Enum):
     Jython = "Jython"
     Other = "Other"
 
-    def __str__(self) -> str:
+    def __init__(self, kind):
+        self.kind = kind
+
+    def __str__(self):
         """
         Return the string value of the implementation. This makes str(PythonImplemtation.*)
         return the underlying implementation string (e.g. "CPython", "Graal", ...).
         """
-        return self.value
+        return self.kind
 
 
-def get_python_implementation(
-    implementation: str = platform.python_implementation(),
-) -> PythonImplementation:
+def get_python_implementation(implementation = "CPython"):
     """
     Detect the current Python implementation and return the corresponding
     PlatformImplemtation enum member.
     """
     # Match common exact names first
-    if implementation == "CPython":
-        return PythonImplementation.CPython
-    elif implementation == "PyPy":
-        return PythonImplementation.PyPy
-    elif implementation == "RustPython":
-        return PythonImplementation.RustPython
-    elif implementation == "Jython":
-        return PythonImplementation.Jython
-    # Graal may appear as "GraalVM" or include "Graal" in some environments
-    elif "Graal" in implementation:
-        return PythonImplementation.Graal
-    # If nothing matched, return Other.
-    return PythonImplementation.Other
+    if implementation is not None:
+        return PythonImplementation(implementation)
+
+    if "__pypy__" in sys.builtin_module_names:
+        return PythonImplementation("PyPy")
+
+    if hasattr(platform, implementation):
+        return PythonImplementation(platform.implementation())
+
+    return PythonImplementation("Other")
 
 
 PYTHON_IMPLEMENTATION = get_python_implementation()
@@ -89,12 +82,11 @@ IS_RUST = PYTHON_IMPLEMENTATION == PythonImplementation.RustPython
 
 
 def version_tuple_to_str(
-    version_tuple: tuple = PYTHON_VERSION_TRIPLE,
-    start: int = 0,
-    end: int = 3,
-    delimiter: str = ".",
-) -> str:
->>>>>>> python-3.0-to-3.2
+    version_tuple=PYTHON_VERSION_TRIPLE,
+    start=0,
+    end=3,
+    delimiter=".",
+):
     """
     Turn a version tuple, e.g. (3,2,6), into a dotted string, e.g. "3.2.6".
 
@@ -107,7 +99,3 @@ def version_tuple_to_str(
     delimiter is what string to put in the between components.
     """
     return delimiter.join([str(v) for v in version_tuple[start:end]])
-
-
-def version_str_to_tuple(python_version, length=2):
-    return tuple([int(v) for v in python_version.split(".")[:length]])

@@ -41,7 +41,7 @@ def _try_compile(source, name):
     return c
 
 
-def code_info(x, version_tuple: tuple, python_implementation):
+def code_info(x, version_tuple, python_implementation):
     """Formatted details of methods, functions, or code."""
     return format_code_info(
         get_code_object(x), version_tuple, python_implementation=python_implementation
@@ -98,6 +98,7 @@ def get_cache_size_313(opname):
 
 # For compatibility
 _get_cache_size_313 = get_cache_size_313
+
 
 def findlabels(code, opc):
     if opc.version_tuple < (3, 10) or IS_GRAAL:
@@ -243,7 +244,9 @@ def instruction_size(op, opc):
 op_size = instruction_size
 
 
-def show_code(co, version_tuple, file=None, python_implementation=PYTHON_IMPLEMENTATION):
+def show_code(
+    co, version_tuple, file=None, python_implementation=PYTHON_IMPLEMENTATION
+):
     """Print details of methods, functions, or code to *file*.
 
     If *file* is not provided, the output is printed on stdout.
@@ -282,7 +285,7 @@ def pretty_flags(flags, python_implementation=PYTHON_IMPLEMENTATION):
 
 def format_code_info(
     co,
-        version_tuple,
+    version_tuple,
     name=None,
     python_implementation=PYTHON_IMPLEMENTATION,
     file_offset=None,

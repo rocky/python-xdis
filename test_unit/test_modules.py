@@ -2,7 +2,7 @@ import sys
 import dis
 import unittest
 import xdis.std as xdis
-from xdis.version_info import version_tuple_to_str
+from xdis.version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 
 class TestModules(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestModules(unittest.TestCase):
             raise AssertionError
 
         # test "has.." tables
-        xmod = xdis.get_opcode_module()
+        xmod = xdis.get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
         attrs = (attr for attr in dir(dis) if attr.startswith("has"))
         for attr in attrs:
             try:

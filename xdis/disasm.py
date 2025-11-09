@@ -144,8 +144,9 @@ def disco(
     asm_format="classic",
     alternate_opmap=None,
     show_source=False,
+    methods=tuple(),
     python_implementation=PYTHON_IMPLEMENTATION,
-    file_offsets ={},
+    file_offsets={},
 ):
     """
     disassembles and deparses a given code block 'co'
@@ -171,18 +172,12 @@ def disco(
 
     if co.co_filename and asm_format != "xasm":
         if not_filtered(co, methods):
-            if not is_graal:
-                file_offset = file_offsets.get(co)
-            else:
-                file_offset = {}
             real_out.write(
                 format_code_info(
                     co,
                     version_tuple,
-                    is_graal=is_graal,
-                    file_offset=file_offset,
                     python_implementation=python_implementation,
-                    file_offset=file_offsets,
+                    file_offset=file_offsets.get(co),
                 )
                 + "\n"
             )

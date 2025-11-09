@@ -864,9 +864,9 @@ python_versions = set(canonic_python_version.keys())
 
 # Python major, minor version names, e.g. 3.6, 3.11PyPy, etc.
 # These are not considered interim version number.
-minor_release_names = {
+minor_release_names = set([
     python_version for python_version in python_versions if re.match("^[1-3][.][0-9]+(?:PyPy|Graal)?$", python_version)
-}
+])
 
 
 def __show(text, magic):
