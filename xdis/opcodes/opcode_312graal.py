@@ -8,7 +8,8 @@ See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 from typing import Dict, Set
 
 from xdis.opcodes.base import init_opdata
-from xdis.opcodes.base_graal import (
+from xdis.opcodes.base_graal import findlabels  # noqa
+from xdis.opcodes.base_graal import (  # find_linestarts,  # noqa
     binary_op_graal,
     call_op_graal,
     collection_op_graal,
@@ -103,12 +104,12 @@ def_op_graal(loc, "DELETE_SUBSCR", 0xA, 0, 2, 0)
 # Gets an iterator of an object.
 #   Pops: object
 #   Pushes: iterator
-def_op_graal(loc, "GET_ITER", 0xB, 0, 1, 1)
+def_op_graal(loc, "GET_ITER", 0xB, 1, 1, 0)
 
 # Gets an iterator of an object, does nothing for a generator iterator or a coroutine.
 #   Pops: object
 #   Pushes: iterator
-def_op_graal(loc, "GET_YIELD_FROM_ITER", 99, 0, 1, 1)
+def_op_graal(loc, "GET_YIELD_FROM_ITER", 0xC, 0, 1, 1)
 
 # Gets an awaitable of an object.
 #   Pops: object
@@ -166,70 +167,70 @@ name_op_graal(loc, "LOAD_ATTR", 90, 1, 1, 1)
 # first immediate operand which indexes the names array ({@code
 # co_names}).
 #   Pushes: read method
-name_op_graal(loc, "LOAD_METHOD", 0x15, 1, 1, 2)
+name_op_graal(loc, "LOAD_METHOD", 0x17, 1, 1, 1)
 
 # Writes an attribute - {@code a.b = c}. {@code b} is determined by
 # the immediate operand which indexes the names array ({@code
 # co_names}).
 #  Pops: {@code c}, then {@code a}
-name_op_graal(loc, "STORE_ATTR", 0x16, 1, 2, 0)
+name_op_graal(loc, "STORE_ATTR", 0x18, 1, 2, 1)
 
 # Deletes an attribute - {@code del a.b}. {@code b} is determined by
 # the immediate operand which indexes the names array ({@code
 # co_names}).
 #  Pops: {@code a}
-name_op_graal(loc, "DELETE_ATTR", 0x17, 1, 1, 0)
+name_op_graal(loc, "DELETE_ATTR", 0x19, 1, 1, 1)
 
 # Reads a global variable. The name is determined by the immediate
 # operand which indexes the names array ({@code co_names}).
 #   Pushes: read object
-name_op_graal(loc, "LOAD_GLOBAL", 0x18, 1, 0, 1)
-loc["nullaryloadop"].add(26)
+name_op_graal(loc, "LOAD_GLOBAL", 0x1A, 1, 0, 1)
+loc["nullaryloadop"].add(0x1A)
 
 
 # Writes a global variable. The name is determined by the immediate
 # operand which indexes the names array ({@code co_names}).
 #  Pops: value to be written
-name_op_graal(loc, "STORE_GLOBAL", 0x19, 1, 1, 0)
+name_op_graal(loc, "STORE_GLOBAL", 0x1B, 1, 1, 0)
 
 # Deletes a global variable. The name is determined by the immediate operand which indexes the
 # names array ({@code co_names}).
-name_op_graal(loc, "DELETE_GLOBAL", 0x1A, 1, 0, 0)
+name_op_graal(loc, "DELETE_GLOBAL", 0x1C, 1, 0, 0)
 
 # Reads a constant object from constants array ({@code co_consts}). Performs no conversion.
 #   Pushes: read constant
-const_op_graal(loc, "LOAD_CONST", 0x1B, 1, 0, 1)
-loc["nullaryloadop"].add(0x1B)
+const_op_graal(loc, "LOAD_CONST", 0x1D, 1, 0, 1)
+loc["nullaryloadop"].add(0x1D)
 
 # Reads a local variable determined by the immediate operand which indexes a stack slot and a
 # variable name in varnames array ({@code co_varnames}).
 #   Pushes: read value
-def_op_graal(loc, "LOAD_FAST", 0x1C, 1, 0, 1)
-loc["nullaryloadop"].add(0x1C0)
+def_op_graal(loc, "LOAD_FAST", 0x1E, 1, 0, 1)
+loc["nullaryloadop"].add(0x1EC)
 
 
 # Writes a local variable determined by the immediate operand which indexes a stack slot and a
 # variable name in varnames array ({@code co_varnames}).
 #  Pops: value to be written
-def_op_graal(loc, "STORE_FAST", 0x1D, 1, 1, 0)
+def_op_graal(loc, "STORE_FAST", 0x1F, 1, 1, 1)
 
 # Deletes a local variable determined by the immediate operand which indexes a stack slot and a
 # variable name in varnames array ({@code co_varnames}).
-def_op_graal(loc, "DELETE_FAST", 0x1E, 1, 0, 0)
+def_op_graal(loc, "DELETE_FAST", 0x20, 1, 0, 1)
 
 # Reads a local cell variable determined by the immediate operand
 # which indexes a stack slot after celloffset and a variable name in
 # cellvars or freevars array ({@code co_cellvars}, {@code
 # co_freevars}).
 #  Pushes: cell contents
-free_op_graal(loc, "LOAD_DEREF", 0x1F, 1, 0, 1)
+free_op_graal(loc, "LOAD_DEREF", 0x21, 1, 0, 1)
 
 # Deletes a local cell variable determined by the immediate operand
 # which indexes a stack slot after celloffset and a variable name in
 # cellvars or freevars array ({@code co_cellvars}, {@code
 # co_freevars}). Note that it doesn't delete the cell, just its
 # contents.
-free_op_graal(loc, "DELETE_DEREF", 0x21, 1, 0, 0)
+free_op_graal(loc, "DELETE_DEREF", 0x22, 1, 0, 0)
 
 # Writes a local cell variable determined by the immediate operand
 # which indexes a stack slot after celloffset and a variable name in
@@ -237,10 +238,10 @@ free_op_graal(loc, "DELETE_DEREF", 0x21, 1, 0, 0)
 # co_freevars}).
 #  Pops: value to be written into the cell contents
 # FIXME: this should be tagged as both a "free" and as "store" op.
-free_op_graal(loc, "STORE_DEREF", 0x20, 1, 1, 0)
+free_op_graal(loc, "STORE_DEREF", 0x23, 1, 1, 0)
 
 # TODO not implemented
-def_op_graal(loc, "LOAD_CLASSDEREF", 0x22, 1, 0, 1)
+def_op_graal(loc, "LOAD_CLASSDEREF", 0x24, 1, 0, 1)
 
 # Raises an exception. If the immediate operand is 0, it pops nothing
 # and is equivalent to {@code raise} without arguments. If the
@@ -249,7 +250,7 @@ def_op_graal(loc, "LOAD_CLASSDEREF", 0x22, 1, 0, 1)
 # {@code raise e from c} and it pops {@code c}, then {@code e}. Other
 # immediate operand values are illegal.
 def_op_graal(
-    loc, "RAISE_VARARGS", 37, 1
+    loc, "RAISE_VARARGS", 0x27, 1, 0, 1
 )  # , (oparg, followingArgs, withJump) -> oparg, 0)
 
 # Creates a slice object. If the immediate argument is 2, it is equivalent to a slice
@@ -280,8 +281,8 @@ def_op_graal(loc, "EXTENDED_ARG", 0x26, 1, 0, 0)
 # indexes the names array ({@code co_names}).
 #  Pops: fromlist (must be a constant {@code TruffleString[]}), then level (must be {@code int})
 #  Pushes: imported module
-name_op_graal(loc, "IMPORT_NAME", 0x27, 1, 2, 1)
-loc["nullaryloadop"].add(41)
+name_op_graal(loc, "IMPORT_NAME", 100, 1, 2, 1)
+loc["nullaryloadop"].add(100)
 
 
 # Imports a name from a module. The name determined by the immediate operand which indexes the
@@ -344,8 +345,9 @@ loc["nullaryloadop"].add(0x38)
 
 # Loads signed byte from immediate operand.
 #
-# def_op_graal(loc, "LOAD_BYTE", 0x36, 1, 0, 1)
-def_op_graal(loc, "LOAD_BYTE", 0x75, 1, 0, 1)  # this is observed
+def_op_graal(loc, "LOAD_BYTE_0", 0x75, 1, 0, 1)
+#
+def_op_graal(loc, "LOAD_BYTE_I", 0x76, 1, 0, 1)
 #
 # Loads {@code int} from primitiveConstants array indexed by the immediate operand.
 #
@@ -391,26 +393,26 @@ const_op_graal(loc, "LOAD_CONST_COLLECTION", 0x42, 2, 0, 2)
 # calling
 # -------
 
-# Calls method on an object using an array as args. The receiver is taken from the first
-# element of the array. The method name is determined by the immediate operand which indexes
+# calls method on an object using an array as args. the receiver is taken from the first
+# element of the array. the method name is determined by the immediate operand which indexes
 # the names array ({@code co_names}).
 #
-# Pops: args ({@code Object[]} of size >= 1)
+# pops: args ({@code object[]} of size >= 1)
 #
-# Pushes: call result
+# pushes: call result
 #
-call_op_graal(loc, "CALL_METHOD_VARARGS", 65, 1, 1, 1)
+call_op_graal(loc, "call_method_varargs", 65, 1, 1, 1)
 #
-# Calls method on an object using a number of stack args determined by the first immediate
+# calls method on an object using a number of stack args determined by the first immediate
 # operand.
 #
-# Pops: multiple arguments depending on the first immediate operand, then the method and the
+# pops: multiple arguments depending on the first immediate operand, then the method and the
 # receiver
 #
-# Pushes: call result
+# pushes: call result
 #
 call_op_graal(
-    loc, "CALL_METHOD", 42, 1, 1, 1
+    loc, "CALL_METHOD", 0x44, 1, 1, 1
 )  # , (oparg, followingArgs, withJump) -> oparg + 2, 1)
 #
 # Calls a callable using a number of stack args determined by the immediate operand.
@@ -432,7 +434,7 @@ call_op_graal(
 #
 # Pushes: call result
 #
-call_op_graal(loc, "CALL_COMPREHENSION", 68, 0, 2, 1)
+call_op_graal(loc, "CALL_COMPREHENSION", 0x46, 0, 2, 1)
 #
 # Calls a callable using an arguments array and keywords array.
 #
@@ -440,7 +442,7 @@ call_op_graal(loc, "CALL_COMPREHENSION", 68, 0, 2, 1)
 #
 # Pushes: call result
 #
-call_op_graal(loc, "CALL_FUNCTION_KW", 0x94, 0, 3, 1)
+call_op_graal(loc, "CALL_FUNCTION_KW", 0x47, 0, 3, 1)
 #
 # Calls a callable using an arguments array. No keywords are passed.
 #
@@ -448,7 +450,7 @@ call_op_graal(loc, "CALL_FUNCTION_KW", 0x94, 0, 3, 1)
 #
 # Pushes: call result
 #
-def_op_graal(loc, "CALL_FUNCTION_VARARGS", 70, 0, 2, 1)
+def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x48, 0, 2, 1)
 
 # ----------------------
 # destructuring bytecodes
@@ -488,23 +490,23 @@ def_op_graal(
 # Pushes (only if not jumping): the iterator, then the next value
 #
 jrel_op_graal(
-    loc, "FOR_ITER", 0x4b, 1, 1, 1
+    loc, "FOR_ITER", 0x4b, 1, 1, True, True, 1
 )  # (, (oparg, followingArgs, withJump) -> withJump ? 0 : 2)
 #
 # Jump forward by the offset in the immediate operand.
 #
-jrel_op_graal(loc, "JUMP_FORWARD", 0x4c, 1, 0, 1)
+jrel_op_graal(loc, "JUMP_FORWARD", 0x4c, 1, 0, False, False, 1)
 
 # Jump backward by the offset in the immediate operand. May trigger OSR compilation.
 #
-jrel_op_graal(loc, "JUMP_BACKWARD", 0x4d, 1, 0, 1)
+jrel_op_graal(loc, "JUMP_BACKWARD", 0x4d, 1, 0, False, False, 1)
 
 # Jump forward by the offset in the immediate operand if the top of the stack is false (in
 # Python sense).
 #
 # Pops (if not jumping): top of the stack
 jrel_op_graal(
-    loc, "JUMP_IF_FALSE_OR_POP", 0x4e, 1, 1, 1
+    loc, "JUMP_IF_FALSE_OR_POP", 0x4e, 1, 1, True, True, 1,
 )  # , (oparg, followingArgs, withJump) -> withJump ? 0 : 1, 0)
 
 # Jump forward by the offset in the immediate operand if the top of the stack is true (in
@@ -513,7 +515,7 @@ jrel_op_graal(
 # Pops (if not jumping): top of the stack
 #
 jrel_op_graal(
-    loc, "JUMP_IF_TRUE_OR_POP", 0x4f, 1, 1, 1
+    loc, "JUMP_IF_TRUE_OR_POP", 0x4f, 1, 1, True, True, 1,
 )  # , (oparg, followingArgs, withJump) -> withJump ? 0 : 1, 0)
 #
 # Jump forward by the offset in the immediate operand if the top of the stack is false (in
@@ -521,14 +523,14 @@ jrel_op_graal(
 #
 # Pops: top of the stack
 #
-jrel_op_graal(loc, "POP_AND_JUMP_IF_FALSE", 0x50, 1, 1, 1)
+jrel_op_graal(loc, "POP_AND_JUMP_IF_FALSE", 0x50, 1, 1, True, True, 3)
 #
 # Jump forward by the offset in the immediate operand if the top of the stack is true (in
 # Python sense).
 #
 # Pops: top of the stack
 #
-jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 0x51, 1, 1, 1)
+jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 0x51, 1, 1, True, True, 3)
 
 
 # ----------------
@@ -753,13 +755,13 @@ def_op_graal(loc, "END_ASYNC_FOR", 103, 0, 3, 0)
 #
 # Pushes: the context manager, then maybe-bound {@code __exit__}, then the result of
 # {@code __enter__}
-def_op_graal(loc, "SETUP_WITH", 104, 0, 1, 3)
+def_op_graal(loc, "SETUP_WITH", 0x6c, 1, 0, 0)
 
 # Run the exit handler of a context manager and reraise if necessary.
 #
 # Pops: exception or {@code None}, then maybe-bound {@code __exit__}, then the context manager
 
-def_op_graal(loc, "EXIT_WITH", 105, 0, 3, 0)
+def_op_graal(loc, "EXIT_WITH", 0x6d, 0, 3, 0)
 
 # Enter a context manager and save data for its exit
 #
@@ -768,18 +770,18 @@ def_op_graal(loc, "EXIT_WITH", 105, 0, 3, 0)
 # Pushes: the context manager, then the maybe-bound async function {@code __aexit__}, then the
 # awaitable returned by {@code __aenter__}
 #
-def_op_graal(loc, "SETUP_AWITH", 106, 0, 1, 3)
+def_op_graal(loc, "SETUP_AWITH", 0x6e, 0, 1, 3)
 
 # Run the exit handler of a context manager
 #
 # Pops: exception or {@code None}, then maybe-bound {@code __aexit__}, then the context manager
 #
 # Pushes: the exception or {@code None}, then the awaitable returned by {@code __aexit__}
-def_op_graal(loc, "GET_AEXIT_CORO", 107, 0, 3, 2)
+def_op_graal(loc, "GET_AEXIT_CORO", 0x6f, 0, 3, 2)
 
 # Reraise the exception passed to {@code __aexit__} if appropriate
 #
 #!Pops: The result of awaiting {@code __aexit__}, then the exception
-def_op_graal(loc, "EXIT_AWITH", 108, 0, 2, 0)
+def_op_graal(loc, "EXIT_AWITH", 0x70, 0, 2, 0)
 
 update_sets(loc)

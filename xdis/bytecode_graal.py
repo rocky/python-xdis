@@ -2,7 +2,12 @@
 from xdis.bytecode import Bytecode
 from xdis.cross_dis import get_code_object
 from xdis.instruction import Instruction
-from xdis.opcodes.base_graal import BINARY_OPS, COLLECTION_KIND, UNARY_OPS
+from xdis.opcodes.base_graal import (
+    BINARY_OPS,
+    COLLECTION_KIND,
+    UNARY_OPS,
+    get_optype_graal,
+)
 
 
 def get_instructions_bytes_graal(
@@ -28,9 +33,9 @@ def get_instructions_bytes_graal(
 
     i = 0
     n = len(bytecode)
-    oparg = 0
 
     extended_arg_count = 0
+    labels = opc.findlabels(bytecode, opc)
 
     while i < n:
         opcode = bytecode[i]
@@ -39,6 +44,7 @@ def get_instructions_bytes_graal(
         offset = i
 
         arg_count = opc.arg_counts[opcode]
+        is_jump_target = i in labels
 
         # print(
         #     f"offset: {offset} {hex(opcode)} {opname} arg_count: {arg_count}, optype: {optype}"
@@ -63,14 +69,14 @@ def get_instructions_bytes_graal(
                 for j in range(arg_count - 1):
                     following_args.append(bytecode[i + j])
                     i += 1
-                argrepr = "%2d" % arg
+                argrepr = str(arg)
 
         while True:
             if opcode == opc.opmap["EXTENDED_ARG"]:
                 argrepr = ""
                 break
-            elif opcode == opc.opmap["LOAD_BYTE"]:
-                argrepr = "%2d" % arg
+            elif opcode in (opc.opmap["LOAD_BYTE_0"], opc.opmap["LOAD_BYTE_I"]):
+                argrepr = str(arg)
                 argval = arg
                 break
             elif optype == "const":
@@ -79,7 +85,7 @@ def get_instructions_bytes_graal(
                 argrepr = str(constants[arg])
             elif opcode == opc.opmap["MAKE_FUNCTION"]:
                 if following_args:
-                    argrepr = "%2d" % following_args[0]
+                    argrepr = str(following_args[0])
                 argval = constants[arg]
                 argrepr = argval.co_name
                 break
@@ -233,7 +239,7 @@ def get_instructions_bytes_graal(
         # }
 
         yield Instruction(
-            is_jump_target=False,  # is_jump_target,
+            is_jump_target=is_jump_target,
             starts_line=False,  # starts_line,
             offset=offset,
             opname=opname,
@@ -250,42 +256,6 @@ def get_instructions_bytes_graal(
             fallthrough=None,
             start_offset=start_offset,
         )
-
-
-def get_optype_graal(opcode: int, opc) -> str:
-    """Helper to determine what class of instructions ``opcode`` is in.
-    Return is a string in:
-       compare, const, free, jabs, jrel, local, name, nargs, or ??
-    """
-    if opcode in opc.BINARY_OPS:
-        return "binary"
-    elif opcode in opc.COLLECTION_OPS:
-        return "collection"
-    elif opcode in opc.CONST_OPS:
-        return "const"
-    elif opcode in opc.COMPARE_OPS:
-        return "compare"
-    elif opcode in opc.ENCODED_ARG_OPS:
-        return "encoded_arg"
-    elif opcode in opc.FREE_OPS:
-        return "free"
-    elif opcode in opc.JABS_OPS:
-        return "jabs"
-    elif opcode in opc.JREL_OPS:
-        return "jrel"
-    # elif opcode in opc.LOCAL_OPS:
-    #     return "local"
-    elif opcode in opc.NAME_OPS:
-        return "name"
-    elif opcode in opc.NARGS_OPS:
-        return "nargs"
-    # This has to come after NARGS_OPS. Some are in both?
-    elif opcode in opc.VARGS_OPS:
-        return "vargs"
-    elif opcode in opc.UNARY_OPS:
-        return "unary"
-
-    return "??"
 
 
 class Bytecode_Graal(Bytecode):

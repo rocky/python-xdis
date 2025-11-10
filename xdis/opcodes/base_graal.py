@@ -19,6 +19,77 @@ limited by, and somewhat compatible with the corresponding
 Python opcode.py structures
 """
 
+
+def get_optype_graal(opcode: int, opc) -> str:
+    """Helper to determine what class of instructions ``opcode`` is in.
+    Return is a string in:
+       compare, const, free, jabs, jrel, local, name, nargs, or ??
+    """
+    if opcode in opc.BINARY_OPS:
+        return "binary"
+    elif opcode in opc.COLLECTION_OPS:
+        return "collection"
+    elif opcode in opc.CONST_OPS:
+        return "const"
+    elif opcode in opc.COMPARE_OPS:
+        return "compare"
+    elif opcode in opc.ENCODED_ARG_OPS:
+        return "encoded_arg"
+    elif opcode in opc.FREE_OPS:
+        return "free"
+    elif opcode in opc.JABS_OPS:
+        return "jabs"
+    elif opcode in opc.JREL_OPS:
+        return "jrel"
+    # elif opcode in opc.LOCAL_OPS:
+    #     return "local"
+    elif opcode in opc.NAME_OPS:
+        return "name"
+    elif opcode in opc.NARGS_OPS:
+        return "nargs"
+    # This has to come after NARGS_OPS. Some are in both?
+    elif opcode in opc.VARGS_OPS:
+        return "vargs"
+    elif opcode in opc.UNARY_OPS:
+        return "unary"
+
+    return "??"
+
+
+def findlabels(bytecode, opc):
+    """Returns a list of instruction offsets in the supplied bytecode
+    which are the targets of some sort of jump instruction.
+    """
+    offset = 0
+    n = len(bytecode)
+    offsets = []
+    while offset < n:
+        opcode = bytecode[offset]
+        optype = get_optype_graal(opcode, opc)
+
+        # opname = opc.opname[opcode]
+        # print(
+        #     f"offset: {offset} {hex(opcode)} {opname} optype: {optype}"
+        # )
+
+        jump_offset = -1
+        if optype == "jrel":
+            arg = bytecode[offset + 1]
+            if opcode == opc.opmap["JUMP_BACKWARD"]:
+                jump_offset = offset - arg
+            else:
+                jump_offset = offset + arg
+        # elif op in opc.JABS_OPS:
+        #     jump_offset = arg
+        if jump_offset >= 0:
+            if jump_offset not in offsets:
+                offsets.append(jump_offset)
+        inst_size = opc.arg_counts[opcode] + 1
+        offset += inst_size
+
+    return offsets
+
+
 # FIXME: Use an enumeration? Or tuple?
 BINARY_OPS = {
     0: "ADD",
@@ -60,7 +131,7 @@ BINARY_OPS = {
 COLLECTION_KIND = {
     32: "list",
     67: "tuple",  # Probably need to use a mask
-    99: "tuple", # probably need to use a mask
+    99: "tuple",  # probably need to use a mask
     3: "set",
     4: "dict",
     5: "kw",
@@ -244,3 +315,5 @@ def update_sets(loc) -> None:
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
     loc["VARGS_OPS"] = frozenset(loc["hasvargs"])
     loc["UNARY_OPS"] = frozenset(loc["unaryop"])
+    loc["findlabels"] = findlabels
+    loc["get_jump_targets"] = findlabels
