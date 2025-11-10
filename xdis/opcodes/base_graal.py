@@ -59,7 +59,8 @@ BINARY_OPS = {
 
 COLLECTION_KIND = {
     32: "list",
-    99: "tuple",
+    67: "tuple",  # Probably need to use a mask
+    99: "tuple", # probably need to use a mask
     3: "set",
     4: "dict",
     5: "kw",
@@ -72,20 +73,21 @@ UNARY_OPS = {
     30: "IN",
 }
 
-def binary_op_graal(
-        loc: dict,
-        name: str,
-        opcode: int,
-        pop: int = 2,
-        push: int = 1,
-        arg_count: int = 1,
 
+def binary_op_graal(
+    loc: dict,
+    name: str,
+    opcode: int,
+    pop: int = 2,
+    push: int = 1,
+    arg_count: int = 1,
 ) -> None:
     """
     Put opcode in the class of instructions that are binary operations.
     """
     loc["binaryop"].add(opcode)
     def_op_graal(loc, name, opcode, pop, push, arg_count)
+
 
 def def_op_graal(
     loc: dict,
@@ -103,11 +105,7 @@ def def_op_graal(
     if not fallthrough:
         loc["nofollow"].append(opcode)
     loc["arg_counts"][opcode] = arg_count
-    loc["operator_set"] = frozenset(
-        loc["nullaryop"]
-        | loc["unaryop"]
-        | loc["binaryop"]
-        )
+    loc["operator_set"] = frozenset(loc["nullaryop"] | loc["unaryop"] | loc["binaryop"])
 
 
 def call_op_graal(
@@ -145,6 +143,25 @@ def free_op_graal(
 ) -> None:
     def_op_graal(loc, name, opcode, pop, push, arg_count)
     loc["hasfree"].append(opcode)
+
+
+def jrel_op_graal(
+    loc,
+    name: str,
+    opcode: int,
+    pop: int = 0,
+    push: int = 0,
+    conditional=False,
+    fallthrough=True,
+    arg_count: int = 1,
+) -> None:
+    """
+    Put opcode in the class of instructions that can perform a relative jump.
+    """
+    def_op_graal(loc, name, opcode, pop, push, arg_count)
+    loc["hasjrel"].append(opcode)
+    if conditional:
+        loc["hascondition"].append(opcode)
 
 
 def name_op_graal(
@@ -194,13 +211,12 @@ def store_op_graal(
 
 
 def unary_op_graal(
-        loc: dict,
-        name: str,
-        opcode: int,
-        pop: int = 1,
-        push: int = 1,
-        arg_count: int = 1,
-
+    loc: dict,
+    name: str,
+    opcode: int,
+    pop: int = 1,
+    push: int = 1,
+    arg_count: int = 1,
 ) -> None:
     """
     Put opcode in the class of instructions that are binary operations.

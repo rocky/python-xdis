@@ -6,7 +6,15 @@ from xdis.opcodes.base_graal import BINARY_OPS, COLLECTION_KIND, UNARY_OPS
 
 
 def get_instructions_bytes_graal(
-    bytecode, opc, varnames, names, constants, *args, **kwargs
+    bytecode,
+    opc,
+    varnames,
+    names,
+    constants,
+    cells,
+    freevars,
+    line_offset,
+    exception_entries,
 ):
     """
     Iterate over the instructions in a bytecode string.
@@ -24,19 +32,21 @@ def get_instructions_bytes_graal(
 
     extended_arg_count = 0
 
-
     while i < n:
         opcode = bytecode[i]
         opname = opc.opname[opcode]
         optype = get_optype_graal(opcode, opc)
-        print(i, hex(opcode), opname, optype)
-        # breakpoint()
-
         offset = i
+
         arg_count = opc.arg_counts[opcode]
+
+        print(
+            f"offset: {offset} {hex(opcode)} {opname} arg_count: {arg_count}, optype: {optype}"
+        )
+
         i += 1
 
-        arg = None
+        arg = -1
         argval = None
         argrepr = ""
 
@@ -46,43 +56,43 @@ def get_instructions_bytes_graal(
         if has_arg:
             argrepr = ""
         else:
-            oparg = bytecode[i]
+            arg = bytecode[i]
             i += 1
             if arg_count > 1:
                 following_args = []
                 for j in range(arg_count - 1):
                     following_args.append(bytecode[i + j])
                     i += 1
-                argrepr = "%2d" % oparg
+                argrepr = "%2d" % arg
 
         while True:
             if opcode == opc.opmap["EXTENDED_ARG"]:
                 argrepr = ""
                 break
             elif opcode == opc.opmap["LOAD_BYTE"]:
-                argrepr = "%2d" % oparg
-                argval = oparg
+                argrepr = "%2d" % arg
+                argval = arg
                 break
             elif optype == "const":
-                arg = oparg
-                argval = constants[oparg]
+                arg = arg
+                argval = constants[arg]
             elif opcode == opc.opmap["MAKE_FUNCTION"]:
                 if following_args:
                     argrepr = "%2d" % following_args[0]
-                argval = constants[oparg]
+                argval = constants[arg]
                 argrepr = argval.co_name
                 break
 
             elif opcode in (opc.opmap["LOAD_INT"], opc.opmap["LOAD_LONG"]):
-                argrepr = Objects.toString(primitiveConstants[oparg])
+                argrepr = Objects.toString(primitiveConstants[arg])
                 break
             elif opcode == opc.opmap["LOAD_DOUBLE"]:
                 argrepr = Objects.toString(
-                    Double.longBitsToDouble(primitiveConstants[oparg])
+                    Double.longBitsToDouble(primitiveConstants[arg])
                 )
                 break
             elif opcode == opc.opmap["LOAD_COMPLEX"]:
-                argval = constants[oparg]
+                argval = constants[arg]
                 if num[0] == 0.0:
                     argrepr = "%g" % argval[1]
                 else:
@@ -94,27 +104,25 @@ def get_instructions_bytes_graal(
                 opc.opmap["STORE_DEREF"],
                 opc.opmap["DELETE_DEREF"],
             ):
-                if oparg >= len(code.co_cellvars):
-                    argrepr = code.co_freevars[
-                        oparg - code.co_cellvars.length
-                    ].toJavaStringUncached()
+                if arg >= len(cells):
+                    argrepr = freevars[arg - len(cells)]
                 else:
-                    argrepr = code.co_cellvars[oparg].toJavaStringUncached()
+                    argrepr = cells[arg]
                 break
             elif opcode in (
                 opc.opmap["LOAD_FAST"],
                 opc.opmap["STORE_FAST"],
                 opc.opmap["DELETE_FAST"],
             ):
-                argval = argrepr = varnames[oparg]
+                argval = argrepr = varnames[arg]
                 break
 
             elif optype == "name":
-                arg = argval = oparg
-                argrepr = names[oparg]
+                argval = arg
+                argrepr = names[arg]
                 break
             elif opcode == opc.opmap["FORMAT_VALUE"]:
-                kind = oparg & FormatOptions.FVC_MASK
+                kind = arg & FormatOptions.FVC_MASK
                 if kind == opc.FormatOptions.FVC_ST:
                     argrepr = "STR"
                     break
@@ -128,49 +136,38 @@ def get_instructions_bytes_graal(
                     argrepr = "NONE"
                     break
 
-                if (oparg & FormatOptions.FVS_MASK) == FormatOptions.FVS_HAVE_SPEC:
+                if (arg & FormatOptions.FVS_MASK) == FormatOptions.FVS_HAVE_SPEC:
                     argrepr += " + SPEC"
                     break
 
             elif opcode == opc.opmap["CALL_METHOD"]:
-                argrepr = "%2d" % oparg
+                argrepr = "%2d" % arg
                 break
 
             elif opcode == "unary":
-                arg = argval = oparg
-                argrepr = UNARY_OPS.get(oparg, "??")
+                argval = arg
+                argrepr = UNARY_OPS.get(arg, "??")
                 break
 
             elif optype == "binary":
-                arg = argval = oparg
-                argrepr = BINARY_OPS.get(oparg, "??")
+                argval = arg
+                argrepr = BINARY_OPS.get(arg, "??")
                 break
 
             elif optype == "collection":
-                arg = argval = oparg
-                argrepr = COLLECTION_KIND.get(oparg, "??")
+                argval = arg
+                argrepr = COLLECTION_KIND.get(arg, "??")
                 break
             elif opcode == opc.opmap["UNPACK_EX"]:
-                argrepr = "%d, %d" % (oparg, Byte.toUnsignedInt(following_args[0]))
+                argrepr = "%d, %d" % (arg, Byte.toUnsignedInt(following_args[0]))
                 break
-            elif opcode == opc.opmap["JUMP_BACKWARD"]:
-                # fields.computeIfAbsent(offset - oparg, k -> new String[DISASSEMBLY_NUM_COLUMNS])[1] = ">>"
-                argval = offset - oparg
-                argrepr = "to %d" % argval
-                break
-            elif opcode in (
-                opc.opmap["FOR_ITER"],
-                opc.opmap["JUMP_FORWARD"],
-                opc.opmap["POP_AND_JUMP_IF_FALSE"],
-                opc.opmap["POP_AND_JUMP_IF_TRUE"],
-                opc.opmap["JUMP_IF_FALSE_OR_POP"],
-                opc.opmap["JUMP_IF_TRUE_OR_POP"],
-                opc.opmap["MATCH_EXC_OR_JUMP"],
-                opc.opmap["SEND"],
-                opc.opmap["THROW"],
-            ):
-                # fields.computeIfAbsent(offset + oparg, k -> new String[DISASSEMBLY_NUM_COLUMNS])[1] = ">>"
-                argval = offset + oparg
+            elif optype == "jrel":
+                # fields.computeIfAbsent(offset + arg, k -> new String[DISASSEMBLY_NUM_COLUMNS])[1] = ">>"
+                arg = arg
+                if opcode == opc.opmap["JUMP_BACKWARD"]:
+                    argval = offset - arg
+                else:
+                    argval = offset + arg
                 argrepr = "to %d" % argval
                 break
             else:
@@ -180,9 +177,9 @@ def get_instructions_bytes_graal(
                 #     continue
 
             if opcode == opc.opmap["EXTENDED_ARG"]:
-                oparg <<= 8
+                arg <<= 8
             else:
-                oparg = 0
+                arg = 0
             break
 
         inst_size = (i - offset + 1) + (extended_arg_count * 2)
@@ -329,6 +326,8 @@ class Bytecode_Graal(Bytecode):
             co.co_varnames,
             co.co_names,
             co.co_consts,
+            co.co_cellvars,
+            co.co_freevars,
         )
 
     def __repr__(self) -> str:
