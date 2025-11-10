@@ -29,6 +29,7 @@ from xdis.opcodes.base_graal import (
     const_op_graal,
     def_op_graal,
     free_op_graal,
+    jrel_op_graal,
     name_op_graal,
     nargs_op_graal,
     store_op_graal,
@@ -330,15 +331,15 @@ def_op_graal(loc, "GET_LEN", 0x31, 0, 0, 1)
 # load bytecodes for special constants
 # -------------------------------------
 
-def_op_graal(loc, "LOAD_NONE", 0x32, 0, 0, 1)
+def_op_graal(loc, "LOAD_NONE", 0x32, 0, 1, 0)
 loc["nullaryloadop"].add(0x32)
 
-def_op_graal(loc, "LOAD_ELLIPSIS", 0x33, 0, 0, 1)
-def_op_graal(loc, "LOAD_TRUE", 0x34, 0, 0, 1)
-loc["nullaryloadop"].add(0x32)
+def_op_graal(loc, "LOAD_ELLIPSIS", 0x33, 0, 1, 0)
+def_op_graal(loc, "LOAD_TRUE", 0x34, 0, 1, 0)
+loc["nullaryloadop"].add(0x34)
 
-def_op_graal(loc, "LOAD_FALSE", 0x35, 0, 0, 1)
-loc["nullaryloadop"].add(0x33)
+def_op_graal(loc, "LOAD_FALSE", 0x35, 0, 1, 0)
+loc["nullaryloadop"].add(0x35)
 
 # Loads signed byte from immediate operand.
 #
@@ -485,24 +486,24 @@ def_op_graal(
 #
 # Pushes (only if not jumping): the iterator, then the next value
 #
-def_op_graal(
-    loc, "FOR_ITER", 74, 1, 1
+jrel_op_graal(
+    loc, "FOR_ITER", 74, 1, 0, 1
 )  # (, (oparg, followingArgs, withJump) -> withJump ? 0 : 2)
 #
 # Jump forward by the offset in the immediate operand.
 #
-def_op_graal(loc, "JUMP_FORWARD", 75, 1, 0, 0)
+jrel_op_graal(loc, "JUMP_FORWARD", 75, 1, 0, 1)
 
 # Jump backward by the offset in the immediate operand. May trigger OSR compilation.
 #
-def_op_graal(loc, "JUMP_BACKWARD", 76, 1, 0, 0)
+jrel_op_graal(loc, "JUMP_BACKWARD", 76, 1, 0, 1)
 
 # Jump forward by the offset in the immediate operand if the top of the stack is false (in
 # Python sense).
 #
 # Pops (if not jumping): top of the stack
-def_op_graal(
-    loc, "JUMP_IF_FALSE_OR_POP", 77, 3
+jrel_op_graal(
+    loc, "JUMP_IF_FALSE_OR_POP", 77, 1, 1, 1,
 )  # , (oparg, followingArgs, withJump) -> withJump ? 0 : 1, 0)
 
 # Jump forward by the offset in the immediate operand if the top of the stack is true (in
@@ -510,8 +511,8 @@ def_op_graal(
 #
 # Pops (if not jumping): top of the stack
 #
-def_op_graal(
-    loc, "JUMP_IF_TRUE_OR_POP", 78, 3
+jrel_op_graal(
+    loc, "JUMP_IF_TRUE_OR_POP", 78, 1, 1, 1,
 )  # , (oparg, followingArgs, withJump) -> withJump ? 0 : 1, 0)
 #
 # Jump forward by the offset in the immediate operand if the top of the stack is false (in
@@ -519,14 +520,14 @@ def_op_graal(
 #
 # Pops: top of the stack
 #
-def_op_graal(loc, "POP_AND_JUMP_IF_FALSE", 79, 3, 1, 0)
+jrel_op_graal(loc, "POP_AND_JUMP_IF_FALSE", 79, 1, 1, 1)
 #
 # Jump forward by the offset in the immediate operand if the top of the stack is true (in
 # Python sense).
 #
 # Pops: top of the stack
 #
-def_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 80, 3, 1, 0)
+jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 80, 1, 1, 1)
 
 
 # ----------------

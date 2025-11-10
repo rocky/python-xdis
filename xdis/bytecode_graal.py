@@ -40,9 +40,9 @@ def get_instructions_bytes_graal(
 
         arg_count = opc.arg_counts[opcode]
 
-        print(
-            f"offset: {offset} {hex(opcode)} {opname} arg_count: {arg_count}, optype: {optype}"
-        )
+        # print(
+        #     f"offset: {offset} {hex(opcode)} {opname} arg_count: {arg_count}, optype: {optype}"
+        # )
 
         i += 1
 
@@ -76,6 +76,7 @@ def get_instructions_bytes_graal(
             elif optype == "const":
                 arg = arg
                 argval = constants[arg]
+                argrepr = str(constants[arg])
             elif opcode == opc.opmap["MAKE_FUNCTION"]:
                 if following_args:
                     argrepr = "%2d" % following_args[0]
@@ -260,7 +261,9 @@ def get_optype_graal(opcode: int, opc) -> str:
         return "binary"
     elif opcode in opc.COLLECTION_OPS:
         return "collection"
-    if opcode in opc.COMPARE_OPS:
+    elif opcode in opc.CONST_OPS:
+        return "const"
+    elif opcode in opc.COMPARE_OPS:
         return "compare"
     elif opcode in opc.ENCODED_ARG_OPS:
         return "encoded_arg"
@@ -348,4 +351,9 @@ class Bytecode_Graal(Bytecode):
         return get_instructions_bytes_graal(
             co.co_code,
             self.opc,
+            co.co_varnames,
+            co.co_names,
+            co.co_consts,
+            co.co_cellvars,
+            co.co_freevars,
         )

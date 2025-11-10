@@ -540,7 +540,7 @@ jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 0x51, 1, 1, 1)
 #
 # Pushes: the cell object
 #
-def_op_graal(loc, "LOAD_CLOSURE", 81, 1, 0, 1)
+free_op_graal(loc, "LOAD_CLOSURE", 81, 1, 0, 1)
 #
 # Reduces multiple stack items into an array of cell objects.
 #
