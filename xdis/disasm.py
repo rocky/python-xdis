@@ -245,24 +245,24 @@ def disco_loop(
                     if asm_format in ("extended_bytes", "bytes"):
                         real_out.write("instruction bytecode:\n%s\n" % co.co_code)
 
-                if opc.python_implementation == PythonImplementation.Graal:
-                    bytecode = Bytecode_Graal(co, opc)
-                else:
-                    bytecode = Bytecode(co, opc, dup_lines=dup_lines)
-                real_out.write(
-                    bytecode.dis(
-                        asm_format=asm_format,
-                        show_source=show_source,
-                    )
-                    + "\n"
+            if opc.python_implementation == PythonImplementation.Graal:
+                bytecode = Bytecode_Graal(co, opc)
+            else:
+                bytecode = Bytecode(co, opc, dup_lines=dup_lines)
+            real_out.write(
+                bytecode.dis(
+                    asm_format=asm_format,
+                    show_source=show_source,
                 )
+                + "\n"
+            )
 
-                if version_tuple >= (3, 11):
-                    if bytecode.exception_entries not in (None, []):
-                        exception_table = format_exception_table(
-                            bytecode, version_tuple
-                        )
-                        real_out.write(exception_table + "\n")
+            if version_tuple >= (3, 11):
+                if bytecode.exception_entries not in (None, []):
+                    exception_table = format_exception_table(
+                        bytecode, version_tuple
+                    )
+                    real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):
