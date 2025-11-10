@@ -256,7 +256,6 @@ def disco_loop(
                         )
                     real_out.write(f"instruction bytecode:\n{co.co_code.hex(':')}\n")
 
-            else:
                 if opc.python_implementation == PythonImplementation.Graal:
                     bytecode = Bytecode_Graal(co, opc)
                 else:

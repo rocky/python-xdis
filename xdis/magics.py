@@ -734,7 +734,9 @@ magics["3.9.16PyPy"] = magics["3.9.0alpha1"]
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
-canonic_python_version = {}
+canonic_python_version = {
+    "3.12.8Graal": "3.12.8Graal"
+}
 
 
 def add_canonic_versions(release_versions: str, canonic: str) -> None:
