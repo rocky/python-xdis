@@ -2,6 +2,7 @@
 from xdis.bytecode import Bytecode
 from xdis.cross_dis import get_code_object
 from xdis.instruction import Instruction
+from xdis.opcodes.base_graal import BINARY_OPS, COLLECTION_KIND, UNARY_OPS
 
 
 def get_instructions_bytes_graal(
@@ -20,14 +21,16 @@ def get_instructions_bytes_graal(
     i = 0
     n = len(bytecode)
     oparg = 0
-    # This is for 3.8 Graal 23
 
     extended_arg_count = 0
+
 
     while i < n:
         opcode = bytecode[i]
         opname = opc.opname[opcode]
         optype = get_optype_graal(opcode, opc)
+        print(i, hex(opcode), opname, optype)
+        # breakpoint()
 
         offset = i
         arg_count = opc.arg_counts[opcode]
@@ -43,7 +46,7 @@ def get_instructions_bytes_graal(
         if has_arg:
             argrepr = ""
         else:
-            oparg |= bytecode[i]
+            oparg = bytecode[i]
             i += 1
             if arg_count > 1:
                 following_args = []
@@ -107,9 +110,8 @@ def get_instructions_bytes_graal(
                 break
 
             elif optype == "name":
-                argval = oparg
-                argrepr = names[oparg - 1]
-                i += 1
+                arg = argval = oparg
+                argrepr = names[oparg]
                 break
             elif opcode == opc.opmap["FORMAT_VALUE"]:
                 kind = oparg & FormatOptions.FVC_MASK
@@ -123,7 +125,7 @@ def get_instructions_bytes_graal(
                     argrepr = "ASCII"
                     break
                 elif opcode == opc.FormatOptions.FVC_NONE:
-                    argepr = "NONE"
+                    argrepr = "NONE"
                     break
 
                 if (oparg & FormatOptions.FVS_MASK) == FormatOptions.FVS_HAVE_SPEC:
@@ -134,22 +136,19 @@ def get_instructions_bytes_graal(
                 argrepr = "%2d" % oparg
                 break
 
-            elif opcode == opc.opmap["UNARY_OP"]:
-                argrepr = UnaryOps.values()[oparg].toString()
+            elif opcode == "unary":
+                arg = argval = oparg
+                argrepr = UNARY_OPS.get(oparg, "??")
                 break
 
-            elif opcode == opc.opmap["BINARY_OP"]:
-                argrepr = BinaryOps.values()[oparg].toString()
+            elif optype == "binary":
+                arg = argval = oparg
+                argrepr = BINARY_OPS.get(oparg, "??")
                 break
 
-            elif opcode in (
-                opc.opmap["COLLECTION_FROM_STACK"],
-                opc.opmap["COLLECTION_ADD_STACK"],
-                opc.opmap["COLLECTION_FROM_COLLECTION"],
-                opc.opmap["COLLECTION_ADD_COLLECTION"],
-                opc.opmap["ADD_TO_COLLECTION"],
-            ):
-                argrepr = collectionKindToString(oparg)
+            elif optype == "collection":
+                arg = argval = oparg
+                argrepr = COLLECTION_KIND.get(oparg, "??")
                 break
             elif opcode == opc.opmap["UNPACK_EX"]:
                 argrepr = "%d, %d" % (oparg, Byte.toUnsignedInt(following_args[0]))
@@ -260,10 +259,14 @@ def get_optype_graal(opcode: int, opc) -> str:
     Return is a string in:
        compare, const, free, jabs, jrel, local, name, nargs, or ??
     """
+    if opcode in opc.BINARY_OPS:
+        return "binary"
+    elif opcode in opc.COLLECTION_OPS:
+        return "collection"
     if opcode in opc.COMPARE_OPS:
         return "compare"
-    elif opcode in opc.CONST_OPS:
-        return "const"
+    elif opcode in opc.ENCODED_ARG_OPS:
+        return "encoded_arg"
     elif opcode in opc.FREE_OPS:
         return "free"
     elif opcode in opc.JABS_OPS:
@@ -279,8 +282,8 @@ def get_optype_graal(opcode: int, opc) -> str:
     # This has to come after NARGS_OPS. Some are in both?
     elif opcode in opc.VARGS_OPS:
         return "vargs"
-    elif opcode in opc.ENCODED_ARG_OPS:
-        return "encoded_arg"
+    elif opcode in opc.UNARY_OPS:
+        return "unary"
 
     return "??"
 
@@ -323,6 +326,9 @@ class Bytecode_Graal(Bytecode):
         return get_instructions_bytes_graal(
             co.co_code,
             self.opc,
+            co.co_varnames,
+            co.co_names,
+            co.co_consts,
         )
 
     def __repr__(self) -> str:

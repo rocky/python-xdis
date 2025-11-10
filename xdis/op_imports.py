@@ -178,6 +178,7 @@ op_imports = {
     "3.11.13PyPy": opcode_311pypy, # is this right?
     3.11: opcode_311,
     "3.12.7Graal": opcode_312graal, # this right?
+    "3.12.8Graal": opcode_312graal, # this right?
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
     "3.13.0rc3": opcode_313,
