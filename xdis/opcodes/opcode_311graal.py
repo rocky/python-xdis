@@ -1,9 +1,11 @@
-# (C) 2024-2025 by Rocky Bernstein
+# (C) 2025 by Rocky Bernstein
 """
-Python Graal 3.10 bytecode opcodes
+Python Graal 3.11 bytecode opcodes
 
 See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
+
+from typing import Dict, Set
 
 from xdis.opcodes.base import init_opdata
 from xdis.opcodes.base_graal import findlabels  # noqa
@@ -24,9 +26,7 @@ from xdis.opcodes.base_graal import (  # find_linestarts,  # noqa
 from xdis.version_info import PythonImplementation
 
 python_implementation = PythonImplementation("Graal")
-
-init_opdata(opc, None, None)
-version_tuple = (3, 10, 8)
+version_tuple = (3, 11, 7)
 
 arg_counts: Dict[int, int] = {}
 
@@ -116,60 +116,75 @@ def_op_graal(loc, "GET_YIELD_FROM_ITER", 0xC, 0, 1, 1)
 #   Pushes: awaitable
 def_op_graal(loc, "GET_AWAITABLE", 0xD, 0, 1, 1)
 
+# Gets the async iterator of an object - error if a coroutine is returned.
+#   Pops: object
+#   Pushes: async iterator
+#  Not in 3.8
+def_op_graal(loc, "GET_AITER", 0xe, 0, 1, 1)
+
+# Get the awaitable that will return the next element of an async iterator.
+#   Pops: object
+#   Pushes: awaitable
+#  Not in 3.8
+def_op_graal(loc, "GET_ANEXT", 0xf, 0, 1, 1)
+
 # Pushes: {@code __build_class__} builtin
 # def_op_graal(loc, "LOAD_BUILD_CLASS", 0xe, 0, 0, 1)
-def_op_graal(loc, "LOAD_BUILD_CLASS", 0xE, 0, 0, 1)  # This is wrong
+def_op_graal(loc, "LOAD_BUILD_CLASS", 0x10, 0, 0, 1)  # This is wrong
 
 # Pushes: {@code AssertionError} builtin exception type
-def_op_graal(loc, "LOAD_ASSERTION_ERROR", 0xF, 0, 0, 1)
+def_op_graal(loc, "LOAD_ASSERTION_ERROR", 0x11, 0, 0, 1)
 
-def_op_graal(loc, "RETURN_VALUE", 0x10, 0, 1, 0)  # This is observed
+# Returns the value to the caller. In generators, performs generator return.
+#   Pops: return value
+# def_op_graal(loc, "RETURN_VALUE", 0x10, 0, 1, 0)
+def_op_graal(loc, "RETURN_VALUE", 0x12, 0, 1, 0)  # This is observed
 #
 # Reads a name from locals dict, globals or builtins determined by the
 # immediate operand which indexes the names array ({@code co_names}).
 #  Pushes: read object
-name_op_graal(loc, "LOAD_NAME", 0x11, 1, 0, 1)
+name_op_graal(loc, "LOAD_NAME", 0x13, 1, 0, 1)
 loc["nullaryloadop"].add(0x13)
 
 # Writes the stack top into a name in locals dict or globals
 # determined by the immediate operand which indexes the names array
 # ({@code co_names}).
 #  Pops: object to be written
-store_op_graal(loc, "STORE_NAME", 0x12, 1, 1, "name", 1)
+store_op_graal(loc, "STORE_NAME", 0x14, 1, 1, "name", 1)
 # observed
 
 # Deletes the name in locals dict or globals determined by the
 # immediate operand which indexes the names array ({@code co_names}).
-name_op_graal(loc, "DELETE_NAME", 0x13, 1, 0, 1)
+name_op_graal(loc, "DELETE_NAME", 0x15, 1, 0, 1)
 
 # Reads an attribute - {@code a.b}. {@code b} is determined by the immediate operand which
 # indexes the names array ({@code co_names}).
 #  Pops: {@code a}
 #  Pushes: read attribute
-name_op_graal(loc, "LOAD_ATTR", 0x14, 1, 1, 1)
+name_op_graal(loc, "LOAD_ATTR", 0x16, 1, 1, 1)
 #
 # Reads method on an object. The method name is determined by the
 # first immediate operand which indexes the names array ({@code
 # co_names}).
 #   Pushes: read method
-name_op_graal(loc, "LOAD_METHOD", 0x15, 1, 1, 1)
+name_op_graal(loc, "LOAD_METHOD", 0x17, 1, 1, 1)
 
 # Writes an attribute - {@code a.b = c}. {@code b} is determined by
 # the immediate operand which indexes the names array ({@code
 # co_names}).
 #  Pops: {@code c}, then {@code a}
-name_op_graal(loc, "STORE_ATTR", 0x16, 1, 2, 1)
+name_op_graal(loc, "STORE_ATTR", 0x18, 1, 2, 1)
 
 # Deletes an attribute - {@code del a.b}. {@code b} is determined by
 # the immediate operand which indexes the names array ({@code
 # co_names}).
 #  Pops: {@code a}
-name_op_graal(loc, "DELETE_ATTR", 0x17, 1, 1, 1)
+name_op_graal(loc, "DELETE_ATTR", 0x19, 1, 1, 1)
 
 # Reads a global variable. The name is determined by the immediate
 # operand which indexes the names array ({@code co_names}).
 #   Pushes: read object
-name_op_graal(loc, "LOAD_GLOBAL", 0x18, 1, 0, 1)
+name_op_graal(loc, "LOAD_GLOBAL", 0x1A, 1, 0, 1)
 loc["nullaryloadop"].add(0x1A)
 
 
