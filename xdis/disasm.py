@@ -57,7 +57,10 @@ def get_opcode(version_tuple: tuple, python_implementation, alternate_opmap=None
         lookup += "PyPy"
     elif python_implementation == PythonImplementation.Graal:
         if magic_int == 21290:
-            lookup = "3.12.7Graal"
+            if version_tuple == (3, 11, 7):
+                lookup = "3.11.7Graal"
+            else:
+                lookup = "3.12.7Graal"
         else:
             lookup += "Graal"
     if lookup in op_imports.keys():

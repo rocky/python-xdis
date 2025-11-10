@@ -58,6 +58,7 @@ from xdis.opcodes import (
     opcode_310,
     opcode_310pypy,
     opcode_311,
+    opcode_311graal,
     opcode_311pypy,
     opcode_312,
     opcode_312graal,
@@ -175,6 +176,7 @@ op_imports = {
     "3.11.4": opcode_311,
     "3.11.5": opcode_311,
     "3.11a7e": opcode_311,
+    "3.11.7Graal": opcode_311graal, # is this right?
     "3.11.13PyPy": opcode_311pypy, # is this right?
     3.11: opcode_311,
     "3.12.7Graal": opcode_312graal, # this right?
