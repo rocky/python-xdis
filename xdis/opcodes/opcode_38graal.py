@@ -22,6 +22,7 @@ See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 from typing import Dict, Set
 
 from xdis.opcodes.base import init_opdata
+from xdis.opcodes.base_graal import findlabels  # noqa
 from xdis.opcodes.base_graal import (
     binary_op_graal,
     call_op_graal,

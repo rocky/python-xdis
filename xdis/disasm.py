@@ -245,17 +245,6 @@ def disco_loop(
                     if asm_format in ("extended_bytes", "bytes"):
                         real_out.write("instruction bytecode:\n%s\n" % co.co_code)
 
-                else:
-                    if co.co_name == "??":
-                        real_out.write(
-                            "\n# Instruction disassembly not supported here.\n"
-                        )
-                    else:
-                        real_out.write(
-                            f"\n# Instruction disassembly for {co.co_name} not supported here.\n"
-                        )
-                    real_out.write(f"instruction bytecode:\n{co.co_code.hex(':')}\n")
-
                 if opc.python_implementation == PythonImplementation.Graal:
                     bytecode = Bytecode_Graal(co, opc)
                 else:
