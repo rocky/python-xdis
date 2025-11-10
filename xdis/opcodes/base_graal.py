@@ -235,6 +235,7 @@ def update_sets(loc) -> None:
     loc["COMPARE_OPS"] = frozenset(loc["hascompare"])
     loc["CONDITION_OPS"] = frozenset(loc["hascondition"])
     loc["CONST_OPS"] = frozenset(loc["hasconst"])
+    loc["EXTENDED_ARG"] = loc["opmap"]["EXTENDED_ARG"]
     loc["ENCODED_ARG_OPS"] = frozenset(loc["encoded_arg"])
     loc["FREE_OPS"] = frozenset(loc["hasfree"])
     loc["JREL_OPS"] = frozenset(loc["hasjrel"])
