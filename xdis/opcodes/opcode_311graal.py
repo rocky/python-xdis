@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-Python Graal 3.10 (graalpy-23) bytecode opcodes
+Python Graal 3.11 bytecode opcodes
 
 See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
@@ -40,8 +40,7 @@ from xdis.opcodes.base_graal import (  # find_linestarts,  # noqa
 from xdis.version_info import PythonImplementation
 
 python_implementation = PythonImplementation("Graal")
-
-version_tuple = (3, 10, 8)
+version_tuple = (3, 11, 7)
 
 arg_counts: Dict[int, int] = {}
 
@@ -105,7 +104,7 @@ binary_op_graal(loc, "BINARY_OP", 0x7, 1, 2, 1)
 # Performs subscript get operation - {@code a[b]}.
 #   Pops: {@code b}, then {@code a}
 #   Pushes: result
-def_op_graal(loc, "BINARY_SUBSCR", 0x8, 0, 2, 0)
+def_op_graal(loc, "BINARY_SUBSCR", 0x8, 1, 2, 0)
 
 # Performs subscript set operation - {@code a[b] = c}.
 #   Pops: {@code b}, then {@code a}, then {@code c}
@@ -129,7 +128,19 @@ def_op_graal(loc, "GET_YIELD_FROM_ITER", 0xC, 0, 1, 1)
 # Gets an awaitable of an object.
 #   Pops: object
 #   Pushes: awaitable
-def_op_graal(loc, "GET_AWAITABLE", 0xF, 0, 1, 1)
+def_op_graal(loc, "GET_AWAITABLE", 0xD, 0, 1, 1)
+
+# Gets the async iterator of an object - error if a coroutine is returned.
+#   Pops: object
+#   Pushes: async iterator
+#  Not in 3.8
+def_op_graal(loc, "GET_AITER", 0xe, 0, 1, 1)
+
+# Get the awaitable that will return the next element of an async iterator.
+#   Pops: object
+#   Pushes: awaitable
+#  Not in 3.8
+def_op_graal(loc, "GET_ANEXT", 0xf, 0, 1, 1)
 
 # Pushes: {@code __build_class__} builtin
 def_op_graal(loc, "LOAD_BUILD_CLASS", 0x10, 0, 1, 0)
@@ -207,7 +218,7 @@ loc["nullaryloadop"].add(0x1D)
 # variable name in varnames array ({@code co_varnames}).
 #   Pushes: read value
 def_op_graal(loc, "LOAD_FAST", 0x1E, 1, 0, 1)
-loc["nullaryloadop"].add(0x1E)
+loc["nullaryloadop"].add(0x1EC)
 
 
 # Writes a local variable determined by the immediate operand which indexes a stack slot and a
@@ -332,53 +343,55 @@ def_op_graal(loc, "GET_LEN", 0x33, 0, 0, 1)
 
 def_op_graal(loc, "LOAD_NONE", 0x34, 0, 1, 0)
 loc["nullaryloadop"].add(0x34)
+
 def_op_graal(loc, "LOAD_ELLIPSIS", 0x35, 0, 1, 0)
-loc["nullaryloadop"].add(0x34)
-def_op_graal(loc, "LOAD_TRUE", 0x36, 0, 1, 0)
-loc["nullaryloadop"].add(0x38)
+def_op_graal(loc, "LOAD_TRUE", 0x35, 0, 1, 0)
+loc["nullaryloadop"].add(0x35)
 
-def_op_graal(loc, "LOAD_FALSE", 0x37, 0, 1, 0)
-loc["nullaryloadop"].add(0x40)
+def_op_graal(loc, "LOAD_FALSE", 0x36, 0, 1, 0)
+loc["nullaryloadop"].add(0x36)
 
-def_op_graal(loc, "LOAD_BYTE", 0x38, 1, 0, 1)
+def_op_graal(loc, "LOAD_BYTE", 0x37, 1, 0, 1)
 #
 # Loads signed byte from immediate operand.
 #
 #    LOAD_BYTE(1, 0, 1),
 
+#### Continue adding opcode numbers here...
+
+
 # Loads {@code int} from primitiveConstants array indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_INT", 0x39, 1, 0, 1)
+def_op_graal(loc, "LOAD_INT", 0x38, 1, 0, 1)
 #
 # Loads {@code long} from primitiveConstants array indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_LONG", 0x3A, 1, 0, 1)
+def_op_graal(loc, "LOAD_LONG", 0x39, 1, 0, 1)
 #
 # Loads {@code double} from primitiveConstants array indexed by the immediate operand
 # (converted from long).
 #
-def_op_graal(loc, "LOAD_DOUBLE", 0x3B, 1, 0, 1)
+def_op_graal(loc, "LOAD_DOUBLE", 0x3A, 1, 0, 1)
 #
 
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
 # operand.
 #
-def_op_graal(loc, "LOAD_BIGINT", 0x3C, 1, 0, 1)
+def_op_graal(loc, "LOAD_BIGINT", 0x3B, 1, 0, 1)
 #
 # Currently the same as {@link #LOAD_CONST}.
 #
-const_op_graal(loc, "LOAD_STRING", 0x3D, 0, 1)
+const_op_graal(loc, "LOAD_STRING", 0x3C, 0, 1)
 
 #
 # Creates python {@code bytes} from a {@code byte[]} array in constants array indexed by the
 # immediate operand.
 #
 def_op_graal(loc, "LOAD_BYTES", 0x3E, 0, 1)
-#
 # Creates python {@code complex} from a {@code double[]} array of size 2 in constants array
 # indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_COMPLEX", 0x3F, 1, 0, 1)
+def_op_graal(loc, "LOAD_COMPLEX", 0x3E, 1, 0, 1)
 
 # Creates a collection out of a Java array in constants array indexed by the immediate operand.
 # The second immediate operand determines the array type and kind, using values from {@link
@@ -390,24 +403,23 @@ const_op_graal(loc, "LOAD_CONST_COLLECTION", 0x40, 2, 0, 2)
 # calling
 # -------
 
-#
-# Calls method on an object using an array as args. The receiver is taken from the first
-# element of the array. The method name is determined by the immediate operand which indexes
+# calls method on an object using an array as args. the receiver is taken from the first
+# element of the array. the method name is determined by the immediate operand which indexes
 # the names array ({@code co_names}).
 #
-# Pops: args ({@code Object[]} of size >= 1)
+# pops: args ({@code object[]} of size >= 1)
 #
-# Pushes: call result
+# pushes: call result
 #
-call_op_graal(loc, "CALL_METHOD_VARARGS", 65, 1, 1, 1)
+call_op_graal(loc, "call_method_varargs", 0x41, 1, 1, 1)
 #
-# Calls method on an object using a number of stack args determined by the first immediate
+# calls method on an object using a number of stack args determined by the first immediate
 # operand.
 #
-# Pops: multiple arguments depending on the first immediate operand, then the method and the
+# pops: multiple arguments depending on the first immediate operand, then the method and the
 # receiver
 #
-# Pushes: call result
+# pushes: call result
 #
 call_op_graal(
     loc, "CALL_METHOD", 0x42, 1, 1, 1
@@ -701,7 +713,13 @@ def_op_graal(loc, "UNWRAP_EXC", 0x60, 0, 1, 1)
 # Pops: yielded value
 #
 def_op_graal(loc, "YIELD_VALUE", 0x61, 0, 1, 0)
-# ### Additional opcode in 3.11 here
+#
+# Wrap value from the stack in a {@link PAsyncGenWrappedValue}. CPython 3.11 opcode, used here
+# to avoid a runtime check
+#
+# Pops: an object Pushes: async_generator_wrapped_value
+#
+def_op_graal(loc, "ASYNCGEN_WRAP", 0x62, 0, 1, 1)
 #
 # Resume after yield. Will raise exception passed by {@code throw} if any.
 #
@@ -732,6 +750,12 @@ jrel_op_graal(
 def_op_graal(
     loc, "THROW", 0x65, 1, 2, 1
 )  # , (oparg, followingArgs, withJump) -> withJump ? 1 : 2)
+
+# Exception handler for async for loops. If the current exception is StopAsyncIteration, handle
+# it, otherwise, reraise.
+#
+# Pops: exception, then the anext coroutine, then the async iterator
+def_op_graal(loc, "END_ASYNC_FOR", 0x66, 0, 3, 0)
 
 # with statements
 #

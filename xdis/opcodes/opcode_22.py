@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019, 2021, 2023 by Rocky Bernstein
+# (C) Copyright 2017, 2019, 2021, 2023, 2025 by Rocky Bernstein
 """
 CPython 2.2 bytecode opcodes
 
@@ -6,17 +6,16 @@ This is similar to the opcode portion in Python 2.2's dis.py library.
 """
 
 import xdis.opcodes.opcode_2x as opcode_2x
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # noqa
+    cpython_implementation as python_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
     update_pj2,
 )
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (2, 2)
-python_implementation = "CPython"
 
 loc = locals()
 init_opdata(loc, opcode_2x, version_tuple)

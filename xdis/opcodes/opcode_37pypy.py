@@ -20,11 +20,11 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+from xdis.opcodes.opcode_36pypy import python_implementation  # noqa
 from xdis.opcodes.opcode_36pypy import opcode_arg_fmt36pypy, opcode_extended_fmt36pypy
 from xdis.opcodes.opcode_37 import opcode_arg_fmt37, opcode_extended_fmt37
 
 version_tuple = (3, 7)
-python_implementation = "PyPy"
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256

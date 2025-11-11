@@ -360,6 +360,12 @@ def load_module_from_file_object(
     if is_pypy(magic_int, filename):
         python_implementation = PythonImplementation.PyPy
 
+    # Below we need to return co.version_triple instead of version_triple,
+    # because Graal uses the *same* magic number but different bytecode
+    # for Python 3.11 and Python 3.12. What a zoo we have here.
+    if hasattr(co, "version_triple") and co.version_triple != (0, 0, 0):
+        version_triple = co.version_triple
+
     return (
         version_triple,
         timestamp,

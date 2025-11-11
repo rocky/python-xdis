@@ -21,9 +21,10 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.opcode_36 import opcode_arg_fmt36, opcode_extended_fmt36
+from xdis.version_info import PythonImplementation
 
 version_tuple = (3, 6)
-python_implementation = "PyPy"
+python_implementation = PythonImplementation("PyPy")
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256
