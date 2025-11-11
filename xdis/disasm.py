@@ -38,7 +38,7 @@ from xdis.codetype import codeType2Portable
 from xdis.codetype.base import iscode
 from xdis.cross_dis import format_code_info, format_exception_table
 from xdis.load import check_object_path, load_module
-from xdis.magics import PYTHON_MAGIC_INT
+from xdis.magics import GRAAL3_MAGICS, PYTHON_MAGIC_INT
 from xdis.op_imports import op_imports, remap_opcodes
 from xdis.version import __version__
 from xdis.version_info import (
