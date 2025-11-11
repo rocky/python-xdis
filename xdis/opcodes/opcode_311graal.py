@@ -129,8 +129,7 @@ def_op_graal(loc, "GET_AITER", 0xe, 0, 1, 1)
 def_op_graal(loc, "GET_ANEXT", 0xf, 0, 1, 1)
 
 # Pushes: {@code __build_class__} builtin
-# def_op_graal(loc, "LOAD_BUILD_CLASS", 0xe, 0, 0, 1)
-def_op_graal(loc, "LOAD_BUILD_CLASS", 0x10, 0, 0, 1)  # This is wrong
+def_op_graal(loc, "LOAD_BUILD_CLASS", 0x10, 0, 1, 0)
 
 # Pushes: {@code AssertionError} builtin exception type
 def_op_graal(loc, "LOAD_ASSERTION_ERROR", 0x11, 0, 0, 1)
@@ -259,7 +258,7 @@ def_op_graal(
 # immediate operand values are illegal.
 #   Pushes: the created slice object
 def_op_graal(
-    loc, "BUILD_SLICE", 0x26, 1
+    loc, "BUILD_SLICE", 0x26, 1, 0, 1
 )  # (oparg, followingArgs, withJump) -> oparg, 1)
 
 # Formats a value. If the immediate argument contains flag {@link FormatOptions#FVS_HAVE_SPEC},
@@ -269,7 +268,7 @@ def_op_graal(
 # {@link FormatOptions}.
 #  Pushes: the formatted value
 def_op_graal(
-    loc, "FORMAT_VALUE", 0x27, 1
+    loc, "FORMAT_VALUE", 0x27, 2, 1, 1
 )  # , (oparg, followingArgs, withJump) -> (oparg & FormatOptions.FVS_MASK) == FormatOptions.FVS_HAVE_SPEC ? 2 : 1, 1)
 
 # Extends the immediate operand of the following instruction by its own operand shifted left by
@@ -289,7 +288,7 @@ loc["nullaryloadop"].add(0x29)
 # names array ({@code co_names}).
 #  Pops: module object
 #   Pushes: module object, imported object
-name_op_graal(loc, "IMPORT_FROM", 0x2A, 1, 1, 2)
+name_op_graal(loc, "IMPORT_FROM", 0x2A, 1, 1, 1)
 
 # Imports all names from a module of name determined by the immediate operand which indexes the
 # names array ({@code co_names}). The imported names are written to locals dict (can only be
@@ -449,7 +448,7 @@ call_op_graal(loc, "CALL_FUNCTION_KW", 0x45, 0, 3, 1)
 #
 # Pushes: call result
 #
-def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x46, 0, 2, 1)
+def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x46, 0, 2, 0)
 
 # ----------------------
 # destructuring bytecodes
@@ -785,10 +784,14 @@ def_op_graal(loc, "EXIT_AWITH", 0x6B, 0, 2, 0)
 
 # Loads signed byte from immediate operand.
 #
-def_op_graal(loc, "LOAD_BYTE_0", 0x70, 1, 0, 1)
-#
+def_op_graal(loc, "LOAD_TRUE_O", 0x6C, 1, 0, 0)
+def_op_graal(loc, "LOAD_TRUE_B", 0x6D, 1, 0, 0)
+def_op_graal(loc, "LOAD_FALSE_O", 0x6E, 1, 0, 0)
+def_op_graal(loc, "LOAD_FALSE_B", 0x6F, 1, 0, 0)
+def_op_graal(loc, "LOAD_BYTE_O", 0x70, 1, 0, 1)
 def_op_graal(loc, "LOAD_BYTE_I", 0x71, 1, 0, 1)
-#
+def_op_graal(loc, "LOAD_INT_O", 0x72, 1, 0, 1)
+def_op_graal(loc, "LOAD_INT_I", 0x78, 1, 0, 1)
 
 
 update_sets(loc)

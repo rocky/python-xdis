@@ -285,14 +285,14 @@ def_op_graal(loc, "EXTENDED_ARG", 0x26, 1, 0, 0)
 #  Pops: fromlist (must be a constant {@code TruffleString[]}), then level (must be {@code int})
 #  Pushes: imported module
 name_op_graal(loc, "IMPORT_NAME", 0x27, 1, 2, 1)
-loc["nullaryloadop"].add(41)
+loc["nullaryloadop"].add(0x27)
 
 
 # Imports a name from a module. The name determined by the immediate operand which indexes the
 # names array ({@code co_names}).
 #  Pops: module object
 #   Pushes: module object, imported object
-name_op_graal(loc, "IMPORT_FROM", 0x28, 1, 1, 2)
+name_op_graal(loc, "IMPORT_FROM", 0x28, 1, 1, 1)
 
 # Imports all names from a module of name determined by the immediate operand which indexes the
 # names array ({@code co_names}). The imported names are written to locals dict (can only be
