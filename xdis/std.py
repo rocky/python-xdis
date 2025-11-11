@@ -49,6 +49,7 @@ Version 'variants' are also supported, for example:
 # std
 import sys
 
+# xdis
 from xdis.bytecode import Bytecode as _Bytecode, get_optype
 from xdis.cross_dis import (
     code_info as _code_info,
@@ -60,8 +61,6 @@ from xdis.cross_dis import (
 from xdis.disasm import disco as _disco
 from xdis.instruction import Instruction as Instruction_xdis
 from xdis.op_imports import get_opcode_module
-
-# xdis
 from xdis.version_info import PYTHON_IMPLEMENTATION
 
 

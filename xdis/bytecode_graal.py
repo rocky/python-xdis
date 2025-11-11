@@ -75,7 +75,7 @@ def get_instructions_bytes_graal(
             if opcode == opc.opmap["EXTENDED_ARG"]:
                 argrepr = ""
                 break
-            elif opcode in (opc.opmap["LOAD_BYTE_0"], opc.opmap["LOAD_BYTE_I"]):
+            elif opcode in (opc.opmap["LOAD_BYTE_O"], opc.opmap["LOAD_BYTE_I"]):
                 argrepr = str(arg)
                 argval = arg
                 break
@@ -129,26 +129,27 @@ def get_instructions_bytes_graal(
                 argrepr = names[arg]
                 break
             elif opcode == opc.opmap["FORMAT_VALUE"]:
-                kind = arg & FormatOptions.FVC_MASK
-                if kind == opc.FormatOptions.FVC_ST:
+                argval = arg
+                kind = arg & 0x3
+                if kind ==0x1:
                     argrepr = "STR"
                     break
-                elif kind == opc.FormatOptions.FVC_REP:
+                elif kind == 0x2:
                     argrepr = "REPR"
                     break
-                elif opcode == opc.FormatOptions.FVC_ASCII:
+                elif kind == 0x3:
                     argrepr = "ASCII"
                     break
-                elif opcode == opc.FormatOptions.FVC_NONE:
+                elif kind == 0:
                     argrepr = "NONE"
                     break
 
-                if (arg & FormatOptions.FVS_MASK) == FormatOptions.FVS_HAVE_SPEC:
+                if (arg & 0x4) == 0x4:
                     argrepr += " + SPEC"
                     break
 
             elif opcode == opc.opmap["CALL_METHOD"]:
-                argrepr = "%2d" % arg
+                argrepr = str(arg)
                 break
 
             elif opcode == "unary":
