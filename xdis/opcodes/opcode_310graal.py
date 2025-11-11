@@ -14,7 +14,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-Python Graal 3.10 (graal-23.0.0) bytecode opcodes
+Python Graal 3.10 (graalpy-23) bytecode opcodes
 
 See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
@@ -390,23 +390,24 @@ const_op_graal(loc, "LOAD_CONST_COLLECTION", 0x40, 2, 0, 2)
 # calling
 # -------
 
-# calls method on an object using an array as args. the receiver is taken from the first
-# element of the array. the method name is determined by the immediate operand which indexes
+#
+# Calls method on an object using an array as args. The receiver is taken from the first
+# element of the array. The method name is determined by the immediate operand which indexes
 # the names array ({@code co_names}).
 #
-# pops: args ({@code object[]} of size >= 1)
+# Pops: args ({@code Object[]} of size >= 1)
 #
-# pushes: call result
+# Pushes: call result
 #
-call_op_graal(loc, "call_method_varargs", 0x41, 1, 1, 1)
+call_op_graal(loc, "CALL_METHOD_VARARGS", 65, 1, 1, 1)
 #
-# calls method on an object using a number of stack args determined by the first immediate
+# Calls method on an object using a number of stack args determined by the first immediate
 # operand.
 #
-# pops: multiple arguments depending on the first immediate operand, then the method and the
+# Pops: multiple arguments depending on the first immediate operand, then the method and the
 # receiver
 #
-# pushes: call result
+# Pushes: call result
 #
 call_op_graal(
     loc, "CALL_METHOD", 0x42, 1, 1, 1
