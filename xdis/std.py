@@ -49,7 +49,6 @@ Version 'variants' are also supported, for example:
 # std
 import sys
 
-# xdis
 from xdis.bytecode import Bytecode as _Bytecode, get_optype
 from xdis.cross_dis import (
     code_info as _code_info,

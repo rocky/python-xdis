@@ -38,7 +38,7 @@ from xdis.codetype import codeType2Portable
 from xdis.codetype.base import iscode
 from xdis.cross_dis import format_code_info, format_exception_table
 from xdis.load import check_object_path, load_module
-from xdis.magics import GRAAL3_MAGICS, PYTHON_MAGIC_INT
+from xdis.magics import PYTHON_MAGIC_INT
 from xdis.op_imports import op_imports, remap_opcodes
 from xdis.version import __version__
 from xdis.version_info import (
@@ -51,25 +51,18 @@ from xdis.version_info import (
 # FIXME we may also need to distinguish by magic_int2magic
 # (for 3.8.5 Graal for example.)
 def get_opcode(version_tuple: tuple, python_implementation, alternate_opmap=None, magic_int: int=-1):
+
     # Set up disassembler with the right opcodes
     lookup = ".".join((str(i) for i in version_tuple))
     if python_implementation == PythonImplementation.PyPy:
         lookup += "PyPy"
-    elif python_implementation == PythonImplementation.Graal:
-        if magic_int == 21290:
-            if version_tuple == (3, 11, 7):
-                lookup = "3.11.7Graal"
-            else:
-                lookup = "3.12.7Graal"
-        else:
-            lookup += "Graal"
     if lookup in op_imports.keys():
         if alternate_opmap is not None:
             # TODO: change bytecode version number comment line to indicate altered
             return remap_opcodes(op_imports[lookup], alternate_opmap)
         return op_imports[lookup]
-    if python_implementation != PythonImplementation.CPython:
-        implementation_str = f" for {python_implementation}"
+    if python_implementation != PythonImplementation.CPyton:
+        pypy_str = f" for {python_implementation}"
     else:
         implementation_str = ""
     raise TypeError(
@@ -163,8 +156,8 @@ def disco(
         sip_hash,
         header=True,
         show_filename=False,
-        python_implementation=python_implementation,
-    )
+        python_implementation=python_implementation)
+
 
     # Store final output stream when there is an error.
     real_out = out or sys.stdout

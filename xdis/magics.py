@@ -691,7 +691,7 @@ add_magic_from_int(256, "3.8PyPy")  # PyPy 3.8.15
 add_magic_from_int(320, "3.9PyPy")  # PyPy 3.9-v7.3.8
 add_magic_from_int(336, "3.9PyPy")  # PyPy 3.9.15, PyPy 3.9.17
 add_magic_from_int(384, "3.10PyPy")  # PyPy 3.10.12
-add_magic_from_int(416, "3.11.13pypy")  # PyPy 3.11.13 or pypy3.11-7.3.20
+add_magic_from_int(416, "3.11.13PyPy")  # PyPy 3.11.13 or pypy3.11-7.3.20
 
 add_magic_from_int(12641, "3.12.0a.rust")  # RustPython 3.12.0
 add_magic_from_int(12897, "3.13.0b.rust")  # RustPython 3.12.0
