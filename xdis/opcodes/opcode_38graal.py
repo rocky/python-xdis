@@ -295,45 +295,23 @@ def_op_graal(loc, "IMPORT_STAR", 0x27, 1, 1, 0)
 def_op_graal(loc, "PRINT_EXPR", 0x28, 0, 1, 0)
 
 # Creates annotations dict in locals
-def_op_graal(loc, "SETUP_ANNOTATIONS", 0x2D, 0, 0, 0)
-
-## RENUMBER FROM HERE
-
-# Determines if a python object is a sequence.
-def_op_graal(loc, "MATCH_SEQUENCE", 0x2E, 0, 0, 1)
-
-# Determines if a Python object is a mapping.
-def_op_graal(loc, "MATCH_MAPPING", 0x2F, 0, 0, 1)
-
-# Determines if a Python object is of a particular type.
-def_op_graal(loc, "MATCH_CLASS", 0x30, 1, 3, 2)
-
-# Matches the keys (stack top) in a dict (stack second). On successful
-# match pushes the values and True, otherwise None and False.
-def_op_graal(loc, "MATCH_KEYS", 0x31, 0, 2, 4)
-
-# Creates a copy of a dict (stack second) without elements matching a
-# tuple of keys (stack top).
-def_op_graal(loc, "COPY_DICT_WITHOUT_KEYS", 0x32, 0, 1, 1)
-
-# Retrieves the length of a Python object and stores it on top.
-def_op_graal(loc, "GET_LEN", 100, 0, 0, 1)
+def_op_graal(loc, "SETUP_ANNOTATIONS", 0x29, 0, 0, 0)
 
 # -------------------------------------
 # load bytecodes for special constants
 # -------------------------------------
 
-def_op_graal(loc, "LOAD_NONE", 0x2a, 0, 1, 0)
+def_op_graal(loc, "LOAD_NONE", 0x2A, 0, 1, 0)
 loc["nullaryloadop"].add(0x34)
-def_op_graal(loc, "LOAD_ELLIPSIS", 0x35, 0, 1, 0)
+def_op_graal(loc, "LOAD_ELLIPSIS", 0x2B, 0, 1, 0)
 loc["nullaryloadop"].add(0x34)
-def_op_graal(loc, "LOAD_TRUE", 0x36, 0, 1, 0)
+def_op_graal(loc, "LOAD_TRUE", 0x2C, 0, 1, 0)
 loc["nullaryloadop"].add(0x38)
 
-def_op_graal(loc, "LOAD_FALSE", 0x37, 0, 1, 0)
+def_op_graal(loc, "LOAD_FALSE", 0x2D, 0, 1, 0)
 loc["nullaryloadop"].add(0x40)
 
-def_op_graal(loc, "LOAD_BYTE", 0x38, 1, 0, 1)
+def_op_graal(loc, "LOAD_BYTE", 0x2E, 1, 0, 1)
 #
 # Loads signed byte from immediate operand.
 #
@@ -341,22 +319,22 @@ def_op_graal(loc, "LOAD_BYTE", 0x38, 1, 0, 1)
 
 # Loads {@code int} from primitiveConstants array indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_INT", 0x39, 1, 0, 1)
+def_op_graal(loc, "LOAD_INT", 0x2F, 1, 0, 1)
 #
 # Loads {@code long} from primitiveConstants array indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_LONG", 0x3A, 1, 0, 1)
+def_op_graal(loc, "LOAD_LONG", 0x30, 1, 0, 1)
 #
 # Loads {@code double} from primitiveConstants array indexed by the immediate operand
 # (converted from long).
 #
-def_op_graal(loc, "LOAD_DOUBLE", 0x3B, 1, 0, 1)
+def_op_graal(loc, "LOAD_DOUBLE", 0x31, 1, 0, 1)
 #
 
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
 # operand.
 #
-def_op_graal(loc, "LOAD_BIGINT", 0x3C, 1, 0, 1)
+def_op_graal(loc, "LOAD_BIGINT", 0x32, 1, 0, 1)
 #
 # Currently the same as {@link #LOAD_CONST}.
 #
@@ -366,18 +344,18 @@ const_op_graal(loc, "LOAD_STRING", 0x33, 0, 1)
 # Creates python {@code bytes} from a {@code byte[]} array in constants array indexed by the
 # immediate operand.
 #
-def_op_graal(loc, "LOAD_BYTES", 0x3E, 0, 1)
+def_op_graal(loc, "LOAD_BYTES", 0x34, 0, 1)
 #
 # Creates python {@code complex} from a {@code double[]} array of size 2 in constants array
 # indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_COMPLEX", 0x3F, 1, 0, 1)
+def_op_graal(loc, "LOAD_COMPLEX", 0x35, 1, 0, 1)
 
 # Creates a collection out of a Java array in constants array indexed by the immediate operand.
 # The second immediate operand determines the array type and kind, using values from {@link
 # CollectionBits}. The only allowed kinds are list and tuple.
 #
-const_op_graal(loc, "LOAD_CONST_COLLECTION", 0x40, 2, 0, 2)
+const_op_graal(loc, "LOAD_CONST_COLLECTION", 0x36, 2, 0, 2)
 
 # -------
 # calling
@@ -392,7 +370,7 @@ const_op_graal(loc, "LOAD_CONST_COLLECTION", 0x40, 2, 0, 2)
 #
 # Pushes: call result
 #
-call_op_graal(loc, "CALL_METHOD_VARARGS", 65, 1, 1, 1)
+call_op_graal(loc, "CALL_METHOD_VARARGS", 0x37, 1, 1, 1)
 #
 # Calls method on an object using a number of stack args determined by the first immediate
 # operand.
@@ -403,7 +381,7 @@ call_op_graal(loc, "CALL_METHOD_VARARGS", 65, 1, 1, 1)
 # Pushes: call result
 #
 call_op_graal(
-    loc, "CALL_METHOD", 0x42, 1, 1, 1
+    loc, "CALL_METHOD", 0x38, 1, 1, 1
 )  # , (oparg, followingArgs, withJump) -> oparg + 2, 1)
 #
 # Calls a callable using a number of stack args determined by the immediate operand.
@@ -413,19 +391,9 @@ call_op_graal(
 # Pushes: call result
 #
 call_op_graal(
-    loc, "CALL_FUNCTION", 0x43, 2, 1, 1
+    loc, "CALL_FUNCTION", 0x39, 2, 1, 1
 )  # , (oparg, followingArgs, withJump) -> oparg + 1, 1)
 #
-# Calls a comprehension function with a single iterator argument. Comprehension functions have
-# to always have the same call target at given calls site. The instruction makes use of this
-# fact and bypasses function object inline caching which would otherwise slow down warmup since
-# comprehensions functions are always created anew and thus the cache would always miss.
-#
-# Pops: iterator, then the function
-#
-# Pushes: call result
-#
-call_op_graal(loc, "CALL_COMPREHENSION", 0x44, 0, 2, 1)
 #
 # Calls a callable using an arguments array and keywords array.
 #
@@ -433,7 +401,7 @@ call_op_graal(loc, "CALL_COMPREHENSION", 0x44, 0, 2, 1)
 #
 # Pushes: call result
 #
-call_op_graal(loc, "CALL_FUNCTION_KW", 0x45, 0, 3, 1)
+call_op_graal(loc, "CALL_FUNCTION_KW", 0x3A, 0, 3, 1)
 #
 # Calls a callable using an arguments array. No keywords are passed.
 #
@@ -441,7 +409,7 @@ call_op_graal(loc, "CALL_FUNCTION_KW", 0x45, 0, 3, 1)
 #
 # Pushes: call result
 #
-def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x46, 0, 2, 0)
+def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x3B, 0, 2, 0)
 
 # ----------------------
 # destructuring bytecodes
@@ -454,7 +422,7 @@ def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x46, 0, 2, 0)
 # Pushed: unpacked items, the count is determined by the immediate operand
 #
 def_op_graal(
-    loc, "UNPACK_SEQUENCE", 0x47, 1, 1, 1
+    loc, "UNPACK_SEQUENCE", 0x3C, 1, 1, 1
 )  # , (oparg, followingArgs, withJump) -> oparg)
 
 # Unpacks an iterable into multiple stack items with a star item that gets the rest. The first
@@ -467,7 +435,7 @@ def_op_graal(
 # operand)
 #
 def_op_graal(
-    loc, "UNPACK_EX", 0x48, 2, 1, 1
+    loc, "UNPACK_EX", 0x3D, 2, 1, 1
 )  #  (oparg, followingArgs, withJump) -> oparg + 1 + Byte.toUnsignedInt(followingArgs[0]))
 
 # jumps
@@ -481,23 +449,23 @@ def_op_graal(
 # Pushes (only if not jumping): the iterator, then the next value
 #
 jrel_op_graal(
-    loc, "FOR_ITER", 0x49, 1, 1, True, True, 1
+    loc, "FOR_ITER", 0x3E, 1, 1, True, True, 1
 )  # (, (oparg, followingArgs, withJump) -> withJump ? 0 : 2)
 #
 # Jump forward by the offset in the immediate operand.
 #
-jrel_op_graal(loc, "JUMP_FORWARD", 0x4A, 1, 0, False, False, 1)
+jrel_op_graal(loc, "JUMP_FORWARD", 0x3F, 1, 0, False, False, 1)
 
 # Jump backward by the offset in the immediate operand. May trigger OSR compilation.
 #
-jrel_op_graal(loc, "JUMP_BACKWARD", 0x4B, 1, 0, False, False, 1)
+jrel_op_graal(loc, "JUMP_BACKWARD", 0x40, 1, 0, False, False, 1)
 
 # Jump forward by the offset in the immediate operand if the top of the stack is false (in
 # Python sense).
 #
 # Pops (if not jumping): top of the stack
 jrel_op_graal(
-    loc, "JUMP_IF_FALSE_OR_POP", 0x4C, 1, 1, True, True, 3,
+    loc, "JUMP_IF_FALSE_OR_POP", 0x41, 1, 1, True, True, 3,
 )  # , (oparg, followingArgs, withJump) -> withJump ? 0 : 1, 0)
 
 # Jump forward by the offset in the immediate operand if the top of the stack is true (in
@@ -506,7 +474,7 @@ jrel_op_graal(
 # Pops (if not jumping): top of the stack
 #
 jrel_op_graal(
-    loc, "JUMP_IF_TRUE_OR_POP", 0x4D, 1, 1, True, True, 3,
+    loc, "JUMP_IF_TRUE_OR_POP", 0x42, 1, 1, True, True, 3,
 )  # , (oparg, followingArgs, withJump) -> withJump ? 0 : 1, 0)
 #
 # Jump forward by the offset in the immediate operand if the top of the stack is false (in
@@ -514,14 +482,14 @@ jrel_op_graal(
 #
 # Pops: top of the stack
 #
-jrel_op_graal(loc, "POP_AND_JUMP_IF_FALSE", 0x4E, 1, 1, True, True, 3)
+jrel_op_graal(loc, "POP_AND_JUMP_IF_FALSE", 0x43, 1, 1, True, True, 3)
 #
 # Jump forward by the offset in the immediate operand if the top of the stack is true (in
 # Python sense).
 #
 # Pops: top of the stack
 #
-jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 0x4F, 1, 1, True, True, 3)
+jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 0x44, 1, 1, True, True, 3)
 
 
 # ----------------
@@ -533,7 +501,7 @@ jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 0x4F, 1, 1, True, True, 3)
 #
 # Pushes: the cell object
 #
-free_op_graal(loc, "LOAD_CLOSURE", 0x50, 1, 0, 1)
+free_op_graal(loc, "LOAD_CLOSURE", 0x45, 1, 0, 1)
 #
 # Reduces multiple stack items into an array of cell objects.
 #
@@ -542,7 +510,7 @@ free_op_graal(loc, "LOAD_CLOSURE", 0x50, 1, 0, 1)
 # Pushes: cell object array ({@code PCell[]})
 #
 def_op_graal(
-    loc, "CLOSURE_FROM_STACK", 0x51, 1
+    loc, "CLOSURE_FROM_STACK", 0x46, 1
 )  # , (oparg, followingArgs, withJump) -> oparg, 1)
 #
 # Creates a function object. The first immediate argument is an index to the constants array
@@ -555,7 +523,7 @@ def_op_graal(
 # Pushes: created function
 #
 nargs_op_graal(
-    loc, "MAKE_FUNCTION", 0x52, 1, 2, 2
+    loc, "MAKE_FUNCTION", 0x47, 1, 2, 2
 )  # , (oparg, followingArgs, withJump) -> Integer.bitCount(followingArgs[0]), 1)
 # observed.
 
@@ -572,7 +540,7 @@ nargs_op_graal(
 # Pushes: new collection
 #
 collection_op_graal(
-    loc, "COLLECTION_FROM_STACK", 0x53, 1
+    loc, "COLLECTION_FROM_STACK", 0x48, 1
 )  # , (oparg, followingArgs, withJump) -> CollectionBits.elementCount(oparg), 1)
 #
 # Add multiple elements from the stack to the collection below them. Collection type is
@@ -581,7 +549,7 @@ collection_op_graal(
 # Pops: items to be added (count = immediate argument)
 #
 collection_op_graal(
-    loc, "COLLECTION_ADD_STACK", 0x54, 1
+    loc, "COLLECTION_ADD_STACK", 0x49, 1
 )  # , (oparg, followingArgs, withJump) -> CollectionBits.elementCount(oparg) + 1, 1)
 #
 # Concatenates two collection of the same type. Collection type is determined by
@@ -591,7 +559,7 @@ collection_op_graal(
 #
 # Pushes: concatenated collection
 #
-collection_op_graal(loc, "COLLECTION_ADD_COLLECTION", 0x55, 1, 2, 1)
+collection_op_graal(loc, "COLLECTION_ADD_COLLECTION", 0x4a, 1, 2, 1)
 #
 # Converts collection to another type determined by {@link CollectionBits} in immediate
 # operand. The converted collection is expected to be an independent copy (they don't share
@@ -601,7 +569,7 @@ collection_op_graal(loc, "COLLECTION_ADD_COLLECTION", 0x55, 1, 2, 1)
 #
 # Pushes: converted collection
 #
-collection_op_graal(loc, "COLLECTION_FROM_COLLECTION", 0x56, 1, 1, 1)
+collection_op_graal(loc, "COLLECTION_FROM_COLLECTION", 0x4b, 1, 1, 1)
 #
 # Converts list to tuple by reusing the underlying storage.
 #
@@ -609,30 +577,22 @@ collection_op_graal(loc, "COLLECTION_FROM_COLLECTION", 0x56, 1, 1, 1)
 #
 # Pushes: tuple
 #
-def_op_graal(loc, "TUPLE_FROM_LIST", 0x57, 0, 1, 1)
-#
-# Converts list to frozenset.
-#
-# Pops: list
-#
-# Pushes: frozenset
-#
-def_op_graal(loc, "FROZENSET_FROM_LIST", 0x58, 0, 1, 1)
-#
+def_op_graal(loc, "TUPLE_FROM_LIST", 0x4c, 0, 1, 1)
+
 # Adds an item to a collection that is multiple items deep under the top of the stack,
 # determined by the immediate argument.
 #
 # Pops: item to be added
 #
 collection_op_graal(
-    loc, "ADD_TO_COLLECTION", 0x59, 1
+    loc, "ADD_TO_COLLECTION", 0x4D, 1
 )  #  (oparg, followingArgs, withJump) -> CollectionBits.collectionKind(oparg) == CollectionBits.KIND_DICT ? 2 : 1, 0)
 #
 # Like {@link #COLLECTION_ADD_COLLECTION} for dicts, but with checks for duplicate keys
 # necessary for keyword arguments merge. Note it works with dicts. Keyword arrays need to be
 # converted to dicts first.
 #
-def_op_graal(loc, "KWARGS_DICT_MERGE", 0x5A, 1, 0, 2, 1)
+def_op_graal(loc, "KWARGS_DICT_MERGE", 0x4e, 1, 0, 2, 1)
 #
 # Create a single {@link PKeyword} object. The name is determined by the immediate operand
 # which indexes the names array ({@code co_names})
@@ -641,7 +601,7 @@ def_op_graal(loc, "KWARGS_DICT_MERGE", 0x5A, 1, 0, 2, 1)
 #
 # Pushes: keyword object
 #
-def_op_graal(loc, "MAKE_KEYWORD", 0x5B, 1, 1, 1)
+def_op_graal(loc, "MAKE_KEYWORD", 0x4f, 1, 1, 1)
 
 # -----------
 # exceptions
@@ -655,7 +615,7 @@ def_op_graal(loc, "MAKE_KEYWORD", 0x5B, 1, 1, 1)
 #
 # Pushes (if jumping): the exception
 #
-jrel_op_graal(loc, "MATCH_EXC_OR_JUMP", 0x5C, 1, 0, 1)
+jrel_op_graal(loc, "MATCH_EXC_OR_JUMP", 0x50, 1, 0, 1)
 #
 # Save the current exception state on the stack and set it to the exception on the stack. The
 # exception object is {@link PException}, not a python exception. The exception is pushed back
@@ -665,24 +625,24 @@ jrel_op_graal(loc, "MATCH_EXC_OR_JUMP", 0x5C, 1, 0, 1)
 #
 # Pushes: the saved exception state, the exception
 #
-def_op_graal(loc, "PUSH_EXC_INFO", 0x5D, 0, 0, 1)
+def_op_graal(loc, "PUSH_EXC_INFO", 0x51, 0, 0, 1)
 
 # Sets the current exception state to the saved state (by {@link #PUSH_EXC_INFO}) on the stack
 # and pop it.
 #
 # Pops: save exception state
-def_op_graal(loc, "POP_EXCEPT", 0x5E, 0, 1, 0)
+def_op_graal(loc, "POP_EXCEPT", 0x52, 0, 1, 0)
 
 # Restore exception state and reraise exception.
 #
 # Pops: exception to reraise, then saved exception state
-def_op_graal(loc, "END_EXC_HANDLER", 100, 0, 2, 0)
+def_op_graal(loc, "END_EXC_HANDLER", 0x53, 0, 2, 0)
 
 # Gets the python-level exception object from a {@link PException}.
 #
 # Pops: a {@link PException} Pushes: python exception
 #
-def_op_graal(loc, "UNWRAP_EXC", 0x60, 0, 1, 1)
+def_op_graal(loc, "UNWRAP_EXC", 0x54, 0, 1, 1)
 
 # ----------
 # generators
@@ -693,14 +653,14 @@ def_op_graal(loc, "UNWRAP_EXC", 0x60, 0, 1, 1)
 #
 # Pops: yielded value
 #
-def_op_graal(loc, "YIELD_VALUE", 0x61, 0, 1, 0)
+def_op_graal(loc, "YIELD_VALUE", 0x55, 0, 1, 0)
 # ### Additional opcode in 3.11 here
 #
 # Resume after yield. Will raise exception passed by {@code throw} if any.
 #
 # Pushes: value received from {@code send} or {@code None}.
 #
-def_op_graal(loc, "RESUME_YIELD", 0x63, 0, 0, 1)
+def_op_graal(loc, "RESUME_YIELD", 0x56, 0, 0, 1)
 #
 # Send value into a generator. Jumps forward by the offset in the immediate argument if the
 # generator is exhausted. Used to implement {@code yield from}.
@@ -712,7 +672,7 @@ def_op_graal(loc, "RESUME_YIELD", 0x63, 0, 0, 1)
 # Pushes (if jumping): the generator return value
 #
 jrel_op_graal(
-    loc, "SEND", 0x64, 1, 2, 1
+    loc, "SEND", 0x57, 1, 2, 1
 )  # , (oparg, followingArgs, withJump) -> withJump ? 1 : 2)
 
 # Exception handler for forwarding {@code throw} calls into {@code yield from}.
@@ -723,7 +683,7 @@ jrel_op_graal(
 #
 # Pushes (if jumping): the generator return value
 def_op_graal(
-    loc, "THROW", 0x65, 1, 2, 1
+    loc, "THROW", 0x58, 1, 2, 1
 )  # , (oparg, followingArgs, withJump) -> withJump ? 1 : 2)
 
 # with statements
@@ -734,34 +694,12 @@ def_op_graal(
 #
 # Pushes: the context manager, then maybe-bound {@code __exit__}, then the result of
 # {@code __enter__}
-def_op_graal(loc, "SETUP_WITH", 0x67, 1, 0, 0)
+def_op_graal(loc, "SETUP_WITH", 0x59, 1, 0, 0)
 
 # Run the exit handler of a context manager and reraise if necessary.
 #
 # Pops: exception or {@code None}, then maybe-bound {@code __exit__}, then the context manager
-
-def_op_graal(loc, "EXIT_WITH", 0x68, 0, 3, 0)
-
-# Enter a context manager and save data for its exit
-#
-# Pops: the context manager
-#
-# Pushes: the context manager, then the maybe-bound async function {@code __aexit__}, then the
-# awaitable returned by {@code __aenter__}
-#
-def_op_graal(loc, "SETUP_AWITH", 0x69, 0, 1, 3)
-
-# Run the exit handler of a context manager
-#
-# Pops: exception or {@code None}, then maybe-bound {@code __aexit__}, then the context manager
-#
-# Pushes: the exception or {@code None}, then the awaitable returned by {@code __aexit__}
-def_op_graal(loc, "GET_AEXIT_CORO", 0x6A, 0, 3, 2)
-
-# Reraise the exception passed to {@code __aexit__} if appropriate
-#
-#!Pops: The result of awaiting {@code __aexit__}, then the exception
-def_op_graal(loc, "EXIT_AWITH", 0x6B, 0, 2, 0)
+def_op_graal(loc, "EXIT_WITH", 0x5A, 0, 3, 0)
 
 # Loads signed byte from immediate operand.
 #

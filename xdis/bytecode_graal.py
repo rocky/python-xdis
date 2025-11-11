@@ -111,10 +111,11 @@ def get_instructions_bytes_graal(
                 opc.opmap["STORE_DEREF"],
                 opc.opmap["DELETE_DEREF"],
             ):
-                if arg >= len(cells):
-                    argrepr = freevars[arg - len(cells)]
-                else:
-                    argrepr = cells[arg]
+                # if arg >= len(cells):
+                #     import pdb; pdb.set_trace()
+                #     argrepr = freevars[arg - len(cells)]
+                # else:
+                #     argrepr = cells[arg]
                 break
             elif opcode in (
                 opc.opmap["LOAD_FAST"],
