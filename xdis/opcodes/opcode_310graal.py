@@ -19,7 +19,6 @@ Python Graal 3.10 (graalpy-23) bytecode opcodes
 See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
 
-from typing import Dict, Set
 
 from xdis.opcodes.base import init_opdata
 from xdis.opcodes.base_graal import findlabels  # noqa
@@ -43,19 +42,19 @@ python_implementation = PythonImplementation("Graal")
 
 version_tuple = (3, 10, 8)
 
-arg_counts: Dict[int, int] = {}
+arg_counts = {}
 
 # opcodes that perform a binary operation on the top two stack entries
-binaryop: Set[int] = set([])
+binaryop = set()
 
 # opcodes that perform some sort of call
-callop: Set[int] = set([])
+callop = set()
 
 # opcodes that perform some sort of call
-collectionop: Set[int] = set([])
+collectionop = set()
 
 # opcodes that perform a unary operation on the toip stack entry
-unaryop: Set[int] = set([])
+unaryop = set()
 
 loc = locals()
 

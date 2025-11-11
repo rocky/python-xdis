@@ -306,7 +306,7 @@ class Bytecode_Graal(Bytecode):
         )
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self._original_object!r})"
+        return "%s({%r)" % (self.__class__.__name__, self._original_object)
 
     def get_instructions(self, x):
         """Iterator for the opcodes in methods, functions or code
