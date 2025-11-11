@@ -16,7 +16,6 @@
 
 """Facilitates for importing Python opcode maps for a given Python version"""
 import copy
-from typing import Tuple
 
 from xdis.magics import canonic_python_version
 from xdis.opcodes import (
