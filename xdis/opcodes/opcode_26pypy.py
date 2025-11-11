@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2021, 2023 by Rocky Bernstein
+# (C) Copyright 2017, 2021, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -34,9 +34,10 @@ from xdis.opcodes.format.extended import (
     extended_format_ATTR,
     extended_format_RETURN_VALUE,
 )
+from xdis.version_info import PythonImplementation
 
 version_tuple = (2, 6)
-python_implementation = "PyPy"
+python_implementation = PythonImplementation("PyPy")
 
 loc = locals()
 init_opdata(loc, opcode_26, version_tuple, is_pypy=True)

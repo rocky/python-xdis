@@ -22,7 +22,8 @@ of stack usage.
 """
 
 import xdis.opcodes.opcode_1x as opcode_1x
-from xdis.opcodes.base import (  # Although these aren't used here, they are exported
+from xdis.opcodes.base import (  # Although these aren't used here, they are exported; noqa
+    cpython_implementation as python_implementation,
     finalize_opcodes,
     init_opdata,
     update_pj2,
@@ -30,7 +31,6 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
 from xdis.opcodes.opcode_1x import opcode_extended_fmt_base1x, update_arg_fmt_base1x
 
 version_tuple = (1, 5)
-python_implementation = "CPython"
 
 loc = locals()
 

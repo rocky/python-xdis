@@ -24,7 +24,8 @@ of stack usage.
 from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_34 as opcode_34
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # noqa
+    cpython_implementation as python_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -37,7 +38,6 @@ from xdis.opcodes.format.extended import extended_format_binary_op, get_arglist
 from xdis.opcodes.opcode_34 import opcode_arg_fmt34, opcode_extended_fmt34
 
 version_tuple = (3, 5)
-python_implementation = "CPython"
 
 
 loc = locals()
