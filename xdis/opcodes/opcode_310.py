@@ -1,4 +1,4 @@
-# (C) Copyright 2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -22,11 +22,17 @@ of stack usage and information for formatting instructions.
 
 import xdis.opcodes.opcode_39 as opcode_39
 from xdis.cross_dis import findlinestarts  # noqa
-from xdis.opcodes.base import def_op, finalize_opcodes, init_opdata, rm_op, update_pj3
+from xdis.opcodes.base import (  # noqa
+    cpython_implementation as python_implementation,
+    def_op,
+    finalize_opcodes,
+    init_opdata,
+    rm_op,
+    update_pj3,
+)
 from xdis.opcodes.opcode_39 import opcode_arg_fmt39, opcode_extended_fmt39
 
 version_tuple = (3, 10)
-python_implementation = "CPython"
 
 loc = locals()
 

@@ -21,9 +21,10 @@ from xdis.opcodes.format.extended import (
     extended_format_CALL_METHOD,
     extended_format_RETURN_VALUE,
 )
+from xdis.version_info import PythonImplementation
 
 version_tuple = (3, 2)
-python_implementation = "PyPy"
+python_implementation = PythonImplementation("PyPy")
 
 loc = locals()
 init_opdata(loc, opcode_32, version_tuple, is_pypy=True)

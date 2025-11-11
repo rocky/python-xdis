@@ -18,9 +18,10 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.opcode_311 import opcode_arg_fmt311, opcode_extended_fmt311
+from xdis.version_info import PythonImplementation
 
 version_tuple = (3, 11)
-python_implementation = "PyPy"
+python_implementation = PythonImplementation("PyPy")
 
 loc = locals()
 init_opdata(loc, opcode_310, version_tuple, is_pypy=True)
