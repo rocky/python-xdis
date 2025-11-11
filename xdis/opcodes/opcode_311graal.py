@@ -1,4 +1,18 @@
 # (C) 2025 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 Python Graal 3.11 bytecode opcodes
 
@@ -90,7 +104,7 @@ binary_op_graal(loc, "BINARY_OP", 0x7, 1, 2, 1)
 # Performs subscript get operation - {@code a[b]}.
 #   Pops: {@code b}, then {@code a}
 #   Pushes: result
-def_op_graal(loc, "BINARY_SUBSCR", 0x8, 0, 2, 1)
+def_op_graal(loc, "BINARY_SUBSCR", 0x8, 1, 2, 0)
 
 # Performs subscript set operation - {@code a[b] = c}.
 #   Pops: {@code b}, then {@code a}, then {@code c}
@@ -136,8 +150,7 @@ def_op_graal(loc, "LOAD_ASSERTION_ERROR", 0x11, 0, 0, 1)
 
 # Returns the value to the caller. In generators, performs generator return.
 #   Pops: return value
-# def_op_graal(loc, "RETURN_VALUE", 0x10, 0, 1, 0)
-def_op_graal(loc, "RETURN_VALUE", 0x12, 0, 1, 0)  # This is observed
+def_op_graal(loc, "RETURN_VALUE", 0x12, 0, 1, 0)
 #
 # Reads a name from locals dict, globals or builtins determined by the
 # immediate operand which indexes the names array ({@code co_names}).
@@ -353,33 +366,32 @@ def_op_graal(loc, "LOAD_INT", 0x38, 1, 0, 1)
 #
 # Loads {@code long} from primitiveConstants array indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_LONG", 0x3A, 1, 0, 1)
+def_op_graal(loc, "LOAD_LONG", 0x39, 1, 0, 1)
 #
 # Loads {@code double} from primitiveConstants array indexed by the immediate operand
 # (converted from long).
 #
-def_op_graal(loc, "LOAD_DOUBLE", 0x3B, 1, 0, 1)
+def_op_graal(loc, "LOAD_DOUBLE", 0x3A, 1, 0, 1)
 #
 
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
 # operand.
 #
-def_op_graal(loc, "LOAD_BIGINT", 0x3C, 1, 0, 1)
+def_op_graal(loc, "LOAD_BIGINT", 0x3B, 1, 0, 1)
 #
 # Currently the same as {@link #LOAD_CONST}.
 #
-const_op_graal(loc, "LOAD_STRING", 0x3D, 0, 1)
+const_op_graal(loc, "LOAD_STRING", 0x3C, 0, 1)
 
 #
 # Creates python {@code bytes} from a {@code byte[]} array in constants array indexed by the
 # immediate operand.
 #
 def_op_graal(loc, "LOAD_BYTES", 0x3E, 0, 1)
-#
 # Creates python {@code complex} from a {@code double[]} array of size 2 in constants array
 # indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_COMPLEX", 0x3F, 1, 0, 1)
+def_op_graal(loc, "LOAD_COMPLEX", 0x3E, 1, 0, 1)
 
 # Creates a collection out of a Java array in constants array indexed by the immediate operand.
 # The second immediate operand determines the array type and kind, using values from {@link
@@ -791,7 +803,19 @@ def_op_graal(loc, "LOAD_FALSE_B", 0x6F, 1, 0, 0)
 def_op_graal(loc, "LOAD_BYTE_O", 0x70, 1, 0, 1)
 def_op_graal(loc, "LOAD_BYTE_I", 0x71, 1, 0, 1)
 def_op_graal(loc, "LOAD_INT_O", 0x72, 1, 0, 1)
-def_op_graal(loc, "LOAD_INT_I", 0x78, 1, 0, 1)
+def_op_graal(loc, "LOAD_INT_I", 0x73, 1, 0, 1)
+def_op_graal(loc, "LOAD_LONG_O", 0x74, 1, 0, 1)
+def_op_graal(loc, "LOAD_LONG_L", 0x75, 1, 0, 1)
+def_op_graal(loc, "LOAD_DOUBLE_O", 0x76, 1, 0, 1)
+def_op_graal(loc, "LOAD_DOUBLE_D", 0x77, 1, 0, 1)
+# There are more...
+# LOAD_FAST*
+# STORE_FAST*
+# UNARY_OP*
+# BINARY_OP*
+# FOR_ITER*
+# BINARY_SUBSCR*
+# and MORE!
 
 
 update_sets(loc)

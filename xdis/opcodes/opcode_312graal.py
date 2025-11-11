@@ -1,6 +1,20 @@
 # (C) 2025 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-Python Graal 3.12 bytecode opcodes
+Python Graal 3.12 (graal-24) bytecode opcodes
 
 See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
@@ -142,7 +156,7 @@ def_op_graal(loc, "RETURN_VALUE", 0x12, 0, 1, 0)
 # immediate operand which indexes the names array ({@code co_names}).
 #  Pushes: read object
 name_op_graal(loc, "LOAD_NAME", 0x13, 1, 0, 1)
-loc["nullaryloadop"].add(19)
+loc["nullaryloadop"].add(0x13)
 
 # Writes the stack top into a name in locals dict or globals
 # determined by the immediate operand which indexes the names array
@@ -301,27 +315,27 @@ def_op_graal(loc, "IMPORT_STAR", 0x2D, 1, 1, 0)
 def_op_graal(loc, "PRINT_EXPR", 0x2E, 0, 1, 0)
 
 # Creates annotations dict in locals
-def_op_graal(loc, "SETUP_ANNOTATIONS", 100, 0, 0, 0)
+def_op_graal(loc, "SETUP_ANNOTATIONS", 0x2F, 0, 0, 0)
 
 # Determines if a python object is a sequence.
-def_op_graal(loc, "MATCH_SEQUENCE", 101, 0, 0, 1)
+def_op_graal(loc, "MATCH_SEQUENCE", 0x30, 0, 0, 1)
 
 # Determines if a Python object is a mapping.
-def_op_graal(loc, "MATCH_MAPPING", 102, 0, 0, 1)
+def_op_graal(loc, "MATCH_MAPPING", 0x31, 0, 0, 1)
 
 # Determines if a Python object is of a particular type.
-def_op_graal(loc, "MATCH_CLASS", 102, 1, 3, 2)
+def_op_graal(loc, "MATCH_CLASS", 0x32, 1, 3, 2)
 
 # Matches the keys (stack top) in a dict (stack second). On successful
 # match pushes the values and True, otherwise None and False.
-def_op_graal(loc, "MATCH_KEYS", 0x2F, 0, 2, 4)
+def_op_graal(loc, "MATCH_KEYS", 0x33, 0, 2, 4)
 
 # Creates a copy of a dict (stack second) without elements matching a
 # tuple of keys (stack top).
-def_op_graal(loc, "COPY_DICT_WITHOUT_KEYS", 0x30, 0, 1, 1)
+def_op_graal(loc, "COPY_DICT_WITHOUT_KEYS", 0x34, 0, 1, 1)
 
 # Retrieves the length of a Python object and stores it on top.
-def_op_graal(loc, "GET_LEN", 0x31, 0, 0, 1)
+def_op_graal(loc, "GET_LEN", 0x35, 0, 0, 1)
 
 # -------------------------------------
 # load bytecodes for special constants
@@ -332,27 +346,28 @@ loc["nullaryloadop"].add(0x36)
 
 def_op_graal(loc, "LOAD_ELLIPSIS", 0x37, 0, 1, 0)
 def_op_graal(loc, "LOAD_TRUE", 0x38, 0, 1, 0)
-loc["nullaryloadop"].add(0x32)
-
-def_op_graal(loc, "LOAD_FALSE", 0x39, 0, 1, 0)
 loc["nullaryloadop"].add(0x38)
 
+def_op_graal(loc, "LOAD_FALSE", 0x39, 0, 1, 0)
+loc["nullaryloadop"].add(0x39)
 
+def_op_graal(loc, "LOAD_BYTE", 0x3A, 1, 0, 1)
+#
 #### Continue adding opcode numbers here...
 
 
 # Loads {@code int} from primitiveConstants array indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_INT", 0x39, 1, 0, 1)
+def_op_graal(loc, "LOAD_INT", 0x3B, 1, 0, 1)
 #
 # Loads {@code long} from primitiveConstants array indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_LONG", 0x3A, 1, 0, 1)
+def_op_graal(loc, "LOAD_LONG", 0x3C, 1, 0, 1)
 #
 # Loads {@code double} from primitiveConstants array indexed by the immediate operand
 # (converted from long).
 #
-def_op_graal(loc, "LOAD_DOUBLE", 0x3B, 1, 0, 1)
+def_op_graal(loc, "LOAD_DOUBLE", 0x3D, 1, 0, 1)
 #
 
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
