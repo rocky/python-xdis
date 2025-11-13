@@ -155,6 +155,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
     #     assert actual == expected
 
     def test_get_instructions():
+        # opc = get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
         actual = list(dis.get_instructions(TEST_SOURCE_CODE))
         actual_len = len(actual)
         assert actual_len > 0

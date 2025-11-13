@@ -814,7 +814,7 @@ class Bytecode:
         the disassembled code object.
         """
         co = get_code_object(x)
-        return get_instructions_bytes(co.co_code, self.opc)
+        return get_instructions_bytes(co, self.opc)
 
 
 def list2bytecode(
