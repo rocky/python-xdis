@@ -137,7 +137,7 @@ def disco(
     co,
     timestamp,
     out=sys.stdout,
-    magic_int=None,
+    magic_int: int=-1,
     source_size=None,
     sip_hash=None,
     asm_format: str = "classic",

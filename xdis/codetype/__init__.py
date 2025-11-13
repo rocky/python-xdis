@@ -33,7 +33,7 @@ from xdis.version_info import IS_GRAAL, IS_PYPY, PYTHON_VERSION_TRIPLE
 __docformat__ = "restructuredtext"
 
 
-def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool=False):
+def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool=False, other_fields: dict={}):
     """Converts a native types.CodeType code object into a
     corresponding more flexible xdis Code type.
     """
@@ -149,20 +149,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
                 version_triple=version_triple,
             )
         elif version_triple[:2] >= (3, 11):
-            other_fields = {}
             if is_graal:
-                other_fields["condition_profileCount"]=code.condition_profileCount if hasattr(code, "condition_profileCount") else -1,
-                other_fields["endColumn"]=code.endColumn if hasattr(code, "endColumn") else -1,
-                other_fields["endLine"]=code.endLine if hasattr(code, "endLine") else -1,
-                other_fields["exception_handler_ranges"]=code.exception_handler_ranges if hasattr(code, "exception_handler_ranges") else tuple(),
-                other_fields["generalizeInputsMap"]=code.generalizeInputsMap if hasattr(code, "generalizeInputsMap") else {},
-                other_fields["generalizeVarsMap"]=code.generalizeVarsMap if hasattr(code, "generalizeVarsMap") else {},
-                other_fields["outputCanQuicken"]=code.outputCanQuicken if hasattr(code, "outputCanQuicken") else b"",
-                other_fields["primitiveConstants"]=code.primitiveConstants if hasattr(code, "primitiveConstants") else tuple(),
-                other_fields["srcOffsetTable"]=code.srcOffsetTable if hasattr(code, "srcOffsetTable") else b"",
-                other_fields["startColumn"]=code.startColumn if hasattr(code, "startColumn") else -1,
-                other_fields["startLine"]=code.startLine if hasattr(code, "startLine") else -1,
-                other_fields["variableShouldUnbox"]=code.variableShouldUnbox if hasattr(code, "variableShouldUnbox") else b"",
 
                 return Code311Graal(
                     co_argcount=code.co_argcount,
@@ -363,7 +350,7 @@ def to_portable(
         version_triple=version_triple,
         other_fields=other_fields,
     )
-    return codeType2Portable(code, version_triple, is_graal=is_graal)
+    return codeType2Portable(code, version_triple, is_graal=is_graal, other_fields=other_fields)
 
 
 if __name__ == "__main__":
