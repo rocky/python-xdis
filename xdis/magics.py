@@ -717,7 +717,11 @@ add_magic_from_int(21280, "3.10.8Graal")
 
 # 21290 = 21000 + 29 * 10
 add_magic_from_int(21290, "3.11.7Graal")
+
 # add_magic_from_int(21290, "3.12.8Graal")
+# Paritally compensate for one magic for two Graal Python versions:
+version2magicint["3.12.8Graal"].append(21290)
+
 
 
 # Jython uses JVM bytecode, not CPython PyPy bytecode.
@@ -936,6 +940,9 @@ def sysinfo2magic(version_info: tuple = tuple(sys.version_info)) -> bytes:
             # just not have platform
             pass
 
+    if vers_str == "3.12.8Graal":
+        # 3.12.8Graal and 3.11.7Graal have the same magic number!
+        vers_str = "3.11.7Graal"
     return magics.get(vers_str, b"?!\r\n")
 
 

@@ -14,7 +14,10 @@ def get_srcdir() -> str:
 
 
 @pytest.mark.skipif(
-    os.name == "nt", reason="Windows differences in output need going over"
+    os.name == "nt", reason="Windows differences in output need going over."
+)
+@pytest.mark.skipif(
+    IS_GRAAL, reason="Graal load_module needs more work."
 )
 def test_load_file() -> None:
     srcdir = get_srcdir()

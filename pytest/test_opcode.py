@@ -2,12 +2,20 @@ import dis
 
 import pytest
 from xdis import get_opcode
-from xdis.version_info import IS_PYPY, PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
+from xdis.version_info import (
+    IS_GRAAL,
+    IS_PYPY,
+    PYTHON_IMPLEMENTATION,
+    PYTHON_VERSION_TRIPLE,
+)
 
 
 @pytest.mark.skipif(
     PYTHON_VERSION_TRIPLE >= (3, 14),
     reason="Python >= 3.14 is not complete.",
+)
+@pytest.mark.skipif(
+    IS_GRAAL, reason="Graal's `dis' module lies about its opcodes."
 )
 def test_opcode() -> None:
     opc = get_opcode(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
