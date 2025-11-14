@@ -69,12 +69,12 @@ def main(format: str, method: tuple, show_source: bool, show_file_offsets, files
     if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 16)):
         mess = "This code works on 3.6 to 3.15; you have %s."
         if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 7):
-            mess += " Code that works for %s can be found in the python-2.4 branch\n"
+            mess += " Code that works for %s can be found in the python-2.4 branch.\n"
         elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
-            mess += " Code that works for %s can be found in the python-3.1 branch\n"
+            mess += " Code that works for %s can be found in the python-3.1 branch.\n"
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
-            mess += " Code that works for %s can be found in the python-3.3 branch\n"
-        sys.stderr.write(mess % PYTHON_VERSION_STR)
+            mess += " Code that works for %s can be found in the python-3.3 branch.\n"
+        sys.stderr.write(mess % (PYTHON_VERSION_STR, PYTHON_VERSION_STR))
         sys.exit(2)
 
     rc = 0

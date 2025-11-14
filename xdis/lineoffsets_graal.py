@@ -88,9 +88,12 @@ class SourceMap:
             op_byte = bytecode[offset]
             op_len = arg_counts[op_byte] + 1
 
-
-            start_line, start_column = self._next_line_and_column()
-            end_line, end_column = self._next_line_and_column()
+            try:
+                start_line, start_column = self._next_line_and_column()
+                end_line, end_column = self._next_line_and_column()
+            except EOFError:
+                # FIXME: We made a mistake somewhere.
+                break
 
             # fill maps for the bytes covered by this opcode
             for i in range(offset, min(offset + op_len, n)):
@@ -163,10 +166,13 @@ def find_linestarts_graal(code_object, opc, dup_lines: bool) -> dict:
     last_lineno = -1
     offset2line: Dict[int, int] = {}
     lines_seen = set()
+    last_linemap_offset = len(source_map.startLineMap) - 1
     while i < n:
         opcode = bytecode[i]
         offset = i
         i += opc.arg_counts[opcode] + 1
+        if offset >= last_linemap_offset:
+            break
         line_number = source_map.startLineMap[offset]
         if line_number != last_lineno:
             if not dup_lines:
