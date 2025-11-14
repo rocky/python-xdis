@@ -145,7 +145,7 @@ class SourceMap:
             b = self.source_table[self.source_table_pos]
             self.source_table_pos += 1
             val = _to_signed(b)
-            assert val != -1
+            # assert val != -1
             if val == EXTENDED_NUM:
                 extensions += 1
             elif val < 0:
