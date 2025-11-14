@@ -385,7 +385,7 @@ const_op_graal(loc, "LOAD_STRING", 0x3C, 0, 1)
 # Creates python {@code bytes} from a {@code byte[]} array in constants array indexed by the
 # immediate operand.
 #
-def_op_graal(loc, "LOAD_BYTES", 0x3E, 0, 1)
+def_op_graal(loc, "LOAD_BYTES", 0x3D, 0, 1)
 # Creates python {@code complex} from a {@code double[]} array of size 2 in constants array
 # indexed by the immediate operand.
 #

@@ -20,7 +20,8 @@ See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
 
 from xdis.opcodes.base import init_opdata
-from xdis.opcodes.base_graal import findlabels  # noqa
+
+# from xdis.opcodes.base_graal import findlabels  # noqa
 from xdis.opcodes.base_graal import (  # find_linestarts,  # noqa
     binary_op_graal,
     call_op_graal,
@@ -54,9 +55,10 @@ collectionop = set()
 # opcodes that perform a unary operation on the toip stack entry
 unaryop= set()
 
-loc = locals()
+opc = loc = locals()
 
 init_opdata(loc, None, None)
+
 
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes

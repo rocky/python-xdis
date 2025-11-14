@@ -452,15 +452,8 @@ def next_offset(op, opc, offset):
 
 
 def get_instructions_bytes(
-    bytecode,
+    code_object,
     opc,
-    varnames=None,
-    names=None,
-    constants=None,
-    cells=None,
-    linestarts=None,
-    line_offset=0,
-    exception_entries=None,
 ):
     """
     Iterate over the instructions in a bytecode string.
@@ -470,7 +463,20 @@ def get_instructions_bytes(
     e.g., variable names, constants, can be specified using optional
     arguments.
     """
+
+    bytecode: bytes = code_object.co_code
+    constants: tuple = code_object.co_consts
+    names: tuple = code_object.co_names
+    varnames: tuple = code_object.co_varnames
+    cells: tuple = code_object.co_cells if hasattr(code_object, "co_cells") else tuple()
+    exception_entries = code_object.exception_entries if hasattr(code_object, "exception_entries") else tuple()
+    # freevars: tuple = code_object.co_freevars
+
     labels = opc.findlabels(bytecode, opc)
+    if hasattr(opc, "findlinestarts"):
+        line_starts = dict(opc.findlinestarts(code_object, dup_lines=True))
+    else:
+        line_starts = None
 
     # PERFORMANCE FIX: Build exception labels ONCE, not on every iteration
     # The old code was O(n^2) because it rebuilt the same list every call to
@@ -495,7 +501,7 @@ def get_instructions_bytes(
                 names=names,
                 constants=constants,
                 cells=cells,
-                linestarts=linestarts,
+                linestarts=line_starts,
                 line_offset=0,
                 exception_entries=exception_entries,
                 labels=labels,
@@ -550,17 +556,7 @@ class Bytecode:
 
     def __iter__(self):
         co = self.codeobj
-        return get_instructions_bytes(
-            co.co_code,
-            self.opc,
-            co.co_varnames,
-            co.co_names,
-            co.co_consts,
-            self._cell_names,
-            self._linestarts,
-            line_offset=self._line_offset,
-            exception_entries=self.exception_entries,
-        )
+        return get_instructions_bytes(co, self.opc)
 
     def __repr__(self):
         return "{}({!r})".format(self.__class__.__name__, self._original_object)
@@ -594,10 +590,8 @@ class Bytecode:
             offset = -1
         output = StringIO()
         if self.opc.version_tuple > (2, 0):
-            cells = self._cell_names
             line_starts = self._linestarts
         else:
-            cells = None
             line_starts = None
 
         first_line_number = co.co_firstlineno if hasattr(co, "co_firstlineno") else None
@@ -608,17 +602,8 @@ class Bytecode:
         if isinstance(filename, UnicodeForPython3):
             filename = str(filename)
 
-        if isinstance(co.co_code, str):
-            co_code = co.co_code.encode('latin-1')
-        else:
-            co_code = co.co_code
-
         self.disassemble_bytes(
-            co_code,
-            varnames=co.co_varnames,
-            names=co.co_names,
-            constants=co.co_consts,
-            cells=cells,
+            co,
             line_starts=line_starts,
             line_offset=self._line_offset,
             file=output,
@@ -627,7 +612,6 @@ class Bytecode:
             filename=filename,
             show_source=show_source,
             first_line_number=first_line_number,
-            exception_entries=self.exception_entries,
         )
         return output.getvalue()
 
@@ -645,12 +629,8 @@ class Bytecode:
 
     def disassemble_bytes(
         self,
-        bytecode,
+        code_object,
         lasti: int = -1,
-        varnames=None,
-        names=None,
-        constants=None,
-        cells=None,
         line_starts=None,
         file=sys.stdout,
         line_offset=0,
@@ -658,7 +638,6 @@ class Bytecode:
         filename=None,
         show_source=True,
         first_line_number=None,
-        exception_entries=None,
     ) -> list:
         # Omit the line number column entirely if we have no line number info
         show_lineno = line_starts is not None or self.opc.version_tuple < (2, 3)
@@ -701,17 +680,7 @@ class Bytecode:
         else:
             get_instructions_fn = get_instructions_bytes
 
-        for instr in get_instructions_fn(
-            bytecode,
-            self.opc,
-            varnames,
-            names,
-            constants,
-            cells,
-            line_starts,
-            line_offset=line_offset,
-            exception_entries=exception_entries,
-        ):
+        for instr in get_instructions_fn(code_object, self.opc):
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
                 instr = Instruction(
@@ -788,7 +757,7 @@ class Bytecode:
             new_source_line = show_lineno and (
                 extended_arg_starts_line
                 or instr.starts_line is not None
-                and instr.offset > 0
+                and instr.offset >= 0
             )
             if new_source_line:
                 file.write("\n")
@@ -832,7 +801,7 @@ class Bytecode:
             pass
         return instructions
 
-    def get_instructions(self, x, first_line=None):
+    def get_instructions(self, x):
         """Iterator for the opcodes in methods, functions or code
 
         Generates a series of Instruction named tuples giving the details of
@@ -844,22 +813,7 @@ class Bytecode:
         the disassembled code object.
         """
         co = get_code_object(x)
-        cell_names = co.co_cellvars + co.co_freevars
-        line_starts = dict(self.opc.findlinestarts(co))
-        if first_line is not None:
-            line_offset = first_line - co.co_firstlineno
-        else:
-            line_offset = 0
-        return get_instructions_bytes(
-            co.co_code,
-            self.opc,
-            co.co_varnames,
-            co.co_names,
-            co.co_consts,
-            cell_names,
-            line_starts,
-            line_offset,
-        )
+        return get_instructions_bytes(co, self.opc)
 
 
 def list2bytecode(inst_list, opc, varnames, consts: tuple):

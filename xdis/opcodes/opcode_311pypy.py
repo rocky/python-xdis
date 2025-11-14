@@ -1,12 +1,14 @@
 # (C) Copyright 2025 by Rocky Bernstein
-"""
-PYPY 3.11 opcodes
+"""PYPY 3.11 opcodes
 
-This is a like Python's 3.10's opcode.py  with some classification
-of stack usage and information for formatting instructions.
+PyPy's 3.11 opcodes are more like CPython's 3.10's opcode.py than CPython 3.11 opcodes.
+
+We add some classification of stack usage and information for
+formatting instructions.
+
 """
 
-import xdis.opcodes.opcode_310 as opcode_310
+import xdis.opcodes.opcode_310 as opcode_311
 from xdis.opcodes.base import (
     def_op,
     finalize_opcodes,
@@ -24,14 +26,14 @@ version_tuple = (3, 11)
 python_implementation = PythonImplementation("PyPy")
 
 loc = locals()
-init_opdata(loc, opcode_310, version_tuple, is_pypy=True)
+init_opdata(loc, opcode_311, version_tuple, is_pypy=True)
 
 
 # fmt: off
 # Changed opcodes
 # ----------------------
 
-# Removed from Python 3.10
+# Removed from Python 3.11
 # ----------------
 
 rm_op(loc,  "GEN_START",              129)
