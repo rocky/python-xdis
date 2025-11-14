@@ -273,9 +273,10 @@ def pretty_flags(flags, python_implementation=PYTHON_IMPLEMENTATION) -> str:
     for i in range(32):
         flag = 1 << i
         if flags & flag:
-            names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
-            if python_implementation == PythonImplementation.PyPy:
+            if python_implementation == PythonImplementation.PyPy and flag in PYPY_COMPILER_FLAG_NAMES:
                 names.append(PYPY_COMPILER_FLAG_NAMES.get(flag, hex(flag)))
+            else:
+                names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
             flags ^= flag
             if not flags:
                 break
