@@ -25,6 +25,7 @@ from xdis.codetype.code30 import Code3
 from xdis.codetype.code38 import Code38
 from xdis.codetype.code38graal import Code38Graal
 from xdis.codetype.code310 import Code310
+from xdis.codetype.code310graal import Code310Graal
 from xdis.codetype.code311 import Code311, Code311FieldNames
 from xdis.codetype.code311graal import Code311Graal
 from xdis.version_info import IS_GRAAL, IS_PYPY, PYTHON_VERSION_TRIPLE
@@ -126,25 +127,48 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
                     version_triple=version_triple,
                 )
         elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
-            return Code310(
-                co_argcount=code.co_argcount,
-                co_posonlyargcount=code.co_posonlyargcount,
-                co_kwonlyargcount=code.co_kwonlyargcount,
-                co_nlocals=code.co_nlocals,
-                co_stacksize=code.co_stacksize,
-                co_flags=code.co_flags,
-                co_code=code.co_code,
-                co_consts=code.co_consts,
-                co_names=code.co_names,
-                co_varnames=code.co_varnames,
-                co_freevars=code.co_freevars,
-                co_cellvars=code.co_cellvars,
-                co_filename=code.co_filename,
-                co_name=code.co_name,
-                co_firstlineno=code.co_firstlineno,
-                co_linetable=code.co_lnotab,
-                version_triple=version_triple,
-            )
+            if is_graal:
+                return Code310Graal(
+                    co_argcount=code.co_argcount,
+                    co_posonlyargcount=code.co_posonlyargcount,
+                    co_kwonlyargcount=code.co_kwonlyargcount,
+                    co_nlocals=code.co_nlocals,
+                    co_stacksize=code.co_stacksize,
+                    co_flags=code.co_flags,
+                    co_code=code.co_code,
+                    co_consts=code.co_consts,
+                    co_names=code.co_names,
+                    co_varnames=code.co_varnames,
+                    co_freevars=code.co_freevars,
+                    co_cellvars=code.co_cellvars,
+                    co_filename=code.co_filename,
+                    co_name=code.co_name,
+                    co_firstlineno=code.co_firstlineno,
+                    co_linetable=line_table,
+                    version_triple=version_triple,
+                    other_fields=other_fields,
+                )
+            else:
+                return Code310(
+                    co_argcount=code.co_argcount,
+                    co_posonlyargcount=code.co_posonlyargcount,
+                    co_kwonlyargcount=code.co_kwonlyargcount,
+                    co_nlocals=code.co_nlocals,
+                    co_stacksize=code.co_stacksize,
+                    co_flags=code.co_flags,
+                    co_code=code.co_code,
+                    co_consts=code.co_consts,
+                    co_names=code.co_names,
+                    co_varnames=code.co_varnames,
+                    co_freevars=code.co_freevars,
+                    co_cellvars=code.co_cellvars,
+                    co_filename=code.co_filename,
+                    co_name=code.co_name,
+                    co_firstlineno=code.co_firstlineno,
+                    co_linetable=line_table,
+                    version_triple=version_triple,
+                )
+>>>>>>> master
         elif version_triple[:2] >= (3, 11):
             if is_graal:
 
