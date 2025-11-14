@@ -86,9 +86,12 @@ class SourceMap:
             op_byte = bytecode[offset]
             op_len = arg_counts[op_byte] + 1
 
-
-            start_line, start_column = self._next_line_and_column()
-            end_line, end_column = self._next_line_and_column()
+            try:
+                start_line, start_column = self._next_line_and_column()
+                end_line, end_column = self._next_line_and_column()
+            except EOFError:
+                # FIXME: We made a mistake somewhere.
+                break
 
             # fill maps for the bytes covered by this opcode
             for i in range(offset, min(offset + op_len, n)):
@@ -125,6 +128,7 @@ class SourceMap:
             self.next_column = 0
         else:
             # reset to before the byte we consumed
+            # print("Resetting from %d to %d" % (self.source_table_pos, old_pos))
             self.source_table_pos = old_pos
         self.next_column += self._get_num()
         return self.next_line, self.next_column
@@ -138,12 +142,10 @@ class SourceMap:
         """
         extensions = 0
         while True:
-            if self.source_table_pos >= self.source_table_len:
-                raise EOFError("Unexpected end of source table while reading line/column")
-
             b = self.source_table[self.source_table_pos]
             self.source_table_pos += 1
             val = _to_signed(b)
+            assert val != -1
             if val == EXTENDED_NUM:
                 extensions += 1
             elif val < 0:
@@ -161,10 +163,13 @@ def find_linestarts_graal(code_object, opc, dup_lines: bool) -> dict:
     last_lineno = -1
     offset2line = {}
     lines_seen = set()
+    last_linemap_offset = len(source_map.startLineMap) - 1
     while i < n:
         opcode = bytecode[i]
         offset = i
         i += opc.arg_counts[opcode] + 1
+        if offset >= last_linemap_offset:
+            break
         line_number = source_map.startLineMap[offset]
         if line_number != last_lineno:
             if not dup_lines:
