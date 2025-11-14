@@ -14,6 +14,7 @@
 # Names:
 #    0: __future__
 #    1: annotations
+
   1:           0 LOAD_CONST           (0)
                2 LOAD_CONST           (('annotations',))
                4 IMPORT_NAME          (__future__)

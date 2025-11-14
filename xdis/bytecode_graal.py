@@ -1,7 +1,10 @@
 # from xdis.bytecode import get_optype
+from typing import Optional
+
 from xdis.bytecode import Bytecode
 from xdis.cross_dis import get_code_object
 from xdis.instruction import Instruction
+from xdis.lineoffsets_graal import SourceMap, find_linestarts_graal
 from xdis.opcodes.base_graal import (
     BINARY_OPS,
     COLLECTION_KIND,
@@ -11,15 +14,8 @@ from xdis.opcodes.base_graal import (
 
 
 def get_instructions_bytes_graal(
-    bytecode,
+    code_object,
     opc,
-    varnames,
-    names,
-    constants,
-    cells,
-    freevars,
-    line_offset,
-    exception_entries,
 ):
     """
     Iterate over the instructions in a bytecode string.
@@ -29,19 +25,26 @@ def get_instructions_bytes_graal(
     e.g., variable names, constants, can be specified using optional
     arguments.
     """
-    # source_map = ???
+    bytecode: bytes = code_object.co_code
+    constants: tuple = code_object.co_consts
+    names: tuple = code_object.co_names
+    varnames: tuple = code_object.co_varnames
+    # cells: tuple = code_object.co_cells
+    # freevars: tuple = code_object.co_freevars
 
     i = 0
     n = len(bytecode)
 
-    extended_arg_count = 0
     labels = opc.findlabels(bytecode, opc)
+    linestarts = find_linestarts_graal(code_object, opc, dup_lines=True)
 
+    extended_arg_count = 0
     while i < n:
         opcode = bytecode[i]
         opname = opc.opname[opcode]
         optype = get_optype_graal(opcode, opc)
         offset = i
+        starts_line = linestarts.get(offset, None)
 
         arg_count = opc.arg_counts[opcode]
         is_jump_target = i in labels
@@ -191,7 +194,7 @@ def get_instructions_bytes_graal(
                 arg = 0
             break
 
-        inst_size = (i - offset + 1) + (extended_arg_count * 2)
+        inst_size = (arg_count + 1) + (extended_arg_count * 2)
         start_offset = offset if opc.oppop[opcode] == 0 else None
 
         # for (int i = 0 i < exceptionHandlerRanges.length; i += 4) {
@@ -242,7 +245,7 @@ def get_instructions_bytes_graal(
 
         yield Instruction(
             is_jump_target=is_jump_target,
-            starts_line=False,  # starts_line,
+            starts_line= starts_line,
             offset=offset,
             opname=opname,
             opcode=opcode,
@@ -280,8 +283,7 @@ class Bytecode_Graal(Bytecode):
             self._line_offset = first_line - co.co_firstlineno
         pass
 
-        # self._linestarts = dict(opc.findlinestarts(co, dup_lines=dup_lines))
-        self._linestarts = None
+        self._linestarts = find_linestarts_graal(co, opc, dup_lines=True)
         self._original_object = x
         self.opc = opc
         self.opnames = opc.opname
@@ -298,11 +300,6 @@ class Bytecode_Graal(Bytecode):
         return get_instructions_bytes_graal(
             co.co_code,
             self.opc,
-            co.co_varnames,
-            co.co_names,
-            co.co_consts,
-            co.co_cellvars,
-            co.co_freevars,
         )
 
     def __repr__(self) -> str:
@@ -319,13 +316,5 @@ class Bytecode_Graal(Bytecode):
         Otherwise, the source line information (if any) is taken directly from
         the disassembled code object.
         """
-        co = get_code_object(x)
-        return get_instructions_bytes_graal(
-            co.co_code,
-            self.opc,
-            co.co_varnames,
-            co.co_names,
-            co.co_consts,
-            co.co_cellvars,
-            co.co_freevars,
-        )
+        code_object = get_code_object(x)
+        return get_instructions_bytes_graal(code_object, self.opc)

@@ -29,6 +29,7 @@
 #    3: date
 #    4: anniversary
 #    5: print
+
   3:           0 LOAD_CONST           (0)
                2 LOAD_CONST           (None)
                4 IMPORT_NAME          (datetime)
