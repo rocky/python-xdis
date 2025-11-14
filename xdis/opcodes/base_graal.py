@@ -69,7 +69,7 @@ def findlabels(bytecode, opc):
 
         # opname = opc.opname[opcode]
         # print(
-        #     f"offset: {offset} {hex(opcode)} {opname} optype: {optype}"
+        #     "offset: %s %s opname: %s  optype: %s" % (offset, hex(opcode), opname, optype)
         # )
 
         jump_offset = -1
