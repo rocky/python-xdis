@@ -381,6 +381,7 @@
 #  369: ('%c: %c', 1, 2)
 # Names:
 #    0: TABLE_DIRECT
+
   2:
             LOAD_CONST           0 ("BINARY_ADD")
             LOAD_CONST           213 (('+',))
