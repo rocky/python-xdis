@@ -50,7 +50,12 @@ from xdis.version_info import (
 
 # FIXME we may also need to distinguish by magic_int2magic
 # (for 3.8.5 Graal for example.)
-def get_opcode(version_tuple: tuple, python_implementation, alternate_opmap=None, magic_int: int=-1):
+def get_opcode(
+    version_tuple: tuple,
+    python_implementation,
+    alternate_opmap=None,
+    magic_int: int = -1,
+):
     # Set up disassembler with the right opcodes
     lookup = ".".join((str(i) for i in version_tuple))
     if python_implementation == PythonImplementation.PyPy:
@@ -137,7 +142,7 @@ def disco(
     co,
     timestamp,
     out=sys.stdout,
-    magic_int=None,
+    magic_int: int=-1,
     source_size=None,
     sip_hash=None,
     asm_format: str = "classic",
@@ -198,7 +203,7 @@ def disco(
             show_source=show_source,
             methods=methods,
             file_offsets=file_offsets,
-            is_unusual_bytecode=magic_int in GRAAL3_MAGICS
+            is_unusual_bytecode=magic_int in GRAAL3_MAGICS,
         )
 
 
@@ -262,9 +267,7 @@ def disco_loop(
 
             if version_tuple >= (3, 11):
                 if bytecode.exception_entries not in (None, []):
-                    exception_table = format_exception_table(
-                        bytecode, version_tuple
-                    )
+                    exception_table = format_exception_table(bytecode, version_tuple)
                     real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
@@ -345,7 +348,16 @@ def disco_loop_asm_format(
     co = co.freeze()
     all_fns.add(co_name)
     if co.co_name != "<module>" or co.co_filename:
-        real_out.write("\n" + format_code_info(co, version_tuple, mapped_name) + "\n")
+        real_out.write(
+            "\n"
+            + format_code_info(
+                co,
+                version_tuple,
+                mapped_name,
+                python_implementation=opc.python_implementation,
+            )
+            + "\n"
+        )
 
     bytecode = Bytecode(co, opc, dup_lines=True)
     real_out.write(bytecode.dis(asm_format="asm") + "\n")

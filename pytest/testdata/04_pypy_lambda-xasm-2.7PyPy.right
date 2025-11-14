@@ -13,6 +13,7 @@
 #	length
 # Positional arguments:
 #	length
+
   4:
             LOAD_CONST           1 (())
             RETURN_VALUE
@@ -34,6 +35,7 @@
 #	right
 # Positional arguments:
 #	right
+
   4:
             BUILD_LIST           0
             LOOKUP_METHOD        0 (map)
@@ -55,6 +57,7 @@
 #    1: None
 # Names:
 #    0: f
+
   4:
             LOAD_CONST           0 (<code object at 0xdeadbeef0001, line 4)
             MAKE_FUNCTION        0 (0 default parameters)

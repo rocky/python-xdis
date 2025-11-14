@@ -223,7 +223,7 @@ class _StdApi:
             python_implementation=self.python_version_tuple,
         )
 
-    def get_instructions(self, x, first_line=None):
+    def get_instructions(self, x):
         """Iterator for the opcodes in methods, functions or code
 
         Generates a series of Instruction named tuples giving the details of
@@ -234,7 +234,11 @@ class _StdApi:
         Otherwise, the source line information (if any) is taken directly from
         the disassembled code object.
         """
-        return self.Bytecode(x).get_instructions(x, first_line)
+        if isinstance(x, str):
+            code_obj = compile(x, f"<std.py {str}>", "exec")
+        else:
+            code_obj = x
+        return self.Bytecode(code_obj).get_instructions(code_obj)
 
     def findlinestarts(self, code):
         """Find the offsets in a byte code which are start of lines in the source.

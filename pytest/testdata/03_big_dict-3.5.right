@@ -380,6 +380,7 @@
 #  369: ('%c: %c', 1, 2)
 # Names:
 #    0: TABLE_DIRECT
+
   2:           0 LOAD_CONST           ("BINARY_ADD")
                3 LOAD_CONST           (('+',))
 
