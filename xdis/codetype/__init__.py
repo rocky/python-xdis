@@ -168,7 +168,6 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
                     co_linetable=line_table,
                     version_triple=version_triple,
                 )
->>>>>>> master
         elif version_triple[:2] >= (3, 11):
             if is_graal:
 
