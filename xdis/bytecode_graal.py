@@ -1,10 +1,9 @@
 # from xdis.bytecode import get_optype
-from typing import Optional
 
 from xdis.bytecode import Bytecode
 from xdis.cross_dis import get_code_object
 from xdis.instruction import Instruction
-from xdis.lineoffsets_graal import SourceMap, find_linestarts_graal
+from xdis.lineoffsets_graal import find_linestarts_graal
 from xdis.opcodes.base_graal import (
     BINARY_OPS,
     COLLECTION_KIND,
@@ -25,10 +24,10 @@ def get_instructions_bytes_graal(
     e.g., variable names, constants, can be specified using optional
     arguments.
     """
-    bytecode: bytes = code_object.co_code
-    constants: tuple = code_object.co_consts
-    names: tuple = code_object.co_names
-    varnames: tuple = code_object.co_varnames
+    bytecode = code_object.co_code
+    constants = code_object.co_consts
+    names = code_object.co_names
+    varnames = code_object.co_varnames
     # cells: tuple = code_object.co_cells
     # freevars: tuple = code_object.co_freevars
 

@@ -15,7 +15,6 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import types
-from collections import namedtuple
 from copy import deepcopy
 from types import CodeType
 

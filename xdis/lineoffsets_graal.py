@@ -20,8 +20,6 @@ The original assumes Truffle's Source/SourceSection APIs.
 See https://github.com/oracle/graalpython/graalpython/com.oracle.graal.python/src/com/oracle/graal/python/compiler/SourceMap.java
 """
 
-from typing import Dict, List, Tuple
-
 # Signed byte constants (as in Java code)
 EXTENDED_NUM = -128
 NEXT_LINE = -127
@@ -59,21 +57,21 @@ class SourceMap:
     ):
         # use Python lists (mutable) to store maps; they match length of code
 
-        bytecode: bytes = code_object.co_code
-        start_column: int  = code_object.startColumn
-        start_line: int  = code_object.startLine
+        bytecode = code_object.co_code
+        start_column  = code_object.startColumn
+        start_line  = code_object.startLine
         # cells: tuple = code_object.co_cells
         # freevars: tuple = code_object.co_freevars
-        arg_counts: Dict[int, int] = opc.arg_counts
+        arg_counts = opc.arg_counts
 
 
         n = len(bytecode)
-        self.startLineMap: List[int] = [0] * n
-        self.endLineMap: List[int] = [0] * n
-        self.startColumnMap: List[int] = [0] * n
-        self.endColumnMap: List[int] = [0] * n
-        self.source_table: bytes = code_object.srcOffsetTable
-        self.source_table_len: int = len(self.source_table)
+        self.startLineMap = [0] * n
+        self.endLineMap = [0] * n
+        self.startColumnMap = [0] * n
+        self.endColumnMap = [0] * n
+        self.source_table = code_object.srcOffsetTable
+        self.source_table_len = len(self.source_table)
 
         # op_length_fn determines instruction size; default to 1
 
@@ -100,7 +98,7 @@ class SourceMap:
                 self.endColumnMap[i] = end_column
             offset += op_len
 
-    def _next_line_and_column(self) -> Tuple[int, int]:
+    def _next_line_and_column(self) -> tuple:
         """
         Get the (line, column) pair delta from self.source_table.
 
@@ -157,11 +155,11 @@ class SourceMap:
 
 def find_linestarts_graal(code_object, opc, dup_lines: bool) -> dict:
     source_map = SourceMap(code_object, opc)
-    bytecode: bytes = code_object.co_code
+    bytecode = code_object.co_code
     i = 0
     n = len(bytecode)
     last_lineno = -1
-    offset2line: Dict[int, int] = {}
+    offset2line = {}
     lines_seen = set()
     while i < n:
         opcode = bytecode[i]

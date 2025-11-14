@@ -235,7 +235,7 @@ class _StdApi:
         the disassembled code object.
         """
         if isinstance(x, str):
-            code_obj = compile(x, f"<std.py {str}>", "exec")
+            code_obj = compile(x, "<std.py %s>" % "str", "exec")
         else:
             code_obj = x
         return self.Bytecode(code_obj).get_instructions(code_obj)

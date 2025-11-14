@@ -46,6 +46,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal: bool
         "co_lnotab" if hasattr(code, "co_lnotab") else "co_linetable"
     )
     line_table = getattr(code, line_table_field)
+
     if version_triple >= (3, 0):
         if version_triple < (3, 8):
             return Code3(

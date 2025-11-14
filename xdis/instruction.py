@@ -24,18 +24,6 @@ from collections import namedtuple
 
 from xdis.version_info import PythonImplementation
 
-# _Instruction.tos_str.__doc__ = (
-#     "If not None, a string representation of the top of the stack (TOS)"
-# )
-# # Python expressions can be straight-line, operator like-basic block code that take
-# # items off a stack and push a value onto the stack. In this case, in a linear scan
-# # we can basically build up an expression tree.
-# # Note this has to be the last field. Code to set this assumes this.
-# _Instruction.start_offset.__doc__ = (
-#     "If not None, the offset of the first instruction feeding into the operation"
-# )
->>>>>>> python-3.6-to-3.10
-
 _Instruction = namedtuple(
     "_Instruction",
     (
@@ -44,6 +32,7 @@ _Instruction = namedtuple(
         "tos_str positions optype inst_size has_extended_arg fallthrough start_offset"
     ),
 )
+
 _OPNAME_WIDTH = 20
 
 _AssembleFormat = namedtuple(
@@ -214,7 +203,8 @@ class Instruction(_Instruction):
                     hex_bytecode += " %02x %02x   " % divmod(self.arg, 0x100)
                 elif self.inst_size == 4:
                     upper, lower = divmod(self.arg, 0x10000)
-                    hex_bytecode += " %02x %02x %02x" % (upper, *divmod(lower, 0x100))
+                    middle, lowest = divmod(lower, 0x100)
+                    hex_bytecode += " %02x %02x %02x" % (upper, middle, lowest)
             else:
                 if self.inst_size == 1:
                     # Not 3.6 or later
