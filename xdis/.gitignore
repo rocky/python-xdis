@@ -1,3 +1,4 @@
 /.coverage
+/.jython_cache
 /.mypy_cache
 /.python-version
