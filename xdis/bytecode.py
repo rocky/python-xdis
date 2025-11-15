@@ -39,7 +39,7 @@ from xdis.namedtuple24 import namedtuple
 from xdis.op_imports import get_opcode_module
 from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
-from xdis.version_info import PYTHON_IMPLEMENTATION, PythonImplementation
+from xdis.version_info import PYTHON_IMPLEMENTATION
 
 
 def get_docstring(filename, line_number, doc_str):

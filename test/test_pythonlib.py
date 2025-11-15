@@ -38,6 +38,7 @@ from fnmatch import fnmatch
 from xdis import disassemble_file
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
+
 def get_srcdir():
     filename = os.path.normcase(os.path.dirname(__file__))
     return os.path.realpath(filename)
