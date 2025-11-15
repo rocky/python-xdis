@@ -23,7 +23,9 @@ from copy import copy
 
 from xdis import wordcode
 from xdis.cross_dis import findlabels, findlinestarts, get_jump_target_maps
-from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
+from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE, PythonImplementation
+
+cpython_implementation = PythonImplementation("CPython")
 
 cmp_op = (
     "<",  # 0

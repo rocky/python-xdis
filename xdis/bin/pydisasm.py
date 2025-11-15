@@ -72,12 +72,12 @@ Type -h for for full help.""" % program
                 " Code that works for %s can be found in the python-3.0-to-3.3 branch\n"
             )
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
-            mess += " Code that works for %s can be found in the python-3.3-to-3.10 branch\n"
+            mess += " Code that works for %s can be found in the python-3.3-to-3.10 branch.\n"
         elif (3, 6) <= PYTHON_VERSION_TRIPLE <= (3, 10):
-            mess += " Code that works for %s can be found in the python-3.6 branch\n"
+            mess += " Code that works for %s can be found in the python-3.6 branch.\n"
         elif (3, 11) <= PYTHON_VERSION_TRIPLE:
-            mess += " Code that works for %s can be found in the master branch\n"
-        sys.stderr.write(mess % PYTHON_VERSION_STR)
+            mess += " Code that works for %s can be found in the master branch.\n"
+        sys.stderr.write(mess % (PYTHON_VERSION_STR, PYTHON_VERSION_STR))
         sys.exit(2)
 
     if len(sys.argv) == 1:

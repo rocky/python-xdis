@@ -47,6 +47,7 @@ except ImportError:
 
 import xdis
 from xdis.bytecode import Bytecode
+from xdis.bytecode_graal import Bytecode_Graal
 from xdis.codetype import codeType2Portable
 from xdis.codetype.base import iscode
 from xdis.cross_dis import format_code_info, format_exception_table
@@ -61,11 +62,26 @@ from xdis.version_info import (
 )
 
 
-def get_opcode(version_tuple, python_implementation, alternate_opmap=None):
+# FIXME we may also need to distinguish by magic_int2magic
+# (for 3.8.5 Graal for example.)
+def get_opcode(
+    version_tuple: tuple,
+    python_implementation,
+    alternate_opmap=None,
+    magic_int: int = -1,
+):
     # Set up disassembler with the right opcodes
     lookup = ".".join((str(i) for i in version_tuple))
     if python_implementation == PythonImplementation.PyPy:
         lookup += "PyPy"
+    elif python_implementation == PythonImplementation.Graal:
+        if magic_int == 21290:
+            if version_tuple == (3, 11, 7):
+                lookup = "3.11.7Graal"
+            else:
+                lookup = "3.12.7Graal"
+        else:
+            lookup += "Graal"
     if lookup in op_imports.keys():
         if alternate_opmap is not None:
             # TODO: change bytecode version number comment line to indicate altered
@@ -138,7 +154,7 @@ def disco(
     co,
     timestamp,
     out=sys.stdout,
-    magic_int=None,
+    magic_int: int=-1,
     source_size=None,
     sip_hash=None,
     asm_format="classic",
@@ -164,8 +180,8 @@ def disco(
         sip_hash,
         header=True,
         show_filename=False,
-        python_implementation=python_implementation)
-
+        python_implementation=python_implementation,
+    )
 
     # Store final output stream when there is an error.
     real_out = out or sys.stdout
@@ -183,7 +199,7 @@ def disco(
             )
         pass
 
-    opc = get_opcode(version_tuple, python_implementation, alternate_opmap)
+    opc = get_opcode(version_tuple, python_implementation, alternate_opmap, magic_int)
 
     if asm_format == "xasm":
         disco_loop_asm_format(opc, version_tuple, co, real_out, {}, set([]))
@@ -199,7 +215,7 @@ def disco(
             show_source=show_source,
             methods=methods,
             file_offsets=file_offsets,
-            is_unusual_bytecode=python_implementation == PythonImplementation.Graal,
+            is_unusual_bytecode=magic_int in GRAAL3_MAGICS,
         )
 
 
@@ -256,30 +272,22 @@ def disco_loop(
                     if asm_format in ("extended_bytes", "bytes"):
                         real_out.write("instruction bytecode:\n%s\n" % co.co_code)
 
-                else:
-                    if hasattr(co, "graal_instr_str") and co.graal_instr_str:
-                        real_out.write(co.graal_instr_str)
-                    else:
-                        if co.co_name == "??":
-                            real_out.write("\n# Instruction disassembly not supported here.\n")
-                        else:
-                            real_out.write("\n# Instruction disassembly for %s not supported here.\n" % co.co_name)
-                        real_out.write("instruction bytecode:\n%s\n" % co.co_code)
-
+            if opc.python_implementation == PythonImplementation.Graal:
+                bytecode = Bytecode_Graal(co, opc)
             else:
                 bytecode = Bytecode(co, opc, dup_lines=dup_lines)
-                real_out.write(
-                    bytecode.dis(
-                        asm_format=asm_format,
-                        show_source=show_source,
-                    )
-                    + "\n"
+            real_out.write(
+                bytecode.dis(
+                    asm_format=asm_format,
+                    show_source=show_source,
                 )
+                + "\n"
+            )
 
-                if version_tuple >= (3, 11):
-                    if bytecode.exception_entries not in (None, []):
-                        exception_table = format_exception_table(bytecode, version_tuple)
-                        real_out.write(exception_table + "\n")
+            if version_tuple >= (3, 11):
+                if bytecode.exception_entries not in (None, []):
+                    exception_table = format_exception_table(bytecode, version_tuple)
+                    real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):
@@ -357,7 +365,16 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
     co = co.freeze()
     all_fns.add(co_name)
     if co.co_name != "<module>" or co.co_filename:
-        real_out.write("\n" + format_code_info(co, version_tuple, mapped_name) + "\n")
+        real_out.write(
+            "\n"
+            + format_code_info(
+                co,
+                version_tuple,
+                mapped_name,
+                python_implementation=opc.python_implementation,
+            )
+            + "\n"
+        )
 
     bytecode = Bytecode(co, opc, dup_lines=True)
     real_out.write(bytecode.dis(asm_format="asm") + "\n")

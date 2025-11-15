@@ -32,7 +32,6 @@ else:
     IS_GRAAL = False
     IS_RUST = False
 
-
 class PythonImplementation(object):
     """
     Enumeration of Python interpreter implementations. Each member's value is the

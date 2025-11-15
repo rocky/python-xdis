@@ -3,7 +3,8 @@ CPython 3.13 bytecode opcodes
 """
 
 import xdis.opcodes.opcode_312 as opcode_312
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # noqa
+    cpython_implementation as python_implementation,
     def_op,
     finalize_opcodes,
     free_op,
@@ -16,7 +17,6 @@ from xdis.opcodes.format.extended import NULL_EXTENDED_OP, get_arglist
 from xdis.opcodes.opcode_36pypy import format_CALL_METHOD
 
 version_tuple = (3, 13)
-python_implementation = "CPython"
 
 loc = locals()
 

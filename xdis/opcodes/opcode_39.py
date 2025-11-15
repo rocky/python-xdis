@@ -23,8 +23,9 @@ of stack usage and information for formatting instructions.
 from copy import copy
 
 import xdis.opcodes.opcode_38 as opcode_38
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # noqa
     binary_op,
+    cpython_implementation as python_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,

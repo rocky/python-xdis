@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019, 2023 by Rocky Bernstein
+# (C) Copyright 2017, 2019, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -20,17 +20,16 @@ This is similar to the opcode portion in Python 2.1's dis.py library.
 """
 
 import xdis.opcodes.opcode_22 as opcode_22
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # noqa
+    cpython_implementation as python_implementation,
     finalize_opcodes,
     init_opdata,
     rm_op,
     update_pj2,
 )
-
-from xdis.opcodes.opcode_2x import update_arg_fmt_base2x, opcode_extended_fmt_base2x
+from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (2, 1)
-python_implementation = "CPython"
 
 loc = locals()
 init_opdata(loc, opcode_22, version_tuple)

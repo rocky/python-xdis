@@ -52,6 +52,7 @@
 #    9: x3
 #   10: nested_scopes
 #   11: func_with_tuple_args6
+
   9:           0 |7f 00 00| SET_LINENO           0
 
   0:           3 |7f 00 09| SET_LINENO           9
@@ -197,6 +198,7 @@
 #	l0
 # Local variables:
 #    0: l0
+
  13:           0 |7f 00 0d| SET_LINENO           13
 
  13:           3 |7f 00 0e| SET_LINENO           14
@@ -231,6 +233,7 @@
 #	y0
 # Local variables:
 #    0: y0
+
  18:           0 |7f 00 12| SET_LINENO           18
 
  18:           3 |7f 00 13| SET_LINENO           19
@@ -264,6 +267,7 @@
 #	y1
 # Local variables:
 #    0: y1
+
  23:           0 |7f 00 17| SET_LINENO           23
 
  23:           3 |7f 00 18| SET_LINENO           24
@@ -300,6 +304,7 @@
 # Local variables:
 #    0: y2
 #    1: blurb
+
  28:           0 |7f 00 1c| SET_LINENO           28
 
  28:           3 |7f 00 1d| SET_LINENO           29
@@ -349,12 +354,13 @@
 # Cell variables:
 #    0: blurb
 #    1: flurb
+
  34:           0 |7f 00 22| SET_LINENO           34
 
  34:           3 |7f 00 23| SET_LINENO           35
 
- 35:           6 |87 00 00| LOAD_CLOSURE         (blurb) ; blurb
-               9 |87 00 01| LOAD_CLOSURE         (flurb) ; flurb
+ 35:           6 |87 00 00| LOAD_CLOSURE         (0) ; 0
+               9 |87 00 01| LOAD_CLOSURE         (1) ; 1
               12 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 35
               15 |86 00 00| MAKE_CLOSURE         0
               18 |7d 00 01| STORE_FAST           (y3a)
@@ -366,12 +372,12 @@
  38:          25 |7f 00 26| SET_LINENO           38
 
  38:          28 |64 00 02| LOAD_CONST           (3) ; TOS = 3
-              31 |89 00 00| STORE_DEREF          (blurb) ; blurb = 3
+              31 |89 00 00| STORE_DEREF          (0) ; 0 = 3
 
  39:          34 |7f 00 27| SET_LINENO           39
 
  39:          37 |64 00 03| LOAD_CONST           (7) ; TOS = 7
-              40 |89 00 01| STORE_DEREF          (flurb) ; flurb = 7
+              40 |89 00 01| STORE_DEREF          (1) ; 1 = 7
 
  40:          43 |7f 00 28| SET_LINENO           40
 
@@ -384,8 +390,8 @@
 
  41:          59 |64 00 05| LOAD_CONST           ("x3a-blurb =") ; TOS = "x3a-blurb ="
               62 |47      | PRINT_ITEM           print "x3a-blurb =",
-              63 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
-              66 |47      | PRINT_ITEM           print blurb,
+              63 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
+              66 |47      | PRINT_ITEM           print 0,
               67 |48      | PRINT_NEWLINE        print "\n"
               68 |64 00 00| LOAD_CONST           (None) ; TOS = None
               71 |53      | RETURN_VALUE         return None
@@ -414,11 +420,12 @@
 #    1: blurb
 # Cell variables:
 #    0: blurb
+
  43:           0 |7f 00 2b| SET_LINENO           43
 
  43:           3 |7f 00 2c| SET_LINENO           44
 
- 44:           6 |87 00 00| LOAD_CLOSURE         (blurb) ; blurb
+ 44:           6 |87 00 00| LOAD_CLOSURE         (0) ; 0
                9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 44
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 00| STORE_FAST           (y3)
@@ -430,7 +437,7 @@
  51:          22 |7f 00 33| SET_LINENO           51
 
  51:          25 |64 00 02| LOAD_CONST           (3) ; TOS = 3
-              28 |89 00 00| STORE_DEREF          (blurb) ; blurb = 3
+              28 |89 00 00| STORE_DEREF          (0) ; 0 = 3
 
  52:          31 |7f 00 34| SET_LINENO           52
 
@@ -443,8 +450,8 @@
 
  53:          47 |64 00 04| LOAD_CONST           ("x3-blurb =") ; TOS = "x3-blurb ="
               50 |47      | PRINT_ITEM           print "x3-blurb =",
-              51 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
-              54 |47      | PRINT_ITEM           print blurb,
+              51 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
+              54 |47      | PRINT_ITEM           print 0,
               55 |48      | PRINT_NEWLINE        print "\n"
               56 |64 00 00| LOAD_CONST           (None) ; TOS = None
               59 |53      | RETURN_VALUE         return None
@@ -471,6 +478,7 @@
 # Local variables:
 #    0: blurb
 #    1: y3b
+
  55:           0 |7f 00 37| SET_LINENO           55
 
  55:           3 |7f 00 38| SET_LINENO           56
@@ -525,6 +533,7 @@
 #	y4
 # Local variables:
 #    0: y4
+
  67:           0 |7f 00 43| SET_LINENO           67
 
  67:           3 |7f 00 44| SET_LINENO           68
@@ -572,11 +581,12 @@
 #    1: y
 # Cell variables:
 #    0: blurb
+
  76:           0 |7f 00 4c| SET_LINENO           76
 
  76:           3 |7f 00 4d| SET_LINENO           77
 
- 77:           6 |87 00 00| LOAD_CLOSURE         (blurb) ; blurb
+ 77:           6 |87 00 00| LOAD_CLOSURE         (0) ; 0
                9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 77
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 01| STORE_FAST           (y)
@@ -584,7 +594,7 @@
  79:          18 |7f 00 4f| SET_LINENO           79
 
  79:          21 |64 00 02| LOAD_CONST           (2) ; TOS = 2
-              24 |89 00 00| STORE_DEREF          (blurb) ; blurb = 2
+              24 |89 00 00| STORE_DEREF          (0) ; 0 = 2
 
  80:          27 |7f 00 50| SET_LINENO           80
 
@@ -626,11 +636,12 @@
 #    8: y
 # Cell variables:
 #    0: a
+
  83:           0 |7f 00 53| SET_LINENO           83
 
  83:           3 |7c 00 00| LOAD_FAST            (.0) ; TOS = .0
                6 |5c 00 02| UNPACK_SEQUENCE      2
-               9 |89 00 00| STORE_DEREF          (a)
+               9 |89 00 00| STORE_DEREF          (0)
               12 |7d 00 05| STORE_FAST           (b)
               15 |7c 00 01| LOAD_FAST            (.2) ; TOS = .2
               18 |5c 00 02| UNPACK_SEQUENCE      2
@@ -639,7 +650,7 @@
 
  84:          27 |7f 00 54| SET_LINENO           84
 
- 84:          30 |87 00 00| LOAD_CLOSURE         (a) ; a
+ 84:          30 |87 00 00| LOAD_CLOSURE         (0) ; 0
               33 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 84
               36 |86 00 00| MAKE_CLOSURE         0
               39 |7d 00 08| STORE_FAST           (y)
@@ -674,6 +685,7 @@
 #	self, name
 # Local variables:
 #    2: L
+
  88:           0 |7f 00 58| SET_LINENO           88
 
  88:           3 |7f 00 5a| SET_LINENO           90
@@ -702,6 +714,7 @@
 #	m
 # Positional arguments:
 #	m
+
  14:           0 |7f 00 0e| SET_LINENO           14
 
  14:           3 |7f 00 0f| SET_LINENO           15
@@ -720,6 +733,7 @@
 # First Line:        19
 # Constants:
 #    0: None
+
  19:           0 |7f 00 13| SET_LINENO           19
 
  19:           3 |7f 00 14| SET_LINENO           20
@@ -741,6 +755,7 @@
 #    1: 'y-blurb ='
 # Names:
 #    0: blurb
+
  24:           0 |7f 00 18| SET_LINENO           24
 
  24:           3 |7f 00 19| SET_LINENO           25
@@ -763,6 +778,7 @@
 # First Line:        29
 # Constants:
 #    0: None
+
  29:           0 |7f 00 1d| SET_LINENO           29
 
  29:           3 |7f 00 1e| SET_LINENO           30
@@ -792,16 +808,17 @@
 # Free variables:
 #    0: blurb
 #    1: flurb
+
  35:           0 |7f 00 23| SET_LINENO           35
 
  35:           3 |7f 00 24| SET_LINENO           36
 
  36:           6 |64 00 01| LOAD_CONST           ("y-blurb =") ; TOS = "y-blurb ="
                9 |47      | PRINT_ITEM           print "y-blurb =",
-              10 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
-              13 |47      | PRINT_ITEM           print blurb,
-              14 |88 00 01| LOAD_DEREF           (flurb) ; TOS = flurb
-              17 |47      | PRINT_ITEM           print flurb,
+              10 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
+              13 |47      | PRINT_ITEM           print 0,
+              14 |88 00 01| LOAD_DEREF           (1) ; TOS = 1
+              17 |47      | PRINT_ITEM           print 1,
               18 |48      | PRINT_NEWLINE        print "\n"
               19 |64 00 00| LOAD_CONST           (None) ; TOS = None
               22 |53      | RETURN_VALUE         return None
@@ -829,6 +846,7 @@
 #    1: z
 # Free variables:
 #    0: blurb
+
  44:           0 |7f 00 2c| SET_LINENO           44
 
  44:           3 |7f 00 2d| SET_LINENO           45
@@ -847,8 +865,8 @@
 
  49:          28 |64 00 02| LOAD_CONST           ("y-blurb =") ; TOS = "y-blurb ="
               31 |47      | PRINT_ITEM           print "y-blurb =",
-              32 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
-              35 |47      | PRINT_ITEM           print blurb,
+              32 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
+              35 |47      | PRINT_ITEM           print 0,
               36 |64 00 00| LOAD_CONST           (None) ; TOS = None
               39 |53      | RETURN_VALUE         return None
 
@@ -877,11 +895,12 @@
 #    2: z
 # Cell variables:
 #    0: blurb
+
  56:           0 |7f 00 38| SET_LINENO           56
 
  56:           3 |7f 00 39| SET_LINENO           57
 
- 57:           6 |87 00 00| LOAD_CLOSURE         (blurb) ; blurb
+ 57:           6 |87 00 00| LOAD_CLOSURE         (0) ; 0
                9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 57
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 02| STORE_FAST           (z)
@@ -889,7 +908,7 @@
  59:          18 |7f 00 3b| SET_LINENO           59
 
  59:          21 |64 00 02| LOAD_CONST           (25) ; TOS = 25
-              24 |89 00 00| STORE_DEREF          (blurb) ; blurb = 25
+              24 |89 00 00| STORE_DEREF          (0) ; 0 = 25
 
  60:          27 |7f 00 3c| SET_LINENO           60
 
@@ -901,8 +920,8 @@
 
  61:          40 |64 00 03| LOAD_CONST           ("y-blurb =") ; TOS = "y-blurb ="
               43 |47      | PRINT_ITEM           print "y-blurb =",
-              44 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
-              47 |47      | PRINT_ITEM           print blurb,
+              44 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
+              47 |47      | PRINT_ITEM           print 0,
               48 |64 00 00| LOAD_CONST           (None) ; TOS = None
               51 |53      | RETURN_VALUE         return None
 
@@ -925,6 +944,7 @@
 #	x
 # Local variables:
 #    1: z
+
  68:           0 |7f 00 44| SET_LINENO           68
 
  68:           3 |7f 00 45| SET_LINENO           69
@@ -960,14 +980,15 @@
 #	x
 # Free variables:
 #    0: blurb
+
  77:           0 |7f 00 4d| SET_LINENO           77
 
  77:           3 |7f 00 4e| SET_LINENO           78
 
  78:           6 |64 00 01| LOAD_CONST           ("y-blurb =") ; TOS = "y-blurb ="
                9 |47      | PRINT_ITEM           print "y-blurb =",
-              10 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
-              13 |47      | PRINT_ITEM           print blurb,
+              10 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
+              13 |47      | PRINT_ITEM           print 0,
               14 |48      | PRINT_NEWLINE        print "\n"
               15 |64 00 00| LOAD_CONST           (None) ; TOS = None
               18 |53      | RETURN_VALUE         return None
@@ -991,14 +1012,15 @@
 #	x
 # Free variables:
 #    0: a
+
  84:           0 |7f 00 54| SET_LINENO           84
 
  84:           3 |7f 00 55| SET_LINENO           85
 
  85:           6 |64 00 01| LOAD_CONST           ("y-a =") ; TOS = "y-a ="
                9 |47      | PRINT_ITEM           print "y-a =",
-              10 |88 00 00| LOAD_DEREF           (a) ; TOS = a
-              13 |47      | PRINT_ITEM           print a,
+              10 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
+              13 |47      | PRINT_ITEM           print 0,
               14 |48      | PRINT_NEWLINE        print "\n"
               15 |64 00 00| LOAD_CONST           (None) ; TOS = None
               18 |53      | RETURN_VALUE         return None
@@ -1020,6 +1042,7 @@
 #	x, name
 # Positional arguments:
 #	x, name
+
  90:           0 |7f 00 5a| SET_LINENO           90
 
  90:           3 |7c 00 00| LOAD_FAST            (x) ; TOS = x
@@ -1045,6 +1068,7 @@
 #	blurb
 # Local variables:
 #    0: blurb
+
  45:           0 |7f 00 2d| SET_LINENO           45
 
  45:           3 |7f 00 2e| SET_LINENO           46
@@ -1076,14 +1100,15 @@
 #    0: blurb
 # Free variables:
 #    0: blurb
+
  57:           0 |7f 00 39| SET_LINENO           57
 
  57:           3 |7f 00 3a| SET_LINENO           58
 
  58:           6 |64 00 01| LOAD_CONST           ("z-blurb =") ; TOS = "z-blurb ="
                9 |47      | PRINT_ITEM           print "z-blurb =",
-              10 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
-              13 |47      | PRINT_ITEM           print blurb,
+              10 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
+              13 |47      | PRINT_ITEM           print 0,
               14 |64 00 00| LOAD_CONST           (None) ; TOS = None
               17 |53      | RETURN_VALUE         return None
 
@@ -1100,6 +1125,7 @@
 #    1: 'z-blurb ='
 # Names:
 #    0: blurb
+
  69:           0 |7f 00 45| SET_LINENO           69
 
  69:           3 |7f 00 46| SET_LINENO           70

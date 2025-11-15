@@ -700,18 +700,20 @@ add_magic_from_int(256, "3.8PyPy")  # PyPy 3.8.15
 add_magic_from_int(320, "3.9PyPy")  # PyPy 3.9-v7.3.8
 add_magic_from_int(336, "3.9PyPy")  # PyPy 3.9.15, PyPy 3.9.17
 add_magic_from_int(384, "3.10PyPy")  # PyPy 3.10.12
-add_magic_from_int(416, "3.11.13pypy")  # PyPy 3.11.13 or pypy3.11-7.3.20
+add_magic_from_int(416, "3.11.13PyPy")  # PyPy 3.11.13 or pypy3.11-7.3.20
 
 add_magic_from_int(12641, "3.12.0a.rust")  # RustPython 3.12.0
 add_magic_from_int(12897, "3.13.0b.rust")  # RustPython 3.12.0
 add_magic_from_int(13413, "3.13.0a.rust")  # RustPython 3.13.0
 add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0
 
-# Graal Python.  Graal uses JVM bytecode, not CPython or PyPy bytecode
-# Its magic number is
+# Graal Python.  Graal uses its own JVM-ish CPython bytecode, not
+# true CPython or PyPy bytecode.
+#
+# Graal's magic number:
 # MAGIC_NUMBER = 21000 + Compiler.BYTECODE_VERSION * 10;
-# Note: Different major/minor releases can have the same magic!
-# Graal for 3.11 and 3.12 are like that.
+# Note: Different major/minor releases
+# can have the same magic!  Graal for 3.11 and 3.12 are like that.
 
 # 21250 = 21000 + 15 * 10
 add_magic_from_int(21150, "3.8.5Graal (15)")
@@ -724,7 +726,11 @@ add_magic_from_int(21280, "3.10.8Graal")
 
 # 21290 = 21000 + 29 * 10
 add_magic_from_int(21290, "3.11.7Graal")
+
 # add_magic_from_int(21290, "3.12.8Graal")
+# Paritally compensate for one magic for two Graal Python versions:
+version2magicint["3.12.8Graal"].append(21290)
+
 
 # Jython uses JVM bytecode, not CPython PyPy bytecode.
 add_magic_from_int(1011, "2.7.1b3Jython")  # Jython 2.7.2b3
@@ -740,7 +746,9 @@ magics["3.9.16PyPy"] = magics["3.9.0alpha1"]
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
-canonic_python_version = {}
+canonic_python_version = {
+    "3.12.8Graal": "3.12.8Graal"
+}
 
 
 def add_canonic_versions(release_versions, canonic):
@@ -941,6 +949,9 @@ def sysinfo2magic(version_info=sys.version_info):
             # just not have platform
             pass
 
+    if vers_str == "3.12.8Graal":
+        # 3.12.8Graal and 3.11.7Graal have the same magic number!
+        vers_str = "3.11.7Graal"
     return magics.get(vers_str, "?!\r\n")
 
 

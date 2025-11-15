@@ -1,4 +1,4 @@
-# (C) Copyright 2022-2024 by Rocky Bernstein
+# (C) Copyright 2022-2025 by Rocky Bernstein
 """
 PYPY 3.10 opcodes
 
@@ -18,9 +18,10 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
+from xdis.version_info import PythonImplementation
 
 version_tuple = (3, 10)
-python_implementation = "PyPy"
+python_implementation = PythonImplementation("PyPy")
 
 loc = locals()
 init_opdata(loc, opcode_310, version_tuple, is_pypy=True)

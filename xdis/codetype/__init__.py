@@ -25,6 +25,7 @@ from xdis.codetype.code30 import Code3
 from xdis.codetype.code38 import Code38
 from xdis.codetype.code38graal import Code38Graal
 from xdis.codetype.code310 import Code310
+from xdis.codetype.code310graal import Code310Graal
 from xdis.codetype.code311 import Code311, Code311FieldNames
 from xdis.codetype.code311graal import Code311Graal
 from xdis.version_info import IS_GRAAL, IS_PYPY, PYTHON_VERSION_TRIPLE
@@ -32,7 +33,7 @@ from xdis.version_info import IS_GRAAL, IS_PYPY, PYTHON_VERSION_TRIPLE
 __docformat__ = "restructuredtext"
 
 
-def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal=False):
+def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal=False, other_fields={}):
     """Converts a native types.CodeType code object into a
     corresponding more flexible xdis Code type.
     """
@@ -49,6 +50,7 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal=False
         line_table_field = "co_linetable"
 
     line_table = getattr(code, line_table_field)
+
     if version_triple >= (3, 0):
         if version_triple < (3, 8):
             if hasattr(code, "collection_order"):
@@ -137,27 +139,6 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal=False
                     version_triple=version_triple,
                 )
         elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
-            return Code310(
-                co_argcount=code.co_argcount,
-                co_posonlyargcount=code.co_posonlyargcount,
-                co_kwonlyargcount=code.co_kwonlyargcount,
-                co_nlocals=code.co_nlocals,
-                co_stacksize=code.co_stacksize,
-                co_flags=code.co_flags,
-                co_code=code.co_code,
-                co_consts=code.co_consts,
-                co_names=code.co_names,
-                co_varnames=code.co_varnames,
-                co_freevars=code.co_freevars,
-                co_cellvars=code.co_cellvars,
-                co_filename=code.co_filename,
-                co_name=code.co_name,
-                co_firstlineno=code.co_firstlineno,
-                co_linetable=code.co_lnotab,
-                version_triple=version_triple,
-            )
-        elif version_triple[:2] >= (3, 11):
-            other_fields = {}
             if is_graal:
                 if hasattr(code, "condition_profileCount"):
                     other_fields["condition_profileCount"] = code.condition_profileCount
@@ -217,6 +198,49 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal=False
                     other_fields["variableShouldUnbox"] = code.variableShouldUnbox
                 else:
                     other_fields["variableShouldUnbox"] = ""
+                return Code310Graal(
+                    co_argcount=code.co_argcount,
+                    co_posonlyargcount=code.co_posonlyargcount,
+                    co_kwonlyargcount=code.co_kwonlyargcount,
+                    co_nlocals=code.co_nlocals,
+                    co_stacksize=code.co_stacksize,
+                    co_flags=code.co_flags,
+                    co_code=code.co_code,
+                    co_consts=code.co_consts,
+                    co_names=code.co_names,
+                    co_varnames=code.co_varnames,
+                    co_freevars=code.co_freevars,
+                    co_cellvars=code.co_cellvars,
+                    co_filename=code.co_filename,
+                    co_name=code.co_name,
+                    co_firstlineno=code.co_firstlineno,
+                    co_linetable=line_table,
+                    version_triple=version_triple,
+                    other_fields=other_fields,
+                )
+            else:
+                return Code310(
+                    co_argcount=code.co_argcount,
+                    co_posonlyargcount=code.co_posonlyargcount,
+                    co_kwonlyargcount=code.co_kwonlyargcount,
+                    co_nlocals=code.co_nlocals,
+                    co_stacksize=code.co_stacksize,
+                    co_flags=code.co_flags,
+                    co_code=code.co_code,
+                    co_consts=code.co_consts,
+                    co_names=code.co_names,
+                    co_varnames=code.co_varnames,
+                    co_freevars=code.co_freevars,
+                    co_cellvars=code.co_cellvars,
+                    co_filename=code.co_filename,
+                    co_name=code.co_name,
+                    co_firstlineno=code.co_firstlineno,
+                    co_linetable=line_table,
+                    version_triple=version_triple,
+                )
+        elif version_triple[:2] >= (3, 11):
+            if is_graal:
+>>>>>>> python-3.0-to-3.2
 
                 return Code311Graal(
                     co_argcount=code.co_argcount,
@@ -343,7 +367,10 @@ def portableCodeType(version_triple=PYTHON_VERSION_TRIPLE, is_graal=IS_GRAAL):
             return Code38
         elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
             # 3.10
-            return Code310
+            if is_graal:
+                return Code310Graal
+            else:
+                return Code310
         elif version_triple[:2] >= (3, 11):
             # 3.11 ...
             if is_graal:
@@ -427,7 +454,7 @@ def to_portable(
         version_triple=version_triple,
         other_fields=other_fields,
     )
-    return codeType2Portable(code, version_triple, is_graal=is_graal)
+    return codeType2Portable(code, version_triple, is_graal=is_graal, other_fields=other_fields)
 
 
 if __name__ == "__main__":
