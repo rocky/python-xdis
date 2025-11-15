@@ -16,7 +16,6 @@
 
 import types
 from copy import deepcopy
-from types import CodeType
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -95,10 +94,10 @@ class Code310Graal(Code310):
         reference_objects=set(),
         version_triple=(0, 0, 0),
         other_fields={},
-    ) -> None:
+    ):
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super().__init__(
+        super(Code310Graal, self).__init__(
             co_argcount=co_argcount,
             co_cellvars=co_cellvars,
             co_code=co_code,
@@ -126,7 +125,7 @@ class Code310Graal(Code310):
         if type(self) is Code310Graal:
             self.check()
 
-    def to_native(self) -> CodeType:
+    def to_native(self):
         if not (PYTHON_VERSION_TRIPLE >= (3, 10)):
             raise TypeError(
                 "Python Interpreter needs to be in 3.10 or greater; is %s"
@@ -137,7 +136,7 @@ class Code310Graal(Code310):
         code.freeze()
         try:
             code.check()
-        except AssertionError as e:
+        except AssertionError(e):
             raise TypeError(e)
 
         return types.CodeType(

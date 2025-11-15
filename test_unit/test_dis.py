@@ -16,6 +16,7 @@ else:
 from xdis.bytecode import Bytecode
 
 _BIG_LINENO_FORMAT_36 = """\
+
 %4d:           0 LOAD_GLOBAL          (spam)
                2 POP_TOP
                4 LOAD_CONST           (None)
@@ -23,6 +24,7 @@ _BIG_LINENO_FORMAT_36 = """\
 """
 
 _BIG_LINENO_FORMAT = """\
+
 %3d:           0 LOAD_GLOBAL          (spam)
                3 POP_TOP
                4 LOAD_CONST           (None)

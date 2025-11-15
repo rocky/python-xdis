@@ -20,7 +20,7 @@ Python opcode.py structures
 """
 
 
-def get_optype_graal(opcode: int, opc) -> str:
+def get_optype_graal(opcode, opc):
     """Helper to determine what class of instructions ``opcode`` is in.
     Return is a string in:
        compare, const, free, jabs, jrel, local, name, nargs, or ??
@@ -64,7 +64,7 @@ def findlabels(bytecode, opc):
     n = len(bytecode)
     offsets = []
     while offset < n:
-        opcode = bytecode[offset]
+        opcode = ord(bytecode[offset])
         optype = get_optype_graal(opcode, opc)
 
         # opname = opc.opname[opcode]
@@ -74,7 +74,7 @@ def findlabels(bytecode, opc):
 
         jump_offset = -1
         if optype == "jrel":
-            arg = bytecode[offset + 1]
+            arg = ord(bytecode[offset + 1])
             if opcode == opc.opmap["JUMP_BACKWARD"]:
                 jump_offset = offset - arg
             else:
@@ -146,13 +146,13 @@ UNARY_OPS = {
 
 
 def binary_op_graal(
-    loc: dict,
-    name: str,
-    opcode: int,
-    pop: int = 2,
-    push: int = 1,
-    arg_count: int = 1,
-) -> None:
+    loc,
+    name,
+    opcode,
+    pop = 2,
+    push = 1,
+    arg_count = 1,
+):
     """
     Put opcode in the class of instructions that are binary operations.
     """
@@ -161,14 +161,14 @@ def binary_op_graal(
 
 
 def def_op_graal(
-    loc: dict,
-    op_name: str,
-    opcode: int,
-    pop: int = -2,
-    push: int = -2,
-    arg_count: int = 0,
-    fallthrough: bool = True,
-) -> None:
+    loc,
+    op_name,
+    opcode,
+    pop = -2,
+    push = -2,
+    arg_count = 0,
+    fallthrough = True,
+):
     loc["opname"][opcode] = op_name
     loc["opmap"][op_name] = opcode
     loc["oppush"][opcode] = push
@@ -180,13 +180,13 @@ def def_op_graal(
 
 
 def call_op_graal(
-    loc: dict,
-    name: str,
-    opcode: int,
-    pop: int = -2,
-    push: int = 1,
-    fallthrough: bool = True,
-) -> None:
+    loc,
+    name,
+    opcode,
+    pop = -2,
+    push = 1,
+    fallthrough = True,
+):
     """
     Put opcode in the class of instructions that perform calls.
     """
@@ -195,37 +195,37 @@ def call_op_graal(
 
 
 def collection_op_graal(
-    loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1, arg_count: int = 1
-) -> None:
+    loc, name, opcode, pop = 0, push = 1, arg_count = 1
+):
     def_op_graal(loc, name, opcode, pop, push, arg_count)
     loc["collectionop"].add(opcode)
 
 
 def const_op_graal(
-    loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1, arg_count: int = 1
-) -> None:
+    loc, name, opcode, pop = 0, push = 1, arg_count = 1
+):
     def_op_graal(loc, name, opcode, pop, push, arg_count)
     loc["hasconst"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
 def free_op_graal(
-    loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1, arg_count: int = 1
-) -> None:
+    loc, name, opcode, pop = 0, push = 1, arg_count = 1
+):
     def_op_graal(loc, name, opcode, pop, push, arg_count)
     loc["hasfree"].append(opcode)
 
 
 def jrel_op_graal(
     loc,
-    name: str,
-    opcode: int,
-    pop: int = 0,
-    push: int = 0,
+    name,
+    opcode,
+    pop = 0,
+    push = 0,
     conditional=False,
     fallthrough=True,
-    arg_count: int = 1,
-) -> None:
+    arg_count = 1,
+):
     """
     Put opcode in the class of instructions that can perform a relative jump.
     """
@@ -236,8 +236,8 @@ def jrel_op_graal(
 
 
 def name_op_graal(
-    loc: dict, op_name, opcode: int, pop=-2, push=-2, arg_count: int = 1
-) -> None:
+    loc, op_name, opcode, pop=-2, push=-2, arg_count = 1
+):
     """
     Put opcode in the class of instructions that index into the "name" table.
     """
@@ -248,13 +248,13 @@ def name_op_graal(
 
 def nargs_op_graal(
     loc,
-    name: str,
-    opcode: int,
-    pop: int = -2,
-    push: int = -1,
-    arg_count: int = 0,
+    name,
+    opcode,
+    pop = -2,
+    push = -1,
+    arg_count = 0,
     fallthrough=True,
-) -> None:
+):
     """
     Put opcode in the class of instructions that have a variable number of (or *n*) arguments
     """
@@ -265,8 +265,8 @@ def nargs_op_graal(
 
 
 def store_op_graal(
-    loc: dict, name: str, op, pop=0, push=1, is_type="def", arg_count: int = 1
-) -> None:
+    loc, name, op, pop=0, push=1, is_type="def", arg_count = 1
+):
     if is_type == "name":
         name_op_graal(loc, name, op, pop, push, arg_count)
         loc["nullaryop"].remove(op)
@@ -282,13 +282,13 @@ def store_op_graal(
 
 
 def unary_op_graal(
-    loc: dict,
-    name: str,
-    opcode: int,
-    pop: int = 1,
-    push: int = 1,
-    arg_count: int = 1,
-) -> None:
+    loc,
+    name,
+    opcode,
+    pop = 1,
+    push = 1,
+    arg_count = 1,
+):
     """
     Put opcode in the class of instructions that are binary operations.
     """
@@ -296,7 +296,7 @@ def unary_op_graal(
     def_op_graal(loc, name, opcode, pop, push, arg_count)
 
 
-def update_sets(loc) -> None:
+def update_sets(loc):
     """
     Updates various category sets all opcode have been defined.
     """

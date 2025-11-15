@@ -39,7 +39,7 @@ def get_instructions_bytes_graal(
 
     extended_arg_count = 0
     while i < n:
-        opcode = bytecode[i]
+        opcode = ord(bytecode[i])
         opname = opc.opname[opcode]
         optype = get_optype_graal(opcode, opc)
         offset = i
@@ -64,7 +64,7 @@ def get_instructions_bytes_graal(
         if has_arg:
             argrepr = ""
         else:
-            arg = bytecode[i]
+            arg = ord(bytecode[i])
             i += 1
             if arg_count > 1:
                 following_args = []
@@ -194,7 +194,10 @@ def get_instructions_bytes_graal(
             break
 
         inst_size = (arg_count + 1) + (extended_arg_count * 2)
-        start_offset = offset if opc.oppop[opcode] == 0 else None
+        if opc.oppop[opcode] == 0:
+            start_offset = offset
+        else:
+            start_offset = None
 
         # for (int i = 0 i < exceptionHandlerRanges.length; i += 4) {
         #     int start = exceptionHandlerRanges[i];
@@ -271,7 +274,7 @@ class Bytecode_Graal(Bytecode):
     Iterating over these yields the bytecode operations as Instruction instances.
     """
 
-    def __init__(self, x, opc, first_line=None, current_offset=None) -> None:
+    def __init__(self, x, opc, first_line=None, current_offset=None):
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
         self._cell_names = tuple()
@@ -301,7 +304,7 @@ class Bytecode_Graal(Bytecode):
             self.opc,
         )
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return "%s({%r)" % (self.__class__.__name__, self._original_object)
 
     def get_instructions(self, x):

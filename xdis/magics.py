@@ -729,7 +729,7 @@ add_magic_from_int(21290, "3.11.7Graal")
 
 # add_magic_from_int(21290, "3.12.8Graal")
 # Paritally compensate for one magic for two Graal Python versions:
-version2magicint["3.12.8Graal"].append(21290)
+version2magicint["3.12.8Graal"] = [21290]
 
 
 # Jython uses JVM bytecode, not CPython PyPy bytecode.

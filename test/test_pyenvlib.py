@@ -64,7 +64,6 @@ PYPY_TEST_VERSIONS = (
 # -----
 
 
->>>>>>> python-3.0-to-3.2
 LONG_PYTHON_VERSION = (
     sys.version_info[0],
     sys.version_info[1],

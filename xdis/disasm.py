@@ -65,10 +65,10 @@ from xdis.version_info import (
 # FIXME we may also need to distinguish by magic_int2magic
 # (for 3.8.5 Graal for example.)
 def get_opcode(
-    version_tuple: tuple,
+    version_tuple,
     python_implementation,
     alternate_opmap=None,
-    magic_int: int = -1,
+    magic_int = -1,
 ):
     # Set up disassembler with the right opcodes
     lookup = ".".join((str(i) for i in version_tuple))
@@ -154,7 +154,7 @@ def disco(
     co,
     timestamp,
     out=sys.stdout,
-    magic_int: int=-1,
+    magic_int=-1,
     source_size=None,
     sip_hash=None,
     asm_format="classic",

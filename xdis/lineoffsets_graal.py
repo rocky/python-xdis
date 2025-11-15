@@ -30,9 +30,12 @@ MAX_NUM = 127
 MULTIPLIER_POSITIVE = MAX_NUM  # 127
 
 
-def _to_signed(byte_value: int) -> int:
+def _to_signed(byte_value):
     """Convert 0..255 byte to signed -128..127 value like Java byte."""
-    return byte_value if byte_value < 128 else byte_value - 256
+    if byte_value < 128:
+        return byte_value
+    else:
+        return byte_value - 256
 
 
 class SourceMap:
@@ -83,7 +86,7 @@ class SourceMap:
         while offset < n:
 
             # code[offset] is an int 0..255 in Python 3 when indexing bytes
-            op_byte = bytecode[offset]
+            op_byte = ord(bytecode[offset])
             op_len = arg_counts[op_byte] + 1
 
             try:
@@ -101,7 +104,7 @@ class SourceMap:
                 self.endColumnMap[i] = end_column
             offset += op_len
 
-    def _next_line_and_column(self) -> tuple:
+    def _next_line_and_column(self):
         """
         Get the (line, column) pair delta from self.source_table.
 
@@ -117,7 +120,7 @@ class SourceMap:
             raise EOFError("Unexpected end of source table while reading line/column")
 
         old_pos = self.source_table_pos
-        b = self.source_table[self.source_table_pos]
+        b = ord(self.source_table[self.source_table_pos])
         self.source_table_pos += 1
         v = _to_signed(b)
         if v == NEXT_LINE:
@@ -133,7 +136,7 @@ class SourceMap:
         self.next_column += self._get_num()
         return self.next_line, self.next_column
 
-    def _get_num(self) -> int:
+    def _get_num(self):
         """
         Decode a signed (possibly extended) number from the stream.
 
@@ -142,7 +145,7 @@ class SourceMap:
         """
         extensions = 0
         while True:
-            b = self.source_table[self.source_table_pos]
+            b = ord(self.source_table[self.source_table_pos])
             self.source_table_pos += 1
             val = _to_signed(b)
             # assert val != -1
@@ -155,7 +158,7 @@ class SourceMap:
                 # non-negative single-byte value
                 return extensions * MULTIPLIER_POSITIVE + val
 
-def find_linestarts_graal(code_object, opc, dup_lines: bool) -> dict:
+def find_linestarts_graal(code_object, opc, dup_lines):
     source_map = SourceMap(code_object, opc)
     bytecode = code_object.co_code
     i = 0
@@ -165,7 +168,7 @@ def find_linestarts_graal(code_object, opc, dup_lines: bool) -> dict:
     lines_seen = set()
     last_linemap_offset = len(source_map.startLineMap) - 1
     while i < n:
-        opcode = bytecode[i]
+        opcode = ord(bytecode[i])
         offset = i
         i += opc.arg_counts[opcode] + 1
         if offset >= last_linemap_offset:

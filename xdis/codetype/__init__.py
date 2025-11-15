@@ -240,8 +240,6 @@ def codeType2Portable(code, version_triple=PYTHON_VERSION_TRIPLE, is_graal=False
                 )
         elif version_triple[:2] >= (3, 11):
             if is_graal:
->>>>>>> python-3.0-to-3.2
-
                 return Code311Graal(
                     co_argcount=code.co_argcount,
                     co_posonlyargcount=code.co_posonlyargcount,
