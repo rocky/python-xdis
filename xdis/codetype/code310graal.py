@@ -127,9 +127,9 @@ class Code310Graal(Code310):
             self.check()
 
     def to_native(self) -> CodeType:
-        if not (PYTHON_VERSION_TRIPLE >= (3, 11)):
+        if not (PYTHON_VERSION_TRIPLE >= (3, 10)):
             raise TypeError(
-                "Python Interpreter needs to be in 3.11 or greater; is %s"
+                "Python Interpreter needs to be in 3.10 or greater; is %s"
                 % version_tuple_to_str()
             )
 

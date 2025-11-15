@@ -19,13 +19,27 @@ Step 2: Run the test:
 	  test_pyenvlib --mylib --verify # disassemble verify 'mylib'
 """
 
+import os
 import os.path as osp
 import py_compile
 import re
+import shutil
+import sys
 import tempfile
+import time
+from fnmatch import fnmatch
 
 import xdis.magics as magics
+from xdis import PYTHON3, PYTHON_VERSION_TRIPLE, disassemble_file
 from xdis.load import check_object_path
+from xdis.verify import verify_file
+
+if not hasattr(time, "ctime"):
+    from datetime import datetime
+    def ctime():
+        return datetime.now().strftime('%a %b %d %H:%M:%S %Y')
+else:
+    ctime = time.ctime
 
 # ----- configure this for your needs
 
@@ -49,15 +63,6 @@ PYPY_TEST_VERSIONS = (
 
 # -----
 
-
-import os
-import shutil
-import sys
-import time
-from fnmatch import fnmatch
-
-from xdis import PYTHON3, PYTHON_VERSION_TRIPLE, disassemble_file
-from xdis.verify import verify_file
 
 LONG_PYTHON_VERSION = (
     sys.version_info[0],
@@ -175,7 +180,7 @@ def do_tests(
     output = open(os.devnull, "w")
     # output = sys.stdout
     start_time = time.time()
-    print(time.ctime())
+    print(ctime())
     for i, bc_file in enumerate(files):
         if verbose:
             print(os.path.join(src_dir, bc_file))
@@ -198,7 +203,7 @@ def do_tests(
         if i % 100 == 0 and i > 0:
             print("Processed %d files" % (i))
     print("Processed %d files, total" % (i + 1))
-    print(time.ctime())
+    print(ctime())
     elapsed_time = time.time() - start_time
     print(f"{elapsed_time:g} seconds")
     os.chdir(cwd)
