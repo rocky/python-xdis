@@ -1126,6 +1126,10 @@ class _VersionIndependentUnmarshaller:
             [self.graal_code_info["co_codeunit_position"], co_code_offset_in_file]
         )
 
+        # if graal_bytecode_version == 26:
+        #     from xdis.bytecode_graal import get_instructions_bytes_graal
+        #     from xdis.opcodes import opcode_38graal
+        #     get_instructions_bytes_graal(code, opcode_38graal)
         return code
 
     # Since Python 3.4

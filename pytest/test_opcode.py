@@ -1,11 +1,15 @@
 import dis
 
-import pytest
-from xdis import IS_PYPY, PYTHON_VERSION_TRIPLE, get_opcode
+from xdis import get_opcode
+from xdis.version_info import (
+    IS_PYPY,
+    PYTHON_IMPLEMENTATION,
+    PYTHON_VERSION_TRIPLE,
+)
 
 
 def test_opcode() -> None:
-    opc = get_opcode(PYTHON_VERSION_TRIPLE, IS_PYPY)
+    opc = get_opcode(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
     opmap = dict([(k.replace("+", "_"), v) for (k, v) in dis.opmap.items()])
     #        (2, 7),
     #        (3, 6),

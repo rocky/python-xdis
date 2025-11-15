@@ -22,8 +22,10 @@ of stack usage.
 """
 
 import xdis.opcodes.opcode_35 as opcode_35
-from xdis.opcodes.base import (
+from xdis.instruction import Instruction
+from xdis.opcodes.base import (  # noqa
     call_op,
+    cpython_implementation as python_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,

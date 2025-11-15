@@ -10,6 +10,7 @@
 #    1: None
 # Names:
 #    0: f
+
   4:           0 LOAD_CONST           (<code object at 0xdeadbeef0001, line 4)
                3 MAKE_FUNCTION        (0 default parameters)
                6 STORE_NAME           (f)
@@ -33,6 +34,7 @@
 #	right
 # Positional arguments:
 #	right
+
   4:           0 BUILD_LIST           0
                3 LOOKUP_METHOD        (map)
                6 LOAD_CONST           (<code object at 0xdeadbeef0001, line 4)
@@ -55,6 +57,7 @@
 #	length
 # Positional arguments:
 #	length
+
   4:           0 LOAD_CONST           (())
                3 RETURN_VALUE
 

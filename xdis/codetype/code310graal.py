@@ -18,12 +18,7 @@ import types
 from copy import deepcopy
 from types import CodeType
 
-from xdis.codetype.code311 import (
-    Code311,
-    Code311FieldTypes,
-    parse_linetable,
-    parse_location_entries,
-)
+from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order given in the Python docs for
@@ -31,24 +26,21 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 # "posonlyargcount" is not used, but it is in other Python versions, so it
 # has to be included since this structure is used as the Union type
 # for all code types.
-Code311GraalFieldNames = """
+Code310GraalFieldNames = """
         co_argcount
         co_cellvars
         co_code
         co_consts
-        co_exceptiontable
         co_filename
         co_firstlineno
         co_flags
         co_freevars
         co_kwonlyargcount
-        co_lines
         co_lnotab
         co_name
         co_names
         co_nlocals
         co_posonlyargcount
-        co_qualname
         co_stacksize
         co_varnames
         condition_profileCount
@@ -65,14 +57,13 @@ Code311GraalFieldNames = """
         variableShouldUnbox
 """
 
-Code311GraalFieldTypes = deepcopy(Code311FieldTypes)
-Code311GraalFieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
+Code310GraalFieldTypes = deepcopy(Code310FieldTypes)
 
 
-class Code311Graal(Code311):
-    """Class for a Python 3.11+ code object used when a Python interpreter less than 3.11 is
-    working on Python 3.11 bytecode. It also functions as an object that can be used
-    to build or write a Python3 code object, since we allow mutable structures.
+class Code310Graal(Code310):
+    """Class for a Python 3.10 Graal code objectIt also functions as
+    an object that can be used to build or write a Python 3.10 Graal code
+    object, since we allow mutable structures.
 
     When done mutating, call method to_native().
 
@@ -80,6 +71,7 @@ class Code311Graal(Code311):
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
     instead as (mutable) lists. Likewise, the line number table `co_linetable`
     can be stored as a simple list of offset, line_number tuples.
+
     """
 
     def __init__(
@@ -98,10 +90,8 @@ class Code311Graal(Code311):
         co_cellvars,
         co_filename,
         co_name,
-        co_qualname,
         co_firstlineno,
         co_linetable,
-        co_exceptiontable,
         reference_objects=set(),
         version_triple=(0, 0, 0),
         other_fields={},
@@ -113,7 +103,6 @@ class Code311Graal(Code311):
             co_cellvars=co_cellvars,
             co_code=co_code,
             co_consts=co_consts,
-            co_exceptiontable=co_exceptiontable,
             co_filename=co_filename,
             co_firstlineno=co_firstlineno,
             co_flags=co_flags,
@@ -123,7 +112,6 @@ class Code311Graal(Code311):
             co_name=co_name,
             co_names=co_names,
             co_nlocals=co_nlocals,
-            co_qualname=co_qualname,
             co_posonlyargcount=co_posonlyargcount,
             co_stacksize=co_stacksize,
             co_varnames=co_varnames,
@@ -134,16 +122,14 @@ class Code311Graal(Code311):
         for field_name, value in other_fields.items():
             setattr(self, field_name, value)
 
-        self.co_qualname = co_qualname
-        self.co_exceptiontable = co_exceptiontable
-        self.fieldtypes = Code311GraalFieldTypes
-        if type(self) is Code311Graal:
+        self.fieldtypes = Code310GraalFieldTypes
+        if type(self) is Code310Graal:
             self.check()
 
     def to_native(self) -> CodeType:
-        if not (PYTHON_VERSION_TRIPLE >= (3, 11)):
+        if not (PYTHON_VERSION_TRIPLE >= (3, 10)):
             raise TypeError(
-                "Python Interpreter needs to be in 3.11 or greater; is %s"
+                "Python Interpreter needs to be in 3.10 or greater; is %s"
                 % version_tuple_to_str()
             )
 
@@ -154,8 +140,6 @@ class Code311Graal(Code311):
         except AssertionError as e:
             raise TypeError(e)
 
-        if code.co_exceptiontable is None:
-            code.co_exceptiontable = b""
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,
@@ -169,16 +153,8 @@ class Code311Graal(Code311):
             code.co_varnames,
             code.co_filename,
             code.co_name,
-            code.co_qualname,
             code.co_firstlineno,
             code.co_linetable,
-            code.co_exceptiontable,
             code.co_freevars,
             code.co_cellvars,
         )
-
-    def co_lines(self):
-        return parse_linetable(self.co_linetable, self.co_firstlineno)
-
-    def co_positions(self):
-        return parse_location_entries(self.co_linetable, self.co_firstlineno)

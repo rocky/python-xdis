@@ -21,11 +21,17 @@ of stack usage.
 """
 
 import xdis.opcodes.opcode_33 as opcode_33
-from xdis.opcodes.base import finalize_opcodes, free_op, init_opdata, rm_op, update_pj3
+from xdis.opcodes.base import (  # noqa
+    cpython_implementation as python_implementation,
+    finalize_opcodes,
+    free_op,
+    init_opdata,
+    rm_op,
+    update_pj3,
+)
 from xdis.opcodes.opcode_33 import opcode_arg_fmt33, opcode_extended_fmt33
 
 version_tuple = (3, 4)
-python_implementation = "CPython"
 
 loc = locals()
 

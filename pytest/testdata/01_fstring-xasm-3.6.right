@@ -30,6 +30,7 @@
 #    3: date
 #    4: anniversary
 #    5: print
+
   3:
             LOAD_CONST           0 (0)
             LOAD_CONST           1 (None)

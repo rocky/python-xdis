@@ -66,8 +66,8 @@ def run_check_disasm(test_tuple, function_to_test):
     got = "\n".join(got_lines[skip_lines:])
 
     if "XDIS_DONT_WRITE_DOT_GOT_FILES" not in os.environ:
+        got_filename = filename_expected + ".got"
         if got != expected:
-            got_filename = filename_expected + ".got"
             with open(got_filename, "w") as out:
                 out.write(got)
         assert got == expected, "see %s for diffs" % got_filename

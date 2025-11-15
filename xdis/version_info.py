@@ -18,7 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import platform
 import sys
-from enum import Enum
 
 PYTHON3 = sys.version_info >= (3, 0)
 
@@ -26,7 +25,7 @@ PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
 PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
 
-class PythonImplementation(Enum):
+class PythonImplementation(object):
     """
     Enumeration of Python interpreter implementations. Each member's value is the
     canonical string returned by platform.python_implementation() for that implementation.
@@ -39,12 +38,15 @@ class PythonImplementation(Enum):
     Jython = "Jython"
     Other = "Other"
 
-    def __str__(self) -> str:
+    def __init__(self, kind):
+        self.kind = kind
+
+    def __str__(self):
         """
         Return the string value of the implementation. This makes str(PythonImplemtation.*)
         return the underlying implementation string (e.g. "CPython", "Graal", ...).
         """
-        return self.value
+        return self.kind
 
 
 def get_python_implementation(
