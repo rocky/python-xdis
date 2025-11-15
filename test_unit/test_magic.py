@@ -10,7 +10,7 @@ class TestMagics(unittest.TestCase):
         if hasattr(sys, 'version_info'):
             version = version_tuple_to_str()
             if IS_PYPY:
-                version += 'pypy'
+                version += "PyPy"
             self.assertTrue(version in magics.magics.keys(),
                             "version %s is not in magic.magics.keys: %s" %
                             (version, magics.magics.keys()))

@@ -24,14 +24,6 @@ PYTHON3 = sys.version_info >= (3, 0)
 PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
 PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
 
-IS_PYPY = "__pypy__" in sys.builtin_module_names
-if hasattr(platform, "python_implementation"):
-    IS_GRAAL = "Graal" in platform.python_implementation()
-    IS_RUST = "RustPython" in platform.python_implementation()
-else:
-    IS_GRAAL = False
-    IS_RUST = False
-
 class PythonImplementation(object):
     """
     Enumeration of Python interpreter implementations. Each member's value is the
@@ -55,8 +47,7 @@ class PythonImplementation(object):
         """
         return self.kind
 
-
-def get_python_implementation(implementation = "CPython"):
+def get_python_implementation(implementation = None):
     """
     Detect the current Python implementation and return the corresponding
     PlatformImplemtation enum member.
@@ -68,16 +59,17 @@ def get_python_implementation(implementation = "CPython"):
     if "__pypy__" in sys.builtin_module_names:
         return PythonImplementation("PyPy")
 
-    if hasattr(platform, implementation):
+    if hasattr(platform, "implementation"):
         return PythonImplementation(platform.implementation())
 
-    return PythonImplementation("Other")
+    return PythonImplementation("CPython")
 
 
 PYTHON_IMPLEMENTATION = get_python_implementation()
-IS_GRAAL = PYTHON_IMPLEMENTATION == PythonImplementation.Graal
-IS_PYPY = PYTHON_IMPLEMENTATION == PythonImplementation.PyPy
-IS_RUST = PYTHON_IMPLEMENTATION == PythonImplementation.RustPython
+PYTHON_IMPLEMENTATION_STR = str(PYTHON_IMPLEMENTATION)
+IS_GRAAL = PYTHON_IMPLEMENTATION_STR == "Graal"
+IS_PYPY = PYTHON_IMPLEMENTATION_STR == "PyPy"
+IS_RUST = PYTHON_IMPLEMENTATION_STR == "Rust"
 
 
 def version_tuple_to_str(

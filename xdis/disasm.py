@@ -72,9 +72,9 @@ def get_opcode(
 ):
     # Set up disassembler with the right opcodes
     lookup = ".".join((str(i) for i in version_tuple))
-    if python_implementation == PythonImplementation.PyPy:
+    if str(python_implementation) == "PyPy":
         lookup += "PyPy"
-    elif python_implementation == PythonImplementation.Graal:
+    elif str(python_implementation) == "Graal":
         if magic_int == 21290:
             if version_tuple == (3, 11, 7):
                 lookup = "3.11.7Graal"
