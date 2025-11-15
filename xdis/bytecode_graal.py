@@ -29,8 +29,8 @@ def get_instructions_bytes_graal(
     constants: tuple = code_object.co_consts
     names: tuple = code_object.co_names
     varnames: tuple = code_object.co_varnames
-    # cells: tuple = code_object.co_cells
-    # freevars: tuple = code_object.co_freevars
+    cells: tuple = code_object.co_cellvars
+    freevars: tuple = code_object.co_freevars
 
     i = 0
     n = len(bytecode)
@@ -114,11 +114,10 @@ def get_instructions_bytes_graal(
                 opc.opmap["STORE_DEREF"],
                 opc.opmap["DELETE_DEREF"],
             ):
-                # if arg >= len(cells):
-                #     import pdb; pdb.set_trace()
-                #     argrepr = freevars[arg - len(cells)]
-                # else:
-                #     argrepr = cells[arg]
+                if arg >= len(cells):
+                    argrepr = freevars[arg - len(cells)]
+                else:
+                    argrepr = cells[arg]
                 break
             elif opcode in (
                 opc.opmap["LOAD_FAST"],

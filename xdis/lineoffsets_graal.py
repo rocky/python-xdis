@@ -62,7 +62,7 @@ class SourceMap:
         bytecode: bytes = code_object.co_code
         start_column: int  = code_object.startColumn
         start_line: int  = code_object.startLine
-        # cells: tuple = code_object.co_cells
+        # cells: tuple = code_object.co_cellvars
         # freevars: tuple = code_object.co_freevars
         arg_counts: Dict[int, int] = opc.arg_counts
 

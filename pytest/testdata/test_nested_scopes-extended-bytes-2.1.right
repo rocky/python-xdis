@@ -351,7 +351,7 @@
 #    0: blurb
 #    1: y3a
 #    2: flurb
-# Cell variables:
+# Free variables:
 #    0: blurb
 #    1: flurb
 
@@ -418,7 +418,7 @@
 # Local variables:
 #    0: y3
 #    1: blurb
-# Cell variables:
+# Free variables:
 #    0: blurb
 
  43:           0 |7f 00 2b| SET_LINENO           43
@@ -579,7 +579,7 @@
 # Local variables:
 #    0: blurb
 #    1: y
-# Cell variables:
+# Free variables:
 #    0: blurb
 
  76:           0 |7f 00 4c| SET_LINENO           76
@@ -634,7 +634,7 @@
 #    6: c
 #    7: d
 #    8: y
-# Cell variables:
+# Free variables:
 #    0: a
 
  83:           0 |7f 00 53| SET_LINENO           83
@@ -805,7 +805,7 @@
 #	x
 # Positional arguments:
 #	x
-# Free variables:
+# Cell variables:
 #    0: blurb
 #    1: flurb
 
@@ -815,10 +815,10 @@
 
  36:           6 |64 00 01| LOAD_CONST           ("y-blurb =") ; TOS = "y-blurb ="
                9 |47      | PRINT_ITEM           print "y-blurb =",
-              10 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
-              13 |47      | PRINT_ITEM           print 0,
-              14 |88 00 01| LOAD_DEREF           (1) ; TOS = 1
-              17 |47      | PRINT_ITEM           print 1,
+              10 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
+              13 |47      | PRINT_ITEM           print blurb,
+              14 |88 00 01| LOAD_DEREF           (flurb) ; TOS = flurb
+              17 |47      | PRINT_ITEM           print flurb,
               18 |48      | PRINT_NEWLINE        print "\n"
               19 |64 00 00| LOAD_CONST           (None) ; TOS = None
               22 |53      | RETURN_VALUE         return None
@@ -844,7 +844,7 @@
 #	x
 # Local variables:
 #    1: z
-# Free variables:
+# Cell variables:
 #    0: blurb
 
  44:           0 |7f 00 2c| SET_LINENO           44
@@ -865,8 +865,8 @@
 
  49:          28 |64 00 02| LOAD_CONST           ("y-blurb =") ; TOS = "y-blurb ="
               31 |47      | PRINT_ITEM           print "y-blurb =",
-              32 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
-              35 |47      | PRINT_ITEM           print 0,
+              32 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
+              35 |47      | PRINT_ITEM           print blurb,
               36 |64 00 00| LOAD_CONST           (None) ; TOS = None
               39 |53      | RETURN_VALUE         return None
 
@@ -893,7 +893,7 @@
 # Local variables:
 #    1: blurb
 #    2: z
-# Cell variables:
+# Free variables:
 #    0: blurb
 
  56:           0 |7f 00 38| SET_LINENO           56
@@ -978,7 +978,7 @@
 #	x
 # Positional arguments:
 #	x
-# Free variables:
+# Cell variables:
 #    0: blurb
 
  77:           0 |7f 00 4d| SET_LINENO           77
@@ -987,8 +987,8 @@
 
  78:           6 |64 00 01| LOAD_CONST           ("y-blurb =") ; TOS = "y-blurb ="
                9 |47      | PRINT_ITEM           print "y-blurb =",
-              10 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
-              13 |47      | PRINT_ITEM           print 0,
+              10 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
+              13 |47      | PRINT_ITEM           print blurb,
               14 |48      | PRINT_NEWLINE        print "\n"
               15 |64 00 00| LOAD_CONST           (None) ; TOS = None
               18 |53      | RETURN_VALUE         return None
@@ -1010,7 +1010,7 @@
 #	x
 # Positional arguments:
 #	x
-# Free variables:
+# Cell variables:
 #    0: a
 
  84:           0 |7f 00 54| SET_LINENO           84
@@ -1019,8 +1019,8 @@
 
  85:           6 |64 00 01| LOAD_CONST           ("y-a =") ; TOS = "y-a ="
                9 |47      | PRINT_ITEM           print "y-a =",
-              10 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
-              13 |47      | PRINT_ITEM           print 0,
+              10 |88 00 00| LOAD_DEREF           (a) ; TOS = a
+              13 |47      | PRINT_ITEM           print a,
               14 |48      | PRINT_NEWLINE        print "\n"
               15 |64 00 00| LOAD_CONST           (None) ; TOS = None
               18 |53      | RETURN_VALUE         return None
@@ -1098,7 +1098,7 @@
 #    1: 'z-blurb ='
 # Names:
 #    0: blurb
-# Free variables:
+# Cell variables:
 #    0: blurb
 
  57:           0 |7f 00 39| SET_LINENO           57
@@ -1107,8 +1107,8 @@
 
  58:           6 |64 00 01| LOAD_CONST           ("z-blurb =") ; TOS = "z-blurb ="
                9 |47      | PRINT_ITEM           print "z-blurb =",
-              10 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
-              13 |47      | PRINT_ITEM           print 0,
+              10 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
+              13 |47      | PRINT_ITEM           print blurb,
               14 |64 00 00| LOAD_CONST           (None) ; TOS = None
               17 |53      | RETURN_VALUE         return None
 
