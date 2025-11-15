@@ -292,7 +292,10 @@ def portableCodeType(version_triple=PYTHON_VERSION_TRIPLE, is_graal=IS_GRAAL):
             return Code38
         elif version_triple[:2] == (3, 10) or IS_PYPY and version_triple[:2] == (3, 11):
             # 3.10
-            return Code310
+            if is_graal:
+                return Code310Graal
+            else:
+                return Code310
         elif version_triple[:2] >= (3, 11):
             # 3.11 ...
             if is_graal:
