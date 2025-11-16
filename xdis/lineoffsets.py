@@ -54,11 +54,6 @@ class LineOffsetInfo(object):
         for instr in get_instructions_bytes(
             code_object=code,
             opc=self.opc,
-            varnames=code.co_varnames,
-            names=code.co_names,
-            constants=code.co_consts,
-            cells=code.co_cellvars + code.co_freevars,
-            linestarts=self.linestarts,
         ):
             offset = instr.offset
             self.offsets.append(offset)
