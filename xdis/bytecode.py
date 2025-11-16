@@ -472,7 +472,7 @@ def get_instructions_bytes(
     constants = code_object.co_consts
     names = code_object.co_names
     varnames = code_object.co_varnames
-    cells = code_object.co_cells if hasattr(code_object, "co_cellvars") else tuple()
+    cells = code_object.co_cellvars if hasattr(code_object, "co_cellvars") else tuple()
     exception_entries = code_object.exception_entries if hasattr(code_object, "exception_entries") else tuple()
     # freevars: tuple = code_object.co_freevars
 
