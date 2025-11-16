@@ -469,13 +469,6 @@ def get_instructions_bytes(
     names = code_object.co_names
     varnames = code_object.co_varnames
     cells = code_object.co_cellvars if hasattr(code_object, "co_cellvars") else tuple()
-=======
-    bytecode: bytes = code_object.co_code
-    constants: tuple = code_object.co_consts
-    names: tuple = code_object.co_names
-    varnames: tuple = code_object.co_varnames
-    cells: tuple = code_object.co_cellvars if hasattr(code_object, "co_cellvars") else tuple()
->>>>>>> python-3.6-to-3.10
     exception_entries = code_object.exception_entries if hasattr(code_object, "exception_entries") else tuple()
     # freevars: tuple = code_object.co_freevars
 

@@ -28,16 +28,8 @@ def get_instructions_bytes_graal(
     constants = code_object.co_consts
     names = code_object.co_names
     varnames = code_object.co_varnames
-    cells = code_object.co_cells
+    cells = code_object.co_cellvars
     freevars = code_object.co_freevars
-=======
-    bytecode: bytes = code_object.co_code
-    constants: tuple = code_object.co_consts
-    names: tuple = code_object.co_names
-    varnames: tuple = code_object.co_varnames
-    cells: tuple = code_object.co_cellvars
-    freevars: tuple = code_object.co_freevars
->>>>>>> python-3.6-to-3.10
 
     i = 0
     n = len(bytecode)
