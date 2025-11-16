@@ -53,7 +53,7 @@ class LineOffsetInfo(object):
         code_map = {code.co_name: code}
         last_line_info = None
         for instr in get_instructions_bytes(
-            bytecode=code.co_code,
+            code_object=code,
             opc=self.opc,
             varnames=code.co_varnames,
             names=code.co_names,
