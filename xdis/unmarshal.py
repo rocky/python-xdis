@@ -765,8 +765,8 @@ class _VersionIndependentUnmarshaller:
                 co_varnames = tuple()
 
             if self.version_triple >= (2, 0):
-                co_freevars = self.r_object(bytes_for_s=bytes_for_s)
                 co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
+                co_freevars = self.r_object(bytes_for_s=bytes_for_s)
 
             co_filename = self.r_object(bytes_for_s=bytes_for_s)
             co_name = self.r_object(bytes_for_s=bytes_for_s)

@@ -274,6 +274,11 @@ def get_logical_instruction_at_offset(
     last_op_was_extended_arg = True
     i = offset
 
+    # create a localsplusnames table that resolves duplicates.
+    localsplusnames = (varnames or tuple()) + tuple(
+        name for name in (cells or tuple()) if name not in varnames
+    )
+
     while i < n and last_op_was_extended_arg:
         op = code2num(bytecode, i)
         opname = opc.opname[op]
@@ -313,11 +318,6 @@ def get_logical_instruction_at_offset(
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
 
             argval = arg
-
-            # create a localsplusnames table that resolves duplicates.
-            localsplusnames = (varnames or tuple()) + tuple(
-                name for name in (cells or tuple()) if name not in varnames
-            )
 
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
@@ -468,7 +468,14 @@ def get_instructions_bytes(
     constants = code_object.co_consts
     names = code_object.co_names
     varnames = code_object.co_varnames
-    cells = code_object.co_cells if hasattr(code_object, "co_cells") else tuple()
+    cells = code_object.co_cellvars if hasattr(code_object, "co_cellvars") else tuple()
+=======
+    bytecode: bytes = code_object.co_code
+    constants: tuple = code_object.co_consts
+    names: tuple = code_object.co_names
+    varnames: tuple = code_object.co_varnames
+    cells: tuple = code_object.co_cellvars if hasattr(code_object, "co_cellvars") else tuple()
+>>>>>>> python-3.6-to-3.10
     exception_entries = code_object.exception_entries if hasattr(code_object, "exception_entries") else tuple()
     # freevars: tuple = code_object.co_freevars
 
