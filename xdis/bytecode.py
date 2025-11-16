@@ -280,6 +280,11 @@ def get_logical_instruction_at_offset(
     last_op_was_extended_arg = True
     i = offset
 
+    # create a localsplusnames table that resolves duplicates.
+    localsplusnames = (varnames or tuple()) + tuple(
+        name for name in (cells or tuple()) if name not in varnames
+    )
+
     while i < n and last_op_was_extended_arg:
         op = code2num(bytecode, i)
         opname = opc.opname[op]
@@ -325,11 +330,6 @@ def get_logical_instruction_at_offset(
             #    raw name index for LOAD_GLOBAL, LOAD_CONST, etc.
 
             argval = arg
-
-            # create a localsplusnames table that resolves duplicates.
-            localsplusnames = (varnames or tuple()) + tuple(
-                name for name in (cells or tuple()) if name not in varnames
-            )
 
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
@@ -494,8 +494,8 @@ def get_instructions_bytes(
     names = code_object.co_names
     varnames = code_object.co_varnames
 
-    if hasattr(code_object, "co_cells"):
-        cells = code_object.co_cells
+    if hasattr(code_object, "co_cellvars"):
+        cells = code_object.co_cellvars
     else:
         cells = tuple()
 
