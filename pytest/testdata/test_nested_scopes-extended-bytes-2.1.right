@@ -351,7 +351,7 @@
 #    0: blurb
 #    1: y3a
 #    2: flurb
-# Cell variables:
+# Free variables:
 #    0: blurb
 #    1: flurb
 
@@ -418,7 +418,7 @@
 # Local variables:
 #    0: y3
 #    1: blurb
-# Cell variables:
+# Free variables:
 #    0: blurb
 
  43:           0 |7f 00 2b| SET_LINENO           43
@@ -579,7 +579,7 @@
 # Local variables:
 #    0: blurb
 #    1: y
-# Cell variables:
+# Free variables:
 #    0: blurb
 
  76:           0 |7f 00 4c| SET_LINENO           76
@@ -634,7 +634,7 @@
 #    6: c
 #    7: d
 #    8: y
-# Cell variables:
+# Free variables:
 #    0: a
 
  83:           0 |7f 00 53| SET_LINENO           83
@@ -805,7 +805,7 @@
 #	x
 # Positional arguments:
 #	x
-# Free variables:
+# Cell variables:
 #    0: blurb
 #    1: flurb
 
@@ -844,7 +844,7 @@
 #	x
 # Local variables:
 #    1: z
-# Free variables:
+# Cell variables:
 #    0: blurb
 
  44:           0 |7f 00 2c| SET_LINENO           44
@@ -893,7 +893,7 @@
 # Local variables:
 #    1: blurb
 #    2: z
-# Cell variables:
+# Free variables:
 #    0: blurb
 
  56:           0 |7f 00 38| SET_LINENO           56
@@ -978,7 +978,7 @@
 #	x
 # Positional arguments:
 #	x
-# Free variables:
+# Cell variables:
 #    0: blurb
 
  77:           0 |7f 00 4d| SET_LINENO           77
@@ -1010,7 +1010,7 @@
 #	x
 # Positional arguments:
 #	x
-# Free variables:
+# Cell variables:
 #    0: a
 
  84:           0 |7f 00 54| SET_LINENO           84
@@ -1098,7 +1098,7 @@
 #    1: 'z-blurb ='
 # Names:
 #    0: blurb
-# Free variables:
+# Cell variables:
 #    0: blurb
 
  57:           0 |7f 00 39| SET_LINENO           57
