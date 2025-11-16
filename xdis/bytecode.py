@@ -503,7 +503,7 @@ def get_instructions_bytes(
         exception_entries = code_object.exception_entries
     else:
         exception_entries = tuple()
-    # freevars: tuple = code_object.co_freevars
+    # freevars = code_object.co_freevars
 
     labels = opc.findlabels(bytecode, opc)
     if hasattr(opc, "findlinestarts"):
