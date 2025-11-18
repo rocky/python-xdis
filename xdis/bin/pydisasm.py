@@ -24,7 +24,7 @@ PATTERNS = ("*.pyc", "*.pyo")
 case_sensitive = {"case_sensitive": False}
 
 
-@click.command()
+@click.command(context_settings={"help_option_names": ["--help", "-help", "-h"]})
 @click.option(
     "--format",
     "-F",
