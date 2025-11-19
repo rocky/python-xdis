@@ -1,10 +1,9 @@
 # from xdis.bytecode import get_optype
-from typing import Optional
 
 from xdis.bytecode import Bytecode
 from xdis.cross_dis import get_code_object
 from xdis.instruction import Instruction
-from xdis.lineoffsets_graal import SourceMap, find_linestarts_graal
+from xdis.lineoffsets_graal import find_linestarts_graal
 from xdis.opcodes.base_graal import (
     BINARY_OPS,
     COLLECTION_KIND,
@@ -102,12 +101,13 @@ def get_instructions_bytes_graal(
                 )
                 break
             elif opcode == opc.opmap["LOAD_COMPLEX"]:
-                argval = constants[arg]
-                if num[0] == 0.0:
-                    argrepr = "%g" % argval[1]
+                real, imaginary = constants[arg]
+                if imaginary == 0.0:
+                    argval = imaginary
                 else:
-                    argrepr = "%g%+gj" % (argval[0], argval[1])
-                    break
+                    argval = complex(real, imaginary)
+                argrepr = str(argval)
+                break
             elif opcode in (
                 opc.opmap["LOAD_CLOSURE"],
                 opc.opmap["LOAD_DEREF"],
