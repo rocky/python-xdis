@@ -373,25 +373,31 @@ def_op_graal(loc, "LOAD_LONG", 0x39, 1, 0, 1)
 #
 def_op_graal(loc, "LOAD_DOUBLE", 0x3A, 1, 0, 1)
 #
-
+# Loads {@code long} from primitiveConstants array indexed by the immediate operand.
+#
+def_op_graal(loc, "LOAD_LONG", 0x3B, 1, 0, 1)
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
 # operand.
 #
-def_op_graal(loc, "LOAD_BIGINT", 0x3B, 1, 0, 1)
+def_op_graal(loc, "LOAD_BIGINT", 0x3C, 1, 0, 1)
 #
 # Currently the same as {@link #LOAD_CONST}.
 #
-const_op_graal(loc, "LOAD_STRING", 0x3C, 0, 1)
+
+#
+# Currently the same as {@link #LOAD_CONST}.
+#
+const_op_graal(loc, "LOAD_STRING", 0x3D, 0, 1)
 
 #
 # Creates python {@code bytes} from a {@code byte[]} array in constants array indexed by the
 # immediate operand.
 #
-def_op_graal(loc, "LOAD_BYTES", 0x3D, 0, 1)
+def_op_graal(loc, "LOAD_BYTES", 0x3E, 0, 1)
 # Creates python {@code complex} from a {@code double[]} array of size 2 in constants array
 # indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_COMPLEX", 0x3E, 1, 0, 1)
+def_op_graal(loc, "LOAD_COMPLEX", 0x3F, 1, 0, 1)
 
 # Creates a collection out of a Java array in constants array indexed by the immediate operand.
 # The second immediate operand determines the array type and kind, using values from {@link
