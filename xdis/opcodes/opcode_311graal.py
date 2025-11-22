@@ -371,13 +371,13 @@ def_op_graal(loc, "LOAD_LONG", 0x39, 1, 0, 1)
 # Loads {@code double} from primitiveConstants array indexed by the immediate operand
 # (converted from long).
 #
-def_op_graal(loc, "LOAD_DOUBLE", 0x3A, 1, 0, 1)
-#
-# Loads {@code long} from primitiveConstants array indexed by the immediate operand.
-#
-def_op_graal(loc, "LOAD_LONG", 0x3B, 1, 0, 1)
+def_op_graal(loc, "LOAD_LONG", 0x3A, 1, 0, 1)
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
 # operand.
+#
+def_op_graal(loc, "LOAD_DOUBLE", 0x3B, 1, 0, 1)
+#
+# Loads {@code long} from primitiveConstants array indexed by the immediate operand.
 #
 def_op_graal(loc, "LOAD_BIGINT", 0x3C, 1, 0, 1)
 #

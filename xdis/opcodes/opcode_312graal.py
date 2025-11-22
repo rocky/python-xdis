@@ -375,7 +375,7 @@ def_op_graal(loc, "LOAD_DOUBLE", 0x3D, 1, 0, 1)
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
 # operand.
 #
-def_op_graal(loc, "LOAD_BIGINT", 0x3C, 1, 0, 1)
+def_op_graal(loc, "LOAD_BIGINT", 0x3E, 1, 0, 1)
 #
 # Currently the same as {@link #LOAD_CONST}.
 #
@@ -410,7 +410,7 @@ const_op_graal(loc, "LOAD_CONST_COLLECTION", 0x42, 2, 0, 2)
 #
 # pushes: call result
 #
-call_op_graal(loc, "call_method_varargs", 65, 1, 1, 1)
+call_op_graal(loc, "call_method_varargs", 0x43, 1, 1, 1)
 #
 # calls method on an object using a number of stack args determined by the first immediate
 # operand.
