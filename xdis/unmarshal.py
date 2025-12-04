@@ -89,6 +89,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     "[": "list",
     "<": "frozenset",
     ">": "set",
+    ":": "slice",
     "{": "dict",
     "R": "python2_string_reference",
     "c": "code",
@@ -454,9 +455,34 @@ class _VersionIndependentUnmarshaller:
         refnum = unpack("<i", self.fp.read(4))[0]
         return self.internStrings[refnum]
 
+    # for the new TYPE_SLICE in marshal.c
+    def t_slice(self, save_ref, bytes_for_s: bool = False):
+        retval, idx = self.r_ref_reserve(tuple(), save_ref)
+
+        if idx and idx < 0:
+            return
+
+        stop = None
+        step = None
+        start = self.r_object(bytes_for_s=bytes_for_s)
+
+        if not start:
+            return
+
+        stop = self.r_object(bytes_for_s=bytes_for_s)
+        if not stop:
+            return
+
+        step = self.r_object(bytes_for_s=bytes_for_s)
+        if not step:
+            return
+
+        retval += (start, stop, step)
+        return self.r_ref_insert(retval, idx)
+
     def t_code(self, save_ref, bytes_for_s: bool = False):
         """
-          Python code type in all of its horrific variations.
+        Python code type in all of its horrific variations.
         """
         # FIXME: use tables to simplify this?
         # FIXME: Python 1.0 .. 1.3 isn't well known
@@ -597,7 +623,6 @@ class _VersionIndependentUnmarshaller:
 
         co_exceptiontable = None
 
-
         if self.version_tuple >= (1, 5):
             if self.version_tuple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
@@ -669,6 +694,7 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
         fp, magic_int, bytes_for_s, code_objects=code_objects
     )
     return um_gen.load()
+
 
 def load_code_and_get_file_offsets(fp, magic_int, bytes_for_s: bool = False, code_objects={}) -> tuple:
     if isinstance(fp, bytes):
