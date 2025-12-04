@@ -1,5 +1,5 @@
 """
-CPython 3.13 bytecode opcodes
+CPython 3.14 bytecode opcodes
 """
 
 import xdis.opcodes.opcode_313 as opcode_313
