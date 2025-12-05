@@ -153,7 +153,9 @@ class _VersionIndependentUnmarshaller:
 
         self.bytes_for_s = bytes_for_s
         version = magic_int2tuple(self.magic_int)
-        if version >= (3, 4):
+        if version >= (3, 14):
+            self.marshal_version = 5
+        elif (3, 14) > version >= (3, 4):
             if self.magic_int in (3250, 3260, 3270):
                 self.marshal_version = 3
             else:
@@ -455,9 +457,9 @@ class _VersionIndependentUnmarshaller:
         refnum = unpack("<i", self.fp.read(4))[0]
         return self.internStrings[refnum]
 
-    # for the new TYPE_SLICE in marshal.c
+    # for the new TYPE_SLICE in marshal version 5
     def t_slice(self, save_ref, bytes_for_s: bool = False):
-        retval, idx = self.r_ref_reserve(tuple(), save_ref)
+        retval, idx = self.r_ref_reserve(slice(None, None, None), save_ref)
 
         if idx and idx < 0:
             return
@@ -477,7 +479,7 @@ class _VersionIndependentUnmarshaller:
         if not step:
             return
 
-        retval += (start, stop, step)
+        retval = slice(start, stop, step)
         return self.r_ref_insert(retval, idx)
 
     def t_code(self, save_ref, bytes_for_s: bool = False):
@@ -580,6 +582,8 @@ class _VersionIndependentUnmarshaller:
         co_varnames = tuple()
         co_freevars = tuple()
         co_cellvars = tuple()
+
+        breakpoint()
 
         if self.version_tuple >= (3, 11) and not self.is_pypy:
             # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
