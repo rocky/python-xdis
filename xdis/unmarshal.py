@@ -464,20 +464,12 @@ class _VersionIndependentUnmarshaller:
         if idx and idx < 0:
             return
 
-        stop = None
-        step = None
+        # FIXME: we currently can't disambiguate between NULL and None.
+        #        marshal.c exits early if start, stop, or step are NULL.
+        #        https://github.com/python/cpython/blob/2dac9e6016c81abbefa4256253ff5c59b29378a7/Python/marshal.c#L1657
         start = self.r_object(bytes_for_s=bytes_for_s)
-
-        if not start:
-            return
-
         stop = self.r_object(bytes_for_s=bytes_for_s)
-        if not stop:
-            return
-
         step = self.r_object(bytes_for_s=bytes_for_s)
-        if not step:
-            return
 
         retval = slice(start, stop, step)
         return self.r_ref_insert(retval, idx)
@@ -582,8 +574,6 @@ class _VersionIndependentUnmarshaller:
         co_varnames = tuple()
         co_freevars = tuple()
         co_cellvars = tuple()
-
-        breakpoint()
 
         if self.version_tuple >= (3, 11) and not self.is_pypy:
             # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
