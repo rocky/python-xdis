@@ -800,8 +800,8 @@ class _VersionIndependentUnmarshaller:
 
         co_exceptiontable = None
 
-        if self.version_tuple >= (1, 5):
-            if self.version_tuple >= (2, 3):
+        if self.version_triple >= (1, 5):
+            if self.version_triple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
             else:
                 co_firstlineno = unpack("<h", self.fp.read(2))[0]
