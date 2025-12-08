@@ -3,6 +3,7 @@ CPython 3.14 bytecode opcodes
 """
 
 from xdis.opcodes.base import (
+    cpython_implementation as python_implementation,
     init_opdata,
     binary_op,
     call_op,
