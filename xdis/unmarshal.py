@@ -89,6 +89,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     "[": "list",
     "<": "frozenset",
     ">": "set",
+    ":": "slice",
     "{": "dict",
     "R": "python2_string_reference",
     "c": "code",
@@ -152,7 +153,9 @@ class _VersionIndependentUnmarshaller:
 
         self.bytes_for_s = bytes_for_s
         version = magic_int2tuple(self.magic_int)
-        if version >= (3, 4):
+        if version >= (3, 14):
+            self.marshal_version = 5
+        elif (3, 14) > version >= (3, 4):
             if self.magic_int in (3250, 3260, 3270):
                 self.marshal_version = 3
             else:
@@ -454,9 +457,26 @@ class _VersionIndependentUnmarshaller:
         refnum = unpack("<i", self.fp.read(4))[0]
         return self.internStrings[refnum]
 
+    # for the new TYPE_SLICE in marshal version 5
+    def t_slice(self, save_ref, bytes_for_s: bool = False):
+        retval, idx = self.r_ref_reserve(slice(None, None, None), save_ref)
+
+        if idx and idx < 0:
+            return
+
+        # FIXME: we currently can't disambiguate between NULL and None.
+        #        marshal.c exits early if start, stop, or step are NULL.
+        #        https://github.com/python/cpython/blob/2dac9e6016c81abbefa4256253ff5c59b29378a7/Python/marshal.c#L1657
+        start = self.r_object(bytes_for_s=bytes_for_s)
+        stop = self.r_object(bytes_for_s=bytes_for_s)
+        step = self.r_object(bytes_for_s=bytes_for_s)
+
+        retval = slice(start, stop, step)
+        return self.r_ref_insert(retval, idx)
+
     def t_code(self, save_ref, bytes_for_s: bool = False):
         """
-          Python code type in all of its horrific variations.
+        Python code type in all of its horrific variations.
         """
         # FIXME: use tables to simplify this?
         # FIXME: Python 1.0 .. 1.3 isn't well known
@@ -597,7 +617,6 @@ class _VersionIndependentUnmarshaller:
 
         co_exceptiontable = None
 
-
         if self.version_tuple >= (1, 5):
             if self.version_tuple >= (2, 3):
                 co_firstlineno = unpack("<i", self.fp.read(4))[0]
@@ -669,6 +688,7 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
         fp, magic_int, bytes_for_s, code_objects=code_objects
     )
     return um_gen.load()
+
 
 def load_code_and_get_file_offsets(fp, magic_int, bytes_for_s: bool = False, code_objects={}) -> tuple:
     if isinstance(fp, bytes):

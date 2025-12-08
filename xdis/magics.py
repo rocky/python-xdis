@@ -611,6 +611,10 @@ add_magic_from_int(3624, "3.14b1")
 # Fix handling of opcodes that may leave operands on the stack when optimizing LOAD_FAST
 add_magic_from_int(3625, "3.14b3")
 
+# Fix missing exception handlers in logical expression
+add_magic_from_int(3626, "3.14rc2")
+
+# Fix miscompilation of some module-level annotations
 add_magic_from_int(3627, "3.14rc3")
 
 # add_magic_from_int(3655, "3.15.0a0")
