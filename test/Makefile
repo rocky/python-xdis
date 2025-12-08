@@ -9,7 +9,7 @@ PYTHON_VERSION = $(shell $(PYTHON) -V | cut -d ' ' -f 2 | cut -d'.' -f1,2)
 COMPILE ?=
 
 #: Run all tests
-check: check-short
+check: check-short check-roundtrip
 	$(PYTHON) test_pythonlib.py \
 	 	  --bytecode-1.0 --bytecode-1.1 --bytecode-1.2 --bytecode-1.3 \
                   --bytecode-1.4 --bytecode-1.5 --bytecode-1.6 \
@@ -25,7 +25,28 @@ check: check-short
 	          --bytecode-3.11 --bytecode-3.12 --bytecode-3.13 \
 	          --bytecode-2.7pypy --bytecode-3.2pypy \
                   --bytecode-pypy35 --bytecode-pypy36 --bytecode-pypy37 \
-                  --bytecode-pypy38 --bytecode-pypy39 --bytecode-pypy310 $(COMPILE)
+                  --bytecode-pypy38 --bytecode-pypy39 --bytecode-pypy310 \
+                  --bytecode-graal311 --bytecode-graal312 $(COMPILE)
+
+check-roundtrip:
+	./test_pyc_roundtrip.py --quiet \
+        --bytecode-2.7 --bytecode-3.0 --bytecode-3.1 --bytecode-3.3 --bytecode-3.4
+
+check-roundtrip-2.7:
+	./test_pyc_roundtrip.py --bytecode-3.0
+
+check-roundtrip-3.0:
+	./test_pyc_roundtrip.py --bytecode-3.0
+
+check-roundtrip-3.1:
+	./test_pyc_roundtrip.py --bytecode-3.1
+
+check-roundtrip-3.3:
+	./test_pyc_roundtrip.py --bytecode-3.3
+
+check-roundtrip-3.4:
+	./test_pyc_roundtrip.py --bytecode-3.4
+
 check-short:
 	$(PYTHON) test_pyenvlib.py --simple
 

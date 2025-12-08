@@ -13,7 +13,7 @@ authors = [
 name = "xdis"
 description = "Python cross-version byte-code library and disassembler"
 dependencies = [
-    "click",
+    "click >= 7.0.0",
     "six >= 1.10.0",
 ]
 readme = "README.rst"
@@ -58,6 +58,7 @@ dev = [
 
 [project.scripts]
 pydisasm = "xdis.bin.pydisasm:main"
+roundtrip-pyc = "xdis.roundtrip_pyc:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "xdis.version.__version__"}

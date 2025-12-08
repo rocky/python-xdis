@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -17,6 +17,7 @@
 import types
 from copy import deepcopy
 from types import CodeType
+from typing import Any, Dict, Set, Tuple, Union
 
 from xdis.codetype.code20 import Code2, Code2FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -31,25 +32,24 @@ Code3FieldTypes.update(
 
 
 class Code3(Code2):
-    """
-    Class for a Python3 code object used when a Python not in the
-    range between 3.0 and 3.7 but is working on Python 3.0 ... 3.7
-    bytecode. It also functions as an object that can be used to
-    build or write a Python3 code object, since we allow mutable
-    structures.  When done mutating, call method freeze().
+    """Class for a cross-version Python 3.0 to 3.7 code object.  It
+    can also be used to build or write a Python3 code object, since we
+    allow mutable structures.  When done mutating, call method
+    freeze().
 
     For convenience in generating code objects, fields like
     `co_consts`, co_names which are (immutable) tuples in the end-result can be stored
     instead as (mutable) lists. Likewise, the line number table `co_lnotab`
     can be stored as a simple list of offset, line_number tuples.
+
     """
 
     def __init__(
         self,
-        co_argcount,
-        co_kwonlyargcount,
-        co_nlocals,
-        co_stacksize,
+        co_argcount: int,
+        co_kwonlyargcount: int,
+        co_nlocals: int,
+        co_stacksize: int,
         co_flags,
         co_code,
         co_consts,
@@ -61,10 +61,13 @@ class Code3(Code2):
         co_lnotab,
         co_freevars,
         co_cellvars,
+        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
+        reference_objects: Set[Any] = set(),
+        version_triple: Tuple[int, int, int] = (0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code3, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_nlocals=co_nlocals,
             co_stacksize=co_stacksize,
@@ -79,11 +82,14 @@ class Code3(Code2):
             co_lnotab=co_lnotab,
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
+            collection_order=collection_order,
+            reference_objects=reference_objects,
+            version_triple=version_triple,
         )
         self.co_kwonlyargcount = co_kwonlyargcount
         self.fieldtypes = Code3FieldTypes
 
-        if type(self) == Code3:
+        if type(self) is Code3:
             self.check()
         return
 

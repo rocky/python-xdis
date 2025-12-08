@@ -24,8 +24,9 @@ of stack usage and information for formatting instructions.
 from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_36 as opcode_36
-from xdis.opcodes.base import (
+from xdis.opcodes.base import (  # noqa
     call_op,
+    cpython_implementation as python_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,

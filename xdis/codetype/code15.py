@@ -1,4 +1,4 @@
-# (C) Copyright 2020, 2023 by Rocky Bernstein
+# (C) Copyright 2020, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from copy import deepcopy
+from typing import Tuple
 
 from xdis.codetype.code13 import Code13, Code13FieldTypes
 
@@ -42,20 +43,21 @@ class Code15(Code13):
 
     def __init__(
         self,
-        co_argcount,
-        co_nlocals,
-        co_stacksize,
-        co_flags,
+        co_argcount: int,
+        co_nlocals: int,
+        co_stacksize: int,
+        co_flags: int,
         co_code,
         co_consts,
         co_names,
         co_varnames,
-        co_filename,
-        co_name,
+        co_filename: str,
+        co_name: str,
         co_firstlineno,
         co_lnotab,
+        version_triple: Tuple[int, int, int] = (0, 0, 0)
     ) -> None:
-        super(Code15, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_nlocals=co_nlocals,
             co_flags=co_flags,
@@ -65,6 +67,7 @@ class Code15(Code13):
             co_varnames=co_varnames,
             co_filename=co_filename,
             co_name=co_name,
+            version_triple=version_triple,
         )
         self.co_stacksize = co_stacksize
         self.co_firstlineno = co_firstlineno
@@ -72,7 +75,7 @@ class Code15(Code13):
         # This messes up decompilers somehow.
         # self.decode_lineno_tab()
         self.fieldtypes = Code15FieldTypes
-        if type(self) == Code15:
+        if type(self) is Code15:
             self.check()
         return
 

@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2017, 2020, 2023-2025 by Rocky Bernstein
 """
 PYPY 3.5 opcodes
 
@@ -23,9 +23,10 @@ from xdis.opcodes.format.extended import (
     extended_format_RETURN_VALUE,
 )
 from xdis.opcodes.opcode_36 import extended_format_BUILD_STRING
+from xdis.version_info import PythonImplementation
 
 version_tuple = (3, 5)
-python_implementation = "PyPy"
+python_implementation = PythonImplementation("PyPy")
 
 loc = locals()
 init_opdata(loc, opcode_35, version_tuple, is_pypy=True)

@@ -40,6 +40,7 @@ from xdis.codetype import (
     Code38,
     Code310,
     Code311,
+    Code311Graal,
     codeType2Portable,
 )
 from xdis.codetype.base import code_has_star_arg, code_has_star_star_arg, iscode
@@ -145,6 +146,7 @@ from xdis.version_info import (
     IS_GRAAL,
     IS_PYPY,
     PYTHON3,
+    PYTHON_IMPLEMENTATION,
     PYTHON_VERSION_STR,
     PYTHON_VERSION_TRIPLE,
 )
@@ -183,6 +185,7 @@ __all__ = [
     "Code3",
     "Code310",
     "Code311",
+    "Code311Graal",
     "Code38",
     "code_has_star_star_arg",
     "code_has_star_arg",
@@ -282,6 +285,7 @@ __all__ = [
     "IS_GRAAL",
     "IS_PYPY",
     "PYTHON3",
+    "PYTHON_IMPLEMENTATION",
     "PYTHON_VERSION_STR",
     "PYTHON_VERSION_TRIPLE",
     "__version__",

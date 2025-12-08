@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2019-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,11 +24,16 @@ import xdis.opcodes.opcode_15 as opcode_15
 
 # This is used from outside this module
 from xdis.cross_dis import findlabels, findlinestarts  # noqa
-from xdis.opcodes.base import call_op, finalize_opcodes, init_opdata, update_pj2
+from xdis.opcodes.base import (  # noqa
+    call_op,
+    cpython_implementation as python_implementation,
+    finalize_opcodes,
+    init_opdata,
+    update_pj2,
+)
 from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (1, 6)
-python_implementation = "CPython"
 
 loc = locals()
 

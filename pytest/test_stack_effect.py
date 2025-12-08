@@ -5,6 +5,7 @@ import xdis
 from xdis import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
 from xdis.op_imports import get_opcode_module
+from xdis.version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
 
 
 def get_srcdir() -> str:
@@ -123,11 +124,7 @@ def test_stack_effect_vs_dis() -> None:
         )
         print("%d (%s) is good: effect %d" % (opcode, opname, effect))
 
-    if xdis.IS_PYPY:
-        variant = "pypy"
-    else:
-        variant = ""
-    opc = get_opcode_module(None, variant)
+    opc = get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
     for (
         opname,
         opcode,

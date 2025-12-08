@@ -29,6 +29,7 @@ import xdis.unmarshal
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 from xdis.magics import (
     GRAAL3_MAGICS,
+    INTERIM_MAGIC_INTS,
     JYTHON_MAGICS,
     PYPY3_MAGICS,
     PYTHON_MAGIC_INT,
@@ -40,7 +41,7 @@ from xdis.magics import (
     py_str2tuple,
     versions,
 )
-from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE
+from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, PythonImplementation
 
 
 def is_python_source(path) -> bool:
@@ -175,7 +176,7 @@ def load_module(
         magic_int: int, a bytecode-specific version number. This is related to the Python version
                      number, the two aren't quite the same thing.
         co         : code object
-        ispypy     : True if this was a PyPy code object
+        python_implementation : The variant of Python the bytecode is written in, e.g. CPython, Graal, Rust, Jython, ...
         source_size: The size of the source code mod 2**32, if that was stored in the bytecode.
                      None otherwise.
         sip_hash   : the SIP Hash for the file (only in Python 3.7 or greater), if the file
@@ -223,6 +224,7 @@ def load_module_from_file_object(
 
     timestamp = 0
     file_offsets = {}
+    python_implementation = PythonImplementation.CPython
     try:
         magic = fp.read(4)
         magic_int = magic2int(magic)
@@ -234,7 +236,7 @@ def load_module_from_file_object(
 
         try:
             # FIXME: use the internal routine below
-            tuple_version = magic_int2tuple(magic_int)
+            version_triple = magic_int2tuple(magic_int)
         except KeyError:
             if len(magic) >= 2:
                 raise ImportError(
@@ -244,40 +246,13 @@ def load_module_from_file_object(
             else:
                 raise ImportError(f"Bad magic number: '{magic}'")
 
-        if magic_int in [2657, 22138] + list(GRAAL3_MAGICS) + list(
+        if magic_int in [2657, 22138] + list(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
             raise ImportError(f"Magic int {magic_int} ({version}) is not supported.")
 
-        if magic_int in (
-            3010,
-            3020,
-            3030,
-            3040,
-            3050,
-            3060,
-            3061,
-            3071,
-            3361,
-            3091,
-            3101,
-            3103,
-            3141,
-            3270,
-            3280,
-            3290,
-            3300,
-            3320,
-            3330,
-            3371,
-            62071,
-            62071,
-            62081,
-            62091,
-            62092,
-            62111,
-        ):
+        if magic_int in INTERIM_MAGIC_INTS:
             raise ImportError(
                 "%s is interim Python %s (%d) bytecode which is "
                 "not supported.\nFinal released versions are "
@@ -336,12 +311,25 @@ def load_module_from_file_object(
                     source_size = unpack("<I", fp.read(4))[0]  # size mod 2**32
 
             if get_code:
-                if save_file_offsets:
+                # Graal uses the same magic int for separate major/minor releases!
+                # So we can't get the major minor number using just a magic check.
+                # Instead we'd also need to seek for a "graal number" typically
+                # lower number like 25, 29, or 85. to distinguish.
+                # Furthermore, runnin unmarshal in graal on graal, can cause the
+                # the graal python interpreter to crash!
+                # For these reasons, we are better off using our marshal routines
+                # for Graal Python.
+                if magic_int in GRAAL3_MAGICS:
+                    is_graal = True
+                    python_implementation = PythonImplementation.Graal
+                else:
+                    is_graal = False
+                if save_file_offsets and not is_graal:
                     co, file_offsets = xdis.unmarshal.load_code_and_get_file_offsets(
                         fp, magic_int, code_objects
                     )
 
-                elif my_magic_int == magic_int:
+                elif my_magic_int == magic_int and not is_graal:
                     bytecode = fp.read()
                     co = marshal.loads(bytecode)
                     # Python 3.10 returns a tuple here?
@@ -367,12 +355,21 @@ def load_module_from_file_object(
     finally:
         fp.close()
 
+    if is_pypy(magic_int, filename):
+        python_implementation = PythonImplementation.PyPy
+
+    # Below we need to return co.version_triple instead of version_triple,
+    # because Graal uses the *same* magic number but different bytecode
+    # for Python 3.11 and Python 3.12. What a zoo we have here.
+    if hasattr(co, "version_triple") and co.version_triple != (0, 0, 0):
+        version_triple = co.version_triple
+
     return (
-        tuple_version,
+        version_triple,
         timestamp,
         magic_int,
         co,
-        is_pypy(magic_int, filename),
+        python_implementation,
         source_size,
         sip_hash,
         file_offsets,
@@ -380,16 +377,21 @@ def load_module_from_file_object(
 
 
 def write_bytecode_file(
-    bytecode_path, code_obj, magic_int, compilation_ts=None, filesize: int = 0
+    bytecode_path,
+    code_obj,
+    magic_int,
+    compilation_ts=None,
+    filesize: int = 0,
+    allow_native: bool = True,
 ) -> None:
     """Write bytecode file _bytecode_path_, with code for having Python
     magic_int (i.e. bytecode associated with some version of Python)
     """
     fp = open(bytecode_path, "wb")
-    version = py_str2tuple(magicint2version[magic_int])
-    if version >= (3, 0):
+    version_tuple = py_str2tuple(magicint2version[magic_int])
+    if version_tuple >= (3, 0):
         fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
-        if version >= (3, 7):  # pep552 bytes
+        if version_tuple >= (3, 7):  # pep552 bytes
             fp.write(pack("<I", 0))  # pep552 bytes
     else:
         fp.write(pack("<Hcc", magic_int, b"\r", b"\n"))
@@ -404,21 +406,33 @@ def write_bytecode_file(
     else:
         fp.write(pack("<I", int(datetime.now().timestamp())))
 
-    if version >= (3, 3):
+    if version_tuple >= (3, 3):
         # In Python 3.3+, these 4 bytes are the size of the source code_obj file (mod 2^32)
         fp.write(pack("<I", filesize))
-    if isinstance(code_obj, types.CodeType):
+    if allow_native and isinstance(code_obj, types.CodeType):
         fp.write(marshal.dumps(code_obj))
     else:
-        fp.write(xdis.marsh.dumps(code_obj))
+        code_sequence = xdis.marsh.dumps(code_obj, python_version=version_tuple)
+        if isinstance(code_sequence, str):
+            # Python 1.x uses code strings, not bytes. To get this into bytes needed by
+            # fp.write, encode the string using 'latin-1' and 'unicode_escape' to convert escape sequences
+            # into the raw byte values. 'latin-1' is a single-byte encoding that works well for this.
+            code_bytes = (
+                code_sequence.encode("latin-1")
+                .decode("unicode_escape")
+                .encode("latin-1")
+            )
+        else:
+            code_bytes = code_sequence
+        fp.write(code_bytes)
     fp.close()
 
 
 if __name__ == "__main__":
     co = load_file(__file__)
     obj_path = check_object_path(__file__)
-    version, timestamp, magic_int, co2, pypy, source_size, sip_hash, file_offsets = load_module(
-        obj_path
+    version, timestamp, magic_int, co2, pypy, source_size, sip_hash, file_offsets = (
+        load_module(obj_path)
     )
     print("version", version, "magic int", magic_int, "is_pypy", pypy)
     if timestamp is not None:

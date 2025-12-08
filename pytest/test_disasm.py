@@ -68,8 +68,8 @@ def run_check_disasm(test_tuple, function_to_test):
     got = "\n".join(got_lines[skip_lines:])
 
     if "XDIS_DONT_WRITE_DOT_GOT_FILES" not in os.environ:
+        got_filename = filename_expected + ".got"
         if got != expected:
-            got_filename = filename_expected + ".got"
             with open(got_filename, "w") as out:
                 out.write(got)
         assert got == expected, f"see {got_filename} for diffs"
@@ -98,7 +98,7 @@ def run_check_disasm(test_tuple, function_to_test):
     [
         ("01_fstring", "3.6", ["classic", "xasm"]),
         # ("01_fstring", "3.10"),  # FIXME
-        ("04_pypy_lambda", "2.7pypy", ["classic", "xasm"]),
+        ("04_pypy_lambda", "2.7PyPy", ["classic", "xasm"]),
         ("03_big_dict", "2.7", ["classic", "xasm"]),
         ("03_big_dict", "3.3", ["classic", "xasm"]),
         ("03_big_dict", "3.5", ["classic", "xasm"]),

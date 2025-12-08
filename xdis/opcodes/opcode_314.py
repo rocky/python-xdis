@@ -21,8 +21,8 @@ from xdis.opcodes.base import (
     update_pj3,
     finalize_opcodes,
 )
+
 version_tuple = (3, 14)
-python_implementation = "CPython"
 
 loc = locals()
 

@@ -18,7 +18,7 @@ import types
 from copy import deepcopy
 from dataclasses import dataclass
 from types import CodeType
-from typing import Iterable, Iterator, Optional
+from typing import Any, Iterable, Iterator, Optional, Set, Tuple
 
 from xdis.codetype.code310 import Code310, Code310FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -28,29 +28,32 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 # "posonlyargcount" is not used, but it is in other Python versions, so it
 # has to be included since this structure is used as the Union type
 # for all code types.
+#
+# Methods co_lines and co_positions do not get added to field names.
 Code311FieldNames = """
         co_argcount
-        co_posonlyargcount
-        co_kwonlyargcount
-        co_nlocals
-        co_stacksize
-        co_flags
-        co_consts
-        co_code
-        co_names
-        co_varnames
-        co_freevars
         co_cellvars
-        co_filename
-        co_name
-        co_qualname
-        co_firstlineno
-        co_linetable
+        co_code
+        co_consts
         co_exceptiontable
+        co_filename
+        co_firstlineno
+        co_flags
+        co_freevars
+        co_kwonlyargcount
+        co_linetable
+        co_lnotab
+        co_name
+        co_names
+        co_nlocals
+        co_posonlyargcount
+        co_qualname
+        co_stacksize
+        co_varnames
 """
 
 Code311FieldTypes = deepcopy(Code310FieldTypes)
-Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes})
+Code311FieldTypes.update({"co_qualname": str, "co_exceptiontable": bytes, "co_linetable": bytes})
 
 
 ##### Parse location table #####
@@ -110,7 +113,7 @@ def parse_location_entries(location_bytes, first_line: int):
                 current_value = 0
                 shift_amt = 0
 
-    def decode_signed_varint(s: int):
+    def decode_signed_varint(s: int) -> int:
         return -(s >> 1) if s & 1 else (s >> 1)
 
     entries = (
@@ -408,10 +411,12 @@ class Code311(Code310):
         co_firstlineno,
         co_linetable,
         co_exceptiontable,
+        reference_objects: Set[Any] = set(),
+        version_triple: Tuple[int, int, int] = (0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code311, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_posonlyargcount=co_posonlyargcount,
             co_kwonlyargcount=co_kwonlyargcount,
@@ -428,6 +433,8 @@ class Code311(Code310):
             co_linetable=co_linetable,
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
+            reference_objects = reference_objects,
+            version_triple = version_triple,
         )
         self.co_qualname = co_qualname
         self.co_exceptiontable = co_exceptiontable
@@ -449,8 +456,6 @@ class Code311(Code310):
         except AssertionError as e:
             raise TypeError(e)
 
-        if code.co_exceptiontable is None:
-            code.co_exceptiontable = b""
         return types.CodeType(
             code.co_argcount,
             code.co_posonlyargcount,

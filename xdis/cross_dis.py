@@ -19,7 +19,7 @@
 # earlier versions of xdis (and without attribution).
 
 from types import CodeType
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from xdis.util import (
     COMPILER_FLAG_NAMES,
@@ -27,7 +27,7 @@ from xdis.util import (
     better_repr,
     code2num,
 )
-from xdis.version_info import IS_GRAAL
+from xdis.version_info import IS_GRAAL, PYTHON_IMPLEMENTATION, PythonImplementation
 
 
 def _try_compile(source: str, name: str) -> CodeType:
@@ -44,9 +44,13 @@ def _try_compile(source: str, name: str) -> CodeType:
     return c
 
 
-def code_info(x, version_tuple, is_pypy=False) -> str:
+def code_info(
+    x, version_tuple: Tuple[int, ...], python_implementation: PythonImplementation
+) -> str:
     """Formatted details of methods, functions, or code."""
-    return format_code_info(get_code_object(x), version_tuple, is_pypy=is_pypy)
+    return format_code_info(
+        get_code_object(x), version_tuple, python_implementation=python_implementation
+    )
 
 
 def get_code_object(x):
@@ -96,8 +100,10 @@ def get_cache_size_313(opname: str) -> int:
     }
     return _inline_cache_entries.get(opname, 0)
 
+
 # For compatibility
 _get_cache_size_313 = get_cache_size_313
+
 
 def findlabels(code: bytes, opc):
     if opc.version_tuple < (3, 10) or IS_GRAAL:
@@ -114,7 +120,10 @@ def findlabels_310(code: bytes, opc):
     for offset, op, arg in unpack_opargs_bytecode_310(code, opc):
         if arg is not None:
             if op in opc.JREL_OPS:
-                if opc.version_tuple >= (3, 11) and opc.opname[op] in ("JUMP_BACKWARD", "JUMP_BACKWARD_NO_INTERRUPT"):
+                if opc.version_tuple >= (3, 11) and opc.opname[op] in (
+                    "JUMP_BACKWARD",
+                    "JUMP_BACKWARD_NO_INTERRUPT",
+                ):
                     arg = -arg
                 label = offset + 2 + arg * 2
                 # in 3.13 we have to add total cache offsets to label
@@ -155,7 +164,7 @@ def findlabels_pre_310(code, opc):
 NO_LINE_NUMBER = -128
 
 
-def findlinestarts(code, dup_lines: bool=False):
+def findlinestarts(code, dup_lines: bool = False):
     """Find the offsets in a byte code which are start of lines in the source.
 
     Generate pairs (offset, lineno) as described in Python/compile.c.
@@ -234,15 +243,20 @@ def instruction_size(op, opc) -> int:
 op_size = instruction_size
 
 
-def show_code(co, version_tuple, file=None, is_pypy: bool=False) -> None:
+def show_code(
+    co,
+    version_tuple: Tuple[int, ...],
+    file=None,
+    python_implementation=PYTHON_IMPLEMENTATION,
+) -> None:
     """Print details of methods, functions, or code to *file*.
 
     If *file* is not provided, the output is printed on stdout.
     """
     if file is None:
-        print(code_info(co, version_tuple, is_pypy=is_pypy))
+        print(code_info(co, version_tuple, python_implementation))
     else:
-        file.write(code_info(co, version_tuple) + "\n")
+        file.write(code_info(co, version_tuple, python_implementation) + "\n")
 
 
 def op_has_argument(opcode: int, opc) -> bool:
@@ -252,16 +266,17 @@ def op_has_argument(opcode: int, opc) -> bool:
     return opcode >= opc.HAVE_ARGUMENT
 
 
-def pretty_flags(flags, is_pypy=False) -> str:
+def pretty_flags(flags, python_implementation=PYTHON_IMPLEMENTATION) -> str:
     """Return pretty representation of code flags."""
     names = []
     result = "0x%08x" % flags
     for i in range(32):
         flag = 1 << i
         if flags & flag:
-            names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
-            if is_pypy:
+            if python_implementation == PythonImplementation.PyPy and flag in PYPY_COMPILER_FLAG_NAMES:
                 names.append(PYPY_COMPILER_FLAG_NAMES.get(flag, hex(flag)))
+            else:
+                names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
             flags ^= flag
             if not flags:
                 break
@@ -272,7 +287,11 @@ def pretty_flags(flags, is_pypy=False) -> str:
 
 
 def format_code_info(
-    co, version_tuple: tuple, name=None, is_pypy=False, is_graal=False, file_offset: Optional[tuple]=None
+    co,
+    version_tuple: tuple,
+    name=None,
+    python_implementation=PYTHON_IMPLEMENTATION,
+    file_offset: Optional[tuple] = None,
 ) -> str:
     if not name:
         name = co.co_name
@@ -288,29 +307,25 @@ def format_code_info(
     if file_offset:
         lines.append("# Offset in file:    0x%x" % file_offset[0])
 
-    if not is_graal:
-        if version_tuple >= (1, 3):
-            lines.append("# Argument count:    %s" % co.co_argcount)
+    if version_tuple >= (1, 3):
+        lines.append("# Argument count:    %s" % co.co_argcount)
 
-        if version_tuple >= (3, 8) and hasattr(co, "co_posonlyargcount"):
-            lines.append("# Position-only argument count: %s" % co.co_posonlyargcount)
+    if version_tuple >= (3, 8) and hasattr(co, "co_posonlyargcount"):
+        lines.append("# Position-only argument count: %s" % co.co_posonlyargcount)
 
-        if version_tuple >= (3, 0) and hasattr(co, "co_kwonlyargcount"):
-            lines.append("# Keyword-only arguments: %s" % co.co_kwonlyargcount)
+    if version_tuple >= (3, 0) and hasattr(co, "co_kwonlyargcount"):
+        lines.append("# Keyword-only arguments: %s" % co.co_kwonlyargcount)
 
-        pos_argc = co.co_argcount
-        if version_tuple >= (1, 3):
-            lines.append("# Number of locals:  %s" % co.co_nlocals)
-        if version_tuple >= (1, 5):
-            lines.append("# Stack size:        %s" % co.co_stacksize)
-            pass
+    pos_argc = co.co_argcount
+    if version_tuple >= (1, 3):
+        lines.append("# Number of locals:  %s" % co.co_nlocals)
+    if version_tuple >= (1, 5):
+        lines.append("# Stack size:        %s" % co.co_stacksize)
         pass
-    else:
-        pos_argc = 0
 
     if version_tuple >= (1, 3):
         lines.append(
-            "# Flags:             %s" % pretty_flags(co.co_flags, is_pypy=is_pypy)
+            "# Flags:             %s" % pretty_flags(co.co_flags, python_implementation)
         )
 
     if version_tuple >= (1, 5):

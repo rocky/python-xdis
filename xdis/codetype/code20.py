@@ -17,6 +17,7 @@
 import types
 from copy import deepcopy
 from types import CodeType
+from typing import Any, Dict, Set, Tuple, Union
 
 from xdis.codetype.code15 import Code15, Code15FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -55,24 +56,27 @@ class Code2(Code15):
 
     def __init__(
         self,
-        co_argcount,
-        co_nlocals,
-        co_stacksize,
+        co_argcount: int,
+        co_nlocals: int,
+        co_stacksize: int,
         co_flags,
         co_code,
         co_consts,
         co_names,
         co_varnames,
         co_filename,
-        co_name,
-        co_firstlineno,
+        co_name: str,
+        co_firstlineno: int,
         co_lnotab,
         co_freevars,
         co_cellvars,
+        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
+        reference_objects: Set[Any] = set(),
+        version_triple: Tuple[int, int, int] = (0, 0, 0)
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code2, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_nlocals=co_nlocals,
             co_stacksize=co_stacksize,
@@ -85,11 +89,25 @@ class Code2(Code15):
             co_name=co_name,
             co_firstlineno=co_firstlineno,
             co_lnotab=co_lnotab,
+            version_triple=version_triple,
         )
         self.co_freevars = co_freevars
         self.co_cellvars = co_cellvars
         self.fieldtypes = Code2FieldTypes
-        if type(self) == Code2:
+
+        # The following fields are mostly useful in marshaling a code object.
+        # Keeping marshal order exactly the same is useful in round-trip marshal
+        # testing; but it may also have other benefits.
+
+        # By saving the order in sets, frozensets, and dictionary keys,
+        # these collections can be written in the same order that appeared
+        # in unmarshalling (if that's how the code object was created).
+        self.collection_order = collection_order
+
+        # Keeping track of which objects were referenced, allows
+        self.reference_objects = reference_objects
+
+        if type(self) is Code2:
             self.check()
         return
 

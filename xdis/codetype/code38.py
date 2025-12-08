@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,6 +16,7 @@
 
 import types
 from copy import deepcopy
+from typing import Any, Dict, Set, Tuple, Union
 
 from xdis.codetype.code30 import Code3, Code3FieldTypes
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
@@ -24,21 +25,21 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 # with the 3.8 order.
 Code38FieldNames = """
         co_argcount
-        co_posonlyargcount
-        co_kwonlyargcount
-        co_nlocals
-        co_stacksize
-        co_flags
+        co_cellvars
         co_code
         co_consts
-        co_names
-        co_varnames
-        co_freevars
-        co_cellvars
         co_filename
-        co_name
         co_firstlineno
+        co_flags
+        co_freevars
+        co_kwonlyargcount
         co_lnotab
+        co_name
+        co_names
+        co_nlocals
+        co_posonlyargcount
+        co_stacksize
+        co_varnames
 """
 
 Code38FieldTypes = deepcopy(Code3FieldTypes)
@@ -72,21 +73,24 @@ class Code38(Code3):
         co_kwonlyargcount: int,
         co_nlocals: int,
         co_stacksize: int,
-        co_flags,
+        co_flags: int,
         co_code,
-        co_consts,
-        co_names,
-        co_varnames,
+        co_consts: tuple,
+        co_names: tuple,
+        co_varnames: tuple,
         co_filename,
         co_name: str,
         co_firstlineno: int,
         co_lnotab,
         co_freevars,
         co_cellvars,
+        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
+        reference_objects: Set[Any] = set(),
+        version_triple: Tuple[int, int, int] = (0, 0, 0),
     ) -> None:
         # Keyword argument parameters in the call below is more robust.
         # Since things change around, robustness is good.
-        super(Code38, self).__init__(
+        super().__init__(
             co_argcount=co_argcount,
             co_kwonlyargcount=co_kwonlyargcount,
             co_nlocals=co_nlocals,
@@ -102,10 +106,13 @@ class Code38(Code3):
             co_lnotab=co_lnotab,
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
+            collection_order = collection_order,
+            reference_objects = reference_objects,
+            version_triple = version_triple,
         )
         self.co_posonlyargcount = co_posonlyargcount
         self.fieldtypes = Code38FieldTypes
-        if type(self) == Code38:
+        if isinstance(self, Code38):
             self.check()
 
     def to_native(self) -> types.CodeType:

@@ -1,11 +1,10 @@
 # Mode: -*- python -*-
-# Copyright (c) 2015-2021 by Rocky Bernstein <rb@dustyfeet.com>
+# Copyright (c) 2015-2021, 2025 by Rocky Bernstein <rb@dustyfeet.com>
 #
 # Note: we can't start with #! because setup.py bdist_wheel will look for that
 # and change that into something that's not portable. Thank you, Python!
 #
 #
-from __future__ import print_function
 
 import os
 import os.path as osp
@@ -21,13 +20,11 @@ program, ext = os.path.splitext(os.path.basename(__file__))
 
 PATTERNS = ("*.pyc", "*.pyo")
 
-if click.__version__ >= "7.":
-    case_sensitive = {"case_sensitive": False}
-else:
-    case_sensitive = {}
+
+case_sensitive = {"case_sensitive": False}
 
 
-@click.command()
+@click.command(context_settings={"help_option_names": ["--help", "-help", "-h"]})
 @click.option(
     "--format",
     "-F",
@@ -61,7 +58,7 @@ else:
 )
 @click.version_option(version=__version__)
 @click.argument("files", nargs=-1, type=click.Path(readable=True), required=True)
-def main(format: list[str], method: tuple, show_source: bool, show_file_offsets, files):
+def main(format: str, method: tuple, show_source: bool, show_file_offsets, files):
     """Disassembles a Python bytecode file.
 
     We handle bytecode for virtually every release of Python and some releases of PyPy.
@@ -72,12 +69,12 @@ def main(format: list[str], method: tuple, show_source: bool, show_file_offsets,
     if not ((2, 7) <= PYTHON_VERSION_TRIPLE < (3, 16)):
         mess = "This code works on 3.6 to 3.15; you have %s."
         if (2, 4) <= PYTHON_VERSION_TRIPLE <= (2, 7):
-            mess += " Code that works for %s can be found in the python-2.4 branch\n"
+            mess += " Code that works for %s can be found in the python-2.4 branch.\n"
         elif (3, 1) <= PYTHON_VERSION_TRIPLE <= (3, 2):
-            mess += " Code that works for %s can be found in the python-3.1 branch\n"
+            mess += " Code that works for %s can be found in the python-3.1 branch.\n"
         elif (3, 3) <= PYTHON_VERSION_TRIPLE <= (3, 5):
-            mess += " Code that works for %s can be found in the python-3.3 branch\n"
-        sys.stderr.write(mess % PYTHON_VERSION_STR)
+            mess += " Code that works for %s can be found in the python-3.3 branch.\n"
+        sys.stderr.write(mess % (PYTHON_VERSION_STR, PYTHON_VERSION_STR))
         sys.exit(2)
 
     rc = 0

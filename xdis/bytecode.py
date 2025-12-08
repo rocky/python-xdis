@@ -27,7 +27,7 @@ import sys
 from io import StringIO
 from linecache import getline
 from types import CodeType
-from typing import Iterable, Iterator, Optional, Tuple, Union
+from typing import Iterable, Iterator, Optional, Tuple
 
 from xdis.cross_dis import (
     format_code_info,
@@ -40,9 +40,7 @@ from xdis.instruction import Instruction
 from xdis.op_imports import get_opcode_module
 from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
 from xdis.util import code2num, num2code
-from xdis.version_info import IS_PYPY
-
-VARIANT = "pypy" if IS_PYPY else None
+from xdis.version_info import PYTHON_IMPLEMENTATION, PythonImplementation
 
 
 def get_docstring(filename: str, line_number: int, doc_str: str) -> str:
@@ -92,7 +90,7 @@ def get_const_info(const_index, const_list):
 _get_const_info = get_const_info
 
 
-def get_name_info(name_index, name_list):
+def get_name_info(name_index: int, name_list) -> tuple:
     """Helper to get optional details about named references
 
     Returns the dereferenced name as both value and repr if the name
@@ -142,11 +140,6 @@ def get_optype(opcode: int, opc) -> str:
 
     return "??"
 
-
-# For compatibility
-_get_name_info = get_name_info
-
-
 def offset2line(offset: int, linestarts):
     """linestarts is expected to be a *list of (offset, line number)
     where both offset and line number are in increasing order.
@@ -189,7 +182,7 @@ _ExceptionTableEntry = collections.namedtuple(
 )
 
 
-def parse_exception_table(exception_table: bytes):
+def parse_exception_table(exception_table: bytes) -> list:
     iterator = iter(exception_table)
     entries = []
     try:
@@ -222,6 +215,15 @@ def prefer_double_quote(string: str) -> str:
         return f'"{string[1:-1]}"'
     return string
 
+def is_fixed_wordsize_bytecode(opc) -> bool:
+    """
+    Returns True if intructions in opc are fixed length (2 bytes)
+    Python byte code instructions before to 3.6 was one or three bytes.
+    3.6 and after, instructions were fixed at 2 bytes.
+    """
+    # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
+    # See below FIXME.
+    return True if opc.python_version >= (3, 6) else False
 
 def get_logical_instruction_at_offset(
     bytecode,
@@ -248,15 +250,13 @@ def get_logical_instruction_at_offset(
         # PERFORMANCE FIX: Only add exception labels if we're building labels ourselves
         # When called from get_instructions_bytes, labels already includes exception targets
         if exception_entries is not None:
-            for start, end, target, _, _ in exception_entries:
+            for _start, _end, target, _, _ in exception_entries:
                 if target not in labels:
                     labels.append(target)
 
     # label_maps = get_jump_target_maps(bytecode, opc)
 
-    # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
-    # See below FIXME
-    python_36 = True if opc.python_version >= (3, 6) else False
+    fixed_length_instructions = is_fixed_wordsize_bytecode(opc)
 
     starts_line = None
 
@@ -275,6 +275,11 @@ def get_logical_instruction_at_offset(
 
     last_op_was_extended_arg = True
     i = offset
+
+    # create a localsplusnames table that resolves duplicates.
+    localsplusnames = (varnames or tuple()) + tuple(
+        name for name in (cells or tuple()) if name not in varnames
+    )
 
     while i < n and last_op_was_extended_arg:
         op = code2num(bytecode, i)
@@ -295,7 +300,7 @@ def get_logical_instruction_at_offset(
         argrepr = ""
         has_arg = op_has_argument(op, opc)
         if has_arg:
-            if python_36:
+            if fixed_length_instructions:
                 arg = code2num(bytecode, i) | extended_arg
                 extended_arg = (arg << 8) if opname == "EXTENDED_ARG" else 0
                 # FIXME: Python 3.6.0a1 is 2, for 3.6.a3 we have 1
@@ -316,28 +321,23 @@ def get_logical_instruction_at_offset(
 
             argval = arg
 
-            # create a localsplusnames table that resolves duplicates.
-            localsplusnames = (varnames or tuple()) + tuple(
-                name for name in (cells or tuple()) if name not in varnames
-            )
-
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
             elif op in opc.NAME_OPS:
                 if opc.version_tuple >= (3, 11) and opname == "LOAD_GLOBAL":
-                    argval, argrepr = _get_name_info(arg >> 1, names)
+                    argval, argrepr = get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL + " + argrepr
                 elif opc.version_tuple >= (3, 12) and opname == "LOAD_ATTR":
-                    argval, argrepr = _get_name_info(arg >> 1, names)
+                    argval, argrepr = get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL|self + " + argrepr
                 elif opc.version_tuple >= (3, 12) and opname == "LOAD_SUPER_ATTR":
-                    argval, argrepr = _get_name_info(arg >> 2, names)
+                    argval, argrepr = get_name_info(arg >> 2, names)
                     if arg & 1:
                         argrepr = "NULL|self + " + argrepr
                 else:
-                    argval, argrepr = _get_name_info(arg, names)
+                    argval, argrepr = get_name_info(arg, names)
             elif op in opc.JREL_OPS:
                 signed_arg = -arg if "JUMP_BACKWARD" in opname else arg
                 argval = i + get_jump_val(signed_arg, opc.python_version)
@@ -369,19 +369,19 @@ def get_logical_instruction_at_offset(
                 ):
                     arg1 = arg >> 4
                     arg2 = arg & 15
-                    argval1, argrepr1 = _get_name_info(arg1, localsplusnames)
-                    argval2, argrepr2 = _get_name_info(arg2, localsplusnames)
+                    argval1, argrepr1 = get_name_info(arg1, localsplusnames)
+                    argval2, argrepr2 = get_name_info(arg2, localsplusnames)
                     argval = argval1, argval2
                     argrepr = argrepr1 + ", " + argrepr2
                 elif opc.version_tuple >= (3, 11):
-                    argval, argrepr = _get_name_info(arg, localsplusnames)
+                    argval, argrepr = get_name_info(arg, localsplusnames)
                 else:
-                    argval, argrepr = _get_name_info(arg, varnames)
+                    argval, argrepr = get_name_info(arg, varnames)
             elif op in opc.FREE_OPS:
                 if opc.version_tuple >= (3, 11):
-                    argval, argrepr = _get_name_info(arg, localsplusnames)
+                    argval, argrepr = get_name_info(arg, localsplusnames)
                 else:
-                    argval, argrepr = _get_name_info(arg, cells)
+                    argval, argrepr = get_name_info(arg, cells)
             elif op in opc.COMPARE_OPS:
                 if opc.python_version >= (3, 13):
                     # The fifth-lowest bit of the oparg now indicates a forced conversion to bool.
@@ -393,7 +393,10 @@ def get_logical_instruction_at_offset(
                 argrepr = argval
             elif op in opc.NARGS_OPS:
                 opname = opname
-                if python_36 and opname in ("CALL_FUNCTION", "CALL_FUNCTION_EX"):
+                if fixed_length_instructions and opname in (
+                    "CALL_FUNCTION",
+                    "CALL_FUNCTION_EX",
+                ):
                     if opname == "CALL_FUNCTION":
                         argrepr = format_CALL_FUNCTION(code2num(bytecode, i - 1))
                     else:
@@ -401,7 +404,7 @@ def get_logical_instruction_at_offset(
                         argrepr = format_CALL_FUNCTION_EX(code2num(bytecode, i - 1))
                 else:
                     if not (
-                        python_36
+                        fixed_length_instructions
                         or opname in ("RAISE_VARARGS", "DUP_TOPX", "MAKE_FUNCTION")
                     ):
                         argrepr = "%d positional, %d named" % (
@@ -411,7 +414,7 @@ def get_logical_instruction_at_offset(
             if hasattr(opc, "opcode_arg_fmt") and opname in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opname](arg)
         else:
-            if python_36:
+            if fixed_length_instructions:
                 i += 1
             if hasattr(opc, "opcode_arg_fmt") and opname in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opname](arg)
@@ -452,15 +455,8 @@ def next_offset(op: int, opc, offset: int) -> int:
 
 
 def get_instructions_bytes(
-    bytecode,
+    code_object,
     opc,
-    varnames=None,
-    names=None,
-    constants=None,
-    cells=None,
-    linestarts=None,
-    line_offset=0,
-    exception_entries=None,
 ):
     """
     Iterate over the instructions in a bytecode string.
@@ -470,7 +466,22 @@ def get_instructions_bytes(
     e.g., variable names, constants, can be specified using optional
     arguments.
     """
+
+    bytecode: bytes = code_object.co_code
+    constants: tuple = code_object.co_consts
+    names: tuple = code_object.co_names
+    varnames: tuple = code_object.co_varnames
+    cellvars: tuple = code_object.co_cellvars if hasattr(code_object, "co_cellvars") else tuple()
+    exception_entries = code_object.exception_entries if hasattr(code_object, "exception_entries") else tuple()
+    freevars: tuple = code_object.co_freevars if hasattr(code_object, "co_freevars") else tuple()
+
+    cells = cellvars + freevars
+
     labels = opc.findlabels(bytecode, opc)
+    if hasattr(opc, "findlinestarts"):
+        line_starts = dict(opc.findlinestarts(code_object, dup_lines=True))
+    else:
+        line_starts = None
 
     # PERFORMANCE FIX: Build exception labels ONCE, not on every iteration
     # The old code was O(n^2) because it rebuilt the same list every call to
@@ -495,7 +506,7 @@ def get_instructions_bytes(
                 names=names,
                 constants=constants,
                 cells=cells,
-                linestarts=linestarts,
+                linestarts=line_starts,
                 line_offset=0,
                 exception_entries=exception_entries,
                 labels=labels,
@@ -521,7 +532,7 @@ class Bytecode:
     ) -> None:
         self.codeobj = co = get_code_object(x)
         self._line_offset = 0
-        self._cell_names = ()
+        self._cell_names = tuple()
         if opc.version_tuple >= (1, 5):
             if first_line is None:
                 self.first_line = co.co_firstlineno
@@ -550,17 +561,7 @@ class Bytecode:
 
     def __iter__(self):
         co = self.codeobj
-        return get_instructions_bytes(
-            co.co_code,
-            self.opc,
-            co.co_varnames,
-            co.co_names,
-            co.co_consts,
-            self._cell_names,
-            self._linestarts,
-            line_offset=self._line_offset,
-            exception_entries=self.exception_entries,
-        )
+        return get_instructions_bytes(co, self.opc)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._original_object!r})"
@@ -569,7 +570,7 @@ class Bytecode:
     def from_traceback(cls, tb, opc=None):
         """Construct a Bytecode from the given traceback"""
         if opc is None:
-            opc = get_opcode_module(sys.version_info, VARIANT)
+            opc = get_opcode_module(sys.version_info, PYTHON_IMPLEMENTATION)
         while tb.tb_next:
             tb = tb.tb_next
         return cls(
@@ -594,10 +595,8 @@ class Bytecode:
             offset = -1
         output = StringIO()
         if self.opc.version_tuple > (2, 0):
-            cells = self._cell_names
             line_starts = self._linestarts
         else:
-            cells = None
             line_starts = None
 
         first_line_number = co.co_firstlineno if hasattr(co, "co_firstlineno") else None
@@ -609,11 +608,7 @@ class Bytecode:
             filename = str(filename)
 
         self.disassemble_bytes(
-            co.co_code,
-            varnames=co.co_varnames,
-            names=co.co_names,
-            constants=co.co_consts,
-            cells=cells,
+            co,
             line_starts=line_starts,
             line_offset=self._line_offset,
             file=output,
@@ -622,7 +617,6 @@ class Bytecode:
             filename=filename,
             show_source=show_source,
             first_line_number=first_line_number,
-            exception_entries=self.exception_entries,
         )
         return output.getvalue()
 
@@ -640,12 +634,8 @@ class Bytecode:
 
     def disassemble_bytes(
         self,
-        bytecode: Union[CodeType, bytes, str],
+        code_object: CodeType,
         lasti: int = -1,
-        varnames=None,
-        names=None,
-        constants=None,
-        cells=None,
         line_starts=None,
         file=sys.stdout,
         line_offset=0,
@@ -653,7 +643,6 @@ class Bytecode:
         filename: Optional[str] = None,
         show_source=True,
         first_line_number: Optional[int] = None,
-        exception_entries=None,
     ) -> list:
         # Omit the line number column entirely if we have no line number info
         show_lineno = line_starts is not None or self.opc.version_tuple < (2, 3)
@@ -690,17 +679,13 @@ class Bytecode:
         extended_arg_starts_line: Optional[int] = None
         extended_arg_jump_target_offset: Optional[int] = None
 
-        for instr in get_instructions_bytes(
-            bytecode,
-            self.opc,
-            varnames,
-            names,
-            constants,
-            cells,
-            line_starts,
-            line_offset=line_offset,
-            exception_entries=exception_entries,
-        ):
+        if self.opc.python_implementation == PythonImplementation.Graal:
+            from xdis.bytecode_graal import get_instructions_bytes_graal
+            get_instructions_fn = get_instructions_bytes_graal
+        else:
+            get_instructions_fn = get_instructions_bytes
+
+        for instr in get_instructions_fn(code_object, self.opc):
             # Python 1.x into early 2.0 uses SET_LINENO
             if last_was_set_lineno:
                 instr = Instruction(
@@ -776,7 +761,7 @@ class Bytecode:
             new_source_line = show_lineno and (
                 extended_arg_starts_line
                 or instr.starts_line is not None
-                and instr.offset > 0
+                and instr.offset >= 0
             )
             if new_source_line:
                 file.write("\n")
@@ -820,7 +805,7 @@ class Bytecode:
             pass
         return instructions
 
-    def get_instructions(self, x, first_line=None):
+    def get_instructions(self, x):
         """Iterator for the opcodes in methods, functions or code
 
         Generates a series of Instruction named tuples giving the details of
@@ -832,22 +817,7 @@ class Bytecode:
         the disassembled code object.
         """
         co = get_code_object(x)
-        cell_names = co.co_cellvars + co.co_freevars
-        line_starts = dict(self.opc.findlinestarts(co))
-        if first_line is not None:
-            line_offset = first_line - co.co_firstlineno
-        else:
-            line_offset = 0
-        return get_instructions_bytes(
-            co.co_code,
-            self.opc,
-            co.co_varnames,
-            co.co_names,
-            co.co_consts,
-            cell_names,
-            line_starts,
-            line_offset,
-        )
+        return get_instructions_bytes(co, self.opc)
 
 
 def list2bytecode(

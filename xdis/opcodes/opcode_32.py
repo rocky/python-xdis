@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2020, 2023 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2020, 2023, 2025 by Rocky Bernstein
 """
 CPython 3.2 bytecode opcodes
 
@@ -7,13 +7,17 @@ of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_3x as opcode_3x
-from xdis.opcodes.base import finalize_opcodes, init_opdata, update_pj3
+from xdis.opcodes.base import (  # noqa
+    cpython_implementation as python_implementation,
+    finalize_opcodes,
+    init_opdata,
+    update_pj3,
+)
 from xdis.opcodes.opcode_33 import opcode_arg_fmt33, opcode_extended_fmt33
 
 # FIXME: can we DRY this even more?
 
 version_tuple = (3, 2)
-python_implementation = "CPython"
 
 loc = locals()
 

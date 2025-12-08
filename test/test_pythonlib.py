@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# emacs-mode: -*-python-*-
 
 """
 test_pythonlib.py -- disassemble Python libraries
@@ -15,7 +14,7 @@ Usage-Examples:
   # Same as above but use a longer set from the python 2.7 library
   test_pythonlib.py --ok-2.7 --verify --compile
 
-  # Just deompile the longer set of files
+  # Just decompile the longer set of files
   test_pythonlib.py --ok-2.7
 
 Adding own test-trees:
@@ -100,6 +99,8 @@ for vers in (
     3.5,
     "3.2pypy",
     "2.7pypy",
+    "3.11graal",
+    "3.12graal",
     3.6,
     3.7,
     3.8,
@@ -109,11 +110,11 @@ for vers in (
     "3.12",
     "3.13",
 ):
-    bytecode = "bytecode_%s" % vers
-    key = "bytecode-%s" % vers
+    bytecode = f"bytecode_{vers}"
+    key = f"bytecode-{vers}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYC, bytecode, vers)
-    key = "%s" % vers
-    pythonlib = "python%s" % vers
+    key = vers
+    pythonlib = f"python{vers}"
     if isinstance(vers, float) and vers >= 3.0:
         pythonlib = os.path.join(src_dir, pythonlib, "__pycache__")
     test_options[key] = (os.path.join(lib_prefix, pythonlib), PYOC, pythonlib, vers)
@@ -129,10 +130,26 @@ for vers, vers_dot in (
     (312, 3.12),
     (313, 3.13),
 ):
-    bytecode = "bytecode_pypy%s" % vers
-    key = "bytecode-pypy%s" % vers
+    bytecode = f"bytecode_pypy{vers}"
+    key = f"bytecode-pypy{vers}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
-    key = "bytecode-pypy%s" % vers_dot
+    key = f"bytecode-pypy{vers_dot}"
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
+
+for vers, vers_dot in (
+    (312, 3.12),
+):
+    bytecode = f"bytecode_graal{vers}"
+    key = f"bytecode-graal{vers}"
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
+    key = f"bytecode-pypy{vers_dot}"
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
+
+for vers, vers_dot in (
+    (311, 3.11),
+):
+    bytecode = f"bytecode_graal{vers}"
+    key = f"bytecode-graal{vers}"
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
 
 
@@ -143,7 +160,7 @@ def help():
     print(
         """Usage-Examples:
 
-  # compile, decompyle and verify short tests for Python 2.7:
+  # compile, decompile and verify short tests for Python 2.7:
   test_pythonlib.py --bytecode-2.7 --verify --compile
 
   # decompile all of Python's installed lib files
@@ -156,7 +173,7 @@ def help():
     sys.exit(1)
 
 
-def do_tests(src_dir, obj_patterns, target_dir, opts):
+def do_tests(src_dir, obj_patterns, opts):
     def file_matches(files, root, basenames, patterns):
         files.extend(
             [
@@ -192,7 +209,7 @@ def do_tests(src_dir, obj_patterns, target_dir, opts):
             pass
         pass
 
-    for root, dirs, basenames in os.walk("."):
+    for root, _dirs, basenames in os.walk("."):
         # Turn root into a relative path
         dirname = root[2:]  # 2 = len('.') + 1
         file_matches(files, dirname, basenames, obj_patterns)
@@ -246,7 +263,7 @@ if __name__ == "__main__":
     checked_dirs = []
     start_with = None
 
-    test_options_keys = list(test_options.keys())
+    test_options_keys = [str(k) for k in test_options.keys()]
     test_options_keys.sort()
     opts, args = getopt.getopt(
         sys.argv[1:],
@@ -287,7 +304,7 @@ if __name__ == "__main__":
         if os.path.isdir(src_dir):
             checked_dirs.append([src_dir, pattern, target_dir])
         else:
-            sys.stderr.write("Can't find directory %s. Skipping\n" % src_dir)
+            sys.stderr.write(f"Can't find directory {src_dir}. Skipping\n")
             continue
         last_compile_version = compiled_version
         pass
@@ -302,4 +319,4 @@ if __name__ == "__main__":
         target_dir = os.path.join(target_base, target_dir)
         if os.path.exists(target_dir):
             shutil.rmtree(target_dir, ignore_errors=1)
-        do_tests(src_dir, pattern, target_dir, test_opts)
+        do_tests(src_dir, pattern, test_opts)

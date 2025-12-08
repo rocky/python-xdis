@@ -50,7 +50,6 @@ Version 'variants' are also supported, for example:
 import sys
 
 # xdis
-from xdis import IS_GRAAL, IS_PYPY
 from xdis.bytecode import Bytecode as _Bytecode, get_optype
 from xdis.cross_dis import (
     code_info as _code_info,
@@ -62,25 +61,24 @@ from xdis.cross_dis import (
 from xdis.disasm import disco as _disco
 from xdis.instruction import Instruction as Instruction_xdis
 from xdis.op_imports import get_opcode_module
-
-PYPY = "pypy"
-GRAAL = "Graal"
-VARIANT = PYPY if IS_PYPY else None
-VARIANT = GRAAL if IS_GRAAL else None
+from xdis.version_info import PYTHON_IMPLEMENTATION
 
 
 class _StdApi:
-    def __init__(self, python_version=sys.version_info, variant=VARIANT) -> None:
+    def __init__(
+        self,
+        python_version=sys.version_info,
+        python_implementation=PYTHON_IMPLEMENTATION,
+    ) -> None:
         if python_version >= (3, 6):
             import xdis.wordcode as xcode
         else:
             import xdis.bytecode as xcode
         self.xcode = xcode
 
-        self.opc = opc = get_opcode_module(python_version, variant)
+        self.opc = opc = get_opcode_module(python_version, python_implementation)
         self.python_version_tuple = opc.version_tuple
-        self.is_pypy = variant == PYPY
-        self.is_graal = variant == GRAAL
+        self.python_implementation = python_implementation
         self.hasconst = opc.hasconst
         self.hasname = opc.hasname
         self.opmap = opc.opmap
@@ -97,7 +95,9 @@ class _StdApi:
             Iterating over these yields a bytecode operation as Instruction instances.
             """
 
-            def __init__(self, x, first_line=None, current_offset=None, opc=None) -> None:
+            def __init__(
+                self, x, first_line=None, current_offset=None, opc=None
+            ) -> None:
                 if opc is None:
                     opc = _std_api.opc
                 _Bytecode.__init__(
@@ -173,14 +173,14 @@ class _StdApi:
 
     def code_info(self, x) -> str:
         """Formatted details of methods, functions, or code."""
-        return _code_info(x, self.python_version_tuple)
+        return _code_info(x, self.python_version_tuple, self.python_implementation)
 
     def show_code(self, x, file=None) -> None:
         """Print details of methods, functions, or code to *file*.
 
         If *file* is not provided, the output is printed on stdout.
         """
-        return _show_code(x, self.opc.version_tuple, file, is_pypy=self.is_pypy)
+        return _show_code(x, self.opc.version_tuple, file, python_implementation=self.python_implementation)
 
     def stack_effect(self, opcode, oparg: int = 0, jump=None):
         """Compute the stack effect of *opcode* with argument *oparg*."""
@@ -209,7 +209,7 @@ class _StdApi:
                 tb = tb.tb_next
         self.disassemble(tb.tb_frame.f_code, tb.tb_lasti, file=file)
 
-    def disassemble(self, code, lasti: int=-1, file=None) -> None:
+    def disassemble(self, code, lasti: int = -1, file=None) -> None:
         """Disassemble a code object."""
         return self.disco(code, lasti, file)
 
@@ -220,11 +220,10 @@ class _StdApi:
             code,
             timestamp=None,
             out=file,
-            is_pypy=self.is_pypy,
-            is_graal=self.is_graal,
+            python_implementation=self.python_version_tuple,
         )
 
-    def get_instructions(self, x, first_line=None):
+    def get_instructions(self, x):
         """Iterator for the opcodes in methods, functions or code
 
         Generates a series of Instruction named tuples giving the details of
@@ -235,7 +234,11 @@ class _StdApi:
         Otherwise, the source line information (if any) is taken directly from
         the disassembled code object.
         """
-        return self.Bytecode(x).get_instructions(x, first_line)
+        if isinstance(x, str):
+            code_obj = compile(x, f"<std.py {str}>", "exec")
+        else:
+            code_obj = x
+        return self.Bytecode(code_obj).get_instructions(code_obj)
 
     def findlinestarts(self, code):
         """Find the offsets in a byte code which are start of lines in the source.
@@ -253,7 +256,7 @@ class _StdApi:
         return self.opc.findlabels(code, self.opc)
 
 
-def make_std_api(python_version=sys.version_info, variant=VARIANT):
+def make_std_api(python_version=sys.version_info, python_implementation=PYTHON_IMPLEMENTATION):
     """
     Generate an object which can be used in the same way as the Python
     standard ``dis`` module.
@@ -275,7 +278,7 @@ def make_std_api(python_version=sys.version_info, variant=VARIANT):
         major = int(python_version)
         minor = int(((python_version - major) + 0.05) * 10)
         python_version = (major, minor)
-    return _StdApi(python_version, variant)
+    return _StdApi(python_version, python_implementation)
 
 
 _std_api = make_std_api()
