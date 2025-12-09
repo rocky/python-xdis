@@ -187,10 +187,10 @@ class _VersionIndependentUnmarshaller:
         self.collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
 
         self.bytes_for_s = bytes_for_s
-        version = magic_int2tuple(self.magic_int)
-        if version >= (3, 14):
+        self.version_triple = magic_int2tuple(self.magic_int)
+        if self.version_triple >= (3, 14):
             self.marshal_version = 5
-        elif (3, 14) > version >= (3, 4):
+        elif (3, 14) > self.version_triple >= (3, 4):
             if self.magic_int in (3250, 3260, 3270):
                 self.marshal_version = 3
             else:
@@ -263,7 +263,6 @@ class _VersionIndependentUnmarshaller:
                 print(f"XXX Whoah {marshal_type}")
                 ret = tuple()
         if save_ref:
-            n = len(self.intern_objects)
             self.intern_objects.append(ret)
         return ret
 
@@ -401,7 +400,11 @@ class _VersionIndependentUnmarshaller:
 
     def r_ref_insert(self, obj, i: int | None):
         if i is not None:
-            self.intern_objects[i] = obj
+            if not isinstance(obj, (set, list)):
+                # I am not sure if this is right...
+                # We can't turn into a set a list that contains a
+                # list or a set. So skip these, for now
+                self.intern_objects[i] = obj
         return obj
 
     def r_ref(self, obj, save_ref):
