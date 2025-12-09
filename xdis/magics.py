@@ -647,10 +647,11 @@ add_magic_from_int(3624, "3.14b1")
 # Fix handling of opcodes that may leave operands on the stack when optimizing LOAD_FAST
 add_magic_from_int(3625, "3.14b3")
 
-# Fix miscompilation of some module-level annotations.
+# Fix missing exception handlers in logical expression
 add_magic_from_int(3626, "3.14rc2")
 
-# Fix miscompilation of some module-level annotations.
+# Fix miscompilation of some module-level annotations
+
 add_magic_from_int(3627, "3.14rc3")
 
 # Initial 3.15 version
@@ -844,7 +845,7 @@ add_canonic_versions(
 )
 
 add_canonic_versions(
-    "3.13 3.13.0 3.13.1 3.13.2 3.13.3 3.13.4 3.13.5 3.13.6 3.13.7 3.13.8 3.13.9",
+    "3.13 3.13.0 3.13.1 3.13.2 3.13.3 3.13.4 3.13.5 3.13.6 3.13.7 3.13.8 3.13.9 3.13.10",
     "3.13.0rc3",
 )
 

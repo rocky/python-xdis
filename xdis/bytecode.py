@@ -363,6 +363,7 @@ def get_logical_instruction_at_offset(
             elif op in opc.LOCAL_OPS:
                 if opc.version_tuple >= (3, 13) and opname in (
                     "LOAD_FAST_LOAD_FAST",
+                    "LOAD_FAST_BORROW_LOAD_FAST_BORROW",
                     "STORE_FAST_LOAD_FAST",
                     "STORE_FAST_STORE_FAST",
                 ):
