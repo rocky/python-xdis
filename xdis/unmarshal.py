@@ -136,6 +136,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_SET: "set",
     TYPE_SHORT_ASCII: "short_ASCII",
     TYPE_SHORT_ASCII_INTERNED: "short_ASCII_interned",
+    TYPE_SLICE: "slice",
     TYPE_SMALL_TUPLE: "small_tuple",
     TYPE_STOPITER: "stopIteration",
     TYPE_STRING: "string",
