@@ -34,6 +34,7 @@ loc["opname"].extend([f"<{i}>" for i in range(256, 267)])
 loc["oppop"].extend([0] * 11)
 loc["oppush"].extend([0] * 11)
 
+# fmt: off
 #            OP NAME                                            OPCODE  POP  PUSH
 # ---------------------------------------------------------------------------
 def_op(loc,     "CACHE",                                        0,      0,   0)
@@ -289,6 +290,8 @@ loc["hasjump"] = loc["hasjrel"]
 # haslocal table populated by local_op and store_op definitions
 loc["hasexc"]  = [263, 264, 265]
 
+# fmt: on
+
 ### update formatting
 import xdis.opcodes.opcode_313 as opcode_313
 from xdis.opcodes.format.extended import extended_format_binary_op
@@ -334,16 +337,13 @@ def extended_BINARY_OP_314(opc, instructions):
     fmt_str = "%s[%s]" if opname == "[]" else f"%s {opname} %s"
     return extended_format_binary_op(opc, instructions, fmt_str)
 
-_common_constants = [
-    "AssertionError",
-    "NotImplementedError",
-    "tuple",
-    "all",
-    "any"
-]
+
+_common_constants = ["AssertionError", "NotImplementedError", "tuple", "all", "any"]
+
 
 def format_LOAD_COMMON_CONSTANT_314(arg: int):
-    return _common_constants[arg] 
+    return _common_constants[arg]
+
 
 opcode_arg_fmt = opcode_arg_fmt314 = {
     **opcode_313.opcode_arg_fmt313,
@@ -356,6 +356,13 @@ opcode_extended_fmt = opcode_extended_fmt314 = {
     **{"BINARY_OP": extended_BINARY_OP_314},
     **{"LOAD_COMMON_CONSTANT": format_LOAD_COMMON_CONSTANT_314},
 }
+
+# CALL_FUNCTION_EX no longer takes an argument
+# https://github.com/python/cpython/blob/2dac9e6016c81abbefa4256253ff5c59b29378a7/Include/internal/pycore_opcode_metadata.h#L1113
+# However, the dis documentation still says it takes a flag
+# https://docs.python.org/3.14/library/dis.html#opcode-CALL_FUNCTION_EX
+# Handling it without formatting seems to be in line with dis output
+del opcode_arg_fmt["CALL_FUNCTION_EX"]
 
 findlinestarts = opcode_313.findlinestarts_313
 
