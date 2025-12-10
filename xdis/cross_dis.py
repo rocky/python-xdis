@@ -44,13 +44,9 @@ def _try_compile(source: str, name: str) -> CodeType:
     return c
 
 
-def code_info(
-    x, version_tuple: Tuple[int, ...], python_implementation: PythonImplementation
-) -> str:
+def code_info(x, version_tuple: Tuple[int, ...], python_implementation: PythonImplementation) -> str:
     """Formatted details of methods, functions, or code."""
-    return format_code_info(
-        get_code_object(x), version_tuple, python_implementation=python_implementation
-    )
+    return format_code_info(get_code_object(x), version_tuple, python_implementation=python_implementation)
 
 
 def get_code_object(x):
@@ -324,9 +320,7 @@ def format_code_info(
         pass
 
     if version_tuple >= (1, 3):
-        lines.append(
-            "# Flags:             %s" % pretty_flags(co.co_flags, python_implementation)
-        )
+        lines.append("# Flags:             %s" % pretty_flags(co.co_flags, python_implementation))
 
     if version_tuple >= (1, 5):
         lines.append("# First Line:        %s" % co.co_firstlineno)
@@ -379,9 +373,7 @@ def format_exception_table(bytecode, version_tuple) -> str:
     for entry in bytecode.exception_entries:
         lasti = " lasti" if entry.lasti else ""
         end = entry.end - 2
-        lines.append(
-            f"  {entry.start} to {end} -> {entry.target} [{entry.depth}]{lasti}"
-        )
+        lines.append(f"  {entry.start} to {end} -> {entry.target} [{entry.depth}]{lasti}")
     return "\n".join(lines)
 
 
@@ -422,11 +414,7 @@ def unpack_opargs_bytecode(code, opc):
         offset += 1
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
-            extended_arg = (
-                extended_arg_val(opc, arg)
-                if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
-                else 0
-            )
+            extended_arg = extended_arg_val(opc, arg) if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG else 0
             offset += 2
         else:
             arg = None
