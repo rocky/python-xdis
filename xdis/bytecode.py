@@ -351,6 +351,9 @@ def get_logical_instruction_at_offset(
                 if opc.version_tuple >= (3, 12) and opname == "FOR_ITER":
                     argval += 2
                 argrepr = "to " + repr(argval)
+                if opc.version_tuple >= (3, 14) and "END_ASYNC_FOR" in opname:
+                    argrepr = "from " + repr(argval)
+
             elif op in opc.JABS_OPS:
                 argval = get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
