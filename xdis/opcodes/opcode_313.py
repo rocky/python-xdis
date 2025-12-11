@@ -6,6 +6,7 @@ from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_312 as opcode_312
 from xdis.opcodes.base import (  # noqa
+    VARYING_STACK_INT,
     cpython_implementation as python_implementation,
     def_op,
     finalize_opcodes,
@@ -282,7 +283,7 @@ def_op(loc, "STORE_FAST_STORE_FAST"            , 112 , 2 , 0)
 def_op(loc, "STORE_GLOBAL"                     , 113 , 1 , 0)
 def_op(loc, "STORE_NAME"                       , 114 , 1 , 0)
 def_op(loc, "SWAP"                             , 115 , 0 , 0)
-def_op(loc, "UNPACK_EX"                        , 116 , 0 , 0)
+def_op(loc, "UNPACK_EX"                        , 116 , VARYING_STACK_INT, VARYING_STACK_INT)
 def_op(loc, "UNPACK_SEQUENCE"                  , 117 , 0 , -1)
 def_op(loc, "YIELD_VALUE"                      , 118 , 1 , 1)
 def_op(loc, "RESUME"                           , 149 , 0 , 0)

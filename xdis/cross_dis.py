@@ -473,7 +473,10 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
     if opname == "BUILD_MAP" and version_tuple >= (3, 5):
         return 1 - (2 * oparg)
     elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX") and version_tuple >= (3, 0):
-        return push + oparg
+        return (oparg & 0xFF) + (oparg >> 8)
+    elif opname == "BUILD_INTERPOLATION":
+        # 3.14+ only
+        return -2 if oparg & 1 else -1
     elif opname in (
         "BUILD_LIST",
         "BUILD_SET",
@@ -503,6 +506,8 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
     elif opname == "CALL_KW":
         return -2 - oparg
     elif opname == "CALL_FUNCTION_EX":
+        if version_tuple >= (3, 14):
+            return -3
         if (3, 5) <= version_tuple < (3, 11):
             return -2 if oparg & 1 else -1
         elif 0 <= oparg <= 3:

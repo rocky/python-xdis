@@ -7,6 +7,8 @@ RustPython 3.12 bytecode opcodes
 
 from typing import Dict, List, Optional, Tuple
 
+from opcodes.base import VARYING_STACK_INT
+
 import xdis.opcodes.opcode_313 as opcode_313
 from xdis.opcodes.base import (
     binary_op,
@@ -174,7 +176,7 @@ name_op(loc, "STORE_NAME", 90)       # Index in name list
 name_op(loc, "DELETE_NAME", 91)      # ""
 def_op(loc, "UNPACK_SEQUENCE", 92)   # Number of tuple items
 jrel_op(loc, "FOR_ITER", 93)
-def_op(loc, "UNPACK_EX", 94)
+def_op(loc, "UNPACK_EX", 94, VARYING_STACK_INT, VARYING_STACK_INT)
 name_op(loc, "STORE_ATTR", 95)       # Index in name list
 name_op(loc, "DELETE_ATTR", 96)      # ""
 name_op(loc, "STORE_GLOBAL", 97)     # ""

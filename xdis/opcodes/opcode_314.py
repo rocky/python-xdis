@@ -3,6 +3,7 @@ CPython 3.14 bytecode opcodes
 """
 
 from xdis.opcodes.base import (  # noqa
+    VARYING_STACK_INT,
     binary_op,
     call_op,
     compare_op,
@@ -51,7 +52,7 @@ def_op(loc,     "FORMAT_SIMPLE",                                12,     1,  1)
 def_op(loc,     "FORMAT_WITH_SPEC",                             13,     2,  1)
 def_op(loc,     "GET_AITER",                                    14,     1,  1)
 def_op(loc,     "GET_ANEXT",                                    15,     1,  2)
-def_op(loc,     "GET_ITER",                                     16,     1,  2)
+def_op(loc,     "GET_ITER",                                     16,     0,  0)
 def_op(loc,     "RESERVED",                                     17,     0,  0)
 def_op(loc,     "GET_LEN",                                      18,     1,  2)
 def_op(loc,     "GET_YIELD_FROM_ITER",                          19,     1,  1)
@@ -65,7 +66,7 @@ def_op(loc,     "MATCH_SEQUENCE",                               26,     1,  2)
 def_op(loc,     "NOP",                                          27,     0,  0)
 def_op(loc,     "NOT_TAKEN",                                    28,     0,  0)
 def_op(loc,     "POP_EXCEPT",                                   29,     1,  0)
-def_op(loc,     "POP_ITER",                                     30,     2,  0)
+def_op(loc,     "POP_ITER",                                     30,     1,  0)
 def_op(loc,     "POP_TOP",                                      31,     1,  0)
 def_op(loc,     "PUSH_EXC_INFO",                                32,     1,  2)
 def_op(loc,     "PUSH_NULL",                                    33,     0,  1)
@@ -80,7 +81,7 @@ unary_op(loc,   "UNARY_NEGATIVE",                               41,     1,  1)
 unary_op(loc,   "UNARY_NOT",                                    42,     1,  1)
 def_op(loc,     "WITH_EXCEPT_START",                            43,     5,  6)
 binary_op(loc,  "BINARY_OP",                                    44,     2,  1)
-def_op(loc,     "BUILD_INTERPOLATION",                          45,     2,  1)  # pops 2 + (oparg & 1)
+def_op(loc,     "BUILD_INTERPOLATION",                          45,  VARYING_STACK_INT,  1)  # Either -1 or -2:  pops 2 + (oparg & 1) and pushes result
 varargs_op(loc, "BUILD_LIST",                                   46,     -1, 1)  # TOS is count of list items
 varargs_op(loc, "BUILD_MAP",                                    47,     0,  1)  # argument is dictionary count to be popped
 varargs_op(loc, "BUILD_SET",                                    48,     -1, 1)  # TOS is count of set items
@@ -153,8 +154,8 @@ store_op(loc,   "STORE_FAST_STORE_FAST",                        114,    2,  0, i
 store_op(loc,   "STORE_GLOBAL",                                 115,    1,  0, is_type="name")
 store_op(loc,   "STORE_NAME",                                   116,    1,  0, is_type="name")
 def_op(loc,     "SWAP",                                         117,    0,  0)
-varargs_op(loc, "UNPACK_EX",                                    118,    1, -1)  # pushes 1 + (oparg & 0xFF) + (oparg >> 8)
-varargs_op(loc, "UNPACK_SEQUENCE",                              119,    0, -1)  # unpacks TOS, arg is the count
+varargs_op(loc, "UNPACK_EX",                                    118,    VARYING_STACK_INT, VARYING_STACK_INT)  # pushes 1 + (oparg & 0xFF) + (oparg >> 8)
+varargs_op(loc, "UNPACK_SEQUENCE",                              119,    VARYING_STACK_INT, VARYING_STACK_INT)  # unpacks TOS, arg is the count
 def_op(loc,     "YIELD_VALUE",                                  120,    1,  1)
 def_op(loc,     "RESUME",                                       128,    0,  0)
 
