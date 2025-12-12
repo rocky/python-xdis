@@ -27,6 +27,7 @@ If this file changes the other opcode files may have to be adjusted accordingly.
 from typing import Optional, Tuple
 
 from xdis.opcodes.base import (
+    VARYING_STACK_INT,
     binary_op,
     call_op,
     compare_op,
@@ -145,7 +146,7 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 #-----------------------------------------------
 store_op(loc, "STORE_NAME",           90,  1,  0, is_type="name")   # Operand is in name list
 name_op(loc, "DELETE_NAME",           91,  0,  0)   # ""
-varargs_op(loc, "UNPACK_SEQUENCE",    92,  0, -1)  # unpacks TOS, arg is the count
+varargs_op(loc, "UNPACK_SEQUENCE",    92,  1, VARYING_STACK_INT)  # unpacks TOS, arg is the count
 jrel_op(loc,    "FOR_ITER",           93,  0,  1)
 
 varargs_op(loc, "UNPACK_EX",          94,  0,  0)  # assignment with a starred target; arg is count

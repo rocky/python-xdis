@@ -472,7 +472,7 @@ def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x48, 0, 2, 0)
 # Pushed: unpacked items, the count is determined by the immediate operand
 #
 def_op_graal(
-    loc, "UNPACK_SEQUENCE", 0x49, 1, 1, 1
+    loc, "UNPACK_SEQUENCE", 0x49, 1, VARYING_STACK_INT, 1
 )  # , (oparg, followingArgs, withJump) -> oparg)
 
 # Unpacks an iterable into multiple stack items with a star item that gets the rest. The first
@@ -485,7 +485,7 @@ def_op_graal(
 # operand)
 #
 def_op_graal(
-    loc, "UNPACK_EX", 0x4a, 2, VARYING_STACK_INT, VARYING_STACK_INT
+    loc, "UNPACK_EX", 0x4a, VARYING_STACK_INT, VARYING_STACK_INT, 1
 )  #  (oparg, followingArgs, withJump) -> oparg + 1 + Byte.toUnsignedInt(followingArgs[0]))
 
 # jumps

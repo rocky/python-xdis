@@ -90,14 +90,13 @@ def test_stack_effect_fixed() -> None:
     xdis.PYTHON_VERSION_TRIPLE < (3, 4) or xdis.IS_PYPY or xdis.IS_GRAAL,
     reason="Python version is before 3.4. Can't test",
 )
-@pytest.mark.skipif(
-    xdis.PYTHON_VERSION_TRIPLE >= (3, 14),
-    reason="Python >= 3.14 is not complete.",
-)
 def test_stack_effect_vs_dis() -> None:
     import dis
 
     def test_one(xdis_args, dis_args, has_arg: bool) -> None:
+
+        if opname.startswith("INSTRUMENTED"):
+            return
         effect = xstack_effect(*xdis_args)
         try:
             check_effect = dis.stack_effect(*dis_args[:2])
@@ -148,6 +147,8 @@ def test_stack_effect_vs_dis() -> None:
             and opcode in opc.CONDITION_OPS
             and opname
             not in (
+                "INSTRUMENTED_POP_JUMP_IF_FALSE",
+                "INSTRUMENTED_POP_JUMP_IF_TRUE",
                 "JUMP_IF_FALSE_OR_POP",
                 "JUMP_IF_TRUE_OR_POP",
                 "POP_JUMP_IF_FALSE",

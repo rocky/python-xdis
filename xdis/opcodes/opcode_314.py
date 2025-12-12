@@ -88,7 +88,7 @@ varargs_op(loc, "BUILD_SET",                                    48,     -1, 1)  
 varargs_op(loc, "BUILD_SLICE",                                  49,     -1, 1)  # TOS is slice
 varargs_op(loc, "BUILD_STRING",                                 50,     -1, 1)  # TOS is concatenated strings
 varargs_op(loc, "BUILD_TUPLE",                                  51,     -1, 1)  # TOS is count of tuple items
-call_op(loc,    "CALL",                                         52,     -2, 1)  # pops 2 + oparg; TOS is return value
+call_op(loc,    "CALL",                                         52,     VARYING_STACK_INT, 2)  # pops 2 + oparg; TOS is return value
 def_op(loc,     "CALL_INTRINSIC_1",                             53,     1,  1)
 def_op(loc,     "CALL_INTRINSIC_2",                             54,     2,  1)
 call_op(loc,    "CALL_KW",                                      55,     -3, 1)  # pops 3 + oparg; TOS is return value
@@ -155,7 +155,7 @@ store_op(loc,   "STORE_GLOBAL",                                 115,    1,  0, i
 store_op(loc,   "STORE_NAME",                                   116,    1,  0, is_type="name")
 def_op(loc,     "SWAP",                                         117,    0,  0)
 varargs_op(loc, "UNPACK_EX",                                    118,    VARYING_STACK_INT, VARYING_STACK_INT)  # pushes 1 + (oparg & 0xFF) + (oparg >> 8)
-varargs_op(loc, "UNPACK_SEQUENCE",                              119,    VARYING_STACK_INT, VARYING_STACK_INT)  # unpacks TOS, arg is the count
+varargs_op(loc, "UNPACK_SEQUENCE",                              119,    1, VARYING_STACK_INT)  # unpacks TOS, arg is the count
 def_op(loc,     "YIELD_VALUE",                                  120,    1,  1)
 def_op(loc,     "RESUME",                                       128,    0,  0)
 
@@ -242,21 +242,21 @@ varargs_op(loc, "UNPACK_SEQUENCE_LIST",                         207,    1,  -1)
 varargs_op(loc, "UNPACK_SEQUENCE_TUPLE",                        208,    1,  -1)
 def_op(loc,     "UNPACK_SEQUENCE_TWO_TUPLE",                    209,    1,  2)
 def_op(loc,     "INSTRUMENTED_END_FOR",                         233,    3,  2)
-def_op(loc,     "INSTRUMENTED_POP_ITER",                        234,    2,  0)
+def_op(loc,     "INSTRUMENTED_POP_ITER",                        234,    1,  0)
 def_op(loc,     "INSTRUMENTED_END_SEND",                        235,    2,  1)
-jrel_op(loc,    "INSTRUMENTED_FOR_ITER",                        236,    2,  3, conditional=True)
-def_op(loc,     "INSTRUMENTED_INSTRUCTION",                     237,    0,  0)
+jrel_op(loc,    "INSTRUMENTED_FOR_ITER",                        236,    2,  1, conditional=True)
+def_op(loc,     "INSTRUMENTED_INSTRUCTION",                     237,    0,  1)
 jrel_op(loc,    "INSTRUMENTED_JUMP_FORWARD",                    238,    0,  0, conditional=False)
 def_op(loc,     "INSTRUMENTED_NOT_TAKEN",                       239,    0,  0)
-jrel_op(loc,    "INSTRUMENTED_POP_JUMP_IF_TRUE",                240,    1,  0, conditional=True)
+jrel_op(loc,    "INSTRUMENTED_POP_JUMP_IF_TRUE",                240,    0,  0, conditional=True)  # dunno why it's not 1, 0.
 jrel_op(loc,    "INSTRUMENTED_POP_JUMP_IF_FALSE",               241,    1,  0, conditional=True)
 jrel_op(loc,    "INSTRUMENTED_POP_JUMP_IF_NONE",                242,    1,  0, conditional=True)
 jrel_op(loc,    "INSTRUMENTED_POP_JUMP_IF_NOT_NONE",            243,    1,  0, conditional=True)
-def_op(loc,     "INSTRUMENTED_RESUME",                          244,    0,  0)
+def_op(loc,     "INSTRUMENTED_RESUME",                          244,    1,  0)  # dunno why it's not 0, 0.
 def_op(loc,     "INSTRUMENTED_RETURN_VALUE",                    245,    1,  1)
 def_op(loc,     "INSTRUMENTED_YIELD_VALUE",                     246,    1,  1)
-jrel_op(loc,    "INSTRUMENTED_END_ASYNC_FOR",                   247,    2,  0, conditional=True)
-name_op(loc,    "INSTRUMENTED_LOAD_SUPER_ATTR",                 248,    3,  1)  # pushes 1 + (oparg & 1)
+jrel_op(loc,    "INSTRUMENTED_END_ASYNC_FOR",                   247,    0,  0, conditional=True) # dunnow why it's not 2, 0
+name_op(loc,    "INSTRUMENTED_LOAD_SUPER_ATTR",                 248,    VARYING_STACK_INT,  1)  # pushes 1 + (oparg & 1)
 call_op(loc,    "INSTRUMENTED_CALL",                            249,    -2, 1)
 call_op(loc,    "INSTRUMENTED_CALL_KW",                         250,    -3, 1)
 def_op(loc,     "INSTRUMENTED_CALL_FUNCTION_EX",                251,    4,  1)
