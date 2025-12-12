@@ -359,8 +359,8 @@
 
  34:           3 |7f 00 23| SET_LINENO           35
 
- 35:           6 |87 00 00| LOAD_CLOSURE         (0) ; 0
-               9 |87 00 01| LOAD_CLOSURE         (1) ; 1
+ 35:           6 |87 00 00| LOAD_CLOSURE         (blurb) ; blurb
+               9 |87 00 01| LOAD_CLOSURE         (flurb) ; flurb
               12 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 35
               15 |86 00 00| MAKE_CLOSURE         0
               18 |7d 00 01| STORE_FAST           (y3a)
@@ -372,12 +372,12 @@
  38:          25 |7f 00 26| SET_LINENO           38
 
  38:          28 |64 00 02| LOAD_CONST           (3) ; TOS = 3
-              31 |89 00 00| STORE_DEREF          (0) ; 0 = 3
+              31 |89 00 00| STORE_DEREF          (blurb) ; blurb = 3
 
  39:          34 |7f 00 27| SET_LINENO           39
 
  39:          37 |64 00 03| LOAD_CONST           (7) ; TOS = 7
-              40 |89 00 01| STORE_DEREF          (1) ; 1 = 7
+              40 |89 00 01| STORE_DEREF          (flurb) ; flurb = 7
 
  40:          43 |7f 00 28| SET_LINENO           40
 
@@ -390,8 +390,8 @@
 
  41:          59 |64 00 05| LOAD_CONST           ("x3a-blurb =") ; TOS = "x3a-blurb ="
               62 |47      | PRINT_ITEM           print "x3a-blurb =",
-              63 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
-              66 |47      | PRINT_ITEM           print 0,
+              63 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
+              66 |47      | PRINT_ITEM           print blurb,
               67 |48      | PRINT_NEWLINE        print "\n"
               68 |64 00 00| LOAD_CONST           (None) ; TOS = None
               71 |53      | RETURN_VALUE         return None
@@ -425,7 +425,7 @@
 
  43:           3 |7f 00 2c| SET_LINENO           44
 
- 44:           6 |87 00 00| LOAD_CLOSURE         (0) ; 0
+ 44:           6 |87 00 00| LOAD_CLOSURE         (blurb) ; blurb
                9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 44
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 00| STORE_FAST           (y3)
@@ -437,7 +437,7 @@
  51:          22 |7f 00 33| SET_LINENO           51
 
  51:          25 |64 00 02| LOAD_CONST           (3) ; TOS = 3
-              28 |89 00 00| STORE_DEREF          (0) ; 0 = 3
+              28 |89 00 00| STORE_DEREF          (blurb) ; blurb = 3
 
  52:          31 |7f 00 34| SET_LINENO           52
 
@@ -450,8 +450,8 @@
 
  53:          47 |64 00 04| LOAD_CONST           ("x3-blurb =") ; TOS = "x3-blurb ="
               50 |47      | PRINT_ITEM           print "x3-blurb =",
-              51 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
-              54 |47      | PRINT_ITEM           print 0,
+              51 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
+              54 |47      | PRINT_ITEM           print blurb,
               55 |48      | PRINT_NEWLINE        print "\n"
               56 |64 00 00| LOAD_CONST           (None) ; TOS = None
               59 |53      | RETURN_VALUE         return None
@@ -586,7 +586,7 @@
 
  76:           3 |7f 00 4d| SET_LINENO           77
 
- 77:           6 |87 00 00| LOAD_CLOSURE         (0) ; 0
+ 77:           6 |87 00 00| LOAD_CLOSURE         (blurb) ; blurb
                9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 77
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 01| STORE_FAST           (y)
@@ -594,7 +594,7 @@
  79:          18 |7f 00 4f| SET_LINENO           79
 
  79:          21 |64 00 02| LOAD_CONST           (2) ; TOS = 2
-              24 |89 00 00| STORE_DEREF          (0) ; 0 = 2
+              24 |89 00 00| STORE_DEREF          (blurb) ; blurb = 2
 
  80:          27 |7f 00 50| SET_LINENO           80
 
@@ -641,7 +641,7 @@
 
  83:           3 |7c 00 00| LOAD_FAST            (.0) ; TOS = .0
                6 |5c 00 02| UNPACK_SEQUENCE      2
-               9 |89 00 00| STORE_DEREF          (0)
+               9 |89 00 00| STORE_DEREF          (a)
               12 |7d 00 05| STORE_FAST           (b)
               15 |7c 00 01| LOAD_FAST            (.2) ; TOS = .2
               18 |5c 00 02| UNPACK_SEQUENCE      2
@@ -650,7 +650,7 @@
 
  84:          27 |7f 00 54| SET_LINENO           84
 
- 84:          30 |87 00 00| LOAD_CLOSURE         (0) ; 0
+ 84:          30 |87 00 00| LOAD_CLOSURE         (a) ; a
               33 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 84
               36 |86 00 00| MAKE_CLOSURE         0
               39 |7d 00 08| STORE_FAST           (y)
@@ -900,7 +900,7 @@
 
  56:           3 |7f 00 39| SET_LINENO           57
 
- 57:           6 |87 00 00| LOAD_CLOSURE         (0) ; 0
+ 57:           6 |87 00 00| LOAD_CLOSURE         (blurb) ; blurb
                9 |64 00 01| LOAD_CONST           (<code object at 0xdeadbeef0001, line 57
               12 |86 00 00| MAKE_CLOSURE         0
               15 |7d 00 02| STORE_FAST           (z)
@@ -908,7 +908,7 @@
  59:          18 |7f 00 3b| SET_LINENO           59
 
  59:          21 |64 00 02| LOAD_CONST           (25) ; TOS = 25
-              24 |89 00 00| STORE_DEREF          (0) ; 0 = 25
+              24 |89 00 00| STORE_DEREF          (blurb) ; blurb = 25
 
  60:          27 |7f 00 3c| SET_LINENO           60
 
@@ -920,8 +920,8 @@
 
  61:          40 |64 00 03| LOAD_CONST           ("y-blurb =") ; TOS = "y-blurb ="
               43 |47      | PRINT_ITEM           print "y-blurb =",
-              44 |88 00 00| LOAD_DEREF           (0) ; TOS = 0
-              47 |47      | PRINT_ITEM           print 0,
+              44 |88 00 00| LOAD_DEREF           (blurb) ; TOS = blurb
+              47 |47      | PRINT_ITEM           print blurb,
               48 |64 00 00| LOAD_CONST           (None) ; TOS = None
               51 |53      | RETURN_VALUE         return None
 

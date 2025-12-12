@@ -119,12 +119,17 @@ verbose-install:
 install:
 	$(PYTHON) ./setup.py install >/dev/null
 
+#: Remove ChangeLog
 rmChangeLog:
 	rm ChangeLog || true
 
+#: Create ChangeLog from version control without corrections
+ChangeLog-without-corrections:
+	git log --pretty --numstat --summary | $(GIT2CL) >ChangeLog
+
 #: Create a ChangeLog from git via git log and git2cl
 ChangeLog: rmChangeLog
-	git log --pretty --numstat --summary | $(GIT2CL) >$@
+	ChangeLog-without-corrections
 	patch ChangeLog < ChangeLog-spell-corrected.diff
 
 .PHONY: $(PHONY)
