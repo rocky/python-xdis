@@ -79,7 +79,7 @@ TYPE_REF = "r"  # Version 3. Since 3.4 (and a little before?)
 TYPE_SET = "<"  # Since Version 2.
 TYPE_SHORT_ASCII = "z"  # Version 4. since 3.4
 TYPE_SHORT_ASCII_INTERNED = "Z"  # Version 3. since 3.4
-TYPE_SLICE = ":"  # Since version 5
+TYPE_SLICE = ":"  # Version 5. Since 3.14
 TYPE_SMALL_TUPLE = ")"  # Version 3. since 3.4
 TYPE_STOPITER = "S"
 TYPE_STRING = "s"  # String in Python 2. In Python 3 this is Bytes.
@@ -97,6 +97,7 @@ ARRAY_TYPE_INT = "i"
 ARRAY_TYPE_LONG = "l"
 ARRAY_TYPE_OBJECT = "o"
 ARRAY_TYPE_SHORT = "s"
+ARRAY_TYPE_SLICE = ":"
 ARRAY_TYPE_STRING = "S"
 
 
@@ -115,7 +116,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_BINARY_COMPLEX: "binary_complex",
     TYPE_BINARY_FLOAT: "binary_float",
     TYPE_CODE: "code",
-    TYPE_CODE_OLD: "code_old_or_graal",  # Older Python code
+    TYPE_CODE_OLD: "code_old_or_graal",  # Older Python code and Graal
     TYPE_COMPLEX: "complex",
     TYPE_DICT: "dict",
     TYPE_ELLIPSIS: "Ellipsis",
@@ -134,6 +135,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_SET: "set",
     TYPE_SHORT_ASCII: "short_ASCII",
     TYPE_SHORT_ASCII_INTERNED: "short_ASCII_interned",
+    TYPE_SLICE: "slice",
     TYPE_SMALL_TUPLE: "small_tuple",
     TYPE_STOPITER: "stopIteration",
     TYPE_STRING: "string",
@@ -168,7 +170,8 @@ class _VersionIndependentUnmarshaller:
             1: [2.4, 2.5) (self.magic_int: 62041 until 62071)
             2: [2.5, 3.4a0) (self.magic_int: 62071 until 3250)
             3: [3.4a0, 3.4a3) (self.magic_int: 3250 until 3280)
-            4: [3.4a3, current) (self.magic_int: 3280 onwards)
+            4: [3.4a3, 3.13) (self.magic_int: 3280 onwards)
+            5: [3.14, current) (self.magic_int: circa 3608)
 
         In Python 3, a ``bytes`` type is used for strings.
         """
@@ -186,7 +189,9 @@ class _VersionIndependentUnmarshaller:
 
         self.bytes_for_s = bytes_for_s
         self.version_triple = magic_int2tuple(self.magic_int)
-        if self.version_triple >= (3, 4):
+        if self.version_triple >= (3, 14):
+            self.marshal_version = 5
+        elif (3, 14) > self.version_triple >= (3, 4):
             if self.magic_int in (3250, 3260, 3270):
                 self.marshal_version = 3
             else:
@@ -258,7 +263,6 @@ class _VersionIndependentUnmarshaller:
             print(f"XXX Whoah {marshal_type}")
             ret = tuple()
         if save_ref:
-            # n = len(self.intern_objects)
             self.intern_objects.append(ret)
         return ret
 
@@ -361,7 +365,7 @@ class _VersionIndependentUnmarshaller:
         MarshalModuleBuiltins.java
         """
         self.graal_readInt()  # the length return value isn't used.
-        table = {} # new int[length][];
+        table = {}  # new int[length][];
         while True:
             i = self.graal_readInt()
             if i == -1:
@@ -396,7 +400,11 @@ class _VersionIndependentUnmarshaller:
 
     def r_ref_insert(self, obj, i: Optional[int]):
         if i is not None:
-            self.intern_objects[i] = obj
+            if not isinstance(obj, (set, list)):
+                # I am not sure if this is right...
+                # We can't turn into a set a list that contains a
+                # list or a set. So skip these, for now
+                self.intern_objects[i] = obj
         return obj
 
     def r_ref(self, obj, save_ref):
@@ -525,7 +533,7 @@ class _VersionIndependentUnmarshaller:
 
     def t_string(self, save_ref, bytes_for_s: bool):
         """
-        Get a string from the bytecode file and save the string in ``save_ref``
+        Get a string from the bytecode file and save the string in ``save_ref``.
 
         In Python3, this is a ``bytes`` type.  In Python2, it is a string type;
         ``bytes_for_s`` is True when a Python 3 interpreter is reading Python 2 bytecode.
@@ -653,6 +661,23 @@ class _VersionIndependentUnmarshaller:
     def t_python2_string_reference(self, save_ref, bytes_for_s: bool = False):
         refnum = unpack("<i", self.fp.read(4))[0]
         return self.intern_strings[refnum]
+
+    def t_slice(self, save_ref, bytes_for_s: bool = False):
+        """TYPE_SLICE introducted in Marshal version 5"""
+        retval, idx = self.r_ref_reserve(slice(None, None, None), save_ref)
+
+        if idx and idx < 0:
+            return
+
+        # FIXME: we currently can't disambiguate between NULL and None.
+        #        marshal.c exits early if start, stop, or step are NULL.
+        #        https://github.com/python/cpython/blob/2dac9e6016c81abbefa4256253ff5c59b29378a7/Python/marshal.c#L1657
+        start = self.r_object(bytes_for_s=bytes_for_s)
+        stop = self.r_object(bytes_for_s=bytes_for_s)
+        step = self.r_object(bytes_for_s=bytes_for_s)
+
+        retval = slice(start, stop, step)
+        return self.r_ref_insert(retval, idx)
 
     def t_code(self, save_ref, bytes_for_s: bool = False):
         """

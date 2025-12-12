@@ -26,6 +26,11 @@ from xdis import wordcode
 from xdis.cross_dis import findlabels, findlinestarts, get_jump_target_maps
 from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE, PythonImplementation
 
+# The VARYING_STACK_INT value is used to indicate that the push or pop stack value
+# for an operation can change. In such cases other means such as looking and an
+# operation's operand value may be needed.
+VARYING_STACK_INT = -3000
+
 cpython_implementation = PythonImplementation("CPython")
 
 cmp_op = (

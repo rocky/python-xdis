@@ -48,9 +48,7 @@ def code_info(
     x, version_tuple: tuple, python_implementation: PythonImplementation
 ) -> str:
     """Formatted details of methods, functions, or code."""
-    return format_code_info(
-        get_code_object(x), version_tuple, python_implementation=python_implementation
-    )
+    return format_code_info(get_code_object(x), version_tuple, python_implementation=python_implementation)
 
 
 def get_code_object(x):
@@ -324,9 +322,7 @@ def format_code_info(
         pass
 
     if version_tuple >= (1, 3):
-        lines.append(
-            "# Flags:             %s" % pretty_flags(co.co_flags, python_implementation)
-        )
+        lines.append("# Flags:             %s" % pretty_flags(co.co_flags, python_implementation))
 
     if version_tuple >= (1, 5):
         lines.append("# First Line:        %s" % co.co_firstlineno)
@@ -379,9 +375,7 @@ def format_exception_table(bytecode, version_tuple) -> str:
     for entry in bytecode.exception_entries:
         lasti = " lasti" if entry.lasti else ""
         end = entry.end - 2
-        lines.append(
-            f"  {entry.start} to {end} -> {entry.target} [{entry.depth}]{lasti}"
-        )
+        lines.append(f"  {entry.start} to {end} -> {entry.target} [{entry.depth}]{lasti}")
     return "\n".join(lines)
 
 
@@ -422,11 +416,7 @@ def unpack_opargs_bytecode(code, opc):
         offset += 1
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
-            extended_arg = (
-                extended_arg_val(opc, arg)
-                if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
-                else 0
-            )
+            extended_arg = extended_arg_val(opc, arg) if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG else 0
             offset += 2
         else:
             arg = None
@@ -480,13 +470,20 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
     version_tuple = opc.version_tuple
     pop, push = opc.oppop[opcode], opc.oppush[opcode]
     opname = opc.opname[opcode]
-    if opname in "BUILD_CONST_KEY_MAP" and version_tuple >= (3, 12):
-        return -oparg
-    if opname == "BUILD_MAP" and version_tuple >= (3, 5):
-        return 1 - (2 * oparg)
-    elif opname in ("UNPACK_SEQUENCE", "UNPACK_EX") and version_tuple >= (3, 0):
-        return push + oparg
-    elif opname in (
+    if version_tuple >= (3, 0):
+        if opname in "BUILD_CONST_KEY_MAP" and version_tuple >= (3, 12):
+            return -oparg
+        if opname == "BUILD_MAP" and version_tuple >= (3, 5):
+            return 1 - (2 * oparg)
+        if opname in ("UNPACK_SEQUENCE",):
+                return oparg - 1
+        elif opname in ("UNPACK_EX"):
+            return (oparg & 0xFF) + (oparg >> 8)
+        elif opname == "BUILD_INTERPOLATION":
+            # 3.14+ only
+            return -2 if oparg & 1 else -1
+
+    if opname in (
         "BUILD_LIST",
         "BUILD_SET",
         "BUILD_STRING",
@@ -510,11 +507,13 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
                     return None
             else:
                 return None
-    elif opname == "CALL" and version_tuple >= (3, 12):
+    elif opname in ("CALL", "INSTRUMENTED_CALL") and version_tuple >= (3, 12):
         return -oparg - 1
-    elif opname == "CALL_KW":
+    elif opname in ("CALL_KW", "INSTRUMENTED_CALL_KW"):
         return -2 - oparg
     elif opname == "CALL_FUNCTION_EX":
+        if version_tuple >= (3, 14):
+            return -3
         if (3, 5) <= version_tuple < (3, 11):
             return -2 if oparg & 1 else -1
         elif 0 <= oparg <= 3:
@@ -525,6 +524,8 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
         "INSTRUMENTED_LOAD_SUPER_ATTR",
         "LOAD_SUPER_ATTR",
     ) and version_tuple >= (3, 12):
+        if opname == "INSTRUMENTED_LOAD_SUPER_ATTR" and version_tuple >= (3, 14):
+            return -2
         return -1 if oparg & 1 else -2
     elif opname == "LOAD_GLOBAL" and version_tuple >= (3, 11):
         return 2 if oparg & 1 else 1

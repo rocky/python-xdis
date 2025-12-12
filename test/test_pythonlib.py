@@ -109,6 +109,7 @@ for vers in (
     "3.11",
     "3.12",
     "3.13",
+    "3.14",
 ):
     bytecode = f"bytecode_{vers}"
     key = f"bytecode-{vers}"
@@ -129,6 +130,7 @@ for vers, vers_dot in (
     (311, 3.11),
     (312, 3.12),
     (313, 3.13),
+    (314, 3.14),
 ):
     bytecode = f"bytecode_pypy{vers}"
     key = f"bytecode-pypy{vers}"

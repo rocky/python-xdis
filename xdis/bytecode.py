@@ -140,6 +140,7 @@ def get_optype(opcode: int, opc) -> str:
 
     return "??"
 
+
 def offset2line(offset: int, linestarts):
     """linestarts is expected to be a *list of (offset, line number)
     where both offset and line number are in increasing order.
@@ -215,6 +216,7 @@ def prefer_double_quote(string: str) -> str:
         return f'"{string[1:-1]}"'
     return string
 
+
 def is_fixed_wordsize_bytecode(opc) -> bool:
     """
     Returns True if intructions in opc are fixed length (2 bytes)
@@ -224,6 +226,7 @@ def is_fixed_wordsize_bytecode(opc) -> bool:
     # FIXME: We really need to distinguish 3.6.0a1 from 3.6.a3.
     # See below FIXME.
     return True if opc.python_version >= (3, 6) else False
+
 
 def get_logical_instruction_at_offset(
     bytecode,
@@ -339,7 +342,12 @@ def get_logical_instruction_at_offset(
                 else:
                     argval, argrepr = get_name_info(arg, names)
             elif op in opc.JREL_OPS:
-                signed_arg = -arg if "JUMP_BACKWARD" in opname else arg
+                signed_arg = arg
+                if "JUMP_BACKWARD" in opname:
+                    signed_arg = -arg
+                elif opc.version_tuple >= (3, 14) and "END_ASYNC_FOR" in opname:
+                    signed_arg = -arg
+
                 argval = i + get_jump_val(signed_arg, opc.python_version)
 
                 # check cache instructions for python 3.13
@@ -357,12 +365,16 @@ def get_logical_instruction_at_offset(
                 if opc.version_tuple >= (3, 12) and opname == "FOR_ITER":
                     argval += 2
                 argrepr = "to " + repr(argval)
+                if opc.version_tuple >= (3, 14) and "END_ASYNC_FOR" in opname:
+                    argrepr = "from " + repr(argval)
+
             elif op in opc.JABS_OPS:
                 argval = get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
             elif op in opc.LOCAL_OPS:
                 if opc.version_tuple >= (3, 13) and opname in (
                     "LOAD_FAST_LOAD_FAST",
+                    "LOAD_FAST_BORROW_LOAD_FAST_BORROW",
                     "STORE_FAST_LOAD_FAST",
                     "STORE_FAST_STORE_FAST",
                 ):
@@ -470,9 +482,17 @@ def get_instructions_bytes(
     constants: tuple = code_object.co_consts
     names: tuple = code_object.co_names
     varnames: tuple = code_object.co_varnames
-    cellvars: tuple = code_object.co_cellvars if hasattr(code_object, "co_cellvars") else tuple()
-    exception_entries = code_object.exception_entries if hasattr(code_object, "exception_entries") else tuple()
-    freevars: tuple = code_object.co_freevars if hasattr(code_object, "co_freevars") else tuple()
+    cellvars: tuple = (
+        code_object.co_cellvars if hasattr(code_object, "co_cellvars") else tuple()
+    )
+    exception_entries = (
+        code_object.exception_entries
+        if hasattr(code_object, "exception_entries")
+        else tuple()
+    )
+    freevars: tuple = (
+        code_object.co_freevars if hasattr(code_object, "co_freevars") else tuple()
+    )
 
     cells = cellvars + freevars
 
@@ -680,6 +700,7 @@ class Bytecode:
 
         if self.opc.python_implementation == PythonImplementation.Graal:
             from xdis.bytecode_graal import get_instructions_bytes_graal
+
             get_instructions_fn = get_instructions_bytes_graal
         else:
             get_instructions_fn = get_instructions_bytes
@@ -798,8 +819,7 @@ class Bytecode:
             # locals and hope the two are the same.
             if instr.opname == "RESERVE_FAST":
                 file.write(
-                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST "
-                    "are inaccurate here in Python before 1.5\n"
+                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST are inaccurate here in Python before 1.5\n"
                 )
             pass
         return instructions

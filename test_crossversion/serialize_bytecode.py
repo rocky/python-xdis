@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import dis
 import logging
 import sys
 from pathlib import Path

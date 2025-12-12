@@ -21,7 +21,7 @@ See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 
 from typing import Dict, Set
 
-from xdis.opcodes.base import init_opdata
+from xdis.opcodes.base import VARYING_STACK_INT, init_opdata
 from xdis.opcodes.base_graal import findlabels  # noqa
 from xdis.opcodes.base_graal import (  # find_linestarts,  # noqa
     binary_op_graal,
@@ -371,13 +371,13 @@ def_op_graal(loc, "LOAD_LONG", 0x39, 1, 0, 1)
 # Loads {@code double} from primitiveConstants array indexed by the immediate operand
 # (converted from long).
 #
-def_op_graal(loc, "LOAD_DOUBLE", 0x3A, 1, 0, 1)
-#
-# Loads {@code long} from primitiveConstants array indexed by the immediate operand.
-#
-def_op_graal(loc, "LOAD_LONG", 0x3B, 1, 0, 1)
+def_op_graal(loc, "LOAD_LONG", 0x3A, 1, 0, 1)
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
 # operand.
+#
+def_op_graal(loc, "LOAD_DOUBLE", 0x3B, 1, 0, 1)
+#
+# Loads {@code long} from primitiveConstants array indexed by the immediate operand.
 #
 def_op_graal(loc, "LOAD_BIGINT", 0x3C, 1, 0, 1)
 #
@@ -479,7 +479,7 @@ def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x46, 0, 2, 0)
 # Pushed: unpacked items, the count is determined by the immediate operand
 #
 def_op_graal(
-    loc, "UNPACK_SEQUENCE", 0x47, 1, 1, 1
+    loc, "UNPACK_SEQUENCE", 0x47, 1, VARYING_STACK_INT, 1
 )  # , (oparg, followingArgs, withJump) -> oparg)
 
 # Unpacks an iterable into multiple stack items with a star item that gets the rest. The first
@@ -492,7 +492,7 @@ def_op_graal(
 # operand)
 #
 def_op_graal(
-    loc, "UNPACK_EX", 0x48, 2, 1, 1
+    loc, "UNPACK_EX", 0x48, VARYING_STACK_INT, VARYING_STACK_INT, 2
 )  #  (oparg, followingArgs, withJump) -> oparg + 1 + Byte.toUnsignedInt(followingArgs[0]))
 
 # jumps
