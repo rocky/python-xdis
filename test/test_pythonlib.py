@@ -148,7 +148,7 @@ for vers, vers_dot in (
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
 
 for vers, vers_dot in (
-    (311, 3.11),
+        (310, 3.10), (311, 3.11),
 ):
     bytecode = f"bytecode_graal{vers}"
     key = f"bytecode-graal{vers}"
