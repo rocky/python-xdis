@@ -236,7 +236,7 @@ def load_module_from_file_object(
 
         # For reasons I don't understand, PyPy 3.2 stores a magic
         # of '0'...  The two values below are for Python 2.x and 3.x respectively
-        if magic[0:1] in ["0", "0"]:
+        if magic[0:1] == b"0":
             magic = int2magic(3180 + 7)
 
         try:
