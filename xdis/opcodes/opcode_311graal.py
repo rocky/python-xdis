@@ -369,27 +369,33 @@ def_op_graal(loc, "LOAD_LONG", 0x39, 1, 0, 1)
 # Loads {@code double} from primitiveConstants array indexed by the immediate operand
 # (converted from long).
 #
-def_op_graal(loc, "LOAD_DOUBLE", 0x3A, 1, 0, 1)
-#
-
+def_op_graal(loc, "LOAD_LONG", 0x3A, 1, 0, 1)
 # Creates a {@link PInt} from a {@link BigInteger} in constants array indexed by the immediate
 # operand.
 #
-def_op_graal(loc, "LOAD_BIGINT", 0x3B, 1, 0, 1)
+def_op_graal(loc, "LOAD_DOUBLE", 0x3B, 1, 0, 1)
+#
+# Loads {@code long} from primitiveConstants array indexed by the immediate operand.
+#
+def_op_graal(loc, "LOAD_BIGINT", 0x3C, 1, 0, 1)
 #
 # Currently the same as {@link #LOAD_CONST}.
 #
-const_op_graal(loc, "LOAD_STRING", 0x3C, 0, 1)
+
+#
+# Currently the same as {@link #LOAD_CONST}.
+#
+const_op_graal(loc, "LOAD_STRING", 0x3D, 0, 1)
 
 #
 # Creates python {@code bytes} from a {@code byte[]} array in constants array indexed by the
 # immediate operand.
 #
-def_op_graal(loc, "LOAD_BYTES", 0x3D, 0, 1)
+def_op_graal(loc, "LOAD_BYTES", 0x3E, 0, 1)
 # Creates python {@code complex} from a {@code double[]} array of size 2 in constants array
 # indexed by the immediate operand.
 #
-def_op_graal(loc, "LOAD_COMPLEX", 0x3E, 1, 0, 1)
+def_op_graal(loc, "LOAD_COMPLEX", 0x3F, 1, 0, 1)
 
 # Creates a collection out of a Java array in constants array indexed by the immediate operand.
 # The second immediate operand determines the array type and kind, using values from {@link
@@ -471,7 +477,7 @@ def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x46, 0, 2, 0)
 # Pushed: unpacked items, the count is determined by the immediate operand
 #
 def_op_graal(
-    loc, "UNPACK_SEQUENCE", 0x47, 1, 1, 1
+    loc, "UNPACK_SEQUENCE", 0x47, 1, VARYING_STACK_INT, 1
 )  # , (oparg, followingArgs, withJump) -> oparg)
 
 # Unpacks an iterable into multiple stack items with a star item that gets the rest. The first
@@ -484,7 +490,7 @@ def_op_graal(
 # operand)
 #
 def_op_graal(
-    loc, "UNPACK_EX", 0x48, 2, 1, 1
+    loc, "UNPACK_EX", 0x48, VARYING_STACK_INT, VARYING_STACK_INT, 2
 )  #  (oparg, followingArgs, withJump) -> oparg + 1 + Byte.toUnsignedInt(followingArgs[0]))
 
 # jumps

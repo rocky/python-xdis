@@ -1,4 +1,4 @@
-# (C) Copyright 2018, 2020-2024 by Rocky Bernstein
+# (C) Copyright 2018, 2020-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@ If this file changes the other opcode files may have to be adjusted accordingly.
 """
 
 from xdis.opcodes.base import (
+    VARYING_STACK_INT,
     binary_op,
     call_op,
     compare_op,
@@ -150,7 +151,7 @@ HAVE_ARGUMENT = 90              # Opcodes from here have an argument:
 store_op(loc, "STORE_NAME",            90,  1,  0, is_type="name")
                                                     # Operand is in name list
 name_op(loc, "DELETE_NAME",            91,  0,  0)  # ""
-varargs_op(loc, "UNPACK_SEQUENCE",     92, -1,  1)  # TOS is number of tuple items
+varargs_op(loc, "UNPACK_SEQUENCE",     92,  1,  VARYING_STACK_INT)  # TOS is number of tuple items
 jrel_op(loc, "FOR_ITER",               93,  0,  1)  # TOS is read
 
 store_op(loc, "STORE_ATTR",            95,  2,  0, is_type="name")
