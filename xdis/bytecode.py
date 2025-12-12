@@ -228,6 +228,7 @@ def is_fixed_wordsize_bytecode(opc):
     else:
         return False
 
+
 def get_logical_instruction_at_offset(
     bytecode,
     offset,
@@ -349,10 +350,12 @@ def get_logical_instruction_at_offset(
                 else:
                     argval, argrepr = get_name_info(arg, names)
             elif op in opc.JREL_OPS:
-                if "JUMP_BACKWARD" in opc.opname[op]:
+                signed_arg = arg
+                if "JUMP_BACKWARD" in opname:
                     signed_arg = -arg
-                else:
-                    signed_arg = arg
+                elif opc.version_tuple >= (3, 14) and "END_ASYNC_FOR" in opname:
+                    signed_arg = -arg
+
                 argval = i + get_jump_val(signed_arg, opc.python_version)
 
                 # check cache instructions for python 3.13
@@ -370,12 +373,16 @@ def get_logical_instruction_at_offset(
                 if opc.version_tuple >= (3, 12) and opname == "FOR_ITER":
                     argval += 2
                 argrepr = "to " + repr(argval)
+                if opc.version_tuple >= (3, 14) and "END_ASYNC_FOR" in opname:
+                    argrepr = "from " + repr(argval)
+
             elif op in opc.JABS_OPS:
                 argval = get_jump_val(arg, opc.python_version)
                 argrepr = "to " + repr(argval)
             elif op in opc.LOCAL_OPS:
                 if opc.version_tuple >= (3, 13) and opname in (
                     "LOAD_FAST_LOAD_FAST",
+                    "LOAD_FAST_BORROW_LOAD_FAST_BORROW",
                     "STORE_FAST_LOAD_FAST",
                     "STORE_FAST_STORE_FAST",
                 ):
@@ -504,6 +511,10 @@ def get_instructions_bytes(
     else:
         exception_entries = tuple()
     # freevars = code_object.co_freevars
+    freevars = code_object.co_freevars if hasattr(code_object, "co_freevars") else tuple()
+
+    cells = cellvars + freevars
+>>>>>>> python-3.0-to-3.2
 
     labels = opc.findlabels(bytecode, opc)
     if hasattr(opc, "findlinestarts"):
@@ -713,6 +724,7 @@ class Bytecode:
 
         if str(self.opc.python_implementation) == "Graal":
             from xdis.bytecode_graal import get_instructions_bytes_graal
+
             get_instructions_fn = get_instructions_bytes_graal
         else:
             get_instructions_fn = get_instructions_bytes
@@ -832,8 +844,7 @@ class Bytecode:
             # locals and hope the two are the same.
             if instr.opname == "RESERVE_FAST":
                 file.write(
-                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST "
-                    "are inaccurate here in Python before 1.5\n"
+                    "# Warning: subsequent LOAD_FAST and STORE_FAST after RESERVE_FAST are inaccurate here in Python before 1.5\n"
                 )
             pass
         return instructions

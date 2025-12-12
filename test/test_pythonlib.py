@@ -100,6 +100,7 @@ for vers in (
     "3.5pypy",
     "3.6pypy",
     "3.7pypy",
+    "3.11graal",
     "3.12graal",
     3.6,
     3.7,
@@ -109,6 +110,7 @@ for vers in (
     "3.11",
     "3.12",
     "3.13",
+    "3.14",
 ):
     bytecode = "bytecode_%s" % vers
     key = "bytecode-%s" % vers
@@ -129,6 +131,7 @@ for vers, vers_dot in (
     (311, 3.11),
     (312, 3.12),
     (313, 3.13),
+    (314, 3.14),
 ):
     bytecode = "bytecode_pypy%s" % vers
     key = "bytecode-pypy%s" % vers
@@ -145,6 +148,13 @@ for vers, vers_dot in (
     key = "bytecode-graal%s" % vers
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
     key = "bytecode-pypy%s" % vers_dot
+    test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
+
+for vers, vers_dot in (
+        (310, 3.10), (311, 3.11),
+):
+    bytecode = "bytecode_graal%s" % vers
+    key = "bytecode-graal%s" % vers
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
 
 

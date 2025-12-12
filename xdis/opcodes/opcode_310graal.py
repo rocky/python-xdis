@@ -20,7 +20,7 @@ See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
 
 
-from xdis.opcodes.base import init_opdata
+from xdis.opcodes.base import VARYING_STACK_INT, init_opdata
 from xdis.opcodes.base_graal import findlabels  # noqa
 from xdis.opcodes.base_graal import (  # find_linestarts,  # noqa
     binary_op_graal,
@@ -460,7 +460,7 @@ def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x46, 0, 2, 0)
 # Pushed: unpacked items, the count is determined by the immediate operand
 #
 def_op_graal(
-    loc, "UNPACK_SEQUENCE", 0x47, 1, 1, 1
+    loc, "UNPACK_SEQUENCE", 0x47, 1, VARYING_STACK_INT, 1
 )  # , (oparg, followingArgs, withJump) -> oparg)
 
 # Unpacks an iterable into multiple stack items with a star item that gets the rest. The first
@@ -473,7 +473,7 @@ def_op_graal(
 # operand)
 #
 def_op_graal(
-    loc, "UNPACK_EX", 0x48, 2, 1, 1
+    loc, "UNPACK_EX", 0x48, 2, VARYING_STACK_INT, VARYING_STACK_INT
 )  #  (oparg, followingArgs, withJump) -> oparg + 1 + Byte.toUnsignedInt(followingArgs[0]))
 
 # jumps

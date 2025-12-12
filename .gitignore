@@ -29,6 +29,7 @@
 /.pytest_cache
 /.python-version
 /.tox
+.tox
 /.venv*/*
 /ChangeLog
 /ChangeLog-spell-corrected
@@ -52,3 +53,4 @@ com_crashlytics_export_strings.xml
 crashlytics-build.properties
 crashlytics.properties
 fabric.properties
+uv.lock
