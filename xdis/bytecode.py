@@ -502,19 +502,21 @@ def get_instructions_bytes(
     varnames = code_object.co_varnames
 
     if hasattr(code_object, "co_cellvars"):
-        cells = code_object.co_cellvars
+        cellvars = code_object.co_cellvars
     else:
-        cells = tuple()
+        cellvars = tuple()
 
     if hasattr(code_object, "exception_entries"):
         exception_entries = code_object.exception_entries
     else:
         exception_entries = tuple()
-    # freevars = code_object.co_freevars
-    freevars = code_object.co_freevars if hasattr(code_object, "co_freevars") else tuple()
+
+    if hasattr(code_object, "co_freevars"):
+        freevars = code_object.co_freevars
+    else:
+        freevars = tuple()
 
     cells = cellvars + freevars
->>>>>>> python-3.0-to-3.2
 
     labels = opc.findlabels(bytecode, opc)
     if hasattr(opc, "findlinestarts"):

@@ -675,7 +675,7 @@ class _VersionIndependentUnmarshaller:
         refnum = unpack("<i", self.fp.read(4))[0]
         return self.intern_strings[refnum]
 
-    def t_slice(self, save_ref, bytes_for_s: bool = False):
+    def t_slice(self, save_ref, bytes_for_s = False):
         """TYPE_SLICE introducted in Marshal version 5"""
         retval, idx = self.r_ref_reserve(slice(None, None, None), save_ref)
 

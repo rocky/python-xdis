@@ -326,21 +326,24 @@ _nb_ops = [
 ]
 
 
-def format_BINARY_OP_314(arg: int):
+def format_BINARY_OP_314(arg):
     return _nb_ops[arg][1]
 
 
 def extended_BINARY_OP_314(opc, instructions):
     opname = _nb_ops[instructions[0].argval][1]
 
-    fmt_str = "%s[%s]" if opname == "[]" else "%%s %s %%s" % opname
+    if opname == "[]":
+        fmt_str = "%s[%s]"
+    else:
+        fmt_str = "%%s %s %%s" % opname
     return extended_format_binary_op(opc, instructions, fmt_str)
 
 
 _common_constants = ("AssertionError", "NotImplementedError", "tuple", "all", "any")
 
 
-def format_LOAD_COMMON_CONSTANT_314(arg: int):
+def format_LOAD_COMMON_CONSTANT_314(arg):
     return _common_constants[arg]
 
 
