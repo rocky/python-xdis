@@ -152,8 +152,8 @@ for vers, vers_dot in (
 for vers, vers_dot in (
     (311, 3.11),
 ):
-    bytecode = f"bytecode_graal{vers}"
-    key = f"bytecode-graal{vers}"
+    bytecode = "bytecode_graal%s" % vers
+    key = "bytecode-graal%s" % vers
     test_options[key] = (os.path.join(src_dir, bytecode), PYOC, bytecode, vers_dot)
 
 

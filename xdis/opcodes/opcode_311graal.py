@@ -19,7 +19,7 @@ Python Graal 3.11 bytecode opcodes
 See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
 
-from xdis.opcodes.base import init_opdata
+from xdis.opcodes.base import VARYING_STACK_INT, init_opdata
 from xdis.opcodes.base_graal import findlabels  # noqa
 from xdis.opcodes.base_graal import (  # find_linestarts,  # noqa
     binary_op_graal,
