@@ -193,6 +193,9 @@ def get_instructions_bytes_graal(
                 arg = 0
             break
 
+        if arg_count == 0:
+            arg = None
+
         inst_size = (arg_count + 1) + (extended_arg_count * 2)
         start_offset = offset if opc.oppop[opcode] == 0 else None
 

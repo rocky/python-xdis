@@ -1095,7 +1095,12 @@ class _VersionIndependentUnmarshaller:
     def t_graal_CodeUnit(self, save_ref, bytes_for_s: bool = False):
         """
         Graal Python code. This has fewer fields than Python
-        code. In particular, instructions are JVM bytecode.
+        code. Graal Python Bytecode is similar to Python Bytecode for
+        a given version, things are a little different, especially when it comes
+        to collections. Graal has intructions for homogeneous arrays.
+
+        Note that Graal's BytecodeCodeUnit has a dumpBytecode() method
+        to show assembly instructions.
         """
 
         graal_bytecode_version = self.graal_readByte()
