@@ -248,7 +248,7 @@ class _VersionIndependentUnmarshaller:
 
         match marshal_type:
             case "B":
-                ret = self.graal_readBigInteger()
+                ret = self.graal_readBooleanArray()
             # case "b":
             #     return "OK"
             case "d":
@@ -313,6 +313,14 @@ class _VersionIndependentUnmarshaller:
             return -result
         else:
             return result
+
+    def graal_readBooleanArray(self) -> tuple[bool, ...]:
+        """
+        Python equivalent of Python Graal's readBooleanArray() from
+        MarshalModuleBuiltins.java
+        """
+        length: int = int(unpack("<i", self.fp.read(4))[0])
+        return tuple([bool(self.graal_readByte()) for _ in range(length)])
 
     def graal_readByte(self) -> int:
         """
