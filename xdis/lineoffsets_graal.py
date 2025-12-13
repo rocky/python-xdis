@@ -82,11 +82,15 @@ class SourceMap:
         self.next_column = start_column
         self.next_line = start_line
         offset = 0
+        # print(f"XXX0 len: {n}") # debug
         while offset < n:
 
             # code[offset] is an int 0..255 in Python 3 when indexing bytes
+            # print(f"offset: {offset}") # debug
             op_byte = bytecode[offset]
+            # print(f"{opc.opname[op_byte]}") # debug
             op_len = arg_counts[op_byte] + 1
+            # print(f"op_len: {op_len}") # debug
 
             try:
                 start_line, start_column = self._next_line_and_column()

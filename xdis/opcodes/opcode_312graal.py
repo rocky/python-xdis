@@ -551,7 +551,7 @@ jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 0x51, 1, 1, True, True, 3)
 #
 # Pushes: the cell object
 #
-free_op_graal(loc, "LOAD_CLOSURE", 81, 1, 0, 1)
+free_op_graal(loc, "LOAD_CLOSURE", 0x52, 1, 0, 1)
 #
 # Reduces multiple stack items into an array of cell objects.
 #
@@ -560,7 +560,7 @@ free_op_graal(loc, "LOAD_CLOSURE", 81, 1, 0, 1)
 # Pushes: cell object array ({@code PCell[]})
 #
 def_op_graal(
-    loc, "CLOSURE_FROM_STACK", 82, 1
+    loc, "CLOSURE_FROM_STACK", 0x53, 1
 )  # , (oparg, followingArgs, withJump) -> oparg, 1)
 #
 # Creates a function object. The first immediate argument is an index to the constants array

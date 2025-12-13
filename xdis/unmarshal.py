@@ -29,7 +29,7 @@ object.
 import io
 import marshal
 import sys
-from struct import unpack
+from struct import unpack, unpack_from
 from types import EllipsisType
 from typing import Any, Dict, Tuple, Union
 
@@ -147,6 +147,9 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_UNKNOWN: "unknown",
 }
 
+# Used by graal
+JAVA_MARSHAL_SHIFT = 15
+JAVA_MARSHAL_BASE = 1 << JAVA_MARSHAL_SHIFT
 
 def compat_str(s: Union[str, bytes]) -> Union[str, bytes]:
     """
@@ -244,8 +247,8 @@ class _VersionIndependentUnmarshaller:
         # print(marshal_type)  # debug
 
         match marshal_type:
-            # case "B":
-            #     ret = tuple()
+            case "B":
+                ret = self.graal_readBigInteger()
             # case "b":
             #     return "OK"
             case "d":
@@ -268,6 +271,48 @@ class _VersionIndependentUnmarshaller:
         if save_ref:
             self.intern_objects.append(ret)
         return ret
+
+    def graal_readBigInteger(self):
+        """
+        Reads a marshaled big integer from the input stream.
+        """
+        negative = False
+        sz = self.graal_readInt() # Get the size in shorts
+        if sz < 0:
+            negative = True
+            sz = -sz
+
+        # size is in shorts, convert to size in bytes
+        sz *= 2
+
+        data = bytes([self.graal_readByte() for _ in range(sz)])
+
+        i = 0
+
+        # Read the first 2 bytes as a 16-bit signed integer (short)
+        # '>h' specifies big-endian signed short
+        digit = unpack_from('>h', data, i)[0]
+        i += 2
+
+        # Python int handles arbitrarily large numbers
+        result = digit
+
+        while i < sz:
+            # Calculate the power based on the number of shorts processed so far
+            power = i // 2
+            # Read the next 2 bytes as a 16-bit signed integer
+            digit = unpack_from('>h', data, i)[0]
+            i += 2
+
+            # In Python, int supports all these operations directly
+            # The Java code effectively reconstructs the number using base 2^16 (MARSHAL_BASE)
+            term = digit * (JAVA_MARSHAL_BASE ** power)
+            result += term
+
+        if negative:
+            return -result
+        else:
+            return result
 
     def graal_readByte(self) -> int:
         """
