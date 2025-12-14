@@ -1,4 +1,4 @@
-#  Copyright (c) 2018-2024 by Rocky Bernstein
+#  Copyright (c) 2018-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -434,7 +434,7 @@ class Instruction(NamedTuple):
                     new_instruction[-2] = new_repr
                     new_instruction[-1] = start_offset
                     del instructions[-1]
-                    # See comment above abut the use of self.__class__
+                    # See comment above about the use of self.__class__
                     instructions.append(self.__class__(*new_instruction))
                     argval = self.argval
                     prefix = "" if argval is None else f"({argval}) | "

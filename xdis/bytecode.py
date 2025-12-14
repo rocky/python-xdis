@@ -536,7 +536,6 @@ def get_instructions_bytes(
             yield instruction
         offset = next_offset(instruction.opcode, opc, instruction.offset)
 
-
 class Bytecode:
     """Bytecode operations involving a Python code object.
 

@@ -29,7 +29,7 @@ object.
 import io
 import marshal
 import sys
-from struct import unpack
+from struct import unpack, unpack_from
 from typing import Dict, Optional, Union
 
 from xdis.codetype import to_portable
@@ -146,6 +146,9 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_UNKNOWN: "unknown",
 }
 
+# Used by graal
+JAVA_MARSHAL_SHIFT = 15
+JAVA_MARSHAL_BASE = 1 << JAVA_MARSHAL_SHIFT
 
 def compat_str(s: Union[str, bytes]) -> Union[str, bytes]:
     """
@@ -241,10 +244,10 @@ class _VersionIndependentUnmarshaller:
 
         # print(marshal_type)  # debug
 
-        # case "B":
-        #     ret = tuple()
-        # case "b":
-        #     return "OK"
+        if marshal_type == ARRAY_TYPE_BOOLEAN:
+            ret = self.graal_readBooleanArray()
+        # elif marshal_type == "b":
+            #     return "OK"
         # case "s":
         #     return "Internal server error"
         if marshal_type == ARRAY_TYPE_DOUBLE:
@@ -265,6 +268,56 @@ class _VersionIndependentUnmarshaller:
         if save_ref:
             self.intern_objects.append(ret)
         return ret
+
+    def graal_readBigInteger(self):
+        """
+        Reads a marshaled big integer from the input stream.
+        """
+        negative = False
+        sz = self.graal_readInt() # Get the size in shorts
+        if sz < 0:
+            negative = True
+            sz = -sz
+
+        # size is in shorts, convert to size in bytes
+        sz *= 2
+
+        data = bytes([self.graal_readByte() for _ in range(sz)])
+
+        i = 0
+
+        # Read the first 2 bytes as a 16-bit signed integer (short)
+        # '>h' specifies big-endian signed short
+        digit = unpack_from('>h', data, i)[0]
+        i += 2
+
+        # Python int handles arbitrarily large numbers
+        result = digit
+
+        while i < sz:
+            # Calculate the power based on the number of shorts processed so far
+            power = i // 2
+            # Read the next 2 bytes as a 16-bit signed integer
+            digit = unpack_from('>h', data, i)[0]
+            i += 2
+
+            # In Python, int supports all these operations directly
+            # The Java code effectively reconstructs the number using base 2^16 (MARSHAL_BASE)
+            term = digit * (JAVA_MARSHAL_BASE ** power)
+            result += term
+
+        if negative:
+            return -result
+        else:
+            return result
+
+    def graal_readBooleanArray(self) -> tuple[bool, ...]:
+        """
+        Python equivalent of Python Graal's readBooleanArray() from
+        MarshalModuleBuiltins.java
+        """
+        length: int = int(unpack("<i", self.fp.read(4))[0])
+        return tuple([bool(self.graal_readByte()) for _ in range(length)])
 
     def graal_readByte(self) -> int:
         """
@@ -1037,7 +1090,12 @@ class _VersionIndependentUnmarshaller:
     def t_graal_CodeUnit(self, save_ref, bytes_for_s: bool = False):
         """
         Graal Python code. This has fewer fields than Python
-        code. In particular, instructions are JVM bytecode.
+        code. Graal Python Bytecode is similar to Python Bytecode for
+        a given version, things are a little different, especially when it comes
+        to collections. Graal has intructions for homogeneous arrays.
+
+        Note that Graal's BytecodeCodeUnit has a dumpBytecode() method
+        to show assembly instructions.
         """
 
         graal_bytecode_version = self.graal_readByte()

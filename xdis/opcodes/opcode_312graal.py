@@ -443,7 +443,7 @@ call_op_graal(
 #
 # Pushes: call result
 #
-call_op_graal(loc, "CALL_COMPREHENSION", 0x46, 0, 2, 1)
+call_op_graal(loc, "CALL_COMPREHENSION", 0x46, 0, 2)
 #
 # Calls a callable using an arguments array and keywords array.
 #
@@ -451,7 +451,9 @@ call_op_graal(loc, "CALL_COMPREHENSION", 0x46, 0, 2, 1)
 #
 # Pushes: call result
 #
-call_op_graal(loc, "CALL_FUNCTION_KW", 0x47, 0, 3, 1)
+call_op_graal(loc, "CALL_FUNCTION_KW", 0x47, 0, 3)
+arg_counts[0x47] = 0
+
 #
 # Calls a callable using an arguments array. No keywords are passed.
 #
@@ -551,7 +553,7 @@ jrel_op_graal(loc, "POP_AND_JUMP_IF_TRUE", 0x51, 1, 1, True, True, 3)
 #
 # Pushes: the cell object
 #
-free_op_graal(loc, "LOAD_CLOSURE", 81, 1, 0, 1)
+free_op_graal(loc, "LOAD_CLOSURE", 0x52, 1, 0, 1)
 #
 # Reduces multiple stack items into an array of cell objects.
 #
@@ -560,7 +562,7 @@ free_op_graal(loc, "LOAD_CLOSURE", 81, 1, 0, 1)
 # Pushes: cell object array ({@code PCell[]})
 #
 def_op_graal(
-    loc, "CLOSURE_FROM_STACK", 82, 1
+    loc, "CLOSURE_FROM_STACK", 0x53, 1
 )  # , (oparg, followingArgs, withJump) -> oparg, 1)
 #
 # Creates a function object. The first immediate argument is an index to the constants array
@@ -650,7 +652,7 @@ collection_op_graal(
 # necessary for keyword arguments merge. Note it works with dicts. Keyword arrays need to be
 # converted to dicts first.
 #
-def_op_graal(loc, "KWARGS_DICT_MERGE", 0x5F, 0, 2, 1)
+def_op_graal(loc, "KWARGS_DICT_MERGE", 0x5F, 0, 2, 0)
 #
 # Create a single {@link PKeyword} object. The name is determined by the immediate operand
 # which indexes the names array ({@code co_names})
@@ -815,4 +817,9 @@ def_op_graal(loc, "LOAD_DOUBLE_D", 0x7C, 1, 0, 1)
 # FOR_ITER*
 # BINARY_SUBSCR*
 # and MORE!
+
+# Something is wrong here...
+collection_op_graal(loc, "COLLECTION_FROM_COLLECTION", 0xa0, 1, 1, 0)
+#
+
 update_sets(loc)

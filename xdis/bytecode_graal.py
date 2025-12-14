@@ -6,8 +6,8 @@ from xdis.instruction import Instruction
 from xdis.lineoffsets_graal import find_linestarts_graal
 from xdis.opcodes.base_graal import (
     BINARY_OPS,
-    COLLECTION_KIND,
     UNARY_OPS,
+    collection_to_str,
     get_optype_graal,
 )
 
@@ -167,10 +167,10 @@ def get_instructions_bytes_graal(
 
             elif optype == "collection":
                 argval = arg
-                argrepr = COLLECTION_KIND.get(arg, "??")
+                argrepr = collection_to_str(arg)
                 break
             elif opcode == opc.opmap["UNPACK_EX"]:
-                argrepr = "%d, %d" % (arg, Byte.toUnsignedInt(following_args[0]))
+                argrepr = "%d, %d" % (arg, int(following_args[0]))
                 break
             elif optype == "jrel":
                 # fields.computeIfAbsent(offset + arg, k -> new String[DISASSEMBLY_NUM_COLUMNS])[1] = ">>"
@@ -192,6 +192,9 @@ def get_instructions_bytes_graal(
             else:
                 arg = 0
             break
+
+        if arg_count == 0:
+            arg = None
 
         inst_size = (arg_count + 1) + (extended_arg_count * 2)
         start_offset = offset if opc.oppop[opcode] == 0 else None
