@@ -170,7 +170,7 @@ def get_instructions_bytes_graal(
                 argrepr = collection_to_str(arg)
                 break
             elif opcode == opc.opmap["UNPACK_EX"]:
-                argrepr = "%d, %d" % (arg, Byte.toUnsignedInt(following_args[0]))
+                argrepr = "%d, %d" % (arg, int(following_args[0]))
                 break
             elif optype == "jrel":
                 # fields.computeIfAbsent(offset + arg, k -> new String[DISASSEMBLY_NUM_COLUMNS])[1] = ">>"
