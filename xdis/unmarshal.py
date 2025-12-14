@@ -266,7 +266,10 @@ class _VersionIndependentUnmarshaller:
             print(f"XXX Whoah {marshal_type}")
             ret = tuple()
         if save_ref:
-            self.intern_objects.append(ret)
+            if isinstance(ret, tuple):
+                self.intern_objects += list(ret)
+            else:
+                self.intern_objects.append(ret)
         return ret
 
     def graal_readBigInteger(self):
