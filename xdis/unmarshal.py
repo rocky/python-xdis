@@ -30,7 +30,7 @@ import io
 import marshal
 import sys
 from struct import unpack, unpack_from
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
@@ -250,7 +250,7 @@ class _VersionIndependentUnmarshaller:
             #     return "OK"
         # case "s":
         #     return "Internal server error"
-        if marshal_type == ARRAY_TYPE_DOUBLE:
+        elif marshal_type == ARRAY_TYPE_DOUBLE:
             ret = self.graal_readDoubleArray()
         elif marshal_type == ARRAY_TYPE_INT:
             ret = self.graal_readIntArray()
@@ -311,7 +311,7 @@ class _VersionIndependentUnmarshaller:
         else:
             return result
 
-    def graal_readBooleanArray(self) -> tuple[bool, ...]:
+    def graal_readBooleanArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readBooleanArray() from
         MarshalModuleBuiltins.java
