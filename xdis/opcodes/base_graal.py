@@ -128,15 +128,30 @@ BINARY_OPS = {
     33: "INPLACE_MATMUL",
 }
 
+COLLECTION_KIND_SHIFT = 5
+COLLECTION_KIND_MASK = (1 << COLLECTION_KIND_SHIFT) - 1
 COLLECTION_KIND = {
-    32: "list",
-    67: "tuple",  # Probably need to use a mask
-    99: "tuple",  # probably need to use a mask
-    3: "set",
-    4: "dict",
-    5: "kw",
-    6: "object",
+    0b001: "list",
+    0b010: "tuple",  # Probably need to use a mask
+    0b011: "set",
+    0b100: "dict",
+    0b101: "PKeyword",
+    0b110: "Object",
+    # #
+    # 99: "tuple",  # probably need to use a mask
+    # 160: "object",
+    # 192: "object",
 }
+
+COLLECTION_KIND_ELEMENT = {
+    0: "",
+    1: "int",
+    2: "long",
+    3: "boolean",
+    4: "double",
+    5: "object"
+}
+
 
 UNARY_OPS = {
     0: "NOT",
@@ -144,6 +159,12 @@ UNARY_OPS = {
     30: "IN",
 }
 
+def collection_to_str(collection_value: int) -> str:
+    kind = collection_value >> COLLECTION_KIND_SHIFT
+    kind_str = COLLECTION_KIND.get(kind, "??")
+    element_type = collection_value & COLLECTION_KIND_MASK
+    element_str = COLLECTION_KIND_ELEMENT.get(element_type, "??")
+    return "%s[%s]" % (kind_str, element_str)
 
 def binary_op_graal(
     loc,

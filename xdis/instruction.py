@@ -389,7 +389,7 @@ class Instruction(_Instruction):
                     new_instruction[9] = new_repr
                     new_instruction[-1] = start_offset
                     del instructions[-1]
-                    # See comment above abut the use of self.__class__
+                    # See comment above about the use of self.__class__
                     instructions.append(self.__class__(*new_instruction))
                     argval = self.argval
                     if argval is None:

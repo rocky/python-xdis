@@ -6,8 +6,8 @@ from xdis.instruction import Instruction
 from xdis.lineoffsets_graal import find_linestarts_graal
 from xdis.opcodes.base_graal import (
     BINARY_OPS,
-    COLLECTION_KIND,
     UNARY_OPS,
+    collection_to_str,
     get_optype_graal,
 )
 
@@ -134,7 +134,7 @@ def get_instructions_bytes_graal(
             elif opcode == opc.opmap["FORMAT_VALUE"]:
                 argval = arg
                 kind = arg & 0x3
-                if kind ==0x1:
+                if kind == 0x1:
                     argrepr = "STR"
                     break
                 elif kind == 0x2:
@@ -167,10 +167,10 @@ def get_instructions_bytes_graal(
 
             elif optype == "collection":
                 argval = arg
-                argrepr = COLLECTION_KIND.get(arg, "??")
+                argrepr = collection_to_str(arg)
                 break
             elif opcode == opc.opmap["UNPACK_EX"]:
-                argrepr = "%d, %d" % (arg, Byte.toUnsignedInt(following_args[0]))
+                argrepr = "%d, %d" % (arg, int(following_args[0]))
                 break
             elif optype == "jrel":
                 # fields.computeIfAbsent(offset + arg, k -> new String[DISASSEMBLY_NUM_COLUMNS])[1] = ">>"
@@ -192,6 +192,9 @@ def get_instructions_bytes_graal(
             else:
                 arg = 0
             break
+
+        if arg_count == 0:
+            arg = None
 
         inst_size = (arg_count + 1) + (extended_arg_count * 2)
         if opc.oppop[opcode] == 0:
@@ -247,7 +250,7 @@ def get_instructions_bytes_graal(
 
         yield Instruction(
             is_jump_target=is_jump_target,
-            starts_line= starts_line,
+            starts_line=starts_line,
             offset=offset,
             opname=opname,
             opcode=opcode,

@@ -61,12 +61,11 @@ class SourceMap:
         # use Python lists (mutable) to store maps; they match length of code
 
         bytecode = code_object.co_code
-        start_column  = code_object.startColumn
-        start_line  = code_object.startLine
+        start_column = code_object.startColumn
+        start_line = code_object.startLine
         # cells: tuple = code_object.co_cells
         # freevars: tuple = code_object.co_freevars
         arg_counts = opc.arg_counts
-
 
         n = len(bytecode)
         self.startLineMap = [0] * n
@@ -83,11 +82,13 @@ class SourceMap:
         self.next_column = start_column
         self.next_line = start_line
         offset = 0
+        # print(f"XXX0 len: {n}") # debug
         while offset < n:
 
             # code[offset] is an int 0..255 in Python 3 when indexing bytes
             op_byte = ord(bytecode[offset])
             op_len = arg_counts[op_byte] + 1
+            # print(f"op_len: {op_len}") # debug
 
             try:
                 start_line, start_column = self._next_line_and_column()
