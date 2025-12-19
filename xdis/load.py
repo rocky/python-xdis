@@ -250,7 +250,6 @@ def load_module_from_file_object(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
-            raise ImportError(f"Magic int {magic_int} ({version}) is not supported.")
 
         if magic_int in INTERIM_MAGIC_INTS:
             raise ImportError(
