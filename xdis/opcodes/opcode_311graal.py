@@ -678,7 +678,7 @@ def_op_graal(loc, "MAKE_KEYWORD", 0x5B, 1, 1, 1)
 #
 # Pushes (if jumping): the exception
 #
-jrel_op_graal(loc, "MATCH_EXC_OR_JUMP", 0x5C, 1, 0, 1)
+jrel_op_graal(loc, "MATCH_EXC_OR_JUMP", 0x5C, 1, 0)
 #
 # Save the current exception state on the stack and set it to the exception on the stack. The
 # exception object is {@link PException}, not a python exception. The exception is pushed back
@@ -688,7 +688,7 @@ jrel_op_graal(loc, "MATCH_EXC_OR_JUMP", 0x5C, 1, 0, 1)
 #
 # Pushes: the saved exception state, the exception
 #
-def_op_graal(loc, "PUSH_EXC_INFO", 0x5D, 0, 0, 1)
+def_op_graal(loc, "PUSH_EXC_INFO", 0x5D, 0, 0, 0)
 
 # Sets the current exception state to the saved state (by {@link #PUSH_EXC_INFO}) on the stack
 # and pop it.
