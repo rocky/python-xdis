@@ -27,7 +27,6 @@ object.
 """
 
 import marshal
-import io
 import sys
 import unicodedata
 from struct import unpack
@@ -35,7 +34,7 @@ from struct import unpack
 from xdis.codetype.code13 import Bytes
 from xdis.codetype import to_portable
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
-from xdis.version_info import version_tuple_to_str
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 if PYTHON_VERSION_TRIPLE < (2, 4):
     from sets import Set as set
@@ -831,15 +830,8 @@ def load_code(fp, magic_int, bytes_for_s=None, code_objects={}):
 
 
 def load_code_and_get_file_offsets(
+    fp, magic_int, bytes_for_s = False, code_objects={}
 ):
-    um_gen = _VersionIndependentUnmarshaller(
-        fp, magic_int, bytes_for_s, code_objects=code_objects
-    )
-=======
-    fp, magic_int, bytes_for_s: bool = False, code_objects={}
-) -> tuple:
-    if isinstance(fp, bytes):
-        fp = io.BytesIO(fp)
     if magic_int in GRAAL3_MAGICS:
         from xdis.unmarsh_graal import VersionIndependentUnmarshallerGraal
 
@@ -850,5 +842,4 @@ def load_code_and_get_file_offsets(
         um_gen = VersionIndependentUnmarshaller(
             fp, magic_int, bytes_for_s, code_objects=code_objects
         )
->>>>>>> python-3.0-to-3.2
     return um_gen.load(), um_gen.code_to_file_offsets

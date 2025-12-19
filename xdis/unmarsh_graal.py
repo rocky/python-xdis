@@ -25,7 +25,9 @@ object.
 """
 
 import marshal
-from struct import unpack, unpack_from
+import struct
+from struct import unpack
+
 
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3
@@ -67,8 +69,29 @@ from xdis.unmarshal import (
 )
 from xdis.version_info import IS_GRAAL, PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
+try:
+    from struct import unpack_from
+except ImportError:
+    def unpack_from(fmt, buffer, offset=0):
+        """
+        Python 2.4 implementation of struct.unpack_from.
+        Unpacks from 'buffer' starting at 'offset' based on 'fmt'.
+        """
+        # 1. Calculate how many bytes the format requires
+        size = struct.calcsize(fmt)
 
-def long(n: int) -> LongTypeForPython3:
+        # 2. Extract the relevant slice of the buffer
+        # In Python 2.4, 'buffer' is typically a string.
+        # We slice from offset to (offset + size).
+        chunk = buffer[offset : offset + size]
+
+        # 3. Use standard unpack on the slice
+        return struct.unpack(fmt, chunk)
+
+
+
+
+def long(n):
     return LongTypeForPython3(n)
 
     # FIXME: we should write a bytes() class with a repr
@@ -148,12 +171,12 @@ def compat_str(s):
         return s
 
 
-def compat_u2s(u) -> str:
+def compat_u2s(u):
     return str(u)
 
 
 class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
-    def __init__(self, fp, magic_int, bytes_for_s, code_objects={}) -> None:
+    def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
         """
         Marshal versions:
             2: [2.5, 3.4a0) (self.magic_int: 62071 until 3250)
@@ -211,7 +234,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
 
     # Python equivalents for graal unmarshal routines.
-    def t_graal_readArray(self, save_ref: bool, bytes_for_s: bool) -> tuple:
+    def t_graal_readArray(self, save_ref, bytes_for_s):
         """
         Python equivalent of Python Graal's readArray() from
         MarshalModuleBuiltins.java
@@ -294,7 +317,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         else:
             return result
 
-    def graal_readBooleanArray(self) -> tuple:
+    def graal_readBooleanArray(self):
         """
         Python equivalent of Python Graal's readBooleanArray() from
         MarshalModuleBuiltins.java
@@ -302,29 +325,29 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([bool(self.graal_readByte()) for _ in range(length)])
 
-    def graal_readByte(self) -> int:
+    def graal_readByte(self):
         """
         Python equivalent of Python Graal's readBytes() from
         MarshalModuleBuiltins.java
         """
         return ord(unpack("c", self.fp.read(1))[0])
 
-    def graal_readBytes(self) -> bytes:
+    def graal_readBytes(self):
         """
         Python equivalent of Python Graal's readBytes() from
         MarshalModuleBuiltins.java
         """
         length = unpack("<i", self.fp.read(4))[0]
-        return bytes([self.graal_readByte() for _ in range(length)])
+        return ''.join([chr(self.graal_readByte()) for _ in range(length)])
 
-    def graal_readDouble(self) -> float:
+    def graal_readDouble(self):
         """
         Python equivalent of Python Graal's readDouble() from
         MarshalModuleBuiltins.java
         """
         return unpack("<d", self.fp.read(8))[0]
 
-    def graal_readDoubleArray(self) -> tuple:
+    def graal_readDoubleArray(self):
         """
         Python equivalent of Python Graal's readDoubleArray() from
         MarshalModuleBuiltins.java
@@ -332,14 +355,14 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readDouble() for _ in range(length)])
 
-    def graal_readInt(self) -> int:
+    def graal_readInt(self):
         """
         Python equivalent of Python Graal's readInt() from
         MarshalModuleBuiltins.java
         """
         return int(unpack("<i", self.fp.read(4))[0])
 
-    def graal_readIntArray(self) -> tuple:
+    def graal_readIntArray(self):
         """
         Python equivalent of Python Graal's readIntArray() from
         MarshalModuleBuiltins.java
@@ -347,14 +370,14 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readInt() for _ in range(length)])
 
-    def graal_readLong(self) -> int:
+    def graal_readLong(self):
         """
         Python equivalent of Python Graal's readLongt() from
         MarshalModuleBuiltins.java
         """
         return int(unpack("<q", self.fp.read(8))[0])
 
-    def graal_readLongArray(self) -> tuple:
+    def graal_readLongArray(self):
         """
         Python equivalent of Python Graal's readLongt() from
         MarshalModuleBuiltins.java
@@ -362,7 +385,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readLong() for _ in range(length)])
 
-    def graal_readObjectArray(self) -> tuple:
+    def graal_readObjectArray(self):
         """
         Python equivalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
@@ -379,15 +402,15 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         # return tuple(result)
         return tuple([self.r_object(bytes_for_s=False) for _ in range(length)])
 
-    def graal_readString(self) -> str:
+    def graal_readString(self):
         """
         Python equvalent of Python Graal's readString() from
         MarshalModuleBuiltins.java
         """
         strsize = unpack("<i", self.fp.read(4))[0]
-        return self.fp.read(strsize).decode("utf-8", errors="ignore")
+        return self.fp.read(strsize).decode("utf-8")
 
-    def graal_readStringArray(self) -> tuple:
+    def graal_readStringArray(self):
         """
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
@@ -395,7 +418,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         length = self.graal_readInt()
         return tuple([self.graal_readString() for _ in range(length)])
 
-    def graal_readSparseTable(self) -> dict:
+    def graal_readSparseTable(self):
         """
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
@@ -408,7 +431,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
                 return table
             table[i] = self.graal_readIntArray()
 
-    def t_code_graal(self, save_ref, bytes_for_s: bool = False):
+    def t_code_graal(self, save_ref, bytes_for_s = False):
         """
         Graal Python code. This has fewer fields than Python
         code. In particular, instructions are JVM bytecode.
@@ -445,9 +468,9 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         )
         co_codeunit_string = self.graal_readBytes()
         # Determine if we are Graal 3.10, 3.11, or 3.12 ...
-        if chr(co_codeunit_string[0]) != TYPE_GRAALPYTHON_CODE_UNIT:
+        if co_codeunit_string[0] != TYPE_GRAALPYTHON_CODE_UNIT:
             # Determine if we are Graal 3.10, 3.11
-            co_codeunit_string = b"U" + co_codeunit_string
+            co_codeunit_string = "U" + co_codeunit_string
             if self.version_triple != (3, 10, 8):
                 self.version_triple = (3, 11, 7)
         else:
@@ -485,7 +508,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
         return self.r_ref_insert(code, i)
 
-    def t_graal_CodeUnit(self, save_ref, bytes_for_s: bool = False):
+    def t_graal_CodeUnit(self, save_ref, bytes_for_s = False):
         """
         Graal Python code. This has fewer fields than Python
         code. Graal Python Bytecode is similar to Python Bytecode for

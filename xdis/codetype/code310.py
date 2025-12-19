@@ -17,7 +17,6 @@
 
 from xdis.codetype.code13 import Bytes
 from xdis.codetype.code38 import Code38
-from xdis.cross_types import UnicodeForPython3
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
 
 # Note: order is the positional order. It is important to match this
@@ -49,8 +48,8 @@ Code310FieldTypes = {
     "co_consts": (tuple, list),
     "co_names": (tuple, list),
     "co_varnames": (tuple, list),
-    "co_filename": (str, Bytes, UnicodeForPython3),
-    "co_name": (str, Bytes, UnicodeForPython3),
+    "co_filename": (str, Bytes, unicode),
+    "co_name": (str, Bytes, unicode),
     "co_stacksize": int,
     "co_firstlineno": int,
     "co_linetable": (str, Bytes, dict),

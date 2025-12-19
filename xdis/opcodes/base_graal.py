@@ -131,12 +131,12 @@ BINARY_OPS = {
 COLLECTION_KIND_SHIFT = 5
 COLLECTION_KIND_MASK = (1 << COLLECTION_KIND_SHIFT) - 1
 COLLECTION_KIND = {
-    0b001: "list",
-    0b010: "tuple",  # Probably need to use a mask
-    0b011: "set",
-    0b100: "dict",
-    0b101: "PKeyword",
-    0b110: "Object",
+    1: "list",
+    2: "tuple",  # Probably need to use a mask
+    3: "set",
+    4: "dict",
+    5: "PKeyword",
+    6: "Object",
     # #
     # 99: "tuple",  # probably need to use a mask
     # 160: "object",
@@ -159,7 +159,7 @@ UNARY_OPS = {
     30: "IN",
 }
 
-def collection_to_str(collection_value: int) -> str:
+def collection_to_str(collection_value):
     kind = collection_value >> COLLECTION_KIND_SHIFT
     kind_str = COLLECTION_KIND.get(kind, "??")
     element_type = collection_value & COLLECTION_KIND_MASK
