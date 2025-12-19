@@ -134,7 +134,7 @@ def get_instructions_bytes_graal(
             elif opcode == opc.opmap["FORMAT_VALUE"]:
                 argval = arg
                 kind = arg & 0x3
-                if kind ==0x1:
+                if kind == 0x1:
                     argrepr = "STR"
                     break
                 elif kind == 0x2:
@@ -247,7 +247,7 @@ def get_instructions_bytes_graal(
 
         yield Instruction(
             is_jump_target=is_jump_target,
-            starts_line= starts_line,
+            starts_line=starts_line,
             offset=offset,
             opname=opname,
             opcode=opcode,

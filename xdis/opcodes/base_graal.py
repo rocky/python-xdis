@@ -164,7 +164,7 @@ def collection_to_str(collection_value: int) -> str:
     kind_str = COLLECTION_KIND.get(kind, "??")
     element_type = collection_value & COLLECTION_KIND_MASK
     element_str = COLLECTION_KIND_ELEMENT.get(element_type, "??")
-    return f"{kind_str}[{element_str}]"
+    return "%s[%s]" % (kind_str, element_str)
 
 def binary_op_graal(
     loc: dict,

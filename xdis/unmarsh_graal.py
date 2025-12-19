@@ -26,7 +26,6 @@ object.
 
 import marshal
 from struct import unpack, unpack_from
-from typing import Any, Dict, Tuple, Union
 
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3
@@ -37,7 +36,6 @@ from xdis.unmarshal import (
     TYPE_ASCII_INTERNED,
     TYPE_BINARY_COMPLEX,
     TYPE_BINARY_FLOAT,
-    TYPE_CODE,
     TYPE_COMPLEX,
     TYPE_DICT,
     TYPE_ELLIPSIS,
@@ -138,7 +136,7 @@ UNMARSHAL_DISPATCH_TABLE = {
 JAVA_MARSHAL_SHIFT = 15
 JAVA_MARSHAL_BASE = 1 << JAVA_MARSHAL_SHIFT
 
-def compat_str(s: Union[str, bytes]) -> Union[str, bytes]:
+def compat_str(s):
     """
     This handles working with strings between Python2 and Python3.
     """
@@ -175,7 +173,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
         # It is helpful to save the order in sets, frozensets and dictionary keys,
         # so that on writing a bytecode file we can duplicate this order.
-        self.collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
+        self.collection_order = {}
 
         self.bytes_for_s = bytes_for_s
         self.version_triple = magic_int2tuple(self.magic_int)
@@ -189,7 +187,10 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         elif (3, 4) > self.version_triple >= (2, 5):
             self.marshal_version = 2
         else:
-            assert False, f"version {version_tuple_to_str(self.version.triple)} is not a graal version"
+            assert False, (
+                "version %s is not a graal version" %
+                version_tuple_to_str(self.version.triple)
+                )
 
         self.intern_strings = []
         self.intern_objects = []
@@ -227,28 +228,23 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
         # print(marshal_type)  # debug
 
-        match marshal_type:
-            case "B":
+        if marshal_type == ARRAY_TYPE_BOOLEAN:
                 ret = self.graal_readBooleanArray()
-            # case "b":
-            #     return "OK"
-            case "d":
-                ret = self.graal_readDoubleArray()
-            case "i":
-                ret = self.graal_readIntArray()
-            case "o":
-                ret = self.graal_readObjectArray()
-            case "l":
-                ret = self.graal_readLongArray()
-            # case "s":
-            #     return "Internal server error"
-            case "S":
-                ret = self.graal_readStringArray()
-            case _:
-                # The underscore '_' acts as a wildcard
-                # It matches anything if no previous case did (the 'default' case)
-                print(f"XXX Whoah {marshal_type}")
-                ret = tuple()
+        elif marshal_type == ARRAY_TYPE_DOUBLE:
+            ret = self.graal_readDoubleArray()
+        elif marshal_type == ARRAY_TYPE_INT:
+            ret = self.graal_readIntArray()
+        elif marshal_type == ARRAY_TYPE_OBJECT:
+            ret = self.graal_readObjectArray()
+        elif marshal_type == ARRAY_TYPE_LONG:
+            ret = self.graal_readLongArray()
+        elif marshal_type == ARRAY_TYPE_STRING:
+            ret = self.graal_readStringArray()
+        else:
+            # The underscore '_' acts as a wildcard
+            # It matches anything if no previous case did (the 'default' case)
+            print("XXX Whoah %s" % marshal_type)
+            ret = tuple()
         if save_ref:
             if isinstance(ret, tuple):
                 self.intern_objects += list(ret)
@@ -298,12 +294,12 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         else:
             return result
 
-    def graal_readBooleanArray(self) -> tuple[bool, ...]:
+    def graal_readBooleanArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readBooleanArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([bool(self.graal_readByte()) for _ in range(length)])
 
     def graal_readByte(self) -> int:
@@ -318,7 +314,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equivalent of Python Graal's readBytes() from
         MarshalModuleBuiltins.java
         """
-        length: int = unpack("<i", self.fp.read(4))[0]
+        length = unpack("<i", self.fp.read(4))[0]
         return bytes([self.graal_readByte() for _ in range(length)])
 
     def graal_readDouble(self) -> float:
@@ -328,12 +324,12 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         """
         return unpack("<d", self.fp.read(8))[0]
 
-    def graal_readDoubleArray(self) -> tuple[float, ...]:
+    def graal_readDoubleArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readDoubleArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readDouble() for _ in range(length)])
 
     def graal_readInt(self) -> int:
@@ -343,12 +339,12 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         """
         return int(unpack("<i", self.fp.read(4))[0])
 
-    def graal_readIntArray(self) -> tuple[int, ...]:
+    def graal_readIntArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readIntArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readInt() for _ in range(length)])
 
     def graal_readLong(self) -> int:
@@ -358,12 +354,12 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         """
         return int(unpack("<q", self.fp.read(8))[0])
 
-    def graal_readLongArray(self) -> tuple[int, ...]:
+    def graal_readLongArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readLongt() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         return tuple([self.graal_readLong() for _ in range(length)])
 
     def graal_readObjectArray(self) -> tuple:
@@ -372,7 +368,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         MarshalModuleBuiltins.java
         """
 
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length = int(unpack("<i", self.fp.read(4))[0])
         # # Debug code
         # result = []
         # for i in range(length):
@@ -388,18 +384,18 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equvalent of Python Graal's readString() from
         MarshalModuleBuiltins.java
         """
-        strsize: int = unpack("<i", self.fp.read(4))[0]
+        strsize = unpack("<i", self.fp.read(4))[0]
         return self.fp.read(strsize).decode("utf-8", errors="ignore")
 
-    def graal_readStringArray(self) -> tuple[str, ...]:
+    def graal_readStringArray(self) -> tuple:
         """
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.graal_readInt()
+        length = self.graal_readInt()
         return tuple([self.graal_readString() for _ in range(length)])
 
-    def graal_readSparseTable(self) -> Dict[int, tuple]:
+    def graal_readSparseTable(self) -> dict:
         """
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
@@ -505,7 +501,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         if graal_bytecode_version in (26,):
             self.version_triple = (3, 8, 5)
 
-        other_fields: Dict = {}
+        other_fields = {}
 
         # This is Java code for how a CodeUnit (type "U") is read
         # TruffleString name = readString();

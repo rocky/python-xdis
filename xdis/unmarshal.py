@@ -207,7 +207,8 @@ class VersionIndependentUnmarshaller:
 
         if magic_int in RUSTPYTHON_MAGICS:
             raise NotImplementedError(
-                "RustPython %s is not supported yet." % version_tuple_to_str(self.version_triple)
+                "RustPython %s is not supported yet."
+                % version_tuple_to_str(self.version_triple)
             )
 
         self.UNMARSHAL_DISPATCH_TABLE = UNMARSHAL_DISPATCH_TABLE
@@ -808,7 +809,10 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
 
     if magic_int in GRAAL3_MAGICS:
         from xdis.unmarsh_graal import VersionIndependentUnmarshallerGraal
-        um_gen = VersionIndependentUnmarshallerGraal(fp, magic_int, bytes_for_s, code_objects)
+
+        um_gen = VersionIndependentUnmarshallerGraal(
+            fp, magic_int, bytes_for_s, code_objects
+        )
     else:
         um_gen = VersionIndependentUnmarshaller(
             fp, magic_int, bytes_for_s, code_objects=code_objects
@@ -823,6 +827,7 @@ def load_code_and_get_file_offsets(
         fp = io.BytesIO(fp)
     if magic_int in GRAAL3_MAGICS:
         from xdis.unmarsh_graal import VersionIndependentUnmarshallerGraal
+
         um_gen = VersionIndependentUnmarshallerGraal(
             fp, magic_int, bytes_for_s, code_objects
         )

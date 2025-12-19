@@ -58,12 +58,11 @@ class SourceMap:
         # use Python lists (mutable) to store maps; they match length of code
 
         bytecode = code_object.co_code
-        start_column  = code_object.startColumn
-        start_line  = code_object.startLine
+        start_column = code_object.startColumn
+        start_line = code_object.startLine
         # cells: tuple = code_object.co_cells
         # freevars: tuple = code_object.co_freevars
         arg_counts = opc.arg_counts
-
 
         n = len(bytecode)
         self.startLineMap = [0] * n
@@ -158,6 +157,7 @@ class SourceMap:
             else:
                 # non-negative single-byte value
                 return extensions * MULTIPLIER_POSITIVE + val
+
 
 def find_linestarts_graal(code_object, opc, dup_lines: bool) -> dict:
     source_map = SourceMap(code_object, opc)
