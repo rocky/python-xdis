@@ -217,7 +217,6 @@ class VersionIndependentUnmarshaller:
             )
 
         self.UNMARSHAL_DISPATCH_TABLE = UNMARSHAL_DISPATCH_TABLE
->>>>>>> python-3.3-to-3.5
 
     def load(self):
         """
