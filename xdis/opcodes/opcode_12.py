@@ -25,7 +25,7 @@ import xdis.opcodes.opcode_13 as opcode_13
 # This is used from outside this module
 from xdis.cross_dis import findlabels  # noqa
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported; noqa
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     finalize_opcodes,
     init_opdata,
     name_op,
@@ -36,6 +36,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
 from xdis.opcodes.opcode_13 import opcode_arg_fmt13, opcode_extended_fmt13
 
 version_tuple = (1, 2)
+python_implementation = cpython_implementation
 
 loc = locals()
 init_opdata(loc, opcode_13, version_tuple)

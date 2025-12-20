@@ -22,7 +22,7 @@ of stack usage, and opererand formatting functions.
 
 import xdis.opcodes.opcode_25 as opcode_25
 from xdis.opcodes.base import (  # noqa
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     finalize_opcodes,
     init_opdata,
     name_op,
@@ -33,6 +33,7 @@ from xdis.opcodes.base import (  # noqa
 from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (2, 6)
+python_implementation = cpython_implementation
 
 loc = locals()
 init_opdata(loc, opcode_25, version_tuple)

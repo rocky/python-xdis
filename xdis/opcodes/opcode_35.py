@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2020-2021, 2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,8 +24,8 @@ of stack usage.
 from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_34 as opcode_34
-from xdis.opcodes.base import (  # noqa
-    cpython_implementation as python_implementation,
+from xdis.opcodes.base import (
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -38,7 +38,7 @@ from xdis.opcodes.format.extended import extended_format_binary_op, get_arglist
 from xdis.opcodes.opcode_34 import opcode_arg_fmt34, opcode_extended_fmt34
 
 version_tuple = (3, 5)
-
+python_implementation = cpython_implementation
 
 loc = locals()
 
