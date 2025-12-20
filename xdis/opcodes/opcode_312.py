@@ -113,9 +113,9 @@ def_op(loc    , "INSTRUMENTED_LINE"                , 254,   1, 1)
 
 #            OP NAME                              OPCODE POP PUSH
 def_op(loc    , "SETUP_FINALLY"                    , 256,   0, 1)
-def_op(loc    , "SETUP_CLEANUP"                    , 257,   0, 1)
+def_op(loc    , "SETUP_CLEANUP"                    , 257,   0, 2)
 def_op(loc    , "SETUP_WITH"                       , 258,   0, 1)
-def_op(loc    , "POP_BLOCK"                        , 259,   0, 1)
+def_op(loc    , "POP_BLOCK"                        , 259,   0, 0)
 
 jrel_op(loc   , "JUMP"                             , 260,   0, 0)
 jrel_op(loc   , "JUMP_NO_INTERRUPT"                , 261,   0, 0)
