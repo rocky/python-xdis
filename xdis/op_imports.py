@@ -64,6 +64,7 @@ from xdis.opcodes import (
     opcode_312,
     opcode_312graal,
     opcode_313,
+    opcode_313rust,
     opcode_314,
 )
 from xdis.version_info import PythonImplementation, version_tuple_to_str
@@ -187,6 +188,7 @@ op_imports = {
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
     "3.13.0rc3": opcode_313,
+    "3.13.0Rust": opcode_313rust,
     "3.14b3": opcode_314,
     "3.14.0": opcode_314,
     "3.14": opcode_314,

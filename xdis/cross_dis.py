@@ -259,7 +259,7 @@ def op_has_argument(opcode: int, opc) -> bool:
     """
     Return True if `opcode` instruction has an operand.
     """
-    return opcode >= opc.HAVE_ARGUMENT
+    return opcode in opc.hasarg if hasattr(opc, "hasarg") else opcode >= opc.HAVE_ARGUMENT
 
 
 def pretty_flags(flags, python_implementation=PYTHON_IMPLEMENTATION) -> str:

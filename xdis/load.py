@@ -224,7 +224,6 @@ def load_module_from_file_object(
 
     timestamp = 0
     file_offsets = {}
-    python_implementation = PythonImplementation.CPython
     try:
         magic = fp.read(4)
         magic_int = magic2int(magic)
@@ -354,6 +353,7 @@ def load_module_from_file_object(
     finally:
         fp.close()
 
+    python_implementation = PythonImplementation.RustPython if magic_int in RUSTPYTHON_MAGICS else PythonImplementation.CPython
     if is_pypy(magic_int, filename):
         python_implementation = PythonImplementation.PyPy
 

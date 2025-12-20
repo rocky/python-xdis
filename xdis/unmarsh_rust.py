@@ -163,6 +163,10 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         instr_count = self.read_int32()
         co_code = self.read_slice(instr_count * 2)
 
+        instructions = [
+            int.from_bytes(co_code[i:i+2], "little") for i in range(0, len(co_code), 2)
+        ]
+
         # read locations
         loc_count = self.read_int32()
         locations: List[SourceLocation] = []
