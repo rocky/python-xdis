@@ -28,7 +28,6 @@ import marshal
 from struct import unpack, unpack_from
 
 from xdis.codetype import to_portable
-from xdis.cross_types import LongTypeForPython3
 from xdis.magics import GRAAL3_MAGICS, magic_int2tuple
 from xdis.unmarshal import (
     TYPE_ARRAY,
@@ -66,14 +65,6 @@ from xdis.unmarshal import (
     VersionIndependentUnmarshaller,
 )
 from xdis.version_info import IS_GRAAL, PYTHON_VERSION_TRIPLE, version_tuple_to_str
-
-
-def long(n: int) -> LongTypeForPython3:
-    return LongTypeForPython3(n)
-
-    # FIXME: we should write a bytes() class with a repr
-    # that prints the b'' prefix so that Python2 can
-    # print out Python3 code correctly
 
 # Graal Array types
 TYPE_CODE_GRAAL = "C"
@@ -136,22 +127,6 @@ UNMARSHAL_DISPATCH_TABLE = {
 JAVA_MARSHAL_SHIFT = 15
 JAVA_MARSHAL_BASE = 1 << JAVA_MARSHAL_SHIFT
 
-def compat_str(s):
-    """
-    This handles working with strings between Python2 and Python3.
-    """
-    if isinstance(s, bytes):
-        return s.decode("utf-8", errors="ignore")
-    elif not isinstance(s, str):
-        return str(s)
-    else:
-        return s
-
-
-def compat_u2s(u) -> str:
-    return str(u)
-
-
 class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
     def __init__(self, fp, magic_int, bytes_for_s, code_objects={}) -> None:
         """
@@ -208,7 +183,6 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         self.graal_code_info = {}
 
         self.UNMARSHAL_DISPATCH_TABLE = UNMARSHAL_DISPATCH_TABLE
-
 
     # Python equivalents for graal unmarshal routines.
     def t_graal_readArray(self, save_ref: bool, bytes_for_s: bool) -> tuple:

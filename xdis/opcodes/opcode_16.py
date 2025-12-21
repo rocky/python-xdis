@@ -16,8 +16,9 @@
 """
 CPython 1.6 bytecode opcodes
 
-This is used in bytecode disassembly. This is similar to the
-opcodes in Python's dis.py library.
+This is a like Python 1.6's dis.py with some classification
+of stack usage and information for formatting instructions.
+of stack usage.
 """
 
 import xdis.opcodes.opcode_15 as opcode_15
@@ -26,7 +27,7 @@ import xdis.opcodes.opcode_15 as opcode_15
 from xdis.cross_dis import findlabels, findlinestarts  # noqa
 from xdis.opcodes.base import (  # noqa
     call_op,
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     finalize_opcodes,
     init_opdata,
     update_pj2,
@@ -34,6 +35,7 @@ from xdis.opcodes.base import (  # noqa
 from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (1, 6)
+python_implementation = cpython_implementation
 
 loc = locals()
 

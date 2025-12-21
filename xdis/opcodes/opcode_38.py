@@ -21,8 +21,8 @@ of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_37 as opcode_37
-from xdis.opcodes.base import (  # noqa
-    cpython_implementation as python_implementation,
+from xdis.opcodes.base import (
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -34,6 +34,7 @@ from xdis.opcodes.base import (  # noqa
 from xdis.opcodes.opcode_37 import opcode_arg_fmt37, opcode_extended_fmt37
 
 version_tuple = (3, 8)
+python_implementation = cpython_implementation
 
 loc = locals()
 
