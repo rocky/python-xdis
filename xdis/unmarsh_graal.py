@@ -158,22 +158,6 @@ UNMARSHAL_DISPATCH_TABLE = {
 JAVA_MARSHAL_SHIFT = 15
 JAVA_MARSHAL_BASE = 1 << JAVA_MARSHAL_SHIFT
 
-def compat_str(s):
-    """
-    This handles working with strings between Python2 and Python3.
-    """
-    if isinstance(s, bytes):
-        return s.decode("utf-8", errors="ignore")
-    elif not isinstance(s, str):
-        return str(s)
-    else:
-        return s
-
-
-def compat_u2s(u):
-    return str(u)
-
-
 class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
     def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
         """

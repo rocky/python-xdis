@@ -360,7 +360,6 @@ def load_module_from_file_object(
     finally:
         fp.close()
 
-    python_implementation = PythonImplementation.RustPython if magic_int in RUSTPYTHON_MAGICS else PythonImplementation.CPython
     if is_pypy(magic_int, filename):
         python_implementation = PythonImplementation.PyPy
     elif magic_int in RUSTPYTHON_MAGICS:

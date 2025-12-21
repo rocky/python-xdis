@@ -41,8 +41,8 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
-from xdis.opcodes.opcode_313 import opcode_arg_fmt313, opcode_extended_fmt313
-from xdis.version_info import PythonImplementation
+from xdis.opcodes.opcode_313 import opcode_extended_fmt313
+from xdis.version_info import PYTHON_VERSION_TRIPLE, PythonImplementation
 
 version_tuple = (3, 13)
 python_implementation = PythonImplementation("RustPython")
@@ -57,7 +57,7 @@ oppop = [0] * 256
 opmap = {}
 
 ## pseudo opcodes (used in the compiler) mapped to the values
-## they can become in the actual code.
+## they can become in the actual code.
 _pseudo_ops = {}
 
 _nb_ops = [
@@ -121,11 +121,22 @@ oplists = [
     loc["hasexc"],
 ]
 
+if PYTHON_VERSION_TRIPLE < (2, 5):
+    def any(iterable):
+        """
+        Python 2.4 implementation of the builtin any() function.
+        Returns True if any element of the iterable is true.
+        """
+        for element in iterable:
+            if element:
+                return True
+        return False
+
 # add new table "hasjump"
 loc.update({"hasjump": []})
 loc["hasjrel"] = loc["hasjump"]
 
-def pseudo_op(name: str, op: int, real_ops: list):
+def pseudo_op(name, op, real_ops):
     def_op(loc, name, op)
     _pseudo_ops[name] = real_ops
     # add the pseudo opcode to the lists its targets are in
@@ -508,7 +519,7 @@ _inline_cache_entries = [
 ]
 
 
-def extended_format_BINARY_OP(opc, instructions) -> tuple:
+def extended_format_BINARY_OP(opc, instructions):
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"

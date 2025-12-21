@@ -805,7 +805,6 @@ def load_code(fp, magic_int, bytes_for_s=None, code_objects={}):
     elif magic_int in RUSTPYTHON_MAGICS:
         from xdis.unmarsh_rust import VersionIndependentUnmarshallerRust
         um_gen = VersionIndependentUnmarshallerRust(
->>>>>>> python-3.0-to-3.2
             fp, magic_int, bytes_for_s, code_objects
         )
     else:

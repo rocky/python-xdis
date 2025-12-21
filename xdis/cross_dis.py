@@ -261,12 +261,10 @@ def op_has_argument(opcode, opc):
     """
     Return True if `opcode` instruction has an operand.
     """
-    return (
-        opcode in opc.hasarg
-        if hasattr(opc, "hasarg")
-        and opc.python_implementation is PythonImplementation.RustPython
-        else opcode >= opc.HAVE_ARGUMENT
-    )
+    if hasattr(opc, "hasarg") and opc.python_implementation is PythonImplementation.RustPython:
+        return opcode in opc.hasarg
+    else:
+        return opcode >= opc.HAVE_ARGUMENT
 
 
 def pretty_flags(flags, python_implementation=PYTHON_IMPLEMENTATION):
