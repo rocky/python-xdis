@@ -356,6 +356,12 @@ def load_module_from_file_object(
     python_implementation = PythonImplementation.RustPython if magic_int in RUSTPYTHON_MAGICS else PythonImplementation.CPython
     if is_pypy(magic_int, filename):
         python_implementation = PythonImplementation.PyPy
+    elif magic_int in RUSTPYTHON_MAGICS:
+        python_implementation = PythonImplementation.RustPython
+    elif magic_int in GRAAL3_MAGICS:
+        python_implementation = PythonImplementation.Graal
+    else:
+        python_implementation = PythonImplementation.CPython
 
     # Below we need to return co.version_triple instead of version_triple,
     # because Graal uses the *same* magic number but different bytecode
