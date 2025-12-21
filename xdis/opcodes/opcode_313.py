@@ -1,5 +1,24 @@
+# (C) Copyright 2025 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-CPython 3.13 bytecode opcodes
+CPython 3.13 bytecode opcodes.
+
+This is like Python 3.13's opcode.py with some classification
+of stack usage and information for formatting instructions.
+This has similar imformation as the opcodes in Python's opcode.py library.
 """
 
 from typing import Optional, Tuple
@@ -7,7 +26,7 @@ from typing import Optional, Tuple
 import xdis.opcodes.opcode_312 as opcode_312
 from xdis.opcodes.base import (  # noqa
     VARYING_STACK_INT,
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     free_op,
@@ -20,6 +39,7 @@ from xdis.opcodes.format.extended import NULL_EXTENDED_OP, get_arglist
 from xdis.opcodes.opcode_36pypy import format_CALL_METHOD
 
 version_tuple = (3, 13)
+python_implementation = cpython_implementation
 
 loc = locals()
 

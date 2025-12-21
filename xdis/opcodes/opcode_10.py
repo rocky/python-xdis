@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2023 by Rocky Bernstein
+# (C) Copyright 2019-2023, 2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,8 +16,8 @@
 """
 CPython 1.0 bytecode opcodes
 
-This is used in bytecode disassembly. This is similar to the
-opcodes in Python's dis.py library.
+This is like Python 1.0's dis.py with some classification
+of stack usage and information for formatting instructions.
 """
 
 import xdis.opcodes.opcode_11 as opcode_11
@@ -25,7 +25,7 @@ import xdis.opcodes.opcode_11 as opcode_11
 # This is used from outside this module
 from xdis.cross_dis import findlabels  # noqa
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported; noqa
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     finalize_opcodes,
     init_opdata,
     name_op,
@@ -35,6 +35,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
 from xdis.opcodes.opcode_11 import opcode_arg_fmt11, opcode_extended_fmt11
 
 version_tuple = (1, 0)
+python_implementation = cpython_implementation
 
 loc = locals()
 init_opdata(loc, opcode_11, version_tuple)
