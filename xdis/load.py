@@ -229,7 +229,6 @@ def load_module_from_file_object(
 
     timestamp = 0
     file_offsets = {}
-    python_implementation = PythonImplementation.CPython
     try:
         magic = fp.read(4)
         magic_int = magic2int(magic)
@@ -255,9 +254,6 @@ def load_module_from_file_object(
             RUSTPYTHON_MAGICS
         ) + list(JYTHON_MAGICS):
             version = magicint2version.get(magic_int, "")
-            raise ImportError(
-                "Magic int %s (%s) is not supported." % (magic_int, version)
-            )
 
         if magic_int in INTERIM_MAGIC_INTS:
             raise ImportError(
@@ -364,8 +360,15 @@ def load_module_from_file_object(
     finally:
         fp.close()
 
+    python_implementation = PythonImplementation.RustPython if magic_int in RUSTPYTHON_MAGICS else PythonImplementation.CPython
     if is_pypy(magic_int, filename):
         python_implementation = PythonImplementation.PyPy
+    elif magic_int in RUSTPYTHON_MAGICS:
+        python_implementation = PythonImplementation.RustPython
+    elif magic_int in GRAAL3_MAGICS:
+        python_implementation = PythonImplementation.Graal
+    else:
+        python_implementation = PythonImplementation.CPython
 
     # Below we need to return co.version_triple instead of version_triple,
     # because Graal uses the *same* magic number but different bytecode

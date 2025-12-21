@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2020-2021, 2023 by Rocky Bernstein
+# (C) Copyright 2017, 2020-2021, 2023, 2025 by Rocky Bernstein
 """
 CPython 3.3 bytecode opcodes
 
@@ -10,7 +10,7 @@ from copy import copy
 
 import xdis.opcodes.opcode_3x as opcode_3x
 from xdis.opcodes.base import (  # noqa
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -22,6 +22,7 @@ from xdis.opcodes.format.extended import opcode_extended_fmt_base
 from xdis.opcodes.opcode_3x import format_MAKE_FUNCTION_30_35
 
 version_tuple = (3, 3)
+python_implementation = cpython_implementation
 
 loc = locals()
 init_opdata(loc, opcode_3x, version_tuple)

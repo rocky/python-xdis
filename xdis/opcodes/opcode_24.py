@@ -1,4 +1,18 @@
 # (C) Copyright 2017, 2020-2021, 2023 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 CPython 2.4 bytecode opcodes
 
@@ -8,7 +22,7 @@ of stack usage, and opererand formatting functions.
 
 import xdis.opcodes.opcode_2x as opcode_2x
 from xdis.opcodes.base import (  # noqa
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -17,6 +31,7 @@ from xdis.opcodes.base import (  # noqa
 from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (2, 4)
+python_implementation = cpython_implementation
 
 loc = locals()
 init_opdata(loc, opcode_2x, version_tuple)

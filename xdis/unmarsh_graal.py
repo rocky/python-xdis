@@ -30,7 +30,6 @@ from struct import unpack
 
 
 from xdis.codetype import to_portable
-from xdis.cross_types import LongTypeForPython3
 from xdis.magics import GRAAL3_MAGICS, magic_int2tuple
 from xdis.unmarshal import (
     TYPE_ARRAY,
@@ -231,7 +230,6 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         self.graal_code_info = {}
 
         self.UNMARSHAL_DISPATCH_TABLE = UNMARSHAL_DISPATCH_TABLE
-
 
     # Python equivalents for graal unmarshal routines.
     def t_graal_readArray(self, save_ref, bytes_for_s):

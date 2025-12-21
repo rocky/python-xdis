@@ -1,5 +1,24 @@
+# (C) Copyright 2025 by Rocky Bernstein
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 CPython 3.14 bytecode opcodes
+
+This is a like Python 3.14's opcode.py with some classification
+of stack usage and information for formatting instructions.
+of stack usage.
 """
 
 from xdis.opcodes.base import (  # noqa
@@ -8,7 +27,7 @@ from xdis.opcodes.base import (  # noqa
     call_op,
     compare_op,
     const_op,
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     free_op,
@@ -23,6 +42,7 @@ from xdis.opcodes.base import (  # noqa
 )
 
 version_tuple = (3, 14)
+python_implementation = cpython_implementation
 
 loc = locals()
 

@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2021, 2023-2024 by Rocky Bernstein
+# (C) Copyright 2019-2021, 2023-2025 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -23,9 +23,9 @@ of stack usage and information for formatting instructions.
 from copy import copy
 
 import xdis.opcodes.opcode_38 as opcode_38
-from xdis.opcodes.base import (  # noqa
+from xdis.opcodes.base import (
     binary_op,
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -37,7 +37,7 @@ from xdis.opcodes.format.extended import extended_format_binary_op
 from xdis.opcodes.opcode_38 import opcode_arg_fmt38, opcode_extended_fmt38
 
 version_tuple = (3, 9)
-python_implementation = "CPython"
+python_implementation = cpython_implementation
 
 loc = locals()
 

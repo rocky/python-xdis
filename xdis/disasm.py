@@ -82,6 +82,8 @@ def get_opcode(
                 lookup = "3.12.7Graal"
         else:
             lookup += "Graal"
+    elif python_implementation == PythonImplementation.RustPython:
+        lookup += "Rust"
     if lookup in op_imports.keys():
         if alternate_opmap is not None:
             # TODO: change bytecode version number comment line to indicate altered
