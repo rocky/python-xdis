@@ -188,11 +188,15 @@ def call_op(
     Put opcode in the class of instructions that perform calls.
     """
     loc["callop"].add(opcode)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     nargs_op(loc, name, opcode, pop, push, fallthrough)
 
 
 def compare_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1) -> None:
     def_op(loc, name, opcode, pop, push)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     loc["hascompare"].append(opcode)
     loc["binaryop"].add(opcode)
 
@@ -203,6 +207,8 @@ def conditional_op(loc: dict, name: str, opcode: int) -> None:
 
 def const_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1) -> None:
     def_op(loc, name, opcode, pop, push)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     loc["hasconst"].append(opcode)
     loc["nullaryop"].add(opcode)
 
@@ -225,6 +231,8 @@ def def_op(
 
 def free_op(loc: dict, name: str, opcode: int, pop: int = 0, push: int = 1) -> None:
     def_op(loc, name, opcode, pop, push)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     loc["hasfree"].append(opcode)
 
 
@@ -242,6 +250,8 @@ def jabs_op(
     """
     def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
     loc["hasjabs"].append(opcode)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     if conditional:
         loc["hascondition"].append(opcode)
 
@@ -252,12 +262,16 @@ def jrel_op(loc, name: str, opcode: int, pop: int=0, push: int=0, conditional=Fa
     """
     def_op(loc, name, opcode, pop, push, fallthrough)
     loc["hasjrel"].append(opcode)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     if conditional:
         loc["hascondition"].append(opcode)
 
 
 def local_op(loc, name, opcode: int, pop=0, push=1) -> None:
     def_op(loc, name, opcode, pop, push)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     loc["haslocal"].append(opcode)
     loc["nullaryop"].add(opcode)
 
@@ -268,6 +282,8 @@ def name_op(loc: dict, op_name, opcode: int, pop=-2, push=-2) -> None:
     """
     def_op(loc, op_name, opcode, pop, push)
     loc["hasname"].append(opcode)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
@@ -278,6 +294,8 @@ def nargs_op(
     Put opcode in the class of instructions that have a variable number of (or *n*) arguments
     """
     def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
+    if "hasarg" in loc:
+        loc["hasarg"].append(opcode)
     loc["hasnargs"].append(opcode)
 
 

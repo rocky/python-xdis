@@ -23,7 +23,7 @@ of stack usage and information for formatting instructions.
 import xdis.opcodes.opcode_39 as opcode_39
 from xdis.cross_dis import findlinestarts  # noqa
 from xdis.opcodes.base import (  # noqa
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -33,6 +33,7 @@ from xdis.opcodes.base import (  # noqa
 from xdis.opcodes.opcode_39 import opcode_arg_fmt39, opcode_extended_fmt39
 
 version_tuple = (3, 10)
+python_implementation = cpython_implementation
 
 loc = locals()
 

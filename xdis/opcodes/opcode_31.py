@@ -8,7 +8,7 @@ of stack usage and information for formatting instructions.
 
 import xdis.opcodes.opcode_32 as opcode_32
 from xdis.opcodes.base import (  # noqa
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -21,6 +21,7 @@ from xdis.opcodes.opcode_33 import opcode_arg_fmt33, opcode_extended_fmt33
 loc = locals()
 
 version_tuple = (3, 1)
+python_implementation = cpython_implementation
 
 init_opdata(loc, opcode_32, version_tuple)
 
