@@ -21,7 +21,7 @@ This is similar to (but better than) the opcode portion in Python 2.0's dis.py l
 
 import xdis.opcodes.opcode_21 as opcode_21
 from xdis.opcodes.base import (  # noqa
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     finalize_opcodes,
     init_opdata,
     rm_op,
@@ -30,6 +30,7 @@ from xdis.opcodes.base import (  # noqa
 from xdis.opcodes.opcode_2x import opcode_extended_fmt_base2x, update_arg_fmt_base2x
 
 version_tuple = (2, 0)
+python_implementation = cpython_implementation
 
 loc = locals()
 init_opdata(loc, opcode_21, version_tuple)

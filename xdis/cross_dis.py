@@ -45,7 +45,9 @@ def code_info(
     x, version_tuple: tuple, python_implementation: PythonImplementation
 ) -> str:
     """Formatted details of methods, functions, or code."""
-    return format_code_info(get_code_object(x), version_tuple, python_implementation=python_implementation)
+    return format_code_info(
+        get_code_object(x), version_tuple, python_implementation=python_implementation
+    )
 
 
 def get_code_object(x):
@@ -258,7 +260,12 @@ def op_has_argument(opcode: int, opc) -> bool:
     """
     Return True if `opcode` instruction has an operand.
     """
-    return opcode >= opc.HAVE_ARGUMENT
+    return (
+        opcode in opc.hasarg
+        if hasattr(opc, "hasarg")
+        and opc.python_implementation is PythonImplementation.RustPython
+        else opcode >= opc.HAVE_ARGUMENT
+    )
 
 
 def pretty_flags(flags, python_implementation=PYTHON_IMPLEMENTATION) -> str:
@@ -268,7 +275,10 @@ def pretty_flags(flags, python_implementation=PYTHON_IMPLEMENTATION) -> str:
     for i in range(32):
         flag = 1 << i
         if flags & flag:
-            if python_implementation == PythonImplementation.PyPy and flag in PYPY_COMPILER_FLAG_NAMES:
+            if (
+                python_implementation == PythonImplementation.PyPy
+                and flag in PYPY_COMPILER_FLAG_NAMES
+            ):
                 names.append(PYPY_COMPILER_FLAG_NAMES.get(flag, hex(flag)))
             else:
                 names.append(COMPILER_FLAG_NAMES.get(flag, hex(flag)))
@@ -319,7 +329,9 @@ def format_code_info(
         pass
 
     if version_tuple >= (1, 3):
-        lines.append("# Flags:             %s" % pretty_flags(co.co_flags, python_implementation))
+        lines.append(
+            "# Flags:             %s" % pretty_flags(co.co_flags, python_implementation)
+        )
 
     if version_tuple >= (1, 5):
         lines.append("# First Line:        %s" % co.co_firstlineno)
@@ -416,7 +428,11 @@ def unpack_opargs_bytecode(code, opc):
         offset += 1
         if op_has_argument(op, opc):
             arg = code2num(code, offset) | extended_arg
-            extended_arg = extended_arg_val(opc, arg) if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG else 0
+            extended_arg = (
+                extended_arg_val(opc, arg)
+                if hasattr(opc, "EXTENDED_ARG") and op == opc.EXTENDED_ARG
+                else 0
+            )
             offset += 2
         else:
             arg = None
@@ -476,7 +492,7 @@ def xstack_effect(opcode, opc, oparg: int = 0, jump=None):
         if opname == "BUILD_MAP" and version_tuple >= (3, 5):
             return 1 - (2 * oparg)
         if opname in ("UNPACK_SEQUENCE",):
-                return oparg - 1
+            return oparg - 1
         elif opname in ("UNPACK_EX"):
             return (oparg & 0xFF) + (oparg >> 8)
         elif opname == "BUILD_INTERPOLATION":

@@ -14,15 +14,19 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-RustPython 3.12 bytecode opcodes.
+RustPython 3.13 bytecode opcodes
+
 """
 
 #FIXME: this needs a lot of going over.
 
-import xdis.opcodes.opcode_312 as opcode_312
+from typing import Dict, List, Optional, Tuple
+
+# import xdis.opcodes.opcode_313 as opcode_313
 from xdis.opcodes.base import (
     VARYING_STACK_INT,
     binary_op,
+    call_op,
     compare_op,
     const_op,
     def_op,
@@ -39,20 +43,20 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
-from xdis.opcodes.opcode_312 import opcode_arg_fmt312, opcode_extended_fmt312
+from xdis.opcodes.opcode_313 import opcode_arg_fmt313, opcode_extended_fmt313
 from xdis.version_info import PythonImplementation
 
-version_tuple = (3, 12)
+version_tuple = (3, 13)
 python_implementation = PythonImplementation("RustPython")
 
 # oppush[op] => number of stack entries pushed
-oppush = [0] * 256
+oppush: List[int] = [0] * 256
 
 # oppop[op] => number of stack entries popped
-oppop = [0] * 256
+oppop: List[int] = [0] * 256
 
 # opmap[opcode_name] => opcode_number
-opmap = {}
+opmap: Dict[str, int] = {}
 
 ## pseudo opcodes (used in the compiler) mapped to the values
 ## they can become in the actual code.
@@ -91,7 +95,21 @@ hasexc = []
 
 loc = locals()
 
-init_opdata(loc, opcode_312, version_tuple)
+init_opdata(loc, from_mod=None, version_tuple=version_tuple)
+
+loc["opname"].extend([f"<{i}>" for i in range(256, 267)])
+loc["oppop"].extend([0] * 11)
+loc["oppush"].extend([0] * 11)
+
+hasarg = []
+hasconst = []
+hasname = []
+hasjrel = []
+hasjabs = []
+haslocal = []
+hascompare = []
+hasfree = []
+hasexc = []
 
 oplists = [
     loc["hasarg"],
@@ -105,6 +123,9 @@ oplists = [
     loc["hasexc"],
 ]
 
+# add new table "hasjump"
+loc.update({"hasjump": []})
+loc["hasjrel"] = loc["hasjump"]
 
 def pseudo_op(name: str, op: int, real_ops: list):
     def_op(loc, name, op)
@@ -124,47 +145,86 @@ def pseudo_op(name: str, op: int, real_ops: list):
 # See RustPython/compiler/core/src/bytecode.rs Instruction
 # fmt: off
 
-#            OP NAME                         OPCODE  POP PUSH
+#            OP NAME                   OPCODE   POP PUSH
 #----------------------------------------------------------
-def_op(loc,    "CACHE",                     0,      0,   0)
-def_op(loc,    "POP_TOP",                   1,      1,   0)
-def_op(loc,    "PUSH_NULL",                 2,      0 ,  1)
+def_op(loc,    "NOP",                       0,  0, 0)
+name_op(loc,   "IMPORT_NAME",               1)
+def_op(loc,    "IMPORT_NAMELESS",           2,  0, 1)
+name_op(loc,   "IMPORT_FROM",               3)
 
-def_op(loc,    "NOP",                       9,      0,   0)
-unary_op(loc,  "UNARY_POSITIVE",           10)
-unary_op(loc,  "UNARY_NEGATIVE",           11)
-unary_op(loc,  "UNARY_NOT",                12)
+local_op(loc,  "LOAD_FAST",                 4)
+name_op(loc,   "LOAD_NAME_ANY",             5)
+name_op(loc,   "LOAD_GLOBAL",               6)
+free_op(loc,   "LOAD_DEREF",                7)
+def_op(loc,    "LOAD_CLASS_DEREF",          8)
 
-unary_op(loc,  "UNARY_INVERT",             15)
+store_op(loc, " STORE_FAST",                9,  1, 0, is_type="local")  # Local variable
+store_op(loc,  "STORE_LOCAL",              10,       4,  0)
+name_op(loc,   "STORE_GLOBAL",             11)                           # ""
+store_op(loc,  "STORE_DEREF",              12,  1, 0, is_type="free")
 
-binary_op(loc, "BINARY_SUBSCR",            25)
-binary_op(loc, "BINARY_SLICE",             26)
-store_op(loc,  "STORE_SLICE",              27,       4,  0)
+local_op(loc,  "DELETE_FAST",              13,  0, 0) # Local variable number is in operand
+local_op(loc,  "DELETE_LOCAL",             14,  0, 0)
+name_op(loc,   "DELETE_GLOBAL",            15)         # ""
+free_op(loc,   "DELETE_DEREF",             16,  0, 0)
 
-def_op(loc,    "GET_LEN",                  30,       0,  1)
-def_op(loc,    "MATCH_MAPPING",            31,   0, 1)
-def_op(loc,    "MATCH_SEQUENCE",           32,   0, 1)
-def_op(loc,    "MATCH_KEYS",               33,   0, 2)
+free_op(loc,   "LOAD_CLOSURE",             17)
+def_op(loc,    "SUBSCRIPT",                18,  0, 0)
 
-jrel_op(loc, "PUSH_EXC_INFO",              35,   0, 1)
-def_op(loc, "CHECK_EXC_MATCH", 36)
-jrel_op(loc, "CHECK_EG_MATCH",             37,   0, 0)
+def_op(loc,    "STORE_SUBSCR",             19,  0, 0)
+def_op(loc,    "DELETE_SUBSCR",            20,  0, 0)
+name_op(loc,   "STORE_ATTR",               21)        # Index in name list
+name_op(loc,   "DELETE_ATTR",              22)        # ""
 
-# FIXME: fill in
-def_op(loc, "WITH_EXCEPT_START", 49)
-def_op(loc, "GET_AITER", 50)
-def_op(loc, "GET_ANEXT", 51)
-def_op(loc, "BEFORE_ASYNC_WITH", 52)
-def_op(loc, "BEFORE_WITH", 53)
-def_op(loc, "END_ASYNC_FOR", 54)
-def_op(loc, "CLEANUP_THROW", 55)
+# Operand is in const list
+const_op(loc,  "LOAD_CONST",               23,  0, 1)
+unary_op(loc,  "UNARY_OP",                 24,  1, 1)
+binary_op(loc, "BINARY_OP",                25,  1, 1)
+binary_op(loc, "BINARY_OP_INPLACE",        26,  1, 1)
+binary_op(loc, "BINARY_SUBCR",             27,  1, 1)
+name_op(loc,    "LOAD_ATTR",               28)       # Index in name list
+compare_op(loc, "TEST_OP",                 127,  2, 1)  # test operator
+compare_op(loc, "COMPARE_OP",              138,  2, 1)  # Comparison operator
+def_op(loc,     "COPY",                    29)
+def_op(loc,     "POP_TOP",                 30,  1, 0)
+def_op(loc,     "SWAP",                    31,  1, 1)
+def_op(loc,     "TO_BOOL",                 32,  1, 1)
+def_op(loc,     "ROT_TWO",                 33,  2, 2)
+def_op(loc,     "ROT_THREE",               34,  3, 3)
 
-def_op(loc, "STORE_SUBSCR", 60)
-def_op(loc, "DELETE_SUBSCR", 61)
-
+nargs_op(loc, "MAKE_FUNCTION", 42)    # Flags
+def_op(loc, "SET_FUNCTION_ATTR", 43)
+call_op(loc, "CALL_FUNCTION", 44)
+call_op(loc, "CALL_FUNCTION_KW", 45)
+call_op(loc, "CALL_FUNCTION_EX", 46)  # Flags
+def_op(loc, "LOAD_METHOD", 47)
+call_op(loc, "CALL_METHOD", 48)
+call_op(loc, "CALL_METHOD_KW", 49)
+call_op(loc, "CALL_METHOD_EX", 50)
+jrel_op(loc, "FOR_ITER", 51)
+def_op(loc, "RETURN_VALUE", 52)
+const_op(loc, "RETURN_CONST", 53)
+# This must be kept in sync with deepfreeze.py
+# resume, acts like a nop
+def_op(loc, "RESUME",        54,   0, 0)
+def_op(loc, "YIELD", 55)
 # TODO: RUSTPYTHON
 # Delete below def_op after updating coroutines.py
-def_op(loc, "YIELD_FROM", 72)
+def_op(loc, "YIELD_FROM", 56)
+
+
+jrel_op(loc, "PUSH_EXC_INFO",              235,   0, 1)
+def_op(loc, "CHECK_EXC_MATCH", 236)
+jrel_op(loc, "CHECK_EG_MATCH",             237,   0, 0)
+
+# FIXME: fill in
+def_op(loc, "WITH_EXCEPT_START", 249)
+def_op(loc, "GET_AITER", 250)
+def_op(loc, "GET_ANEXT", 251)
+def_op(loc, "BEFORE_ASYNC_WITH", 252)
+def_op(loc, "BEFORE_WITH", 253)
+def_op(loc, "END_ASYNC_FOR", 254)
+def_op(loc, "CLEANUP_THROW", 255)
 
 def_op(loc, "GET_ITER", 68)
 def_op(loc, "GET_YIELD_FROM_ITER", 69)
@@ -175,7 +235,7 @@ def_op(loc, "LOAD_ASSERTION_ERROR", 74)
 def_op(loc, "RETURN_GENERATOR", 75)
 
 def_op(loc, "LIST_TO_TUPLE", 82)
-def_op(loc, "RETURN_VALUE", 83)
+
 def_op(loc, "IMPORT_STAR", 84)
 def_op(loc, "SETUP_ANNOTATIONS", 85)
 
@@ -188,62 +248,39 @@ HAVE_ARGUMENT = 90             # real opcodes from here have an argument:
 name_op(loc, "STORE_NAME", 90)       # Index in name list
 name_op(loc, "DELETE_NAME", 91)      # ""
 varargs_op(loc, "UNPACK_SEQUENCE", 92, 1, VARYING_STACK_INT)   # Number of tuple items
-jrel_op(loc, "FOR_ITER", 93)
 def_op(loc, "UNPACK_EX", 94, VARYING_STACK_INT, VARYING_STACK_INT)
-name_op(loc, "STORE_ATTR", 95)       # Index in name list
-name_op(loc, "DELETE_ATTR", 96)      # ""
-name_op(loc, "STORE_GLOBAL", 97)     # ""
-name_op(loc, "DELETE_GLOBAL", 98)    # ""
-
-def_op(loc, "SWAP",                            99,   0, 0)
-
-# Operand is in const list
-const_op(loc,   "LOAD_CONST",                 100,   0, 1)
 
 name_op(loc, "LOAD_NAME", 101)       # Index in name list
 def_op(loc, "BUILD_TUPLE", 102)      # Number of tuple items
 def_op(loc, "BUILD_LIST", 103)       # Number of list items
 def_op(loc, "BUILD_SET", 104)        # Number of set items
 def_op(loc, "BUILD_MAP", 105)        # Number of dict entries
-name_op(loc, "LOAD_ATTR", 106)       # Index in name list
-compare_op(loc, "COMPARE_OP",        107,  2,  1)  # Comparison operator
-name_op(loc, "IMPORT_NAME", 108)     # Index in name list
 name_op(loc, "IMPORT_FROM", 109)     # Index in name list
 jrel_op(loc, "JUMP_FORWARD", 110)    # Number of words to skip
 jrel_op(loc, "JUMP_IF_FALSE_OR_POP", 111) # Number of words to skip
 jrel_op(loc, "JUMP_IF_TRUE_OR_POP", 112)  # ""
 jrel_op(loc, "POP_JUMP_IF_FALSE", 114)
 jrel_op(loc, "POP_JUMP_IF_TRUE", 115)
-name_op(loc, "LOAD_GLOBAL", 116)     # Index in name list
 def_op(loc, "IS_OP", 117)
 def_op(loc, "CONTAINS_OP", 118)
 def_op(loc, "RERAISE",                 119,   3, 0)
-def_op(loc, "COPY", 120)
 def_op(loc, "BINARY_OP", 122)
 jrel_op(loc, "SEND", 123) # Number of bytes to skip
 local_op(loc, "LOAD_FAST",            124,  0,  1)  # Local variable number
 loc["nullaryloadop"].add(124)
-store_op(loc, "STORE_FAST",           125,  1,  0, is_type="local")  # Local variable
-local_op(loc, "DELETE_FAST",          126,  0,  0) # Local variable number is in operand
 def_op(loc    , "LOAD_FAST_CHECK"                  , 127,   0, 1)
 local_op(loc, "LOAD_FAST_CHECK", 127)  # Local variable number
 jrel_op(loc, "POP_JUMP_IF_NOT_NONE", 128)
 jrel_op(loc, "POP_JUMP_IF_NONE", 129)
 def_op(loc, "RAISE_VARARGS", 130)    # Number of raise arguments (1, 2, or 3)
 def_op(loc, "GET_AWAITABLE", 131)
-nargs_op(loc, "MAKE_FUNCTION", 132)    # Flags
 def_op(loc, "BUILD_SLICE", 133)      # Number of items
 jrel_op(loc, "JUMP_BACKWARD_NO_INTERRUPT", 134) # Number of words to skip (backwards)
 free_op(loc, "MAKE_CELL",                     135,   0, 0)
-free_op(loc, "LOAD_CLOSURE", 136)
 free_op(loc, "LOAD_DEREF",                    137,   0, 1)
 loc["nullaryop"].add(137)
 loc["nullaryloadop"].add(137)
-store_op(loc, "STORE_DEREF",                  138,   1, 0, is_type="free")
-free_op(loc, "DELETE_DEREF",                  139,   0, 0)
 jrel_op(loc, "JUMP_BACKWARD", 140)    # Number of words to skip (backwards)
-
-def_op(loc, "CALL_FUNCTION_EX", 142)  # Flags
 
 def_op(loc, "EXTENDED_ARG", 144)
 EXTENDED_ARG = 144
@@ -254,9 +291,6 @@ free_op(loc, "LOAD_CLASSDEREF", 148)
 def_op(loc, "COPY_FREE_VARS", 149)
 def_op(loc, "YIELD_VALUE", 150)
 
-# This must be kept in sync with deepfreeze.py
-# resume, acts like a nop
-def_op(loc, "RESUME",                         151,   0, 0)
 
 def_op(loc, "MATCH_CLASS", 152)
 
@@ -269,11 +303,7 @@ def_op(loc, "SET_UPDATE", 163)
 def_op(loc, "DICT_MERGE", 164)
 def_op(loc, "DICT_UPDATE", 165)
 
-def_op(loc, "CALL", 171)
 const_op(loc, "KW_NAMES", 172)
-
-
-loc["hasarg"].extend([op for op in opmap.values() if op >= HAVE_ARGUMENT])
 
 MIN_PSEUDO_OPCODE = 256
 
@@ -288,7 +318,10 @@ pseudo_op("POP_BLOCK", 259, ["NOP"])
 pseudo_op("JUMP", 260, ["JUMP_FORWARD", "JUMP_BACKWARD"])
 pseudo_op("JUMP_NO_INTERRUPT", 261, ["JUMP_FORWARD", "JUMP_BACKWARD_NO_INTERRUPT"])
 
-pseudo_op("LOAD_METHOD", 262, ["LOAD_ATTR"])
+def_op(loc,    "MATCH_SEQUENCE",           32,   0, 1)
+def_op(loc,    "MATCH_KEYS",               33,   0, 2)
+
+
 
 # fmt: on
 
@@ -296,8 +329,8 @@ MAX_PSEUDO_OPCODE = MIN_PSEUDO_OPCODE + len(_pseudo_ops) - 1
 
 # extend opcodes to cover pseudo ops
 
-opname = ["<%r>" % op for op in range(MAX_PSEUDO_OPCODE + 1)]
-opname.extend(["<%d>" % i for i in range(256, 267)])
+opname = [f"<{op!r}>" for op in range(MAX_PSEUDO_OPCODE + 1)]
+opname.extend([f"<{i}>" for i in range(256, 267)])
 oppop.extend([0] * 11)
 oppush.extend([0] * 11)
 
@@ -477,27 +510,27 @@ _inline_cache_entries = [
 ]
 
 
-def extended_format_BINARY_OP(opc, instructions) -> tuple:
+def extended_format_BINARY_OP(opc, instructions) -> Tuple[str, Optional[int]]:
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
     elif opname == "%=":
         opname = "%%="
-    return extended_format_binary_op(opc, instructions, "%%s %s %%s" % opname)
+    return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
 
 
-pcode_extended_fmt312rust = opcode_extended_fmt312.copy()
-opcode_arg_fmt = opcode_arg_fmt12rust = opcode_arg_fmt312.copy()
+opcode_extended_fmt313rust = {}
+opcode_arg_fmt = opcode_arg_fmt13rust = {}
 
 ### update arg formatting
-opcode_extended_fmt = opcode_extended_fmt312rust = opcode_extended_fmt312.copy()
-opcode_extended_fmt312rust.update(
-    {
+opcode_extended_fmt = opcode_extended_fmt312rust = {
+    **opcode_extended_fmt313,
+    **{
         "BINARY_OP": extended_format_BINARY_OP,
     },
-)
+}
 
-from xdis.opcodes.opcode_312 import findlinestarts  # noqa
+from xdis.opcodes.opcode_311 import findlinestarts
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

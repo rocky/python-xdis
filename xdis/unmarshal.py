@@ -33,7 +33,6 @@ from struct import unpack
 from xdis.codetype import to_portable
 from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
-from xdis.version_info import version_tuple_to_str
 
 
 def long(n: int) -> LongTypeForPython3:
@@ -86,18 +85,6 @@ TYPE_TRUE = "T"
 TYPE_TUPLE = "("  # See also TYPE_SMALL_TUPLE
 TYPE_UNICODE = "u"
 TYPE_UNKNOWN = "?"
-
-# Graal Array types
-ARRAY_TYPE_BOOLEAN = "B"
-ARRAY_TYPE_BYTE = "b"
-ARRAY_TYPE_DOUBLE = "d"
-ARRAY_TYPE_INT = "i"
-ARRAY_TYPE_LONG = "l"
-ARRAY_TYPE_OBJECT = "o"
-ARRAY_TYPE_SHORT = "s"
-ARRAY_TYPE_SLICE = ":"
-ARRAY_TYPE_STRING = "S"
-
 
 # The keys in the following dictionary are unmarshal codes, like "s",
 # "c", "<", etc. The values of the dictionary are names of routines
@@ -204,12 +191,6 @@ class VersionIndependentUnmarshaller:
         self.intern_objects = []
         self.is_pypy = magic_int in PYPY3_MAGICS
         self.is_rust = magic_int in RUSTPYTHON_MAGICS
-
-        if magic_int in RUSTPYTHON_MAGICS:
-            raise NotImplementedError(
-                "RustPython %s is not supported yet."
-                % version_tuple_to_str(self.version_triple)
-            )
 
         self.UNMARSHAL_DISPATCH_TABLE = UNMARSHAL_DISPATCH_TABLE
 
@@ -809,8 +790,10 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
 
     if magic_int in GRAAL3_MAGICS:
         from xdis.unmarsh_graal import VersionIndependentUnmarshallerGraal
-
-        um_gen = VersionIndependentUnmarshallerGraal(
+        um_gen = VersionIndependentUnmarshallerGraal(fp, magic_int, bytes_for_s, code_objects)
+    elif magic_int in RUSTPYTHON_MAGICS:
+        from xdis.unmarsh_rust import VersionIndependentUnmarshallerRust
+        um_gen = VersionIndependentUnmarshallerRust(
             fp, magic_int, bytes_for_s, code_objects
         )
     else:
@@ -818,7 +801,6 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
             fp, magic_int, bytes_for_s, code_objects=code_objects
         )
     return um_gen.load()
-
 
 def load_code_and_get_file_offsets(
     fp, magic_int, bytes_for_s: bool = False, code_objects={}
@@ -829,6 +811,11 @@ def load_code_and_get_file_offsets(
         from xdis.unmarsh_graal import VersionIndependentUnmarshallerGraal
 
         um_gen = VersionIndependentUnmarshallerGraal(
+            fp, magic_int, bytes_for_s, code_objects
+        )
+    elif magic_int in RUSTPYTHON_MAGICS:
+        from xdis.unmarsh_rust import VersionIndependentUnmarshallerRust
+        um_gen = VersionIndependentUnmarshallerRust(
             fp, magic_int, bytes_for_s, code_objects
         )
     else:

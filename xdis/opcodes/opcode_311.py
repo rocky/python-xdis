@@ -24,6 +24,7 @@ of stack usage and information for formatting instructions.
 import xdis.opcodes.opcode_310 as opcode_310
 from xdis.opcodes.base import (
     binary_op,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     free_op,
@@ -42,7 +43,7 @@ from xdis.opcodes.format.extended import (
 from xdis.opcodes.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 
 version_tuple = (3, 11)
-python_implementation = "CPython"
+python_implementation = cpython_implementation
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256
