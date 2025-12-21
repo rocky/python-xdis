@@ -184,7 +184,6 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
         self.UNMARSHAL_DISPATCH_TABLE = UNMARSHAL_DISPATCH_TABLE
 
-
     # Python equivalents for graal unmarshal routines.
     def t_graal_readArray(self, save_ref: bool, bytes_for_s: bool) -> tuple:
         """

@@ -20,8 +20,6 @@ RustPython 3.13 bytecode opcodes
 
 #FIXME: this needs a lot of going over.
 
-from typing import Dict, List, Optional, Tuple
-
 # import xdis.opcodes.opcode_313 as opcode_313
 from xdis.opcodes.base import (
     VARYING_STACK_INT,
@@ -50,13 +48,13 @@ version_tuple = (3, 13)
 python_implementation = PythonImplementation("RustPython")
 
 # oppush[op] => number of stack entries pushed
-oppush: List[int] = [0] * 256
+oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
-oppop: List[int] = [0] * 256
+oppop = [0] * 256
 
 # opmap[opcode_name] => opcode_number
-opmap: Dict[str, int] = {}
+opmap = {}
 
 ## pseudo opcodes (used in the compiler) mapped to the values
 ## they can become in the actual code.
@@ -97,7 +95,7 @@ loc = locals()
 
 init_opdata(loc, from_mod=None, version_tuple=version_tuple)
 
-loc["opname"].extend([f"<{i}>" for i in range(256, 267)])
+loc["opname"].extend([("%d" % i) for i in range(256, 267)])
 loc["oppop"].extend([0] * 11)
 loc["oppush"].extend([0] * 11)
 
@@ -329,8 +327,8 @@ MAX_PSEUDO_OPCODE = MIN_PSEUDO_OPCODE + len(_pseudo_ops) - 1
 
 # extend opcodes to cover pseudo ops
 
-opname = [f"<{op!r}>" for op in range(MAX_PSEUDO_OPCODE + 1)]
-opname.extend([f"<{i}>" for i in range(256, 267)])
+opname = ["<%r>" % op for op in range(MAX_PSEUDO_OPCODE + 1)]
+opname.extend(["<%d>" % i for i in range(256, 267)])
 oppop.extend([0] * 11)
 oppush.extend([0] * 11)
 
@@ -510,25 +508,25 @@ _inline_cache_entries = [
 ]
 
 
-def extended_format_BINARY_OP(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_OP(opc, instructions) -> tuple:
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
     elif opname == "%=":
         opname = "%%="
-    return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
+    return extended_format_binary_op(opc, instructions, "%%s %s %%s" % opname)
 
 
 opcode_extended_fmt313rust = {}
 opcode_arg_fmt = opcode_arg_fmt13rust = {}
 
 ### update arg formatting
-opcode_extended_fmt = opcode_extended_fmt312rust = {
-    **opcode_extended_fmt313,
-    **{
+opcode_extended_fmt = opcode_extended_fmt312rust = opcode_extended_fmt313.copy()
+opcode_extended_fmt312rust.update(
+    {
         "BINARY_OP": extended_format_BINARY_OP,
-    },
-}
+    })
+
 
 from xdis.opcodes.opcode_311 import findlinestarts
 
