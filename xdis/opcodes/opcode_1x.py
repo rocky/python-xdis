@@ -64,19 +64,22 @@ HAVE_ARGUMENT = 90
 # Instruction opcodes for compiled code
 # Blank lines correspond to available opcodes
 
-# If the POP field is -1 and the opcode is var args operation
+# Obsolete: If the POP field is -1 and the opcode is var args operation
 # (hasvargs | hasnargs) operation, then
 # the operand holds the size.
+
+# If an argument is VARYING_STACK_INT, then the number of items
+# pushed or popped varies in stack-dependent data way.
 
 # fmt: off
 
 #                OP NAME        OPCODE POP PUSH
 #-----------------------------------------------
 def_op(loc,   "STOP_CODE",           0,  0,  0, fallthrough=False)
-def_op(loc,   "POP_TOP",             1)
-def_op(loc,   "ROT_TWO",             2)
-def_op(loc,   "ROT_THREE",           3)
-def_op(loc,   "DUP_TOP",             4)
+def_op(loc,   "POP_TOP",             1,  1,  0)
+def_op(loc,   "ROT_TWO",             2,  2,  3)
+def_op(loc,   "ROT_THREE",           3,  3,  3)
+def_op(loc,   "DUP_TOP",             4,  0,  1)
 
 def_op(loc,     "UNARY_POSITIVE",   10)
 unary_op(loc,   "UNARY_NEGATIVE",   11)
