@@ -93,7 +93,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_FLOAT_RUSTPYTHON: "float",
     TYPE_FROZENSET: "frozenset",
     TYPE_INT64: "int64",
-    TYPE_INT: "int32",
+    TYPE_INT: "bigint",
     TYPE_INTERNED: "interned",
     TYPE_LIST: "list",
     TYPE_LONG: "long",
@@ -163,9 +163,10 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         instr_count = self.read_int32()
         co_code = self.read_slice(instr_count * 2)
 
-        instructions = [
-            int.from_bytes(co_code[i:i+2], "little") for i in range(0, len(co_code), 2)
-        ]
+        # instructions = [
+        #     int.from_bytes(co_code[i:i+2], "little") for i in range(0, len(co_code), 2)
+        # ]
+        instructions = [int(co_code[i]) for i in range(len(co_code))] # debug
 
         # read locations
         loc_count = self.read_int32()
@@ -218,6 +219,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         # constants
         const_count = self.read_int32()
         constants = []
+
         for _ in range(const_count):
             # deserialize_value must exist in your runtime; it is the
             # counterpart of the Rust deserialize_value()
@@ -229,7 +231,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
             for _ in range(n):
                 length = self.read_int32()
                 out.append(self.read_string(length, False))
-            return out
+            return tuple(out)
 
         co_names = read_names()
         co_varnames = read_names()
@@ -269,6 +271,13 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         )
 
 
+    def t_bigint(self, save_ref: bool=False, bytes_for_s: bool=False):
+        len = self.read_int32()
+        is_positive = len >= 0
+        byte_data = self.read_slice(abs(len))
+        value = int.from_bytes(byte_data, byteorder='little')
+        return value if is_positive else -value
+
     def read_int16(self):
         return int(unpack("<h", self.fp.read(2))[0])
 
@@ -277,6 +286,9 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
 
     def read_slice(self, n: int) -> bytes:
         return self.fp.read(n)
+
+    def read_uint32(self):
+        return int(unpack("<I", self.fp.read(4))[0])
 
     def read_string(self, n: int, bytes_for_s: bool=False) -> Union[bytes, str]:
         s = self.read_slice(n)

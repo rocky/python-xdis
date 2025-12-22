@@ -156,8 +156,8 @@ name_op(loc,   "LOAD_GLOBAL",               6)
 free_op(loc,   "LOAD_DEREF",                7)
 def_op(loc,    "LOAD_CLASS_DEREF",          8)
 
-store_op(loc, " STORE_FAST",                9,  1, 0, is_type="local")  # Local variable
-store_op(loc,  "STORE_LOCAL",              10,       4,  0)
+store_op(loc,  "STORE_FAST",                9,  1, 0, is_type="local")  # Local variable
+store_op(loc,  "STORE_LOCAL",              10,  4,  0)
 name_op(loc,   "STORE_GLOBAL",             11)                           # ""
 store_op(loc,  "STORE_DEREF",              12,  1, 0, is_type="free")
 
@@ -167,7 +167,7 @@ name_op(loc,   "DELETE_GLOBAL",            15)         # ""
 free_op(loc,   "DELETE_DEREF",             16,  0, 0)
 
 free_op(loc,   "LOAD_CLOSURE",             17)
-def_op(loc,    "SUBSCRIPT",                18,  0, 0)
+binary_op(loc, "BINARY_SUBSCR",            18)
 
 def_op(loc,    "STORE_SUBSCR",             19,  0, 0)
 def_op(loc,    "DELETE_SUBSCR",            20,  0, 0)
@@ -181,35 +181,43 @@ binary_op(loc, "BINARY_OP",                25,  1, 1)
 binary_op(loc, "BINARY_OP_INPLACE",        26,  1, 1)
 binary_op(loc, "BINARY_SUBCR",             27,  1, 1)
 name_op(loc,    "LOAD_ATTR",               28)       # Index in name list
-compare_op(loc, "TEST_OP",                 127,  2, 1)  # test operator
-compare_op(loc, "COMPARE_OP",              138,  2, 1)  # Comparison operator
-def_op(loc,     "COPY",                    29)
-def_op(loc,     "POP_TOP",                 30,  1, 0)
+compare_op(loc, "TEST_OP",                 29,  2, 1)  # test operator
+compare_op(loc, "COMPARE_OP",              30,  2, 1)  # Comparison operator
 def_op(loc,     "SWAP",                    31,  1, 1)
-def_op(loc,     "TO_BOOL",                 32,  1, 1)
-def_op(loc,     "ROT_TWO",                 33,  2, 2)
-def_op(loc,     "ROT_THREE",               34,  3, 3)
+def_op(loc,     "TO_BOOL",                 132,  1, 1)
+def_op(loc,     "POP_TOP",                 32,  1, 0)
+def_op(loc,     "ROT_TWO",                 35,  2, 2)
+def_op(loc,     "ROT_THREE",               36,  3, 3)
+def_op(loc,     "DUP_TOP",                 37,  0, 1)
+def_op(loc, "GET_ITER", 39)
 
-nargs_op(loc, "MAKE_FUNCTION", 42)    # Flags
-def_op(loc, "SET_FUNCTION_ATTR", 43)
-call_op(loc, "CALL_FUNCTION", 44)
-call_op(loc, "CALL_FUNCTION_KW", 45)
-call_op(loc, "CALL_FUNCTION_EX", 46)  # Flags
-def_op(loc, "LOAD_METHOD", 47)
-call_op(loc, "CALL_METHOD", 48)
-call_op(loc, "CALL_METHOD_KW", 49)
-call_op(loc, "CALL_METHOD_EX", 50)
-jrel_op(loc, "FOR_ITER", 51)
-def_op(loc, "RETURN_VALUE", 52)
-const_op(loc, "RETURN_CONST", 53)
-# This must be kept in sync with deepfreeze.py
-# resume, acts like a nop
-def_op(loc, "RESUME",        54,   0, 0)
-def_op(loc, "YIELD", 55)
-# TODO: RUSTPYTHON
-# Delete below def_op after updating coroutines.py
-def_op(loc, "YIELD_FROM", 56)
+jrel_op(loc, "JUMP", 45)    # Number of words to skip
+jrel_op(loc, "POP_JUMP_IF_TRUE", 46)
+jrel_op(loc, "POP_JUMP_IF_FALSE", 47)
+jrel_op(loc, "JUMP_IF_TRUE_OR_POP",  48) # Number of words to skip
+jrel_op(loc, "JUMP_IF_FALSE_OR_POP", 49) # "
 
+nargs_op(loc, "MAKE_FUNCTION", 50)    # Flags
+def_op(loc, "SET_FUNCTION_ATTR", 51)
+
+call_op(loc, "CALL_FUNCTION", 52)
+call_op(loc, "CALL_FUNCTION_KW", 53)
+call_op(loc, "CALL_FUNCTION_EX", 54)  # Flags
+def_op(loc, "LOAD_METHOD", 55)
+call_op(loc, "CALL_METHOD", 56)
+call_op(loc, "CALL_METHOD_KW", 57)
+call_op(loc, "CALL_METHOD_EX", 58)
+
+jrel_op(loc, "FOR_ITER", 59)
+def_op(loc, "RETURN_VALUE", 60)
+const_op(loc, "RETURN_CONST", 61)
+def_op(loc, "YIELD", 62)
+def_op(loc, "YIELD_FROM", 63)
+def_op(loc, "RESUME", 64,   0, 0)
+
+def_op(loc, "SETUP_ANNOTATIONS", 65)
+jrel_op(loc, "SETUP_LOOP", 66,  0,  0, conditional=True)
+def_op(loc, "SETUP_FINALLY", 67, 0, 1)
 
 jrel_op(loc, "PUSH_EXC_INFO",              235,   0, 1)
 def_op(loc, "CHECK_EXC_MATCH", 236)
@@ -217,61 +225,59 @@ jrel_op(loc, "CHECK_EG_MATCH",             237,   0, 0)
 
 # FIXME: fill in
 def_op(loc, "WITH_EXCEPT_START", 249)
-def_op(loc, "GET_AITER", 250)
-def_op(loc, "GET_ANEXT", 251)
 def_op(loc, "BEFORE_ASYNC_WITH", 252)
 def_op(loc, "BEFORE_WITH", 253)
 def_op(loc, "END_ASYNC_FOR", 254)
 def_op(loc, "CLEANUP_THROW", 255)
 
-def_op(loc, "GET_ITER", 68)
 def_op(loc, "GET_YIELD_FROM_ITER", 69)
-def_op(loc, "PRINT_EXPR", 70)
-def_op(loc, "LOAD_BUILD_CLASS", 71)
+def_op(loc, "SETUP_WITH", 71)
 
-def_op(loc, "LOAD_ASSERTION_ERROR", 74)
-def_op(loc, "RETURN_GENERATOR", 75)
+def_op(loc, "POP_BLOCK", 74)
+def_op(loc, "RAISE", 75)
 
 def_op(loc, "LIST_TO_TUPLE", 82)
 
-def_op(loc, "IMPORT_STAR", 84)
-def_op(loc, "SETUP_ANNOTATIONS", 85)
+varargs_op(loc, "BUILD_TUPLE", 77, 1, VARYING_STACK_INT)      # Number of tuple items
+varargs_op(loc, "BUILD_TUPLE_FROM_TUPLES", 78, 1, VARYING_STACK_INT)      # Number of tuple items
+varargs_op(loc, "BUILD_TUPLE_FROM_ITER", 79, 1, VARYING_STACK_INT)      # Number of tuple items
+varargs_op(loc, "BUILD_LIST", 80, 1, VARYING_STACK_INT)       # Number of list items
+varargs_op(loc, "BUILD_LIST_FROM_TUPLES", 81, 1, VARYING_STACK_INT)       # Number of list items
+varargs_op(loc, "BUILD_SET", 82, 1, VARYING_STACK_INT)        # Number of set items
+varargs_op(loc, "BUILD_SET_FROM_TUPLES", 83, 1, VARYING_STACK_INT)       # Number of list items
+varargs_op(loc, "BUILD_MAP", 84, 1, VARYING_STACK_INT)        # Number of dict entries
+varargs_op(loc, "BUILD_MAP_FOR_CALL", 85, 1, VARYING_STACK_INT)        # Number of dict entries
 
-def_op(loc, "ASYNC_GEN_WRAP", 87)
-def_op(loc, "PREP_RERAISE_STAR", 88)
-def_op(loc, "POP_EXCEPT", 89)
+def_op(loc, "ASYNC_GEN_WRAP", 88)
+def_op(loc, "LIST_APPEND", 89)
+def_op(loc, "SET_ADD", 90)
+def_op(loc, "MAP_ADD", 91)
+def_op(loc, "PRINT_EXPR", 92)
+def_op(loc, "LOAD_BUILD_CLASS", 93)
+varargs_op(loc, "UNPACK_SEQUENCE", 94, 1, VARYING_STACK_INT)   # Number of tuple items
+def_op(loc, "UNPACK_EX", 95, VARYING_STACK_INT, VARYING_STACK_INT)
+def_op(loc, "FORMAT_VALUE", 96, VARYING_STACK_INT, VARYING_STACK_INT)
+def_op(loc, "POP_EXCEPT", 97)
+def_op(loc, "REVERSE", 98)
+def_op(loc, "GET_AWAITABLE", 99)
+def_op(loc, "GET_AITER", 100)
+def_op(loc, "GET_ANEXT", 101)
 
-HAVE_ARGUMENT = 90             # real opcodes from here have an argument:
 
-name_op(loc, "STORE_NAME", 90)       # Index in name list
-name_op(loc, "DELETE_NAME", 91)      # ""
-varargs_op(loc, "UNPACK_SEQUENCE", 92, 1, VARYING_STACK_INT)   # Number of tuple items
-def_op(loc, "UNPACK_EX", 94, VARYING_STACK_INT, VARYING_STACK_INT)
 
 name_op(loc, "LOAD_NAME", 101)       # Index in name list
-def_op(loc, "BUILD_TUPLE", 102)      # Number of tuple items
-def_op(loc, "BUILD_LIST", 103)       # Number of list items
-def_op(loc, "BUILD_SET", 104)        # Number of set items
-def_op(loc, "BUILD_MAP", 105)        # Number of dict entries
 name_op(loc, "IMPORT_FROM", 109)     # Index in name list
-jrel_op(loc, "JUMP_FORWARD", 110)    # Number of words to skip
-jrel_op(loc, "JUMP_IF_FALSE_OR_POP", 111) # Number of words to skip
-jrel_op(loc, "JUMP_IF_TRUE_OR_POP", 112)  # ""
-jrel_op(loc, "POP_JUMP_IF_FALSE", 114)
-jrel_op(loc, "POP_JUMP_IF_TRUE", 115)
 def_op(loc, "IS_OP", 117)
 def_op(loc, "CONTAINS_OP", 118)
 def_op(loc, "RERAISE",                 119,   3, 0)
 def_op(loc, "BINARY_OP", 122)
 jrel_op(loc, "SEND", 123) # Number of bytes to skip
-local_op(loc, "LOAD_FAST",            124,  0,  1)  # Local variable number
 loc["nullaryloadop"].add(124)
 def_op(loc    , "LOAD_FAST_CHECK"                  , 127,   0, 1)
 local_op(loc, "LOAD_FAST_CHECK", 127)  # Local variable number
 jrel_op(loc, "POP_JUMP_IF_NOT_NONE", 128)
 jrel_op(loc, "POP_JUMP_IF_NONE", 129)
 def_op(loc, "RAISE_VARARGS", 130)    # Number of raise arguments (1, 2, or 3)
-def_op(loc, "GET_AWAITABLE", 131)
 def_op(loc, "BUILD_SLICE", 133)      # Number of items
 jrel_op(loc, "JUMP_BACKWARD_NO_INTERRUPT", 134) # Number of words to skip (backwards)
 free_op(loc, "MAKE_CELL",                     135,   0, 0)
@@ -282,7 +288,6 @@ jrel_op(loc, "JUMP_BACKWARD", 140)    # Number of words to skip (backwards)
 
 def_op(loc, "EXTENDED_ARG", 144)
 EXTENDED_ARG = 144
-def_op(loc, "LIST_APPEND", 145)
 def_op(loc, "SET_ADD", 146)
 def_op(loc, "MAP_ADD", 147)
 free_op(loc, "LOAD_CLASSDEREF", 148)
@@ -305,19 +310,16 @@ const_op(loc, "KW_NAMES", 172)
 
 MIN_PSEUDO_OPCODE = 256
 
-pseudo_op("SETUP_FINALLY", 256, ["NOP"])
 hasexc.append(256)
 pseudo_op("SETUP_CLEANUP", 257, ["NOP"])
 hasexc.append(257)
-pseudo_op("SETUP_WITH", 258, ["NOP"])
 hasexc.append(258)
-pseudo_op("POP_BLOCK", 259, ["NOP"])
 
-pseudo_op("JUMP", 260, ["JUMP_FORWARD", "JUMP_BACKWARD"])
-pseudo_op("JUMP_NO_INTERRUPT", 261, ["JUMP_FORWARD", "JUMP_BACKWARD_NO_INTERRUPT"])
+# pseudo_op("JUMP", 260, ["JUMP_FORWARD", "JUMP_BACKWARD"])
+# pseudo_op("JUMP_NO_INTERRUPT", 261, ["JUMP_FORWARD", "JUMP_BACKWARD_NO_INTERRUPT"])
 
-def_op(loc,    "MATCH_SEQUENCE",           32,   0, 1)
-def_op(loc,    "MATCH_KEYS",               33,   0, 2)
+def_op(loc,    "MATCH_SEQUENCE",           232,   0, 1)
+def_op(loc,    "MATCH_KEYS",               233,   0, 2)
 
 
 
@@ -530,5 +532,5 @@ opcode_extended_fmt312rust.update(
 
 from xdis.opcodes.opcode_311 import findlinestarts
 
-update_pj3(globals(), loc)
+update_pj3(globals(), loc, is_rust=True)
 finalize_opcodes(loc)
