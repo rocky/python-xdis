@@ -104,7 +104,7 @@ binary_op_graal(loc, "BINARY_OP", 0x7, 1, 2, 1)
 # Performs subscript get operation - {@code a[b]}.
 #   Pops: {@code b}, then {@code a}
 #   Pushes: result
-def_op_graal(loc, "BINARY_SUBSCR", 0x8, 1, 2, 0)
+binary_op_graal(loc, "BINARY_SUBSCR", 0x8, 1, 2, 0)
 
 # Performs subscript set operation - {@code a[b] = c}.
 #   Pops: {@code b}, then {@code a}, then {@code c}
