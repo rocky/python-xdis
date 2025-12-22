@@ -7,4 +7,4 @@ if [[ $0 == ${BASH_SOURCE[0]} ]] ; then
 fi
 
 # export PYVERSIONS='3.11 pypy3.11 pypy3.11 3.12 3.13'
-export PYVERSIONS='3.11 pypy3.11 graalpy-24.2.2 pypy3.11 3.12 graalpy-community-25.0.0 3.13'
+export PYVERSIONS='3.11 pypy3.11 graalpy-24.2.2 pypy3.11 3.12 graalpy-community-25.0.0 3.13 3.14'

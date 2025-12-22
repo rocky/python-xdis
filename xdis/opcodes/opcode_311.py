@@ -378,5 +378,5 @@ del opcode_extended_fmt311["INPLACE_XOR"]
 
 from xdis.opcodes.opcode_310 import findlinestarts
 
-update_pj3(globals(), loc)
+update_pj3(globals(), loc, is_rust=True)
 finalize_opcodes(loc)
