@@ -379,5 +379,5 @@ opcode_arg_fmt = opcode_arg_fmt311 = opcode_arg_fmt310.copy()
 
 from xdis.opcodes.opcode_310 import findlinestarts  # noqa
 
-update_pj3(globals(), loc)
+update_pj3(globals(), loc, is_rust=True)
 finalize_opcodes(loc)
