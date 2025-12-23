@@ -30,7 +30,7 @@ class SerializedTestCase:
         self.serialized_xdis = serialize_pyc(pyc, use_xdis=True, output_file=None)
         # debug messages
         self.message = f"{SYS_VERSION}: Checking equivalence: {self.pyc_path} <---> {self.serialized_txt_path}"
-        self.fail_message = f"{SYS_VERSION} failed equivalence; xdis:{self.pyc_path.name} != dis:{self.serialized_txt_path.name}"
+        self.fail_message = f"Running version {SYS_VERSION}, failed equivalence; xdis:{self.pyc_path.name} != dis:{self.serialized_txt_path.name}"
 
     def __str__(self) -> str:
         return self.message
