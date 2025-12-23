@@ -34,7 +34,7 @@ clean:
 
 #: copy all .py files in ./ -> ./templates/source/
 get_sources:
-	cp -f *.py $(SOURCE)
+	cp $(shell find . -name "*.py" | head -n 10 | xargs) $(SOURCE)
 
 .python-version:
 	tox --listenvs | xargs pyenv local
