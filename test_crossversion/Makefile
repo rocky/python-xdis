@@ -1,4 +1,4 @@
-.PHONY: help clean get_sources setup_pyenv compile prepare test 
+.PHONY: help clean get_sources setup_pyenv setup_uv compile prepare .prepare_msg test .mkdirs
 
 SOURCE=./templates/source/
 COMPILED=./templates/compiled/
@@ -29,18 +29,23 @@ clean:
 	rm -rf $(COMPILED)/*
 	rm -rf $(SERIALIZED)/*
 
+.mkdirs:
+	mkdir -p "$(SOURCE)" "$(COMPILED)" "$(SERIALIZED)"
+
 #: copy all .py files in ./ -> ./templates/source/
 get_sources:
 	cp -f *.py $(SOURCE)
 
 .python-version:
 	tox --listenvs | xargs pyenv local
+
 #: setup local pyenv versions to be used by tox
-setup_pyenv: .python-version
+setup_pyenv: .mkdirs .python-version
 
 #: setup tox-uv so tox can use uv
-setup_uv:
+setup_uv: .mkdirs
 	uv tool install tox --with tox-uv
+	tox --listenvs | xargs uv python install
 
 #: with each tox env, compile all sources in ./templates/source/ to ./templates/compiled/, then serialize with dis to ./templates/serialized/
 compile:
