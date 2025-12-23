@@ -163,24 +163,21 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         instr_count = self.read_int32()
         co_code = self.read_slice(instr_count * 2)
 
-        # instructions = [
-        #     int.from_bytes(co_code[i:i+2], "little") for i in range(0, len(co_code), 2)
-        # ]
-        instructions = [int(co_code[i]) for i in range(len(co_code))] # debug
+        # instructions = [int(co_code[i]) for i in range(len(co_code))] # debug
 
         # read locations
         loc_count = self.read_int32()
         locations: List[SourceLocation] = []
         for _ in range(loc_count):
-            line = self.read_int32()
-            if line == 0:
+            line_number = self.read_int32()
+            if line_number == 0:
                 raise MarshalError("invalid source location")
             # OneIndexed::new used in Rust requires line != 0
             char_off_zero_indexed = self.read_int32()
             locations.append(
                 SourceLocation(
-                    line=line,
-                    character_offset=char_off_zero_indexed + 1  # convert from zero-indexed
+                    line_number=line_number,
+                    column_offset=char_off_zero_indexed + 1  # convert from zero-indexed
                 )
             )
 
@@ -257,17 +254,19 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
             co_stacksize=max_stackdepth,
             co_flags=flags,
             co_code=co_code,
-            co_consts=constants,
+            co_consts=tuple(constants),
             co_names=co_names,
             co_varnames=co_varnames,
             co_filename=source_path,
             co_name=obj_name,
             co_qualname=co_qualname,
             co_firstlineno=first_line_number,
-            co_linetable=locations,
+            co_linetable=co_linetable,
             co_freevars=co_freevars,
             co_cellvars=co_cellvars,
             co_exceptiontable=co_exceptiontable,
+            version_triple=self.version_triple,
+            locations=tuple(locations),
         )
 
 

@@ -142,7 +142,8 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy: bool=False) -> None:
             if version_tuple >= (3,14):
                 fields2copy.extend(fields2copy_314)
         for field in fields2copy:
-            loc[field] = getattr(from_mod, field).copy()
+            if hasattr(from_mod, field):
+                loc[field] = getattr(from_mod, field).copy()
         pass
     else:
         # FIXME: DRY with above
