@@ -5,7 +5,11 @@ import xdis
 from xdis import get_opcode
 from xdis.cross_dis import op_has_argument, xstack_effect
 from xdis.op_imports import get_opcode_module
-from xdis.version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
+from xdis.version_info import (
+    PYTHON_IMPLEMENTATION,
+    PYTHON_VERSION_TRIPLE,
+    version_tuple_to_str,
+)
 
 
 def get_srcdir() -> str:
@@ -78,7 +82,7 @@ def test_stack_effect_fixed() -> None:
             check_effect = opcode_stack_effect[opcode]
             assert check_effect == effect, (
                 "in version %s %d (%s) not okay; effect xstack_effect is %d; C source has %d"
-                % (opc.version, opcode, opname, effect, check_effect)
+                % (version_tuple_to_str(opc.version_tuple), opcode, opname, effect, check_effect)
             )
             # print("version %s: %d (%s) is good: effect %d" % (version, opcode, opname, effect))
             pass

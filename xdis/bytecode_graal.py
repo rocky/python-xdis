@@ -4,7 +4,7 @@ from xdis.bytecode import Bytecode
 from xdis.cross_dis import get_code_object
 from xdis.instruction import Instruction
 from xdis.lineoffsets_graal import find_linestarts_graal
-from xdis.opcodes.base_graal import (
+from xdis.opcodes.opcode_graal.base_graal import (
     BINARY_OPS,
     UNARY_OPS,
     collection_to_str,
