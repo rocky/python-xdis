@@ -507,7 +507,5 @@ opcode_extended_fmt312rust.update(
     },
 )
 
-from xdis.opcodes.opcode_312 import findlinestarts  # noqa
-
 update_pj3(globals(), loc)
 finalize_opcodes(loc)

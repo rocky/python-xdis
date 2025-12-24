@@ -21,9 +21,6 @@ of stack usage and information for formatting instructions.
 This has similar imformation as the opcodes in Python's opcode.py library.
 """
 
-from typing import Optional, Tuple
-
->>>>>>> python-3.6-to-3.10:xdis/opcodes/opcode_3x/opcode_313.py
 from xdis.opcodes.base import (  # noqa
     VARYING_STACK_INT,
     cpython_implementation,

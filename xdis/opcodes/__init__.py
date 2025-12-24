@@ -124,7 +124,7 @@ __all__ = [
     # "opcode_310graal",
     # "opcode_311graal",
     # "opcode_312graal",
-    "opcode_38graal",
+    # "opcode_38graal",
     # "opcode_312rust",
     "opcode_313rust",
 

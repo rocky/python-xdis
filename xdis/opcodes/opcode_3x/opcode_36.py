@@ -21,10 +21,9 @@ This is like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
-from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     call_op,
-    cpython_implementation as python_implementation,
+    cpython_implementation,
     def_op,
     finalize_opcodes,
     init_opdata,
@@ -59,7 +58,7 @@ oppop = [0] * 256
 EXTENDED_ARG_SHIFT = 8
 
 version_tuple = (3, 6)
-python_implementation = "CPython"
+python_implementation = cpython_implementation
 
 loc = locals()
 

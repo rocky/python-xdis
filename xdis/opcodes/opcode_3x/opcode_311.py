@@ -44,8 +44,6 @@ from xdis.opcodes.format.extended import (
 )
 from xdis.opcodes.opcode_3x.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
 
-from . import opcode_310
-
 findlinestarts = xdis.cross_dis.findlinestarts
 python_implementation = cpython_implementation
 version_tuple = (3, 11)

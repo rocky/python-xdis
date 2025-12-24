@@ -242,26 +242,6 @@ EXTENDED_ARG = 144
 
 opcode_arg_fmt = {"EXTENDED_ARG": format_extended_arg}
 
-def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> tuple:
-    """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
-    should have the function or closure name.
-    """
-    # From opcode description: argc indicates the total number of
-    # positional and keyword arguments.  Sometimes the function name
-    # is in the stack arg positions back.
-    assert len(instructions) >= 2
-    inst = instructions[0]
-    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
-    s = ""
-    name_inst = instructions[1]
-    start_offset = name_inst.offset
-    if name_inst.opname in ("LOAD_CONST",):
-        s += "make_function(%s)" % short_code_repr(name_inst.argval)
-        return s, start_offset
-    s += format_MAKE_FUNCTION_30_35(inst.argval)
-    return s, start_offset
-
-
 opcode_extended_fmt = opcode_extended_fmt33 = opcode_extended_fmt_base
 opcode_arg_fmt33 = opcode_arg_fmt_base.copy()
 opcode_arg_fmt33.update(
@@ -275,4 +255,3 @@ opcode_arg_fmt = opcode_arg_fmt33
 
 update_pj3(globals(), loc)
 finalize_opcodes(loc)
->>>>>>> python-3.6-to-3.10:xdis/opcodes/opcode_3x/opcode_33.py

@@ -273,19 +273,6 @@ EXTENDED_ARG = 103
 
 # fmt: on
 
-MAX_PSEUDO_OPCODE = MIN_PSEUDO_OPCODE + len(_pseudo_ops) - 1
-
-# extend opcodes to cover pseudo ops
-
-opname = ["<%r>" % op for op in range(MAX_PSEUDO_OPCODE + 1)]
-opname.extend(["<%d>" % i for i in range(256, 267)])
-oppop.extend([0] * 11)
-oppush.extend([0] * 11)
-
-for op, i in opmap.items():
-    opname[i] = op
-
-
 _specializations = {
     "BINARY_OP": [
         "BINARY_OP_ADAPTIVE",

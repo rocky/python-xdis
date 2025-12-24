@@ -24,12 +24,10 @@ similar to the opcodes in Python's opcode.py library.
 If this file changes the other opcode files may have to be adjusted accordingly.
 """
 
-from typing import Optional, Tuple
-
 from xdis.opcodes.format.extended import opcode_extended_fmt_base, short_code_repr
 
 
-def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> Tuple[Optional[str], int]:
+def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> tuple:
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
     """
@@ -43,7 +41,7 @@ def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> Tuple[Optional[str
     name_inst = instructions[1]
     start_offset = name_inst.offset
     if name_inst.opname in ("LOAD_CONST",):
-        s += f"make_function({short_code_repr(name_inst.argval)}"
+        s += "make_function(%s)" % short_code_repr(name_inst.argval)
         return s, start_offset
     s += format_MAKE_FUNCTION_30_35(inst.argval)
     return s, start_offset
@@ -62,7 +60,7 @@ def format_MAKE_FUNCTION_30_35(argc: int) -> str:
     return s
 
 
-def parse_fn_counts_30_35(argc: int) -> Tuple[int, int, int]:
+def parse_fn_counts_30_35(argc: int) -> tuple:
     """
     In Python 3.0 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
     arguments counts of positional, default + named, and annotation
