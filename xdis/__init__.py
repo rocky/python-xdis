@@ -1,5 +1,5 @@
 """
-  Copyright (c) 2015-2017, 2020-2024 by Rocky Bernstein
+  Copyright (c) 2015-2017, 2020-2025 by Rocky Bernstein
   Copyright (c) 2000 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
   This program is free software; you can redistribute it and/or
@@ -88,16 +88,16 @@ from xdis.magics import (
     sysinfo2magic,
 )
 from xdis.op_imports import get_opcode_module
-from xdis.opcodes import (
-    opcode_13,
-    opcode_14,
-    opcode_15,
+from xdis.opcodes.opcode_1x import opcode_13, opcode_14, opcode_15
+from xdis.opcodes.opcode_2x import (
     opcode_22,
     opcode_23,
     opcode_24,
     opcode_25,
     opcode_26,
     opcode_27,
+)
+from xdis.opcodes.opcode_3x import (
     opcode_30,
     opcode_31,
     opcode_32,

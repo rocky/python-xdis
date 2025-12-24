@@ -134,8 +134,17 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     if from_mod is not None:
         loc["opmap"] = copy(from_mod.opmap)
         loc["opname"] = copy(from_mod.opname)
+        loc["opmap"] = deepcopy(from_mod.opmap)
+        loc["opname"] = deepcopy(from_mod.opname)
+        if version_tuple is not None:
+            if version_tuple >= (3, 13):
+                fields2copy.extend(fields2copy_313)
+            if version_tuple >= (3, 14):
+                fields2copy.extend(fields2copy_314)
         for field in fields2copy:
             loc[field] = copy(getattr(from_mod, field))
+            if hasattr(from_mod, field):
+                loc[field] = copy(getattr(from_mod, field))
         pass
     else:
         # FIXME: DRY with above
@@ -466,30 +475,31 @@ def update_sets(loc, is_pypy, is_rust=False):
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
 
     python_version = loc.get("python_version")
-    if python_version and python_version < (3, 11) or (is_pypy and python_version == (3, 11)):
+    if python_version:
         loc["JUMP_UNCONDITIONAL"] = frozenset(
-            [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
+            [
+                loc["opmap"][op]
+                for op in {
+                    "JUMP_ABSOLUTE",
+                    "JUMP_FORWARD",
+                    "JUMP_BACKWARD",
+                    "JUMP_BACKWARD_NO_INTERRUPT",
+                }
+                if op in loc["opmap"]
+            ]
         )
-    elif python_version:
-        if not is_pypy and not is_rust:
-            loc["JUMP_UNCONDITIONAL"] = frozenset(
-                [
-                    loc["opmap"]["JUMP_FORWARD"],
-                    loc["opmap"]["JUMP_BACKWARD"],
-                    loc["opmap"]["JUMP_BACKWARD_NO_INTERRUPT"],
-                ]
-            )
-    else:
-        loc["JUMP_UNCONDITIONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
     if PYTHON_VERSION_TRIPLE < (3, 8, 0) and python_version and python_version < (3, 8):
         loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
         loc["LOOP_OPS"] = frozenset()
 
     loc["LOCAL_OPS"] = frozenset(loc["haslocal"])
-    if not is_rust:
+    if not is_rust and python_version:
         loc["JUMP_OPS"] = (
-            loc["JABS_OPS"] | loc["JREL_OPS"] | loc["LOOP_OPS"] | loc["JUMP_UNCONDITIONAL"]
+            loc["JABS_OPS"]
+            | loc["JREL_OPS"]
+            | loc["LOOP_OPS"]
+            | loc["JUMP_UNCONDITIONAL"]
         )
     loc["NAME_OPS"] = frozenset(loc["hasname"])
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
