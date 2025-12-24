@@ -94,7 +94,8 @@ binary_op(loc , "BINARY_SLICE"                     , 26 ,   2, 0)
 binary_op(loc , "STORE_SLICE"                      , 27 ,   4, 0)
 
 def_op(loc    , "CLEANUP_THROW"                    , 55 ,   2, 1)
-def_op(loc    , "LOAD_LOCALS"                      , 87 ,   0, 1)
+def_op(loc    , "LOAD_LOCALS"                      , 87 ,   0, 1) # Pushes a reference to the locals of the current scope.
+                                                                  # This is not a name op.
 def_op(loc    , "RETURN_CONST"                     , 121,   0, 0)
 local_op(loc  , "LOAD_FAST_CHECK"                  , 127,   0, 1)
 

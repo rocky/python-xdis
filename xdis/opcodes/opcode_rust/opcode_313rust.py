@@ -203,7 +203,7 @@ jrel_op(loc, "POP_JUMP_IF_FALSE", 47)
 jrel_op(loc, "JUMP_IF_TRUE_OR_POP",  48) # Number of words to skip
 jrel_op(loc, "JUMP_IF_FALSE_OR_POP", 49) # "
 
-nargs_op(loc, "MAKE_FUNCTION", 50)    # Flags
+nargs_op(loc, "MAKE_FUNCTION", 50, VARYING_STACK_INT)    # Flags
 def_op(loc, "SET_FUNCTION_ATTR", 51)
 
 call_op(loc, "CALL_FUNCTION", 52)

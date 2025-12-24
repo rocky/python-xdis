@@ -136,7 +136,8 @@ def_op(loc, "INPLACE_XOR",            78,  2,  1)
 def_op(loc, "INPLACE_OR",             79,  2,  1)
 def_op(loc, "BREAK_LOOP",             80,  0,  0, fallthrough=False)
 
-def_op(loc, "LOAD_LOCALS",            82,  0,  1)
+def_op(loc, "LOAD_LOCALS",            82, 0, 1) # Pushes a reference to the locals of the current scope.
+                                                # This is not a name op.
 def_op(loc, "RETURN_VALUE",           83,  1,  0, fallthrough=False)
 def_op(loc, "IMPORT_STAR",            84,  1,  0)
 def_op(loc, "EXEC_STMT",              85,  3,  0)
@@ -208,11 +209,11 @@ store_op(loc, "STORE_FAST",           125,  1,  0, is_type="local")  # Local var
                                                                      # number
 local_op(loc, "DELETE_FAST",          126,  0,  0) # Local variable number is in operand
 
-nargs_op(loc, "RAISE_VARARGS",        130, -1,  2, fallthrough=False)
+nargs_op(loc, "RAISE_VARARGS",        130, VARYING_STACK_INT,  2, fallthrough=False)
                                                 # Number of raise arguments (1, 2, or 3)
-call_op(loc, "CALL_FUNCTION",        131, -1,  2)  # TOS is #args + (#kwargs << 8)
+call_op(loc, "CALL_FUNCTION",        131, VARYING_STACK_INT,  2)  # TOS is #args + (#kwargs << 8)
 
-nargs_op(loc, "MAKE_FUNCTION",        132, -1,  2)  # TOS is number of args with
+nargs_op(loc, "MAKE_FUNCTION",        132, VARYING_STACK_INT,  2)  # TOS is number of args with
                                                     # default values
 varargs_op(loc, "BUILD_SLICE",        133,  2,  1)  # TOS is number of items
 
