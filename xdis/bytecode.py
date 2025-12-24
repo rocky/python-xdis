@@ -36,7 +36,10 @@ from xdis.cross_dis import (
 from xdis.cross_types import UnicodeForPython3
 from xdis.instruction import Instruction
 from xdis.op_imports import get_opcode_module
-from xdis.opcodes.opcode_36 import format_CALL_FUNCTION, format_CALL_FUNCTION_EX
+from xdis.opcodes.opcode_3x.opcode_36 import (
+    format_CALL_FUNCTION,
+    format_CALL_FUNCTION_EX,
+)
 from xdis.util import code2num, num2code
 from xdis.version_info import PYTHON_IMPLEMENTATION, PythonImplementation
 
@@ -878,9 +881,9 @@ def list2bytecode(inst_list, opc, varnames, consts: tuple):
 
 
 if __name__ == "__main__":
-    import xdis.opcodes.opcode_27 as opcode_27
-    import xdis.opcodes.opcode_34 as opcode_34
-    import xdis.opcodes.opcode_36 as opcode_36
+    import xdis.opcodes.opcode_2x.opcode_27 as opcode_27
+    import xdis.opcodes.opcode_3x.opcode_34 as opcode_34
+    import xdis.opcodes.opcode_3x.opcode_36 as opcode_36
 
     my_constants = (None, 2)
     var_names = "a"

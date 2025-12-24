@@ -109,7 +109,8 @@ nofollow nullaryop nullaryloadop ternaryop unaryop
 fields2copy_313 = "hasarg hasexc".split()  # added in 3.12
 fields2copy_314 = "hasjump".split()  # added in 3.13
 
-def init_opdata(loc, from_mod, version_tuple=None, is_pypy: bool=False) -> None:
+
+def init_opdata(loc, from_mod, version_tuple=None, is_pypy: bool = False) -> None:
     """Sets up a number of the structures found in Python's
     opcode.py. Python opcode.py routines assign attributes to modules.
     In order to do this in a modular way here, the local dictionary
@@ -135,12 +136,13 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy: bool=False) -> None:
         loc["opmap"] = deepcopy(from_mod.opmap)
         loc["opname"] = deepcopy(from_mod.opname)
         if version_tuple is not None:
-            if version_tuple >= (3,13):
+            if version_tuple >= (3, 13):
                 fields2copy.extend(fields2copy_313)
-            if version_tuple >= (3,14):
+            if version_tuple >= (3, 14):
                 fields2copy.extend(fields2copy_314)
         for field in fields2copy:
-            loc[field] = deepcopy(getattr(from_mod, field))
+            if hasattr(from_mod, field):
+                loc[field] = deepcopy(getattr(from_mod, field))
         pass
     else:
         # FIXME: DRY with above
@@ -180,7 +182,12 @@ def binary_op(loc: dict, name: str, opcode: int, pop: int = 2, push: int = 1) ->
 
 
 def call_op(
-    loc: dict, name: str, opcode: int, pop: int = -2, push: int = 1, fallthrough: bool=True
+    loc: dict,
+    name: str,
+    opcode: int,
+    pop: int = -2,
+    push: int = 1,
+    fallthrough: bool = True,
 ) -> None:
     """
     Put opcode in the class of instructions that perform calls.
@@ -254,7 +261,15 @@ def jabs_op(
         loc["hascondition"].append(opcode)
 
 
-def jrel_op(loc, name: str, opcode: int, pop: int=0, push: int=0, conditional=False, fallthrough=True) -> None:
+def jrel_op(
+    loc,
+    name: str,
+    opcode: int,
+    pop: int = 0,
+    push: int = 0,
+    conditional=False,
+    fallthrough=True,
+) -> None:
     """
     Put opcode in the class of instructions that can perform a relative jump.
     """
@@ -387,7 +402,7 @@ def ternary_op(loc: dict, name: str, opcode: int, pop: int = 3, push: int = 1) -
     def_op(loc, name, opcode, pop, push)
 
 
-def unary_op(loc, name: str, op, pop: int=1, push: int=1) -> None:
+def unary_op(loc, name: str, op, pop: int = 1, push: int = 1) -> None:
     loc["unaryop"].add(op)
     def_op(loc, name, op, pop, push)
 
@@ -395,7 +410,7 @@ def unary_op(loc, name: str, op, pop: int=1, push: int=1) -> None:
 # This is not in Python. The operand indicates how
 # items on the pop from the stack. BUILD_TUPLE_UNPACK
 # is line this.
-def varargs_op(loc, op_name, op_code, pop: int=-1, push: int=1) -> None:
+def varargs_op(loc, op_name, op_code, pop: int = -1, push: int = 1) -> None:
     def_op(loc, op_name, op_code, pop, push)
     loc["hasvargs"].append(op_code)
 
@@ -448,14 +463,14 @@ def fix_opcode_names(opmap: dict):
     return dict([(k.replace("+", "_"), v) for (k, v) in opmap.items()])
 
 
-def update_pj3(g, loc, is_pypy: bool=False, is_rust: bool=False) -> None:
+def update_pj3(g, loc, is_pypy: bool = False, is_rust: bool = False) -> None:
     if loc["version_tuple"] < (3, 11):
         g.update({"PJIF": loc["opmap"]["POP_JUMP_IF_FALSE"]})
         g.update({"PJIT": loc["opmap"]["POP_JUMP_IF_TRUE"]})
     update_sets(loc, is_pypy, is_rust)
 
 
-def update_pj2(g, loc, is_pypy: bool=False) -> None:
+def update_pj2(g, loc, is_pypy: bool = False) -> None:
     g.update({"PJIF": loc["opmap"]["JUMP_IF_FALSE"]})
     g.update({"PJIT": loc["opmap"]["JUMP_IF_TRUE"]})
     update_sets(loc, is_pypy)
@@ -475,39 +490,40 @@ def update_sets(loc, is_pypy: bool, is_rust=False) -> None:
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
 
     python_version = loc.get("python_version")
-    if python_version and python_version < (3, 11) or (is_pypy and python_version == (3, 11)):
+    if python_version:
         loc["JUMP_UNCONDITIONAL"] = frozenset(
-            [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
+            [
+                loc["opmap"][op]
+                for op in {
+                    "JUMP_ABSOLUTE",
+                    "JUMP_FORWARD",
+                    "JUMP_BACKWARD",
+                    "JUMP_BACKWARD_NO_INTERRUPT",
+                }
+                if op in loc["opmap"]
+            ]
         )
-    elif python_version:
-        if not is_pypy and not is_rust:
-            loc["JUMP_UNCONDITIONAL"] = frozenset(
-                [
-                    loc["opmap"]["JUMP_FORWARD"],
-                    loc["opmap"]["JUMP_BACKWARD"],
-                    loc["opmap"]["JUMP_BACKWARD_NO_INTERRUPT"],
-                ]
-            )
-    else:
-        loc["JUMP_UNCONDITIONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
     if PYTHON_VERSION_TRIPLE < (3, 8, 0) and python_version and python_version < (3, 8):
         loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
         loc["LOOP_OPS"] = frozenset()
 
     loc["LOCAL_OPS"] = frozenset(loc["haslocal"])
-    if not is_rust:
+    if not is_rust and python_version:
         loc["JUMP_OPS"] = (
-            loc["JABS_OPS"] | loc["JREL_OPS"] | loc["LOOP_OPS"] | loc["JUMP_UNCONDITIONAL"]
+            loc["JABS_OPS"]
+            | loc["JREL_OPS"]
+            | loc["LOOP_OPS"]
+            | loc["JUMP_UNCONDITIONAL"]
         )
     loc["NAME_OPS"] = frozenset(loc["hasname"])
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
     loc["VARGS_OPS"] = frozenset(loc["hasvargs"])
     loc["STORE_OPS"] = frozenset(loc["hasstore"])
-    if python_version and python_version >= (3,12):
+    if python_version and python_version >= (3, 12):
         loc["ARG_OPS"] = frozenset(loc["hasarg"])
         loc["EXC_OPS"] = frozenset(loc["hasarg"])
-    if python_version and python_version >= (3,13):
+    if python_version and python_version >= (3, 13):
         loc["JUMP_OPS"] = frozenset(loc["hasjump"])
 
 

@@ -50,21 +50,23 @@ from xdis.opcodes import (
     opcode_37,
     opcode_37pypy,
     opcode_38,
-    opcode_38graal,
     opcode_38pypy,
     opcode_39,
     opcode_39pypy,
     opcode_310,
-    opcode_310graal,
     opcode_310pypy,
     opcode_311,
-    opcode_311graal,
     opcode_311pypy,
     opcode_312,
-    opcode_312graal,
     opcode_313,
     opcode_313rust,
     opcode_314,
+)
+from xdis.opcodes.opcode_graal import (
+    opcode_38graal,
+    opcode_310graal,
+    opcode_311graal,
+    opcode_312graal,
 )
 from xdis.version_info import PythonImplementation, version_tuple_to_str
 
