@@ -478,30 +478,31 @@ def update_sets(loc, is_pypy: bool, is_rust=False) -> None:
     loc["JABS_OPS"] = frozenset(loc["hasjabs"])
 
     python_version = loc.get("python_version")
-    if python_version and python_version < (3, 11) or (is_pypy and python_version == (3, 11)):
+    if python_version:
         loc["JUMP_UNCONDITIONAL"] = frozenset(
-            [loc["opmap"]["JUMP_ABSOLUTE"], loc["opmap"]["JUMP_FORWARD"]]
+            [
+                loc["opmap"][op]
+                for op in {
+                    "JUMP_ABSOLUTE",
+                    "JUMP_FORWARD",
+                    "JUMP_BACKWARD",
+                    "JUMP_BACKWARD_NO_INTERRUPT",
+                }
+                if op in loc["opmap"]
+            ]
         )
-    elif python_version:
-        if not is_pypy and not is_rust:
-            loc["JUMP_UNCONDITIONAL"] = frozenset(
-                [
-                    loc["opmap"]["JUMP_FORWARD"],
-                    loc["opmap"]["JUMP_BACKWARD"],
-                    loc["opmap"]["JUMP_BACKWARD_NO_INTERRUPT"],
-                ]
-            )
-    else:
-        loc["JUMP_UNCONDITIONAL"] = frozenset([loc["opmap"]["JUMP_FORWARD"]])
     if PYTHON_VERSION_TRIPLE < (3, 8, 0) and python_version and python_version < (3, 8):
         loc["LOOP_OPS"] = frozenset([loc["opmap"]["SETUP_LOOP"]])
     else:
         loc["LOOP_OPS"] = frozenset()
 
     loc["LOCAL_OPS"] = frozenset(loc["haslocal"])
-    if not is_rust:
+    if not is_rust and python_version:
         loc["JUMP_OPS"] = (
-            loc["JABS_OPS"] | loc["JREL_OPS"] | loc["LOOP_OPS"] | loc["JUMP_UNCONDITIONAL"]
+            loc["JABS_OPS"]
+            | loc["JREL_OPS"]
+            | loc["LOOP_OPS"]
+            | loc["JUMP_UNCONDITIONAL"]
         )
     loc["NAME_OPS"] = frozenset(loc["hasname"])
     loc["NARGS_OPS"] = frozenset(loc["hasnargs"])
