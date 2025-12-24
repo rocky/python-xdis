@@ -17,18 +17,18 @@
 from dataclasses import dataclass
 from typing import Any, Dict, Tuple, Union
 
-from xdis.codetype.base import CodeBase
+from xdis.codetype.code311 import Code311
 
 
 @dataclass
 class SourceLocation:
-    # line: 1-based int
-    line: int
-    # character_offset: 1-based int (constructed from a zero-indexed stored value)
-    character_offset: int
+    # 1-based integer line number
+    line_number: int
+    # column offset in line: 1-based int (constructed from a zero-indexed stored value)
+    column_offset: int
 
 
-class Code313Rust(CodeBase):
+class Code313Rust(Code311):
     """Class for a RustPython 3.13 code object used when a Python
     interpreter is not RustPython 3.13 but working on RustPython 3.13 bytecode. It
     also functions as an object that can be used to build or write a
@@ -61,9 +61,10 @@ class Code313Rust(CodeBase):
         co_linetable: bytes,
         co_freevars: tuple,
         co_cellvars: tuple,
+        version_triple: Tuple[int, int, int],
+        locations: tuple,
         co_exceptiontable = tuple(),
         collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
-        version_triple: Tuple[int, int, int]  = (0, 0, 0),
     ) -> None:
         self.co_argcount = co_argcount
         self.co_posonlyargcount = co_posonlyargcount
@@ -85,7 +86,5 @@ class Code313Rust(CodeBase):
         self.co_freevars= co_freevars
         self.co_exceptiontable = co_exceptiontable
         self.co_collection_order = collection_order
-        version_triple = version_triple
-
-    def co_lines(self):
-        return [(sl.line, sl.character_offset, sl.character_offset) for sl in self.co_linetable]
+        self.version_triple = version_triple
+        self.locations = locations
