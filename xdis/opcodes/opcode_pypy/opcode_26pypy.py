@@ -21,7 +21,6 @@ of stack usage.
 """
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_2x.opcode_26 as opcode_26
 from xdis.opcodes.base import (
     finalize_opcodes,
     init_opdata,
@@ -36,6 +35,8 @@ from xdis.opcodes.format.extended import (
     extended_format_RETURN_VALUE,
 )
 from xdis.version_info import PythonImplementation
+
+from ..opcode_2x import opcode_26
 
 findlabels = xdis.cross_dis.findlabels
 python_implementation = PythonImplementation("PyPy")

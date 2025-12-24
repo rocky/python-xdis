@@ -22,7 +22,6 @@ of stack usage and information for formatting instructions.
 
 from typing import Optional, Tuple
 
-import xdis.opcodes.opcode_3x.opcode_38 as opcode_38
 from xdis.opcodes.base import (
     binary_op,
     cpython_implementation,
@@ -35,6 +34,8 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
 from xdis.opcodes.opcode_3x.opcode_38 import opcode_arg_fmt38, opcode_extended_fmt38
+
+from . import opcode_38
 
 version_tuple = (3, 9)
 python_implementation = cpython_implementation

@@ -21,7 +21,6 @@ opcodes in Python's dis.py library.
 """
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_1x.opcode_13 as opcode_13
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported; noqa
     cpython_implementation,
     finalize_opcodes,
@@ -32,6 +31,8 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     update_pj2,
 )
 from xdis.opcodes.opcode_1x.opcode_13 import opcode_arg_fmt13, opcode_extended_fmt13
+
+from . import opcode_13
 
 version_tuple = (1, 2)
 python_implementation = cpython_implementation

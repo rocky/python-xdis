@@ -6,7 +6,6 @@ This is like Python 3.2's opcode.py with some classification
 of stack usage.
 """
 
-import xdis.opcodes.opcode_3x.opcode_32 as opcode_32
 from xdis.opcodes.base import (
     call_op,
     finalize_opcodes,
@@ -22,6 +21,8 @@ from xdis.opcodes.format.extended import (
     extended_format_RETURN_VALUE,
 )
 from xdis.version_info import PythonImplementation
+
+from ..opcode_3x import opcode_32
 
 version_tuple = (3, 2)
 python_implementation = PythonImplementation("PyPy")

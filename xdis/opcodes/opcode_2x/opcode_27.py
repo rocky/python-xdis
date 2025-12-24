@@ -21,7 +21,6 @@ of stack usage.
 """
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_2x.opcode_26 as opcode_26
 from xdis.opcodes.base import (  # noqa
     compare_op,
     cpython_implementation,
@@ -39,6 +38,8 @@ from xdis.opcodes.opcode_2x.opcode_2x import (
     opcode_extended_fmt_base2x,
     update_arg_fmt_base2x,
 )
+
+from . import opcode_26
 
 findlabels = xdis.cross_dis.findlabels
 python_implementation = cpython_implementation

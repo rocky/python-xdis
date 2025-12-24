@@ -20,7 +20,6 @@ This is a like Python 3.14's opcode.py with some classification
 of stack usage and information for formatting instructions.
 of stack usage.
 """
-
 from xdis.opcodes.base import (
     VARYING_STACK_INT,
     binary_op,
@@ -40,6 +39,8 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
+
+from . import opcode_313
 
 version_tuple = (3, 14)
 python_implementation = cpython_implementation
@@ -312,7 +313,6 @@ loc["hasexc"] = [263, 264, 265]
 # fmt: on
 
 ### update formatting
-import xdis.opcodes.opcode_3x.opcode_313 as opcode_313
 from xdis.opcodes.format.extended import extended_format_binary_op
 
 _nb_ops = [

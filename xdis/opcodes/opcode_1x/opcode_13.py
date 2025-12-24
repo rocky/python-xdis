@@ -21,7 +21,6 @@ opcodes in Python's dis.py library.
 """
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_1x.opcode_14 as opcode_14
 from xdis.opcodes.base import (
     cpython_implementation,
     def_op,
@@ -34,6 +33,8 @@ from xdis.opcodes.opcode_1x.opcode_1x import (
     opcode_extended_fmt_base1x,
     update_arg_fmt_base1x,
 )
+
+from . import opcode_14
 
 version_tuple = (1, 3)
 python_implementation = cpython_implementation

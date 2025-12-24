@@ -20,8 +20,6 @@ This is like Python 1.0's dis.py with some classification
 of stack usage and information for formatting instructions.
 """
 
-import xdis.opcodes.opcode_1x.opcode_11 as opcode_11
-
 # This is used from outside this module
 from xdis.cross_dis import findlabels  # noqa
 from xdis.opcodes.base import (  # Although these aren't used here, they are exported; noqa
@@ -33,6 +31,8 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     update_pj2,
 )
 from xdis.opcodes.opcode_1x.opcode_11 import opcode_arg_fmt11, opcode_extended_fmt11
+
+from . import opcode_11
 
 version_tuple = (1, 0)
 python_implementation = cpython_implementation

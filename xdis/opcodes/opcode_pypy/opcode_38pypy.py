@@ -6,7 +6,6 @@ This is a like PyPy 3.8's opcode.py  with some classification
 of stack usage and information for formatting instructions..
 """
 
-import xdis.opcodes.opcode_3x.opcode_38 as opcode_38
 from xdis.opcodes.base import (
     call_op,
     def_op,
@@ -18,11 +17,10 @@ from xdis.opcodes.base import (
     update_pj3,
     varargs_op,
 )
-from xdis.opcodes.opcode_pypy.opcode_37pypy import (
-    opcode_arg_fmt37pypy,
-    opcode_extended_fmt37pypy,
-)
 from xdis.version_info import PythonImplementation
+
+from ..opcode_3x import opcode_38
+from .opcode_37pypy import opcode_arg_fmt37pypy, opcode_extended_fmt37pypy
 
 version_tuple = (3, 8)
 python_implementation = PythonImplementation("PyPy")

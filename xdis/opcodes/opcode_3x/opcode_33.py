@@ -22,7 +22,6 @@ from xdis.opcodes.base import (
     local_op,
     name_op,
     nargs_op,
-    rm_op,
     store_op,
     unary_op,
     update_pj3,

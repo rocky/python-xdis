@@ -21,7 +21,6 @@ of stack usage and information for formatting instructions.
 """
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_3x.opcode_39 as opcode_39
 from xdis.opcodes.base import (
     cpython_implementation,
     def_op,
@@ -31,6 +30,8 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 from xdis.opcodes.opcode_3x.opcode_39 import opcode_arg_fmt39, opcode_extended_fmt39
+
+from . import opcode_39
 
 findlinestarts = xdis.cross_dis.findlinestarts
 version_tuple = (3, 10)

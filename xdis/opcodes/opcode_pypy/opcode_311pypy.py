@@ -8,7 +8,6 @@ formatting instructions.
 
 """
 
-import xdis.opcodes.opcode_3x.opcode_310 as opcode_311
 from xdis.opcodes.base import (
     def_op,
     finalize_opcodes,
@@ -21,6 +20,8 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.opcode_3x.opcode_311 import opcode_arg_fmt311, opcode_extended_fmt311
 from xdis.version_info import PythonImplementation
+
+from ..opcode_3x import opcode_311
 
 version_tuple = (3, 11)
 python_implementation = PythonImplementation("PyPy")
@@ -36,7 +37,6 @@ init_opdata(loc, opcode_311, version_tuple, is_pypy=True)
 # Removed from Python 3.11
 # ----------------
 
-rm_op(loc,  "GEN_START",              129)
 rm_op(loc,  "LIST_EXTEND",            162)
 rm_op(loc,  "SET_UPDATE",             163)
 rm_op(loc,  "DICT_MERGE",             164)

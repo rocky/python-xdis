@@ -23,7 +23,6 @@ This has similar imformation as the opcodes in Python's opcode.py library.
 
 from typing import Optional, Tuple
 
-import xdis.opcodes.opcode_3x.opcode_312 as opcode_312
 from xdis.opcodes.base import (  # noqa
     VARYING_STACK_INT,
     cpython_implementation,
@@ -37,6 +36,8 @@ from xdis.opcodes.base import (  # noqa
 )
 from xdis.opcodes.format.extended import NULL_EXTENDED_OP, get_arglist
 from xdis.opcodes.opcode_pypy.opcode_36pypy import format_CALL_METHOD
+
+from . import opcode_312
 
 version_tuple = (3, 13)
 python_implementation = cpython_implementation

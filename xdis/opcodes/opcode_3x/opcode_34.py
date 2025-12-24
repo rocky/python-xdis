@@ -20,7 +20,6 @@ This is a like Python 3.4's opcode.py with some classification
 of stack usage.
 """
 
-import xdis.opcodes.opcode_3x.opcode_33 as opcode_33
 from xdis.opcodes.base import (
     cpython_implementation,
     finalize_opcodes,
@@ -30,6 +29,8 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 from xdis.opcodes.opcode_3x.opcode_33 import opcode_arg_fmt33, opcode_extended_fmt33
+
+from . import opcode_33
 
 version_tuple = (3, 4)
 python_implementation = cpython_implementation

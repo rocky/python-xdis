@@ -23,7 +23,6 @@ of stack usage.
 
 from typing import Dict, List, Optional, Tuple
 
-import xdis.opcodes.opcode_3x.opcode_35 as opcode_35
 from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     call_op,
@@ -47,6 +46,8 @@ from xdis.opcodes.format.extended import (
     get_instruction_arg,
 )
 from xdis.opcodes.opcode_3x.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
+
+from . import opcode_35
 
 # oppush[op] => number of stack entries pushed
 oppush: List[int] = [0] * 256

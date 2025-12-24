@@ -9,7 +9,6 @@ of stack usage and information for formatting instructions.
 import sys
 from typing import List, Optional, Tuple
 
-import xdis.opcodes.opcode_3x.opcode_36 as opcode_36
 from xdis.opcodes.base import (
     call_op,
     def_op,
@@ -23,6 +22,8 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.opcode_3x.opcode_36 import opcode_arg_fmt36, opcode_extended_fmt36
 from xdis.version_info import PythonImplementation
+
+from ..opcode_3x import opcode_36
 
 version_tuple = (3, 6)
 python_implementation = PythonImplementation("PyPy")

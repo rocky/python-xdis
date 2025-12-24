@@ -21,7 +21,6 @@ of stack usage, and opererand formatting functions.
 """
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_2x.opcode_25 as opcode_25
 from xdis.opcodes.base import (
     cpython_implementation,
     finalize_opcodes,
@@ -35,6 +34,8 @@ from xdis.opcodes.opcode_2x.opcode_2x import (
     opcode_extended_fmt_base2x,
     update_arg_fmt_base2x,
 )
+
+from . import opcode_25
 
 findlabels = xdis.cross_dis.findlabels
 python_implementation = cpython_implementation

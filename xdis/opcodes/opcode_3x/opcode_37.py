@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2019-2021, 2023-2024
+# (C) Copyright 2016-2017, 2019-2021, 2023-2025
 # by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
@@ -23,7 +23,6 @@ of stack usage and information for formatting instructions.
 
 from typing import Optional, Tuple
 
-import xdis.opcodes.opcode_3x.opcode_36 as opcode_36
 from xdis.opcodes.base import (
     call_op,
     cpython_implementation,
@@ -44,6 +43,8 @@ from xdis.opcodes.opcode_3x.opcode_36 import (
     opcode_arg_fmt36,
     opcode_extended_fmt36,
 )
+
+from . import opcode_36
 
 version_tuple = (3, 7)
 python_implementation = cpython_implementation

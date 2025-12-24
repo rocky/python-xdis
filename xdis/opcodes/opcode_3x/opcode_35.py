@@ -23,7 +23,6 @@ of stack usage.
 
 from typing import Optional, Tuple
 
-import xdis.opcodes.opcode_3x.opcode_34 as opcode_34
 from xdis.opcodes.base import (
     cpython_implementation,
     def_op,
@@ -37,8 +36,10 @@ from xdis.opcodes.base import (
 from xdis.opcodes.format.extended import extended_format_binary_op, get_arglist
 from xdis.opcodes.opcode_3x.opcode_34 import opcode_arg_fmt34, opcode_extended_fmt34
 
-version_tuple = (3, 5)
+from . import opcode_34
+
 python_implementation = cpython_implementation
+version_tuple = (3, 5)
 
 loc = locals()
 

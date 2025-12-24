@@ -7,7 +7,6 @@ of stack usage.
 """
 import sys
 
-import xdis.opcodes.opcode_2x.opcode_27 as opcode_27
 from xdis.opcodes.base import (
     def_op,
     finalize_opcodes,
@@ -22,6 +21,8 @@ from xdis.opcodes.opcode_2x.opcode_2x import (
     update_arg_fmt_base2x,
 )
 from xdis.version_info import PythonImplementation
+
+from ..opcode_2x import opcode_27
 
 version_tuple = (2, 7)
 python_implementation = PythonImplementation("PyPy")

@@ -20,7 +20,6 @@ This is similar to the opcode portion in Python 2.2's dis.py library.
 """
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_2x.opcode_2x as opcode_2x
 from xdis.opcodes.base import (  # noqa
     cpython_implementation,
     def_op,
@@ -32,6 +31,8 @@ from xdis.opcodes.opcode_2x.opcode_2x import (
     opcode_extended_fmt_base2x,
     update_arg_fmt_base2x,
 )
+
+from . import opcode_2x
 
 version_tuple = (2, 2)
 python_implementation = cpython_implementation

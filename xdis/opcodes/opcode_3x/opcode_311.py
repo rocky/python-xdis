@@ -24,7 +24,6 @@ of stack usage and information for formatting instructions.
 from typing import Dict, List, Optional, Tuple
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_3x.opcode_310 as opcode_310
 from xdis.instruction import Instruction
 from xdis.opcodes.base import (
     binary_op,
@@ -45,6 +44,8 @@ from xdis.opcodes.format.extended import (
     extended_function_signature,
 )
 from xdis.opcodes.opcode_3x.opcode_310 import opcode_arg_fmt310, opcode_extended_fmt310
+
+from . import opcode_310
 
 findlinestarts = xdis.cross_dis.findlinestarts
 python_implementation = cpython_implementation

@@ -6,7 +6,6 @@ This is a like Python 3.1's opcode.py  with some classification
 of stack usage and information for formatting instructions.
 """
 
-import xdis.opcodes.opcode_3x.opcode_32 as opcode_32
 from xdis.opcodes.base import (
     cpython_implementation,
     def_op,
@@ -17,6 +16,8 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 from xdis.opcodes.opcode_3x.opcode_33 import opcode_arg_fmt33, opcode_extended_fmt33
+
+from . import opcode_32
 
 loc = locals()
 

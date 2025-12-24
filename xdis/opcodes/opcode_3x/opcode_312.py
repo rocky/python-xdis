@@ -22,7 +22,6 @@ This has similar imformation as the opcodes in Python's opcode.py library.
 """
 
 import xdis.cross_dis
-import xdis.opcodes.opcode_3x.opcode_311 as opcode_311
 from xdis.opcodes.base import (
     binary_op,
     cpython_implementation,
@@ -36,6 +35,8 @@ from xdis.opcodes.base import (
     update_pj3,
 )
 from xdis.opcodes.opcode_3x.opcode_311 import opcode_arg_fmt311, opcode_extended_fmt311
+
+from . import opcode_311
 
 findlinestarts = xdis.cross_dis.findlinestarts
 version_tuple = (3, 12)
