@@ -32,7 +32,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
 )
 from xdis.opcodes.opcode_1x.opcode_11 import opcode_arg_fmt11, opcode_extended_fmt11
 
-from . import opcode_11
+from xdis.opcodes.opcode_1x import opcode_11
 
 version_tuple = (1, 0)
 python_implementation = cpython_implementation

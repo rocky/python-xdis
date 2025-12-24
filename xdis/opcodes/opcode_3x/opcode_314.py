@@ -40,7 +40,7 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 
-from . import opcode_313
+from xdis.opcodes.opcode_3x import opcode_313
 
 version_tuple = (3, 14)
 python_implementation = cpython_implementation

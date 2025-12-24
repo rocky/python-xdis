@@ -32,7 +32,7 @@ from xdis.opcodes.opcode_2x.opcode_2x import (
     update_arg_fmt_base2x,
 )
 
-from . import opcode_22
+from xdis.opcodes.opcode_2x import opcode_22
 
 version_tuple = (2, 1)
 python_implementation = cpython_implementation

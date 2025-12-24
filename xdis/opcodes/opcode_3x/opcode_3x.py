@@ -27,7 +27,7 @@ If this file changes the other opcode files may have to be adjusted accordingly.
 from xdis.opcodes.format.extended import opcode_extended_fmt_base, short_code_repr
 
 
-def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> tuple:
+def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
     """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
     should have the function or closure name.
     """
@@ -47,7 +47,7 @@ def extended_format_MAKE_FUNCTION_30_35(opc, instructions) -> tuple:
     return s, start_offset
 
 
-def format_MAKE_FUNCTION_30_35(argc: int) -> str:
+def format_MAKE_FUNCTION_30_35(argc):
     pos_args, name_pair_args, annotate_args = parse_fn_counts_30_35(argc)
     if (pos_args, name_pair_args, annotate_args) == (0, 0, 0):
         return "No arguments"
@@ -60,7 +60,7 @@ def format_MAKE_FUNCTION_30_35(argc: int) -> str:
     return s
 
 
-def parse_fn_counts_30_35(argc: int) -> tuple:
+def parse_fn_counts_30_35(argc):
     """
     In Python 3.0 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode
     arguments counts of positional, default + named, and annotation

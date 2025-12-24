@@ -30,7 +30,7 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
 )
 from xdis.opcodes.opcode_1x.opcode_12 import opcode_arg_fmt12, opcode_extended_fmt12
 
-from . import opcode_12
+from xdis.opcodes.opcode_1x import opcode_12
 
 version_tuple = (1, 1)  # 1.2 is the same
 python_implementation = cpython_implementation

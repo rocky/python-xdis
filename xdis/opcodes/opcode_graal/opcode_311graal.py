@@ -20,7 +20,7 @@ See com.oracle.graal.python/src/com/oracle/graal/python/compiler/OpCodes.java
 """
 
 from xdis.opcodes.base import VARYING_STACK_INT, init_opdata
-from . import base_graal
+from xdis.opcodes.opcode_graal import base_graal
 from xdis.opcodes.opcode_graal.base_graal import (
     binary_op_graal,
     call_op_graal,

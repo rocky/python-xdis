@@ -21,6 +21,8 @@ This is like Python 3.6's opcode.py with some classification
 of stack usage.
 """
 
+from copy import copy
+
 from xdis.opcodes.base import (
     call_op,
     cpython_implementation,
@@ -44,7 +46,7 @@ from xdis.opcodes.format.extended import (
 )
 from xdis.opcodes.opcode_3x.opcode_35 import opcode_arg_fmt35, opcode_extended_fmt35
 
-from . import opcode_35
+from xdis.opcodes.opcode_3x import opcode_35
 
 # oppush[op] => number of stack entries pushed
 oppush = [0] * 256

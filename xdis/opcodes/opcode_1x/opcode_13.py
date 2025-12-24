@@ -34,7 +34,7 @@ from xdis.opcodes.opcode_1x.opcode_1x import (
     update_arg_fmt_base1x,
 )
 
-from . import opcode_14
+from xdis.opcodes.opcode_1x import opcode_14
 
 version_tuple = (1, 3)
 python_implementation = cpython_implementation

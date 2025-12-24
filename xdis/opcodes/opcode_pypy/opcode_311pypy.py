@@ -20,8 +20,7 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.opcode_3x.opcode_311 import opcode_arg_fmt311, opcode_extended_fmt311
 from xdis.version_info import PythonImplementation
-
-from ..opcode_3x import opcode_311
+from xdis.opcodes.opcode_3x import opcode_311
 
 version_tuple = (3, 11)
 python_implementation = PythonImplementation("PyPy")

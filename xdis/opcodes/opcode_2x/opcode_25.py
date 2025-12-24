@@ -33,7 +33,7 @@ from xdis.opcodes.opcode_2x.opcode_2x import (
     update_arg_fmt_base2x,
 )
 
-from . import opcode_24
+from xdis.opcodes.opcode_2x import opcode_24
 
 findlabels = xdis.cross_dis.findlabels
 python_implementation = cpython_implementation

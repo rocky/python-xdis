@@ -21,6 +21,8 @@ This is like Python 3.7's opcode.py with some classification
 of stack usage and information for formatting instructions.
 """
 
+from copy import copy
+
 from xdis.opcodes.base import (
     call_op,
     cpython_implementation,
@@ -42,7 +44,7 @@ from xdis.opcodes.opcode_3x.opcode_36 import (
     opcode_extended_fmt36,
 )
 
-from . import opcode_36
+from xdis.opcodes.opcode_3x import opcode_36
 
 version_tuple = (3, 7)
 python_implementation = cpython_implementation

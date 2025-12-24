@@ -24,7 +24,7 @@ from xdis.opcodes.format.extended import (
 from xdis.opcodes.opcode_3x.opcode_36 import extended_format_BUILD_STRING
 from xdis.version_info import PythonImplementation
 
-from ..opcode_3x import opcode_35
+from xdis.opcodes.opcode_3x import opcode_35
 
 version_tuple = (3, 5)
 python_implementation = PythonImplementation("PyPy")

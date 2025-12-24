@@ -31,7 +31,7 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.opcode_3x.opcode_39 import opcode_arg_fmt39, opcode_extended_fmt39
 
-from . import opcode_39
+from xdis.opcodes.opcode_3x import opcode_39
 
 findlinestarts = xdis.cross_dis.findlinestarts
 version_tuple = (3, 10)

@@ -16,7 +16,7 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.opcode_3x.opcode_33 import opcode_arg_fmt33, opcode_extended_fmt33
 
-from . import opcode_33
+from xdis.opcodes.opcode_3x import opcode_33
 
 # FIXME: can we DRY this even more?
 

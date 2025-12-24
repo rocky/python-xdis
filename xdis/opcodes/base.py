@@ -134,15 +134,14 @@ def init_opdata(loc, from_mod, version_tuple=None, is_pypy=False):
     if from_mod is not None:
         loc["opmap"] = copy(from_mod.opmap)
         loc["opname"] = copy(from_mod.opname)
-        loc["opmap"] = deepcopy(from_mod.opmap)
-        loc["opname"] = deepcopy(from_mod.opname)
+        loc["opmap"] = copy(from_mod.opmap)
+        loc["opname"] = copy(from_mod.opname)
         if version_tuple is not None:
             if version_tuple >= (3, 13):
                 fields2copy.extend(fields2copy_313)
             if version_tuple >= (3, 14):
                 fields2copy.extend(fields2copy_314)
         for field in fields2copy:
-            loc[field] = copy(getattr(from_mod, field))
             if hasattr(from_mod, field):
                 loc[field] = copy(getattr(from_mod, field))
         pass
@@ -479,12 +478,12 @@ def update_sets(loc, is_pypy, is_rust=False):
         loc["JUMP_UNCONDITIONAL"] = frozenset(
             [
                 loc["opmap"][op]
-                for op in {
+                for op in (
                     "JUMP_ABSOLUTE",
                     "JUMP_FORWARD",
                     "JUMP_BACKWARD",
                     "JUMP_BACKWARD_NO_INTERRUPT",
-                }
+                )
                 if op in loc["opmap"]
             ]
         )

@@ -253,39 +253,6 @@ opcode_arg_fmt33.update(
 )
 opcode_arg_fmt = opcode_arg_fmt33
 
-def extended_format_MAKE_FUNCTION_30_35(opc, instructions):
-    """make_function_inst should be a "MAKE_FUNCTION" or "MAKE_CLOSURE" instruction. TOS
-    should have the function or closure name.
-    """
-    # From opcode description: argc indicates the total number of
-    # positional and keyword arguments.  Sometimes the function name
-    # is in the stack arg positions back.
-    assert len(instructions) >= 2
-    inst = instructions[0]
-    assert inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE")
-    s = ""
-    name_inst = instructions[1]
-    start_offset = name_inst.offset
-    if name_inst.opname in ("LOAD_CONST",):
-        s += "make_function(%s)" % short_code_repr(name_inst.argval)
-        return s, start_offset
-    s += format_MAKE_FUNCTION_30_35(inst.argval)
-    return s, start_offset
-
-
-def format_MAKE_FUNCTION_30_35(argc):
-    pos_args, name_pair_args, annotate_args = parse_fn_counts_30_35(argc)
-    if (pos_args, name_pair_args, annotate_args) == (0, 0, 0):
-        return "No arguments"
-
-    s = "%d positional, %d keyword only, %d annotated" % (
-        pos_args,
-        name_pair_args,
-        annotate_args,
-    )
-    return s
-
-
 def parse_fn_counts_30_35(argc):
     """
     In Python 3.0 to 3.5 MAKE_CLOSURE and MAKE_FUNCTION encode

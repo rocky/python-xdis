@@ -29,8 +29,8 @@ from xdis.opcodes.base import (  # Although these aren't used here, they are exp
     update_pj2,
 )
 
-from . import opcode_1x
-from .opcode_1x import opcode_extended_fmt_base1x, update_arg_fmt_base1x
+from xdis.opcodes.opcode_1x import opcode_1x
+from xdis.opcodes.opcode_1x.opcode_1x import opcode_extended_fmt_base1x, update_arg_fmt_base1x
 
 findlabels = xdis.cross_dis.findlabels
 python_implementation = cpython_implementation

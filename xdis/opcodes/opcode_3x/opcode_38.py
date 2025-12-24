@@ -32,7 +32,7 @@ from xdis.opcodes.base import (
 )
 from xdis.opcodes.opcode_3x.opcode_37 import opcode_arg_fmt37, opcode_extended_fmt37
 
-from . import opcode_37
+from xdis.opcodes.opcode_3x import opcode_37
 
 version_tuple = (3, 8)
 python_implementation = cpython_implementation

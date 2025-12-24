@@ -18,9 +18,8 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.version_info import PythonImplementation
-
-from ..opcode_3x import opcode_38
-from .opcode_37pypy import opcode_arg_fmt37pypy, opcode_extended_fmt37pypy
+from xdis.opcodes.opcode_3x import opcode_38
+from xdis.opcodes.opcode_pypy.opcode_37pypy import opcode_arg_fmt37pypy, opcode_extended_fmt37pypy
 
 version_tuple = (3, 8)
 python_implementation = PythonImplementation("PyPy")

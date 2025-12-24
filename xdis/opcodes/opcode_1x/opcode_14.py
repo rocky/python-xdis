@@ -35,7 +35,7 @@ from xdis.opcodes.opcode_1x.opcode_1x import (
     update_arg_fmt_base1x,
 )
 
-from . import opcode_15
+from xdis.opcodes.opcode_1x import opcode_15
 
 version_tuple = (1, 4)
 findlabels = xdis.cross_dis.findlabels

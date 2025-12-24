@@ -36,7 +36,7 @@ from xdis.opcodes.format.extended import (
 )
 from xdis.version_info import PythonImplementation
 
-from ..opcode_2x import opcode_26
+from xdis.opcodes.opcode_2x import opcode_26
 
 findlabels = xdis.cross_dis.findlabels
 python_implementation = PythonImplementation("PyPy")

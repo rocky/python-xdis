@@ -40,11 +40,10 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
-from ..opcode_3x.opcode_313 import opcode_arg_fmt313, opcode_extended_fmt313
-from xdis.version_info import PythonImplementation
->>>>>>> python-3.0-to-3.2:xdis/opcodes/opcode_rust/opcode_313rust.py
+from xdis.opcodes.opcode_3x.opcode_313 import opcode_arg_fmt313, opcode_extended_fmt313
+from xdis.version_info import PYTHON_VERSION_TRIPLE, PythonImplementation
 
-from ..opcode_3x import opcode_311
+from xdis.opcodes.opcode_3x import opcode_311
 
 version_tuple = (3, 13)
 python_implementation = PythonImplementation("RustPython")
@@ -476,8 +475,6 @@ opcode_extended_fmt312rust.update(
     {
         "BINARY_OP": extended_format_BINARY_OP,
     })
-
-
 
 update_pj3(globals(), loc, is_rust=True)
 finalize_opcodes(loc)

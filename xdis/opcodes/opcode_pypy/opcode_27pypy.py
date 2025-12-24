@@ -22,7 +22,7 @@ from xdis.opcodes.opcode_2x.opcode_2x import (
 )
 from xdis.version_info import PythonImplementation
 
-from ..opcode_2x import opcode_27
+from xdis.opcodes.opcode_2x import opcode_27
 
 version_tuple = (2, 7)
 python_implementation = PythonImplementation("PyPy")

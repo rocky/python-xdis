@@ -26,8 +26,7 @@ from xdis.opcodes.opcode_pypy.opcode_36pypy import (
     opcode_extended_fmt36pypy,
 )
 from xdis.version_info import PythonImplementation
-
-from ..opcode_3x import opcode_37
+from xdis.opcodes.opcode_3x import opcode_37
 
 python_implementation = PythonImplementation("PyPy")
 version_tuple = (3, 7)

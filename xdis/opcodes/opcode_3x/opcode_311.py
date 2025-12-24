@@ -23,7 +23,7 @@ of stack usage and information for formatting instructions.
 
 from copy import copy
 
-from . import opcode_310
+from xdis.opcodes.opcode_3x import opcode_310
 
 import xdis.cross_dis
 from xdis.opcodes.base import (
