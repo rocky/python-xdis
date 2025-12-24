@@ -279,7 +279,7 @@ jrel_op(loc,    "INSTRUMENTED_END_ASYNC_FOR",                   247,    0,  0, c
 name_op(loc,    "INSTRUMENTED_LOAD_SUPER_ATTR",                 248,    VARYING_STACK_INT,  1)  # pushes 1 + (oparg & 1)
 call_op(loc,    "INSTRUMENTED_CALL",                            249,    -2, 1)
 call_op(loc,    "INSTRUMENTED_CALL_KW",                         250,    -3, 1)
-def_op(loc,     "INSTRUMENTED_CALL_FUNCTION_EX",                251,    4,  1)
+call_op(loc,    "INSTRUMENTED_CALL_FUNCTION_EX",                251,    4,  1)
 jrel_op(loc,    "INSTRUMENTED_JUMP_BACKWARD",                   252,    0,  0, conditional=False)
 def_op(loc,     "INSTRUMENTED_LINE",                            253,    0,  0)
 def_op(loc,     "ENTER_EXECUTOR",                               254,    0,  0)

@@ -26,6 +26,7 @@ from typing import Optional, Tuple
 import xdis.opcodes.opcode_3x.opcode_312 as opcode_312
 from xdis.opcodes.base import (  # noqa
     VARYING_STACK_INT,
+    call_op,
     cpython_implementation,
     def_op,
     finalize_opcodes,
@@ -243,10 +244,10 @@ def_op(loc, "BUILD_SET"                        , 49  , -1, 1)
 def_op(loc, "BUILD_SLICE"                      , 50  , 2 , 1)
 def_op(loc, "BUILD_STRING"                     , 51  , -2, 2)
 def_op(loc, "BUILD_TUPLE"                      , 52  , -1, 1)
-def_op(loc, "CALL"                             , 53  , 1 , 0)
-def_op(loc, "CALL_FUNCTION_EX"                 , 54  , -2, 1)
-def_op(loc, "CALL_INTRINSIC_1"                 , 55  , 1 , 1)
-def_op(loc, "CALL_INTRINSIC_2"                 , 56  , 2 , 1)
+call_op(loc, "CALL"                            , 53  , 1 , 0)
+call_op(loc, "CALL_FUNCTION_EX"                , 54  , -2, 1)
+call_op(loc, "CALL_INTRINSIC_1"                , 55  , 1 , 1)
+call_op(loc, "CALL_INTRINSIC_2"                , 56  , 2 , 1)
 def_op(loc, "COMPARE_OP"                       , 58  , 2 , 1)
 def_op(loc, "CONTAINS_OP"                      , 59  , 2 , 1)
 def_op(loc, "COPY"                             , 61  , 0 , 1)
@@ -315,9 +316,9 @@ def_op(loc, "INSTRUMENTED_RETURN_CONST"        , 240 , 1 , 1)
 def_op(loc, "INSTRUMENTED_YIELD_VALUE"         , 241 , 1 , 1)
 def_op(loc, "INSTRUMENTED_LOAD_SUPER_ATTR"     , 242 , 2 , 0)
 def_op(loc, "INSTRUMENTED_FOR_ITER"            , 243 , 1 , 1)
-def_op(loc, "INSTRUMENTED_CALL"                , 244 , 1 , 1)
-def_op(loc, "INSTRUMENTED_CALL_KW"             , 245 , 2 , 2)
-def_op(loc, "INSTRUMENTED_CALL_FUNCTION_EX"    , 246 , 1 , 1)
+call_op(loc, "INSTRUMENTED_CALL"               , 244 , 1 , 1)
+call_op(loc, "INSTRUMENTED_CALL_KW"            , 245 , 2 , 2)
+call_op(loc, "INSTRUMENTED_CALL_FUNCTION_EX"   , 246 , 1 , 1)
 def_op(loc, "INSTRUMENTED_INSTRUCTION"         , 247 , 1 , 1)
 def_op(loc, "INSTRUMENTED_JUMP_FORWARD"        , 248 , 1 , 1)
 def_op(loc, "INSTRUMENTED_JUMP_BACKWARD"       , 249 , 1 , 1)

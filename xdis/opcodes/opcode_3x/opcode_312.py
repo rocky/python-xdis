@@ -25,6 +25,7 @@ import xdis.cross_dis
 import xdis.opcodes.opcode_3x.opcode_311 as opcode_311
 from xdis.opcodes.base import (
     binary_op,
+    call_op,
     cpython_implementation,
     def_op,
     finalize_opcodes,
@@ -118,7 +119,7 @@ def_op(loc    , "INSTRUMENTED_RESUME"              , 240,   1, 1)
 def_op(loc    , "INSTRUMENTED_CALL"                , 241,   1, 1)
 def_op(loc    , "INSTRUMENTED_RETURN_VALUE"        , 242,   1, 0)
 def_op(loc    , "INSTRUMENTED_YIELD_VALUE"         , 243,   1, 1)
-def_op(loc    , "INSTRUMENTED_CALL_FUNCTION_EX"    , 244,   1, 1)
+call_op(loc   , "INSTRUMENTED_CALL_FUNCTION_EX"    , 244,   1, 1)
 def_op(loc    , "INSTRUMENTED_JUMP_FORWARD"        , 245,   1, 1)
 def_op(loc    , "INSTRUMENTED_JUMP_BACKWARD"       , 246,   1, 1)
 def_op(loc    , "INSTRUMENTED_RETURN_CONST"        , 247,   1, 1)

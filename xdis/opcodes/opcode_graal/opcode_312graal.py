@@ -461,7 +461,7 @@ arg_counts[0x47] = 0
 #
 # Pushes: call result
 #
-def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x48, 0, 2, 0)
+call_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x48, 0, 2, 0)
 
 # ----------------------
 # destructuring bytecodes
