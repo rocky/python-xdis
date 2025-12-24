@@ -410,7 +410,7 @@ call_op_graal(loc, "CALL_FUNCTION_KW", 0x3A, 0, 3)
 #
 # Pushes: call result
 #
-def_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x3B, 0, 2, 0)
+call_op_graal(loc, "CALL_FUNCTION_VARARGS", 0x3B, 0, 2, 0)
 
 # ----------------------
 # destructuring bytecodes

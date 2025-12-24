@@ -24,6 +24,7 @@ from typing import Dict, List, Optional, Tuple
 from xdis.opcodes.base import (
     VARYING_STACK_INT,
     binary_op,
+    call_op,
     compare_op,
     const_op,
     def_op,
@@ -254,7 +255,7 @@ store_op(loc, "STORE_DEREF",                  138,   1, 0, is_type="free")
 free_op(loc, "DELETE_DEREF",                  139,   0, 0)
 jrel_op(loc, "JUMP_BACKWARD", 140)    # Number of words to skip (backwards)
 
-def_op(loc, "CALL_FUNCTION_EX", 142)  # Flags
+call_op(loc, "CALL_FUNCTION_EX", 142)  # Flags
 
 def_op(loc, "EXTENDED_ARG", 144)
 EXTENDED_ARG = 144
