@@ -273,7 +273,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equivalent of Python Graal's readBooleanArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.read_uint32()
+        length = self.read_uint32()
         return tuple([bool(self.graal_readByte()) for _ in range(length)])
 
     def graal_readByte(self) -> int:
@@ -288,7 +288,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equivalent of Python Graal's readBytes() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.read_uint32()
+        length = self.read_uint32()
         return bytes([self.graal_readByte() for _ in range(length)])
 
     def graal_readDoubleArray(self) -> tuple:
@@ -296,7 +296,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equivalent of Python Graal's readDoubleArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.read_uint32()
+        length = self.read_uint32()
         return tuple([self.read_float() for _ in range(length)])
 
     def graal_readIntArray(self) -> tuple:
@@ -304,7 +304,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equivalent of Python Graal's readIntArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.read_uint32()
+        length = self.read_uint32()
         return tuple([self.read_int32() for _ in range(length)])
 
     def graal_readLong(self) -> int:
@@ -352,7 +352,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.read_uint32()
+        length = self.read_uint32()
         return tuple([self.graal_readString() for _ in range(length)])
 
     def graal_readSparseTable(self) -> dict:
