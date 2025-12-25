@@ -26,7 +26,6 @@ you can use Python's built-in ``marshal.loads()`` to produce a code
 object.
 """
 
-import marshal
 import sys
 import unicodedata
 from struct import unpack
@@ -34,7 +33,7 @@ from struct import unpack
 from xdis.codetype.code13 import Bytes
 from xdis.codetype import to_portable
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
-from xdis.version_info import PYTHON_VERSION_TRIPLE, version_tuple_to_str
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 if PYTHON_VERSION_TRIPLE < (2, 4):
     from sets import Set as set
@@ -222,7 +221,7 @@ class VersionIndependentUnmarshaller:
         return self.fp.read(n)
 
     def read_uint32(self):
-        return unpack("<I", self.fp.read(4))[0]
+        return int(unpack("<I", self.fp.read(4))[0])
 
     def load(self):
         """
@@ -333,7 +332,6 @@ class VersionIndependentUnmarshaller:
 
     def t_long(self, save_ref, bytes_for_s=False):
         n = self.read_uint32()
-        n = unpack("<i", self.fp.read(4))[0]
 
         if n == 0:
             return long(0)
@@ -622,7 +620,6 @@ class VersionIndependentUnmarshaller:
 
             CO_FAST_LOCAL = 0x20
             CO_FAST_CELL = 0x40
-            CO_FAST_FREE = 0x80
 
             for name, kind in zip(co_localsplusnames, co_localspluskinds):
                 if isinstance(kind, str):
