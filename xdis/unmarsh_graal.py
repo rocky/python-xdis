@@ -230,7 +230,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Reads a marshaled big integer from the input stream.
         """
         negative = False
-        sz = self.graal_readInt() # Get the size in shorts
+        sz = self.read_uint32() # Get the size in shorts
         if sz < 0:
             negative = True
             sz = -sz
@@ -272,7 +272,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equivalent of Python Graal's readBooleanArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
+        length: int = self.read_uint32()
         return tuple([bool(self.graal_readByte()) for _ in range(length)])
 
     def graal_readByte(self) -> int:
@@ -287,30 +287,16 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equivalent of Python Graal's readBytes() from
         MarshalModuleBuiltins.java
         """
-        length: int = unpack("<i", self.fp.read(4))[0]
+        length: int = self.read_uint32()
         return bytes([self.graal_readByte() for _ in range(length)])
-
-    def graal_readDouble(self) -> float:
-        """
-        Python equivalent of Python Graal's readDouble() from
-        MarshalModuleBuiltins.java
-        """
-        return unpack("<d", self.fp.read(8))[0]
 
     def graal_readDoubleArray(self) -> tuple:
         """
         Python equivalent of Python Graal's readDoubleArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = int(unpack("<i", self.fp.read(4))[0])
-        return tuple([self.graal_readDouble() for _ in range(length)])
-
-    def graal_readInt(self) -> int:
-        """
-        Python equivalent of Python Graal's readInt() from
-        MarshalModuleBuiltins.java
-        """
-        return int(unpack("<i", self.fp.read(4))[0])
+        length: int = self.read_uint32()
+        return tuple([self.read_float() for _ in range(length)])
 
     def graal_readIntArray(self) -> tuple:
         """
@@ -318,7 +304,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         MarshalModuleBuiltins.java
         """
         length: int = int(unpack("<i", self.fp.read(4))[0])
-        return tuple([self.graal_readInt() for _ in range(length)])
+        return tuple([self.read_int32() for _ in range(length)])
 
     def graal_readLong(self) -> int:
         """
@@ -365,7 +351,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.graal_readInt()
+        length: int = self.read_uint32()
         return tuple([self.graal_readString() for _ in range(length)])
 
     def graal_readSparseTable(self) -> Dict[int, tuple]:
@@ -373,10 +359,10 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
         """
-        self.graal_readInt()  # the length return value isn't used.
+        self.read_uint32()  # the length return value isn't used.
         table = {}  # new int[length][];
         while True:
-            i = self.graal_readInt()
+            i = self.read_int32()
             if i == -1:
                 return table
             table[i] = self.graal_readIntArray()
@@ -489,15 +475,15 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
         co_name = self.graal_readString()
         co_qualname = self.graal_readString()
-        co_argcount = self.graal_readInt()
-        co_kwonlyargcount = self.graal_readInt()
-        co_posonlyargcount = self.graal_readInt()
+        co_argcount = self.read_uint32()
+        co_kwonlyargcount = self.read_uint32()
+        co_posonlyargcount = self.read_uint32()
 
-        co_stacksize = self.graal_readInt()
+        co_stacksize = self.read_uint32()
         co_code_offset_in_file = self.fp.tell()
         co_code = self.graal_readBytes()
         other_fields["srcOffsetTable"] = self.graal_readBytes()
-        co_flags = self.graal_readInt()
+        co_flags = self.read_uint32()
 
         # writeStringArray(code.names);
         # writeStringArray(code.varnames);
@@ -537,11 +523,11 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
         other_fields["primitiveConstants"] = self.graal_readLongArray()
         other_fields["exception_handler_ranges"] = self.graal_readIntArray()
-        other_fields["condition_profileCount"] = self.graal_readInt()
-        other_fields["startLine"] = self.graal_readInt()
-        other_fields["startColumn"] = self.graal_readInt()
-        other_fields["endLine"] = self.graal_readInt()
-        other_fields["endColumn"] = self.graal_readInt()
+        other_fields["condition_profileCount"] = self.read_uint32()
+        other_fields["startLine"] = self.read_uint32()
+        other_fields["startColumn"] = self.read_uint32()
+        other_fields["endLine"] = self.read_uint32()
+        other_fields["endColumn"] = self.read_uint32()
         other_fields["outputCanQuicken"] = self.graal_readBytes()
         other_fields["variableShouldUnbox"] = self.graal_readBytes()
         other_fields["generalizeInputsMap"] = self.graal_readSparseTable()
