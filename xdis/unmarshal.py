@@ -195,20 +195,23 @@ class VersionIndependentUnmarshaller:
 
         self.UNMARSHAL_DISPATCH_TABLE = UNMARSHAL_DISPATCH_TABLE
 
+    def read_float(self) -> float:
+        return unpack("<d", self.fp.read(8))[0]
+
     def read_int16(self) -> int:
-        return int(unpack("<h", self.fp.read(2))[0])
+        return unpack("<h", self.fp.read(2))[0]
 
     def read_int32(self) -> int:
-        return int(unpack("<i", self.fp.read(4))[0])
+        return unpack("<i", self.fp.read(4))[0]
 
     def read_int64(self) -> int:
-        return int(unpack("<q", self.fp.read(8))[0])
+        return unpack("<q", self.fp.read(8))[0]
 
     def read_slice(self, n: int) -> bytes:
         return self.fp.read(n)
 
     def read_uint32(self) -> int:
-        return int(unpack("<I", self.fp.read(4))[0])
+        return unpack("<I", self.fp.read(4))[0]
 
     def load(self):
         """
@@ -344,15 +347,15 @@ class VersionIndependentUnmarshaller:
         return obj
 
     # float - Seems not in use after Python 2.4
-    def t_float(self, save_ref, bytes_for_s: bool = False):
+    def t_float(self, save_ref, bytes_for_s: bool = False) -> float:
         strsize = unpack("B", self.fp.read(1))[0]
         s = self.fp.read(strsize)
         return self.r_ref(float(s), save_ref)
 
-    def t_binary_float(self, save_ref, bytes_for_s: bool = False):
-        return self.r_ref(float(unpack("<d", self.fp.read(8))[0]), save_ref)
+    def t_binary_float(self, save_ref, bytes_for_s: bool = False) -> float:
+        return self.r_ref(self.read_float(), save_ref)
 
-    def t_complex(self, save_ref, bytes_for_s: bool = False):
+    def t_complex(self, save_ref, bytes_for_s: bool = False) -> complex:
         def unpack_pre_24() -> float:
             return float(self.fp.read(unpack("B", self.fp.read(1))[0]))
 
@@ -365,10 +368,10 @@ class VersionIndependentUnmarshaller:
         imag = get_float()
         return self.r_ref(complex(real, imag), save_ref)
 
-    def t_binary_complex(self, save_ref, bytes_for_s: bool = False):
+    def t_binary_complex(self, save_ref, bytes_for_s: bool = False) -> complex:
         # binary complex
-        real = unpack("<d", self.fp.read(8))[0]
-        imag = unpack("<d", self.fp.read(8))[0]
+        real = self.read_float()
+        imag = self.read_float()
         return self.r_ref(complex(real, imag), save_ref)
 
     def t_string(self, save_ref, bytes_for_s: bool):
@@ -476,7 +479,7 @@ class VersionIndependentUnmarshaller:
         self.collection_order[final_frozenset] = tuple(collection)
         return self.r_ref_insert(final_frozenset, i)
 
-    def t_set(self, save_ref, bytes_for_s: bool = False):
+    def t_set(self, save_ref, bytes_for_s: bool = False) -> set:
         setsize = self.read_uint32()
         ret, i = self.r_ref_reserve(tuple(), save_ref)
         while setsize > 0:
@@ -484,7 +487,7 @@ class VersionIndependentUnmarshaller:
             setsize -= 1
         return self.r_ref_insert(set(ret), i)
 
-    def t_dict(self, save_ref, bytes_for_s: bool = False):
+    def t_dict(self, save_ref, bytes_for_s: bool = False) -> dict:
         ret = self.r_ref(dict(), save_ref)
         # dictionary
         while True:

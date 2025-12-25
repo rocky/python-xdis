@@ -295,20 +295,13 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         length: int = self.read_uint32()
         return bytes([self.graal_readByte() for _ in range(length)])
 
-    def graal_readDouble(self) -> float:
-        """
-        Python equivalent of Python Graal's readDouble() from
-        MarshalModuleBuiltins.java
-        """
-        return unpack("<d", self.fp.read(8))[0]
-
     def graal_readDoubleArray(self) -> tuple[float, ...]:
         """
         Python equivalent of Python Graal's readDoubleArray() from
         MarshalModuleBuiltins.java
         """
         length: int = self.read_uint32()
-        return tuple([self.graal_readDouble() for _ in range(length)])
+        return tuple([self.read_float() for _ in range(length)])
 
     def graal_readIntArray(self) -> tuple[int, ...]:
         """
