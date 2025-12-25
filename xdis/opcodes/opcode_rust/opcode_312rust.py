@@ -242,7 +242,7 @@ jrel_op(loc, "POP_JUMP_IF_NOT_NONE", 128)
 jrel_op(loc, "POP_JUMP_IF_NONE", 129)
 def_op(loc, "RAISE_VARARGS", 130)    # Number of raise arguments (1, 2, or 3)
 def_op(loc, "GET_AWAITABLE", 131)
-nargs_op(loc, "MAKE_FUNCTION", 132)    # Flags
+nargs_op(loc, "MAKE_FUNCTION", 132, VARYING_STACK_INT, 1)    # Flags
 def_op(loc, "BUILD_SLICE", 133)      # Number of items
 jrel_op(loc, "JUMP_BACKWARD_NO_INTERRUPT", 134) # Number of words to skip (backwards)
 free_op(loc, "MAKE_CELL",                     135,   0, 0)
