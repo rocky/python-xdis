@@ -1,11 +1,11 @@
 # Automated crossversion testing
 This testing suite is used for automatic testing of differences found between xdis and dis.
-This is done by having a way to identically "serialize" important attributes in xdis and dis bytecodes.
-We then can check a diff between a serialized xdis and dis bytecode to find if xdis is parsing something incorrectly.
+This is done by having a way to identically "serialize" important attributes in bytecodes with xdis and dis.
+Using a diff between a bytecode serialized with xdis and dis, we can find if xdis is parsing something incorrectly.
 Most tests should be ran using the makefile.
 
 # Parsing results
-When running `make test`, tox will serialize bytecode to be put into text form. Given a bytecode compiled in 3.11 and natively disassembled, we go through each of our test versions, say 3.9 ... 3.14, and disassemble the same 3.11 bytecode.
+When running `make test`, two main steps take place. 1st, we compile and serialize bytecode in each target version. 2nd, we disasm the same bytecode using xdis, serialize again, and check the diff. In other words, given a bytecode compiled in 3.11 and natively disassembled (dis), we go through each of our test versions, say 3.9 ... 3.14, and disassemble the same 3.11 bytecode.
 Given the 3.11 serialized disasembly, disassembled from 3.11, we take the diff between that and a serialized 3.11 disassembled from any of our test versions.
 This lets us see if there are any differences in how xdis handles native vs cross version.
 
@@ -22,18 +22,20 @@ for native in test_vers:
 
 Pytest will fail early, so not all tests may be ran.
 
-# System Requirements
+# Usage
+## Requirements
 - `uv`
     - uv will handle everything on its own
+run `make setup_uv`
 
 ---OR---
 
 - `pyenv` and `pyenv-virtualenv`
     - Each version needing to be tested should be installed with pyenv
 - `tox`
+run `make setup_pyenv`
 
-# Usage
-## Makefile
+## Running tests
 Run `make` or `make help` to show the help menu for running and preparing tests, or with `remake`, `remake --tasks`.
 
 To simply run tests, `make test` will copy some sources, prepare template files, and run tests.
