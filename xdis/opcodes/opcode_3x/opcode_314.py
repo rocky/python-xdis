@@ -20,6 +20,7 @@ This is a like Python 3.14's opcode.py with some classification
 of stack usage and information for formatting instructions.
 of stack usage.
 """
+
 from xdis.opcodes.base import (
     VARYING_STACK_INT,
     binary_op,
@@ -34,12 +35,13 @@ from xdis.opcodes.base import (
     jrel_op,
     local_op,
     name_op,
+    nargs_op,
     store_op,
     unary_op,
     update_pj3,
     varargs_op,
 )
-
+from xdis.opcodes.format.extended import extended_format_binary_op
 from xdis.opcodes.opcode_3x import opcode_313
 
 version_tuple = (3, 14)
@@ -79,8 +81,9 @@ def_op(loc,     "GET_LEN",                                      18,     1,  2)
 def_op(loc,     "GET_YIELD_FROM_ITER",                          19,     1,  1)
 def_op(loc,     "INTERPRETER_EXIT",                             20,     1,  0)
 def_op(loc,     "LOAD_BUILD_CLASS",                             21,     0,  1)
-def_op(loc,     "LOAD_LOCALS",                                  22,     0,  1)
-def_op(loc,     "MAKE_FUNCTION",                                23,     1,  1)
+def_op(loc,     "LOAD_LOCALS",                                  22,     0,  1) # Pushes a reference to the locals of the current scope.
+                                                                               # This is not a name op.
+nargs_op(loc,   "MAKE_FUNCTION",                                23,     VARYING_STACK_INT,  1)
 def_op(loc,     "MATCH_KEYS",                                   24,     2,  3)
 def_op(loc,     "MATCH_MAPPING",                                25,     1,  2)
 def_op(loc,     "MATCH_SEQUENCE",                               26,     1,  2)
@@ -313,7 +316,6 @@ loc["hasexc"] = [263, 264, 265]
 # fmt: on
 
 ### update formatting
-from xdis.opcodes.format.extended import extended_format_binary_op
 
 _nb_ops = [
     ("NB_ADD", "+"),

@@ -21,7 +21,7 @@ of stack usage and information for formatting instructions.
 This has similar imformation as the opcodes in Python's opcode.py library.
 """
 
-from xdis.opcodes.base import (  # noqa
+from xdis.opcodes.base import (
     VARYING_STACK_INT,
     call_op,
     cpython_implementation,
@@ -30,13 +30,13 @@ from xdis.opcodes.base import (  # noqa
     free_op,
     init_opdata,
     local_op,
+    nargs_op,
     rm_op,
     update_pj3,
 )
 from xdis.opcodes.format.extended import NULL_EXTENDED_OP, get_arglist
-from xdis.opcodes.opcode_pypy.opcode_36pypy import format_CALL_METHOD
-
 from xdis.opcodes.opcode_3x import opcode_312
+from xdis.opcodes.opcode_pypy.opcode_36pypy import format_CALL_METHOD
 
 version_tuple = (3, 13)
 python_implementation = cpython_implementation
@@ -216,8 +216,9 @@ def_op(loc, "GET_YIELD_FROM_ITER"              , 21  , 1 , 1)
 def_op(loc, "INTERPRETER_EXIT"                 , 22  , 1 , 0)
 def_op(loc, "LOAD_ASSERTION_ERROR"             , 23  , 0 , 1)
 def_op(loc, "LOAD_BUILD_CLASS"                 , 24  , 0 , 1)
-def_op(loc, "LOAD_LOCALS"                      , 25  , 0 , 1)
-def_op(loc, "MAKE_FUNCTION"                    , 26  , -2, 1)
+def_op(loc, "LOAD_LOCALS"                      , 25  , 0 , 1)  # Pushes a reference to the locals of the current scope.
+                                                               # This is not a name op.
+nargs_op(loc, "MAKE_FUNCTION"                  , 26  , VARYING_STACK_INT, 1)
 def_op(loc, "MATCH_KEYS"                       , 27  , 0 , 1)
 def_op(loc, "MATCH_MAPPING"                    , 28  , 0 , 1)
 def_op(loc, "MATCH_SEQUENCE"                   , 29  , 0 , 1)

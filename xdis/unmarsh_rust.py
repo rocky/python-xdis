@@ -24,7 +24,6 @@ you can use Python's built-in ``marshal.loads()`` to produce a code
 object.
 """
 
-from struct import unpack
 from typing import Any, Dict, List, Tuple, Union
 
 from xdis.codetype.code313rust import Code313Rust, SourceLocation
@@ -276,18 +275,6 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         byte_data = self.read_slice(abs(len))
         value = int.from_bytes(byte_data, byteorder='little')
         return value if is_positive else -value
-
-    def read_int16(self):
-        return int(unpack("<h", self.fp.read(2))[0])
-
-    def read_int32(self):
-        return int(unpack("<i", self.fp.read(4))[0])
-
-    def read_slice(self, n: int) -> bytes:
-        return self.fp.read(n)
-
-    def read_uint32(self):
-        return int(unpack("<I", self.fp.read(4))[0])
 
     def read_string(self, n: int, bytes_for_s: bool=False) -> Union[bytes, str]:
         s = self.read_slice(n)

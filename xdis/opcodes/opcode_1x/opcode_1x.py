@@ -129,7 +129,8 @@ def_op(loc,     "PRINT_NEWLINE",    72, 0, 0)
 
 def_op(loc,     "BREAK_LOOP",       80, 0, 0, fallthrough=False)
 
-def_op(loc,     "LOAD_LOCALS",      82, 0, 1)
+def_op(loc,     "LOAD_LOCALS",      82, 0, 1) # Pushes a reference to the locals of the current scope.
+                                              # This is not a name op.
 def_op(loc,     "RETURN_VALUE",     83, 1, 0, fallthrough=False)
 
 def_op(loc,     "EXEC_STMT",        85, 3, 0)
