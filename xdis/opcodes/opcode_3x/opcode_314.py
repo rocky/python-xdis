@@ -42,8 +42,7 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
-
-from . import opcode_313
+from xdis.opcodes.opcode_3x import opcode_313
 
 version_tuple = (3, 14)
 python_implementation = cpython_implementation
@@ -317,8 +316,6 @@ loc["hasexc"] = [263, 264, 265]
 # fmt: on
 
 ### update formatting
-=======
->>>>>>> master
 
 _nb_ops = [
     ("NB_ADD", "+"),
