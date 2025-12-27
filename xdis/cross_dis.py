@@ -170,7 +170,7 @@ def findlinestarts(code, dup_lines: bool = False):
     Generate pairs (offset, lineno) as described in Python/compile.c.
     """
 
-    if hasattr(code, "co_lines"):
+    if hasattr(code, "co_lines") and hasattr(code, "co_linetable"):
         # Taken from 3.10 findlinestarts
         lastline = None
         for start, _, line in code.co_lines():
@@ -325,7 +325,7 @@ def format_code_info(
         lines.append("# Keyword-only arguments: %s" % co.co_kwonlyargcount)
 
     pos_argc = co.co_argcount
-    if version_tuple >= (1, 3):
+    if hasattr(co, "co_nlocals"):
         lines.append("# Number of locals:  %s" % co.co_nlocals)
     if version_tuple >= (1, 5):
         lines.append("# Stack size:        %s" % co.co_stacksize)

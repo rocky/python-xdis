@@ -47,11 +47,12 @@ JYTHON_MAGICS = (1011, 65526)
 # See below for mapping to version numbers.
 PYPY3_MAGICS = (48, 64, 112, 160, 192, 240, 244, 256, 320, 336, 384, 416)
 
+# Rust Magics is a git commit number!
 RUSTPYTHON_MAGICS = (
     12641,  # RustPython 3.12
-    12897,  # RustPython 3.12
+    12897,  # RustPython 3.12.0 0.4.0
     13413,  # RustPython 3.13
-    24881,  # RustPython 3.13
+    24881,  # RustPython 3.13   0.4.0
 )
 
 # A list of interim Python version magic numbers used, but were not
@@ -695,9 +696,9 @@ add_magic_from_int(384, "3.10PyPy")  # PyPy 3.10.12
 add_magic_from_int(416, "3.11.13PyPy")  # PyPy 3.11.13 or pypy3.11-7.3.20
 
 add_magic_from_int(12641, "3.12.0a.rust")  # RustPython 3.12.0
-add_magic_from_int(12897, "3.13.0b.rust")  # RustPython 3.12.0
+add_magic_from_int(12897, "3.12.0.rust")   # RustPython 3.12.0 0.4.0
 add_magic_from_int(13413, "3.13.0a.rust")  # RustPython 3.13.0
-add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0
+add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0 0.4.0
 
 # Graal Python.  Graal uses its own JVM-ish CPython bytecode, not
 # true CPython or PyPy bytecode.
