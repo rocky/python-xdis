@@ -53,6 +53,7 @@ RUSTPYTHON_MAGICS = (
     12897,  # RustPython 3.12.0 0.4.0
     13413,  # RustPython 3.13
     24881,  # RustPython 3.13   0.4.0
+    3531,   # RustPython 3.13   0.4.0 later version!
 )
 
 # A list of interim Python version magic numbers used, but were not
@@ -516,7 +517,7 @@ add_magic_from_int(3511, "3.12a2b")
 add_magic_from_int(3512, "3.12a2c")
 add_magic_from_int(3513, "3.12a4a")
 add_magic_from_int(3514, "3.12a4b")
-add_magic_from_int(3515, "3.12a5a")
+# add_magic_from_int(3515, "3.12a5a")  # Rust Python 3.13 0.40 uses this too!
 add_magic_from_int(3516, "3.12a5b")
 add_magic_from_int(3517, "3.12a5c")
 add_magic_from_int(3518, "3.12a6a")
