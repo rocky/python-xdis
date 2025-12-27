@@ -47,6 +47,7 @@ class Code312Rust(Code311):
         co_argcount: int,
         co_posonlyargcount: int,
         co_kwonlyargcount: int,
+        co_lnotab: dict,
         co_stacksize: int,
         co_flags: int,
         co_code: bytes,
@@ -65,7 +66,7 @@ class Code312Rust(Code311):
         self.co_argcount = co_argcount
         self.co_posonlyargcount = co_posonlyargcount
         self.co_kwonlyargcount = co_kwonlyargcount
-        self.co_lnotab={}  # FIXME: compute this from locations.
+        self.co_lnotab = co_lnotab
         self.co_stacksize = co_stacksize
         self.co_flags = co_flags
         self.co_code = co_code

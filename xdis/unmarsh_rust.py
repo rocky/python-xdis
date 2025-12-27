@@ -163,12 +163,15 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         instr_count = self.read_int32()
         co_code = self.read_slice(instr_count * 2)
 
-        instructions = [int(co_code[i]) for i in range(len(co_code))] # debug
+        # instructions = [int(co_code[i]) for i in range(len(co_code))] # debug
+        co_lnotab = {}
 
         # read locations
         loc_count = self.read_int32()
         locations: List[SourceLocation] = []
-        for _ in range(loc_count):
+        last_line_number = -1
+        for i in range(loc_count):
+            offset = i * 2
             line_number = self.read_int32()
             if line_number == 0:
                 raise MarshalError("invalid source location")
@@ -180,6 +183,9 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
                     column_offset=char_off_zero_indexed + 1  # convert from zero-indexed
                 )
             )
+            if line_number != last_line_number and offset not in co_lnotab:
+                co_lnotab[offset] = line_number
+                last_line_number = line_number
 
         flags = self.read_int16()
 
@@ -269,6 +275,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
                 co_argcount=arg_count,
                 co_posonlyargcount=posonlyarg_count,
                 co_kwonlyargcount=kwonlyarg_count,
+                co_lnotab=co_lnotab,
                 co_stacksize=max_stackdepth,
                 co_flags=flags,
                 co_code=co_code,
