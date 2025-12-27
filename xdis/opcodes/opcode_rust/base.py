@@ -239,7 +239,7 @@ def make_opcodes(loc: dict, magic_int: int):
         name_op_graal(loc,   "LOAD_ATTR")
     compare_op_graal(loc, "TEST_OP",           2, 1)  # test operator
     if magic_int in (24881,):
-        def_op_graal(loc,     "CopyItem")
+        def_op_graal(loc,     "COPY")
         binary_op_graal(loc, "BINARY_SUBCR")
     compare_op_graal(loc, "COMPARE_OP",        2, 1)  # Comparison operator
     if magic_int in (24881,):
@@ -256,10 +256,10 @@ def make_opcodes(loc: dict, magic_int: int):
 
     if magic_int in (24881,):
         def_op_graal(loc,     "GetLen")
-        def_op_graal(loc,     "CallIntrinsic1")
-        def_op_graal(loc,     "CallIntrinsic2")
-    def_op_graal(loc,     "Continue")
-    def_op_graal(loc,     "Break")
+        call_op_graal(loc,     "CallIntrinsic1")
+        call_op_graal(loc,     "CallIntrinsic2")
+    def_op_graal(loc,     "CONTINUE_LOOP")
+    def_op_graal(loc,     "BREAK_LOOP")
 
     # In contrast to CPython and others Rust does not seem to use relative jumps,
     # but only absolute jumps.
@@ -283,7 +283,7 @@ def make_opcodes(loc: dict, magic_int: int):
     call_op_graal(loc, "CALL_METHOD_KW")
     call_op_graal(loc, "CALL_METHOD_EX")
 
-    jrel_op_graal(loc, "FOR_ITER")
+    jabs_op_graal(loc, "FOR_ITER")
     def_op_graal(loc, "RETURN_VALUE")
     const_op_graal(loc, "RETURN_CONST")
     def_op_graal(loc, "YIELD")
@@ -292,7 +292,7 @@ def make_opcodes(loc: dict, magic_int: int):
         def_op_graal(loc, "RESUME", 0, 0)
 
     def_op_graal(loc, "SETUP_ANNOTATIONS")
-    jrel_op_graal(loc, "SETUP_LOOP", 0,  0, conditional=True)
+    jabs_op_graal(loc, "SETUP_LOOP", 0,  0, conditional=True)
     def_op_graal(loc, "SETUP_FINALLY", 0, 1)
 
     if magic_int in (12897,):

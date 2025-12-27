@@ -68,7 +68,7 @@ from xdis.opcodes.opcode_pypy import (
     opcode_310pypy,
     opcode_311pypy,
 )
-from xdis.opcodes.opcode_rust import opcode_12897rust, opcode_24481rust
+from xdis.opcodes.opcode_rust import opcode_3531rust, opcode_12897rust, opcode_24481rust
 
 # from xdis.opcodes.opcode_graal import (
 #     opcode_310graal,
@@ -122,8 +122,8 @@ __all__ = [
     "opcode_39pypy",
     # "opcode_310graal",
     # "opcode_311graal",
-    "opcode_38graal",
     # "opcode_312rust",
+    "opcode_3531rust",
     "opcode_12897rust",
     "opcode_24481rust",
 ]

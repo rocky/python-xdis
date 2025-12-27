@@ -19,8 +19,6 @@ import copy
 from typing import Tuple
 
 from xdis.magics import canonic_python_version
-from xdis.opcodes import opcode_12897rust  # 3.13.0 0.4.0
-from xdis.opcodes import opcode_24481rust  # 3.13.0 0.4.0
 from xdis.opcodes import (
     opcode_10,
     opcode_11,
@@ -63,6 +61,9 @@ from xdis.opcodes import (
     opcode_312,
     opcode_313,
     opcode_314,
+    opcode_3531rust,
+    opcode_12897rust,
+    opcode_24481rust,
 )
 from xdis.opcodes.opcode_graal import (
     opcode_38graal,
@@ -193,6 +194,7 @@ op_imports = {
     "3.12.0": opcode_312,
     "3.13.0rc3": opcode_313,
     "3.13.0Rust": opcode_24481rust,
+    "3.13.1Rust": opcode_3531rust,
     "3.14b3": opcode_314,
     "3.14.0": opcode_314,
     "3.14": opcode_314,

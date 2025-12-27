@@ -199,7 +199,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         obj_name_len = self.read_int32()
         obj_name = self.read_string(obj_name_len, False)
 
-        if self.magic_int in (24881, 3531):
+        if self.magic_int in (24881, 35310):
             qualname_len = self.read_int32()
             co_qualname = self.read_string(qualname_len, False)
 
@@ -235,7 +235,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         co_freevars = read_names()
         co_nlocals = 0
 
-        if self.magic_int in (24881, 3531):
+        if self.magic_int in (24881, 35310):
             linetable_len = self.read_int32()
             co_linetable = self.read_slice(linetable_len)
 

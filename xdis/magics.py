@@ -53,7 +53,7 @@ RUSTPYTHON_MAGICS = (
     12897,  # RustPython 3.12.0 0.4.0
     13413,  # RustPython 3.13
     24881,  # RustPython 3.13   0.4.0
-    3531,   # RustPython 3.13   0.4.0 later version!
+    35310,  # RustPython 3.13   0.4.0 later version! Actually 3531 is stored in file
 )
 
 # A list of interim Python version magic numbers used, but were not
@@ -700,6 +700,9 @@ add_magic_from_int(12641, "3.12.0a.rust")  # RustPython 3.12.0
 add_magic_from_int(12897, "3.12.0.rust")   # RustPython 3.12.0 0.4.0
 add_magic_from_int(13413, "3.13.0a.rust")  # RustPython 3.13.0
 add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0 0.4.0
+
+# Actually we should add 3531, but that already means CPython 3.12!
+add_magic_from_int(35310, "3.13.1.rust")  # RustPython 3.13.0 0.4.0
 
 # Graal Python.  Graal uses its own JVM-ish CPython bytecode, not
 # true CPython or PyPy bytecode.
