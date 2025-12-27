@@ -26,6 +26,7 @@ object.
 
 from typing import Any, Dict, List, Tuple, Union
 
+from xdis.codetype.code312rust import Code312Rust
 from xdis.codetype.code313rust import Code313Rust, SourceLocation
 from xdis.magics import magic_int2tuple
 from xdis.unmarshal import (
@@ -162,7 +163,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         instr_count = self.read_int32()
         co_code = self.read_slice(instr_count * 2)
 
-        # instructions = [int(co_code[i]) for i in range(len(co_code))] # debug
+        instructions = [int(co_code[i]) for i in range(len(co_code))] # debug
 
         # read locations
         loc_count = self.read_int32()
@@ -198,19 +199,18 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         obj_name_len = self.read_int32()
         obj_name = self.read_string(obj_name_len, False)
 
-        qualname_len = self.read_int32()
-        co_qualname = self.read_string(qualname_len, False)
+        if self.magic_int in (24881, 35310):
+            qualname_len = self.read_int32()
+            co_qualname = self.read_string(qualname_len, False)
 
-        cell2arg = None
-        if self.magic_int not in (12897,):
-            cell2arg_len = self.read_int32()
-            if cell2arg_len != 0:
-                cell2arg = []
-                for _ in range(cell2arg_len):
-                    raw = self.read_int32()
-                    # convert raw (u32) to signed i32
-                    signed = raw if raw < (1 << 31) else raw - (1 << 32)
-                    cell2arg.append(signed)
+        cell2arg_len = self.read_int32()
+        if cell2arg_len != 0:
+            cell2arg = []
+            for _ in range(cell2arg_len):
+                raw = self.read_int32()
+                # convert raw (u32) to signed i32
+                signed = raw if raw < (1 << 31) else raw - (1 << 32)
+                cell2arg.append(signed)
 
         # constants
         const_count = self.read_int32()
@@ -235,38 +235,55 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         co_freevars = read_names()
         co_nlocals = 0
 
-        if self.magic_int not in (12897,):
+        if self.magic_int in (24881, 35310):
             linetable_len = self.read_int32()
             co_linetable = self.read_slice(linetable_len)
 
             exceptiontable_len = self.read_int32()
             co_exceptiontable = self.read_slice(exceptiontable_len)
-        else:
-            co_linetable = b''
-            co_exceptiontable = b''
+            return Code313Rust(
+                co_argcount=arg_count,
+                co_posonlyargcount=posonlyarg_count,
+                co_kwonlyargcount=kwonlyarg_count,
+                co_nlocals=co_nlocals,
+                co_stacksize=max_stackdepth,
+                co_flags=flags,
+                co_code=co_code,
+                co_consts=tuple(constants),
+                co_names=co_names,
+                co_varnames=co_varnames,
+                co_filename=source_path,
+                co_name=obj_name,
+                co_qualname=co_qualname,
+                co_firstlineno=first_line_number,
+                co_linetable=co_linetable,
+                co_freevars=co_freevars,
+                co_cellvars=co_cellvars,
+                co_exceptiontable=co_exceptiontable,
+                version_triple=self.version_triple,
+                locations=tuple(locations),
+            )
 
-        return Code313Rust(
-            co_argcount=arg_count,
-            co_posonlyargcount=posonlyarg_count,
-            co_kwonlyargcount=kwonlyarg_count,
-            co_nlocals=co_nlocals,
-            co_stacksize=max_stackdepth,
-            co_flags=flags,
-            co_code=co_code,
-            co_consts=tuple(constants),
-            co_names=co_names,
-            co_varnames=co_varnames,
-            co_filename=source_path,
-            co_name=obj_name,
-            co_qualname=co_qualname,
-            co_firstlineno=first_line_number,
-            co_linetable=co_linetable,
-            co_freevars=co_freevars,
-            co_cellvars=co_cellvars,
-            co_exceptiontable=co_exceptiontable,
-            version_triple=self.version_triple,
-            locations=tuple(locations),
-        )
+        else:
+            return Code312Rust(
+                co_argcount=arg_count,
+                co_posonlyargcount=posonlyarg_count,
+                co_kwonlyargcount=kwonlyarg_count,
+                co_stacksize=max_stackdepth,
+                co_flags=flags,
+                co_code=co_code,
+                co_consts=tuple(constants),
+                co_names=co_names,
+                co_varnames=co_varnames,
+                co_filename=source_path,
+                co_name=obj_name,
+                co_firstlineno=first_line_number,
+                co_freevars=co_freevars,
+                co_cellvars=co_cellvars,
+                version_triple=self.version_triple,
+                locations=tuple(locations),
+            )
+
 
 
     def t_bigint(self, save_ref: bool=False, bytes_for_s: bool=False):

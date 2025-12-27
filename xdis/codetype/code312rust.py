@@ -28,9 +28,9 @@ class SourceLocation:
     column_offset: int
 
 
-class Code313Rust(Code311):
-    """Class for a RustPython 3.13 code object used when a Python
-    interpreter is not RustPython 3.13 but working on RustPython 3.13 bytecode. It
+class Code312Rust(Code311):
+    """Class for a RustPython 3.12 code object used when a Python
+    interpreter is not RustPython 3.12 but working on RustPython 3.12 bytecode. It
     also functions as an object that can be used to build or write a
     Python3 code object, since we allow mutable structures.
 
@@ -47,7 +47,6 @@ class Code313Rust(Code311):
         co_argcount: int,
         co_posonlyargcount: int,
         co_kwonlyargcount: int,
-        co_nlocals: int,
         co_stacksize: int,
         co_flags: int,
         co_code: bytes,
@@ -56,20 +55,17 @@ class Code313Rust(Code311):
         co_varnames: tuple[str],
         co_filename: str,
         co_name: str,
-        co_qualname: str,
         co_firstlineno: int,
-        co_linetable: bytes,
         co_freevars: tuple,
         co_cellvars: tuple,
         version_triple: Tuple[int, int, int],
         locations: tuple,
-        co_exceptiontable = tuple(),
         collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
     ) -> None:
         self.co_argcount = co_argcount
         self.co_posonlyargcount = co_posonlyargcount
         self.co_kwonlyargcount = co_kwonlyargcount
-        self.co_nlocals = co_nlocals
+        self.co_lnotab={}  # FIXME: compute this from locations.
         self.co_stacksize = co_stacksize
         self.co_flags = co_flags
         self.co_code = co_code
@@ -79,11 +75,8 @@ class Code313Rust(Code311):
         self.co_filename = co_filename
         self.co_name = co_name
         self.co_firstlineno = co_firstlineno    # None if 0 in serialized form
-        self.co_linetable = co_linetable
-        self.co_qualname = co_qualname
         self.co_cellvars = co_cellvars
         self.co_freevars= co_freevars
-        self.co_exceptiontable = co_exceptiontable
         self.co_collection_order = collection_order
         self.version_triple = version_triple
         self.locations = locations
