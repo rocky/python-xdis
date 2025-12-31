@@ -28,8 +28,9 @@ class SerializedTestCase:
         # read serialized bytecode
         self.serialized_dis = serialized_txt.read_text()
         self.serialized_xdis = serialize_pyc(pyc, use_xdis=True, output_file=None)
-        # debug message
+        # debug messages
         self.message = f"{SYS_VERSION}: Checking equivalence: {self.pyc_path} <---> {self.serialized_txt_path}"
+        self.fail_message = f"Running version {SYS_VERSION}, failed equivalence; xdis:{self.pyc_path.name} != dis:{self.serialized_txt_path.name}"
 
     def __str__(self) -> str:
         return self.message
@@ -64,7 +65,7 @@ def get_tests_by_version(v: str) -> Iterable[SerializedTestCase]:
 def test_version(version):
     """Test each version in compiled template folder."""
     for case in get_tests_by_version(version):
-        assert case.serialized_dis.splitlines() == case.serialized_xdis.splitlines()
+        assert case.serialized_dis.splitlines() == case.serialized_xdis.splitlines(), case.fail_message
 
 
 ### LESS VERBOSE (fail early) ###
@@ -72,4 +73,4 @@ def test_version(version):
 #    "case", chain.from_iterable(get_tests_by_version(v) for v in get_versions())
 #)
 #def test_case(case: SerializedTestCase) -> None:
-#    assert case.serialized_dis.splitlines() == case.serialized_xdis.splitlines()
+#    assert case.serialized_dis.splitlines() == case.serialized_xdis.splitlines(), case.fail_message
