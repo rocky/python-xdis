@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2025 by Rocky Bernstein
+# (C) Copyright 2018-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -54,6 +54,7 @@ RUSTPYTHON_MAGICS = (
     13413,  # RustPython 3.13
     24881,  # RustPython 3.13   0.4.0
     35310,  # RustPython 3.13   0.4.0 later version! Actually 3531 is stored in file
+    2997,   # RustPython 3.13   0.4.0 later version!
 )
 
 # A list of interim Python version magic numbers used, but were not
@@ -826,7 +827,7 @@ add_canonic_versions(
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 "
     "3.9.12 3.9.13 3.9.14 3.9.14 3.9.15 3.9.16 3.9.17 3.9.18 3.9.19 3.9.10PyPy 3.9.11PyPy 3.9.12PyPy "
-    "3.9.15PyPy 3.9.16PyPy 3.9.0b5+ 3.9.17 3.9.18 3.9.19 3.9.20 3.9.21 3.9.22 3.9.23 3.9.24",
+    "3.9.15PyPy 3.9.16PyPy 3.9.0b5+ 3.9.17 3.9.18 3.9.19 3.9.20 3.9.21 3.9.22 3.9.23 3.9.24 3.9.25",
     "3.9.0beta5",
 )
 
