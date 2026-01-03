@@ -228,10 +228,24 @@ def load_module_from_file_object(
         magic = fp.read(4)
         magic_int = magic2int(magic)
 
+        if magic_int == 3531:
+            # this magic int is used for both 3.12 and 3.13Rust!
+            # Disambiguate using the fact that CPython 3.13 stores 0xe3
+            # "c" | 0x80 at offoset 0x10 while RustPython uses "c" (no 0x80).
+            fp.seek(0x10)
+            code_type = fp.read(1)
+            if code_type == b'c':
+                # Is RustPython 3.13 using CPython's 3.12 magic number.
+                magic_int = 35310
+            else:
+                assert code_type == b'\xe3', "Expecting magic int 3531 to have a code type b'0x63 or b'0x33' at offset 0x10"
+            fp.seek(0x04)
+
         # For reasons I don't understand, PyPy 3.2 stores a magic
         # of '0'...  The two values below are for Python 2.x and 3.x respectively
         if magic[0:1] in ["0", b"0"]:
             magic = int2magic(3180 + 7)
+            magic_int = magic2int(magic)
 
         try:
             # FIXME: use the internal routine below
@@ -245,10 +259,7 @@ def load_module_from_file_object(
             else:
                 raise ImportError(f"Bad magic number: '{magic}'")
 
-        if magic_int in [2657, 22138] + list(
-            RUSTPYTHON_MAGICS
-        ) + list(JYTHON_MAGICS):
-            version = magicint2version.get(magic_int, "")
+        version = magic_int2tuple(magic_int)
 
         if magic_int in INTERIM_MAGIC_INTS:
             raise ImportError(
@@ -268,8 +279,6 @@ def load_module_from_file_object(
 
         try:
             my_magic_int = PYTHON_MAGIC_INT
-            magic_int = magic2int(magic)
-            version = magic_int2tuple(magic_int)
 
             timestamp = None
             source_size = None

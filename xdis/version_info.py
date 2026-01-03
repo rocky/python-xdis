@@ -71,6 +71,7 @@ def get_python_implementation(
 
 
 PYTHON_IMPLEMENTATION = get_python_implementation()
+IS_C_PYTHON = PYTHON_IMPLEMENTATION == PythonImplementation.CPython
 IS_GRAAL = PYTHON_IMPLEMENTATION == PythonImplementation.Graal
 IS_PYPY = PYTHON_IMPLEMENTATION == PythonImplementation.PyPy
 IS_RUST = PYTHON_IMPLEMENTATION == PythonImplementation.RustPython

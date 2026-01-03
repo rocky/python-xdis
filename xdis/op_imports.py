@@ -59,8 +59,10 @@ from xdis.opcodes import (
     opcode_311pypy,
     opcode_312,
     opcode_313,
-    opcode_313rust,
     opcode_314,
+    opcode_3531rust,
+    opcode_12897rust,
+    opcode_24481rust,
 )
 from xdis.opcodes.opcode_graal import (
     opcode_38graal,
@@ -186,10 +188,12 @@ op_imports = {
     3.11: opcode_311,
     "3.12.7Graal": opcode_312graal, # this right?
     "3.12.8Graal": opcode_312graal, # this right?
+    "3.12.0Rust": opcode_12897rust,
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
     "3.13.0rc3": opcode_313,
-    "3.13.0Rust": opcode_313rust,
+    "3.13.0Rust": opcode_24481rust,
+    "3.13.1Rust": opcode_3531rust,
     "3.14b3": opcode_314,
     "3.14.0": opcode_314,
     "3.14": opcode_314,
@@ -210,7 +214,7 @@ def get_opcode_module(version_info: tuple, implementation: PythonImplementation)
     if vers_str not in canonic_python_version:
         vers_str = version_tuple_to_str(version_info[:2])
 
-    if implementation != PythonImplementation.CPython:
+    if str(implementation) != str(PythonImplementation.CPython):
         vers_str += str(implementation)
 
     return op_imports[canonic_python_version[vers_str]]
@@ -329,4 +333,4 @@ def remap_opcodes(op_obj, alternate_opmap):
 
 if __name__ == "__main__":
     from version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
-    print(get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION))
+    print(get_opcode_module(PYTHON_VERSION_TRIPLE[:2], PYTHON_IMPLEMENTATION))
