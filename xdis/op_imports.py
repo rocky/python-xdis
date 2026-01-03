@@ -18,7 +18,7 @@
 import copy
 
 from xdis.magics import canonic_python_version
-from xdis.opcodes import (
+from xdis.opcodes import (  # opcode_3531rust,; opcode_12897rust,; opcode_24481rust,
     opcode_10,
     opcode_11,
     opcode_12,
@@ -60,9 +60,6 @@ from xdis.opcodes import (
     opcode_312,
     opcode_313,
     opcode_314,
-    opcode_3531rust,
-    opcode_12897rust,
-    opcode_24481rust,
 )
 from xdis.opcodes.opcode_graal import (
     opcode_38graal,
@@ -188,12 +185,12 @@ op_imports = {
     3.11: opcode_311,
     "3.12.7Graal": opcode_312graal, # this right?
     "3.12.8Graal": opcode_312graal, # this right?
-    "3.12.0Rust": opcode_12897rust,
+    # "3.12.0Rust": opcode_12897rust,
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
     "3.13.0rc3": opcode_313,
-    "3.13.0Rust": opcode_24481rust,
-    "3.13.1Rust": opcode_3531rust,
+    # "3.13.0Rust": opcode_24481rust,
+    # "3.13.1Rust": opcode_3531rust,
     "3.14b3": opcode_314,
     "3.14.0": opcode_314,
     "3.14": opcode_314,

@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
