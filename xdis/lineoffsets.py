@@ -14,6 +14,7 @@ from xdis.bytecode import get_instructions_bytes
 from xdis.codetype.base import iscode
 from xdis.load import check_object_path, load_module
 from xdis.op_imports import get_opcode_module
+from xdis.version_info import PythonImplementation
 
 # Information about a single line in a particular piece of code
 #  Note that a code can have several lines with the same value but
@@ -51,7 +52,14 @@ class LineOffsetInfo(object):
         code = self.code
         code_map = {code.co_name: code}
         last_line_info = None
-        for instr in get_instructions_bytes(
+        if self.opc.python_implementation == PythonImplementation.Graal:
+            from xdis.bytecode_graal import get_instructions_bytes_graal
+
+            get_instructions_fn = get_instructions_bytes_graal
+        else:
+            get_instructions_fn = get_instructions_bytes
+
+        for instr in get_instructions_fn(
             code_object=code,
             opc=self.opc,
         ):
