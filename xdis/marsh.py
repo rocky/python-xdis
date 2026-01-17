@@ -650,7 +650,7 @@ class _Unmarshaller:
         try:
             return self.dispatch[c](self)
         except KeyError:
-            raise ValueError("bad marshal code: %c (%d)" % (c, c))
+            raise ValueError("bad marshal code: %s (%s)" % (c, c))
 
     def r_byte(self):
         return self._read(1)

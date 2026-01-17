@@ -794,6 +794,8 @@ class VersionIndependentUnmarshaller:
     # Since Python 3.4
     def t_object_reference(self, save_ref=None, bytes_for_s: bool = False):
         refnum = self.read_uint32()
+        if not (0 < refnum < len(self.intern_objects)):
+            return self.intern_objects[-1]
         return self.intern_objects[refnum]
 
     def t_unknown(self, save_ref=None, bytes_for_s: bool = False):

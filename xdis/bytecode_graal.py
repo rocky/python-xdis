@@ -117,7 +117,11 @@ def get_instructions_bytes_graal(
                 if arg >= len(cells):
                     argrepr = freevars[arg - len(cells)]
                 else:
-                    argrepr = cells[arg]
+                    if 0 < arg < len(cells[arg]):
+                        argrepr = cells[arg]
+                    else:
+                        argrepr = "???"
+
                 break
             elif opcode in (
                 opc.opmap["LOAD_FAST"],
@@ -129,7 +133,10 @@ def get_instructions_bytes_graal(
 
             elif optype == "name":
                 argval = arg
-                argrepr = names[arg]
+                if 0 <= arg < len(names):
+                    argrepr = names[arg]
+                else:
+                    argrepr = "??"
                 break
             elif opcode == opc.opmap["FORMAT_VALUE"]:
                 argval = arg
