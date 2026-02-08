@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -309,14 +309,14 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
     def graal_readLong(self) -> int:
         """
-        Python equivalent of Python Graal's readLongt() from
+        Python equivalent of Python Graal's readLong() from
         MarshalModuleBuiltins.java
         """
         return int(unpack("<q", self.fp.read(8))[0])
 
     def graal_readLongArray(self) -> tuple:
         """
-        Python equivalent of Python Graal's readLongt() from
+        Python equivalent of Python Graal's readLong() from
         MarshalModuleBuiltins.java
         """
         length = int(unpack("<i", self.fp.read(4))[0])
