@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2025 by Rocky Bernstein
+# (C) Copyright 2018-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -54,6 +54,7 @@ RUSTPYTHON_MAGICS = (
     13413,  # RustPython 3.13
     24881,  # RustPython 3.13   0.4.0
     35310,  # RustPython 3.13   0.4.0 later version! Actually 3531 is stored in file
+    2997,   # RustPython 3.13   0.4.0 later version!
 )
 
 # A list of interim Python version magic numbers used, but were not
@@ -728,7 +729,6 @@ add_magic_from_int(21290, "3.11.7Graal")
 # Paritally compensate for one magic for two Graal Python versions:
 version2magicint["3.12.8Graal"].append(21290)
 
-
 # Jython uses JVM bytecode, not CPython PyPy bytecode.
 add_magic_from_int(1011, "2.7.1b3Jython")  # Jython 2.7.2b3
 add_magic_from_int(65226, "2.7.4Jython")  # Jython 2.7.4
@@ -736,10 +736,13 @@ add_magic_from_int(65226, "2.7.4Jython")  # Jython 2.7.4
 # Pyston
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
-magics = __by_version(versions)
+magics: Dict[str, bytes] = __by_version(versions)
 magics["3.8.12PyPy"] = magics["3.8.0rc1+"]
 magics["3.9.15PyPy"] = magics["3.9.0alpha1"]
 magics["3.9.16PyPy"] = magics["3.9.0alpha1"]
+magics["3.12.Graal"] = magics["3.11.7Graal"]
+magics["3.12.8.Graal"] = magics["3.11.7Graal"]
+by_magic[int2magic(21290)].add("3.12.8Graal")
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
@@ -825,7 +828,7 @@ add_canonic_versions(
 add_canonic_versions(
     "3.9 3.9.0 3.9.1 3.9.2 3.9.3 3.9.4 3.9.5 3.9.6 3.9.7 3.9.8 3.9.9 3.9.10 3.9.11 "
     "3.9.12 3.9.13 3.9.14 3.9.14 3.9.15 3.9.16 3.9.17 3.9.18 3.9.19 3.9.10PyPy 3.9.11PyPy 3.9.12PyPy "
-    "3.9.15PyPy 3.9.16PyPy 3.9.0b5+ 3.9.17 3.9.18 3.9.19 3.9.20 3.9.21 3.9.22 3.9.23 3.9.24",
+    "3.9.15PyPy 3.9.16PyPy 3.9.0b5+ 3.9.17 3.9.18 3.9.19 3.9.20 3.9.21 3.9.22 3.9.23 3.9.24 3.9.25",
     "3.9.0beta5",
 )
 
@@ -849,12 +852,12 @@ add_canonic_versions(
 )
 
 add_canonic_versions(
-    "3.13 3.13.0 3.13.1 3.13.2 3.13.3 3.13.4 3.13.5 3.13.6 3.13.7 3.13.8 3.13.9 3.13.10 3.13.11",
+    "3.13 3.13.0 3.13.1 3.13.2 3.13.3 3.13.4 3.13.5 3.13.6 3.13.7 3.13.8 3.13.9 3.13.10 3.13.11 3.13.12",
     "3.13.0rc3",
 )
 
 add_canonic_versions("3.14-dev", "3.14b3")
-add_canonic_versions("3.14 3.14.0 3.14.1, 3.14.2", "3.14rc3")
+add_canonic_versions("3.14 3.14.0 3.14.1, 3.14.2 3.14.3", "3.14rc3")
 
 add_canonic_versions(
     "3.15 3.15.0 3.15.0a1 3.15.0a0",
