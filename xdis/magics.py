@@ -736,7 +736,7 @@ add_magic_from_int(65226, "2.7.4Jython")  # Jython 2.7.4
 # Pyston
 add_magic_from_int(22138, "2.7.7Pyston")  # 2.7.8pyston, pyston-0.6.0
 
-magics: Dict[str, bytes] = __by_version(versions)
+magics = __by_version(versions)
 magics["3.8.12PyPy"] = magics["3.8.0rc1+"]
 magics["3.9.15PyPy"] = magics["3.9.0alpha1"]
 magics["3.9.16PyPy"] = magics["3.9.0alpha1"]

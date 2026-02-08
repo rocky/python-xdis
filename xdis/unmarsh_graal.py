@@ -304,8 +304,15 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Python equivalent of Python Graal's readIntArray() from
         MarshalModuleBuiltins.java
         """
-        length: int = self.read_uint32()
+        length = self.read_uint32()
         return tuple([self.read_int32() for _ in range(length)])
+
+    def graal_readLong(self) -> int:
+        """
+        Python equivalent of Python Graal's readLong() from
+        MarshalModuleBuiltins.java
+        """
+        return int(unpack("<q", self.fp.read(8))[0])
 
     def graal_readLongArray(self) -> tuple:
         """
