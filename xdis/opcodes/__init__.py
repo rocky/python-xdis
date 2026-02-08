@@ -1,4 +1,4 @@
-# (C) Copyright 2023, 2025 by Rocky Bernstein
+# (C) Copyright 2023, 2025-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -68,7 +68,8 @@ from xdis.opcodes.opcode_pypy import (
     opcode_310pypy,
     opcode_311pypy,
 )
-from xdis.opcodes.opcode_rust import opcode_313rust  # opcode_312rust,
+
+# from xdis.opcodes.opcode_rust import opcode_3531rust, opcode_12897rust, opcode_24481rust
 
 # from xdis.opcodes.opcode_graal import (
 #     opcode_310graal,
@@ -76,7 +77,6 @@ from xdis.opcodes.opcode_rust import opcode_313rust  # opcode_312rust,
 #     opcode_312graal,
 #     opcode_38graal,
 #     )
-
 
 
 __all__ = [
@@ -126,6 +126,7 @@ __all__ = [
     # "opcode_312graal",
     # "opcode_38graal",
     # "opcode_312rust",
-    "opcode_313rust",
-
+    # "opcode_3531rust",
+    # "opcode_12897rust",
+    # "opcode_24481rust",
 ]
