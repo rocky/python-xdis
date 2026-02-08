@@ -41,9 +41,9 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
-from xdis.opcodes.opcode_3x.opcode_313 import opcode_arg_fmt313, opcode_extended_fmt313
+from xdis.opcodes.opcode_3x.opcode_313 import opcode_extended_fmt313
 from xdis.opcodes.opcode_rust.base import cmp_op as cmp_op_rust
-from xdis.version_info import PythonImplementation
+from xdis.version_info import PythonImplementation, PYTHON_VERSION_TRIPLE
 
 from xdis.opcodes.opcode_3x import opcode_311
 

@@ -1,5 +1,5 @@
 """
-Copyright (c) 2020-2025 by Rocky Bernstein
+Copyright (c) 2020-2026 by Rocky Bernstein
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -71,12 +71,6 @@ IS_C_PYTHON = PYTHON_IMPLEMENTATION == "CPython"
 IS_GRAAL = PYTHON_IMPLEMENTATION_STR == "Graal"
 IS_PYPY = PYTHON_IMPLEMENTATION_STR == "PyPy"
 IS_RUST = PYTHON_IMPLEMENTATION_STR == "Rust"
-=======
-IS_C_PYTHON = PYTHON_IMPLEMENTATION == PythonImplementation.CPython
-IS_GRAAL = PYTHON_IMPLEMENTATION == PythonImplementation.Graal
-IS_PYPY = PYTHON_IMPLEMENTATION == PythonImplementation.PyPy
-IS_RUST = PYTHON_IMPLEMENTATION == PythonImplementation.RustPython
->>>>>>> python-3.0-to-3.2
 
 
 def version_tuple_to_str(

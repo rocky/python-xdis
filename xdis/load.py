@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2026 by Rocky Bernstein
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -29,7 +29,6 @@ from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 from xdis.magics import (
     GRAAL3_MAGICS,
     INTERIM_MAGIC_INTS,
-    JYTHON_MAGICS,
     PYPY3_MAGICS,
     PYTHON_MAGIC_INT,
     RUSTPYTHON_MAGICS,
@@ -239,11 +238,11 @@ def load_module_from_file_object(
             # "c" | 0x80 at offoset 0x10 while RustPython uses "c" (no 0x80).
             fp.seek(0x10)
             code_type = fp.read(1)
-            if code_type == b'c':
+            if code_type == 'c':
                 # Is RustPython 3.13 using CPython's 3.12 magic number.
                 magic_int = 35310
             else:
-                assert code_type == b'\xe3', "Expecting magic int 3531 to have a code type b'0x63 or b'0x33' at offset 0x10"
+                assert code_type == '\xe3', "Expecting magic int 3531 to have a code type b'0x63 or b'0x33' at offset 0x10"
             fp.seek(0x04)
 
         # For reasons I don't understand, PyPy 3.2 stores a magic

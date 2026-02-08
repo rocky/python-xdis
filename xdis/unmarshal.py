@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2026 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
