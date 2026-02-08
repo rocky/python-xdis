@@ -67,9 +67,16 @@ def get_python_implementation(implementation = None):
 
 PYTHON_IMPLEMENTATION = get_python_implementation()
 PYTHON_IMPLEMENTATION_STR = str(PYTHON_IMPLEMENTATION)
+IS_C_PYTHON = PYTHON_IMPLEMENTATION == "CPython"
 IS_GRAAL = PYTHON_IMPLEMENTATION_STR == "Graal"
 IS_PYPY = PYTHON_IMPLEMENTATION_STR == "PyPy"
 IS_RUST = PYTHON_IMPLEMENTATION_STR == "Rust"
+=======
+IS_C_PYTHON = PYTHON_IMPLEMENTATION == PythonImplementation.CPython
+IS_GRAAL = PYTHON_IMPLEMENTATION == PythonImplementation.Graal
+IS_PYPY = PYTHON_IMPLEMENTATION == PythonImplementation.PyPy
+IS_RUST = PYTHON_IMPLEMENTATION == PythonImplementation.RustPython
+>>>>>>> python-3.0-to-3.2
 
 
 def version_tuple_to_str(

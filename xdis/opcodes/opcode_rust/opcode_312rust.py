@@ -19,7 +19,6 @@ RustPython 3.12 bytecode opcodes.
 
 # FIXME: this needs a lot of going over.
 
-import xdis.opcodes.opcode_312 as opcode_312
 from xdis.opcodes.base import (
     VARYING_STACK_INT,
     binary_op,
