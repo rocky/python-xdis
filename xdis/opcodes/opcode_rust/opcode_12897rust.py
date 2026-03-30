@@ -19,7 +19,7 @@ RustPython 3.12.0 bytecode opcodes for version 0.40. There are other Rust 3.12 w
 
 #FIXME: this needs a lot of going over.
 
-from typing import Dict, List, Optional, Tuple
+from typing import Optional, Tuple
 
 import xdis.opcodes.opcode_3x.opcode_311 as opcode_311
 
@@ -135,12 +135,12 @@ opcode_extended_fmt313rust = {}
 opcode_arg_fmt = opcode_arg_fmt13rust = {}
 
 ### update arg formatting
-opcode_extended_fmt = opcode_extended_fmt312rust = {
-    **opcode_extended_fmt313,
-    **{
+opcode_extended_fmt = opcode_extended_fmt313rust = opcode_extended_fmt313.copy()
+opcode_extended_fmt313rust.update(
+    {
         "BINARY_OP": extended_format_BINARY_OP,
     },
-}
+)
 
 
 update_pj3(globals(), loc, is_rust=True)

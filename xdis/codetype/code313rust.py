@@ -1,4 +1,4 @@
-# (C) Copyright 2025 by Rocky Bernstein
+# (C) Copyright 2025-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,19 +14,19 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from dataclasses import dataclass
-from typing import Any, Dict, Tuple, Union
 
 from xdis.codetype.code311 import Code311
 
 
-@dataclass
-class SourceLocation:
-    # 1-based integer line number
-    line_number: int
-    # column offset in line: 1-based int (constructed from a zero-indexed stored value)
-    column_offset: int
+class SourceLocation(object):
 
+    def __init__(self, line_number, column_offset):
+
+        # 1-based integer line number
+        self.line_number = line_number
+
+        # column offset in line: 1-based int (constructed from a zero-indexed stored value)
+        self.column_offset = column_offset
 
 class Code313Rust(Code311):
     """Class for a RustPython 3.13 code object used when a Python
@@ -61,10 +61,10 @@ class Code313Rust(Code311):
         co_linetable: bytes,
         co_freevars: tuple,
         co_cellvars: tuple,
-        version_triple: Tuple[int, int, int],
+        version_triple: tuple(),
         locations: tuple,
         co_exceptiontable = tuple(),
-        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
+        collection_order: dict = {},
     ) -> None:
         self.co_argcount = co_argcount
         self.co_posonlyargcount = co_posonlyargcount
