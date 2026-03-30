@@ -18,7 +18,7 @@
 from xdis.codetype.code311 import Code311
 
 
-class SourceLocation(object):
+class SourceLocation():
 
     def __init__(self, line_number, column_offset):
 
