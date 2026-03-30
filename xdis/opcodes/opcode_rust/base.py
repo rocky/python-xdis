@@ -1,4 +1,4 @@
-# (C) Copyright 2025 by Rocky Bernstein
+# (C) Copyright 2025-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -64,7 +64,7 @@ test_op = (
     "exception-match",  # 4
 )
 
-def init_opdata_rust(loc, from_mod, version_tuple) -> None:
+def init_opdata_rust(loc, from_mod, version_tuple):
     """Sets up a number of the structures found in Python's
     opcode.py. Python opcode.py routines assign attributes to modules.
     In order to do this in a modular way here, the local dictionary
@@ -76,7 +76,7 @@ def init_opdata_rust(loc, from_mod, version_tuple) -> None:
 def inc_opcode(loc):
     loc["_opcode"] += 1
 
-def binary_op_graal(loc: dict, name: str, pop: int = 2, push: int = 1) -> None:
+def binary_op_graal(loc, name, pop = 2, push = 1):
     """
     Put opcode in the class of instructions that are binary operations.
     """
@@ -85,8 +85,8 @@ def binary_op_graal(loc: dict, name: str, pop: int = 2, push: int = 1) -> None:
 
 
 def call_op_graal(
-    loc: dict, name: str, pop: int = -2, push: int = 1, fallthrough: bool=True
-) -> None:
+    loc, name, pop = -2, push = 1, fallthrough=True
+):
     """
     Put opcode in the class of instructions that perform calls.
     """
@@ -94,45 +94,32 @@ def call_op_graal(
     inc_opcode(loc)
 
 
-def compare_op_graal(loc: dict, name: str, pop: int = 2, push: int = 1) -> None:
+def compare_op_graal(loc, name, pop = 2, push = 1):
     compare_op(loc, name, loc["_opcode"], pop, push)
     inc_opcode(loc)
 
 
-def conditional_op_graal(loc: dict, name: str) -> None:
+def conditional_op_graal(loc, name):
     conditional_op(loc, name, loc["_opcode"])
     inc_opcode(loc)
 
 
-def const_op_graal(loc: dict, name: str, pop: int = 0, push: int = 1) -> None:
+def const_op_graal(loc, name, pop = 0, push = 1):
     const_op(loc, name, loc["_opcode"], pop, push)
     inc_opcode(loc)
 
 
-def def_op_graal(
-    loc: dict,
-    op_name: str,
-    pop: int = -2,
-    push: int = -2,
-    fallthrough: bool = True,
-) -> None:
+def def_op_graal(loc, op_name, pop = -2, push = -2, fallthrough = True):
     def_op(loc, op_name, loc["_opcode"], pop, push, fallthrough)
     inc_opcode(loc)
 
 
-def free_op_graal(loc: dict, op_name: str, pop: int = 0, push: int = 1) -> None:
+def free_op_graal(loc, op_name, pop = 0, push = 1):
     free_op(loc, op_name, loc["_opcode"], pop, push)
     inc_opcode(loc)
 
 
-def jabs_op_graal(
-    loc: dict,
-    op_name: str,
-    pop: int = 0,
-    push: int = 0,
-    conditional: bool = False,
-    fallthrough: bool = True,
-) -> None:
+def jabs_op_graal(loc, op_name, pop = 0, push = 0, conditional = False, fallthrough = True):
     """
     Put opcode in the class of instructions that can perform an absolute jump.
     """
@@ -140,7 +127,7 @@ def jabs_op_graal(
     inc_opcode(loc)
 
 
-def jrel_op_graal(loc, op_name: str, pop: int=0, push: int=0, conditional=False, fallthrough=True) -> None:
+def jrel_op_graal(loc, op_name, pop=0, push=0, conditional=False, fallthrough=True):
     """
     Put opcode in the class of instructions that can perform a relative jump.
     """
@@ -148,12 +135,12 @@ def jrel_op_graal(loc, op_name: str, pop: int=0, push: int=0, conditional=False,
     inc_opcode(loc)
 
 
-def local_op_graal(loc, op_name, pop=0, push=1) -> None:
+def local_op_graal(loc, op_name, pop=0, push=1):
     local_op(loc, op_name, loc["_opcode"], pop, push)
     inc_opcode(loc)
 
 
-def name_op_graal(loc: dict, op_name, pop=-2, push=-2) -> None:
+def name_op_graal(loc, op_name, pop=-2, push=-2):
     """
     Put opcode in the class of instructions that index into the "name" table.
     """
@@ -162,8 +149,8 @@ def name_op_graal(loc: dict, op_name, pop=-2, push=-2) -> None:
 
 
 def nargs_op_graal(
-    loc, op_name: str, pop: int = -2, push: int = -1, fallthrough=True
-) -> None:
+    loc, op_name, pop = -2, push = -1, fallthrough=True
+):
     """
     Put opcode in the class of instructions that have a variable number of (or *n*) arguments
     """
@@ -171,12 +158,12 @@ def nargs_op_graal(
     inc_opcode(loc)
 
 
-def store_op_graal(loc: dict, op_name: str, pop=0, push=1, is_type="def") -> None:
+def store_op_graal(loc, op_name, pop=0, push=1, is_type="def"):
     store_op(loc, op_name, loc["_opcode"], pop, push, is_type)
     inc_opcode(loc)
 
 
-def ternary_op_graal(loc: dict, op_name: str, pop: int = 3, push: int = 1) -> None:
+def ternary_op_graal(loc, op_name, pop = 3, push = 1):
     """
     Put opcode in the class of instructions that are ternary operations.
     """
@@ -184,12 +171,12 @@ def ternary_op_graal(loc: dict, op_name: str, pop: int = 3, push: int = 1) -> No
     inc_opcode(loc)
 
 
-def unary_op_graal(loc, op_name: str, pop: int=1, push: int=1) -> None:
+def unary_op_graal(loc, op_name, pop=1, push=1):
     unary_op(loc, op_name, loc["_opcode"], pop, push)
     inc_opcode(loc)
 
 
-def varargs_op_graal(loc, op_name, pop: int=-1, push: int=1) -> None:
+def varargs_op_graal(loc, op_name, pop=-1, push=1):
     varargs_op(loc, op_name, loc["_opcode"], pop, push)
     inc_opcode(loc)
 
@@ -198,7 +185,7 @@ def varargs_op_graal(loc, op_name, pop: int=-1, push: int=1) -> None:
 # See RustPython/compiler/core/src/bytecode.rs Instruction
 # fmt: off
 
-def make_opcodes(loc: dict, magic_int: int):
+def make_opcodes(loc, magic_int):
     #            OP NAME                        POP PUSH
     #----------------------------------------------------------
     def_op_graal(loc,    "NOP",             0, 0)
