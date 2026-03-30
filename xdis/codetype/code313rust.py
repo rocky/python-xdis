@@ -27,15 +27,6 @@ class SourceLocation():
 
         # column offset in line: 1-based int (constructed from a zero-indexed stored value)
         self.column_offset = column_offset
->>>>>>> python-3.3-to-3.5
-
-    def __init__(self, line_number, column_offset):
-
-        # 1-based integer line number
-        self.line_number = line_number
-
-        # column offset in line: 1-based int (constructed from a zero-indexed stored value)
-        self.column_offset = column_offset
 
 class Code313Rust(Code311):
     """Class for a RustPython 3.13 code object used when a Python
