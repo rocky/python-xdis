@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -136,7 +136,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
 
         # It is helpful to save the order in sets, frozensets and dictionary keys,
         # so that on writing a bytecode file we can duplicate this order.
-        self.collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
+        self.collection_order = {}
 
         self.bytes_for_s = bytes_for_s
         self.version_triple = magic_int2tuple(self.magic_int)
@@ -148,7 +148,9 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
             else:
                 self.marshal_version = 4
         else:
-            assert False, f"version {version_tuple_to_str(self.version.triple)} is not a graal version"
+            assert False, "version %s is not a graal version" % version_tuple_to_str(
+                self.version.triple
+            )
 
         self.intern_strings = []
         self.intern_objects = []
@@ -168,7 +170,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
 
         # read locations
         loc_count = self.read_int32()
-        locations: List[SourceLocation] = []
+        locations = []
         last_line_number = -1
         for i in range(loc_count):
             offset = i * 2

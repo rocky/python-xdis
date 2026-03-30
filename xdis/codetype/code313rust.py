@@ -20,12 +20,15 @@ from typing import Any, Dict, Tuple, Union
 from xdis.codetype.code311 import Code311
 
 
-@dataclass
-class SourceLocation:
-    # 1-based integer line number
-    line_number: int
-    # column offset in line: 1-based int (constructed from a zero-indexed stored value)
-    column_offset: int
+class SourceLocation():
+
+    def __init__(self, line_number, column_offset):
+
+        # 1-based integer line number
+        self.line_number = line_number
+
+        # column offset in line: 1-based int (constructed from a zero-indexed stored value)
+        self.column_offset = column_offset
 
 
 class Code313Rust(Code311):
