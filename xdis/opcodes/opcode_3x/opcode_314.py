@@ -359,7 +359,7 @@ def extended_BINARY_OP_314(opc, instructions):
         # Make sure to escape % below.
         opname = "%%"
 
-    fmt_str = "%s[%s]" if opname == "[]" else f"%s {opname} %s"
+    fmt_str = "%s[%s]" if opname == "[]" else "%s " + opname + " %s"
     return extended_format_binary_op(opc, instructions, fmt_str)
 
 
