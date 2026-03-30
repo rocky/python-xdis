@@ -201,7 +201,10 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         source_path = self.read_string(src_len, False)
 
         first_line_raw = self.read_int32()
-        first_line_number = None if first_line_raw == 0 else first_line_raw
+        if first_line_raw == 0:
+            first_line_number = None
+        else:
+            first_line_number = first_line_raw
 
         max_stackdepth = self.read_int32()
 
@@ -218,7 +221,10 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
             for _ in range(cell2arg_len):
                 raw = self.read_int32()
                 # convert raw (u32) to signed i32
-                signed = raw if raw < (1 << 31) else raw - (1 << 32)
+                if raw < (1 << 31):
+                    signed = raw
+                else:
+                    signed = raw - (1 << 32)
                 cell2arg.append(signed)
 
         # constants
@@ -299,7 +305,9 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
         is_positive = len >= 0
         byte_data = self.read_slice(abs(len))
         value = int.from_bytes(byte_data, byteorder="little")
-        return value if is_positive else -value
+        if is_positive:
+            return value
+        return -value
 
     def read_string(self, n, bytes_for_s = False):
         s = self.read_slice(n)

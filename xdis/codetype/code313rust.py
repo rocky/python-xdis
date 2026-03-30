@@ -1,4 +1,4 @@
-# (C) Copyright 2025 by Rocky Bernstein
+# (C) Copyright 2025-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -14,19 +14,19 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from dataclasses import dataclass
-from typing import Any, Dict, Tuple, Union
 
 from xdis.codetype.code311 import Code311
 
 
-@dataclass
-class SourceLocation:
-    # 1-based integer line number
-    line_number: int
-    # column offset in line: 1-based int (constructed from a zero-indexed stored value)
-    column_offset: int
+class SourceLocation(object):
 
+    def __init__(self, line_number, column_offset):
+
+        # 1-based integer line number
+        self.line_number = line_number
+
+        # column offset in line: 1-based int (constructed from a zero-indexed stored value)
+        self.column_offset = column_offset
 
 class Code313Rust(Code311):
     """Class for a RustPython 3.13 code object used when a Python
@@ -44,28 +44,28 @@ class Code313Rust(Code311):
     """
     def __init__(
         self,
-        co_argcount: int,
-        co_posonlyargcount: int,
-        co_kwonlyargcount: int,
-        co_nlocals: int,
-        co_stacksize: int,
-        co_flags: int,
-        co_code: bytes,
-        co_consts: tuple,
-        co_names: tuple[str],
-        co_varnames: tuple[str],
-        co_filename: str,
-        co_name: str,
-        co_qualname: str,
-        co_firstlineno: int,
-        co_linetable: bytes,
-        co_freevars: tuple,
-        co_cellvars: tuple,
-        version_triple: Tuple[int, int, int],
-        locations: tuple,
+        co_argcount,
+        co_posonlyargcount,
+        co_kwonlyargcount,
+        co_nlocals,
+        co_stacksize,
+        co_flags,
+        co_code,
+        co_consts,
+        co_names,
+        co_varnames,
+        co_filename,
+        co_name,
+        co_qualname,
+        co_firstlineno,
+        co_linetable,
+        co_freevars,
+        co_cellvars,
+        version_triple,
+        locations,
         co_exceptiontable = tuple(),
-        collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {},
-    ) -> None:
+        collection_order = {},
+    ):
         self.co_argcount = co_argcount
         self.co_posonlyargcount = co_posonlyargcount
         self.co_kwonlyargcount = co_kwonlyargcount

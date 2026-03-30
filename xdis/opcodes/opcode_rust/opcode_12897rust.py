@@ -1,4 +1,4 @@
-# (C) Copyright 2025 by Rocky Bernstein
+# (C) Copyright 2025-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -19,14 +19,12 @@ RustPython 3.12.0 bytecode opcodes for version 0.40. There are other Rust 3.12 w
 
 #FIXME: this needs a lot of going over.
 
-from typing import Dict, List, Optional, Tuple
-
 import xdis.opcodes.opcode_3x.opcode_311 as opcode_311
 
 # import xdis.opcodes.opcode_313 as opcode_313
 from xdis.opcodes.base import finalize_opcodes, update_pj3
 from xdis.opcodes.format.extended import extended_format_binary_op
-from xdis.opcodes.opcode_3x.opcode_313 import opcode_arg_fmt313, opcode_extended_fmt313
+from xdis.opcodes.opcode_3x.opcode_313 import opcode_extended_fmt313
 from xdis.opcodes.opcode_rust.base import init_opdata_rust, make_opcodes
 from xdis.version_info import PythonImplementation
 
@@ -35,13 +33,13 @@ version_tuple = (3, 12, 0)
 python_implementation = PythonImplementation("RustPython")
 
 # oppush[op] => number of stack entries pushed
-oppush: List[int] = [0] * 256
+oppush = [0] * 256
 
 # oppop[op] => number of stack entries popped
-oppop: List[int] = [0] * 256
+oppop = [0] * 256
 
 # opmap[opcode_name] => opcode_number
-opmap: Dict[str, int] = {}
+opmap = {}
 
 ## pseudo opcodes (used in the compiler) mapped to the values
 ## they can become in the actual code.
@@ -82,7 +80,7 @@ loc = locals()
 
 init_opdata_rust(loc, from_mod=None, version_tuple=version_tuple)
 
-loc["opname"].extend([f"<{i}>" for i in range(256, 267)])
+loc["opname"].extend(["<%d>" % i for i in range(256, 267)])
 loc["oppop"].extend([0] * 11)
 loc["oppush"].extend([0] * 11)
 
@@ -122,25 +120,24 @@ EXTENDED_ARG = 103
 
 findlinestarts = opcode_311.findlinestarts
 
-def extended_format_BINARY_OP(opc, instructions) -> Tuple[str, Optional[int]]:
+def extended_format_BINARY_OP(opc, instructions):
     opname = _nb_ops[instructions[0].argval][1]
     if opname == "%":
         opname = "%%"
     elif opname == "%=":
         opname = "%%="
-    return extended_format_binary_op(opc, instructions, f"%s {opname} %s")
+    return extended_format_binary_op(opc, instructions, "%%s %s %%s" % opname)
 
 
 opcode_extended_fmt313rust = {}
 opcode_arg_fmt = opcode_arg_fmt13rust = {}
 
 ### update arg formatting
-opcode_extended_fmt = opcode_extended_fmt312rust = {
-    **opcode_extended_fmt313,
-    **{
+opcode_extended_fmt = opcode_extended_fmt312rust = opcode_extended_fmt313.copy()
+opcode_extended_fmt312rust.update(
+    {
         "BINARY_OP": extended_format_BINARY_OP,
-    },
-}
+    })
 
 
 update_pj3(globals(), loc, is_rust=True)

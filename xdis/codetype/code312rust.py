@@ -14,12 +14,10 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from typing import Any, Dict, Tuple, Union
-
 from xdis.codetype.code311 import Code311
 
 
-class SourceLocation():
+class SourceLocation(object):
 
     def __init__(self, line_number, column_offset):
 
