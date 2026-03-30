@@ -54,7 +54,7 @@ RUSTPYTHON_MAGICS = (
     13413,  # RustPython 3.13
     24881,  # RustPython 3.13   0.4.0
     35310,  # RustPython 3.13   0.4.0 later version! Actually 3531 is stored in file
-    2997,   # RustPython 3.13   0.4.0 later version!
+    2997,  # RustPython 3.13   0.4.0 later version!
 )
 
 # A list of interim Python version magic numbers used, but were not
@@ -89,12 +89,15 @@ INTERIM_MAGIC_INTS = frozenset([
 ])
 # fmt: on
 
+
 def add_magic_from_int(magic_int: int, version: str) -> None:
     magicint2version[magic_int] = version
     versions[int2magic(magic_int)] = version
     version2magicint[version].append(magic_int)
 
+
 version2magicint = defaultdict(list)
+
 
 def int2magic(magic_int: int) -> bytes:
     """Given a magic int like 62211, compute the corresponding magic byte string
@@ -671,7 +674,15 @@ add_magic_from_int(3652, "3.15a1b")
 add_magic_from_int(3653, "3.15a1c")
 
 # Fix missing exception handlers in logical expression.
-add_magic_from_int(3654, "3.15a1d")
+add_magic_from_int(3654, "3.15.1d")
+
+add_magic_from_int(3655, "3.15.0a1")
+add_magic_from_int(3656, "3.15.0a2")
+add_magic_from_int(3657, "3.15.0a3")
+add_magic_from_int(3658, "3.15.0a4")
+add_magic_from_int(3659, "3.15.0a5")
+add_magic_from_int(3660, "3.15.0a6")
+add_magic_from_int(3661, "3.15.0a7")
 
 # Fix miscompilation of some module-level annotations.
 # add_magic_from_int(3655, "3.15a1e")
@@ -698,7 +709,7 @@ add_magic_from_int(384, "3.10PyPy")  # PyPy 3.10.12
 add_magic_from_int(416, "3.11.13PyPy")  # PyPy 3.11.13 or pypy3.11-7.3.20
 
 add_magic_from_int(12641, "3.12.0a.rust")  # RustPython 3.12.0
-add_magic_from_int(12897, "3.12.0.rust")   # RustPython 3.12.0 0.4.0
+add_magic_from_int(12897, "3.12.0.rust")  # RustPython 3.12.0 0.4.0
 add_magic_from_int(13413, "3.13.0a.rust")  # RustPython 3.13.0
 add_magic_from_int(24881, "3.13.0b.rust")  # RustPython 3.13.0 0.4.0
 
@@ -746,9 +757,7 @@ by_magic[int2magic(21290)].add("3.12.8Graal")
 
 # From a Python version given in sys.info, e.g. 3.6.1,
 # what is the "canonic" version number, e.g. '3.6.0rc1'
-canonic_python_version = {
-    "3.12.8Graal": "3.12.8Graal"
-}
+canonic_python_version = {"3.12.8Graal": "3.12.8Graal"}
 
 
 def add_canonic_versions(release_versions: str, canonic: str) -> None:
@@ -789,7 +798,7 @@ add_canonic_versions(
 add_canonic_versions(
     "3.6b2 3.6 3.6.0 3.6.1 3.6.2 3.6.3 3.6.4 3.6.5 3.6.6 3.6.7 3.6.8 "
     "3.6.9 3.6.10 3.6.11 3.6.12 3.6.13 3.6.14 3.6.15",
-    "3.6rc1", # ?? 3.6b2 is not 3.6rc1!
+    "3.6rc1",  # ?? 3.6b2 is not 3.6rc1!
 )
 
 add_canonic_versions("3.7b1", "3.7.0beta3")
@@ -834,7 +843,8 @@ add_canonic_versions(
 
 add_canonic_versions(
     "3.10 3.10.0 3.10.1 3.10.2 3.10.3 3.10.4 3.10.5 3.10.6 3.10.7 3.10.8 3.10.9 "
-    "3.10.10 3.10.11 3.10.12 3.10.13 3.10.14 3.10.15 3.10.16 3.10.17 3.10.18 3.10.19",
+    "3.10.10 3.10.11 3.10.12 3.10.13 3.10.14 3.10.15 3.10.16 3.10.17 3.10.18 "
+    "3.10.19 3.10.20",
     "3.10.b1",
 )
 
@@ -842,12 +852,13 @@ add_canonic_versions("3.10.13Graal", "3.10.8Graal")
 
 add_canonic_versions(
     "3.11 3.11.0 3.11.1 3.11.2 3.11.3 3.11.4 3.11.5 3.11.6 3.11.7 3.11.8 3.11.9 3.11.10 "
-    "3.11.11 3.11.12 3.11.13 3.11.14",
+    "3.11.11 3.11.12 3.11.13 3.11.14 3.11.15",
     "3.11a7e",
 )
 
 add_canonic_versions(
-    "3.12 3.12.0 3.12.1 3.12.2 3.12.3 3.12.4 3.12.5 3.12.6 3.12.7 3.12.8 3.12.9 3.12.10 3.12.11 3.12.12",
+    "3.12 3.12.0 3.12.1 3.12.2 3.12.3 3.12.4 3.12.5 3.12.6 3.12.7 3.12.8 3.12.9 3.12.10 "
+    "3.12.11 3.12.12 3.12.13",
     "3.12.0rc2",
 )
 
@@ -873,7 +884,9 @@ python_versions = set(canonic_python_version.keys())
 # Python major, minor version names, e.g. 3.6, 3.11PyPy, etc.
 # These are not considered interim version number.
 minor_release_names = {
-    python_version for python_version in python_versions if re.match("^[1-3][.][0-9]+(?:PyPy|Graal)?$", python_version)
+    python_version
+    for python_version in python_versions
+    if re.match("^[1-3][.][0-9]+(?:PyPy|Graal)?$", python_version)
 }
 
 
@@ -965,11 +978,14 @@ def test() -> None:
     assert sysinfo2magic() == MAGIC, (sysinfo2magic(), MAGIC)
 
     # Check that our interim version numbers are not used as release numbers.
-    interim_version_names = {magicint2version[magic_int] for magic_int in INTERIM_MAGIC_INTS}
+    interim_version_names = {
+        magicint2version[magic_int] for magic_int in INTERIM_MAGIC_INTS
+    }
     incorrect_interim_names = interim_version_names.intersection(minor_release_names)
     if interim_version_names:
         for incorrect_name in incorrect_interim_names:
             print(f"Remove {incorrect_name} {version2magicint[incorrect_name]}")
+
 
 if __name__ == "__main__":
     test()

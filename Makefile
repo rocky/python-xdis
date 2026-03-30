@@ -13,6 +13,7 @@ PYTHONUTF8 ?= 1
 #EXTRA_DIST=ipython/ipy_trepan.py trepan
 PHONY= \
     all \
+    ChangeLog-without-corrections \
     check \
     check-long \
     check-pytest \
@@ -136,8 +137,7 @@ ChangeLog-without-corrections:
 	git log --pretty --numstat --summary | $(GIT2CL) >ChangeLog
 
 #: Create a ChangeLog from git via git log and git2cl
-ChangeLog: rmChangeLog
-	ChangeLog-without-corrections
+ChangeLog: rmChangeLog ChangeLog-without-corrections
 	patch ChangeLog < ChangeLog-spell-corrected.diff
 
 .PHONY: $(PHONY)
