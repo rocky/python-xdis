@@ -355,6 +355,10 @@ def format_BINARY_OP_314(arg):
 def extended_BINARY_OP_314(opc, instructions):
     opname = _nb_ops[instructions[0].argval][1]
 
+    if opname == "%":
+        # Make sure to escape % below.
+        opname = "%%"
+
     if opname == "[]":
         fmt_str = "%s[%s]"
     else:
