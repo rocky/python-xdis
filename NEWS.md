@@ -1,15 +1,28 @@
-6.1.7 2025-10-17
-================
+6.3.0 2026-03-30 Your Conference listed here
+============================================
+
+* Add magics up to 3.10.20, 3.11.15, 3.12.13, and 3.15.0a7
+* Add Graal and RustPython opcodes and disassembly
+* Test framework a la Elliot Tarbet
+* Add `IS_C_PYTHON` which tests whether the platform is the CPython implementation
+* DRY unmarshal integer reading routines
+
+
+6.1.8 2025-10-17 BSides NYC 2025 - take 2
+==========================================
 
 * Add magics 3.13.9 3.15.0a1, and PyPy 3.9-v7.3.8
 * Correct PyPy 3.11 unmarshaling
 
-6.1.7 2025-10-12
-================
+* Add magics 3.13.9 3.15.0a1, and PyPy 3.9-v7.3.8
+* Correct PyPy 3.11 unmarshaling
+
+6.1.7 2025-10-12 BSides NYC 2025
+================================
 
 * Include Python versions 3.9.24, 3.10.19, 3.11.14, and 3.12.12
 * Better code type and marshalling routines for 3.11+
-* Adjust formatting for `MAKE_FUNCTION` for 3.6 & 3.11. Python 3.11 MAKE_FUNCTION is different from 3.6.
+* Adjust formatting for `MAKE_FUNCTION` for 3.6 & 3.11. Python 3.11 `MAKE_FUNCTION` is different from 3.6.
 * Fix O(n^2) performance issue with Python 3.11+ exception. Patch submitted by ril3y.
 * Don't allow installing the wrong wheel or tarball for the Python interpreter installed.
 * Add more magics like Rust and 3.15. Python 3.14 is out, so that's another magic number too.
