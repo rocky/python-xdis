@@ -105,8 +105,6 @@ def add_magic_from_int(magic_int, version):
         version2magicint[version] = [magic_int]
 
 
-version2magicint = defaultdict(list)
-
 def int2magic(magic_int):
 
     """Given a magic int like 62211, compute the corresponding magic byte string
