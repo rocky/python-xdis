@@ -133,11 +133,12 @@ opcode_extended_fmt313rust = {}
 opcode_arg_fmt = opcode_arg_fmt13rust = {}
 
 ### update arg formatting
-opcode_extended_fmt = opcode_extended_fmt312rust = opcode_extended_fmt313.copy()
-opcode_extended_fmt312rust.update(
+opcode_extended_fmt = opcode_extended_fmt313rust = opcode_extended_fmt313.copy()
+opcode_extended_fmt313rust.update(
     {
         "BINARY_OP": extended_format_BINARY_OP,
-    })
+    },
+)
 
 
 update_pj3(globals(), loc, is_rust=True)
