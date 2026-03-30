@@ -118,7 +118,7 @@ class MarshalError(Exception):
 
 
 class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
-    def __init__(self, fp, magic_int, bytes_for_s, code_objects={}) -> None:
+    def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
         """
         Marshal versions:
             4: [3.4a3, 3.13) (self.magic_int: 3280 onwards)
@@ -160,7 +160,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
 
         self.UNMARSHAL_DISPATCH_TABLE = UNMARSHAL_DISPATCH_TABLE
 
-    def t_code_rust(self, save_ref, bytes_for_s: bool = False) -> Code313Rust:
+    def t_code_rust(self, save_ref, bytes_for_s = False):
         # read instructions
         instr_count = self.read_int32()
         co_code = self.read_slice(instr_count * 2)
@@ -294,14 +294,14 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
                 locations=tuple(locations),
             )
 
-    def t_bigint(self, save_ref: bool = False, bytes_for_s: bool = False):
+    def t_bigint(self, save_ref = False, bytes_for_s = False):
         len = self.read_int32()
         is_positive = len >= 0
         byte_data = self.read_slice(abs(len))
         value = int.from_bytes(byte_data, byteorder="little")
         return value if is_positive else -value
 
-    def read_string(self, n: int, bytes_for_s: bool = False):
+    def read_string(self, n, bytes_for_s = False):
         s = self.read_slice(n)
         if not bytes_for_s:
             s = compat_str(s)
