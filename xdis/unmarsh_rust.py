@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -23,8 +23,6 @@ When the running interpreter and the read-in bytecode are the same,
 you can use Python's built-in ``marshal.loads()`` to produce a code
 object.
 """
-
-from typing import Any, Dict, List, Tuple, Union
 
 from xdis.codetype.code312rust import Code312Rust
 from xdis.codetype.code313rust import Code313Rust, SourceLocation
@@ -114,8 +112,10 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_UNKNOWN: "unknown",
 }
 
+
 class MarshalError(Exception):
     pass
+
 
 class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
     def __init__(self, fp, magic_int, bytes_for_s, code_objects={}) -> None:
@@ -136,7 +136,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
 
         # It is helpful to save the order in sets, frozensets and dictionary keys,
         # so that on writing a bytecode file we can duplicate this order.
-        self.collection_order: Dict[Union[set, frozenset, dict], Tuple[Any]] = {}
+        self.collection_order = {}
 
         self.bytes_for_s = bytes_for_s
         self.version_triple = magic_int2tuple(self.magic_int)
@@ -148,7 +148,9 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
             else:
                 self.marshal_version = 4
         else:
-            assert False, f"version {version_tuple_to_str(self.version.triple)} is not a graal version"
+            assert False, "version %s is not a graal version" % version_tuple_to_str(
+                self.version.triple
+            )
 
         self.intern_strings = []
         self.intern_objects = []
@@ -168,7 +170,7 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
 
         # read locations
         loc_count = self.read_int32()
-        locations: List[SourceLocation] = []
+        locations = []
         last_line_number = -1
         for i in range(loc_count):
             offset = i * 2
@@ -180,7 +182,8 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
             locations.append(
                 SourceLocation(
                     line_number=line_number,
-                    column_offset=char_off_zero_indexed + 1  # convert from zero-indexed
+                    column_offset=char_off_zero_indexed
+                    + 1,  # convert from zero-indexed
                 )
             )
             if line_number != last_line_number and offset not in co_lnotab:
@@ -291,16 +294,14 @@ class VersionIndependentUnmarshallerRust(VersionIndependentUnmarshaller):
                 locations=tuple(locations),
             )
 
-
-
-    def t_bigint(self, save_ref: bool=False, bytes_for_s: bool=False):
+    def t_bigint(self, save_ref: bool = False, bytes_for_s: bool = False):
         len = self.read_int32()
         is_positive = len >= 0
         byte_data = self.read_slice(abs(len))
-        value = int.from_bytes(byte_data, byteorder='little')
+        value = int.from_bytes(byte_data, byteorder="little")
         return value if is_positive else -value
 
-    def read_string(self, n: int, bytes_for_s: bool=False) -> Union[bytes, str]:
+    def read_string(self, n: int, bytes_for_s: bool = False):
         s = self.read_slice(n)
         if not bytes_for_s:
             s = compat_str(s)
