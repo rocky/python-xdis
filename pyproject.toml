@@ -52,6 +52,7 @@ Downloads = "https://github.com/rocky/python-xdis/releases"
 
 [project.optional-dependencies]
 dev = [
+    "check-jsonschema",
     "pre-commit",
     "pytest",
     "tox",
