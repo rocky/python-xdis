@@ -868,7 +868,7 @@ add_canonic_versions(
 )
 
 add_canonic_versions("3.14-dev", "3.14b3")
-add_canonic_versions("3.14 3.14.0 3.14.1, 3.14.2 3.14.3", "3.14rc3")
+add_canonic_versions("3.14 3.14.0 3.14.1, 3.14.2 3.14.3 3.14.4", "3.14rc3")
 
 add_canonic_versions(
     "3.15 3.15.0 3.15.0a1 3.15.0a0",
