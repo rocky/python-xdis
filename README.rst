@@ -61,7 +61,7 @@ Installation
 
     pip install xdis
 
-*For Python releases before 3.11*, do not install using PyPI, but instead install using a file in the [GitHub Releases section](https://github.com/rocky/python-xdis/releases). Older Python used to use `easy_install <https://python101.pythonlibrary.org/chapter29_pip.html#using-easy-install>`_. But this is no longer supported in PyPi or newer Python versions. And vice versa, *poetry* nor *pip*, (the newer ways) are not supported on older Pythons.
+*For Python releases before 3.11*, do not install using PyPI, but instead install using a file in the `GitHub Releases section <https://github.com/rocky/python-xdis/releases>`_. Older Python used to use `easy_install <https://python101.pythonlibrary.org/chapter29_pip.html#using-easy-install>`_. But this is no longer supported in PyPi or newer Python versions. And vice versa, *poetry* nor *pip*, (the newer ways) are not supported on older Pythons.
 
 If the Python version you are running xdis is between Python 2.4 through 2.7, use a tarball called xdis_24-*x.y.z*.tar.gz.
 
@@ -216,7 +216,7 @@ Testing
 
    $ make check
 
-A GNU makefile has been added to smooth over setting up running the right
+A GNU makefile has been added to smooth over setting up and running the right
 command, and running tests from fastest to slowest.
 
 If you have remake_ installed, you can see the list of all tasks
