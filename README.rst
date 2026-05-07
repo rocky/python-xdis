@@ -73,7 +73,7 @@ If the Python version you are running xdis is between Python 3.6 through 3.11, u
 
 If the Python version you are running xdis is 3.11 or later, use a file called xdis-*x.y.z*.tar.gz.
 
-You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that *the version without the designation means Python 3.11 or greater*.
+You can also try eggs or wheels that have the same version designation, e.g., xdis-*x.y.z*-py39-none-any.whl for a Python 3.9 installation. *However, note that the version without the designation means Python 3.11 or greater*.
 
 Similarly, a tarball with or without the underscore *xx*,  e.g., xdis_36-*x.y.z*.tar.gz. works only from Python 3.11 or greater.
 
