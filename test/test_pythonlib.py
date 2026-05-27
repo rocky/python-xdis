@@ -111,6 +111,7 @@ for vers in (
     "3.12",
     "3.13",
     "3.14",
+    "3.15",
 ):
     bytecode = f"bytecode_{vers}"
     key = f"bytecode-{vers}"
