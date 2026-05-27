@@ -515,8 +515,6 @@ class VersionIndependentUnmarshaller:
             if key is None:
                 break
             val = self.r_object(bytes_for_s=bytes_for_s)
-            if val is None:
-                break
             ret[key] = val
             pass
         return ret
