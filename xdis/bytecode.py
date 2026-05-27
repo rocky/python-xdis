@@ -330,7 +330,13 @@ def get_logical_instruction_at_offset(
             if op in opc.CONST_OPS:
                 argval, argrepr = _get_const_info(arg, constants)
             elif op in opc.NAME_OPS:
-                if opc.version_tuple >= (3, 11) and opname == "LOAD_GLOBAL":
+                if opc.version_tuple >= (3, 15) and opname == "IMPORT_NAME":
+                    argval, argrepr = get_name_info(arg >> 2, names)
+                    if arg & 1:
+                        argrepr = argrepr + " + lazy"
+                    elif arg & 2:
+                        argrepr = argrepr + " + eager"
+                elif opc.version_tuple >= (3, 11) and opname == "LOAD_GLOBAL":
                     argval, argrepr = get_name_info(arg >> 1, names)
                     if arg & 1:
                         argrepr = "NULL + " + argrepr
