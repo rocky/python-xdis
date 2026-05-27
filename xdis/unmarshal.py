@@ -33,7 +33,7 @@ from types import EllipsisType
 from typing import Any, Dict, Tuple, Union
 
 from xdis.codetype import to_portable
-from xdis.cross_types import LongTypeForPython3, UnicodeForPython3
+from xdis.cross_types import LongTypeForPython3, UnicodeForPython3, FrozenDictPrePython315
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
 
 
@@ -60,6 +60,7 @@ TYPE_CODE = "c"
 TYPE_CODE_OLD = "C"  # used in Python 1.0 - 1.2. Graal Python uses this too.
 TYPE_COMPLEX = "x"  # Version 0 only. Not in use after Python 2.4
 TYPE_DICT = "{"
+TYPE_FROZENDICT = "}"
 TYPE_ELLIPSIS = "."
 TYPE_FALSE = "F"
 TYPE_FLOAT = "f"  # Version 0 only. Not in use after Python 2.4
@@ -105,6 +106,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_CODE_OLD: "code_old",  # Older Python
     TYPE_COMPLEX: "complex",
     TYPE_DICT: "dict",
+    TYPE_FROZENDICT: "frozendict",
     TYPE_ELLIPSIS: "Ellipsis",
     TYPE_FALSE: "False",
     TYPE_FLOAT: "float",
@@ -486,6 +488,24 @@ class VersionIndependentUnmarshaller:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             setsize -= 1
         return self.r_ref_insert(set(ret), i)
+
+    def t_frozendict(self, save_ref, bytes_for_s: bool = False):
+        d, i = self.r_ref_reserve(dict(), save_ref)
+        # dictionary
+        while True:
+            key = self.r_object(bytes_for_s=bytes_for_s)
+            if key is None:
+                break
+            val = self.r_object(bytes_for_s=bytes_for_s)
+            d[key] = val
+            pass
+
+        try:
+            final_frozendict = frozendict(d)
+        except NameError:
+            final_frozendict = FrozenDictPrePython315(d)
+
+        return self.r_ref_insert(final_frozendict, i)
 
     def t_dict(self, save_ref, bytes_for_s: bool = False) -> dict:
         ret = self.r_ref(dict(), save_ref)
