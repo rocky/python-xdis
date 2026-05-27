@@ -438,7 +438,12 @@ class VersionIndependentUnmarshaller:
         if self.version_triple < (3, 0):
             string = UnicodeForPython3(unicodestring)
         else:
-            string = unicodestring.decode()
+            # surrogatepass is needed because Python 3 supports surrogate
+            # code points in strings. CPython 3.15+ pulls in Pygments as a
+            # dependency (for colored CLI/REPL output), and its source
+            # contains surrogate code points that cause stdlib test
+            # disassembly to fail without this error handler.
+            string = unicodestring.decode("utf-8", "surrogatepass")
 
         return self.r_ref(string, save_ref)
 
