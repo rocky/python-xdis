@@ -325,7 +325,7 @@ class VersionIndependentUnmarshaller:
         return self.r_ref(self.read_int32(), save_ref)
 
     def t_long(self, save_ref, bytes_for_s: bool = False):
-        n = self.read_uint32()
+        n = self.read_int32()
         if n == 0:
             return long(0)
         size = abs(n)
