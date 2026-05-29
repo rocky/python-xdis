@@ -61,6 +61,7 @@ from xdis.opcodes import (
     opcode_312,
     opcode_313,
     opcode_314,
+    opcode_315,
     opcode_3531rust,
     opcode_12897rust,
     opcode_24481rust,
@@ -199,7 +200,10 @@ op_imports = {
     "3.14.0": opcode_314,
     "3.14": opcode_314,
     "3.14rc3": opcode_314,
+    "3.14.5": opcode_314,
     3.14: opcode_314,
+    "3.15": opcode_315,
+    3.15: opcode_315,
 }
 
 for k, v in canonic_python_version.items():

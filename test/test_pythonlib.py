@@ -51,7 +51,8 @@ src_dir = get_srcdir()
 
 # ----- configure this for your needs
 
-lib_prefix = "/usr/lib"
+lib_prefix = os.environ.get("XDIS_LIB_PREFIX", "/usr/lib")
+# lib_prefix = "/usr/lib"
 # lib_prefix = [src_dir, '/usr/lib/', '/usr/local/lib/']
 
 target_base = tempfile.mkdtemp(prefix="py-dis-")
@@ -110,6 +111,7 @@ for vers in (
     "3.12",
     "3.13",
     "3.14",
+    "3.15",
 ):
     bytecode = f"bytecode_{vers}"
     key = f"bytecode-{vers}"
