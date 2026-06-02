@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019, 2021-2023, 2025 by Rocky Bernstein
+# (C) Copyright 2018-2019, 2021-2023, 2025-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -18,7 +18,10 @@
 import copy
 
 from xdis.magics import canonic_python_version
-from xdis.opcodes import (  # opcode_3531rust,; opcode_12897rust,; opcode_24481rust,
+from xdis.opcodes import (
+    # opcode_3531rust,
+    # opcode_12897rust,
+    # opcode_24481rust,
     opcode_10,
     opcode_11,
     opcode_12,
@@ -60,6 +63,7 @@ from xdis.opcodes import (  # opcode_3531rust,; opcode_12897rust,; opcode_24481r
     opcode_312,
     opcode_313,
     opcode_314,
+    opcode_315,
 )
 from xdis.opcodes.opcode_graal import (
     opcode_38graal,
@@ -148,7 +152,7 @@ op_imports = {
     "3.8": opcode_38,
     "3.8PyPy": opcode_38pypy,
     "3.8.0PyPy": opcode_38pypy,
-    '3.8.5Graal (16)': opcode_38graal,
+    "3.8.5Graal (16)": opcode_38graal,
     "3.8.12PyPy": opcode_38pypy,
     "3.8.13PyPy": opcode_38pypy,
     "3.8.14PyPy": opcode_38pypy,
@@ -180,24 +184,24 @@ op_imports = {
     "3.11.4": opcode_311,
     "3.11.5": opcode_311,
     "3.11a7e": opcode_311,
-    "3.11.7Graal": opcode_311graal, # is this right?
-    "3.11.13PyPy": opcode_311pypy, # is this right?
+    "3.11.7Graal": opcode_311graal,  # is this right?
+    "3.11.13PyPy": opcode_311pypy,  # is this right?
     3.11: opcode_311,
-    "3.12.7Graal": opcode_312graal, # this right?
-    "3.12.8Graal": opcode_312graal, # this right?
-    # "3.12.0Rust": opcode_12897rust,
+    "3.12.7Graal": opcode_312graal,  # this right?
+    "3.12.8Graal": opcode_312graal,  # this right?
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
     3.13: opcode_311,
     "3.13": opcode_311,
     "3.13.0rc3": opcode_313,
-    # "3.13.0Rust": opcode_24481rust,
-    # "3.13.1Rust": opcode_3531rust,
     "3.14b3": opcode_314,
     "3.14.0": opcode_314,
     "3.14": opcode_314,
     "3.14rc3": opcode_314,
+    "3.14.5": opcode_314,
     3.14: opcode_314,
+    "3.15": opcode_315,
+    3.15: opcode_315,
 }
 
 for k, v in canonic_python_version.items():
@@ -331,4 +335,5 @@ def remap_opcodes(op_obj, alternate_opmap):
 
 if __name__ == "__main__":
     from version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
+
     print(get_opcode_module(PYTHON_VERSION_TRIPLE[:2], PYTHON_IMPLEMENTATION))

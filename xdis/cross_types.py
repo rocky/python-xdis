@@ -93,3 +93,15 @@ class UnicodeForPython3(str):
             return "'{%s'" % self.value[1:]
 
         return "%s" % utf8_value
+
+class FrozenDictPrePython315(dict):
+    """
+    Defines a frozendict type which was newly added in
+    Python 3.15 and doesn't exist on previous versions
+    """
+    def __repr__(self):
+        return "frozendict(%s)" % super().__repr__()
+
+    def __hash__(self):
+        return hash(tuple(self.items()))
+>>>>>>> python-3.0-to-3.2

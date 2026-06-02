@@ -41,3 +41,19 @@ class MarshalTest(unittest.TestCase):
 
 # if __name__ == "__main__":
 #     unittest.main()
+        mod_file = os.path.join(get_srcdir(), '..', 'test', 'bytecode_3.15',
+                            '01_frozendict.pyc')
+        (version, timestamp, magic_int, co, is_pypy,
+         source_size, *_) = load_module(mod_file)
+        self.assertEqual(version, (3, 15),
+                         "Should have picked up Python version properly")
+        self.assertEqual(co.co_consts[0], 'Testing frozendict cross-version support!')
+        fd = co.co_consts[1]
+        if version < (3, 15):
+            self.assertIsInstance(fd, FrozenDictPrePython315)
+        else:
+            self.assertIsInstance(fd, frozendict)
+        self.assertEqual(dict(fd), {'hello': 'cross-version-world'})
+
+if __name__ == '__main__':
+    unittest.main()

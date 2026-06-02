@@ -1,4 +1,4 @@
-# (C) Copyright 2017, 2019-2025 by Rocky Bernstein
+# (C) Copyright 2017, 2019-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -182,21 +182,31 @@ def binary_op(loc, name, opcode, pop=2, push=1):
     def_op(loc, name, opcode, pop, push)
 
 
-def call_op(loc, name, opcode, pop=-2, push=1, fallthrough=True):
+def call_op(loc, name, opcode, pop=-2, push=1, fallthrough=True, include_in_dis_has_table: bool = True):
     """
     Put opcode in the class of instructions that perform calls.
     """
     loc["callop"].add(opcode)
-    if "hasarg" in loc:
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
-    nargs_op(loc, name, opcode, pop, push, fallthrough)
+    nargs_op(
+        loc,
+        name,
+        opcode,
+        pop,
+        push,
+        fallthrough,
+        include_in_dis_has_table=include_in_dis_has_table,
+    )
 
 
-def compare_op(loc, name, opcode, pop=2, push=1):
+def compare_op(loc, name, opcode, pop=2, push=1,include_in_dis_has_table=True
+):
     def_op(loc, name, opcode, pop, push)
-    if "hasarg" in loc:
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
-    loc["hascompare"].append(opcode)
+    if include_in_dis_has_table:
+        loc["hascompare"].append(opcode)
     loc["binaryop"].add(opcode)
 
 
@@ -204,11 +214,12 @@ def conditional_op(loc, name, opcode):
     loc["hascompare"].append(opcode)
 
 
-def const_op(loc, name, opcode, pop=0, push=1):
+def const_op(loc, name, opcode, pop=0, push=1, include_in_dis_has_table: bool=True):
     def_op(loc, name, opcode, pop, push)
-    if "hasarg" in loc:
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
-    loc["hasconst"].append(opcode)
+    if include_in_dis_has_table:
+        loc["hasconst"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
@@ -228,11 +239,12 @@ def def_op(
         loc["nofollow"].append(opcode)
 
 
-def free_op(loc, name, opcode, pop=0, push=1):
+def free_op(loc, name, opcode, pop=0, push=1, include_in_dis_has_table: bool = True):
     def_op(loc, name, opcode, pop, push)
-    if "hasarg" in loc:
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
-    loc["hasfree"].append(opcode)
+    if include_in_dis_has_table:
+        loc["hasfree"].append(opcode)
 
 
 def jabs_op(
@@ -243,55 +255,61 @@ def jabs_op(
     push = 0,
     conditional = False,
     fallthrough = True
+    include_in_dis_has_table: bool = True,
 ):
     """
     Put opcode in the class of instructions that can perform an absolute jump.
     """
     def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
-    loc["hasjabs"].append(opcode)
-    if "hasarg" in loc:
+    if include_in_dis_has_table:
+        loc["hasjabs"].append(opcode)
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
     if conditional:
         loc["hascondition"].append(opcode)
 
 
-def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=True):
+def jrel_op(loc, name, opcode, pop=0, push=0, conditional=False, fallthrough=True, include_in_dis_has_table=True):
     """
     Put opcode in the class of instructions that can perform a relative jump.
     """
     def_op(loc, name, opcode, pop, push, fallthrough)
-    loc["hasjrel"].append(opcode)
-    if "hasarg" in loc:
+    if include_in_dis_has_table:
+        loc["hasjrel"].append(opcode)
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
     if conditional:
         loc["hascondition"].append(opcode)
 
 
-def local_op(loc, name, opcode, pop=0, push=1):
+def local_op(loc, name, opcode, pop=0, push=1, include_in_dis_has_table=True):
     def_op(loc, name, opcode, pop, push)
-    if "hasarg" in loc:
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
-    loc["haslocal"].append(opcode)
+    if include_in_dis_has_table:
+        loc["haslocal"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
-def name_op(loc, op_name, opcode, pop=-2, push=-2):
+def name_op(loc, op_name, opcode, pop=-2, push=-2, include_in_dis_has_table: bool=True):
     """
     Put opcode in the class of instructions that index into the "name" table.
     """
     def_op(loc, op_name, opcode, pop, push)
-    loc["hasname"].append(opcode)
-    if "hasarg" in loc:
+    if include_in_dis_has_table:
+        loc["hasname"].append(opcode)
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
     loc["nullaryop"].add(opcode)
 
 
-def nargs_op(loc, name, opcode, pop=-2, push=-1, fallthrough=True):
+def nargs_op(loc, name, opcode, pop=-2, push=-1, fallthrough=True, include_in_dis_has_table: bool=True
+):
     """
     Put opcode in the class of instructions that have a variable number of (or *n*) arguments
     """
     def_op(loc, name, opcode, pop, push, fallthrough=fallthrough)
-    if "hasarg" in loc:
+    if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
     loc["hasnargs"].append(opcode)
 
@@ -363,15 +381,21 @@ def rm_op(loc, name, op):
     del loc["opmap"][name]
 
 
-def store_op(loc, name, op, pop=0, push=1, is_type="def"):
+def store_op(loc, name, op, pop=0, push=1, is_type="def", include_in_dis_has_table=True):
     if is_type == "name":
-        name_op(loc, name, op, pop, push)
+        name_op(
+            loc, name, op, pop, push, include_in_dis_has_table=include_in_dis_has_table
+        )
         loc["nullaryop"].remove(op)
     elif is_type == "local":
-        local_op(loc, name, op, pop, push)
+        local_op(
+            loc, name, op, pop, push, include_in_dis_has_table=include_in_dis_has_table
+        )
         loc["nullaryop"].remove(op)
     elif is_type == "free":
-        free_op(loc, name, op, pop, push)
+        free_op(
+            loc, name, op, pop, push, include_in_dis_has_table=include_in_dis_has_table
+        )
     else:
         assert is_type == "def"
         def_op(loc, name, op, pop, push)
