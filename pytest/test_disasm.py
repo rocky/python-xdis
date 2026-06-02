@@ -4,7 +4,7 @@ import re
 from io import StringIO
 
 from xdis import disassemble_file
-from xdis.version_info import IS_PYPY, PYTHON_VERSION_TRIPLE
+from xdis.version_info import PYTHON_VERSION_TRIPLE
 
 hextring_file = "testdata/01_hexstring-2.7-for3x.right"
 
@@ -58,10 +58,6 @@ def run_check_disasm(test_tuple, function_to_test):
     # In Python 3.10 they are a single line, e.g:
     #    Python 3.10.0 (default, Oct  4 2021, 23:36:04) [GCC 9.3.0]
     skip_lines = 4 if PYTHON_VERSION_TRIPLE >= (3, 10) else 5
-    if IS_PYPY:
-        if (3, 5) <= PYTHON_VERSION_TRIPLE[:2] <= (3, 9):
-            # PyPy also adds a timestamp line
-            skip_lines -= 1
 
     got = "\n".join(got_lines[skip_lines:])
 
@@ -89,7 +85,7 @@ def run_check_disasm(test_tuple, function_to_test):
 if os.name != "nt":
 
     def test_funcoutput():
-        for test_name, version in [
+        for test_name, version, formats in [
             ("01_fstring", "3.6", ["classic", "xasm"]),
             # ("01_fstring", "3.10"),  # FIXME
             ("04_pypy_lambda", "2.7pypy", ["classic", "xasm"]),
@@ -101,70 +97,26 @@ if os.name != "nt":
             ("01_frozendict", "3.15", ["classic", "xasm"]),
             ("03_annotations", "3.7", ["classic", "xasm"]),
             ("test_nested_scopes", "2.1", ["extended-bytes"]),
-            ("01_fstring", "3.6"),
-            # ("01_fstring", "3.10"),  # FIXME
-            ("04_pypy_lambda", "2.7pypy"),
-            ("03_big_dict", "2.7"),
-            ("03_big_dict", "3.3"),
-            ("03_big_dict", "3.5"),
-            ("03_big_dict", "3.6"),
-            # ("03_big_dict", "3.10"), # FIXME
         ]:
-            test_tuple = (
-                "../test/bytecode_%s/%s.pyc" % (version, test_name),
-                "testdata/%s-%s.right" % (test_name, version),
-            )
-            run_check_disasm(test_tuple, disassemble_file)
-            test_tuple = (
-                "../test/bytecode_%s/%s.pyc" % (version, test_name),
-                "testdata/%s-xasm-%s.right" % (test_name, version),
-            )
-            run_check_disasm(test_tuple, disassemble_file_xasm)
-=======
-# FIXME: redo putting more in loop. Add more Python versions and
-# more formats
-@pytest.mark.skipif(
-    os.name == "nt", reason="Windows differences in output need going over"
-)
-@pytest.mark.parametrize(
-    ("test_name", "version", "formats"),
-    [
-        ("01_fstring", "3.6", ["classic", "xasm"]),
-        # ("01_fstring", "3.10"),  # FIXME
-        ("04_pypy_lambda", "2.7pypy", ["classic", "xasm"]),
-        ("03_big_dict", "2.7", ["classic", "xasm"]),
-        ("03_big_dict", "3.3", ["classic", "xasm"]),
-        ("03_big_dict", "3.5", ["classic", "xasm"]),
-        ("03_big_dict", "3.6", ["classic", "xasm"]),
-        ("03_big_dict", "3.15", ["classic", "xasm"]),
-        ("01_frozendict", "3.15", ["classic", "xasm"]),
-        ("03_annotations", "3.7", ["classic", "xasm"]),
-        ("test_nested_scopes", "2.1", ["extended-bytes"]),
-        # ("01_augmented_assign", "3.7", ["extended-bytes"]),
-        # ("03_big_dict", "3.10"), # FIXME
-    ],
-)
-def test_funcoutput(test_name, version, formats):
-    if "classic" in formats:
-        test_tuple = (
-            ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
-            ("testdata/%s-%s.right" % (test_name, version)),
-        )
-        run_check_disasm(test_tuple, disassemble_file)
-    if "extended_bytes" in formats:
-        test_tuple = (
-            "../test/bytecode_%s/%s.pyc" % (version, test_name),
-            "testdata/%s-extended-bytes-%s.right" % (test_name, version),
-        )
-        run_check_disasm(test_tuple, disassemble_file_extended_bytes)
-    if "xasm" in formats:
-        test_tuple = (
-            ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
-            ("testdata/%s-xasm-%s.right" % (test_name, version)),
-        )
-        run_check_disasm(test_tuple, disassemble_file_xasm)
->>>>>>> python-3.3-to-3.5
+            if "classic" in formats:
+                test_tuple = (
+                    ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
+                    ("testdata/%s-%s.right" % (test_name, version)),
+                )
+                run_check_disasm(test_tuple, disassemble_file)
+            if "extended_bytes" in formats:
+                test_tuple = (
+                    "../test/bytecode_%s/%s.pyc" % (version, test_name),
+                    "testdata/%s-extended-bytes-%s.right" % (test_name, version),
+                )
+                run_check_disasm(test_tuple, disassemble_file_extended_bytes)
+            if "xasm" in formats:
+                test_tuple = (
+                    ("../test/bytecode_%s/%s.pyc" % (version, test_name)),
+                    ("testdata/%s-xasm-%s.right" % (test_name, version)),
+                )
+                run_check_disasm(test_tuple, disassemble_file_xasm)
 
 
-if __name__ == "__main__":
-    test_funcoutput()
+    if __name__ == "__main__":
+        test_funcoutput()
