@@ -2,7 +2,7 @@ import sys
 import dis
 import unittest
 import xdis.std as xdis
-from xdis.version_info import version_tuple_to_str
+from xdis.version_info import version_tuple_to_str, PythonImplementation
 
 
 class TestModules(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestModules(unittest.TestCase):
             raise ae
 
         # test "has.." tables
-        xmod = xdis.get_opcode_module()
+        xmod = xdis.get_opcode_module(sys.version_info, PythonImplementation.CPython)
         attrs = (attr for attr in dir(dis) if attr.startswith("has"))
         for attr in attrs:
             try:
