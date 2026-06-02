@@ -182,7 +182,7 @@ def binary_op(loc, name, opcode, pop=2, push=1):
     def_op(loc, name, opcode, pop, push)
 
 
-def call_op(loc, name, opcode, pop=-2, push=1, fallthrough=True, include_in_dis_has_table: bool = True):
+def call_op(loc, name, opcode, pop=-2, push=1, fallthrough=True, include_in_dis_has_table=True):
     """
     Put opcode in the class of instructions that perform calls.
     """
@@ -214,7 +214,7 @@ def conditional_op(loc, name, opcode):
     loc["hascompare"].append(opcode)
 
 
-def const_op(loc, name, opcode, pop=0, push=1, include_in_dis_has_table: bool=True):
+def const_op(loc, name, opcode, pop=0, push=1, include_in_dis_has_table=True):
     def_op(loc, name, opcode, pop, push)
     if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
@@ -239,7 +239,7 @@ def def_op(
         loc["nofollow"].append(opcode)
 
 
-def free_op(loc, name, opcode, pop=0, push=1, include_in_dis_has_table: bool = True):
+def free_op(loc, name, opcode, pop=0, push=1, include_in_dis_has_table=True):
     def_op(loc, name, opcode, pop, push)
     if "hasarg" in loc and include_in_dis_has_table:
         loc["hasarg"].append(opcode)
@@ -254,8 +254,8 @@ def jabs_op(
     pop = 0,
     push = 0,
     conditional = False,
-    fallthrough = True
-    include_in_dis_has_table: bool = True,
+    fallthrough = True,
+    include_in_dis_has_table=True,
 ):
     """
     Put opcode in the class of instructions that can perform an absolute jump.
@@ -291,7 +291,7 @@ def local_op(loc, name, opcode, pop=0, push=1, include_in_dis_has_table=True):
     loc["nullaryop"].add(opcode)
 
 
-def name_op(loc, op_name, opcode, pop=-2, push=-2, include_in_dis_has_table: bool=True):
+def name_op(loc, op_name, opcode, pop=-2, push=-2, include_in_dis_has_table=True):
     """
     Put opcode in the class of instructions that index into the "name" table.
     """
@@ -303,7 +303,7 @@ def name_op(loc, op_name, opcode, pop=-2, push=-2, include_in_dis_has_table: boo
     loc["nullaryop"].add(opcode)
 
 
-def nargs_op(loc, name, opcode, pop=-2, push=-1, fallthrough=True, include_in_dis_has_table: bool=True
+def nargs_op(loc, name, opcode, pop=-2, push=-1, fallthrough=True, include_in_dis_has_table=True
 ):
     """
     Put opcode in the class of instructions that have a variable number of (or *n*) arguments

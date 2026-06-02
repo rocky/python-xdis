@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2025 by Rocky Bernstein
+# Copyright (c) 2023-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -79,7 +79,7 @@ class UnicodeForPython3(str):
         result = []
         for c in stripped_utf8:
             if not is_ascii(c):
-                c = hex(org(c))
+                c = hex(ord(c))
             result.append(c)
 
         unicode_codepoint = "".join(result)
@@ -100,8 +100,7 @@ class FrozenDictPrePython315(dict):
     Python 3.15 and doesn't exist on previous versions
     """
     def __repr__(self):
-        return "frozendict(%s)" % super().__repr__()
+        return "frozendict(%s)" % super(FrozenDictPrePython315).__repr__()
 
     def __hash__(self):
         return hash(tuple(self.items()))
->>>>>>> python-3.0-to-3.2

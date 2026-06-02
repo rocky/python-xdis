@@ -501,6 +501,21 @@ class VersionIndependentUnmarshaller:
         self.collection_order[final_frozenset] = tuple(collection)
         return self.r_ref_insert(final_frozenset, i)
 
+    def t_frozendict(self, save_ref, bytes_for_s=False):
+        d, i = self.r_ref_reserve(dict(), save_ref)
+        # dictionary
+        while True:
+            key = self.r_object(bytes_for_s=bytes_for_s)
+            if key is None:
+                break
+            val = self.r_object(bytes_for_s=bytes_for_s)
+            d[key] = val
+            pass
+
+        final_frozendict = FrozenDictPrePython315(d)
+        return self.r_ref_insert(final_frozendict, i)
+
+
     def t_set(self, save_ref, bytes_for_s=False):
         setsize = self.read_uint32()
         ret, i = self.r_ref_reserve(tuple(), save_ref)
@@ -520,25 +535,9 @@ class VersionIndependentUnmarshaller:
             d[key] = val
             pass
 
-        try:
-            final_frozendict = frozendict(d)
-        except NameError:
-            final_frozendict = FrozenDictPrePython315(d)
-
+        final_frozendict = FrozenDictPrePython315(d)
         return self.r_ref_insert(final_frozendict, i)
 
-    def t_dict(self, save_ref, bytes_for_s: bool = False) -> dict:
->>>>>>> python-3.0-to-3.2
-        ret = self.r_ref(dict(), save_ref)
-        # dictionary
-        while True:
-            key = self.r_object(bytes_for_s=bytes_for_s)
-            if key is None:
-                break
-            val = self.r_object(bytes_for_s=bytes_for_s)
-            ret[key] = val
-            pass
-        return ret
 
     def t_python2_string_reference(self, save_ref, bytes_for_s=False):
         refnum = self.read_uint32()

@@ -358,7 +358,7 @@ _nb_ops = [
     ("NB_SUBSCR", "[]"),
 ]
 
-def format_BINARY_OP_315(arg: int):
+def format_BINARY_OP_315(arg):
     return _nb_ops[arg][1]
 
 
@@ -369,7 +369,10 @@ def extended_BINARY_OP_315(opc, instructions):
         # Make sure to escape % below.
         opname = "%%"
 
-    fmt_str = "%s[%s]" if opname == "[]" else "%s " + opname + " %s"
+    if opname == "[]":
+        fmt_str = "%s[%s]"
+    else:
+        fmt_str = "%s " + opname + " %s"
     return extended_format_binary_op(opc, instructions, fmt_str)
 
 
@@ -391,7 +394,7 @@ _common_constants = (
 )
 
 
-def format_LOAD_COMMON_CONSTANT_315(arg: int):
+def format_LOAD_COMMON_CONSTANT_315(arg):
     return _common_constants[arg]
 
 

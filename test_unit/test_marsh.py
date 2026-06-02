@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import os
+import unittest
 
 from xdis.load import load_module
 from xdis import PYTHON_VERSION_TRIPLE
-
-import unittest
+from xdis.cross_types import FrozenDictPrePython315
 
 if PYTHON_VERSION_TRIPLE < (2, 4):
     from sets import Set as set
@@ -44,15 +44,12 @@ class MarshalTest(unittest.TestCase):
         mod_file = os.path.join(get_srcdir(), '..', 'test', 'bytecode_3.15',
                             '01_frozendict.pyc')
         (version, timestamp, magic_int, co, is_pypy,
-         source_size, *_) = load_module(mod_file)
+         source_size, sip_hash, save_offsets) = load_module(mod_file)
         self.assertEqual(version, (3, 15),
                          "Should have picked up Python version properly")
         self.assertEqual(co.co_consts[0], 'Testing frozendict cross-version support!')
         fd = co.co_consts[1]
-        if version < (3, 15):
-            self.assertIsInstance(fd, FrozenDictPrePython315)
-        else:
-            self.assertIsInstance(fd, frozendict)
+        self.assertIsInstance(fd, FrozenDictPrePython315)
         self.assertEqual(dict(fd), {'hello': 'cross-version-world'})
 
 if __name__ == '__main__':
