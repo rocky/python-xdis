@@ -58,8 +58,12 @@ EXPECTED_CODE_INFO = (
 # First Line:        1
 # Constants:
 #    0: 10
-#    1: None
-# Names:
+"""
+    + ("#    1: None\n" if PYTHON_VERSION_TRIPLE < (3, 15) else "")
+    # In Python 3.15+, None is no longer in co_consts; it is loaded via
+    # LOAD_COMMON_CONSTANT(7) instead, so the implicit "return None" does
+    # not produce a constant entry.
+    + """# Names:
 #    0: a"""
 ).format(
     flags="0x00000000 (0x0)"

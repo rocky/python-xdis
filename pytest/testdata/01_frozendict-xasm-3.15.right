@@ -1,0 +1,29 @@
+# Source code size mod 2**32: 50 bytes
+
+# Method Name:       <module>
+# Filename:          dummy.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        3
+# Flags:             0x00000000 (0x0)
+# First Line:        1
+# Constants:
+#    0: 'Testing frozendict cross-version support!'
+#    1: frozendict({'hello': 'cross-version-world'})
+# Names:
+#    0: print
+
+  0:
+            RESUME               0
+
+  1:
+            LOAD_NAME            0 (print)
+            PUSH_NULL
+            LOAD_CONST           0 ("Testing frozendict cross-version support!")
+            CALL                 1 (1 positional)
+            POP_TOP
+            LOAD_COMMON_CONSTANT 7 (None)
+            RETURN_VALUE
+
