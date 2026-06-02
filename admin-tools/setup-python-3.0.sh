@@ -10,7 +10,6 @@ PYTHON_VERSION=3.0
 export PATH=$HOME/.pyenv/bin/pyenv:$PATH
 xdis_owd=$(pwd)
 mydir=$(dirname $bs)
-mydir=$(dirname $bs)
 cd $mydir
 
 cd $xdis_owd

@@ -5,36 +5,37 @@
 # TYPE_FROZENDICT, so manually inserting the frozendict object is the only way to test this
 # functionality currently.
 #
-# This must be run in Python 3.15 to correctly generate the pyc file used for testing. 
+# This must be run in Python 3.15 to correctly generate the pyc file used for testing.
 
 import importlib.util
 import marshal
 import struct
 import time
 
-# 1. Compile a simple dummy script
+# Compile a simple dummy script.
 source = "print('Testing frozendict cross-version support!')"
 code_obj = compile(source, "01_frozendict.py", "exec")
 
-# 2. Create a native 3.15 frozendict
-fd = frozendict({"hello": "cross-version-world"})
+# Create a native 3.15 frozendict. "frozendict" is only
+# available starting only with Python 3.15
+fd = frozendict({"hello": "cross-version-world"})  # NOQA
 
-# 3. Inject it into the code object's constants
+# Inject it into the code object's constants
 # We use the `.replace()` method (added in Python 3.8) to make a new code obj
 new_consts = code_obj.co_consts + (fd,)
 new_code_obj = code_obj.replace(co_consts=new_consts)
 
-# 4. Write the .pyc file manually
+# Write the .pyc file manually.
 magic = importlib.util.MAGIC_NUMBER
 bitfield = 0
 timestamp = int(time.time())
 file_size = len(source)
 
 with open("01_frozendict.pyc", "wb") as f:
-    # Write the 16-byte header (Magic, Bitfield, Timestamp, Size)
+    # Write the 16-byte header (Magic, Bitfield, Timestamp, Size).
     f.write(magic)
     f.write(struct.pack("<LLL", bitfield, timestamp, file_size))
-    
+
     # Dump the injected code object!
     marshal.dump(new_code_obj, f)
 
