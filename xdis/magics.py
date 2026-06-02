@@ -687,7 +687,7 @@ add_magic_from_int(3661, "3.15.0a7")
 # Fix miscompilation of some module-level annotations.
 # add_magic_from_int(3655, "3.15a1e")
 # NOTE: this will change on release!
-add_magic_from_int(3655, "3.15-dev")
+add_magic_from_int(3666, "3.15")
 
 # Python 3.16 will start with 3700
 
@@ -868,11 +868,11 @@ add_canonic_versions(
 )
 
 add_canonic_versions("3.14-dev", "3.14b3")
-add_canonic_versions("3.14 3.14.0 3.14.1, 3.14.2 3.14.3 3.14.4", "3.14rc3")
+add_canonic_versions("3.14 3.14.0 3.14.1, 3.14.2 3.14.3 3.14.4 3.14.5", "3.14rc3")
 
 add_canonic_versions(
-    "3.15 3.15.0 3.15.0a1 3.15.0a0",
-    "3.15-dev",
+    "3.15 3.15.0 3.15.0a1 3.15.0a0 3.15-dev 3.15.0b1",
+    "3.15",
 )
 
 # The canonic version for a canonic version is itself
