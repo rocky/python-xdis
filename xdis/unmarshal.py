@@ -32,7 +32,11 @@ from struct import unpack, unpack_from
 from typing import Any, Dict, Optional, Tuple, Union
 
 from xdis.codetype import to_portable
-from xdis.cross_types import LongTypeForPython3, UnicodeForPython3, FrozenDictPrePython315
+from xdis.cross_types import (
+    LongTypeForPython3,
+    UnicodeForPython3,
+    FrozenDictPrePython315,
+)
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
 
 
@@ -131,6 +135,7 @@ UNMARSHAL_DISPATCH_TABLE = {
     TYPE_UNICODE: "unicode",
     TYPE_UNKNOWN: "unknown",
 }
+
 
 def compat_str(s: Union[str, bytes]) -> Union[str, bytes]:
     """
@@ -306,10 +311,10 @@ class VersionIndependentUnmarshaller:
     def t_None(self, save_ref, bytes_for_s: bool = False) -> None:
         return None
 
-    def t_stopIteration(self, save_ref, bytes_for_s: bool=False):
+    def t_stopIteration(self, save_ref, bytes_for_s: bool = False):
         return StopIteration
 
-    def t_Ellipsis(self, save_ref, bytes_for_s: bool=False):
+    def t_Ellipsis(self, save_ref, bytes_for_s: bool = False):
         return Ellipsis
 
     def t_False(self, save_ref, bytes_for_s: bool = False) -> bool:
@@ -833,9 +838,13 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
 
     if magic_int in GRAAL3_MAGICS:
         from xdis.unmarsh_graal import VersionIndependentUnmarshallerGraal
-        um_gen = VersionIndependentUnmarshallerGraal(fp, magic_int, bytes_for_s, code_objects)
+
+        um_gen = VersionIndependentUnmarshallerGraal(
+            fp, magic_int, bytes_for_s, code_objects
+        )
     elif magic_int in RUSTPYTHON_MAGICS:
         from xdis.unmarsh_rust import VersionIndependentUnmarshallerRust
+
         um_gen = VersionIndependentUnmarshallerRust(
             fp, magic_int, bytes_for_s, code_objects
         )
@@ -853,11 +862,13 @@ def load_code_and_get_file_offsets(
         fp = io.BytesIO(fp)
     if magic_int in GRAAL3_MAGICS:
         from xdis.unmarsh_graal import VersionIndependentUnmarshallerGraal
+
         um_gen = VersionIndependentUnmarshallerGraal(
             fp, magic_int, bytes_for_s, code_objects
         )
     elif magic_int in RUSTPYTHON_MAGICS:
         from xdis.unmarsh_rust import VersionIndependentUnmarshallerRust
+
         um_gen = VersionIndependentUnmarshallerRust(
             fp, magic_int, bytes_for_s, code_objects
         )

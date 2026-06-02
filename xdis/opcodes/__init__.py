@@ -54,7 +54,7 @@ from xdis.opcodes.opcode_3x import (
     opcode_312,
     opcode_313,
     opcode_314,
-    opcode_315
+    opcode_315,
 )
 from xdis.opcodes.opcode_pypy import (
     opcode_26pypy,

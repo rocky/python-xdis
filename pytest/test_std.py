@@ -67,7 +67,8 @@ EXPECTED_CODE_INFO = (
 #    0: a"""
 ).format(
     flags="0x00000000 (0x0)"
-    if (PYTHON_VERSION_TRIPLE >= (3, 11) and not IS_PYPY) or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
+    if (PYTHON_VERSION_TRIPLE >= (3, 11) and not IS_PYPY)
+    or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
     else "0x00000040 (NOFREE)"
 )
 
@@ -209,8 +210,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         fn_code = compile(text, "<string>", "exec")
 
         line_table_value = (
-            fn_code.co_lnotab if hasattr(fn_code, "co_lnotab")
-            else fn_code.co_linetable
+            fn_code.co_lnotab if hasattr(fn_code, "co_lnotab") else fn_code.co_linetable
         )
 
         return Code3(

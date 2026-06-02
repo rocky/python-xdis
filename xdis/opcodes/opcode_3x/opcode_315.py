@@ -21,7 +21,6 @@ of stack usage and information for formatting instructions.
 of stack usage.
 """
 
-import xdis.opcodes.opcode_3x.opcode_314 as opcode_314
 from xdis.opcodes.base import (
     VARYING_STACK_INT,
     binary_op,
@@ -43,6 +42,7 @@ from xdis.opcodes.base import (
     varargs_op,
 )
 from xdis.opcodes.format.extended import extended_format_binary_op
+from xdis.opcodes.opcode_3x import opcode_314
 
 version_tuple = (3, 15)
 python_implementation = cpython_implementation

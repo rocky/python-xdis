@@ -72,7 +72,7 @@ def run_check_disasm(test_tuple, function_to_test):
         if got != expected:
             with open(got_filename, "w") as out:
                 out.write(got)
-        assert got == expected, ("see %s for diffs" % got_filename)
+        assert got == expected, "see %s for diffs" % got_filename
     else:
         assert got == expected
 
