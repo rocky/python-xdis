@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2021, 2024-2025 by Rocky Bernstein
+# Copyright (c) 2015-2021, 2024-2026 by Rocky Bernstein
 # Copyright (c) 2000-2002 by hartmut Goebel <h.goebel@crazy-compilers.com>
 #
 #  This program is free software; you can redistribute it and/or
@@ -506,11 +506,7 @@ class VersionIndependentUnmarshaller:
             d[key] = val
             pass
 
-        try:
-            final_frozendict = frozendict(d)
-        except NameError:
-            final_frozendict = FrozenDictPrePython315(d)
-
+        final_frozendict = FrozenDictPrePython315(d)
         return self.r_ref_insert(final_frozendict, i)
 
     def t_dict(self, save_ref, bytes_for_s: bool = False) -> dict:
