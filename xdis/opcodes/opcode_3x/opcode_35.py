@@ -1,4 +1,4 @@
-# (C) Copyright 2016-2017, 2020-2021, 2023, 2025 by Rocky Bernstein
+# (C) Copyright 2016-2017, 2020-2021, 2023, 2025, 2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -77,11 +77,11 @@ jrel_op(loc, "SETUP_ASYNC_WITH",          154,  0,  6)
 # fmt: on
 
 
-def extended_format_BINARY_MATRIX_MULTIPLY(opc, instructions) -> tuple[str, int | None]:
+def extended_format_BINARY_MATRIX_MULTIPLY(opc, instructions) -> Optional[tuple]:
     return extended_format_binary_op(opc, instructions, "%s @ %s")
 
 
-def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions) -> tuple[str, int | None]:
+def extended_format_INPLACE_MATRIX_MULTIPLY(opc, instructions) -> Optional[tuple]:
     return extended_format_binary_op(opc, instructions, "%s @= %s")
 
 
