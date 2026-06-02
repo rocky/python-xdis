@@ -58,12 +58,17 @@ EXPECTED_CODE_INFO = (
 # First Line:        1
 # Constants:
 #    0: 10
-#    1: None
-# Names:
+"""
+    + ("#    1: None\n" if PYTHON_VERSION_TRIPLE < (3, 15) else "")
+    # In Python 3.15+, None is no longer in co_consts; it is loaded via
+    # LOAD_COMMON_CONSTANT(7) instead, so the implicit "return None" does
+    # not produce a constant entry.
+    + """# Names:
 #    0: a"""
 ).format(
     flags="0x00000000 (0x0)"
-    if (PYTHON_VERSION_TRIPLE >= (3, 11) and not IS_PYPY) or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
+    if (PYTHON_VERSION_TRIPLE >= (3, 11) and not IS_PYPY)
+    or (IS_PYPY and PYTHON_VERSION_TRIPLE < (3, 5))
     else "0x00000040 (NOFREE)"
 )
 
@@ -205,8 +210,7 @@ if PYTHON_VERSION_TRIPLE >= (3, 2) and not IS_GRAAL:
         fn_code = compile(text, "<string>", "exec")
 
         line_table_value = (
-            fn_code.co_lnotab if hasattr(fn_code, "co_lnotab")
-            else fn_code.co_linetable
+            fn_code.co_lnotab if hasattr(fn_code, "co_lnotab") else fn_code.co_linetable
         )
 
         return Code3(
