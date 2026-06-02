@@ -1,4 +1,4 @@
-# (C) Copyright 2025 by Rocky Bernstein
+# (C) Copyright 2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -57,7 +57,7 @@ loc["oppop"].extend([0] * 11)
 loc["oppush"].extend([0] * 11)
 
 # fmt: off
-#            OP NAME                                            OPCODE  POP  PUSH
+#               OP NAME                                         OPCODE  POP  PUSH
 # ---------------------------------------------------------------------------
 def_op(loc,     "CACHE",                                        0,      0,  0)
 def_op(loc,     "BINARY_SLICE",                                 1,      3,  1)
@@ -183,6 +183,7 @@ varargs_op(loc, "UNPACK_SEQUENCE",                              119,    1, VARYI
 def_op(loc,     "YIELD_VALUE",                                  120,    1,  1)
 def_op(loc,     "RESUME",                                       128,    0,  0)
 
+
 # Specialized opcodes (>128)
 binary_op(loc,  "BINARY_OP_ADD_FLOAT",                          129,    2,  1)
 binary_op(loc,  "BINARY_OP_ADD_INT",                            130,    2,  1)
@@ -298,7 +299,8 @@ def_op(loc,     "POP_BLOCK",                                    262,    0,  0)
 def_op(loc,     "SETUP_CLEANUP",                                263,    0,  2)
 def_op(loc,     "SETUP_FINALLY",                                264,    0,  1)
 def_op(loc,     "SETUP_WITH",                                   265,    0,  1)
-def_op(loc,     "STORE_FAST_MAYBE_NULL",                        266,    1,  0)
+local_op(loc,   "STORE_FAST_MAYBE_NULL",                        266,    1,  0)
+
 
 # ops >= 44 have args
 HAVE_ARGUMENT = 44
@@ -312,6 +314,7 @@ loc["hasjump"] = loc["hasjrel"]
 # hasfree table populated by free_op and store_op definitions
 # haslocal table populated by local_op and store_op definitions
 loc["hasexc"] = [263, 264, 265]
+loc["hascompare"] = [loc["opmap"]["COMPARE_OP"]]
 
 # fmt: on
 

@@ -52,7 +52,7 @@ loc = locals()
 init_opdata(loc, None, version_tuple)
 
 # extend opcodes to cover pseudo ops
-loc["opname"].extend([f"<{i}>" for i in range(256, 267)])
+loc["opname"].extend(["<%s>" % i for i in range(256, 267)])
 loc["oppop"].extend([0] * 11)
 loc["oppush"].extend([0] * 11)
 
@@ -325,6 +325,7 @@ loc["hasexc"] = [263, 264, 265]
 loc["hascompare"] = [loc["opmap"]["COMPARE_OP"]]
 
 # fmt: on
+
 ### update formatting
 
 _nb_ops = [
@@ -368,7 +369,7 @@ def extended_BINARY_OP_315(opc, instructions):
         # Make sure to escape % below.
         opname = "%%"
 
-    fmt_str = "%s[%s]" if opname == "[]" else f"%s {opname} %s"
+    fmt_str = "%s[%s]" if opname == "[]" else "%s " + opname + " %s"
     return extended_format_binary_op(opc, instructions, fmt_str)
 
 
@@ -394,16 +395,18 @@ def format_LOAD_COMMON_CONSTANT_315(arg: int):
     return _common_constants[arg]
 
 
-opcode_arg_fmt = opcode_arg_fmt315 = {
-    **opcode_314.opcode_arg_fmt314,
-    **{"BINARY_OP": format_BINARY_OP_315},
-    **{"LOAD_COMMON_CONSTANT": format_LOAD_COMMON_CONSTANT_315},
-}
+opcode_arg_fmt = opcode_arg_fmt315 = opcode_314.opcode_arg_fmt314.copy()
+opcode_arg_fmt315.update(
+    {
+        "BINARY_OP": format_BINARY_OP_315,
+        "LOAD_COMMON_CONSTANT": format_LOAD_COMMON_CONSTANT_315,
+    })
 
-opcode_extended_fmt = opcode_extended_fmt315 = {
-    **opcode_314.opcode_extended_fmt314,
-    **{"BINARY_OP": extended_BINARY_OP_315},
-}
+opcode_extended_fmt = opcode_extended_fmt315 = opcode_314.opcode_extended_fmt314.copy()
+opcode_extended_fmt315.update(
+    {
+    "BINARY_OP": extended_BINARY_OP_315
+    })
 
 # CALL_FUNCTION_EX no longer takes an argument in 3.14/3.15, so it no longer needs to be formatted
 opcode_arg_fmt.pop("CALL_FUNCTION_EX", None)

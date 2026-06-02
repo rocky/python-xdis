@@ -91,3 +91,14 @@ class UnicodeForPython3(str):
         if is_ascii(utf8_value):
             return "'%s'" % utf8_value
         return "???"
+
+class FrozenDictPrePython315(dict):
+    """
+    Defines a frozendict type which was newly added in
+    Python 3.15 and doesn't exist on previous versions
+    """
+    def __repr__(self):
+        return "frozendict(%s)" % super().__repr__()
+
+    def __hash__(self):
+        return hash(tuple(self.items()))

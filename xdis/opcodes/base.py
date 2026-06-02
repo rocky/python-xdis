@@ -487,7 +487,7 @@ def varargs_op(loc, op_name, op_code, pop: int = -1, push: int = 1) -> None:
 # many Python idiocies over the years.
 
 
-def finalize_opcodes(loc: List[str]) -> None:
+def finalize_opcodes(loc: list) -> None:
     """
     Things done to Python codes after all opcode have been defined.
     """
