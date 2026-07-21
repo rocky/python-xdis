@@ -1,11 +1,43 @@
 """xdis.bytecode testing"""
+import dis
 import sys
 
 import pytest
 from xdis import IS_GRAAL, IS_PYPY
 from xdis.bytecode import Bytecode
 from xdis.op_imports import get_opcode_module
-from xdis.version_info import PYTHON_VERSION_TRIPLE
+from xdis.version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
+
+
+@pytest.mark.skipif(
+    IS_PYPY or PYTHON_VERSION_TRIPLE[:2] not in ((3, 14), (3, 15)),
+    reason="LOAD_COMMON_CONSTANT is specific to CPython 3.14 and 3.15",
+)
+def test_load_common_constant_argval_matches_dis() -> None:
+    codes = [
+        compile(source, "<test>", "exec")
+        for source in (
+            "assert False",
+            'result = {"success": True, "failure": False}',
+        )
+    ]
+
+    native = [
+        (inst.arg, inst.argval, inst.argrepr)
+        for code in codes
+        for inst in dis.get_instructions(code)
+        if inst.opname == "LOAD_COMMON_CONSTANT"
+    ]
+    cross = [
+        (inst.arg, inst.argval, inst.argrepr)
+        for code in codes
+        for inst in Bytecode(
+            code, get_opcode_module(PYTHON_VERSION_TRIPLE, PYTHON_IMPLEMENTATION)
+        )
+        if inst.opname == "LOAD_COMMON_CONSTANT"
+    ]
+
+    assert cross == native
 
 
 def extended_arg_fn36() -> int:

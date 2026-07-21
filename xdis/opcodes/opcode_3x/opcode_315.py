@@ -373,24 +373,29 @@ def extended_BINARY_OP_315(opc, instructions):
 
 
 _common_constants = (
-    "AssertionError",
-    "NotImplementedError",
-    "tuple",
-    "all",
-    "any",
-    "list",
-    "set",
-    "None",        # <--- There is your oparg 7!
-    '""',
-    "True",
-    "False",
-    "-1",
-    "frozenset",
-    "()",
+    AssertionError,
+    NotImplementedError,
+    tuple,
+    all,
+    any,
+    list,
+    set,
+    None,
+    "",
+    True,
+    False,
+    -1,
+    frozenset,
+    (),
 )
 
 
 def format_LOAD_COMMON_CONSTANT_315(arg: int):
+    obj = _common_constants[arg]
+    return obj.__name__ if isinstance(obj, type) else repr(obj)
+
+
+def resolve_LOAD_COMMON_CONSTANT_315(arg: int):
     return _common_constants[arg]
 
 
@@ -398,6 +403,11 @@ opcode_arg_fmt = opcode_arg_fmt315 = {
     **opcode_314.opcode_arg_fmt314,
     **{"BINARY_OP": format_BINARY_OP_315},
     **{"LOAD_COMMON_CONSTANT": format_LOAD_COMMON_CONSTANT_315},
+}
+
+opcode_arg_val = opcode_arg_val315 = {
+    **opcode_314.opcode_arg_val314,
+    **{"LOAD_COMMON_CONSTANT": resolve_LOAD_COMMON_CONSTANT_315},
 }
 
 opcode_extended_fmt = opcode_extended_fmt315 = {
