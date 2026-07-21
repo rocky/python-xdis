@@ -406,8 +406,7 @@ opcode_arg_fmt = opcode_arg_fmt315 = {
 }
 
 opcode_arg_val = opcode_arg_val315 = {
-    **opcode_314.opcode_arg_val314,
-    **{"LOAD_COMMON_CONSTANT": resolve_LOAD_COMMON_CONSTANT_315},
+    "LOAD_COMMON_CONSTANT": resolve_LOAD_COMMON_CONSTANT_315,
 }
 
 opcode_extended_fmt = opcode_extended_fmt315 = {

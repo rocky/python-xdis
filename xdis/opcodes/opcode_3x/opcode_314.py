@@ -377,8 +377,6 @@ opcode_arg_fmt = opcode_arg_fmt314 = {
     **{"LOAD_COMMON_CONSTANT": format_LOAD_COMMON_CONSTANT_314},
 }
 
-opcode_arg_val = opcode_arg_val314 = {}
-
 opcode_extended_fmt = opcode_extended_fmt314 = {
     **opcode_313.opcode_extended_fmt313,
     **{"BINARY_OP": extended_BINARY_OP_314},
