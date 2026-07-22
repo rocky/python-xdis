@@ -25,23 +25,14 @@ def test_load_file() -> None:
 
     co_file = load_file(load_py)
     obj_path = check_object_path(load_py)
-    (
-        version_tuple,
-        _timestamp,
-        _magic_int,
-        co_module,
-        pypy,
-        source_size,
-        sip_hash,
-        _file_offsets,
-    ) = load_module(obj_path)
-    if (3, 3) <= version_tuple <= (3, 7):
+    module = load_module(obj_path)
+    if (3, 3) <= module.tuple_version <= (3, 7):
         statinfo = os.stat(load_py)
-        assert statinfo.st_size == source_size
-        assert sip_hash is None
-    elif version_tuple < (3, 3):
-        assert source_size is None, source_size
-        assert sip_hash is None
+        assert statinfo.st_size == module.source_size
+        assert module.sip_hash is None
+    elif module.tuple_version < (3, 3):
+        assert module.source_size is None, module.source_size
+        assert module.sip_hash is None
 
     # FIXME: put in xdis code somewhere
     if IS_GRAAL:
@@ -66,10 +57,10 @@ def test_load_file() -> None:
         if field == "co_lnotab" and PYTHON_VERSION_TRIPLE >= (3, 11):
             continue
         if hasattr(co_file, field):
-            if field == "co_code" and (pypy or IS_PYPY):
+            if field == "co_code" and (module.is_pypy or IS_PYPY):
                 continue
             load_file_field = getattr(co_file, field)
-            load_module_field = getattr(co_module, field)
+            load_module_field = getattr(module.co, field)
             if os.name == "windows" and field == "co_filename":
                 # MS/Windows is letter case insensitive
                 load_module_field = load_module_field.upper()
