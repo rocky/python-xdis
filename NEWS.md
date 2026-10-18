@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Add `PycModuleInfo` object for loaded module instead of tuple
+
+
 6.3.0 2026-03-30 Your Conference listed here
 ============================================
 
