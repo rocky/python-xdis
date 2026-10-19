@@ -1,4 +1,5 @@
 """xdis.bytecode testing"""
+import dis
 import sys
 
 import pytest
@@ -6,7 +7,6 @@ from xdis import IS_GRAAL, IS_PYPY
 from xdis.bytecode import Bytecode
 from xdis.op_imports import get_opcode_module
 from xdis.version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
-
 
 def extended_arg_fn36() -> int:
     if __file__:
