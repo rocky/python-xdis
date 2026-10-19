@@ -377,30 +377,32 @@ def extended_BINARY_OP_315(opc, instructions):
 
 
 _common_constants = (
-    AssertionError,
-    NotImplementedError,
-    tuple,
-    all,
-    any,
-    list,
-    set,
-    None,
-    "",
-    True,
-    False,
-    -1,
-    frozenset,
-    (),
+    "AssertionError",
+    "NotImplementedError",
+    "tuple",
+    "all",
+    "any",
+    "list",
+    "set",
+    "None",        # <--- There is your oparg 7!
+    '""',
+    "True",
+    "False",
+    "-1",
+    "frozenset",
+    "()",
 )
 
 
 def format_LOAD_COMMON_CONSTANT_315(arg):
     obj = _common_constants[arg]
-    return obj.__name__ if isinstance(obj, type) else repr(obj)
+    if isinstance(obj, type):
+        return obj.__name__
+    else:
+        return repr(obj)
 
 
-def resolve_LOAD_COMMON_CONSTANT_315(arg: int):
->>>>>>> python-3.0-to-3.2
+def resolve_LOAD_COMMON_CONSTANT_315(arg):
     return _common_constants[arg]
 
 

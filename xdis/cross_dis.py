@@ -1,4 +1,4 @@
-# (C) Copyright 2020-2021, 2023-2025 by Rocky Bernstein
+# (C) Copyright 2020-2021, 2023-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -516,7 +516,10 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
     elif opname in ("BUILD_SLICE") and version_tuple < (3, 14):
         # this was 2.7 only, but 3.0 through 3.13 also pop the step in a[x:y:z]
         # (3.14 changed BUILD_SLICE and its opcode table already handles it)
-        return -2 if oparg == 3 else -1
+        if oparg == 3:
+            return -2
+        else:
+            return -1
     elif opname == "FORMAT_VALUE" and version_tuple >= (3, 6):
         # f"{x:>10}" also pops the format spec; the table only counted the value
         if oparg == 3:
@@ -524,7 +527,6 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
         else:
             return -1
         pass
->>>>>>> python-3.0-to-3.2
     elif opname == "LOAD_ATTR" and version_tuple >= (3, 12):
         if oparg & 1:
             return 2
@@ -533,7 +535,11 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
     elif opname == "MAKE_FUNCTION":
         if version_tuple >= (3, 5):
             # was 10, but a nested function with defaults, kwdefaults, and a closure is 11 (15 with annotations)
-            if 0 <= oparg <= (10 if version_tuple == (3, 5) else 15):
+            if version_tuple == (3, 5):
+                max_oparg = 10
+            else:
+                max_oparg = 15
+            if 0 <= oparg <= max_oparg:
                 if version_tuple == (3, 5):
                     return [-1, -2, -3, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
                 elif (3, 6) <= version_tuple < (3, 11):
