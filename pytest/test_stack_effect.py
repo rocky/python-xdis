@@ -197,5 +197,29 @@ def test_stack_effect_operand_dependent() -> None:
         assert xstack_effect(opc.opmap["BUILD_SLICE"], opc, 3) == -2
 
 
+def test_stack_effect_operand_dependent() -> None:
+    """Check stack effects of MAKE_FUNCTION, FORMAT_VALUE, and BUILD_SLICE
+    for operands whose bits change how many items are popped.
+    """
+    for version in ((3, 6), (3, 10)):
+        opc = get_opcode(version, False)
+        for oparg, effect in ((11, -4), (12, -3), (15, -5)):
+            assert xstack_effect(opc.opmap["MAKE_FUNCTION"], opc, oparg) == effect
+
+    for version in ((3, 11), (3, 12)):
+        opc = get_opcode(version, False)
+        for oparg, effect in ((3, -2), (4, -1), (8, -1), (9, -2), (10, -2), (11, -3), (15, -4)):
+            assert xstack_effect(opc.opmap["MAKE_FUNCTION"], opc, oparg) == effect
+
+    for version in ((3, 6), (3, 12)):
+        opc = get_opcode(version, False)
+        assert xstack_effect(opc.opmap["FORMAT_VALUE"], opc, 0) == 0
+        assert xstack_effect(opc.opmap["FORMAT_VALUE"], opc, 4) == -1
+
+    for version in ((3, 6), (3, 13)):
+        opc = get_opcode(version, False)
+        assert xstack_effect(opc.opmap["BUILD_SLICE"], opc, 3) == -2
+
+
 if __name__ == "__main__":
     test_stack_effect_fixed()
