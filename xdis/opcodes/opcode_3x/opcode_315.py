@@ -417,11 +417,6 @@ opcode_extended_fmt315.update(
     "BINARY_OP": extended_BINARY_OP_315
     })
 
-opcode_extended_fmt = opcode_extended_fmt315 = {
-    **opcode_314.opcode_extended_fmt314,
-    **{"BINARY_OP": extended_BINARY_OP_315},
-}
->>>>>>> python-3.6-to-3.10
 
 # CALL_FUNCTION_EX no longer takes an argument in 3.14/3.15, so it no longer needs to be formatted
 opcode_arg_fmt.pop("CALL_FUNCTION_EX", None)
