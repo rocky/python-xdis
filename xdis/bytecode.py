@@ -433,6 +433,8 @@ def get_logical_instruction_at_offset(
                         )
             if hasattr(opc, "opcode_arg_fmt") and opname in opc.opcode_arg_fmt:
                 argrepr = opc.opcode_arg_fmt[opname](arg)
+            if hasattr(opc, "opcode_arg_val") and opname in opc.opcode_arg_val:
+                argval = opc.opcode_arg_val[opname](arg)
         else:
             if fixed_length_instructions:
                 i += 1
