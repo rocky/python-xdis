@@ -513,12 +513,18 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
         "BUILD_TUPLE",
     ) and version_tuple >= (3, 12):
         return 1 - oparg
-    elif opname in ("BUILD_SLICE") and version_tuple <= (2, 7):
+    elif opname in ("BUILD_SLICE") and version_tuple < (3, 14):
+        # this was 2.7 only, but 3.0 through 3.13 also pop the step in a[x:y:z]
+        # (3.14 changed BUILD_SLICE and its opcode table already handles it)
+        return -2 if oparg == 3 else -1
+    elif opname == "FORMAT_VALUE" and version_tuple >= (3, 6):
+        # f"{x:>10}" also pops the format spec; the table only counted the value
         if oparg == 3:
             return -2
         else:
             return -1
         pass
+>>>>>>> python-3.0-to-3.2
     elif opname == "LOAD_ATTR" and version_tuple >= (3, 12):
         if oparg & 1:
             return 2
@@ -526,15 +532,16 @@ def xstack_effect(opcode, opc, oparg=0, jump=None):
             return 1
     elif opname == "MAKE_FUNCTION":
         if version_tuple >= (3, 5):
-            if 0 <= oparg <= 10:
+            # was 10, but a nested function with defaults, kwdefaults, and a closure is 11 (15 with annotations)
+            if 0 <= oparg <= (10 if version_tuple == (3, 5) else 15):
                 if version_tuple == (3, 5):
                     return [-1, -2, -3, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
                 elif (3, 6) <= version_tuple < (3, 11):
-                    return [-1, -2, -2, -3, -2, -3, -3, -4, -2, -3, -3, -4][oparg]
-                elif 0 <= oparg <= 2:
-                    return [0, -1, -1][oparg]
+                    return [-1, -2, -2, -3, -2, -3, -3, -4, -2, -3, -3, -4, -3, -4, -4, -5][oparg]
                 else:
-                    return None
+                    # only flags 0-2 were handled, so closures and annotations gave None;
+                    # this is the 3.6-3.10 table plus one since 3.11 no longer pops the qualname
+                    return [0, -1, -1, -2, -1, -2, -2, -3, -1, -2, -2, -3, -2, -3, -3, -4][oparg]
             else:
                 return None
     elif opname in ("CALL", "INSTRUMENTED_CALL") and version_tuple >= (3, 12):

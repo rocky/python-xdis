@@ -517,6 +517,8 @@ def extended_format_CALL(opc, instructions):
 
     return NULL_EXTENDED_OP
 
+### update CALL_INTRINSIC_2 function
+opcode_312._intrinsic_2_descs.append("INTRINSIC_SET_TYPEPARAM_DEFAULT")
 
 ### update formatting
 opcode_arg_fmt = opcode_arg_fmt313 = opcode_312.opcode_arg_fmt312.copy()
