@@ -13,12 +13,15 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from __future__ import annotations
+
 import marshal
 import os.path as osp
 import py_compile
 import sys
 import tempfile
 import types
+from dataclasses import dataclass, field
 from datetime import datetime
 from os import close
 from struct import pack, unpack
@@ -26,6 +29,7 @@ from types import CodeType
 
 import xdis.marsh
 import xdis.unmarshal
+from xdis.codetype.base import CodeBase
 from xdis.dropbox.decrypt25 import fix_dropbox_pyc
 from xdis.magics import (
     GRAAL3_MAGICS,
@@ -42,6 +46,19 @@ from xdis.magics import (
     versions,
 )
 from xdis.version_info import PYTHON3, PYTHON_VERSION_TRIPLE, PythonImplementation
+
+
+
+@dataclass
+class PycModuleInfo:
+    tuple_version: tuple[int, int, int]
+    timestamp: int
+    magic_int: int
+    co: CodeBase
+    is_pypy: bool
+    source_size: int
+    sip_hash: int = None
+    file_offsets: dict = field(default_factory=dict)
 
 
 def is_python_source(path) -> bool:
@@ -148,7 +165,7 @@ def load_module(
     fast_load: bool = False,
     get_code: bool = True,
     save_file_offsets: bool = False,
-):
+) -> PycModuleInfo:
     """load a module without importing it.
     Parameters:
        filename:    name of file containing Python byte-code object
@@ -182,6 +199,8 @@ def load_module(
         sip_hash   : the SIP Hash for the file (only in Python 3.7 or greater), if the file
                      was created with a SIP hash or None otherwise. Note that if the sip_hash is not
                      none, then the timestamp and source_size will be invalid.
+
+    :rtype: PycModuleInfo
     """
 
     # Some sanity checks
@@ -213,10 +232,11 @@ def load_module_from_file_object(
     fast_load=False,
     get_code=True,
     save_file_offsets=False,
-):
+) -> PycModuleInfo:
     """load a module from a file object without importing it.
 
-    See :func:load_module for a list of return values.
+    :return: Module information, see :func:load_module for detailed information
+    :rtype: PycModuleInfo
     """
 
     if code_objects is None:
@@ -378,7 +398,7 @@ def load_module_from_file_object(
     if hasattr(co, "version_triple") and co.version_triple != (0, 0, 0):
         version_triple = co.version_triple
 
-    return (
+    return PycModuleInfo(
         version_triple,
         timestamp,
         magic_int,
