@@ -21,22 +21,9 @@ another set of Pythons
 
 # From
 # https://stackoverflow.com/questions/196345/how-to-check-if-a-string-in-python-is-in-ascii
-def is_ascii(obj) -> bool:
+def is_ascii(s: str) -> bool:
     """Check if the characters in string s are in ASCII, U+0-U+7F."""
-    if isinstance(obj, str):
-        try:
-            obj.encode('ascii')
-            return True
-        except UnicodeEncodeError:
-            return False
-    elif isinstance(obj, (bytes, bytearray)):
-        try:
-            # Bytes in Python 3.6 already allow checking ranges,
-            # but encoding/decoding or a simple check works:
-            return all(b < 128 for b in obj)
-        except TypeError:
-            return False
-    raise TypeError(f"a bytes-like object is required, not '{type(obj).__name__}'")
+    return len(s) == len(s.encode())
 
 class LongTypeForPython3(int):
     """
