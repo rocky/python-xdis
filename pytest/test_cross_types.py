@@ -5,7 +5,7 @@ import io
 from struct import pack
 
 import pytest
-from xdis.cross_types import UnicodeForPython3
+from xdis.cross_types import UnicodeForPython3, is_ascii
 from xdis.magics import by_version, magic2int
 from xdis.unmarshal import VersionIndependentUnmarshaller
 
@@ -41,7 +41,7 @@ def test_python2_unicode_repr_roundtrip(text, expected):
     value = UnicodeForPython3(raw)
     literal = repr(value)
     assert literal == expected
-    assert literal.isascii()
+    assert is_ascii(literal)
     assert ast.literal_eval(literal) == text
     assert str(value) == text
     assert value.value == raw
