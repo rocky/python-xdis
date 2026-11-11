@@ -59,27 +59,14 @@ class UnicodeForPython3(str):
         return id(self.value)
 
     def __repr__(self) -> str:
-        r"""
-        Replacement repr() for Python3.
-        This ensures we get the "u" suffix on unicode types,
-        and also \u when the string is not ASCII representable
-        """
+        """Return an ASCII-only Python 2 Unicode literal for UTF-8 text."""
         try:
             utf8_value = self.value.decode("utf-8")
             # Do we need to handle utf-16 and utf-32?
         except UnicodeDecodeError:
             return f"""u'{str(self.value)[1:]}'"""
 
-        if is_ascii(utf8_value):
-            return f"""u'{utf8_value}'"""
-
-        # Turn the unicode character into its Unicode code point,
-        # but strip of the leading "0x".
-        stripped_utf8 = utf8_value[len("0x") :]
-        unicode_codepoint = "".join(
-            (c if is_ascii(c) else hex(ord(c)) for c in stripped_utf8)
-        )
-        return rf"""u'\u{unicode_codepoint}'"""
+        return "u" + ascii(utf8_value)
 
     def __str__(self) -> str:
         try:
