@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2026 by Rocky Bernstein
+# Copyright (c) 2023-2024, 2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@ another set of Pythons
 def is_ascii(s):
     """Check if the characters in string s are in ASCII, U+0-U+7F."""
     return len(s) == len(s.encode())
-
 
 class LongTypeForPython3(int):
     """

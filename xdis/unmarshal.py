@@ -204,6 +204,7 @@ class VersionIndependentUnmarshaller:
             self.marshal_version = 0
 
         self.intern_strings = []
+        self.intern_string_bytes = {}
         self.intern_objects = []
         self.is_pypy = magic_int in PYPY3_MAGICS
         self.is_rust = magic_int in RUSTPYTHON_MAGICS
@@ -240,6 +241,7 @@ class VersionIndependentUnmarshaller:
 
         if self.marshal_version == 0:
             self.intern_strings = []
+            self.intern_string_bytes = {}
         if self.marshal_version < 3:
             assert self.intern_objects == []
 
@@ -444,7 +446,14 @@ class VersionIndependentUnmarshaller:
     def t_interned(self, save_ref, bytes_for_s=False):
         strsize = self.read_uint32()
         interned = compat_str(self.fp.read(strsize), False)
+        raw = self.fp.read(strsize)
+        interned = compat_str(raw)
+        # A string first read as text can later be referenced as bytecode.
+        # Keep the original bytes alongside the existing text representation.
+        self.intern_string_bytes[len(self.intern_strings)] = raw
         self.intern_strings.append(interned)
+        if bytes_for_s and self.version_triple < (3, 0):
+            interned = raw
         return self.r_ref(interned, save_ref)
 
     def t_unicode(self, save_ref, bytes_for_s=False):
@@ -541,9 +550,18 @@ class VersionIndependentUnmarshaller:
 
     def t_python2_string_reference(self, save_ref, bytes_for_s=False):
         refnum = self.read_uint32()
+        if bytes_for_s and self.version_triple < (3, 0):
+            return self.intern_string_bytes[refnum]
         return self.intern_strings[refnum]
 
-    def t_slice(self, save_ref, bytes_for_s = False):
+    def _reference_objects(self):
+        references = set(self.intern_objects + self.intern_strings)
+        if self.version_triple < (3, 0):
+            # The marshal writer can encounter either representation.
+            references.update(self.intern_string_bytes.values())
+        return references
+
+    def t_slice(self, save_ref, bytes_for_s: bool = False):
         """TYPE_SLICE introducted in Marshal version 5"""
         retval, idx = self.r_ref_reserve(slice(None, None, None), save_ref)
 
@@ -700,7 +718,7 @@ class VersionIndependentUnmarshaller:
             co_firstlineno = -1  # Bogus sentinel value
             co_lnotab = ""
 
-        reference_objects = set(self.intern_objects + self.intern_strings)
+        reference_objects = self._reference_objects()
 
         code = to_portable(
             co_argcount=co_argcount,
@@ -794,7 +812,7 @@ class VersionIndependentUnmarshaller:
         co_firstlineno = -1  # Bogus sentinel value
         co_lnotab = ""
 
-        reference_objects = set(self.intern_objects + self.intern_strings)
+        reference_objects = self._reference_objects()
 
         code = to_portable(
             co_argcount=co_argcount,
