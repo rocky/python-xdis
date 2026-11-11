@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2024 by Rocky Bernstein
+# Copyright (c) 2023-2024, 2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@ another set of Pythons
 def is_ascii(s: str) -> bool:
     """Check if the characters in string s are in ASCII, U+0-U+7F."""
     return len(s) == len(s.encode())
-
 
 class LongTypeForPython3(int):
     """
@@ -59,11 +58,7 @@ class UnicodeForPython3(str):
         return id(self.value)
 
     def __repr__(self) -> str:
-        r"""
-        Replacement repr() for Python3.
-        This ensures we get the "u" suffix on unicode types,
-        and also \u when the string is not ASCII representable
-        """
+        """Return an ASCII-only Python 2 Unicode literal for UTF-8 text."""
         try:
             utf8_value = self.value.decode("utf-8")
             # Do we need to handle utf-16 and utf-32?
