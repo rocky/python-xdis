@@ -1,3 +1,31 @@
+6.3.1 2026-09-11
+================
+
+Update minor versions released recent versions Python from 3.10 to 3.15
+
+SakayanagiYuna:
+
+For Python 2 interned strings Honor the per-read bytes_for_s flag for Python 2 TYPE_INTERNED and
+TYPE_STRINGREF records. Previously, these records were always
+decoded as UTF-8 with errors ignored, silently dropping non-UTF-8
+bytes.  Cache the original bytes alongside the existing text representation
+so references can be read in either context without losing data,
+preserving identity for repeated references within each
+representation.  Include both representations in code reference
+metadata to preserve interned tags when re-marshalling.  Keep existing text decoding and Python 3 Unicode behavior unchanged.  Add synthetic regression tests for binary strings, mixed-context
+references, interned bytecode in a Python 2.7 pyc, and marshal round
+trips.
+
+
+Joel-Flores123:
+
+* Fix stack effects of `make_function`, `build_slice`, and `format_value`
+
+Quinntyx:
+
+* Python version 3.15 support
+
+
 6.3.0 2026-03-30 Your Conference listed here
 ============================================
 
