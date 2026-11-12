@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2019, 2021-2023, 2025 by Rocky Bernstein
+# (C) Copyright 2018-2019, 2021-2023, 2025-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -16,7 +16,6 @@
 
 """Facilitates for importing Python opcode maps for a given Python version"""
 import copy
-from typing import Tuple
 
 from xdis.magics import canonic_python_version
 from xdis.opcodes import (
@@ -153,7 +152,7 @@ op_imports = {
     "3.8": opcode_38,
     "3.8PyPy": opcode_38pypy,
     "3.8.0PyPy": opcode_38pypy,
-    '3.8.5Graal (16)': opcode_38graal,
+    "3.8.5Graal (16)": opcode_38graal,
     "3.8.12PyPy": opcode_38pypy,
     "3.8.13PyPy": opcode_38pypy,
     "3.8.14PyPy": opcode_38pypy,
@@ -185,11 +184,11 @@ op_imports = {
     "3.11.4": opcode_311,
     "3.11.5": opcode_311,
     "3.11a7e": opcode_311,
-    "3.11.7Graal": opcode_311graal, # is this right?
-    "3.11.13PyPy": opcode_311pypy, # is this right?
+    "3.11.7Graal": opcode_311graal,  # is this right?
+    "3.11.13PyPy": opcode_311pypy,  # is this right?
     3.11: opcode_311,
-    "3.12.7Graal": opcode_312graal, # this right?
-    "3.12.8Graal": opcode_312graal, # this right?
+    "3.12.7Graal": opcode_312graal,  # this right?
+    "3.12.8Graal": opcode_312graal,  # this right?
     "3.12.0Rust": opcode_12897rust,
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
@@ -211,7 +210,9 @@ for k, v in canonic_python_version.items():
         op_imports[k] = op_imports[v]
 
 
-def get_opcode_module(version_info: Tuple[int, ...], implementation: PythonImplementation):
+def get_opcode_module(
+    version_info: tuple[int, ...], implementation: PythonImplementation
+):
     vers_str = version_tuple_to_str(version_info)
     if len(version_info) > 3 and version_info[3] != "final":
         vers_str += version_tuple_to_str(version_info, start=3)
@@ -275,9 +276,7 @@ def remap_opcodes(op_obj, alternate_opmap):
     for opname, alt_opcode in alternate_opmap.items():
         if opname not in op_obj.opmap:
             raise KeyError(
-                "The opname {} was not found in Python's original opmap for version {}".format(
-                    opname, op_obj.version
-                )
+                f"The opname {opname} was not found in Python's original opmap for version {op_obj.version}"
             )
         else:
             original_opcode = op_obj.opmap[opname]
@@ -309,33 +308,34 @@ def remap_opcodes(op_obj, alternate_opmap):
                     frozen_set_list[idx] = alt_opcode
 
     new_opcodes_with_args = {}
-    for opname in opcodes_with_args.keys():
+    for opname in opcodes_with_args:
         new_opcodes_with_args[opname] = new_opmap[opname]
     lowest_opcode_with_arg = min(new_opcodes_with_args.values())
-    setattr(op_obj, "HAVE_ARGUMENT", lowest_opcode_with_arg)
+    op_obj.HAVE_ARGUMENT = lowest_opcode_with_arg
     if hasattr(op_obj, "PJIF"):
         if hasattr(op_obj, "POP_JUMP_IF_FALSE") and "POP_JUMP_IF_FALSE" in new_opmap:
             # 2.7 and later
-            setattr(op_obj, "PJIF", new_opmap["POP_JUMP_IF_FALSE"])
+            op_obj.PJIF = new_opmap["POP_JUMP_IF_FALSE"]
         if hasattr(op_obj, "JUMP_IF_FALSE") and "JUMP_IF_FALSE" in new_opmap:
-            setattr(op_obj, "PJIF", new_opmap["JUMP_IF_FALSE"])
+            op_obj.PJIF = new_opmap["JUMP_IF_FALSE"]
     if hasattr(op_obj, "PJIT"):
         if hasattr(op_obj, "POP_JUMP_IF_TRUE") and "POP_JUMP_IF_TRUE" in new_opmap:
             # 2.7 and later
-            setattr(op_obj, "PJIT", new_opmap["POP_JUMP_IF_TRUE"])
+            op_obj.PJIT = new_opmap["POP_JUMP_IF_TRUE"]
         if hasattr(op_obj, "JUMP_IF_TRUE") and "JUMP_IF_TRUE" in new_opmap:
-            setattr(op_obj, "PJIT", new_opmap["JUMP_IF_TRUE"])
+            op_obj.PJIT = new_opmap["JUMP_IF_TRUE"]
 
     for new_list_name, new_list in new_lists.items():
         setattr(op_obj, new_list_name, new_list)
     for new_frozenset_name, new_frozenset in new_frozensets.items():
         setattr(op_obj, new_frozenset_name, frozenset(new_frozenset))
 
-    setattr(op_obj, "opmap", new_opmap)
-    setattr(op_obj, "REMAPPED", True)
+    op_obj.opmap = new_opmap
+    op_obj.REMAPPED = True
     return op_obj
 
 
 if __name__ == "__main__":
     from version_info import PYTHON_IMPLEMENTATION, PYTHON_VERSION_TRIPLE
+
     print(get_opcode_module(PYTHON_VERSION_TRIPLE[:2], PYTHON_IMPLEMENTATION))

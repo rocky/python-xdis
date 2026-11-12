@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 import platform
 import sys
 from enum import Enum
-from typing import Tuple
 
 PYTHON3 = sys.version_info >= (3, 0)
 
@@ -79,7 +78,7 @@ IS_RUST = PYTHON_IMPLEMENTATION == PythonImplementation.RustPython
 
 
 def version_tuple_to_str(
-    version_tuple: Tuple[int, ...] = PYTHON_VERSION_TRIPLE,
+    version_tuple: tuple[int, ...] = PYTHON_VERSION_TRIPLE,
     start: int = 0,
     end: int = 3,
     delimiter: str = ".",
