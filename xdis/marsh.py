@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2025 by Rocky Bernstein
+# (C) Copyright 2018-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@ import struct
 import types
 from sys import intern
 from types import CodeType, EllipsisType
-from typing import Any, Dict, Optional, Set, Union
+from typing import Any
 
 from xdis.codetype import Code2, Code3, Code15
 from xdis.unmarshal import (
@@ -88,14 +88,14 @@ class _Marshaller:
         self,
         writefunc,
         python_version: tuple,
-        is_pypy: Optional[bool] = None,
+        is_pypy: bool | None = None,
         collection_order={},
         reference_objects=set(),
     ) -> None:
         self._write = writefunc
         self.collection_order = collection_order
-        self.intern_objects: Dict[Any, int] = {}
-        self.intern_consts: Dict[Any, int] = {}
+        self.intern_objects: dict[Any, int] = {}
+        self.intern_consts: dict[Any, int] = {}
         self.is_pypy = is_pypy
         self.python_version = python_version
         self.reference_objects = reference_objects
@@ -106,8 +106,7 @@ class _Marshaller:
             and PYTHON_VERSION_TRIPLE[:2] != self.python_version[:2]
         ):
             raise RuntimeError(
-                "code type passed for version %s but we are running version %s"
-                % (version_tuple_to_str(), self.python_version)
+                f"code type passed for version {version_tuple_to_str()} but we are running version {self.python_version}"
             )
         try:
             self.dispatch[type(x)](self, x, flag_ref)
@@ -275,7 +274,9 @@ class _Marshaller:
         self.w_long(code.co_firstlineno)
 
         # 3.10 and greater uses co_linetable.
-        linetable = code.co_linetable if hasattr(code, "co_linetable") else code.co_lnotab
+        linetable = (
+            code.co_linetable if hasattr(code, "co_linetable") else code.co_lnotab
+        )
         self.dump_linetable(linetable)
 
     dispatch[Code3] = dump_code3
@@ -286,7 +287,7 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_collection(self, type_code: str, bag: Union[frozenset, set, dict]) -> None:
+    def dump_collection(self, type_code: str, bag: frozenset | set | dict) -> None:
         """
         Save marshalled version of frozenset fs.
         Use self.collection_order, to ensure that the order
@@ -392,7 +393,6 @@ class _Marshaller:
         else:
             self.dump_unicode(name)
 
-
     def dump_names(self, names, flag_ref: int) -> None:
         n = len(names)
         if flag_ref:
@@ -488,7 +488,7 @@ class _Marshaller:
         self._write(TYPE_REF)
         self.w_long(ref)
 
-    def dump_set(self, s: Set[Any]) -> None:
+    def dump_set(self, s: set[Any]) -> None:
         """
         Save marshalled version of set s.
         """
@@ -614,7 +614,6 @@ class _Marshaller:
         dispatch[str] = dump_unicode
     else:
         dispatch[unicode] = dump_unicode  # noqa
-
 
 
 class _NULL:
@@ -1177,7 +1176,7 @@ def dump(
     f,
     version: int = version,
     python_version: tuple = PYTHON_VERSION_TRIPLE,
-    is_pypy: Optional[bool] = None,
+    is_pypy: bool | None = None,
 ) -> None:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version, is_pypy)
@@ -1194,7 +1193,7 @@ def load(f, python_version: tuple = PYTHON_VERSION_TRIPLE, is_pypy=None):
 def dumps(
     x,
     python_version: tuple[int, ...] = PYTHON_VERSION_TRIPLE,
-    is_pypy: Optional[bool] = None,
+    is_pypy: bool | None = None,
 ) -> bytes | str:
     buffer = []
     collection_order = x.collection_order if hasattr(x, "collection_order") else {}
