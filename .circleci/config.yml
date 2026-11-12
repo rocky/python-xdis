@@ -1,7 +1,7 @@
 version: 2
 filters:
   branches:
-    only: master
+    only: main
 jobs:
   build:
     working_directory: ~/rocky/python-xdis
@@ -12,7 +12,7 @@ jobs:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
       COMPILE: --compile
     docker:
-    - image: cimg/python:3.13
+    - image: cimg/python:3.14
     steps:
     # Machine Setup
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each

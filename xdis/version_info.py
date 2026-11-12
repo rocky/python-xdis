@@ -1,5 +1,5 @@
 """
-Copyright (c) 2020-2025 by Rocky Bernstein
+Copyright (c) 2020-2026 by Rocky Bernstein
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ from typing import Tuple
 PYTHON3 = sys.version_info >= (3, 0)
 
 PYTHON_VERSION_TRIPLE = tuple(sys.version_info[:3])
-PYTHON_VERSION_STR = "%s.%s" % (sys.version_info[0], sys.version_info[1])
+PYTHON_VERSION_STR = f"{sys.version_info[0]}.{sys.version_info[1]}"
 
 
 class PythonImplementation(Enum):
