@@ -1,7 +1,7 @@
 version: 2
 filters:
   branches:
-    only: master
+    only: main
 jobs:
   build:
     working_directory: ~/rocky/python-xdis
