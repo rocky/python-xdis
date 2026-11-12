@@ -87,7 +87,7 @@ class _Marshaller:
         self,
         writefunc,
         python_version: Tuple,
-        is_pypy: bool | None = None,
+        is_pypy: Optional[bool] = None,
         collection_order={},
         reference_objects=set(),
     ) -> None:
@@ -286,7 +286,7 @@ class _Marshaller:
     except NameError:
         pass
 
-    def dump_collection(self, type_code: str, bag: frozenset | set | dict) -> None:
+    def dump_collection(self, type_code: str, bag: Union[frozenset, set, dict]) -> None:
         """
         Save marshalled version of frozenset fs.
         Use self.collection_order, to ensure that the order
@@ -1178,7 +1178,7 @@ def dump(
     x,
     f,
     python_version: Tuple = PYTHON_VERSION_TRIPLE,
-    is_pypy: bool | None = None,
+    is_pypy: Optional[bool] = None,
 ) -> None:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version, is_pypy)

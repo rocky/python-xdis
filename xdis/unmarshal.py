@@ -28,14 +28,14 @@ object.
 
 import io
 import sys
-from struct import unpack, unpack_from
+from struct import unpack
 from typing import Any, Dict, Optional, Tuple, Union
 
 from xdis.codetype import to_portable
 from xdis.cross_types import (
+    FrozenDictPrePython315,
     LongTypeForPython3,
     UnicodeForPython3,
-    FrozenDictPrePython315,
 )
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
 
@@ -248,12 +248,11 @@ class VersionIndependentUnmarshaller:
         return obj, i
 
     def r_ref_insert(self, obj, i: Optional[int]):
-        if i is not None:
-            if not isinstance(obj, (set, list)):
-                # I am not sure if this is right...
-                # We can't turn into a set a list that contains a
-                # list or a set. So skip these, for now
-                self.intern_objects[i] = obj
+        if i is not None and not isinstance(obj, (set, list)):
+            # I am not sure if this is right...
+            # We can't turn into a set a list that contains a
+            # list or a set. So skip these, for now
+            self.intern_objects[i] = obj
         return obj
 
     def r_ref(self, obj, save_ref):

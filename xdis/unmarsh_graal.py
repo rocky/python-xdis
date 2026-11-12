@@ -26,7 +26,7 @@ object.
 
 import marshal
 from struct import unpack, unpack_from
-from typing import Any
+from typing import Any, Dict
 
 from xdis.codetype import to_portable
 from xdis.magics import GRAAL3_MAGICS, magic_int2tuple
@@ -349,7 +349,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         length: int = self.read_uint32()
         return tuple([self.graal_readString() for _ in range(length)])
 
-    def graal_readSparseTable(self) -> dict[int, tuple]:
+    def graal_readSparseTable(self) -> Dict[int, tuple]:
         """
         Python equvalent of Python Graal's readObjectArray() from
         MarshalModuleBuiltins.java
