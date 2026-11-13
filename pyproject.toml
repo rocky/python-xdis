@@ -17,7 +17,7 @@ dependencies = [
     "six >= 1.10.0",
 ]
 readme = "README.rst"
-license = {text = "GPL"}
+license = "GPL-3.0-or-later"
 keywords = ["Python bytecode", "bytecode", "disassembler"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
