@@ -7,7 +7,7 @@ cd $(dirname ${BASH_SOURCE[0]})
 if ! source ./pyenv-newest-versions ; then
     exit $?
 fi
-if ! source ./setup-master.sh ; then
+if ! source ./setup-main.sh ; then
     exit $?
 fi
 cd ..
