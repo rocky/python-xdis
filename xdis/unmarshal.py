@@ -29,7 +29,6 @@ object.
 import io
 import sys
 from struct import unpack
-from typing import Tuple
 
 from xdis.codetype import to_portable
 from xdis.cross_types import (
@@ -248,12 +247,11 @@ class VersionIndependentUnmarshaller:
         return obj, i
 
     def r_ref_insert(self, obj, i):
-        if i is not None:
-            if not isinstance(obj, (set, list)):
-                # I am not sure if this is right...
-                # We can't turn into a set a list that contains a
-                # list or a set. So skip these, for now
-                self.intern_objects[i] = obj
+        if i is not None and not isinstance(obj, (set, list)):
+            # I am not sure if this is right...
+            # We can't turn into a set a list that contains a
+            # list or a set. So skip these, for now
+            self.intern_objects[i] = obj
         return obj
 
     def r_ref(self, obj, save_ref):
@@ -868,7 +866,7 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects=None):
 
 def load_code_and_get_file_offsets(
     fp, magic_int, bytes_for_s: bool = False, code_objects=None
-) -> Tuple:
+):
     if isinstance(fp, bytes):
         fp = io.BytesIO(fp)
     if magic_int in GRAAL3_MAGICS:

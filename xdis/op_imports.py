@@ -274,7 +274,9 @@ def remap_opcodes(op_obj, alternate_opmap):
     for opname, alt_opcode in alternate_opmap.items():
         if opname not in op_obj.opmap:
             raise KeyError(
-                f"The opname {opname} was not found in Python's original opmap for version {op_obj.version}"
+                "The opname {} was not found in Python's original opmap for version {}".format(
+                    opname, op_obj.version
+                )
             )
         else:
             original_opcode = op_obj.opmap[opname]

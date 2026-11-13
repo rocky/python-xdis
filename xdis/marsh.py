@@ -104,7 +104,8 @@ class _Marshaller:
             and PYTHON_VERSION_TRIPLE[:2] != self.python_version[:2]
         ):
             raise RuntimeError(
-                f"code type passed for version {version_tuple_to_str()} but we are running version {self.python_version}"
+                "code type passed for version %s but we are running version %s"
+                % (version_tuple_to_str(), self.python_version)
             )
         try:
             self.dispatch[type(x)](self, x, flag_ref)
@@ -570,7 +571,7 @@ class _Marshaller:
     dispatch[bytes] = dump_string
     dispatch[bytearray] = dump_string
 
-    def dump_tuple(self, tuple_object: Tuple, flag_ref: int = 0) -> None:
+    def dump_tuple(self, tuple_object, flag_ref: int = 0) -> None:
 
         n = len(tuple_object)
         if self.python_version >= (3, 4) and n < 256:
@@ -1177,7 +1178,7 @@ def dump(
     x,
     f,
     python_version = PYTHON_VERSION_TRIPLE,
-    is_pypy: Optional[bool] = None,
+    is_pypy = None,
 ) -> None:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
     m = _Marshaller(f.write, python_version, is_pypy)
@@ -1185,7 +1186,7 @@ def dump(
 
 
 @builtinify
-def load(f, python_version: Tuple = PYTHON_VERSION_TRIPLE, is_pypy=None):
+def load(f, python_version = PYTHON_VERSION_TRIPLE, is_pypy=None):
     um = _Unmarshaller(f.read, python_version, is_pypy)
     return um.load()
 

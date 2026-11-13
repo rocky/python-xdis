@@ -93,9 +93,7 @@ def show_module_header(
     python_implementation=PYTHON_IMPLEMENTATION,
     file_offset=None,
 ):
-    bytecode_version = ".".join((str(i) for i in version_tuple))
     bytecode_version = ".".join(str(i) for i in version_tuple)
->>>>>>> python-3.6-to-3.10
     real_out = out or sys.stdout
     implementation_str = python_implementation
 
@@ -125,16 +123,16 @@ def show_module_header(
 
     if timestamp is not None:
         value = datetime.datetime.fromtimestamp(timestamp)
-        real_out.write(f"# Timestamp in code: {timestamp}")
+        real_out.write("# Timestamp in code: %d" % timestamp)
         real_out.write(value.strftime(" (%Y-%m-%d %H:%M:%S)\n"))
     if source_size is not None:
-        real_out.write(f"# Source code size mod 2**32: {source_size} bytes\n")
+        real_out.write("# Source code size mod 2**32: %d bytes\n" % source_size)
     if sip_hash is not None:
-        real_out.write(f"# SipHash:           0x{sip_hash:x}\n")
+        real_out.write("# SipHash:           0x%x\n" % sip_hash)
     if show_filename:
-        real_out.write(f"# Embedded file name: {co.co_filename}\n")
+        real_out.write("# Embedded file name: %s\n" % co.co_filename)
     if file_offset:
-        real_out.write(f"# Position in bytecode file: 0x{file_offset:x}\n")
+        real_out.write("# Position in bytecode file: 0x%x\n" % file_offset)
 
 
 def disco(
@@ -261,7 +259,7 @@ def disco_loop(
             ):
                 real_out.write(co.graal_instr_str)
                 if asm_format in ("extended_bytes", "bytes"):
-                    real_out.write(f"instruction bytecode:\n{co.co_code}\n")
+                    real_out.write("instruction bytecode:\n%s\n" % co.co_code)
 
             if opc.python_implementation == PythonImplementation.Graal:
                 bytecode = Bytecode_Graal(co, opc)
@@ -291,11 +289,11 @@ def disco_loop(
 
 def code_uniquify(basename, co_code) -> str:
     # FIXME: better would be a hash of the co_code
-    return f"{basename}_0x{id(co_code):x}"
+    return "%s_0x%x" % (basename, id(co_code))
 
 
 def disco_loop_asm_format(
-    opc, version_tuple: Tuple, co, real_out, fn_name_map, all_fns
+    opc, version_tuple, co, real_out, fn_name_map, all_fns
 ) -> None:
     """Produces disassembly in a format more conducive to
     automatic assembly by producing inner modules before they are
@@ -467,7 +465,7 @@ def disassemble_file(
     )
 
 
-def not_filtered(co: types.CodeType, methods: Tuple) -> bool:
+def not_filtered(co: types.CodeType, methods) -> bool:
     return len(methods) == 0 or co.co_name in methods
 
 
