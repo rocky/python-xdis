@@ -683,9 +683,6 @@ class _Marshaller:
     dispatch[str] = dump_string
 
     def dump_tuple(self, tuple_object, flag_ref=0):
-=======
-    def dump_tuple(self, tuple_object, flag_ref: int = 0) -> None:
->>>>>>> python-3.0-to-3.2
 
         n = len(tuple_object)
         if self.python_version >= (3, 4) and n < 256:

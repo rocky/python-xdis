@@ -467,7 +467,7 @@ class VersionIndependentUnmarshaller:
     def t_small_tuple(self, save_ref, bytes_for_s=False):
         # small tuple - since Python 3.4
         tuplesize = unpack("B", self.fp.read(1))[0]
-        ret, i = self.r_ref_reserve(tuple(), save_ref)
+        ret, i = self.r_ref_reserve((), save_ref)
         while tuplesize > 0:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             tuplesize -= 1
@@ -476,7 +476,7 @@ class VersionIndependentUnmarshaller:
 
     def t_tuple(self, save_ref, bytes_for_s=False):
         tuplesize = self.read_uint32()
-        ret = self.r_ref(tuple(), save_ref)
+        ret = self.r_ref((), save_ref)
         while tuplesize > 0:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             tuplesize -= 1
@@ -519,7 +519,7 @@ class VersionIndependentUnmarshaller:
 
     def t_set(self, save_ref, bytes_for_s=False):
         setsize = self.read_uint32()
-        ret, i = self.r_ref_reserve(tuple(), save_ref)
+        ret, i = self.r_ref_reserve((), save_ref)
         while setsize > 0:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             setsize -= 1
@@ -636,9 +636,9 @@ class VersionIndependentUnmarshaller:
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        co_varnames = tuple()
-        co_freevars = tuple()
-        co_cellvars = tuple()
+        co_varnames = ()
+        co_freevars = ()
+        co_cellvars = ()
 
         if self.version_triple >= (3, 11) and not self.is_pypy:
             # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
@@ -668,7 +668,7 @@ class VersionIndependentUnmarshaller:
             if self.version_triple >= (1, 3):
                 co_varnames = self.r_object(bytes_for_s=False)
             else:
-                co_varnames = tuple()
+                co_varnames = ()
 
             if self.version_triple >= (2, 0):
                 co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
@@ -769,15 +769,15 @@ class VersionIndependentUnmarshaller:
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        co_varnames = tuple()
-        co_freevars = tuple()
-        co_cellvars = tuple()
+        co_varnames = ()
+        co_freevars = ()
+        co_cellvars = ()
 
         co_qualname = None
         if self.version_triple >= (1, 3):
             co_varnames = self.r_object(bytes_for_s=False)
         else:
-            co_varnames = tuple()
+            co_varnames = ()
 
         if self.version_triple >= (2, 0):
             co_freevars = self.r_object(bytes_for_s=bytes_for_s)
