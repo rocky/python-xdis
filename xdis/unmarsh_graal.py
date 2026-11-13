@@ -158,6 +158,7 @@ UNMARSHAL_DISPATCH_TABLE = {
 JAVA_MARSHAL_SHIFT = 15
 JAVA_MARSHAL_BASE = 1 << JAVA_MARSHAL_SHIFT
 
+
 class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
     def __init__(self, fp, magic_int, bytes_for_s, code_objects={}):
         """
@@ -262,7 +263,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         Reads a marshaled big integer from the input stream.
         """
         negative = False
-        sz = self.read_uint32() # Get the size in shorts
+        sz = self.read_uint32()  # Get the size in shorts
         if sz < 0:
             negative = True
             sz = -sz
@@ -276,7 +277,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
 
         # Read the first 2 bytes as a 16-bit signed integer (short)
         # '>h' specifies big-endian signed short
-        digit = unpack_from('>h', data, i)[0]
+        digit = unpack_from(">h", data, i)[0]
         i += 2
 
         # Python int handles arbitrarily large numbers
@@ -286,12 +287,12 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
             # Calculate the power based on the number of shorts processed so far
             power = i // 2
             # Read the next 2 bytes as a 16-bit signed integer
-            digit = unpack_from('>h', data, i)[0]
+            digit = unpack_from(">h", data, i)[0]
             i += 2
 
             # In Python, int supports all these operations directly
             # The Java code effectively reconstructs the number using base 2^16 (MARSHAL_BASE)
-            term = digit * (JAVA_MARSHAL_BASE ** power)
+            term = digit * (JAVA_MARSHAL_BASE**power)
             result += term
 
         if negative:
@@ -409,7 +410,7 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
         # Below, the value None (slot for a code object value), will
         # be replaced by the actual code in variable `ret` after it
         # has been built.
-        ret, i = self.r_ref_reserve(None, save_ref)
+        _, i = self.r_ref_reserve(None, save_ref)
 
         self.version_triple = magic_int2tuple(self.magic_int)
 
@@ -587,9 +588,10 @@ class VersionIndependentUnmarshallerGraal(VersionIndependentUnmarshaller):
             other_fields=other_fields,
         )
 
-        self.code_to_file_offsets[code] = tuple(
-            [self.graal_code_info["co_codeunit_position"], co_code_offset_in_file]
-        )
+        self.code_to_file_offsets[code] = [
+            self.graal_code_info["co_codeunit_position"],
+            co_code_offset_in_file,
+        ]
 
         # if graal_bytecode_version == 26:
         #     from xdis.bytecode_graal import get_instructions_bytes_graal

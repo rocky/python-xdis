@@ -363,6 +363,81 @@ class _Marshaller:
     except NameError:
         pass
 
+    def dump_linetable(self, s):
+        if self.python_version < (3, 5):
+            type_code = TYPE_STRING
+        else:
+            type_code = TYPE_UNICODE
+        self._write(type_code)
+        self.w_long(len(s))
+        self._write(s)
+
+    def w_long(self, x):
+        a = chr(x & 0xFF)
+        x >>= 8
+        b = chr(x & 0xFF)
+        x >>= 8
+        c = chr(x & 0xFF)
+        x >>= 8
+        d = chr(x & 0xFF)
+        self._write(a + b + c + d)
+
+    def w_long64(self, x):
+        self.w_long(x)
+        self.w_long(x >> 32)
+
+    def dump_name(self, name, flag_ref):
+        if flag_ref:
+            if len(name) < 256:
+                self.dump_short_ascii_interned(name)
+            else:
+                self.dump_ascii(name)
+        else:
+            self.dump_unicode(name)
+
+    def dump_names(self, names, flag_ref):
+        n = len(names)
+        if flag_ref:
+
+            # We have reference objects. Has "names" already been seen as a reference object?
+            if names in self.intern_objects:
+                # It has, so just write the reference and return.
+                self._write(TYPE_REF)
+                self.w_long(self.intern_objects[names])
+                return
+
+            if n < 256:
+                is_reference = names in self.reference_objects
+                if is_reference:
+                    type_code = chr(ord(TYPE_SMALL_TUPLE) | FLAG_REF)
+                else:
+                    type_code = TYPE_SMALL_TUPLE
+                self._write(type_code)
+                self._write(chr(n))
+                if is_reference:
+                    self.intern_objects[names] = len(self.intern_objects)
+
+            else:
+                self._write(chr(ord(TYPE_TUPLE) | FLAG_REF))
+                self.w_long(n)
+
+            for name in names:
+                self.dump_short_ascii_interned(name)
+        else:
+            self._write(TYPE_TUPLE)
+            self.w_long(n)
+            for name in names:
+                self.dump(name)
+
+    def dump_none(self, _, flag_ref):
+        self._write(TYPE_NONE)
+        # In Python 3.4 .. ? None appears always as the first
+        # constant.
+        if flag_ref and self.intern_consts.get(None, -1) == -1:
+            self.intern_consts[None] = len(self.intern_consts)
+
+    dispatch[type(None)] = dump_none
+
     def dump_int(self, value, flag_ref = 0):
         if flag_ref:
             ref = self.intern_consts.get(value, None)
@@ -608,6 +683,9 @@ class _Marshaller:
     dispatch[str] = dump_string
 
     def dump_tuple(self, tuple_object, flag_ref=0):
+=======
+    def dump_tuple(self, tuple_object, flag_ref: int = 0) -> None:
+>>>>>>> python-3.0-to-3.2
 
         n = len(tuple_object)
         if self.python_version >= (3, 4) and n < 256:
@@ -657,7 +735,6 @@ class _Marshaller:
         dispatch[str] = dump_unicode
     else:
         dispatch[unicode] = dump_unicode  # noqa
-
 
 
 class _NULL:
@@ -1239,7 +1316,7 @@ def load(f, python_version=PYTHON_VERSION_TRIPLE, is_pypy=None):
 @builtinify
 def dumps(
     x,
-    python_version=PYTHON_VERSION_TRIPLE,
+    python_version = PYTHON_VERSION_TRIPLE,
     is_pypy=None,
 ):
     buffer = []

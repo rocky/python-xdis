@@ -1,23 +1,23 @@
 """
-  Copyright (c) 2015-2017, 2020-2025 by Rocky Bernstein
-  Copyright (c) 2000 by hartmut Goebel <h.goebel@crazy-compilers.com>
+Copyright (c) 2015-2017, 2020-2026 by Rocky Bernstein
+Copyright (c) 2000 by hartmut Goebel <h.goebel@crazy-compilers.com>
 
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU General Public License
-  as published by the Free Software Foundation; either version 2
-  of the License, or (at your option) any later version.
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-  NB. This is not a masterpiece of software, but became more like a hack.
-  Probably a complete rewrite would be sensefull. hG/2000-12-27
+NB. This is not a masterpiece of software, but became more like a hack.
+Probably a complete rewrite would be sensefull. hG/2000-12-27
 """
 
 __docformat__ = "restructuredtext"
@@ -152,13 +152,9 @@ from xdis.version_info import (
 )
 
 __all__ = [
-    # bytecode
-    "Bytecode",
-    "get_instructions_bytes",
-    "list2bytecode",
-    "next_offset",
-    "offset2line",
-    "op_has_argument",
+    # util
+    "COMPILER_FLAG_BIT",
+    "COMPILER_FLAG_NAMES",
     # codetype
     "CO_ABSOLUTE_IMPORT",
     "CO_ASYNC_GENERATOR",
@@ -179,59 +175,74 @@ __all__ = [
     "CO_OPTIMIZED",
     "CO_VARARGS",
     "CO_VARKEYWORDS",
-    "Code13",
-    "Code15",
+    # version_info
+    "IS_GRAAL",
+    "IS_PYPY",
+    "PYPY_COMPILER_FLAG_NAMES",
+    "PYTHON3",
+    "PYTHON_IMPLEMENTATION",
+    "PYTHON_MAGIC_INT",
+    "PYTHON_VERSION_STR",
+    "PYTHON_VERSION_TRIPLE",
+    # bytecode
+    "Bytecode",
     "Code2",
     "Code3",
+    "Code13",
+    "Code15",
+    "Code38",
     "Code310",
     "Code311",
     "Code311Graal",
-    "Code38",
-    "code_has_star_star_arg",
-    "code_has_star_arg",
-    "codeType2Portable",
-    "iscode",
-    # cross_dis
-    "code_info",
-    "extended_arg_val",
-    "findlinestarts",
-    "findlabels",
-    "format_code_info",
-    "get_code_object",
-    "get_jump_target_maps",
-    "instruction_size",
-    "pretty_code_flags",
-    "op_size",
-    "show_code",
-    # disasm
-    "get_opcode",
-    "show_module_header",
-    "disco_loop",
-    "disco_loop_asm_format",
-    "disassemble_file",
-    # load
-    "check_object_path",
-    "is_bytecode_extension",
-    "is_pypy",
-    "is_python_source",
-    "load_file",
-    "load_module",
-    "load_module_from_file_object",
-    "write_bytecode_file",
+    # instruction
+    "Instruction",
     # lineoffsets
     "LineOffsetInfo",
     "LineOffsets",
     "LineOffsetsCompact",
-    "lineoffsets_in_file",
-    "lineoffsets_in_module",
-    # instruction
-    "Instruction",
+    "__version__",
     # magic
     "canonic_python_version",
+    # load
+    "check_object_path",
+    "co_flags_is_async",
+    "code2num",
+    "codeType2Portable",
+    "code_has_star_arg",
+    "code_has_star_star_arg",
+    # cross_dis
+    "code_info",
+    "disassemble_file",
+    "disco_loop",
+    "disco_loop_asm_format",
+    "extended_arg_val",
+    "findlabels",
+    "findlinestarts",
+    "format_code_info",
+    "get_code_object",
+    "get_instructions_bytes",
+    "get_jump_target_maps",
+    # disasm
+    "get_opcode",
+    # op_imports
+    "get_opcode_module",
+    "instruction_size",
     "int2magic",
+    "is_bytecode_extension",
+    "is_pypy",
+    "is_python_source",
+    "iscode",
+    "lineoffsets_in_file",
+    "lineoffsets_in_module",
+    "list2bytecode",
+    "load_file",
+    "load_module",
+    "load_module_from_file_object",
     "magic2int",
-    "PYTHON_MAGIC_INT",
-    "sysinfo2magic",
+    "next_offset",
+    "offset2line",
+    "op_has_argument",
+    "op_size",
     # opcodes
     "opcode_13",
     "opcode_14",
@@ -254,39 +265,9 @@ __all__ = [
     "opcode_39",
     "opcode_310",
     "opcode_311",
-    # op_imports
-    "get_opcode_module",
-    # util
-    "COMPILER_FLAG_BIT",
-    "COMPILER_FLAG_NAMES",
-    "CO_ABSOLUTE_IMPORT",
-    "CO_ASYNC_GENERATOR",
-    "CO_COROUTINE",
-    "CO_FUTURE_ANNOTATIONS",
-    "CO_FUTURE_BARRY_AS_DBFL",
-    "CO_FUTURE_DIVISION",
-    "CO_FUTURE_GENERATOR_STOP",
-    "CO_FUTURE_PRINT_FUNCTION",
-    "CO_FUTURE_UNICODE_LITERALS",
-    "CO_FUTURE_WITH_STATEMENT",
-    "CO_GENERATOR",
-    "CO_GENERATOR_ALLOWED",
-    "CO_ITERABLE_COROUTINE",
-    "CO_NESTED",
-    "CO_NEWLOCALS",
-    "CO_NOFREE",
-    "CO_OPTIMIZED",
-    "CO_VARARGS",
-    "CO_VARKEYWORDS",
-    "PYPY_COMPILER_FLAG_NAMES",
-    "code2num",
-    "co_flags_is_async",
-    # version_info
-    "IS_GRAAL",
-    "IS_PYPY",
-    "PYTHON3",
-    "PYTHON_IMPLEMENTATION",
-    "PYTHON_VERSION_STR",
-    "PYTHON_VERSION_TRIPLE",
-    "__version__",
+    "pretty_code_flags",
+    "show_code",
+    "show_module_header",
+    "sysinfo2magic",
+    "write_bytecode_file",
 ]

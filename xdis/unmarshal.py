@@ -34,6 +34,8 @@ from xdis.codetype.code13 import Bytes
 from xdis.codetype import to_portable
 from xdis.cross_types import (
     FrozenDictPrePython315,
+    LongTypeForPython3,
+    UnicodeForPython3,
 )
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
 from xdis.version_info import PYTHON_VERSION_TRIPLE
@@ -255,12 +257,11 @@ class VersionIndependentUnmarshaller:
         return obj, i
 
     def r_ref_insert(self, obj, i):
-        if i is not None:
-            if not isinstance(obj, (set, list)):
-                # I am not sure if this is right...
-                # We can't turn into a set a list that contains a
-                # list or a set. So skip these, for now
-                self.intern_objects[i] = obj
+        if i is not None and not isinstance(obj, (set, list)):
+            # I am not sure if this is right...
+            # We can't turn into a set a list that contains a
+            # list or a set. So skip these, for now
+            self.intern_objects[i] = obj
         return obj
 
     def r_ref(self, obj, save_ref):
@@ -342,7 +343,7 @@ class VersionIndependentUnmarshaller:
             return long(0)
         size = abs(n)
         d = long(0)
-        for j in range(0, size):
+        for j in range(size):
             md = self.read_int16()
             # This operation and turn "d" from a long back
             # into an int.
@@ -484,7 +485,7 @@ class VersionIndependentUnmarshaller:
     def t_list(self, save_ref, bytes_for_s=False):
         # FIXME: check me
         n = self.read_uint32()
-        ret = self.r_ref(list(), save_ref)
+        ret = self.r_ref([], save_ref)
         while n > 0:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             n -= 1

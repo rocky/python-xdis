@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2018, 2020-2021, 2023-2025
+# Copyright (c) 2016-2018, 2020-2021, 2023-2026
 # by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
@@ -84,7 +84,7 @@ def get_opcode(
             lookup += "Graal"
     elif python_implementation == PythonImplementation.RustPython:
         lookup += "Rust"
-    if lookup in op_imports.keys():
+    if lookup in op_imports:
         if alternate_opmap is not None:
             # TODO: change bytecode version number comment line to indicate altered
             return remap_opcodes(op_imports[lookup], alternate_opmap)
@@ -109,7 +109,7 @@ def show_module_header(
     python_implementation=PYTHON_IMPLEMENTATION,
     file_offset=None,
 ):
-    bytecode_version = ".".join((str(i) for i in version_tuple))
+    bytecode_version = ".".join(str(i) for i in version_tuple)
     real_out = out or sys.stdout
     implementation_str = python_implementation
 
@@ -268,11 +268,14 @@ def disco_loop(
                     % (version_tuple[:2], PYTHON_VERSION_TRIPLE[:2])
                 )
                 dis.disassemble(co, lasti=-1, file=real_out)
-            elif is_unusual_bytecode:
-                if hasattr(co, "graal_instr_str") and co.graal_instr_str:
-                    real_out.write(co.graal_instr_str)
-                    if asm_format in ("extended_bytes", "bytes"):
-                        real_out.write("instruction bytecode:\n%s\n" % co.co_code)
+            elif (
+                is_unusual_bytecode
+                and hasattr(co, "graal_instr_str")
+                and co.graal_instr_str
+            ):
+                real_out.write(co.graal_instr_str)
+                if asm_format in ("extended_bytes", "bytes"):
+                    real_out.write("instruction bytecode:\n%s\n" % co.co_code)
 
             if opc.python_implementation == PythonImplementation.Graal:
                 bytecode = Bytecode_Graal(co, opc)
@@ -286,10 +289,12 @@ def disco_loop(
                 + "\n"
             )
 
-            if version_tuple >= (3, 11):
-                if bytecode.exception_entries not in (None, []):
-                    exception_table = format_exception_table(bytecode, version_tuple)
-                    real_out.write(exception_table + "\n")
+            if version_tuple >= (3, 11) and bytecode.exception_entries not in (
+                None,
+                [],
+            ):
+                exception_table = format_exception_table(bytecode, version_tuple)
+                real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):
@@ -354,13 +359,11 @@ def disco_loop_asm_format(opc, version_tuple, co, real_out, fn_name_map, all_fns
                 mapped_name += "_%s" % str(co.co_firstlineno)
         fn_name_map[mapped_name] = basename
         co.co_name = mapped_name
-        pass
     elif co_name in fn_name_map:
         # FIXME: better would be a hash of the co_code
         mapped_name = code_uniquify(co_name, co.co_code)
         fn_name_map[mapped_name] = co_name
         co.co_name = mapped_name
-        pass
     else:
         mapped_name = co.co_name
 
