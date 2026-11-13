@@ -29,6 +29,7 @@ import re
 import sys
 import types
 from collections import deque
+from typing import Optional, Tuple
 
 import xdis
 from xdis.bytecode import Bytecode
@@ -94,7 +95,7 @@ def show_module_header(
     header=True,
     show_filename=True,
     python_implementation: PythonImplementation = PYTHON_IMPLEMENTATION,
-    file_offset: int | None = None,
+    file_offset: Optional[int] = None,
 ) -> None:
     bytecode_version = ".".join(str(i) for i in version_tuple)
     real_out = out or sys.stdout
@@ -289,7 +290,7 @@ def code_uniquify(basename, co_code) -> str:
 
 
 def disco_loop_asm_format(
-    opc, version_tuple: tuple, co, real_out, fn_name_map, all_fns
+    opc, version_tuple: Tuple, co, real_out, fn_name_map, all_fns
 ) -> None:
     """Produces disassembly in a format more conducive to
     automatic assembly by producing inner modules before they are
@@ -373,7 +374,7 @@ def disassemble_file(
     asm_format="classic",
     alternate_opmap=None,
     show_source=False,
-    methods: tuple[str] = (),
+    methods: Tuple[str] = (),
     save_file_offsets: bool = False,
 ):
     """
@@ -459,7 +460,7 @@ def disassemble_file(
     )
 
 
-def not_filtered(co: types.CodeType, methods: tuple) -> bool:
+def not_filtered(co: types.CodeType, methods: Tuple) -> bool:
     return len(methods) == 0 or co.co_name in methods
 
 
