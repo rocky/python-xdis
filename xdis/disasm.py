@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2018, 2020-2021, 2023-2025
+# Copyright (c) 2016-2018, 2020-2021, 2023-2026
 # by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
@@ -29,7 +29,6 @@ import re
 import sys
 import types
 from collections import deque
-from typing import Optional, Tuple
 
 import xdis
 from xdis.bytecode import Bytecode
@@ -57,7 +56,7 @@ def get_opcode(
     magic_int: int = -1,
 ):
     # Set up disassembler with the right opcodes
-    lookup = ".".join((str(i) for i in version_tuple))
+    lookup = ".".join(str(i) for i in version_tuple)
     if python_implementation == PythonImplementation.PyPy:
         lookup += "PyPy"
     elif python_implementation == PythonImplementation.Graal:
@@ -70,7 +69,7 @@ def get_opcode(
             lookup += "Graal"
     elif python_implementation == PythonImplementation.RustPython:
         lookup += "Rust"
-    if lookup in op_imports.keys():
+    if lookup in op_imports:
         if alternate_opmap is not None:
             # TODO: change bytecode version number comment line to indicate altered
             return remap_opcodes(op_imports[lookup], alternate_opmap)
@@ -95,9 +94,9 @@ def show_module_header(
     header=True,
     show_filename=True,
     python_implementation: PythonImplementation = PYTHON_IMPLEMENTATION,
-    file_offset: Optional[int] = None,
+    file_offset: int | None = None,
 ) -> None:
-    bytecode_version = ".".join((str(i) for i in version_tuple))
+    bytecode_version = ".".join(str(i) for i in version_tuple)
     real_out = out or sys.stdout
     implementation_str = python_implementation
 
@@ -127,16 +126,16 @@ def show_module_header(
 
     if timestamp is not None:
         value = datetime.datetime.fromtimestamp(timestamp)
-        real_out.write("# Timestamp in code: %d" % timestamp)
+        real_out.write(f"# Timestamp in code: {timestamp}")
         real_out.write(value.strftime(" (%Y-%m-%d %H:%M:%S)\n"))
     if source_size is not None:
-        real_out.write("# Source code size mod 2**32: %d bytes\n" % source_size)
+        real_out.write(f"# Source code size mod 2**32: {source_size} bytes\n")
     if sip_hash is not None:
-        real_out.write("# SipHash:           0x%x\n" % sip_hash)
+        real_out.write(f"# SipHash:           0x{sip_hash:x}\n")
     if show_filename:
-        real_out.write("# Embedded file name: %s\n" % co.co_filename)
+        real_out.write(f"# Embedded file name: {co.co_filename}\n")
     if file_offset:
-        real_out.write("# Position in bytecode file: 0x%x\n" % file_offset)
+        real_out.write(f"# Position in bytecode file: 0x{file_offset:x}\n")
 
 
 def disco(
@@ -144,7 +143,7 @@ def disco(
     co,
     timestamp,
     out=sys.stdout,
-    magic_int: int=-1,
+    magic_int: int = -1,
     source_size=None,
     sip_hash=None,
     asm_format: str = "classic",
@@ -217,7 +216,7 @@ def disco_loop(
     dup_lines=False,
     asm_format="classic",
     show_source=False,
-    methods=tuple(),
+    methods=(),
     file_offsets: dict = {},
     is_unusual_bytecode: bool = False,
 ) -> None:
@@ -249,11 +248,14 @@ def disco_loop(
                     f"Bytecode is for {version_tuple[:2]}; Running:{PYTHON_VERSION_TRIPLE[:2]}"
                 )
                 dis.disassemble(co, lasti=-1, file=real_out)
-            elif is_unusual_bytecode:
-                if hasattr(co, "graal_instr_str") and co.graal_instr_str:
-                    real_out.write(co.graal_instr_str)
-                    if asm_format in ("extended_bytes", "bytes"):
-                        real_out.write("instruction bytecode:\n%s\n" % co.co_code)
+            elif (
+                is_unusual_bytecode
+                and hasattr(co, "graal_instr_str")
+                and co.graal_instr_str
+            ):
+                real_out.write(co.graal_instr_str)
+                if asm_format in ("extended_bytes", "bytes"):
+                    real_out.write(f"instruction bytecode:\n{co.co_code}\n")
 
             if opc.python_implementation == PythonImplementation.Graal:
                 bytecode = Bytecode_Graal(co, opc)
@@ -267,10 +269,12 @@ def disco_loop(
                 + "\n"
             )
 
-            if version_tuple >= (3, 11):
-                if bytecode.exception_entries not in (None, []):
-                    exception_table = format_exception_table(bytecode, version_tuple)
-                    real_out.write(exception_table + "\n")
+            if version_tuple >= (3, 11) and bytecode.exception_entries not in (
+                None,
+                [],
+            ):
+                exception_table = format_exception_table(bytecode, version_tuple)
+                real_out.write(exception_table + "\n")
 
         for c in co.co_consts:
             if iscode(c):
@@ -281,7 +285,7 @@ def disco_loop(
 
 def code_uniquify(basename, co_code) -> str:
     # FIXME: better would be a hash of the co_code
-    return "%s_0x%x" % (basename, id(co_code))
+    return f"{basename}_0x{id(co_code):x}"
 
 
 def disco_loop_asm_format(
@@ -334,16 +338,14 @@ def disco_loop_asm_format(
             if mapped_name in fn_name_map:
                 # We can have two lambdas created that are the same
                 # but have different line numbers.
-                mapped_name += f"_{str(co.co_firstlineno)}"
+                mapped_name += f"_{co.co_firstlineno!s}"
         fn_name_map[mapped_name] = basename
         co.co_name = mapped_name
-        pass
     elif co_name in fn_name_map:
         # FIXME: better would be a hash of the co_code
         mapped_name = code_uniquify(co_name, co.co_code)
         fn_name_map[mapped_name] = co_name
         co.co_name = mapped_name
-        pass
     else:
         mapped_name = co.co_name
 
@@ -371,7 +373,7 @@ def disassemble_file(
     asm_format="classic",
     alternate_opmap=None,
     show_source=False,
-    methods: Tuple[str] = tuple(),
+    methods: tuple[str] = (),
     save_file_offsets: bool = False,
 ):
     """

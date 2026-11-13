@@ -5,7 +5,7 @@ if [[ $0 == $${BASH_SOURCE[0]} ]] ; then
     exit 1
 fi
 
-PYTHON_VERSION=3.12
+PYTHON_VERSION=3.15
 pyenv local $PYTHON_VERSION
 
 git checkout main && git pull && pyenv local $PYTHON_VERSION
