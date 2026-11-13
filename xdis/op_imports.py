@@ -189,6 +189,7 @@ op_imports = {
     3.11: opcode_311,
     "3.12.7Graal": opcode_312graal,  # this right?
     "3.12.8Graal": opcode_312graal,  # this right?
+    # "3.12.0Rust": opcode_12897rust,
     "3.12.0rc2": opcode_312,
     "3.12.0": opcode_312,
     3.13: opcode_311,
@@ -307,30 +308,30 @@ def remap_opcodes(op_obj, alternate_opmap):
                     frozen_set_list[idx] = alt_opcode
 
     new_opcodes_with_args = {}
-    for opname in opcodes_with_args.keys():
+    for opname in opcodes_with_args:
         new_opcodes_with_args[opname] = new_opmap[opname]
     lowest_opcode_with_arg = min(new_opcodes_with_args.values())
-    setattr(op_obj, "HAVE_ARGUMENT", lowest_opcode_with_arg)
+    op_obj.HAVE_ARGUMENT = lowest_opcode_with_arg
     if hasattr(op_obj, "PJIF"):
         if hasattr(op_obj, "POP_JUMP_IF_FALSE") and "POP_JUMP_IF_FALSE" in new_opmap:
             # 2.7 and later
-            setattr(op_obj, "PJIF", new_opmap["POP_JUMP_IF_FALSE"])
+            op_obj.PJIF = new_opmap["POP_JUMP_IF_FALSE"]
         if hasattr(op_obj, "JUMP_IF_FALSE") and "JUMP_IF_FALSE" in new_opmap:
-            setattr(op_obj, "PJIF", new_opmap["JUMP_IF_FALSE"])
+            op_obj.PJIF = new_opmap["JUMP_IF_FALSE"]
     if hasattr(op_obj, "PJIT"):
         if hasattr(op_obj, "POP_JUMP_IF_TRUE") and "POP_JUMP_IF_TRUE" in new_opmap:
             # 2.7 and later
-            setattr(op_obj, "PJIT", new_opmap["POP_JUMP_IF_TRUE"])
+            op_obj.PJIT = new_opmap["POP_JUMP_IF_TRUE"]
         if hasattr(op_obj, "JUMP_IF_TRUE") and "JUMP_IF_TRUE" in new_opmap:
-            setattr(op_obj, "PJIT", new_opmap["JUMP_IF_TRUE"])
+            op_obj.PJIT = new_opmap["JUMP_IF_TRUE"]
 
     for new_list_name, new_list in new_lists.items():
         setattr(op_obj, new_list_name, new_list)
     for new_frozenset_name, new_frozenset in new_frozensets.items():
         setattr(op_obj, new_frozenset_name, frozenset(new_frozenset))
 
-    setattr(op_obj, "opmap", new_opmap)
-    setattr(op_obj, "REMAPPED", True)
+    op_obj.opmap = new_opmap
+    op_obj.REMAPPED = True
     return op_obj
 
 

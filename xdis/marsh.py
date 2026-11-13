@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2025 by Rocky Bernstein
+# (C) Copyright 2018-2026 by Rocky Bernstein
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -85,7 +85,7 @@ class _Marshaller:
     def __init__(
         self,
         writefunc,
-        python_version: tuple,
+        python_version,
         is_pypy = None,
         collection_order={},
         reference_objects=set(),
@@ -273,7 +273,9 @@ class _Marshaller:
         self.w_long(code.co_firstlineno)
 
         # 3.10 and greater uses co_linetable.
-        linetable = code.co_linetable if hasattr(code, "co_linetable") else code.co_lnotab
+        linetable = (
+            code.co_linetable if hasattr(code, "co_linetable") else code.co_lnotab
+        )
         self.dump_linetable(linetable)
 
     dispatch[Code3] = dump_code3
@@ -389,7 +391,6 @@ class _Marshaller:
                 self.dump_ascii(name)
         else:
             self.dump_unicode(name)
-
 
     def dump_names(self, names, flag_ref: int) -> None:
         n = len(names)
@@ -570,7 +571,7 @@ class _Marshaller:
     dispatch[bytes] = dump_string
     dispatch[bytearray] = dump_string
 
-    def dump_tuple(self, tuple_object: tuple, flag_ref: int = 0) -> None:
+    def dump_tuple(self, tuple_object, flag_ref: int = 0) -> None:
 
         n = len(tuple_object)
         if self.python_version >= (3, 4) and n < 256:
@@ -616,7 +617,6 @@ class _Marshaller:
         dispatch[str] = dump_unicode
     else:
         dispatch[unicode] = dump_unicode  # noqa
-
 
 
 class _NULL:
@@ -1177,7 +1177,7 @@ version = 1
 def dump(
     x,
     f,
-    python_version: tuple = PYTHON_VERSION_TRIPLE,
+    python_version = PYTHON_VERSION_TRIPLE,
     is_pypy = None,
 ) -> None:
     # XXX 'version' is ignored, we always dump in a version-0-compatible format
@@ -1186,7 +1186,7 @@ def dump(
 
 
 @builtinify
-def load(f, python_version: tuple = PYTHON_VERSION_TRIPLE, is_pypy=None):
+def load(f, python_version = PYTHON_VERSION_TRIPLE, is_pypy=None):
     um = _Unmarshaller(f.read, python_version, is_pypy)
     return um.load()
 
@@ -1194,7 +1194,7 @@ def load(f, python_version: tuple = PYTHON_VERSION_TRIPLE, is_pypy=None):
 @builtinify
 def dumps(
     x,
-    python_version: tuple = PYTHON_VERSION_TRIPLE,
+    python_version = PYTHON_VERSION_TRIPLE,
     is_pypy=None,
 ):
     buffer = []

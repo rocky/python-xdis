@@ -32,9 +32,9 @@ from struct import unpack
 
 from xdis.codetype import to_portable
 from xdis.cross_types import (
+    FrozenDictPrePython315,
     LongTypeForPython3,
     UnicodeForPython3,
-    FrozenDictPrePython315,
 )
 from xdis.magics import GRAAL3_MAGICS, PYPY3_MAGICS, RUSTPYTHON_MAGICS, magic_int2tuple
 
@@ -252,12 +252,11 @@ class VersionIndependentUnmarshaller:
         return obj, i
 
     def r_ref_insert(self, obj, i):
-        if i is not None:
-            if not isinstance(obj, (set, list)):
-                # I am not sure if this is right...
-                # We can't turn into a set a list that contains a
-                # list or a set. So skip these, for now
-                self.intern_objects[i] = obj
+        if i is not None and not isinstance(obj, (set, list)):
+            # I am not sure if this is right...
+            # We can't turn into a set a list that contains a
+            # list or a set. So skip these, for now
+            self.intern_objects[i] = obj
         return obj
 
     def r_ref(self, obj, save_ref):
@@ -338,7 +337,7 @@ class VersionIndependentUnmarshaller:
             return long(0)
         size = abs(n)
         d = long(0)
-        for j in range(0, size):
+        for j in range(size):
             md = self.read_int16()
             # This operation and turn "d" from a long back
             # into an int.
@@ -466,16 +465,15 @@ class VersionIndependentUnmarshaller:
     def t_small_tuple(self, save_ref, bytes_for_s: bool = False):
         # small tuple - since Python 3.4
         tuplesize = unpack("B", self.fp.read(1))[0]
-        ret, i = self.r_ref_reserve(tuple(), save_ref)
+        ret, i = self.r_ref_reserve((), save_ref)
         while tuplesize > 0:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             tuplesize -= 1
-            pass
         return self.r_ref_insert(ret, i)
 
     def t_tuple(self, save_ref, bytes_for_s: bool = False):
         tuplesize = self.read_uint32()
-        ret = self.r_ref(tuple(), save_ref)
+        ret = self.r_ref((), save_ref)
         while tuplesize > 0:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             tuplesize -= 1
@@ -484,7 +482,7 @@ class VersionIndependentUnmarshaller:
     def t_list(self, save_ref, bytes_for_s: bool = False):
         # FIXME: check me
         n = self.read_uint32()
-        ret = self.r_ref(list(), save_ref)
+        ret = self.r_ref([], save_ref)
         while n > 0:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             n -= 1
@@ -503,14 +501,14 @@ class VersionIndependentUnmarshaller:
 
     def t_set(self, save_ref, bytes_for_s: bool = False) -> set:
         setsize = self.read_uint32()
-        ret, i = self.r_ref_reserve(tuple(), save_ref)
+        ret, i = self.r_ref_reserve((), save_ref)
         while setsize > 0:
             ret += (self.r_object(bytes_for_s=bytes_for_s),)
             setsize -= 1
         return self.r_ref_insert(set(ret), i)
 
     def t_frozendict(self, save_ref, bytes_for_s: bool = False):
-        d, i = self.r_ref_reserve(dict(), save_ref)
+        d, i = self.r_ref_reserve({}, save_ref)
         # dictionary
         while True:
             key = self.r_object(bytes_for_s=bytes_for_s)
@@ -518,13 +516,12 @@ class VersionIndependentUnmarshaller:
                 break
             val = self.r_object(bytes_for_s=bytes_for_s)
             d[key] = val
-            pass
 
         final_frozendict = FrozenDictPrePython315(d)
         return self.r_ref_insert(final_frozendict, i)
 
     def t_dict(self, save_ref, bytes_for_s: bool = False) -> dict:
-        ret = self.r_ref(dict(), save_ref)
+        ret = self.r_ref({}, save_ref)
         # dictionary
         while True:
             key = self.r_object(bytes_for_s=bytes_for_s)
@@ -532,7 +529,6 @@ class VersionIndependentUnmarshaller:
                 break
             val = self.r_object(bytes_for_s=bytes_for_s)
             ret[key] = val
-            pass
         return ret
 
     def t_python2_string_reference(self, save_ref, bytes_for_s: bool = False):
@@ -641,9 +637,9 @@ class VersionIndependentUnmarshaller:
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        co_varnames = tuple()
-        co_freevars = tuple()
-        co_cellvars = tuple()
+        co_varnames = ()
+        co_freevars = ()
+        co_cellvars = ()
 
         if self.version_triple >= (3, 11) and not self.is_pypy:
             # parse localsplusnames list: https://github.com/python/cpython/blob/3.11/Objects/codeobject.c#L208C12
@@ -668,13 +664,12 @@ class VersionIndependentUnmarshaller:
             co_filename = self.r_object(bytes_for_s=bytes_for_s)
             co_name = self.r_object(bytes_for_s=bytes_for_s)
             co_qualname = self.r_object(bytes_for_s=bytes_for_s)
-            pass
         else:
             co_qualname = None
             if self.version_triple >= (1, 3):
                 co_varnames = self.r_object(bytes_for_s=False)
             else:
-                co_varnames = tuple()
+                co_varnames = ()
 
             if self.version_triple >= (2, 0):
                 co_cellvars = self.r_object(bytes_for_s=bytes_for_s)
@@ -775,15 +770,15 @@ class VersionIndependentUnmarshaller:
         co_consts = self.r_object(bytes_for_s=bytes_for_s)
         co_names = self.r_object(bytes_for_s=bytes_for_s)
 
-        co_varnames = tuple()
-        co_freevars = tuple()
-        co_cellvars = tuple()
+        co_varnames = ()
+        co_freevars = ()
+        co_cellvars = ()
 
         co_qualname = None
         if self.version_triple >= (1, 3):
             co_varnames = self.r_object(bytes_for_s=False)
         else:
-            co_varnames = tuple()
+            co_varnames = ()
 
         if self.version_triple >= (2, 0):
             co_freevars = self.r_object(bytes_for_s=bytes_for_s)
@@ -850,7 +845,9 @@ class VersionIndependentUnmarshaller:
 # user interface
 
 
-def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
+def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects=None):
+    if code_objects is None:
+        code_objects = {}
     if isinstance(fp, bytes):
         fp = io.BytesIO(fp)
 
@@ -873,8 +870,8 @@ def load_code(fp, magic_int, bytes_for_s: bool = False, code_objects={}):
     return um_gen.load()
 
 def load_code_and_get_file_offsets(
-    fp, magic_int, bytes_for_s: bool = False, code_objects={}
-) -> tuple:
+    fp, magic_int, bytes_for_s: bool = False, code_objects=None
+):
     if isinstance(fp, bytes):
         fp = io.BytesIO(fp)
     if magic_int in GRAAL3_MAGICS:
